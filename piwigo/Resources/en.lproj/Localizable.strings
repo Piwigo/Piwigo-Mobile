@@ -418,10 +418,9 @@
 "imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image rotate
-"rotateSingleImage_rotate" = "Rotate Photo…";
-"rotateSeveralImages_rotate" = "Rotate Photos…";
-"rotateImage_left" = "…by 90° left";
-"rotateImage_right" = "…by 90° right";
+"rotateImage_rotate" = "Rotate 90°…";
+"rotateImage_left" = "Counterclockwise";
+"rotateImage_right" = "Clockwise";
 "rotateSingleImageHUD_rotating" = "Rotating Photo…";
 "rotateSeveralImageHUD_rotating" = "Rotating Photos…";
 

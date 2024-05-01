@@ -16,19 +16,17 @@ extension ImageCollectionViewController
 {
     func rotateMenu() -> UIMenu? {
         if selectedVideosIds.isEmpty {
-            return UIMenu(title: NSLocalizedString("rotateSeveralImages_rotate",
-                                                   comment: "Rotate Photos…"),
+            return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
                           image: nil,
                           identifier: UIMenu.Identifier("org.piwigo.piwigoImages.rotate"),
-                          children: [rotateLeftAction(), rotateRightAction()])
+                          children: [rotateRightAction(), rotateLeftAction()])
         }
         return nil
     }
     
     private func rotateRightAction() -> UIAction {
         // Rotate image right
-        let action = UIAction(title: NSLocalizedString("rotateImage_right",
-                                                       comment: "Clockwise"),
+        let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
                               handler: { _ in
             // Edit image informations
@@ -40,8 +38,7 @@ extension ImageCollectionViewController
 
     private func rotateLeftAction() -> UIAction {
         // Rotate image left
-        let action = UIAction(title: NSLocalizedString("rotateImage_left",
-                                                       comment: "Counterclockwise"),
+        let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
                               handler: { _ in
             // Edit image informations

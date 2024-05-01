@@ -165,32 +165,32 @@
 "categoryDiscoverFavorites_title" = "你的最愛";
 
 // Albums sort
-"categorySort_sort" = "Sort Images By…";
-"categorySort_default" = "Default";
-"categorySort_name" = "Photo Title";
+"categorySort_sort" = "排序圖片依...";
+"categorySort_default" = "預設";
+"categorySort_name" = "圖片標題";
 "categorySort_nameAscending" = "照片標題，A → Z";
 "categorySort_nameDescending" = "照片標題，Z → A";
-"categorySort_fileName" = "File Name";
+"categorySort_fileName" = "檔案名稱";
 "categorySort_fileNameAscending" = "檔名，A → Z";
 "categorySort_fileNameDescending" = "檔名，Z → A";
-"categorySort_dateCreated" = "Date Created";
+"categorySort_dateCreated" = "建立日期";
 "categorySort_dateCreatedDescending" = "建立日期，新 → 舊";
 "categorySort_dateCreatedAscending" = "建立日期，舊 → 新";
-"categorySort_datePosted" = "Date Posted";
+"categorySort_datePosted" = "發表日期";
 "categorySort_datePostedDescending" = "發布日期，新 → 舊";
 "categorySort_datePostedAscending" = "發布日期，舊 → 新";
-"categorySort_ratingScore" = "Rating Score";
+"categorySort_ratingScore" = "評分";
 "categorySort_ratingScoreDescending" = "評分，高 → 低";
 "categorySort_ratingScoreAscending" = "評分，低 → 高";
-"categorySort_visits" = "Visits";
+"categorySort_visits" = "訪問次數";
 "categorySort_visitsDescending" = "觀看次數，高 → 低";
 "categorySort_visitsAscending" = "觀看次數，低 → 高";
 "categorySort_manual" = "手動排序";
-"categorySort_randomly" = "Randomly";
+"categorySort_randomly" = "隨機";
 "categorySort_random" = "隨機排序";
-"categorySort_id" = "Identifier";
-"categorySort_idDescending" = "Identifier, 9 → 1";
-"categorySort_idAscending" = "Identifier, 1 → 9";
+"categorySort_id" = "識別碼";
+"categorySort_idDescending" = "識別碼, 9 → 1";
+"categorySort_idAscending" = "識別碼, 1 → 9";
 
 "categorySort_videosOnly" = "只有影片";
 "categorySort_imagesOnly" = "只有照片";
@@ -418,16 +418,15 @@
 "imageFavoritesRemoveError_message" = "無法從最愛移除此照片。";
 
 // Image rotate
-"rotateSingleImage_rotate" = "Rotate Photo…";
-"rotateSeveralImages_rotate" = "Rotate Photos…";
-"rotateImage_left" = "…by 90° left";
-"rotateImage_right" = "…by 90° right";
-"rotateSingleImageHUD_rotating" = "Rotating Photo…";
-"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+"rotateImage_rotate" = "Rotate 90°…";
+"rotateImage_left" = "Counterclockwise";
+"rotateImage_right" = "Clockwise";
+"rotateSingleImageHUD_rotating" = "正在旋轉圖片...";
+"rotateSeveralImageHUD_rotating" = "正在旋轉多張圖片...";
 
 // Image rotate — Errors
-"rotateImageFail_title" = "Rotation Failed";
-"rotateImageFail_message" = "Image could not be rotated";
+"rotateImageFail_title" = "旋轉失敗";
+"rotateImageFail_message" = "圖片無法被旋轉";
 
 // Image delete
 "deleteImage_delete" = "刪除";

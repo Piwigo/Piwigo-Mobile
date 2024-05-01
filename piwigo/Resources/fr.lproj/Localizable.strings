@@ -418,10 +418,9 @@
 "imageFavoritesRemoveError_message" = "Echec de la suppression de cette photo de vos favoris.";
 
 // Image rotate
-"rotateSingleImage_rotate" = "Tourner la photo…";
-"rotateSeveralImages_rotate" = "Tourner les photos…";
-"rotateImage_left" = "…de 90° à gauche";
-"rotateImage_right" = "…de 90° à droite";
+"rotateImage_rotate" = "Tourner de 90°…";
+"rotateImage_left" = "Sens anti-horaire";
+"rotateImage_right" = "Sens horaire";
 "rotateSingleImageHUD_rotating" = "Rotation de la photo…";
 "rotateSeveralImageHUD_rotating" = "Rotation des photos…";
 
