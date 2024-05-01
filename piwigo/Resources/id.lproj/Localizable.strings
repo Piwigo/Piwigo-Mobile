@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Your favorites";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Judul Foto, A → Z";
 "categorySort_nameDescending" = "Judul Foto, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Nama Berkas, A → Z";
 "categorySort_fileNameDescending" = "Nama Berkas, Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Tanggal Dibuat, baru → lama";
 "categorySort_dateCreatedAscending" = "Tanggal Dibuat, lama → baru";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Tanggal Dikirim, baru → lama";
 "categorySort_datePostedAscending" = "Tanggal Dikirim, lama → baru";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Rating Score, high → low";
 "categorySort_ratingScoreAscending" = "Rating Score, low → high";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_manual" = "Pesanan Manual";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Random Order";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Hanya Video";
 "categorySort_imagesOnly" = "Hanya Gambar";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
 "imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Hapus";

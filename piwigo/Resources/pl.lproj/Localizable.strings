@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Moje ulubione";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Tytuł Zdjęcia, A → Z";
 "categorySort_nameDescending" = "Tytuł Zdjęcia, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Nazwa Pliku, A → Z";
 "categorySort_fileNameDescending" = "Nazwa Pliku, Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Data Utworzenia, nowe → stare";
 "categorySort_dateCreatedAscending" = "Data Utworzenia, stare → nowe";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Data Wysłania, nowe → stare";
 "categorySort_datePostedAscending" = "Data Wysłania, stare → nowe";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Ocena, wysoka → niska";
 "categorySort_ratingScoreAscending" = "Ocena, niska → wysoka";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Odwiedzin, mniej → więcej";
 "categorySort_visitsAscending" = "Odwiedzin, mniej → więcej";
 "categorySort_manual" = "Ustaw ręcznie";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Kolejność losowa";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Tylko filmy";
 "categorySort_imagesOnly" = "Tylko zdjęcia";
@@ -228,14 +240,14 @@
 "createAlbumError_message" = "Nie można utworzyć nowego albumu";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Zmień\nNazwę";
+"categoryCellOption_rename" = "Zmień\nnazwę";
 "categoryCellOption_move" = "Przenieść";
 "categoryCellOption_delete" = "Usuń";
 
 // Album rename
-"renameCategory_title" = "Zmień Nazwę Albumu";
+"renameCategory_title" = "Zmień nazwę albumu";
 "renameCategory_message" = "Wprowadź nową nazwę dla tego albumu";
-"renameCategory_button" = "Zmień Nazwę";
+"renameCategory_button" = "Zmień nazwę";
 "renameCategoryHUD_label" = "Zmiana nazwy albumu…";
 
 // Album rename — Errors
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Nie udało się dodać tego zdjęcia do ulubionych.";
 "imageFavoritesRemoveError_message" = "Nie udało się usunąć tego zdjęcia z ulubionych.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Usuń";

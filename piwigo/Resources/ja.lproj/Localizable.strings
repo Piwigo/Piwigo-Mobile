@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "お気に入り";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "写真題名、A → Z";
 "categorySort_nameDescending" = "写真題名、Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "ファイル名、A → Z";
 "categorySort_fileNameDescending" = "ファイル名、Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "作成日、新しい → 古い";
 "categorySort_dateCreatedAscending" = "作成日、古い → 新しい";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "掲載日、新しい → 古い";
 "categorySort_datePostedAscending" = "掲載日、古い → 新しい";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "評価スコア、高い→低い";
 "categorySort_ratingScoreAscending" = "評価スコア、低い→高い";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "訪問回数, 高 → 低";
 "categorySort_visitsAscending" = "訪問回数, 低 → 高";
 "categorySort_manual" = "手動注文";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "ランダムな順序";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "写真のみ";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "お気に入りにこの写真を追加できませんでした。";
 "imageFavoritesRemoveError_message" = "お気に入りからこの写真を削除できませんでした。";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "削除";

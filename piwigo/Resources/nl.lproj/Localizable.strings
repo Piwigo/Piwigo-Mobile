@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Jouw favorieten";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Foto titel, A → Z";
 "categorySort_nameDescending" = "Foto titel, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Bestandsnaam A → Z";
 "categorySort_fileNameDescending" = "Bestandsnaam, Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Aanmaakdatum, nieuw → oud";
 "categorySort_dateCreatedAscending" = "Datum gemaakt, oud → nieuw";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Datum geplaatst, nieuw → oud";
 "categorySort_datePostedAscending" = "Datum geplaatst, oud → nieuw";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Waarderingsscore, hoog → laag";
 "categorySort_ratingScoreAscending" = "Waarderingsscore, laag → hoog";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Bezoeken, hoog → laag";
 "categorySort_visitsAscending" = "Bezoeken, laag → hoog";
 "categorySort_manual" = "Handmatige volgorde";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Willekeurige volgorde";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Alleen video's";
 "categorySort_imagesOnly" = "Alleen foto's";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Foto kan niet toegevoegd worden aan favorieten.";
 "imageFavoritesRemoveError_message" = "Fout bij het verwijderen van deze foto uit je favorieten.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Verwijderen";

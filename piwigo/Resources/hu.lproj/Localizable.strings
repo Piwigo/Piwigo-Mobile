@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Kedvencek";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Név szerint, A → Z";
 "categorySort_nameDescending" = "Név szerint, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Vezetéknév, A → Z";
 "categorySort_fileNameDescending" = "Vezetéknév, Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Létrehozás, új → régi";
 "categorySort_dateCreatedAscending" = "Létrehozás, régi → új";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Feltöltés, új → régi";
 "categorySort_datePostedAscending" = "Feltöltés, régi → új";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Értékelés, magas → alacsony";
 "categorySort_ratingScoreAscending" = "Értékelés, alacsony → magas";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Népszerűség, magas → alacsony";
 "categorySort_visitsAscending" = "Népszerűség, alacsony → magas";
 "categorySort_manual" = "Kézi rendezés";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Véletlen sorrend";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Videók";
 "categorySort_imagesOnly" = "Fotók";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Nem sikerült felvenni a fotót a kedvencekhez.";
 "imageFavoritesRemoveError_message" = "Nem sikerült eltávolítani a fotót a kedvencekből.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Törlés";

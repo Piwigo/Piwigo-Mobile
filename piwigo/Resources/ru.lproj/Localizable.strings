@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Ваши избранные";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Заголовок фотографии, A → Я";
 "categorySort_nameDescending" = "Заголовок фотографии, Я → А";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Имя файла, A → Z";
 "categorySort_fileNameDescending" = "Имя файла, Я → А";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Дата создания, новая → старая";
 "categorySort_dateCreatedAscending" = "Дата создания, старые → новые";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Дата публикации, новая → старая";
 "categorySort_datePostedAscending" = "Дата публикации, старая → новая";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Рейтинг, высокий → низкий";
 "categorySort_ratingScoreAscending" = "Рейтинг, низкий → высокий";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Посещения, высокие → низкие";
 "categorySort_visitsAscending" = "Посещения, низкий → высокий";
 "categorySort_manual" = "Ручная сортировка";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Случайный порядок";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Только Видео";
 "categorySort_imagesOnly" = "Только Фото";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Не удалось добавить эту фотографию в избранное.";
 "imageFavoritesRemoveError_message" = "Не удалось удалить эту фотографию из избранного.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Удалить";

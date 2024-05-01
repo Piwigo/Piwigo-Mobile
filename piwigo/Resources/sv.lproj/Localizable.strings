@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Mina favoriter";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Bildtitel, A → Ö";
 "categorySort_nameDescending" = "Bildtitel, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Filnamn, A → Ö";
 "categorySort_fileNameDescending" = "Filnamn, Ö → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_dateCreatedAscending" = "Skapelsedatum, gammal → ny";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_datePostedAscending" = "Skapelsedatum, gammal → ny";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Betyg, hög → låg";
 "categorySort_ratingScoreAscending" = "Betyg, låg → hög";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Besökare, hög → låg";
 "categorySort_visitsAscending" = "Besökare, låg → hög";
 "categorySort_manual" = "Manuell sortering";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Slumpmässig ordning";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Det gick inte att lägga till detta foto till dina favoriter.";
 "imageFavoritesRemoveError_message" = "Det gick inte att ta bort detta foto från dina favoriter.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Radera";

@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "Mes favoris";
 
 // Albums sort
+"categorySort_sort" = "Trier les images par…";
+"categorySort_default" = "Défaut";
+"categorySort_name" = "Titre de la photo";
 "categorySort_nameAscending" = "Titre de la photo, A → Z";
 "categorySort_nameDescending" = "Titre de la photo, Z → A";
+"categorySort_fileName" = "Nom du fichier";
 "categorySort_fileNameAscending" = "Nom de fichier, A → Z";
 "categorySort_fileNameDescending" = "Nom de fichier, Z → A";
+"categorySort_dateCreated" = "Date de création";
 "categorySort_dateCreatedDescending" = "Date de création, récent → ancien";
 "categorySort_dateCreatedAscending" = "Date de création, ancien → récent";
+"categorySort_datePosted" = "Date d'ajout";
 "categorySort_datePostedDescending" = "Date d'ajout, récent → ancien";
 "categorySort_datePostedAscending" = "Date d'ajout, ancien → récent";
+"categorySort_ratingScore" = "Note";
 "categorySort_ratingScoreDescending" = "Note, haute → basse";
 "categorySort_ratingScoreAscending" = "Note, basse → haute";
+"categorySort_visits" = "Nombre de visites";
 "categorySort_visitsDescending" = "Nombre de visites, élevé → faible";
 "categorySort_visitsAscending" = "Nombre de visites, faible → élevé";
 "categorySort_manual" = "Tri manuel";
+"categorySort_randomly" = "Au hasard";
 "categorySort_random" = "Ordre aléatoire";
+"categorySort_id" = "Identifiant";
+"categorySort_idDescending" = "Identifiant, 9 → 1";
+"categorySort_idAscending" = "Identifiant, 1 → 9";
 
 "categorySort_videosOnly" = "Vidéos uniquement";
 "categorySort_imagesOnly" = "Photos uniquement";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Echec de l'ajout de cette photo à vos favoris.";
 "imageFavoritesRemoveError_message" = "Echec de la suppression de cette photo de vos favoris.";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Tourner la photo…";
+"rotateSeveralImages_rotate" = "Tourner les photos…";
+"rotateImage_left" = "…de 90° à gauche";
+"rotateImage_right" = "…de 90° à droite";
+"rotateSingleImageHUD_rotating" = "Rotation de la photo…";
+"rotateSeveralImageHUD_rotating" = "Rotation des photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Échec de la rotation";
+"rotateImageFail_message" = "La photo n'a pas pu être tournée";
 
 // Image delete
 "deleteImage_delete" = "Supprimer";

@@ -165,20 +165,32 @@
 "categoryDiscoverFavorites_title" = "你的最爱";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "照片标题，A → Z";
 "categorySort_nameDescending" = "照片标题，Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "文件名，A → Z";
 "categorySort_fileNameDescending" = "文件名，Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "创建日期，新 → 旧";
 "categorySort_dateCreatedAscending" = "创建日期，旧 → 新";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "发布日期，新 → 旧";
 "categorySort_datePostedAscending" = "发布日期，旧 → 新";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "评分分数，高 → 低";
 "categorySort_ratingScoreAscending" = "评分分数，低 → 高";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "点击量，高 → 低";
 "categorySort_visitsAscending" = "点击量，低 → 高";
 "categorySort_manual" = "手动排序";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "随机顺序";
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 
 "categorySort_videosOnly" = "仅视频";
 "categorySort_imagesOnly" = "仅图片";
@@ -404,6 +416,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "无法将此照片添加到您的收藏夹。";
 "imageFavoritesRemoveError_message" = "从您的收藏夹中删除此照片失败。";
+
+// Image rotate
+"rotateSingleImage_rotate" = "Rotate Photo…";
+"rotateSeveralImages_rotate" = "Rotate Photos…";
+"rotateImage_left" = "…by 90° left";
+"rotateImage_right" = "…by 90° right";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "删除";
