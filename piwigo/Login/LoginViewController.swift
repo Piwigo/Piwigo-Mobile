@@ -165,6 +165,20 @@ class LoginViewController: UIViewController {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        // Should we update user interface based on the appearance?
+        if #available(iOS 13.0, *) {
+            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.screenBrightnessChanged()
+            }
+        }
+    }
+
     deinit {
         // Release memory
         
