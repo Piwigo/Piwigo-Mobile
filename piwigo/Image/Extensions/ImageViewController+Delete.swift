@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 
@@ -71,14 +72,14 @@ extension ImageViewController
     
     func removeImageFromAlbum() {
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"))
         
         // Remove selected category ID from image category list
         guard let imageData = imageData,
               var catIDs = imageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}) else {
             dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
                 // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
+                self.hideHUD { [unowned self] in
                     // Re-enable buttons
                     self.setEnableStateOfButtons(true)
                 }
@@ -115,8 +116,8 @@ extension ImageViewController
                 }
 
                 // Hide HUD
-                self.updatePiwigoHUDwithSuccess { [unowned self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                self.updateHUDwithSuccess { [unowned self] in
+                    self.hideHUD(afterDelay: pwgDelayHUD) { [unowned self] in
                         // Display preceding/next image or return to album view
                         self.didRemoveImage()
                     }
@@ -145,7 +146,7 @@ extension ImageViewController
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
-                hidePiwigoHUD { [unowned self] in
+                hideHUD { [unowned self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
@@ -158,7 +159,7 @@ extension ImageViewController
         guard let imageData = imageData else {
             dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
                 // Hide HUD
-                self.hidePiwigoHUD { [self] in
+                self.hideHUD { [self] in
                     // Re-enable buttons
                     self.setEnableStateOfButtons(true)
                 }
@@ -167,7 +168,7 @@ extension ImageViewController
         }
 
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
         NetworkUtilities.checkSession(ofUser: user) { [self] in
@@ -200,8 +201,8 @@ extension ImageViewController
                 }
 
                 // Hide HUD
-                self.updatePiwigoHUDwithSuccess { [self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                self.updateHUDwithSuccess { [self] in
+                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Display preceding/next image or return to album view
                         self.didRemoveImage()
                     }
@@ -230,7 +231,7 @@ extension ImageViewController
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
-                hidePiwigoHUD { [self] in
+                hideHUD { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }

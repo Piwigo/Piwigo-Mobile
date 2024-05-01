@@ -18,8 +18,7 @@ extension SettingsViewController: UITableViewDataSource
         /// User can upload images/videos if he/she is logged in and has:
         /// — admin rights
         /// — normal rights with upload access to some categories with Community
-        return user.hasAdminRights ||
-        (user.role == .normal && NetworkVars.usesCommunityPluginV29)
+        return user.hasAdminRights || (user.role == .normal && NetworkVars.usesCommunityPluginV29)
     }
     
     func activeSection(_ section: Int) -> SettingsSection {

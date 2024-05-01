@@ -8,6 +8,7 @@
 
 import Photos
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 

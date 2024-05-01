@@ -20,7 +20,7 @@ extension SelectCategoryViewController {
         // Check image data
         guard let imageData = inputImages.first else {
             // Close HUD
-            updatePiwigoHUDwithSuccess() {
+            updateHUDwithSuccess() {
                 // Save changes
                 do {
                     try self.mainContext.save()
@@ -28,7 +28,7 @@ extension SelectCategoryViewController {
                     print("Could not save copied images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and dismiss album selector
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                self.hideHUD(afterDelay: pwgDelayHUD) {
                     self.dismiss(animated: true) {
                         // Update image data in current view (ImageDetailImage view)
                         self.imageCopiedDelegate?.didCopyImage()
@@ -42,12 +42,12 @@ extension SelectCategoryViewController {
         self.copyImage(imageData, toAlbum: albumData) { [self] in
             // Next image…
             self.inputImages.remove(imageData)
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
             self.copyImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showError(error)
             }
         }
@@ -99,7 +99,7 @@ extension SelectCategoryViewController {
         // Jobe done?
         guard let imageData = inputImages.first else {
             // Close HUD
-            updatePiwigoHUDwithSuccess() {
+            updateHUDwithSuccess() {
                 // Save changes
                 do {
                     try self.mainContext.save()
@@ -108,7 +108,7 @@ extension SelectCategoryViewController {
                 }
 
                 // Hide HUD and dismiss album selector
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                self.hideHUD(afterDelay: pwgDelayHUD) {
                     self.dismiss(animated: true) {
                         // Remove image from ImageViewController
                         self.imageRemovedDelegate?.didRemoveImage()
@@ -122,12 +122,12 @@ extension SelectCategoryViewController {
         moveImage(imageData, toCategory: albumData) { [self] in
             // Next image…
             self.inputImages.remove(imageData)
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
             self.moveImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showError(error)
             }
         }

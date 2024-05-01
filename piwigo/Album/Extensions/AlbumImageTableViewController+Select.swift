@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 @available(iOS 14, *)
@@ -105,7 +106,7 @@ extension AlbumImageTableViewController
         // Any album cell visible above the image collection?
         if let lastAlbumCell = visibleAlbumCells.last, let window = view.window
         {
-            var fromCoordinateSpace = lastAlbumCell.coordinateSpace
+            let fromCoordinateSpace = lastAlbumCell.coordinateSpace
             let toCoordinateSpace = window.screen.coordinateSpace
             var albumHeight = fromCoordinateSpace.convert(lastAlbumCell.bounds, to: toCoordinateSpace).maxY
             albumHeight -= navigationController?.navigationBar.bounds.height ?? 0.0
@@ -165,12 +166,20 @@ extension AlbumImageTableViewController
 
 extension AlbumImageTableViewController: ImageSelectionCollectionViewDelegate
 {
-    func updatePreviewMode() {
-        updateBarsInPreviewMode()
+    func updatePreviewMode(withInit: Bool) {
+        if withInit {
+            initBarsInPreviewMode()
+        } else {
+            updateBarsInPreviewMode()
+        }
     }
     
-    func updateSelectMode() {
-        updateBarsInSelectMode()
+    func updateSelectMode(withInit: Bool) {
+        if withInit {
+            initBarsInSelectMode()
+        } else {
+            updateBarsInSelectMode()
+        }
     }
     
     func setButtonsState(_ enabled: Bool) {

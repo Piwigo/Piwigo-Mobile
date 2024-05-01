@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Sort Image
 /// - for selecting image sort options

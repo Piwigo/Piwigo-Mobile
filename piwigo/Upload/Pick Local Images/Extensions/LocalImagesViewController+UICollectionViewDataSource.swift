@@ -7,6 +7,7 @@
 //
 
 import Photos
+import UIKit
 import piwigoKit
 
 extension LocalImagesViewController: UICollectionViewDataSource

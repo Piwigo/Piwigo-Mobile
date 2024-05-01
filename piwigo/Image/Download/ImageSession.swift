@@ -7,8 +7,9 @@
 //
 
 import AVFoundation
-import MobileCoreServices
 import Foundation
+import MobileCoreServices
+import UIKit
 import piwigoKit
 
 #if canImport(UniformTypeIdentifiers)

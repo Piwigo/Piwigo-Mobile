@@ -9,6 +9,7 @@
 import CoreData
 import MobileCoreServices
 import Photos
+import UIKit
 import piwigoKit
 import uploadKit
 
@@ -123,6 +124,7 @@ extension PasteboardImagesViewController {
             /// - restart UplaodManager activity
             if self.pendingOperations.preparationsInProgress.isEmpty {
                 DispatchQueue.main.async {
+                    self.updateSelectButton()
                     if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
                         header.setButtonTitle(forState: .select)
                     }

@@ -29,7 +29,7 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver
             }
 
             // Show HUD during update, preventing touches
-            self.showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
+            self.showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
 
             // Update fetched asset collection
             self.fetchedImages = changes.fetchResultAfterChanges

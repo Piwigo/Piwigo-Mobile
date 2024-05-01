@@ -5,6 +5,8 @@
 //  Created by Eddy Lelièvre-Berna on 15/07/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
+
+import UIKit
 import piwigoKit
 
 enum EditImageDetailsOrder : Int {
@@ -60,7 +62,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     deinit {

@@ -7,6 +7,7 @@
 //
 
 import piwigoKit
+import UIKit
 
 // MARK: - UITableViewDelegate Methods
 extension EditImageParamsViewController: UITableViewDelegate

@@ -85,7 +85,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register app becoming active for updating the pasteboard
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
@@ -186,6 +186,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
                indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
                 hasImagesInPasteboard = true
+            } else {
+                hasImagesInPasteboard = false
             }
         }
 

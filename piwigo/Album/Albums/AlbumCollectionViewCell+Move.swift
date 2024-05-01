@@ -6,6 +6,8 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+import UIKit
+
 extension AlbumCollectionViewCell {
     // MARK: - Move Category
     func moveCategory(completion: @escaping (Bool) -> Void) {

@@ -348,7 +348,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         // Display albums
         categoriesTableView?.reloadData()
     }
@@ -732,16 +732,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             albumData = albums.object(at: albumIndexPath)
         }
 
-//        if (indexPath.section == 0) && (wantedAction == .setAlbumThumbnail) {
-//            let categoryId = inputImageData.categoryIds[indexPath.row].intValue
-//            albumData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-//        }
-//        else if hasRecentAlbums && (indexPath.section == 0) {
-//            albumData = recentCategories[indexPath.row]
-//        } else {
-//            albumData = categories[indexPath.row]
-//        }
-        
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
@@ -857,9 +847,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
             // User must not move album to current parent album or in itself
             if albumData.pwgID == 0 {  // upperCategories is nil for root
-                if inputAlbum.parentId == 0 { return }
-            } else if (albumData.pwgID == inputAlbum.parentId) ||
-                        albumData.upperIds.components(separatedBy: ",").contains(where: { Int32($0) == inputAlbum.pwgID}) { return }
+                if inputAlbum.parentId == 0 {
+                    return
+                }
+            } else {
+                let parentIds = albumData.upperIds.components(separatedBy: ",")
+                if albumData.pwgID == inputAlbum.parentId ||
+                    parentIds.contains(where: { Int32($0) == inputAlbum.pwgID}) {
+                    return
+                }
+            }
 
             // Ask user to confirm
             let title = NSLocalizedString("moveCategory", comment: "Move Album")
@@ -901,7 +898,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { _ in
                 // Display HUD
-                self.showPiwigoHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
+                self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
                 // Copy single image to selected album
                 self.copyImages(toAlbum: albumData)
             })
@@ -919,7 +916,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath) { _ in
                 // Display HUD
-                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
+                self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
                 // Move single image to selected album
                 self.moveImages(toAlbum: albumData)
             }
@@ -936,7 +933,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { _ in
                 // Display HUD
-                self.showPiwigoHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"), inMode: .annularDeterminate)
+                self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
+                             inMode: .determinate)
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
                     self.copyImages(toAlbum: albumData)
@@ -955,7 +953,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath) { _ in
                 // Display HUD
-                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"), inMode: .annularDeterminate)
+                self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
+                             inMode: .determinate)
                 // Move several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
                     self.moveImages(toAlbum: albumData)

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension AlbumImageTableViewController
@@ -84,7 +85,7 @@ extension AlbumImageTableViewController
     func addCategory(withName albumName: String, andComment albumComment: String,
                      inParent parentId: Int32) {
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Create album
         NetworkUtilities.checkSession(ofUser: user) {
@@ -97,8 +98,8 @@ extension AlbumImageTableViewController
                 }
                 
                 // Hide HUD
-                updatePiwigoHUDwithSuccess() { [self] in
-                    hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                updateHUDwithSuccess() { [self] in
+                    hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Reset buttons
                         didCancelTapAddButton()
                     }
@@ -112,7 +113,7 @@ extension AlbumImageTableViewController
     }
     
     private func addCategoryError(_ error: NSError) {
-        self.hidePiwigoHUD() { [self] in
+        self.hideHUD() { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]

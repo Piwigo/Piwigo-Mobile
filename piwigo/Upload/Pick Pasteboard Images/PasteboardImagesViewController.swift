@@ -148,11 +148,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
         // At start, there is no image selected
         selectedImages = .init(repeating: nil, count: pbObjects.count)
         
-        // Collection flow layout of images
+        // Collection view
         collectionFlowLayout.scrollDirection = .vertical
         collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
-
-        // Collection view identifier
+        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
         localImagesCollection.accessibilityIdentifier = "Pasteboard"
         
         // Navigation bar
@@ -246,11 +245,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadProgress, object: nil)
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
         
         // Register app becoming active for updating the pasteboard
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),

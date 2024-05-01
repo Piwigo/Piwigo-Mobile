@@ -6,6 +6,7 @@
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 
 extension LocalImagesViewController: LocalImagesHeaderDelegate
@@ -21,7 +22,7 @@ extension LocalImagesViewController: LocalImagesHeaderDelegate
             firstIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: 0, section: section))
         }
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
             // Loop over all images in section to select them (70356 images takes 150.6 ms with iPhone 11 Pro)
             // Here, we exploit the cached local IDs
@@ -59,8 +60,8 @@ extension LocalImagesViewController: LocalImagesHeaderDelegate
             // Change section button state
             selectedSections[section] = .select
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
         
         // Update navigation bar
         self.updateNavBar()

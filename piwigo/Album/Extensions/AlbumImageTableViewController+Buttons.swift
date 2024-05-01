@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension AlbumImageTableViewController
@@ -298,9 +299,11 @@ extension AlbumImageTableViewController
                                           y: kRadius - height / 2.0, width: width, height: height)
 
         progressLayer.frame = CGRect(x: 0, y: 0, width: 2 * kRadius + extraWidth, height: 2 * kRadius)
-        let path = UIBezierPath(arcCenter: CGPoint(x: kRadius + extraWidth, y: kRadius), radius: kRadius - 1.5, startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
+        let path = UIBezierPath(arcCenter: CGPoint(x: kRadius + extraWidth, y: kRadius), 
+                                radius: kRadius - 1.5, startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
         path.addLine(to: CGPoint(x: kRadius, y: 2 * kRadius - 1.5))
-        path.addArc(withCenter: CGPoint(x: kRadius, y: kRadius), radius: kRadius - 1.5, startAngle: .pi / 2, endAngle: .pi + .pi / 2, clockwise: true)
+        path.addArc(withCenter: CGPoint(x: kRadius, y: kRadius), 
+                    radius: kRadius - 1.5, startAngle: .pi / 2, endAngle: .pi + .pi / 2, clockwise: true)
         path.addLine(to: CGPoint(x: kRadius + extraWidth, y: 1.5))
         path.lineCapStyle = .round
         progressLayer.path = path.cgPath
@@ -423,6 +426,7 @@ extension AlbumImageTableViewController
             animation.fromValue = NSNumber(value: Double(progressLayer.strokeEnd))
             animation.toValue = NSNumber(value: progress)
             progressLayer.strokeEnd = CGFloat(progress)
+            progressLayer.lineCap = .round
             animation.duration = 0.2
             progressLayer.add(animation, forKey: nil)
         } else {

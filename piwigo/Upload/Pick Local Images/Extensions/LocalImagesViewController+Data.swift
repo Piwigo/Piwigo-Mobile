@@ -8,6 +8,7 @@
 
 import CoreData
 import Photos
+import UIKit
 import piwigoKit
 import uploadKit
 
@@ -113,9 +114,9 @@ extension LocalImagesViewController
 
         // Hide HUD when Photo Library notifies changes
         DispatchQueue.main.async {
-            if self.isShowingPiwigoHUD() {
-                self.updatePiwigoHUDwithSuccess {
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+            if self.isShowingHUD() {
+                self.updateHUDwithSuccess {
+                    self.hideHUD(afterDelay: pwgDelayHUD) {
                         self.didFinishSorting()
                         self.localImagesCollection.reloadData()
                     }

@@ -84,9 +84,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
         // Register image share methods to perform on completion
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage),
-                                               name: .pwgDidShare, object: nil)
+                                               name: Notification.Name.pwgDidShare, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask),
-                                               name: .pwgCancelDownload, object: nil)
+                                               name: Notification.Name.pwgCancelDownload, object: nil)
     }
 
     // MARK: - Download & Prepare Image

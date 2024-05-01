@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension ImageCollectionViewController
@@ -33,8 +34,8 @@ extension ImageCollectionViewController
     func editImages() {
         if selectedImageIds.isEmpty {
             // No image => End (should never happen)
-            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
-                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     imageSelectionDelegate?.deselectImages()
                 }
             }
@@ -47,7 +48,8 @@ extension ImageCollectionViewController
             fatalError("No EditImageParamsViewController!")
         }
         editImageVC.user = user
-        editImageVC.images = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
+        let albumImages = images.fetchedObjects ?? []
+        editImageVC.images = albumImages.filter({selectedImageIds.contains($0.pwgID)})
         editImageVC.delegate = self
         imageSelectionDelegate?.pushSelectionToView(editImageVC)
     }

@@ -6,6 +6,7 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 
 extension AlbumCollectionViewCell {
@@ -35,7 +36,7 @@ extension AlbumCollectionViewCell {
                 title: NSLocalizedString("deleteCategory_empty", comment: "Delete Empty Album"),
                 style: .destructive, handler: { [self] action in
                     // Display HUD during the deletion
-                    topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+                    topViewController?.showHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"))
                     
                     // Delete empty album
                     deleteCategory(withDeletionMode: .none,
@@ -189,7 +190,7 @@ extension AlbumCollectionViewCell {
         }
 
         // Display HUD during the deletion
-        topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        topViewController?.showHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"))
 
         // Delete album (deleted images will remain in cache)
         deleteCategory(withDeletionMode: deletionMode, andViewController: topViewController, completion: completion)
@@ -238,7 +239,7 @@ extension AlbumCollectionViewCell {
             // Report error
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
             let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
-            topViewController?.hidePiwigoHUD() {
+            topViewController?.hideHUD() {
                 topViewController?.dismissPiwigoError(withTitle: title, message: message,
                                                       errorMessage: error.localizedDescription) {
                 }
@@ -268,8 +269,8 @@ extension AlbumImageTableViewController: DeleteAlbumCollectionViewCellDelegate
                 guard let error = error as? NSError else {
                     // No error ► Hide HUD, update
                     DispatchQueue.main.async { [self] in
-                        topViewController?.updatePiwigoHUDwithSuccess() {
-                            topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        topViewController?.updateHUDwithSuccess() {
+                            topViewController?.hideHUD(afterDelay: pwgDelayHUD) {
                                 // Update number of images in footer
                                 self.albumCollectionVC.updateNberOfImagesInFooter()
                             }
@@ -280,7 +281,7 @@ extension AlbumImageTableViewController: DeleteAlbumCollectionViewCellDelegate
                 
                 // Show the error
                 DispatchQueue.main.async { [self] in
-                    topViewController?.hidePiwigoHUD {
+                    topViewController?.hideHUD {
                         // Display error alert after trying to share image
                         self.deleteCategoryError(error, viewController: topViewController)
                     }
@@ -291,7 +292,7 @@ extension AlbumImageTableViewController: DeleteAlbumCollectionViewCellDelegate
         
         // Show the error
         DispatchQueue.main.async { [self] in
-            topViewController?.hidePiwigoHUD {
+            topViewController?.hideHUD {
                 // Display error alert after trying to share image
                 self.deleteCategoryError(error, viewController: topViewController)
             }
@@ -302,7 +303,7 @@ extension AlbumImageTableViewController: DeleteAlbumCollectionViewCellDelegate
         DispatchQueue.main.async {
             let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
             let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
-            topViewController?.hidePiwigoHUD() {
+            topViewController?.hideHUD() {
                 topViewController?.dismissPiwigoError(withTitle: title, message: message,
                                                       errorMessage: error.localizedDescription) {
                 }

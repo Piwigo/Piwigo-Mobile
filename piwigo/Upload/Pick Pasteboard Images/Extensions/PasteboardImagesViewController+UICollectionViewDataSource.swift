@@ -7,6 +7,7 @@
 //
 
 import MobileCoreServices
+import UIKit
 
 #if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers        // Requires iOS 14

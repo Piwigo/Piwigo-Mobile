@@ -56,7 +56,7 @@ extension AlbumImageTableViewController
                     // ► Check if the album has been deleted
                     if self.albumData.isDeleted {
                         DispatchQueue.main.async { [self] in
-                            navigationController?.hidePiwigoHUD { [self] in
+                            navigationController?.hideHUD { [self] in
                                 navigationController?.popViewController(animated: true)
                             }
                         }
@@ -125,7 +125,7 @@ extension AlbumImageTableViewController
                 if onPage < newLastPage, query == albumData.query {
                     // Pursue fetch without HUD
                     DispatchQueue.main.async { [self] in
-                        navigationController?.hidePiwigoHUD {
+                        navigationController?.hideHUD {
                             // Set navigation bar buttons
                             if self.imageCollectionVC.isSelect {
                                 self.updateBarsInSelectMode()
@@ -210,9 +210,9 @@ extension AlbumImageTableViewController
     private func showError(_ error: Error?) {
         DispatchQueue.main.async { [unowned self] in
             guard let error = error as? NSError else {
-                navigationController?.showPiwigoHUD(
+                navigationController?.showHUD(
                     withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
-                    detail: " ",
+                    detail: " ", minWidth: 200,
                     buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
                     buttonTarget: self, buttonSelector: #selector(hideLoading),
                     inMode: .text)
@@ -223,9 +223,9 @@ extension AlbumImageTableViewController
             if [NSURLErrorUserAuthenticationRequired, 401, 403].contains(error.code) ||
                 NetworkVars.didFailHTTPauthentication {
                 // Invalid Piwigo or HTTP credentials
-                navigationController?.showPiwigoHUD(
+                navigationController?.showHUD(
                     withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
-                    detail: error.localizedDescription,
+                    detail: error.localizedDescription, minWidth: 240,
                     buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
                     buttonTarget: self, buttonSelector: #selector(hideLoading),
                     inMode: .text)
@@ -233,7 +233,7 @@ extension AlbumImageTableViewController
             else if let err = error as? PwgSessionError, 
                     err == PwgSessionError.missingParameter {
                 // Hide HUD
-                navigationController?.hidePiwigoHUD() {
+                navigationController?.hideHUD() {
                     // End refreshing if needed
                     self.albumImageTableView.refreshControl?.endRefreshing()
                 }
@@ -243,7 +243,7 @@ extension AlbumImageTableViewController
 
     @objc func hideLoading() {
         // Hide HUD
-        navigationController?.hidePiwigoHUD() {
+        navigationController?.hideHUD() {
             // Return to login view
             ClearCache.closeSession()
         }

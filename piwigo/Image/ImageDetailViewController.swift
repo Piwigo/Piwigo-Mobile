@@ -81,7 +81,7 @@ class ImageDetailViewController: UIViewController
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -286,8 +286,9 @@ class ImageDetailViewController: UIViewController
         }
 
         // Center image horizontally
-        let imageWidth = imageSize.width * scrollView.zoomScale
-        let horizontalSpace = max(0, (view.bounds.width - imageWidth) / 2)
+        let imageWidth: CGFloat = imageSize.width * scrollView.zoomScale
+        let leftWidth: CGFloat = (view.bounds.width - imageWidth) / 2
+        let horizontalSpace = max(0, leftWidth)
         scrollView.contentInset.left = horizontalSpace
         scrollView.contentInset.right = horizontalSpace
         if horizontalSpace > 0 {
@@ -297,8 +298,9 @@ class ImageDetailViewController: UIViewController
         }
         
         // Center image vertically
-        let imageHeight = imageSize.height * scrollView.zoomScale
-        let verticalSpace = max(0, (view.bounds.height - imageHeight) / 2)
+        let imageHeight: CGFloat = imageSize.height * scrollView.zoomScale
+        let leftHeight: CGFloat = (view.bounds.height - imageHeight) / 2
+        let verticalSpace = max(0, leftHeight)
         scrollView.contentInset.top = verticalSpace
         scrollView.contentInset.bottom = verticalSpace
         if verticalSpace > 0 {

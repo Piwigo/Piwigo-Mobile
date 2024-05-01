@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 // MARK: - Rotate Images Actions
@@ -68,8 +69,8 @@ extension ImageCollectionViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
-                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Deselect images
                     imageSelectionDelegate?.deselectImages()
                 }
@@ -85,7 +86,7 @@ extension ImageCollectionViewController
             selectedVideosIds.remove(imageId)
 
             // Update HUD
-            navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Next image
             rotateImages(by: angle)
@@ -102,13 +103,13 @@ extension ImageCollectionViewController
                 let imageID = imageData.pwgID
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
                     // Update HUD
-                    navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updateHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Next image
                     selectedImageIds.removeFirst()
                     selectedFavoriteIds.remove(imageId)
                     selectedVideosIds.remove(imageId)
-                    addImageToFavorites()
+                    rotateImages(by: angle)
                     
                 } failure: { [self] error in
                     rotateImagesInDatabaseError(error)
@@ -137,7 +138,7 @@ extension ImageCollectionViewController
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
-                navigationController?.hidePiwigoHUD { [self] in
+                navigationController?.hideHUD { [self] in
                     // Re-enable buttons
                     imageSelectionDelegate?.setButtonsState(true)
                 }

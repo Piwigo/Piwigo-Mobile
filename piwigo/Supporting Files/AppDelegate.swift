@@ -117,11 +117,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
-                                               name: .pwgLeftUploads, object: nil)
+                                               name: Notification.Name.pwgLeftUploads, object: nil)
         
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
-                                               name: .pwgAppendAutoUploadRequestsFailed, object: nil)
+                                               name: Notification.Name.pwgAppendAutoUploadRequestsFailed, object: nil)
         return true
     }
 
@@ -781,11 +781,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
-                                               name: .pwgAddRecentAlbum, object: nil)
+                                               name: Notification.Name.pwgAddRecentAlbum, object: nil)
 
         // Observe the PiwigoRemoveRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(removeRecentAlbumWithAlbumId),
-                                               name: .pwgRemoveRecentAlbum, object: nil)
+                                               name: Notification.Name.pwgRemoveRecentAlbum, object: nil)
 
         // Observe the Power State notification
         let name = Notification.Name.NSProcessInfoPowerStateDidChange

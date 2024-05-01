@@ -6,6 +6,8 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import UIKit
+
 // MARK: - UITextFieldDelegate Methods
 extension EditImageParamsViewController: UITextFieldDelegate
 {

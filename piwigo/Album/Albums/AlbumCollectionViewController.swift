@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import UIKit
 import piwigoKit
 
 class AlbumCollectionViewController: UICollectionViewController

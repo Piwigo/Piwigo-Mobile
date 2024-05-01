@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 @available(iOS 14, *)
@@ -23,7 +24,8 @@ extension ImageCollectionViewController
             
             // Change image sorting
             AlbumVars.shared.defaultSort = .albumDefault
-            fetchImagesRequest.sortDescriptors = sortDescriptors(for: albumData.imageSort)
+            let imageSortDescriptors = sortDescriptors(for: albumData.imageSort)
+            fetchImagesRequest.sortDescriptors = imageSortDescriptors
             updateCollectionAndMenu()
         })
         action.accessibilityIdentifier = "DefaultSort"

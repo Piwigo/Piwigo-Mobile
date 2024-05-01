@@ -146,7 +146,7 @@ class EditImageParamsViewController: UIViewController
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
 
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
@@ -270,9 +270,10 @@ class EditImageParamsViewController: UIViewController
     @objc func doneEdit() {
         // Display HUD during the update
         if images.count > 1 {
-            showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .annularDeterminate)
+            showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"),
+                    inMode: .determinate)
         } else {
-            showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+            showHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"))
         }
 
         // Determine common time offset to apply
@@ -284,7 +285,7 @@ class EditImageParamsViewController: UIViewController
             updateImageProperties(fromIndex: index)
         } failure: { [self] error in
             // Display error
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
             }
         }
@@ -294,11 +295,11 @@ class EditImageParamsViewController: UIViewController
         // Any further image to update?
         if index == images.count {
             // Done, save, hide HUD and dismiss controller
-            self.updatePiwigoHUDwithSuccess { [self] in
+            self.updateHUDwithSuccess { [self] in
                 // Save changes
                 try? mainContext.save()
                 // Close HUD
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                self.hideHUD(afterDelay: pwgDelayHUD) { [unowned self] in
                     // Return to image preview or album view
                     self.dismiss(animated: true)
                 }
@@ -310,12 +311,12 @@ class EditImageParamsViewController: UIViewController
         /// The cache will be updated by the parent view controller.
         setProperties(ofImage: images[index]) { [self] in
             // Next image?
-            self.updatePiwigoHUD(withProgress: Float(index + 1) / Float(images.count))
+            self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
             self.updateImageProperties(fromIndex: index + 1)
         }
         failure: { [self] error in
             // Display error
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
             }
         }

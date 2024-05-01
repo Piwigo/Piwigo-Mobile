@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: - Set as Album Thumbnail Action
 @available(iOS 14, *)

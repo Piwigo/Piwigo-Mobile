@@ -6,6 +6,8 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import Foundation
+
 // MARK: -  EditImageDatePickerDelegate Methods
 extension EditImageParamsViewController: EditImageDatePickerDelegate
 {

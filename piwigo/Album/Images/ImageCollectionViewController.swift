@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import UIKit
 import piwigoKit
 
 enum pwgImageAction {
@@ -22,8 +23,8 @@ protocol ImageCollectionViewDelegate: NSObjectProtocol {
 }
 
 protocol ImageSelectionCollectionViewDelegate: NSObjectProtocol {
-    func updatePreviewMode()
-    func updateSelectMode()
+    func updatePreviewMode(withInit: Bool)
+    func updateSelectMode(withInit: Bool)
     func setButtonsState(_ enabled: Bool)
     func pushSelectionToView(_ viewController: UIViewController?)
     func deselectImages()
@@ -185,7 +186,7 @@ class ImageCollectionViewController: UICollectionViewController
 
         // Register palette changes
         NotificationCenter.default.addObserver(self,selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -487,8 +488,8 @@ extension ImageCollectionViewController
                 selectedVideosIds.remove(imageId)
             }
             
-            // and update nav buttons
-            imageSelectionDelegate?.updateSelectMode()
+            // Update nav buttons
+            imageSelectionDelegate?.updateSelectMode(withInit: false)
             return
         }
         
@@ -560,7 +561,7 @@ extension ImageCollectionViewController: NSFetchedResultsControllerDelegate {
                 updateOperations.append( BlockOperation { [weak self] in
                     debugPrint("••> Last removed image ► disable menu")
                     self?.isSelect = false
-                    self?.imageSelectionDelegate?.updatePreviewMode()
+                    self?.imageSelectionDelegate?.updatePreviewMode(withInit: true)
                 })
             }
         case NSFetchedResultsChangeType.update.rawValue:
@@ -588,7 +589,7 @@ extension ImageCollectionViewController: NSFetchedResultsControllerDelegate {
             if albumData.nbImages == 1 {
                 updateOperations.append( BlockOperation { [weak self] in
                     debugPrint("••> First added image ► enable menu")
-                    self?.imageSelectionDelegate?.updatePreviewMode()
+                    self?.imageSelectionDelegate?.updatePreviewMode(withInit: true)
                 })
             }
         case NSFetchedResultsChangeType.move.rawValue:

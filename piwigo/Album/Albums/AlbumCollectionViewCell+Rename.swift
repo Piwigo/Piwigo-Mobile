@@ -7,6 +7,7 @@
 //
 
 import piwigoKit
+import UIKit
 
 // MARK: - Rename Category
 extension AlbumCollectionViewCell
@@ -130,7 +131,7 @@ extension AlbumCollectionViewCell
               let albumComment = albumComment else { return }
 
         // Display HUD during the update
-        topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        topViewController?.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
         NetworkUtilities.checkSession(ofUser: user) {
@@ -153,8 +154,8 @@ extension AlbumCollectionViewCell
                     }
                     
                     // Hide HUD and swipe button
-                    topViewController?.updatePiwigoHUDwithSuccess() {
-                        topViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { }
+                    topViewController?.updateHUDwithSuccess() {
+                        topViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                     }
                 }
             } failure: { error in
@@ -182,7 +183,7 @@ extension AlbumCollectionViewCell
             // Report error
             let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
             let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
-            topViewController?.hidePiwigoHUD() {
+            topViewController?.hideHUD() {
                 topViewController?.dismissPiwigoError(withTitle: title, message: message,
                                                       errorMessage: error.localizedDescription) {
                     completion(true)

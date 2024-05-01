@@ -81,7 +81,8 @@ class ImageViewController: UIViewController {
 
         // Check current image index
         var index = max(0, imageIndex)
-        index = min(imageIndex, (images.fetchedObjects?.count ?? 0) - 1)
+        let count = images.fetchedObjects?.count ?? 0
+        index = min(imageIndex, count - 1)
         imageData = getImageData(atIndex: index)
 
         // Initialise pageViewController
@@ -131,12 +132,12 @@ class ImageViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         // Register video player changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
-                                               name: .pwgVideoPlaybackStatus, object: nil)
+                                               name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeMuteOption),
-                                               name: .pwgVideoMutedOrNot, object: nil)
+                                               name: Notification.Name.pwgVideoMutedOrNot, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -279,7 +280,7 @@ class ImageViewController: UIViewController {
                 let imageID = imageData.pwgID
                 print("••> Retrieving data of image \(imageID)")
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [self] in
                         // Look for the corresponding view controller
                         guard let vcs = self.pageViewController?.viewControllers else { return }
                         for vc in vcs {

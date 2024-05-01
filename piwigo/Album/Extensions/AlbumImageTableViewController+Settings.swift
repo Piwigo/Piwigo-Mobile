@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: "Settings" Button
 extension AlbumImageTableViewController

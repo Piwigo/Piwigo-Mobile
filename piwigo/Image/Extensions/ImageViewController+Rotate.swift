@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 // MARK: - Rotate Image Actions
@@ -59,7 +60,7 @@ extension ImageViewController
         setEnableStateOfButtons(false)
 
         // Display HUD during rotation
-        showPiwigoHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
         NetworkUtilities.checkSession(ofUser: user) { [self] in
@@ -86,8 +87,8 @@ extension ImageViewController
                             // Rotate image view
                             imageDVC.rotateImageView(by: angle) {
                                 // Hide HUD
-                                self.updatePiwigoHUDwithSuccess { [self] in
-                                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                                self.updateHUDwithSuccess { [self] in
+                                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                                         // Re-enable buttons
                                         setEnableStateOfButtons(true)
                                     }
@@ -122,7 +123,7 @@ extension ImageViewController
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
-                hidePiwigoHUD { [self] in
+                hideHUD { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }

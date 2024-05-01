@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension ImageCollectionViewController
@@ -14,8 +15,10 @@ extension ImageCollectionViewController
     // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending ||
-            NetworkVars.userStatus == .guest {
+        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending {
+            return nil
+        }
+        if NetworkVars.userStatus == .guest {
             return nil
         }
         
@@ -37,8 +40,8 @@ extension ImageCollectionViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
-                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Deselect images
                     imageSelectionDelegate?.deselectImages()
                 }
@@ -54,7 +57,7 @@ extension ImageCollectionViewController
             selectedVideosIds.remove(imageId)
 
             // Update HUD
-            navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Next image
             addImageToFavorites()
@@ -66,7 +69,7 @@ extension ImageCollectionViewController
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
-                    navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updateHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Image added to favorites ► Add it in the background
                     if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -107,8 +110,8 @@ extension ImageCollectionViewController
             let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [self] in
-                navigationController?.hidePiwigoHUD() { [self] in
-                    imageSelectionDelegate?.updateSelectMode()
+                navigationController?.hideHUD() { [self] in
+                    imageSelectionDelegate?.updateSelectMode(withInit: false)
                 }
             }
         }
@@ -125,8 +128,8 @@ extension ImageCollectionViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
-                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Deselect images
                     imageSelectionDelegate?.deselectImages()
                 }
@@ -142,7 +145,7 @@ extension ImageCollectionViewController
             selectedVideosIds.remove(imageId)
 
             // Update HUD
-            navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
 
             // Next image
             removeImageFromFavorites()
@@ -154,7 +157,7 @@ extension ImageCollectionViewController
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
-                    navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updateHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
                     
                     // Image removed from favorites ► Remove it in the foreground
                     if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -195,8 +198,8 @@ extension ImageCollectionViewController
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hidePiwigoHUD() { [unowned self] in
-                    imageSelectionDelegate?.updateSelectMode()
+                navigationController?.hideHUD() { [unowned self] in
+                    imageSelectionDelegate?.updateSelectMode(withInit: false)
                 }
             }
         }

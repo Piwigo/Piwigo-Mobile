@@ -103,7 +103,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
@@ -111,7 +111,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadProgress, object: nil)
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

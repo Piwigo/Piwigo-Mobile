@@ -6,6 +6,7 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 
 // MARK: - TagsViewControllerDelegate Methods

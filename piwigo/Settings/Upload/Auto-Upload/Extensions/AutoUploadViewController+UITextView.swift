@@ -6,13 +6,15 @@
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 
 // MARK: - UITextViewDelegate Methods
 extension AutoUploadViewController : UITextViewDelegate {
     // Update comments and store them
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let finalString = (textView.text as NSString).replacingCharacters(in: range, with: text)
+        let oldText = textView.text as NSString
+        let finalString = oldText.replacingCharacters(in: range, with: text)
         UploadVars.autoUploadComments = finalString
         return true
     }
@@ -55,7 +57,7 @@ extension AutoUploadViewController
             autoUploadTableView.contentInset = insets
 
             // Scroll cell to make it visible if necessary
-            if cell.frame.maxY - viewIntersection.minY > 0 {
+            if cell.frame.maxY - viewIntersection.minY > CGFloat.zero {
                 let point = CGPointMake(0, oldVertOffset + missingHeight )
                 autoUploadTableView.setContentOffset(point, animated: true)
             }

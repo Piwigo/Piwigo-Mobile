@@ -13,7 +13,7 @@ extension SelectCategoryViewController {
     // MARK: - Move Category Methods
     func moveCategory(intoCategory parentData: Album) {
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
+        showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
 
         // Add category to list of recent albums
         let userInfo = ["categoryId": parentData.pwgID]
@@ -37,8 +37,8 @@ extension SelectCategoryViewController {
                     // Check error
                     guard let error = error else {
                         // No error ► Hide HUD
-                        self.updatePiwigoHUDwithSuccess() {
-                            self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        self.updateHUDwithSuccess() {
+                            self.hideHUD(afterDelay: pwgDelayHUD) {
                                 self.dismiss(animated: true)
                             }
                         }
@@ -47,18 +47,18 @@ extension SelectCategoryViewController {
                     
                     // Show the error
                     DispatchQueue.main.async { [self] in
-                        self.hidePiwigoHUD {
+                        self.hideHUD {
                             self.showError(error)
                         }
                     }
                 }
             } failure: { [unowned self] error in
-                self.hidePiwigoHUD {
+                self.hideHUD {
                     self.showError(error)
                 }
             }
         } failure: { [unowned self] error in
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showError(error)
             }
         }
@@ -70,7 +70,7 @@ extension SelectCategoryViewController {
         guard let imageData = self.inputImages.first else { return }
         
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
+        showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
         NetworkUtilities.checkSession(ofUser: user) {  [self] in
@@ -85,19 +85,19 @@ extension SelectCategoryViewController {
                     }
 
                     // Close HUD
-                    self.updatePiwigoHUDwithSuccess() {
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                    self.updateHUDwithSuccess() {
+                        self.hideHUD(afterDelay: pwgDelayHUD) {
                             self.dismiss(animated: true)
                         }
                     }
                 }
             } failure: { [unowned self] error in
-                self.hidePiwigoHUD {
+                self.hideHUD {
                     self.showError(error)
                 }
             }
         } failure: { [unowned self] error in
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showError(error)
             }
         }

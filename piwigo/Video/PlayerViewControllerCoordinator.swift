@@ -287,7 +287,7 @@ class PlayerViewControllerCoordinator: NSObject {
 
         // Observe system notifications for storing videos in cache
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishPlaying(_:)),
-                                               name: .AVPlayerItemDidPlayToEndTime, object: nil)
+                                               name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     // Create AVPlayerController only if necessary

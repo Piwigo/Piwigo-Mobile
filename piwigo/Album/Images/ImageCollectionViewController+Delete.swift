@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 
@@ -60,7 +61,7 @@ extension ImageCollectionViewController
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
-                imageSelectionDelegate?.updateSelectMode()
+                imageSelectionDelegate?.updateSelectMode(withInit: false)
             })
         alert.addAction(cancelAction)
 
@@ -82,13 +83,11 @@ extension ImageCollectionViewController
                 if totalNumberOfImages > 1 {
                     msgHUD = NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
                 } else if let imageData = toDelete.first, imageData.isVideo {
-                    msgHUD = NSLocalizedString("deleteSingleVideo_title", comment: "Deleting Video…")
+                    msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
                 } else {
-                    msgHUD = NSLocalizedString("deleteSingleImage_message", comment: "Deleting Photo…")
+                    msgHUD = NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
                 }
-                navigationController?.showPiwigoHUD(withTitle: msgHUD, detail: "",
-                              buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                              inMode: .indeterminate)
+                navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
 
                 // Start deleting images
                 deleteImages(toDelete)
@@ -107,19 +106,15 @@ extension ImageCollectionViewController
                         msgHUD = toDelete.isEmpty
                         ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
                         : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
-                        navigationController?.showPiwigoHUD(withTitle: msgHUD, detail: "", buttonTitle: "",
-                                      buttonTarget: nil, buttonSelector: nil,
-                                      inMode: .annularDeterminate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: .determinate)
                     } else if toRemove.isEmpty {
                         // Delete a single image
                         if let imageData = toDelete.first, imageData.isVideo {
-                            msgHUD = NSLocalizedString("deleteSingleVideo_title", comment: "Deleting Video…")
+                            msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
                         } else {
-                            msgHUD = NSLocalizedString("deleteSingleImage_message", comment: "Deleting Photo…")
+                            msgHUD = NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
                         }
-                        navigationController?.showPiwigoHUD(withTitle: msgHUD, detail: "",
-                                      buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                                      inMode: .indeterminate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
                     } else {
                         // Remove a single image
                         if let imageData = toRemove.first, imageData.isVideo {
@@ -127,9 +122,7 @@ extension ImageCollectionViewController
                         } else {
                             msgHUD = NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…")
                         }
-                        navigationController?.showPiwigoHUD(withTitle: msgHUD, detail: "",
-                                      buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                                      inMode: .indeterminate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
                     }
 
                     // Start removing images
@@ -157,7 +150,7 @@ extension ImageCollectionViewController
         guard let imageData = imagesToRemove.first,
               let albums = imageData.albums else {
             if toDelete.isEmpty {
-                navigationController?.updatePiwigoHUDwithSuccess() { [self] in
+                navigationController?.updateHUDwithSuccess() { [self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
@@ -165,7 +158,7 @@ extension ImageCollectionViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and deselect images
-                    navigationController?.hidePiwigoHUD() { [self] in
+                    navigationController?.hideHUD() { [self] in
                         imageSelectionDelegate?.deselectImages()
                     }
                 }
@@ -200,7 +193,8 @@ extension ImageCollectionViewController
                 imagesToRemove.removeFirst()
 
                 // Update HUD
-                navigationController?.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToRemove.count) / Float(totalNumberOfImages))
+                let ratio = Float(imagesToRemove.count) / Float(totalNumberOfImages)
+                navigationController?.updateHUD(withProgress: 1.0 - ratio)
 
                 // Next image
                 removeImages(imagesToRemove, andThenDelete:toDelete)
@@ -229,7 +223,7 @@ extension ImageCollectionViewController
         if imagesToRemove.count > 1 {
             cancelDismissPiwigoError(withTitle: title, message: message,
                                      errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hidePiwigoHUD() { [unowned self] in
+                navigationController?.hideHUD() { [unowned self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
@@ -237,7 +231,7 @@ extension ImageCollectionViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
-                    imageSelectionDelegate?.updateSelectMode()
+                    imageSelectionDelegate?.updateSelectMode(withInit: false)
                 }
             } dismiss: { [unowned self] in
                 // Bypass image
@@ -248,7 +242,7 @@ extension ImageCollectionViewController
         } else {
             dismissPiwigoError(withTitle: title, message: message,
                                      errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hidePiwigoHUD() { [unowned self] in
+                navigationController?.hideHUD() { [unowned self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
@@ -256,7 +250,7 @@ extension ImageCollectionViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
-                    imageSelectionDelegate?.updateSelectMode()
+                    imageSelectionDelegate?.updateSelectMode(withInit: false)
                 }
             }
         }
@@ -264,7 +258,7 @@ extension ImageCollectionViewController
 
     func deleteImages(_ toDelete: Set<Image>) {
         if toDelete.isEmpty {
-            navigationController?.updatePiwigoHUDwithSuccess() { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
                 // Save changes
                 do {
                     try self.mainContext.save()
@@ -272,7 +266,7 @@ extension ImageCollectionViewController
                     print("Could not save moved images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and deselect images
-                navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     imageSelectionDelegate?.deselectImages()
                 }
             }
@@ -313,8 +307,8 @@ extension ImageCollectionViewController
                     }
 
                     // Hide HUD
-                    self.navigationController?.updatePiwigoHUDwithSuccess() { [self] in
-                        self.navigationController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                    self.navigationController?.updateHUDwithSuccess() { [self] in
+                        self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             imageSelectionDelegate?.deselectImages()
                         }
                     }
@@ -348,8 +342,8 @@ extension ImageCollectionViewController
                     print("Could not save moved images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and update buttons
-                navigationController?.hidePiwigoHUD() { [self] in
-                    imageSelectionDelegate?.updateSelectMode()
+                navigationController?.hideHUD() { [self] in
+                    imageSelectionDelegate?.updateSelectMode(withInit: false)
                 }
             }
         }

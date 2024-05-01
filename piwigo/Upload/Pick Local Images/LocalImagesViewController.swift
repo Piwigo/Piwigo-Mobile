@@ -144,11 +144,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             self.sortImagesAndIndexUploads()
         }
         
-        // Collection flow layout of images
+        // Collection view
         collectionFlowLayout.scrollDirection = .vertical
         collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
-
-        // Collection view identifier
+        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
         localImagesCollection.accessibilityIdentifier = "CameraRoll"
         
         // Navigation bar
@@ -290,11 +289,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadProgress, object: nil)
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
         
         // Prevent device from sleeping if uploads are in progress
         let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,

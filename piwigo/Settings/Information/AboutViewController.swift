@@ -95,7 +95,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -165,23 +165,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let translatorsRange = NSRange(location: 0, length: translatorsString.count)
         translatorsAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: translatorsRange)
         aboutAttributedString.append(translatorsAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
-
-        // Introduction string — Bundle string
-        let introString = NSLocalizedString("about_text", tableName: "About", bundle: Bundle.main, value: "", comment: "Introduction text")
-        let introAttributedString = NSMutableAttributedString(string: introString)
-        let introRange = NSRange(location: 0, length: introString.count)
-        introAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: introRange)
-        aboutAttributedString.append(introAttributedString)
-
-        // MBProgressHUD Licence — Bundle string
-        let mbpHudString = NSLocalizedString("licenceMBProgHUD_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MBProgressHUD licence text")
-        let mbpHudAttributedString = NSMutableAttributedString(string: mbpHudString)
-        var mbpHudRange = NSRange(location: 0, length: mbpHudString.count)
-        mbpHudAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: mbpHudRange)
-        mbpHudRange = NSRange(location: 0, length: (mbpHudString as NSString).range(of: "\n").location)
-        mbpHudAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: mbpHudRange)
-        aboutAttributedString.append(mbpHudAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
         // MIT Licence — Bundle string

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension ImageViewController
 {
@@ -153,22 +154,21 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
-        presentedViewController?.showPiwigoHUD(withTitle: title, detail: "", buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"), buttonTarget: self, buttonSelector: #selector(cancelShareImage), inMode: .annularDeterminate)
+        presentedViewController?.showHUD(withTitle: title, buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"), buttonTarget: self, buttonSelector: #selector(cancelShareImage), inMode: .determinate)
     }
 
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?, preprocessingProgressDidUpdate progress: Float) {
         // Update HUD
-        presentedViewController?.updatePiwigoHUD(withProgress: progress)
+        presentedViewController?.updateHUD(withProgress: progress)
     }
 
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int64) {
         // Close HUD
         if imageActivityItemProvider?.isCancelled ?? false {
-            presentedViewController?.hidePiwigoHUD(completion: {
-            })
+            presentedViewController?.hideHUD { }
         } else {
-            presentedViewController?.updatePiwigoHUDwithSuccess(completion: { [self] in
-                presentedViewController?.hidePiwigoHUD(completion: {
+            presentedViewController?.updateHUDwithSuccess(completion: { [self] in
+                presentedViewController?.hideHUD(completion: {
                 })
             })
         }

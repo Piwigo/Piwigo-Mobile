@@ -6,6 +6,7 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 import uploadKit
 
@@ -51,7 +52,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Can we propose to delete images after upload?
         if let switchVC = parent as? UploadSwitchViewController {

@@ -232,11 +232,11 @@ class SettingsViewController: UIViewController {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: .pwgAutoUploadChanged, object: nil)
+                                               name: Notification.Name.pwgAutoUploadChanged, object: nil)
         
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),

@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 //import StoreKit
@@ -516,7 +517,7 @@ class AlbumImageTableViewController: UIViewController
         super.viewWillTransition(to: size, with: coordinator)
 
         // Hide HUD if needded
-        navigationController?.hidePiwigoHUD { }
+        navigationController?.hideHUD { }
         
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
@@ -592,7 +593,7 @@ class AlbumImageTableViewController: UIViewController
         addButton.isHidden = true
         
         // Hide HUD if still presented
-        self.navigationController?.hidePiwigoHUD { }
+        self.navigationController?.hideHUD { }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -654,10 +655,9 @@ class AlbumImageTableViewController: UIViewController
             if withHUD == false { return }
             
             // Display HUD while downloading album data
-            self.navigationController?.showPiwigoHUD(
+            self.navigationController?.showHUD(
                 withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                detail: NSLocalizedString("severalImages", comment: "Photos"),
-                buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+                detail: NSLocalizedString("severalImages", comment: "Photos"), minWidth: 200)
         }
         
         // Fetch album data and then image data
@@ -704,7 +704,7 @@ class AlbumImageTableViewController: UIViewController
     func fetchCompleted() {
         DispatchQueue.main.async { [self] in
             // Hide HUD
-            self.navigationController?.hidePiwigoHUD { }
+            self.navigationController?.hideHUD { }
 
             // Update title
             self.setTitleViewFromAlbumData(whileUpdating: false)
