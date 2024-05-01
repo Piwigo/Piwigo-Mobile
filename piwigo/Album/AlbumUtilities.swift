@@ -18,15 +18,15 @@ enum pwgImageCollectionType {
 class AlbumUtilities: NSObject {
     
     // MARK: - Constants
-//    static let kAlbumCellSpacing = CGFloat(8)               // Spacing between albums (horizontally and vertically)
-//    static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
+    static let kAlbumCellSpacing = CGFloat(4)               // Spacing between albums (horizontally and vertically)
+//    static let kAlbumMarginsSpacing = CGFloat(0)            // Left and right margins for albums
 
     static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
     static let kImageCellHorSpacing4iPadPopup = CGFloat(1)
     static let kImageCellVertSpacing4iPad = CGFloat(8)
     static let kImageCellVertSpacing4iPadPopup = CGFloat(1)
-    static let kImageMarginsSpacing = CGFloat(3)            // Left and right margins for images
+//    static let kImageMarginsSpacing = CGFloat(0)            // Left and right margins for images
     static let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
 
     static let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
@@ -461,29 +461,27 @@ class AlbumUtilities: NSObject {
         return .xxLarge
     }
     
-//    static func albumSize(forView view: UIView, maxWidth: CGFloat) -> CGFloat {
-//        // Size of view or screen
-//        let pageSize = sizeOfPage(forView: view)
-//
-//        // Available width in portrait mode
-//        let viewWidth = viewWidth(for: view, pageSize: pageSize)
-//        
-//        // Number of albums per row in portrait
-//        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
-//        let denominator = kAlbumCellSpacing + maxWidth
-//        let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
-//
-//        // Width of album cells determined for the portrait mode
-//        let portraitSpacing = 2.0 * kAlbumMarginsSpacing + (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
-//        let albumWidthInPortrait = floor((viewWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
-//
-//        // Number of albums per row we should display right now
-//        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
-//        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumWidthInPortrait))
-//
-//        // Width of albums for that number
-//        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
-//    }
+    static func albumSize(forView view: UIView, maxWidth: CGFloat) -> CGFloat {
+        // Sizes of view and screen
+        let screenSize = sizeOfPage()
+        let pageSize = sizeOfPage(forView: view)
+        
+        // Number of albums per row in portrait
+        let minWidth = min(screenSize.width, screenSize.height)
+        let numerator = minWidth + kAlbumCellSpacing
+        let denominator = kAlbumCellSpacing + maxWidth
+        let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
+
+        // Width of album cells determined for the portrait mode
+        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
+        let albumWidthInPortrait = floor((minWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
+
+        // Number of albums per row we should display right now
+        let albumsPerRow = round((pageSize.width + kAlbumCellSpacing) / (kAlbumCellSpacing + albumWidthInPortrait))
+
+        // Width of albums for that number
+        return floor((pageSize.width - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
+    }
 
 
     // MARK: - Album/Images Collections | Image Thumbnails
@@ -535,7 +533,7 @@ class AlbumUtilities: NSObject {
         let pageSize = sizeOfPage(forView: nil)
         let viewWidth = min(pageSize.width, pageSize.height)
         let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
-        let numerator = viewWidth - 2 * kImageMarginsSpacing + horSpacing
+        let numerator = viewWidth + horSpacing
         let denominator = horSpacing + maxWidth
         let nberOfImagePerRow = Int(round(numerator / denominator))
         return max(minNberOfImagesPerRow, nberOfImagePerRow)
@@ -551,7 +549,7 @@ class AlbumUtilities: NSObject {
         // CGFloat version of imagesPerRowInPortrait
         let nberOfImagesInPortrait = CGFloat(imagesPerRowInPortrait)
 
-        // Size of view or screen
+        // Sizes of view and screen
         let screenSize = sizeOfPage()
         let pageSize = sizeOfPage(forView: view)
 
@@ -560,10 +558,10 @@ class AlbumUtilities: NSObject {
 
         // Size of images determined for the portrait mode in full screen
         let minWidth = min(screenSize.width, screenSize.height)
-        let imagesSizeInPortrait = floor((minWidth - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
+        let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
         
         // Images per row in whichever mode we are displaying them
-        let numerator = screenSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing
+        let numerator = screenSize.width + imageCellHorizontalSpacing
         let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
         let nberOfImages = Int(round(numerator / denominator))
         var imagesPerRow = Double(max(minNberOfImagesPerRow, nberOfImages))
@@ -573,7 +571,7 @@ class AlbumUtilities: NSObject {
         imagesPerRow = max(1.0, round(imagesPerRow))
 
         // Size of squared images for that number
-        let usedWidth = pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
+        let usedWidth = pageSize.width - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
         return CGFloat(floor(usedWidth / imagesPerRow))
     }
 
@@ -590,20 +588,19 @@ class AlbumUtilities: NSObject {
 
         // Size of images determined for the portrait mode
         let minWidth = min(screenSize.width, screenSize.height)
-        let imagesSizeInPortrait = floor((minWidth - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
+        let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
         
         // Images per row in portrait and landscape modes
-        let spacing = 2.0 * kImageMarginsSpacing - imageCellHorizontalSpacing
-        var numerator = screenSize.width - spacing
+        var numerator = screenSize.width + imageCellHorizontalSpacing
         let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
         let imagesPerRowInPortrait = Double(max(minNberOfImagesPerRow, Int(round(numerator / denominator))))
-        numerator = screenSize.height - spacing
+        numerator = screenSize.height + imageCellHorizontalSpacing
         let imagesPerRowInLandscape = Double(max(minNberOfImagesPerRow, Int(round(numerator / denominator))))
 
         // Minimum size of squared images
-        let portrait = 2.0 * kImageMarginsSpacing + (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing
+        let portrait = (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing
         let sizeInPortrait = floor((screenSize.width - portrait) / imagesPerRowInPortrait)
-        let landscape = 2.0 * kImageMarginsSpacing + (imagesPerRowInLandscape - 1.0) * imageCellVerticalSpacing
+        let landscape = (imagesPerRowInLandscape - 1.0) * imageCellVerticalSpacing
         let sizeInLandscape = floor((screenSize.height - landscape) / imagesPerRowInLandscape)
         let size = min(sizeInPortrait, sizeInLandscape)
         

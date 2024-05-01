@@ -20,8 +20,7 @@ class ImageCollectionViewFlowLayout: UICollectionViewFlowLayout
         super.prepare()
         
         guard let collectionView = collectionView else { return }
-        collectionView.layoutMargins = UIEdgeInsets(top: 0.0, left: AlbumUtilities.kImageMarginsSpacing,
-                                                    bottom: 0.0, right: AlbumUtilities.kImageMarginsSpacing)
+        collectionView.layoutMargins = UIEdgeInsets.zero
 
         let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
         let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)

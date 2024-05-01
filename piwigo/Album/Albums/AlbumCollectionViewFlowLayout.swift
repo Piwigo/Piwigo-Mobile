@@ -13,9 +13,7 @@ class AlbumCollectionViewFlowLayout: UICollectionViewFlowLayout
 {
     // See https://iosref.com/res
     private let margin = CGFloat(4)                 // Left and right margins for albums
-    private let minColumnWidth = CGFloat(280)       // Minimum album width
     private let cellHeight = CGFloat(156.5)         // See AlbumTableViewCell XIB file
-    private let cellSpacing = CGFloat(4)            // Spacing between albums (horizontally and vertically)
 
     private var deletingIndexPaths = [IndexPath]()
     private var insertingIndexPaths = [IndexPath]()
@@ -28,13 +26,10 @@ class AlbumCollectionViewFlowLayout: UICollectionViewFlowLayout
         guard let collectionView = collectionView else { return }
         collectionView.layoutMargins = UIEdgeInsets(top: 0.0, left: margin, bottom: 0.0, right: margin)
 
-        let availableWidth = collectionView.bounds.inset(by: collectionView.layoutMargins).width
-        let maxNumColumns = max(1.0, (availableWidth / minColumnWidth).rounded(.down))
-        let cellWidth = (availableWidth / maxNumColumns).rounded(.down)
-
+        let cellWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
         self.itemSize = CGSize(width: cellWidth, height: cellHeight)
         self.minimumLineSpacing = 0.0
-        self.minimumInteritemSpacing = cellSpacing
+        self.minimumInteritemSpacing = AlbumUtilities.kAlbumCellSpacing
         self.sectionInset = UIEdgeInsets.zero
         self.sectionInsetReference = .fromSafeArea
     }

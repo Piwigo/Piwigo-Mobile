@@ -289,6 +289,7 @@ extension AlbumCollectionViewController
                 cell.isUserInteractionEnabled = true
             }
         }
+        debugPrint("••> Adds album cell at \(indexPath.item)")
         return cell
     }
 }

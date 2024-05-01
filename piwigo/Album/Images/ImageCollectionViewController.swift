@@ -404,6 +404,7 @@ extension ImageCollectionViewController
         // The image being retrieved in a background task,
         // config() must be called after setting all other parameters
         cell.config(with: image)
+        debugPrint("••> Adds image cell at \(indexPath.item)")
         return cell
     }
 }
@@ -418,7 +419,7 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout
             view.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize
     {
         if albumData.pwgID == 0 { return CGSize.zero}
@@ -426,7 +427,7 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout
         // Get number of images and status
         let footer = getImageCount()
         if footer.isEmpty { return CGSize.zero }
-
+        
         let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light)]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -437,18 +438,15 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout
         return CGSize(width: collectionView.frame.size.width - 30.0,
                       height: ceil(footerRect.size.height + 8.0))
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         if collectionView.numberOfItems(inSection: section) == 0 {
-            return UIEdgeInsets(top: 0, left: AlbumUtilities.kImageMarginsSpacing,
-                                bottom: 0, right: AlbumUtilities.kImageMarginsSpacing)
+            return UIEdgeInsets.zero
         } else if albumData.comment.string.isEmpty {
-            return UIEdgeInsets(top: 4, left: AlbumUtilities.kImageMarginsSpacing,
-                                bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
+            return UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0)
         } else {
-            return UIEdgeInsets(top: 10, left: AlbumUtilities.kImageMarginsSpacing,
-                                bottom: 4, right: AlbumUtilities.kImageMarginsSpacing)
+            return UIEdgeInsets(top: 10, left: 0, bottom: 4, right: 0)
         }
     }
 }
