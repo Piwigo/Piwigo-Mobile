@@ -236,7 +236,7 @@ class ImageCollectionViewController: UICollectionViewController
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-//        print("••> viewDidLayoutSubviews imageCollectionView: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
+        print("••> viewDidLayoutSubviews imageCollectionView: ", collectionView?.collectionViewLayout.collectionViewContentSize as Any)
 
         // Update table row height after collection view layouting
         if let albumImageVC = parent as? AlbumImageTableViewController {
@@ -404,7 +404,7 @@ extension ImageCollectionViewController
         // The image being retrieved in a background task,
         // config() must be called after setting all other parameters
         cell.config(with: image)
-        debugPrint("••> Adds image cell at \(indexPath.item)")
+        debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size), \(collectionView.contentSize), \(collectionView.visibleSize), \(collectionView.visibleCells.count)")
         return cell
     }
 }
