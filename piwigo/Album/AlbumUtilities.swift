@@ -21,7 +21,7 @@ class AlbumUtilities: NSObject {
     static let kAlbumCellSpacing = CGFloat(4)               // Spacing between albums (horizontally and vertically)
 //    static let kAlbumMarginsSpacing = CGFloat(0)            // Left and right margins for albums
 
-    static let kImageCellSpacing4iPhone = CGFloat(4)        // Spacing between images (horizontally and vertically)
+    static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
     static let kImageCellHorSpacing4iPadPopup = CGFloat(1)
     static let kImageCellVertSpacing4iPad = CGFloat(8)
