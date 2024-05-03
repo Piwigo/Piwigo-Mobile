@@ -963,8 +963,15 @@ extension AlbumImageTableViewController: UITableViewDelegate
 extension AlbumImageTableViewController
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if round(scrollView.contentOffset.y) > 0 {
-            // Show navigation bar border
+        // Show/hide navigation bar border
+        var topSpace = navigationController?.navigationBar.bounds.height ?? 0
+        if #available(iOS 13, *) {
+            topSpace += view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        } else {
+            topSpace += UIApplication.shared.statusBarFrame.height
+        }
+        if (scrollView.contentOffset.y + topSpace).rounded(.down) > 0 {
+            // Show bar border
             if #available(iOS 13.0, *) {
                 let navBar = navigationItem
                 let barAppearance = navBar.standardAppearance
@@ -975,7 +982,7 @@ extension AlbumImageTableViewController
                 }
             }
         } else {
-            // Hide navigation bar border
+            // Hide bar border
             if #available(iOS 13.0, *) {
                 let navBar = navigationItem
                 let barAppearance = navBar.standardAppearance
