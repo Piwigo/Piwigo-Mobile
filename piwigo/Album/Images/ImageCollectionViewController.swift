@@ -44,11 +44,22 @@ class ImageCollectionViewController: UICollectionViewController
     var selectedFavoriteIds = Set<Int64>()
     var selectedVideosIds = Set<Int64>()
     var totalNumberOfImages = 0
-        
+    
     private var updateOperations = [BlockOperation]()
     private var didUpdateCellHeight = false             // Workaround for iOS 12 - 15.x
 
+    // Cached parameters
+    private var timeCounter = CFAbsoluteTime(0)
+    private let imagePlaceHolder = UIImage(named: "unknownImage")!
+    private let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+    lazy var hasFavorites: Bool = {
+        // pwg.users.favorites… methods available from Piwigo version 2.10
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.userStatus != .guest { return true }
+        return false
+    }()
     
+
     // MARK: - Core Data Source
     var user: User!
     var albumData: Album!
@@ -177,8 +188,9 @@ class ImageCollectionViewController: UICollectionViewController
         super.viewDidLoad()
         print("••> viewDidLoad images…")
 
-        // Set collection view layout
+        // Set collection view layout and enable prefetching
         collectionView?.collectionViewLayout = ImageCollectionViewFlowLayout()
+        collectionView?.isPrefetchingEnabled = true
         
         // Register ImageCollectionViewCell and ImagesFooterReusableView classes
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
@@ -232,6 +244,9 @@ class ImageCollectionViewController: UICollectionViewController
         } else {
 //            collectionView?.reloadData()
         }
+        
+        // For bebugging…
+        timeCounter = CFAbsoluteTimeGetCurrent()
     }
 
     override func viewDidLayoutSubviews() {
@@ -253,6 +268,17 @@ class ImageCollectionViewController: UICollectionViewController
                 }
             }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // Speed and memory measurements with iPad Pro 11" in debug mode
+        /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
+        /// hasFavorites  cached —> a very little quicker but less memory impacting (-195 MB transcient allocations for 3020 photos)
+        /// placeHolder & size cached —> 0 photo: 526 ms, 24 photos: 585 ms, 3020 photos: 14 586 ms i.e. -6% (memory crash after repeating tests)
+        let diff = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
+        print("••> viewDidAppear imageCollectionView in \(diff.rounded()) ms")
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -348,6 +374,45 @@ class ImageCollectionViewController: UICollectionViewController
 }
 
 
+// MARK: - UICollectionViewDataSourcePrefetching
+extension ImageCollectionViewController: UICollectionViewDataSourcePrefetching
+{
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        print("••> prefetchItemsAt \(indexPaths.debugDescription)")
+        for indexPath in indexPaths {
+            // Retrieve image data
+            let imageData = images.object(at: indexPath)
+            
+            // Retrieve image from cache or download it
+            let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
+            let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
+            let cellSize = CGSize(width: size, height: size)
+            let scale = self.traitCollection.displayScale
+            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize,
+                                         atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
+                                         fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                         placeHolder: imagePlaceHolder) { cachedImageURL in
+                let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+            } failure: { _ in
+                // No image available
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        print("••> cancelPrefetchingForItemsAt \(indexPaths.debugDescription)")
+        for indexPath in indexPaths {
+            // Retrieve image data
+            let imageData = images.object(at: indexPath)
+            
+            // Cancel download if needed
+            guard let imageURL = ImageUtilities.getURL(imageData, ofMinSize: imageSize)
+            else { return }
+            ImageSession.shared.cancelDownload(atURL: imageURL)
+        }
+    }
+}
+
 // MARK: - UICollectionViewDataSource
 extension ImageCollectionViewController
 {
@@ -395,16 +460,15 @@ extension ImageCollectionViewController
         cell.isSelection = selectedImageIds.contains(image.pwgID)
         
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.userStatus != .guest {
+        if hasFavorites {
             cell.isFavorite = (image.albums ?? Set<Album>())
                 .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
         }
         
         // The image being retrieved in a background task,
         // config() must be called after setting all other parameters
-        cell.config(with: image)
-        debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size), \(collectionView.contentSize), \(collectionView.visibleSize), \(collectionView.visibleCells.count)")
+        cell.config(with: image, placeHolder: imagePlaceHolder, size: imageSize)
+        debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
         return cell
     }
 }
@@ -565,11 +629,11 @@ extension ImageCollectionViewController: NSFetchedResultsControllerDelegate {
         case NSFetchedResultsChangeType.update.rawValue:
             guard let indexPath = indexPath else { return }
             guard let image = anObject as? Image else { return }
-            updateOperations.append( BlockOperation {  [weak self] in
+            updateOperations.append( BlockOperation {  [self] in
                 debugPrint("••> Update image at \(indexPath) of album #\(fetchDelegate.albumData.pwgID)")
-                if let cell = self?.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                if let cell = self.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     // Re-configure image cell
-                    cell.config(with: image)
+                    cell.config(with: image, placeHolder: self.imagePlaceHolder, size: self.imageSize)
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         cell.isFavorite = (image.albums ?? Set<Album>())

@@ -101,7 +101,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         playImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: Image) {
+    func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize) {
         // Do we have any info on that image ?
         if imageData.pwgID == Int64.zero { return }
 
