@@ -2355,8 +2355,8 @@
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				AD778358267E34F800317F36 /* piwigoIntents */,
-				AD2C62632A48ACBA00671582 /* uploadKit */,
 				AD084E3B2659846400159FE1 /* piwigoKit */,
+				AD2C62632A48ACBA00671582 /* uploadKit */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
 				1F042DC0C96A55B227088605 /* Frameworks */,
 				D82B8CBC1A67820A000E47CA /* Products */,
@@ -2772,8 +2772,8 @@
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
 				AD778355267E34F800317F36 /* piwigoIntents */,
-				AD2C62392A4896A600671582 /* uploadKit */,
 				AD084E452659A27100159FE1 /* piwigoKit */,
+				AD2C62392A4896A600671582 /* uploadKit */,
 				AD11E45D24A930B000C8876F /* piwigoWebAPI */,
 				AD30FD3321316DA7009AA30E /* piwigoScreenshots */,
 				AD7F1C002B6675AC008E100E /* piwigoAppPreviews */,
