@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,19 +13,13 @@
         <scene sceneID="bnU-01-erT">
             <objects>
                 <viewController storyboardIdentifier="EditImageParamsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3wd-nH-xaU" customClass="EditImageParamsViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="v9H-sj-q9x"/>
-                        <viewControllerLayoutGuide type="bottom" id="uVf-G5-mw5"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wiZ-et-8Je">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
-                                <rect key="frame" x="0.0" y="48" width="414" height="871"/>
+                            <tableView contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T0l-Ou-dhs">
+                                <rect key="frame" x="0.0" y="48" width="414" height="814"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="871" id="avd-IM-n1u"/>
-                                </constraints>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageThumbTableViewCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditImageThumbTableViewCell" rowHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="KmZ-y2-jIU" customClass="EditImageThumbTableViewCell" customModule="piwigo" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="414" height="170"/>
@@ -212,7 +207,7 @@
                                             <outlet property="tagsList" destination="oKC-S2-125" id="s8W-s9-1S4"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="description" rowHeight="428" id="Bpu-ru-Cr7" customClass="EditImageTextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTextViewTableViewCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="default" indentationWidth="10" reuseIdentifier="description" rowHeight="428" id="Bpu-ru-Cr7" customClass="EditImageTextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="498" width="414" height="428"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bpu-ru-Cr7" id="IBt-8g-0eO">
@@ -226,7 +221,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zMu-VQ-mu0">
-                                                    <rect key="frame" x="20" y="39.5" width="374" height="354.5"/>
+                                                    <rect key="frame" x="20" y="39.5" width="374" height="377.5"/>
                                                     <color key="textColor" systemColor="labelColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
@@ -255,13 +250,13 @@
                                 </connections>
                             </tableView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="xW7-53-IeP"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="T0l-Ou-dhs" firstAttribute="leadingMargin" secondItem="wiZ-et-8Je" secondAttribute="leadingMargin" id="1zo-yp-ZXp"/>
-                            <constraint firstItem="T0l-Ou-dhs" firstAttribute="trailingMargin" secondItem="wiZ-et-8Je" secondAttribute="trailingMargin" id="Auf-rc-gxf"/>
-                            <constraint firstAttribute="height" secondItem="T0l-Ou-dhs" secondAttribute="height" multiplier="1.0287" id="TjL-lu-aAu"/>
-                            <constraint firstItem="T0l-Ou-dhs" firstAttribute="top" secondItem="v9H-sj-q9x" secondAttribute="bottom" id="c7s-EB-sm9"/>
-                            <constraint firstAttribute="width" secondItem="T0l-Ou-dhs" secondAttribute="width" id="t5X-0o-NnM"/>
+                            <constraint firstItem="T0l-Ou-dhs" firstAttribute="leading" secondItem="xW7-53-IeP" secondAttribute="leading" id="ECV-np-vbS"/>
+                            <constraint firstItem="xW7-53-IeP" firstAttribute="trailing" secondItem="T0l-Ou-dhs" secondAttribute="trailing" id="Ej6-wP-QHh"/>
+                            <constraint firstItem="T0l-Ou-dhs" firstAttribute="top" secondItem="xW7-53-IeP" secondAttribute="top" id="YP1-ZW-UkR"/>
+                            <constraint firstItem="xW7-53-IeP" firstAttribute="bottom" secondItem="T0l-Ou-dhs" secondAttribute="bottom" id="hd6-7d-62l"/>
                         </constraints>
                     </view>
                     <connections>
