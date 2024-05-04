@@ -136,8 +136,8 @@ class AlbumTableViewCell: UITableViewCell {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = NSLocalizedString("severalImagesCount", comment: "%@ photos")
-        let severalImages = NSLocalizedString("singleImageCount", comment: "%@ photo")
+        let singleImage = NSLocalizedString("singleImageCount", comment: "%@ photo")
+        let severalImages = NSLocalizedString("severalImagesCount", comment: "%@ photos")
         let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
         let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string
