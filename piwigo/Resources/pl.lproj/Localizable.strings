@@ -418,9 +418,9 @@
 "imageFavoritesRemoveError_message" = "Nie udało się usunąć tego zdjęcia z ulubionych.";
 
 // Image rotate
-"rotateImage_rotate" = "Rotate 90°…";
-"rotateImage_left" = "Counterclockwise";
-"rotateImage_right" = "Clockwise";
+"rotateImage_rotate" = "Obróć o 90°…";
+"rotateImage_left" = "Przeciwnie do ruchu wskazówek zegara";
+"rotateImage_right" = "Zgodnie z ruchem wskazówek zegara";
 "rotateSingleImageHUD_rotating" = "Rotating Photo…";
 "rotateSeveralImageHUD_rotating" = "Rotating Photos…";
 
