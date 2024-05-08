@@ -1,8 +1,8 @@
 //
-//  ImageCollectionViewController+Rotate.swift
+//  AlbumViewController+Rotate.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 18/04/2024.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ import piwigoKit
 
 // MARK: - Rotate Images Actions
 @available(iOS 14, *)
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     func rotateMenu() -> UIMenu? {
         if selectedVideosIds.isEmpty {
@@ -50,7 +50,7 @@ extension ImageCollectionViewController
 }
 
 
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     // MARK: - Rotate Image
     @objc func rotateImagesLeft() {
@@ -69,7 +69,7 @@ extension ImageCollectionViewController
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Deselect images
-                    imageSelectionDelegate?.deselectImages()
+                    cancelSelect()
                 }
             }
             return
@@ -137,7 +137,7 @@ extension ImageCollectionViewController
                 // Hide HUD
                 navigationController?.hideHUD { [self] in
                     // Re-enable buttons
-                    imageSelectionDelegate?.setButtonsState(true)
+                    setEnableStateOfButtons(true)
                 }
             }
         }

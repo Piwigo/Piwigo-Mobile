@@ -14,7 +14,7 @@ extension SceneDelegate {
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
         // Look for an instance of AlbumViewController as first controller
         guard let navController = window?.rootViewController as? UINavigationController,
-              let defaultAlbum = navController.viewControllers.first as? AlbumImageTableViewController else {
+              let defaultAlbum = navController.viewControllers.first as? AlbumViewController else {
           return nil
         }
         
@@ -25,7 +25,7 @@ extension SceneDelegate {
         var catIDs = Set<Int32>()
         var imageIndex = Int.min
         for viewController in navController.viewControllers {
-            if let vc = viewController as? AlbumImageTableViewController {
+            if let vc = viewController as? AlbumViewController {
                 // Bypass the default album
                 if vc.categoryId == defaultAlbum.categoryId { continue }
                 // Store sub-album ID
@@ -51,7 +51,7 @@ extension SceneDelegate {
         // Look for the instance of AlbumViewController
         guard
           let navController = window?.rootViewController as? UINavigationController,
-          let _ = navController.viewControllers.first as? AlbumImageTableViewController,
+          let _ = navController.viewControllers.first as? AlbumViewController,
           let userInfo = stateRestorationActivity.userInfo
         else {
           return
@@ -59,16 +59,17 @@ extension SceneDelegate {
 
         // Restore sub-albums
         var catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? [AlbumVars.shared.defaultCategory]
-        let albumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
+        let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
         while catIDs.isEmpty == false {
             let catID = catIDs.removeFirst()
-            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else { fatalError("!!! No AlbumImageTableViewController !!!") }
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController 
+            else { preconditionFailure("Could not load AlbumViewController") }
             subAlbumVC.categoryId = catID
             // It may take time to load album/image view controllers
             // so we delegate the restoration task to the last sub-album view controller
-            if catIDs.isEmpty, let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min {
-                subAlbumVC.indexOfImageToRestore = imageIndex
-            }
+//            if catIDs.isEmpty, let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min {
+//                subAlbumVC.indexOfImageToRestore = imageIndex
+//            }
             navController.pushViewController(subAlbumVC, animated: false)
         }
     }

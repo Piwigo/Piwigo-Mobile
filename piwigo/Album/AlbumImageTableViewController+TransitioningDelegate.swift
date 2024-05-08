@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-extension AlbumImageTableViewController: UIViewControllerTransitioningDelegate {
+extension AlbumViewController: UIViewControllerTransitioningDelegate {
 
     public func animationController(forPresented presented: UIViewController,
                                     presenting: UIViewController,
                                     source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard let albumImageTableViewController = presenting.children.last as? AlbumImageTableViewController,
+        guard let albumViewController = presenting.children.last as? AlbumViewController,
               let imageNavViewController = presented as? UINavigationController,
               let albumViewSnapshot = self.albumViewSnapshot,
               let cellImageViewSnapshot = self.cellImageViewSnapshot,
@@ -22,7 +22,7 @@ extension AlbumImageTableViewController: UIViewControllerTransitioningDelegate {
             else { return nil }
 
         imageAnimator = ImageAnimatedTransitioning(type: .present,
-                                                   albumImageTableViewController: albumImageTableViewController,
+                                                   albumViewController: albumViewController,
                                                    imageNavViewController: imageNavViewController,
                                                    albumViewSnapshot: albumViewSnapshot,
                                                    cellImageViewSnapshot: cellImageViewSnapshot,
@@ -37,7 +37,7 @@ extension AlbumImageTableViewController: UIViewControllerTransitioningDelegate {
               let navBarSnapshot = self.navBarSnapshot
             else { return nil }
 
-        imageAnimator = ImageAnimatedTransitioning(type: .dismiss, albumImageTableViewController: self,
+        imageAnimator = ImageAnimatedTransitioning(type: .dismiss, albumViewController: self,
                                                    imageNavViewController: imageNavViewController,
                                                    albumViewSnapshot: albumViewSnapshot,
                                                    cellImageViewSnapshot: cellImageViewSnapshot,

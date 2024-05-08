@@ -1,8 +1,8 @@
 //
-//  ImageCollectionViewController+Favorite.swift
+//  AlbumViewController+Favorite.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
@@ -43,7 +43,7 @@ extension ImageCollectionViewController
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Deselect images
-                    imageSelectionDelegate?.deselectImages()
+                    cancelSelect()
                 }
             }
             return
@@ -111,7 +111,7 @@ extension ImageCollectionViewController
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
-                    imageSelectionDelegate?.updateSelectMode(withInit: false)
+                    updateBarsInSelectMode()
                 }
             }
         }
@@ -131,7 +131,7 @@ extension ImageCollectionViewController
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Deselect images
-                    imageSelectionDelegate?.deselectImages()
+                    cancelSelect()
                 }
             }
             return
@@ -199,7 +199,7 @@ extension ImageCollectionViewController
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
                 navigationController?.hideHUD() { [unowned self] in
-                    imageSelectionDelegate?.updateSelectMode(withInit: false)
+                    updateBarsInSelectMode()
                 }
             }
         }

@@ -215,8 +215,8 @@ extension AlbumCollectionViewCell {
                 }
 
                 // Delete album and images from cache and update UI
-                self.deleteAlbumDelegate?.didDeleteCategory(withError: nil,
-                                                            viewController: topViewController)
+                self.deleteAlbumDelegate?.didDeleteAlbum(withError: nil,
+                                                         viewController: topViewController)
             } failure: { error in
                 self.deleteCategoryError(error, viewController: topViewController)
             }
@@ -250,9 +250,9 @@ extension AlbumCollectionViewCell {
 
 
 // MARK: - DeleteAlbumCollectionViewCellDelegate
-extension AlbumImageTableViewController: DeleteAlbumCollectionViewCellDelegate
+extension AlbumViewController: DeleteAlbumCollectionViewCellDelegate
 {
-    func didDeleteCategory(withError error: NSError?, viewController topViewController: UIViewController?) {
+    func didDeleteAlbum(withError error: NSError?, viewController topViewController: UIViewController?) {
         guard let error = error else {
             // Remember that the app is fetching all album data
             AlbumVars.shared.isFetchingAlbumData.insert(0)
@@ -272,7 +272,7 @@ extension AlbumImageTableViewController: DeleteAlbumCollectionViewCellDelegate
                         topViewController?.updateHUDwithSuccess() {
                             topViewController?.hideHUD(afterDelay: pwgDelayHUD) {
                                 // Update number of images in footer
-                                self.albumCollectionVC.updateNberOfImagesInFooter()
+                                self.updateNberOfImagesInFooter()
                             }
                         }
                     }

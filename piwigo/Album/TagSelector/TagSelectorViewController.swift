@@ -247,10 +247,9 @@ class TagSelectorViewController: UITableViewController {
         // Dismiss tag select
         dismiss(animated: true) { [self] in
             // Push tagged images view with AlbumViewController
-            let taggedImagesSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
-            guard let taggedImagesVC = taggedImagesSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-                fatalError("!!! No AlbumImageTableViewController !!!")
-            }
+            let taggedImagesSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let taggedImagesVC = taggedImagesSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
             taggedImagesVC.categoryId = catID
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
         }

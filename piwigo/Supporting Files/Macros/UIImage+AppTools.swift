@@ -18,12 +18,14 @@ extension UIImage {
         #if targetEnvironment(simulator)
         return nil
         #else
-        // Retrieve CGImage version
-        guard let cgImage = self.cgImage else { return nil }
-        
         // Check that it is possible to perform a saliency request
         // by checking if it is possible to create a context from the image.
-        guard let _ = CGContext(data: nil, width: cgImage.width, height: cgImage.height, bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: cgImage.bytesPerRow, space: cgImage.colorSpace ?? CGColorSpace.displayP3 as! CGColorSpace, bitmapInfo: cgImage.bitmapInfo.rawValue)
+        let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        guard let imageData = self.jpegData(compressionQuality: 1.0),
+              let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
+              let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
+              imageRef.hasCGContextSupportedPixelFormat,
+              let cgImage = self.cgImage
         else {
             return nil
         }

@@ -1,8 +1,8 @@
 //
-//  AlbumImageTableViewController+Discover.swift
+//  AlbumViewController+Discover.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Created by Eddy Lelièvre-Berna on 04/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import piwigoKit
 
 // MARK: "Discover" menu/button
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     func getDiscoverButton() -> UIBarButtonItem {
         var button: UIBarButtonItem!
@@ -35,7 +35,7 @@ extension AlbumImageTableViewController
 /// - for presenting best rated images
 /// - for presenting recent images
 @available(iOS 14.0, *)
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     func discoverMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.discover")
@@ -61,8 +61,7 @@ extension AlbumImageTableViewController
             }
             
             // Present favorite images
-            guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-                fatalError("!!! No AlbumImageTableViewController !!!")
+            guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController else { preconditionFailure("Could not load AlbumViewController")
             }
             favoritesVC.categoryId = pwgSmartAlbum.favorites.rawValue
             navigationController?.pushViewController(favoritesVC, animated: true)
@@ -118,7 +117,7 @@ extension AlbumImageTableViewController
 
 
 // MARK: - Discover Menu (iOS 9.3 to 13.x)
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     @objc func discoverMenuOld() {
         /// - for presenting favorite images
@@ -143,9 +142,8 @@ extension AlbumImageTableViewController
                 }
                 
                 // Present favorite images
-                guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-                    fatalError("!!! No AlbumImageTableViewController !!!")
-                }
+                guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+                else { preconditionFailure("Could not load AlbumImageTableViewController") }
                 favoritesVC.categoryId = pwgSmartAlbum.favorites.rawValue
                 navigationController?.pushViewController(favoritesVC, animated: true)
             })
@@ -201,7 +199,7 @@ extension AlbumImageTableViewController
     
 
 // MARK: - Discover Images
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     func discoverImages(inCategoryId categoryId: Int32) {
         // Check that a discover album exists in cache (create it if necessary)
@@ -210,9 +208,8 @@ extension AlbumImageTableViewController
         }
         
         // Create and push Discover view
-        guard let discoverVC = storyboard?.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-            fatalError("!!! No AlbumImageTableViewController !!!")
-        }
+        guard let discoverVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+        else { preconditionFailure("Could not load AlbumImageTableViewController") }
         discoverVC.categoryId = categoryId
         self.navigationController?.pushViewController(discoverVC, animated: true)
     }
@@ -220,9 +217,8 @@ extension AlbumImageTableViewController
     func discoverImagesByTag() {
         // Push tag select view
         let tagSelectorSB = UIStoryboard(name: "TagSelectorViewController", bundle: nil)
-        guard let tagSelectorVC = tagSelectorSB.instantiateViewController(withIdentifier: "TagSelectorViewController") as? TagSelectorViewController else {
-            fatalError("No TagSelectorViewController!")
-        }
+        guard let tagSelectorVC = tagSelectorSB.instantiateViewController(withIdentifier: "TagSelectorViewController") as? TagSelectorViewController
+        else { preconditionFailure("Could not load TagSelectorViewController") }
         tagSelectorVC.user = user
         tagSelectorVC.tagSelectedDelegate = self
         pushView(tagSelectorVC)
@@ -231,7 +227,7 @@ extension AlbumImageTableViewController
 
 
 // MARK: - TagSelectorViewDelegate Methods
-extension AlbumImageTableViewController: TagSelectorViewDelegate
+extension AlbumViewController: TagSelectorViewDelegate
 {
     func pushTaggedImagesView(_ viewController: UIViewController) {
         // Push sub-album view

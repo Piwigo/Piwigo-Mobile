@@ -43,7 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        print("••> App did finish launching with options.")
         // Register notifications for displaying number of uploads to perform in app badge
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { print("request succeeded!") }
@@ -749,12 +748,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let window = window else { return }
         
         // Display default album
-        let defaultAlbumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
-        guard let defaultAlbum = defaultAlbumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-            fatalError("!!! No AlbumImageTableViewController !!!")
-        }
-        defaultAlbum.categoryId = AlbumVars.shared.defaultCategory
-        window.rootViewController = AlbumNavigationController(rootViewController: defaultAlbum)
+        let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+        guard let albumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+        else { preconditionFailure("Could not load AlbumViewController") }
+        albumVC.categoryId = AlbumVars.shared.defaultCategory
+        window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }

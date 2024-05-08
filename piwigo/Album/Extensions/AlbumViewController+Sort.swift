@@ -1,5 +1,5 @@
 //
-//  ImageCollectionViewController+Sort.swift
+//  AlbumViewController+Sort.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/04/2024.
@@ -10,9 +10,23 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// MARK: - Sort Image
+/// - for selecting image sort options
 @available(iOS 14, *)
-extension ImageCollectionViewController
+extension AlbumViewController
 {
+    func imageSortMenu() -> UIMenu {
+        let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.sort")
+        let menu = UIMenu(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
+                          image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: [defaultSortAction(), titleSortAction(),
+                                     createdSortAction(), postedSortAction(),
+                                     ratingSortAction(), visitsSortAction(),
+                                     randomSortAction()].compactMap({$0}))
+        return menu
+    }
+
     func defaultSortAction() -> UIAction {
         let actionId = UIAction.Identifier("defaultSort")
         let isActive = AlbumVars.shared.defaultSort == .albumDefault
@@ -212,6 +226,7 @@ extension ImageCollectionViewController
         collectionView?.reloadData()
         
         // Update menu
-        imageCollectionDelegate?.updateImageSortMenu()
+        let updatedMenu = selectBarButton?.menu?.replacingChildren([selectMenu(), imageSortMenu()])
+        selectBarButton?.menu = updatedMenu
     }
 }

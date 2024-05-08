@@ -1,8 +1,8 @@
 //
-//  AlbumImageTableViewController.swift
+//  AlbumViewController.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 06/04/2024.
+//  Created by Eddy Lelièvre-Berna on 04/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -11,60 +11,37 @@ import Foundation
 import UIKit
 import piwigoKit
 import uploadKit
-//import StoreKit
 
-let kRadius: CGFloat = 25.0
-let kDeg2Rad: CGFloat = 3.141592654 / 180.0
+enum pwgImageAction {
+    case edit, delete, share
+    case copyImages, moveImages
+    case addToFavorites, removeFromFavorites
+    case rotateImagesLeft, rotateImagesRight
+}
 
-class AlbumImageTableViewController: UIViewController
+class AlbumViewController: UIViewController
 {
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     var categoryId = Int32.zero
-    var indexOfImageToRestore = Int.min
-    
-    @IBOutlet weak var albumImageTableView: UITableView!
-
-    // Create album collection view controller from storyboard
-    lazy var albumCollectionVC: AlbumCollectionViewController = {
-        guard let albumVC = storyboard?.instantiateViewController(withIdentifier: "AlbumCollectionViewController") as? AlbumCollectionViewController
-        else { fatalError("No AlbumCollectionViewController!") }
-        albumVC.user = user
-        albumVC.albumData = albumData
-        return albumVC
-    }()
-    weak var albumCollectionCell: UITableViewCell?
-
-    // Create image collection view controller from storyboard
-    lazy var imageCollectionVC: ImageCollectionViewController = {
-        guard let imageVC = storyboard?.instantiateViewController(withIdentifier: "ImageCollectionViewController") as? ImageCollectionViewController
-        else { fatalError("No ImageCollectionViewController!") }
-        imageVC.user = user
-        imageVC.albumData = albumData
-        imageVC.albumProvider = albumProvider
-        imageVC.imageProvider = imageProvider
-        imageVC.imageSelectionDelegate = self
-        imageVC.indexOfImageToRestore = indexOfImageToRestore
-        if #available(iOS 14, *) {
-            imageVC.imageCollectionDelegate = self
-        }
-        return imageVC
-    }()
-    weak var imageCollectionCell: UITableViewCell?
-    
     
     // MARK: - Bar Buttons
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     var actionBarButton: UIBarButtonItem?
-    lazy var moveBarButton: UIBarButtonItem? = imageCollectionVC.getMoveBarButton()
-    lazy var shareBarButton: UIBarButtonItem? = imageCollectionVC.getShareBarButton()
-    lazy var deleteBarButton: UIBarButtonItem? = imageCollectionVC.getDeleteBarButton()
+    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
+    lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
+    lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var favoriteBarButton: UIBarButtonItem?
-
+    
     var selectBarButton: UIBarButtonItem?
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
-
+    
     
     // MARK: - Buttons
+    let kRadius: CGFloat = 25.0
+    let kDeg2Rad: CGFloat = 3.141592654 / 180.0
+    
     lazy var addButton: UIButton = getAddButton()
     lazy var uploadQueueButton: UIButton = getUploadQueueButton()
     lazy var homeAlbumButton: UIButton = getHomeButton()
@@ -75,12 +52,36 @@ class AlbumImageTableViewController: UIViewController
     lazy var progressLayer: CAShapeLayer = getProgressLayer()
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
     
-
+    
     // MARK: - Search
     var searchController: UISearchController?
     var pauseSearch = false
-
     
+    
+    // MARK: Image Managemennt
+    var imageOfInterest = IndexPath(item: 0, section: 0)
+    var indexOfImageToRestore = Int.min
+    var isSelect = false
+    var touchedImageIds = [Int64]()
+    var selectedImageIds = Set<Int64>()
+    var selectedImageIdsLoop = Set<Int64>()
+    var selectedFavoriteIds = Set<Int64>()
+    var selectedVideosIds = Set<Int64>()
+    var totalNumberOfImages = 0
+    
+
+    // MARK: - Cached Values
+    private var timeCounter = CFAbsoluteTime(0)
+    let imagePlaceHolder = UIImage(named: "unknownImage")!
+    let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+    var updateOperations = [BlockOperation]()
+    lazy var hasFavorites: Bool = {
+        // pwg.users.favorites… methods available from Piwigo version 2.10
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.userStatus != .guest { return true }
+        return false
+    }()
+
     // MARK: - Image Animated Transitioning
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
     var animatedCell: ImageCollectionViewCell?
@@ -88,7 +89,7 @@ class AlbumImageTableViewController: UIViewController
     var cellImageViewSnapshot: UIView?
     var navBarSnapshot: UIView?
     var imageAnimator: ImageAnimatedTransitioning?
-
+    
     
     // MARK: - Fetch
     // Number of images to download per page
@@ -97,33 +98,30 @@ class AlbumImageTableViewController: UIViewController
     lazy var perPage: Int = {
         return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
     }()
-
+    
     
     // MARK: - Core Data Providers
     private lazy var userProvider: UserProvider = {
         return UserProvider.shared
     }()
-    
     lazy var albumProvider: AlbumProvider = {
         return AlbumProvider.shared
     }()
-    
     lazy var imageProvider: ImageProvider = {
         return ImageProvider.shared
     }()
-
+    
     
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.mainContext
         return context
     }()
-
     lazy var bckgContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.shared.newTaskContext()
         return context
     }()
-
+    
     
     // MARK: - Core Data Source
     lazy var user: User = {
@@ -180,39 +178,193 @@ class AlbumImageTableViewController: UIViewController
         changeAlbumID()
         return rootAlbum
     }
+
+    private lazy var albumPredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "parentId == $catId"))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
     
+    lazy var nberSubAlbums: Int = {
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.resultType = .countResultType
+        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        return (try? mainContext.count(for: fetchRequest)) ?? 0
+    }()
     
+    private lazy var fetchAlbumsRequest: NSFetchRequest = {
+        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+    
+    lazy var albums: NSFetchedResultsController<Album> = {
+        let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        albums.delegate = self
+        return albums
+    }()
+
+    lazy var imagePredicate: NSPredicate = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catId"))
+        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.username))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    func sortDescriptors(for sortKeys: String) -> [NSSortDescriptor] {
+        var descriptors = [NSSortDescriptor]()
+        let items = sortKeys.components(separatedBy: ",")
+        for item in items {
+            var fixedItem = item
+            // Remove extra space at the begining and end
+            while fixedItem.hasPrefix(" ") {
+                fixedItem.removeFirst()
+            }
+            while fixedItem.hasSuffix(" ") {
+                fixedItem.removeLast()
+            }
+            // Convert to sort descriptors
+            let sortDesc = fixedItem.components(separatedBy: " ")
+            if sortDesc[0].contains(pwgImageOrder.random.rawValue) {
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.rankRandom), ascending: true))
+                continue
+            }
+            if sortDesc.count != 2 { continue }
+            let isAscending = sortDesc[1].lowercased() == pwgImageOrder.ascending.rawValue ? true : false
+            switch sortDesc[0] {
+            case pwgImageAttr.title.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: isAscending, selector: #selector(NSString.localizedCaseInsensitiveCompare)))
+            case pwgImageAttr.dateCreated.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: isAscending))
+            case pwgImageAttr.datePosted.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: isAscending))
+            case pwgImageAttr.fileName.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.fileName), ascending: isAscending, selector: #selector(NSString.localizedCompare)))
+            case pwgImageAttr.rating.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: isAscending))
+            case pwgImageAttr.visits.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.visits), ascending: isAscending))
+            case pwgImageAttr.identifier.rawValue:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: isAscending))
+            case pwgImageAttr.rank.rawValue, "`\(pwgImageAttr.rank.rawValue)`":
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.rankManual), ascending: isAscending))
+            default:
+                descriptors.append(NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: isAscending))
+            }
+        }
+        if descriptors.isEmpty {
+            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
+            let sortByFile = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: true)
+            let sortById = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)
+            return [sortByPosted, sortByFile, sortById]
+        } else {
+            return descriptors
+        }
+    }
+    
+    lazy var fetchImagesRequest: NSFetchRequest = {
+        // Sort images according to default settings
+        // PS: Comparator blocks are not supported with Core Data
+        let fetchRequest = Image.fetchRequest()
+        let sortByIdDesc = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: false)
+        let sortByIdAsc = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)
+        switch albumData.pwgID {
+        case pwgSmartAlbum.search.rawValue:
+            // 'datePosted' is always accessible (returned by pwg.images.search)
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.datePostedAscending.param)
+            
+        case pwgSmartAlbum.visits.rawValue:
+            // 'visits' is always accessible (returned by pwg.category.getImages)
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.visitsDescending.param)
+            
+        case pwgSmartAlbum.best.rawValue:
+            // 'ratingScore' is not always accessible (returned by pwg.images.getInfo)
+            // so the image list might not be identical to the one returned by the web UI.
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.ratingScoreDescending.param)
+            
+        case pwgSmartAlbum.recent.rawValue:
+            // 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
+            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.datePostedDescending.param)
+            
+        default:    // Sorting option chosen by user
+            if albumData.imageSort.isEmpty {
+                // Piwigo version < 14
+                if AlbumVars.shared.defaultSort.rawValue > pwgImageSort.random.rawValue {
+                    AlbumVars.shared.defaultSort = .dateCreatedAscending
+                }
+                fetchRequest.sortDescriptors = sortDescriptors(for: AlbumVars.shared.defaultSort.param)
+            }
+            else if AlbumVars.shared.defaultSort == pwgImageSort.albumDefault {
+                fetchRequest.sortDescriptors = sortDescriptors(for: albumData.imageSort)
+            }
+            else {
+                fetchRequest.sortDescriptors = sortDescriptors(for: AlbumVars.shared.defaultSort.param)
+            }
+        }
+        fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+    
+    lazy var images: NSFetchedResultsController<Image> = {
+        let images = NSFetchedResultsController(fetchRequest: fetchImagesRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        images.delegate = self
+        return images
+    }()
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("===============================")
-        print("••> viewDidLoad albumImage: \(categoryId)")
+        print("--------------------------------------------------")
+        print("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
 
+        // Initialise data source
+        do {
+            if categoryId >= Int32.zero {
+                try albums.performFetch()
+            }
+            try images.performFetch()
+        } catch {
+            print("Error: \(error)")
+        }
+        
         // Place search bar in navigation bar of root album
         if categoryId == 0 {
             initSearchBar()
         }
         
-        // Navigation bar
-        navigationController?.navigationBar.accessibilityIdentifier = "AlbumImagesNav"
-        
-        // Hide toolbar
-        navigationController?.isToolbarHidden = true
-        
         // Add buttons above table view and other buttons
-        view.insertSubview(addButton, aboveSubview: albumImageTableView)
+        view.insertSubview(addButton, aboveSubview: collectionView)
         uploadQueueButton.layer.addSublayer(progressLayer)
         uploadQueueButton.addSubview(nberOfUploadsLabel)
         view.insertSubview(uploadQueueButton, belowSubview: addButton)
         view.insertSubview(homeAlbumButton, belowSubview: addButton)
         view.insertSubview(createAlbumButton, belowSubview: addButton)
         view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        
+        // Register classes
+        collectionView?.isPrefetchingEnabled = false
+        collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
+        collectionView?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
+        collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
+        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
 
         // Refresh view
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-        albumImageTableView.refreshControl = refreshControl
-
+        collectionView.refreshControl = refreshControl
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -221,80 +373,12 @@ class AlbumImageTableViewController: UIViewController
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
+        collectionView.backgroundColor = UIColor.piwigoColorBackground()
         
-        // Navigation bar appearance
-        let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        // Navigation bar title
         setTitleViewFromAlbumData(whileUpdating: false)
+        navigationController?.navigationBar.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
         
-        // Toolbar appearance
-        let toolbar = navigationController?.toolbar
-        toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        toolbar?.tintColor = UIColor.piwigoColorOrange()
-        
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        let attributesLarge = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
-        ]
-        if categoryId == AlbumVars.shared.defaultCategory {
-            // Title
-            navigationBar?.largeTitleTextAttributes = attributesLarge
-            navigationBar?.prefersLargeTitles = true
-            
-            // Search bar
-            let searchBar = navigationItem.searchController?.searchBar
-            searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-            if #available(iOS 13.0, *) {
-                searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
-                searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
-            }
-        } else {
-            navigationBar?.titleTextAttributes = attributes
-            navigationBar?.prefersLargeTitles = false
-        }
-        
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            barAppearance.largeTitleTextAttributes = attributesLarge
-            if categoryId != AlbumVars.shared.defaultCategory {
-                barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor(white: 1.0, alpha: 0.15) : UIColor(white: 0.0, alpha: 0.3)
-            }
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-            
-            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            toolbar?.standardAppearance = toolbarAppearance
-            if #available(iOS 15.0, *) {
-                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-                /// which by default produces a transparent background, to all navigation bars.
-                toolbar?.scrollEdgeAppearance = toolbarAppearance
-            }
-        } else {
-            navigationBar?.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-        }
-        
-        // Refresh controller
-        albumImageTableView.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-        albumImageTableView.refreshControl?.tintColor = UIColor.piwigoColorHeader()
-        let attributesRefresh = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
-        ]
-        albumImageTableView.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
-
-        // Table view
-        albumImageTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-
         // Buttons appearance
         addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
         
@@ -309,41 +393,75 @@ class AlbumImageTableViewController: UIViewController
         homeAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
         homeAlbumButton.backgroundColor = UIColor.piwigoColorRightLabel()
         homeAlbumButton.tintColor = UIColor.piwigoColorBackground()
-
+        
         if AppVars.shared.isDarkPaletteActive {
             addButton.layer.shadowRadius = 1.0
             addButton.layer.shadowOffset = CGSize.zero
-
+            
             createAlbumButton.layer.shadowRadius = 1.0
             createAlbumButton.layer.shadowOffset = CGSize.zero
             uploadImagesButton.layer.shadowRadius = 1.0
             uploadImagesButton.layer.shadowOffset = CGSize.zero
-
+            
             uploadQueueButton.layer.shadowRadius = 1.0
             uploadQueueButton.layer.shadowOffset = CGSize.zero
-
+            
             homeAlbumButton.layer.shadowRadius = 1.0
             homeAlbumButton.layer.shadowOffset = CGSize.zero
         } else {
             addButton.layer.shadowRadius = 3.0
             addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-
+            
             createAlbumButton.layer.shadowRadius = 3.0
             createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
             uploadImagesButton.layer.shadowRadius = 3.0
             uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-
+            
             uploadQueueButton.layer.shadowRadius = 3.0
             uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-
+            
             homeAlbumButton.layer.shadowRadius = 3.0
             homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
         }
+        
+        // Collection view
+        collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        if (headers?.count ?? 0) > 0 {
+            let header = headers?.first as? AlbumHeaderReusableView
+            header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
+            header?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        }
+        (collectionView?.visibleCells ?? []).forEach { cell in
+            if let albumCell = cell as? AlbumCollectionViewCell {
+                albumCell.applyColorPalette()
+            }
+            else if let imageCell = cell as? ImageCollectionViewCell {
+                imageCell.applyColorPalette()
+            }
+        }
+        let footers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter)
+        if let footer = footers?.first as? ImageFooterReusableView {
+            footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+            footer.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        }
+
+        // Refresh controller
+        collectionView.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
+        collectionView.refreshControl?.tintColor = UIColor.piwigoColorHeader()
+        let attributesRefresh = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
+        ]
+        collectionView.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("••> viewWillAppear albumImage: \(categoryId)")
+        print("••> viewWillAppear in AlbumViewController: Album #\(categoryId)")
+        
+        // For testing…
+        timeCounter = CFAbsoluteTimeGetCurrent()
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -360,40 +478,44 @@ class AlbumImageTableViewController: UIViewController
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
-
+        
         // Register upload queue changes for reporting inability to upload and updating upload queue button
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
                                                name: Notification.Name.pwgLeftUploads, object: nil)
-
+        
         // Register upload progress if displaying default album
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                    name: Notification.Name.pwgUploadProgress, object: nil)
         }
-
-        // Display albums and images
-        albumImageTableView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("••> viewDidAppear albumImage => ID:\(categoryId)")
+        print("••> viewDidAppear in AlbumViewController: Album #\(categoryId)")
         
+        // Speed and memory measurements with iPad Pro 11" in debug mode
+        /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
+        /// hasFavorites  cached —> a very little quicker but less memory impacting (-195 MB transcient allocations for 3020 photos)
+        /// placeHolder & size cached —> 0 photo: 526 ms, 24 photos: 585 ms, 3020 photos: 14 586 ms i.e. -6% (memory crash after repeating tests)
+        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
+        print("••> completed in \(duration.rounded()) ms")
+
         // The user may have cleared the cached data
         // Display an empty root album in that case
         if categoryId == Int32.zero, albumData.isFault {
             return
         }
-
+        
         // Header informing user on network status
         setTableViewMainHeader()
         
         // Hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = true
-
+        
         // Check conditions before loading album and image data
         let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
-        let nbImages = (imageCollectionVC.images.fetchedObjects ?? []).count
+        let nbImages = (images.fetchedObjects ?? []).count
         let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
@@ -409,33 +531,33 @@ class AlbumImageTableViewController: UIViewController
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                     return
                 }
-
+                
                 // Report error
                 let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
                 self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
             }
         }
-
+        
         // Should we highlight the image of interest?
-        if categoryId != 0, nbImages > 0 {
-            imageCollectionVC.revealImageOfInteret()
+        if nbImages > 0 {
+            revealImageOfInteret()
         }
-
+        
         // Inform user why the app crashed at start
         if CacheVars.shared.couldNotMigrateCoreDataStore {
             dismissPiwigoError(
                 withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
                 message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
                 errorMessage: "") {
-                // Reset flag
-                CacheVars.shared.couldNotMigrateCoreDataStore = false
-            }
+                    // Reset flag
+                    CacheVars.shared.couldNotMigrateCoreDataStore = false
+                }
             return
         }
-
+        
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
-//        AppVars.shared.didShowWhatsNewAppVersion = "3.0.2"
+        //        AppVars.shared.didShowWhatsNewAppVersion = "3.0.2"
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             if AppVars.shared.didShowWhatsNewAppVersion.compare("3.1", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
@@ -471,15 +593,15 @@ class AlbumImageTableViewController: UIViewController
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView
         let diff = Date().timeIntervalSinceReferenceDate - dateOfLastHelpView
         if categoryId <= 0 || diff > TimeInterval(86400) { return }
-            
+        
         // Determine which help pages should be presented
         var displayHelpPagesWithID = [UInt16]()
         if nbImages > 5,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if (albumCollectionVC.albums.fetchedObjects ?? []).count > 2,
-            user.hasAdminRights,
+        if (albums.fetchedObjects ?? []).count > 2,
+           user.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
@@ -503,7 +625,7 @@ class AlbumImageTableViewController: UIViewController
                 present(helpVC, animated: true)
             }
         }
-
+        
         // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
         // Tells StoreKit to ask the user to rate or review the app, if appropriate.
         //#if !defined(DEBUG)
@@ -512,20 +634,38 @@ class AlbumImageTableViewController: UIViewController
         //    }
         //#endif
     }
-
+    
+    func revealImageOfInteret() {
+        if imageOfInterest.item != 0 {
+            // Highlight the cell of interest
+            let indexPathsForVisibleItems = collectionView?.indexPathsForVisibleItems
+            if indexPathsForVisibleItems?.contains(imageOfInterest) ?? false {
+                // Thumbnail is already visible and is highlighted
+                if let cell = collectionView?.cellForItem(at: imageOfInterest),
+                   let imageCell = cell as? ImageCollectionViewCell {
+                    imageCell.highlight() {
+                        self.imageOfInterest = IndexPath(item: 0, section: 0)
+                    }
+                } else {
+                    self.imageOfInterest = IndexPath(item: 0, section: 0)
+                }
+            }
+        }
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         // Hide HUD if needded
         navigationController?.hideHUD { }
         
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
             // Reload collection
-            albumImageTableView.reloadData()
-
+            collectionView.reloadData()
+            
             // Update buttons
-            if imageCollectionVC.isSelect {
+            if isSelect {
                 initBarsInSelectMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
@@ -537,10 +677,10 @@ class AlbumImageTableViewController: UIViewController
             }
         })
     }
-
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-
+        
         // Should we update user interface based on the appearance?
         if #available(iOS 13.0, *) {
             let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
@@ -551,10 +691,10 @@ class AlbumImageTableViewController: UIViewController
             }
         }
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         if #available(iOS 15, *) {
             // Keep title
         } else {
@@ -565,7 +705,7 @@ class AlbumImageTableViewController: UIViewController
                 title = ""
             }
         }
-
+        
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
         PwgSession.shared.dataSession.getAllTasks { tasks in
@@ -588,22 +728,28 @@ class AlbumImageTableViewController: UIViewController
                 $0.cancel()
             })
         }
-
+        
         // Hide upload button during transition
         addButton.isHidden = true
         
         // Hide HUD if still presented
         self.navigationController?.hideHUD { }
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
+        
         // Make sure buttons are back to initial state
         didCancelTapAddButton()
     }
-
+    
     deinit {
+        // Cancel all block operations
+        for operation in updateOperations {
+            operation.cancel()
+        }
+        updateOperations.removeAll(keepingCapacity: false)
+
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
@@ -624,7 +770,7 @@ class AlbumImageTableViewController: UIViewController
         resetPredicatesAndPerformFetch()
 
         // Reload album
-        albumImageTableView.reloadData()
+        collectionView.reloadData()
         
         // Reset buttons and menus
         initBarsInPreviewMode()
@@ -633,12 +779,12 @@ class AlbumImageTableViewController: UIViewController
     
     func resetPredicatesAndPerformFetch() {
         // Update albums
-        albumCollectionVC.albumData = albumData
-        albumCollectionVC.resetPredicateAndPerformFetch()
+        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        try? albums.performFetch()
 
         // Update images
-        imageCollectionVC.albumData = albumData
-        imageCollectionVC.resetPredicateAndPerformFetch()
+        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        try? images.performFetch()
     }
 
     func startFetchingAlbumAndImages(withHUD: Bool) {
@@ -685,7 +831,7 @@ class AlbumImageTableViewController: UIViewController
         } failure: { error in
             // End refreshing anyway
             DispatchQueue.main.async {
-                self.albumImageTableView.refreshControl?.endRefreshing()
+                self.collectionView.refreshControl?.endRefreshing()
                 // Session logout required?
                 if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -710,10 +856,10 @@ class AlbumImageTableViewController: UIViewController
             self.setTitleViewFromAlbumData(whileUpdating: false)
 
             // Update number of images in footer
-            self.albumCollectionVC.updateNberOfImagesInFooter()
+            self.updateNberOfImagesInFooter()
 
             // End refreshing if needed
-            self.albumImageTableView.refreshControl?.endRefreshing()
+            self.collectionView.refreshControl?.endRefreshing()
         }
         
         // Fetch favorites in the background if needed
@@ -745,34 +891,34 @@ class AlbumImageTableViewController: UIViewController
     // MARK: - Utilities
     @objc func setTableViewMainHeader() {
         // Update table header only if being displayed
-        if albumImageTableView?.window == nil { return }
-        DispatchQueue.main.async { [self] in
-            // Any upload request in the queue?
-            if UploadManager.shared.nberOfUploadsToComplete == 0 {
-                albumImageTableView.tableHeaderView = nil
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
-                // No Wi-Fi and user wishes to upload only on Wi-Fi
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: albumImageTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-                albumImageTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            }
-            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-                // Low Power mode enabled
-                let headerView = TableHeaderView(frame: .zero)
-                headerView.configure(width: albumImageTableView.frame.size.width,
-                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
-                albumImageTableView.tableHeaderView = headerView
-                UIApplication.shared.isIdleTimerDisabled = false
-            } else {
-                // Uploads in progress ► Prevents device to sleep
-                albumImageTableView.tableHeaderView = nil
-                UIApplication.shared.isIdleTimerDisabled = true
-            }
-        }
+//        if albumImageTableView?.window == nil { return }
+//        DispatchQueue.main.async { [self] in
+//            // Any upload request in the queue?
+//            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+//                albumImageTableView.tableHeaderView = nil
+//                UIApplication.shared.isIdleTimerDisabled = false
+//            }
+//            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+//                // No Wi-Fi and user wishes to upload only on Wi-Fi
+//                let headerView = TableHeaderView(frame: .zero)
+//                headerView.configure(width: albumImageTableView.frame.size.width,
+//                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+//                albumImageTableView.tableHeaderView = headerView
+//                UIApplication.shared.isIdleTimerDisabled = false
+//            }
+//            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+//                // Low Power mode enabled
+//                let headerView = TableHeaderView(frame: .zero)
+//                headerView.configure(width: albumImageTableView.frame.size.width,
+//                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+//                albumImageTableView.tableHeaderView = headerView
+//                UIApplication.shared.isIdleTimerDisabled = false
+//            } else {
+//                // Uploads in progress ► Prevents device to sleep
+//                albumImageTableView.tableHeaderView = nil
+//                UIApplication.shared.isIdleTimerDisabled = true
+//            }
+//        }
     }
 
     func pushView(_ viewController: UIViewController?) {
@@ -817,11 +963,11 @@ class AlbumImageTableViewController: UIViewController
     @objc func returnToDefaultCategory() {
         // Does the default album view controller already exists?
         var cur = 0, index = 0
-        var rootAlbumViewController: AlbumImageTableViewController? = nil
+        var rootAlbumViewController: AlbumViewController? = nil
         for viewController in navigationController?.viewControllers ?? []
         {
             // Look for AlbumImagesViewControllers
-            if let thisViewController = viewController as? AlbumImageTableViewController
+            if let thisViewController = viewController as? AlbumViewController
             {
                 // Is this the view controller of the default album?
                 if thisViewController.categoryId == AlbumVars.shared.defaultCategory {
@@ -840,10 +986,9 @@ class AlbumImageTableViewController: UIViewController
 
         // The view controller of the default album does not exist yet
         if rootAlbumViewController == nil {
-            let defaultAlbumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
-            guard let defaultAlbum = defaultAlbumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-                fatalError("!!! No AlbumImageTableViewController !!!")
-            }
+            let defaultAlbumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let defaultAlbum = defaultAlbumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
             defaultAlbum.categoryId = AlbumVars.shared.defaultCategory
             rootAlbumViewController = defaultAlbum
             
@@ -857,140 +1002,6 @@ class AlbumImageTableViewController: UIViewController
         // Present the root album
         if let rootAlbumViewController = rootAlbumViewController {
             navigationController?.popToViewController(rootAlbumViewController, animated: true)
-        }
-    }
-}
-
-
-// MARK: - UITableViewDatasource
-extension AlbumImageTableViewController: UITableViewDataSource
-{
-    func hasAlbumDataToShow() -> Bool {
-        // Album data to show in sub-album?
-        if albumData.comment.string.isEmpty,
-           albumCollectionVC.nberSubAlbums == 0 {
-            return false
-        }
-        return true
-    }
-    
-    private func activeRow(_ row: Int) -> Int {
-        // Only albums in root album
-        if categoryId == 0 {
-            return row
-        }
-        
-        // Album data to show in sub-album?
-        return hasAlbumDataToShow() ? row : row+1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if categoryId == 0 {
-            return 1    // Only albums in root album
-        } else {
-            return hasAlbumDataToShow() ? 2 : 1    // Albums and images
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        switch activeRow(indexPath.row) {
-        case 0:
-            // Initialise album collection view cell
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumCollectionTableViewCell", for: indexPath) as? AlbumCollectionTableViewCell
-            else { preconditionFailure("Failed to load AlbumCollectionTableViewCell") }
-            
-            // Add album view controller to container view controller
-            cell.albumVC = albumCollectionVC
-            if cell.subviews.contains(albumCollectionVC.view) == false {
-                // Add view controller to container view controller
-                add(asChildViewController: albumCollectionVC, toCell: cell)
-            }
-            
-            // For auto-sizing the cell after collection view layouting
-            albumCollectionCell = cell
-            return cell
-            
-        default:
-            // Initialise image collection view cell
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ImageCollectionTableViewCell", for: indexPath) as? ImageCollectionTableViewCell
-            else { preconditionFailure("Failed to laod ImageCollectionTableViewCell") }
-
-            // Add view controller to container view controller
-            cell.imageVC = imageCollectionVC
-            if cell.subviews.contains(imageCollectionVC.view) == false {
-                add(asChildViewController: imageCollectionVC, toCell: cell)
-            }
-
-            // For auto-sizing the cell after collection view layouting
-            imageCollectionCell = cell
-            return cell
-        }
-    }
-    
-    private func add(asChildViewController viewController: UIViewController, toCell cell: UIView) {
-        // Add child view controller
-        addChild(viewController)
-
-        // Add child view as subview
-        cell.addSubview(viewController.view)
-
-        // Define Constraints
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            viewController.view.topAnchor.constraint(equalTo: cell.topAnchor),
-            viewController.view.bottomAnchor.constraint(equalTo: cell.bottomAnchor),
-            viewController.view.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
-            viewController.view.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
-        ])
-
-        // Notify child view Controller
-        viewController.didMove(toParent: self)
-    }
-}
-
-
-// MARK: - UITableViewDelegate
-extension AlbumImageTableViewController: UITableViewDelegate
-{
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-}
-
-
-// MARK: - UIScrollViewDelegate
-extension AlbumImageTableViewController
-{
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Show/hide navigation bar border
-        var topSpace = navigationController?.navigationBar.bounds.height ?? 0
-        if #available(iOS 13, *) {
-            topSpace += view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
-        } else {
-            topSpace += UIApplication.shared.statusBarFrame.height
-        }
-        if (scrollView.contentOffset.y + topSpace).rounded(.down) > 0 {
-            // Show bar border
-            if #available(iOS 13.0, *) {
-                let navBar = navigationItem
-                let barAppearance = navBar.standardAppearance
-                let shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor(white: 1.0, alpha: 0.15) : UIColor(white: 0.0, alpha: 0.3)
-                if barAppearance?.shadowColor != shadowColor {
-                    barAppearance?.shadowColor = shadowColor
-                    navBar.scrollEdgeAppearance = barAppearance
-                }
-            }
-        } else {
-            // Hide bar border
-            if #available(iOS 13.0, *) {
-                let navBar = navigationItem
-                let barAppearance = navBar.standardAppearance
-                if barAppearance?.shadowColor != UIColor.clear {
-                    barAppearance?.shadowColor = UIColor.clear
-                    navBar.scrollEdgeAppearance = barAppearance
-                }
-            }
         }
     }
 }

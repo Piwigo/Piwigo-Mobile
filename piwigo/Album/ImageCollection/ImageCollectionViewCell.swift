@@ -64,7 +64,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         set(isSelection) {
             _isSelection = isSelection
             selectedImg?.isHidden = !isSelection
-            darkenView.frame = cellImage.frame
+//            darkenView?.frame = cellImage?.image
             darkenView?.isHidden = !isSelection
         }
     }
@@ -107,8 +107,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Store image data
         self.imageData = imageData
-        if noDataLabel.isHidden == false {
-            noDataLabel.isHidden = true
+        if noDataLabel?.isHidden == false {
+            noDataLabel?.isHidden = true
             isAccessibilityElement = true
         }
 
@@ -218,7 +218,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
     private func configImage(_ image: UIImage) {
         // Set image
-        self.cellImage.image = image
+        self.cellImage?.image = image
 
         // Favorite image position depends on device
         self.deltaX = self.margin

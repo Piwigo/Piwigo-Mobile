@@ -1,8 +1,8 @@
 //
-//  ImageCollectionViewController+Edit.swift
+//  AlbumViewController+Edit.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     // MARK: Edit Images Parameters Action
     @available(iOS 14.0, *)
@@ -36,7 +36,7 @@ extension ImageCollectionViewController
             // No image => End (should never happen)
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    imageSelectionDelegate?.deselectImages()
+                    cancelSelect()
                 }
             }
             return
@@ -51,13 +51,13 @@ extension ImageCollectionViewController
         let albumImages = images.fetchedObjects ?? []
         editImageVC.images = albumImages.filter({selectedImageIds.contains($0.pwgID)})
         editImageVC.delegate = self
-        imageSelectionDelegate?.pushSelectionToView(editImageVC)
+        pushView(editImageVC)
     }
 }
 
 
 // MARK: - EditImageParamsDelegate Methods
-extension ImageCollectionViewController: EditImageParamsDelegate
+extension AlbumViewController: EditImageParamsDelegate
 {
     func didDeselectImage(withId imageId: Int64) {
         // Deselect image
@@ -76,6 +76,6 @@ extension ImageCollectionViewController: EditImageParamsDelegate
     }
 
     func didFinishEditingParameters() {
-        imageSelectionDelegate?.deselectImages()
+        cancelSelect()
     }
 }

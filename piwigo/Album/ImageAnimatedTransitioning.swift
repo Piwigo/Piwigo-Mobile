@@ -30,7 +30,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
     }()
 
     private let type: PresentationType
-    private let albumImageTableViewController: AlbumImageTableViewController
+    private let albumViewController: AlbumViewController
     private let imageNavViewController: UINavigationController
     private let albumViewSnapshot: UIView
     private var cellImageViewSnapshot: UIView
@@ -39,22 +39,22 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
     private let navBarRect: CGRect
 
     init?(type: PresentationType,
-          albumImageTableViewController: AlbumImageTableViewController,
+          albumViewController: AlbumViewController,
           imageNavViewController: UINavigationController,
           albumViewSnapshot: UIView,
           cellImageViewSnapshot: UIView,
           navBarSnapshot: UIView)
     {
         self.type = type
-        self.albumImageTableViewController = albumImageTableViewController
+        self.albumViewController = albumViewController
         self.imageNavViewController = imageNavViewController
         self.albumViewSnapshot = albumViewSnapshot
         self.cellImageViewSnapshot = cellImageViewSnapshot
         self.navBarSnapshot = navBarSnapshot
         
-        guard let window = albumImageTableViewController.view.window,
-              let animatedCell = albumImageTableViewController.animatedCell,
-              let navBar = albumImageTableViewController.navigationController?.navigationBar
+        guard let window = albumViewController.view.window,
+              let animatedCell = albumViewController.animatedCell,
+              let navBar = albumViewController.navigationController?.navigationBar
             else { return nil } // i.e. use default present/dismiss animation
 
         // Get frame of cell relative to the window’s frame
@@ -73,7 +73,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         
         // Retrieve window and image or video detail view
-        guard let window = albumImageTableViewController.view.window ?? imageNavViewController.view.window,
+        guard let window = albumViewController.view.window ?? imageNavViewController.view.window,
               let imageViewController = imageNavViewController.children.last as? ImageViewController,
               let detailVC = imageViewController.pageViewController?.viewControllers?.first
         else {

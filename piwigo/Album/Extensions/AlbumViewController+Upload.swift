@@ -1,5 +1,5 @@
 //
-//  AlbumImageTableViewController+Upload.swift
+//  AlbumViewController+Upload.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/04/2024.
@@ -10,7 +10,7 @@ import Foundation
 import Photos
 import UIKit
 
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     // MARK: - Upload Actions
     @objc func didTapUploadImagesButton() {

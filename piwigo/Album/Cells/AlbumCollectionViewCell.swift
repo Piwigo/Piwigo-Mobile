@@ -12,19 +12,19 @@ import CoreData
 import UIKit
 import piwigoKit
 
-protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
-    func pushCategoryView(_ viewController: UIViewController?,
-                          completion: @escaping (Bool) -> Void)
+protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
+    func pushAlbumView(_ viewController: UIViewController?,
+                       completion: @escaping (Bool) -> Void)
 }
 
 protocol DeleteAlbumCollectionViewCellDelegate: NSObjectProtocol {
-    func didDeleteCategory(withError error: NSError?,
-                           viewController topViewController: UIViewController?)
+    func didDeleteAlbum(withError error: NSError?,
+                        viewController topViewController: UIViewController?)
 }
 
 class AlbumCollectionViewCell: UICollectionViewCell
 {
-    weak var pushAlbumDelegate: AlbumCollectionViewCellDelegate?
+    weak var pushAlbumDelegate: PushAlbumCollectionViewCellDelegate?
     weak var deleteAlbumDelegate: DeleteAlbumCollectionViewCellDelegate?
     
     var albumData: Album? {
@@ -135,12 +135,11 @@ extension AlbumCollectionViewCell: UITableViewDelegate
 
         // Push new album view
         if let albumData = albumData {
-            let albumSB = UIStoryboard(name: "AlbumImageTableViewController", bundle: nil)
-            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumImageTableViewController") as? AlbumImageTableViewController else {
-                fatalError("!!! No AlbumImageTableViewController !!!")
-            }
+            let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
             subAlbumVC.categoryId = albumData.pwgID
-            pushAlbumDelegate?.pushCategoryView(subAlbumVC, completion: {_ in })
+            pushAlbumDelegate?.pushAlbumView(subAlbumVC, completion: {_ in })
         }
     }
     

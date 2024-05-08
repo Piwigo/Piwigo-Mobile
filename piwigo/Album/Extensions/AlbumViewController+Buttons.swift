@@ -1,5 +1,5 @@
 //
-//  AlbumImageTableViewController+Buttons.swift
+//  AlbumViewController+Buttons.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/04/2024.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     // MARK: - Buttons Management
     func initButtons() {

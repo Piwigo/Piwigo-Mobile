@@ -482,10 +482,11 @@ class LoginViewController: UIViewController {
             LoginUtilities.checkAvailableSizes()
 
             // Present Album/Images view and resume uploads
+            guard let window = self.view.window else { return }
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             hideHUD() {
                 // Present Album/Images view and resume uploads
-                appDelegate?.loadNavigation(in: self.view.window)
+                appDelegate?.loadNavigation(in: window)
             }
         }
     }

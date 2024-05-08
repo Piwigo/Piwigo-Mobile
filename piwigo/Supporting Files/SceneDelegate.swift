@@ -239,20 +239,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configure(window: UIWindow?, session: UISceneSession, with activity: NSUserActivity) -> Bool {
-        var succeeded = false
-        
         // Check the user activity type to know which part of the app to restore.
         if activity.activityType == ActivityType.album.rawValue {
             // The activity type is for restoring AlbumViewController.
-            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                  let window = window
+            else { return false }
             appDelegate.loadNavigation(in: window)
-            succeeded = true
+            return true
         }
-        else {
-            // The incoming userActivity is not recognizable here.
-        }
-        
-        return succeeded
+
+        // The incoming userActivity is not recognizable here.
+        return false
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

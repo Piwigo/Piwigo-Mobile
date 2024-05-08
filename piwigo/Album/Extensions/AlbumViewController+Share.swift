@@ -1,8 +1,8 @@
 //
-//  ImageCollectionViewController+Share.swift
+//  AlbumViewController+Share.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import Photos
 import UIKit
 
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     // MARK: Share Bar Button
     func getShareBarButton() -> UIBarButtonItem {
@@ -114,7 +114,7 @@ extension ImageCollectionViewController
                 NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
                 // Deselect images
-                imageSelectionDelegate?.deselectImages()
+                cancelSelect()
 
                 // Close HUD with success
                 presentedViewController?.updateHUDwithSuccess() { [self] in
@@ -126,13 +126,13 @@ extension ImageCollectionViewController
             } else {
                 if activityType == nil {
                     // User dismissed the view controller without making a selection.
-                    imageSelectionDelegate?.updateSelectMode(withInit: false)
+                    updateBarsInSelectMode()
                 } else {
                     // Check what to do with selection
                     if selectedImageIds.isEmpty {
-                        imageSelectionDelegate?.deselectImages()
+                        cancelSelect()
                     } else {
-                        imageSelectionDelegate?.setButtonsState(true)
+                        setEnableStateOfButtons(true)
                     }
 
                     // Cancel download task
@@ -148,7 +148,7 @@ extension ImageCollectionViewController
         }
 
         // Present share image activity view controller
-        if let parent = parent as? AlbumImageTableViewController {
+        if let parent = parent as? AlbumViewController {
             activityViewController.popoverPresentationController?.barButtonItem = parent.shareBarButton
         }
         present(activityViewController, animated: true)
@@ -162,7 +162,7 @@ extension ImageCollectionViewController
 
 
 // MARK: - ShareImageActivityItemProviderDelegate Methods
-extension ImageCollectionViewController: ShareImageActivityItemProviderDelegate
+extension AlbumViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
                                                         withTitle title: String) {
@@ -197,7 +197,7 @@ extension ImageCollectionViewController: ShareImageActivityItemProviderDelegate
             selectedImageIds.remove(imageId)
             selectedFavoriteIds.remove(imageId)
             selectedVideosIds.remove(imageId)
-            imageSelectionDelegate?.updateSelectMode(withInit: false)
+            updateBarsInSelectMode()
 
             // Close HUD if last image
             if selectedImageIds.count == 0 {
@@ -222,4 +222,3 @@ extension ImageCollectionViewController: ShareImageActivityItemProviderDelegate
         }
     }
 }
-

@@ -1,8 +1,8 @@
 //
-//  ImageCollectionViewController+CopyMove.swift
+//  AlbumViewController+CopyMove.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     // MARK: - Copy/Move Bar Button & Actions
     func getMoveBarButton() -> UIBarButtonItem {
@@ -25,7 +25,7 @@ extension ImageCollectionViewController
                               image: UIImage(systemName: "rectangle.stack.badge.plus"),
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action
-            imageSelectionDelegate?.setButtonsState(false)
+            setEnableStateOfButtons(false)
             // Retrieve complete image data before copying images
             initSelection(beforeAction: .copyImages)
         })
@@ -40,7 +40,7 @@ extension ImageCollectionViewController
                               image: UIImage(systemName: "arrowshape.turn.up.right"),
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action
-            imageSelectionDelegate?.setButtonsState(false)
+            setEnableStateOfButtons(false)
             // Retrieve complete image data before moving images
             initSelection(beforeAction: .moveImages)
         })
@@ -52,7 +52,7 @@ extension ImageCollectionViewController
     // MARK: - Copy/Move Images to Album
     @objc func copyMoveSelection() {    // Alert displayed on iOS 9.x to 13.x
         // Disable buttons
-        imageSelectionDelegate?.setButtonsState(false)
+        setEnableStateOfButtons(false)
 
         // Present alert to user
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -60,7 +60,7 @@ extension ImageCollectionViewController
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
-                imageSelectionDelegate?.setButtonsState(true)
+                setEnableStateOfButtons(true)
             })
 
         let copyAction = UIAlertAction(
@@ -87,7 +87,7 @@ extension ImageCollectionViewController
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         }
-        if let parent = parent as? AlbumImageTableViewController {
+        if let parent = parent as? AlbumViewController {
             alert.popoverPresentationController?.barButtonItem = parent.moveBarButton
         }
         present(alert, animated: true) {
@@ -103,7 +103,7 @@ extension ImageCollectionViewController
         copyVC.user = user
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self              // To re-enable toolbar
-            imageSelectionDelegate?.pushSelectionToView(copyVC)
+            pushView(copyVC)
         }
     }
 
@@ -114,20 +114,20 @@ extension ImageCollectionViewController
         moveVC.user = user
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self              // To re-enable toolbar
-            imageSelectionDelegate?.pushSelectionToView(moveVC)
+            pushView(moveVC)
         }
     }
 }
 
 
 // MARK: - SelectCategoryDelegate Methods
-extension ImageCollectionViewController: SelectCategoryDelegate
+extension AlbumViewController: SelectCategoryDelegate
 {
     func didSelectCategory(withId category: Int32) {
         if category == Int32.min {
-            imageSelectionDelegate?.setButtonsState(true)
+            setEnableStateOfButtons(true)
         } else {
-            imageSelectionDelegate?.deselectImages()
+            cancelSelect()
         }
     }
 }

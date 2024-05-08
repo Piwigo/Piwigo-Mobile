@@ -1,8 +1,8 @@
 //
-//  AlbumImageTableViewController+Settings.swift
+//  AlbumViewController+Settings.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Created by Eddy Lelièvre-Berna on 04/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 // MARK: "Settings" Button
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     func getSettingsBarButton() -> UIBarButtonItem {
         var button: UIBarButtonItem!
@@ -25,7 +25,8 @@ extension AlbumImageTableViewController
     
     @objc func didTapSettingsButton() {
         let settingsSB = UIStoryboard(name: "SettingsViewController", bundle: nil)
-        guard let settingsVC = settingsSB.instantiateViewController(withIdentifier: "SettingsViewController") as? SettingsViewController else { fatalError("No SettingsViewController") }
+        guard let settingsVC = settingsSB.instantiateViewController(withIdentifier: "SettingsViewController") as? SettingsViewController
+        else { preconditionFailure("Could not load SettingsViewController") }
         settingsVC.settingsDelegate = self
         settingsVC.user = user
         let navController = UINavigationController(rootViewController: settingsVC)
@@ -44,17 +45,17 @@ extension AlbumImageTableViewController
 
 
 // MARK: - ChangedSettingsDelegate Methods
-extension AlbumImageTableViewController: ChangedSettingsDelegate
+extension AlbumViewController: ChangedSettingsDelegate
 {
     func didChangeDefaultAlbum() {
         // Change default album
-        categoryId = AlbumVars.shared.defaultCategory
-        albumData = currentAlbumData()
-        changeAlbumID()
+//        categoryId = AlbumVars.shared.defaultCategory
+//        albumData = currentAlbumData()
+//        changeAlbumID()
     }
 
     func didChangeRecentPeriod() {
         // Reload album
-        albumImageTableView.reloadData()
+//        albumImageTableView.reloadData()
     }
 }

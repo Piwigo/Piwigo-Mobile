@@ -104,6 +104,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             selectedImage?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
+            waitingActivity?.stopAnimating()
             uploadingProgress?.isHidden = false
             uploadingProgress?.setProgress(0, animated: false)
             uploadedImage?.isHidden = true
@@ -112,6 +113,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             selectedImage?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = true
+            waitingActivity?.stopAnimating()
             uploadingProgress?.isHidden = false
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
@@ -119,6 +121,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             selectedImage?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
+            waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
             uploadingProgress?.setProgress(1.0, animated: false)
             uploadedImage?.isHidden = true
@@ -130,6 +133,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = false
             failedUploadImage?.isHidden = true
             waitingActivity?.isHidden = true
+            waitingActivity?.stopAnimating()
         case .preparingFail, .preparingError, .formatError,
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
             selectedImage?.isHidden = true
@@ -138,6 +142,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = false
             waitingActivity?.isHidden = true
+            waitingActivity?.stopAnimating()
         }
     }
 

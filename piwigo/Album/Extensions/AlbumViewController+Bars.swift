@@ -1,5 +1,5 @@
 //
-//  AlbumImageTableViewController+Bars.swift
+//  AlbumViewController+Bars.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/04/2024.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     // MARK: - Preview Mode
     func initBarsInPreviewMode() {
@@ -96,7 +96,7 @@ extension AlbumImageTableViewController
         navigationItem.hidesBackButton = true
 
         // Favorites button depends on Piwigo server version, user role and image data
-        favoriteBarButton = imageCollectionVC.getFavoriteBarButton()
+        favoriteBarButton = getFavoriteBarButton()
 
         // Button displayed in all circumstances
         if #available(iOS 14, *) {
@@ -185,7 +185,8 @@ extension AlbumImageTableViewController
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
             if user.hasUploadRights(forCatID: categoryId) {
                 // The action button only proposes to edit image parameters
-                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(imageCollectionVC.editSelection))
+                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self,
+                                                  action: #selector(editSelection))
                 actionBarButton?.accessibilityIdentifier = "actions"
 
                 if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
@@ -260,7 +261,7 @@ extension AlbumImageTableViewController
     }
     
     func updateBarsInSelectMode() {
-        let hasImagesSelected = !imageCollectionVC.selectedImageIds.isEmpty
+        let hasImagesSelected = !selectedImageIds.isEmpty
         cancelBarButton.isEnabled = true
 
         // User with admin or upload rights can do everything
@@ -268,32 +269,32 @@ extension AlbumImageTableViewController
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
         if user.hasUploadRights(forCatID: categoryId) {
             actionBarButton?.isEnabled = hasImagesSelected
-            shareBarButton?.isEnabled = hasImagesSelected
-            deleteBarButton?.isEnabled = hasImagesSelected
+            shareBarButton.isEnabled = hasImagesSelected
+            deleteBarButton.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
-            let selected = imageCollectionVC.selectedImageIds
-            let favorites = imageCollectionVC.selectedFavoriteIds
+            let selected = selectedImageIds
+            let favorites = selectedFavoriteIds
             let areFavorites = selected == favorites
             favoriteBarButton?.setFavoriteImage(for: areFavorites)
-            favoriteBarButton?.action = areFavorites ? #selector(imageCollectionVC.removeFromFavorites) : #selector(imageCollectionVC.addToFavorites)
+            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
 
             if #available(iOS 14, *) {
                 let updatedMenu = actionBarButton?.menu?.replacingChildren([albumMenu(), imagesMenu()])
                 actionBarButton?.menu = updatedMenu
             } else {
-                moveBarButton?.isEnabled = hasImagesSelected
+                moveBarButton.isEnabled = hasImagesSelected
             }
         } else {
             // Right side of navigation bar
             /// — guests can share photo of high-resolution or not
             /// — non-guest users can set favorites in addition
-            shareBarButton?.isEnabled = hasImagesSelected
+            shareBarButton.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
-            let selected = imageCollectionVC.selectedImageIds
-            let favorites = imageCollectionVC.selectedFavoriteIds
+            let selected = selectedImageIds
+            let favorites = selectedFavoriteIds
             let areFavorites = selected == favorites
             favoriteBarButton?.setFavoriteImage(for: areFavorites)
-            favoriteBarButton?.action = areFavorites ? #selector(imageCollectionVC.removeFromFavorites) : #selector(imageCollectionVC.addToFavorites)
+            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
         }
     }
     
@@ -303,9 +304,9 @@ extension AlbumImageTableViewController
     func setEnableStateOfButtons(_ state: Bool) {
         cancelBarButton.isEnabled = state
         actionBarButton?.isEnabled = state
-        deleteBarButton?.isEnabled = state
-        moveBarButton?.isEnabled = state
-        shareBarButton?.isEnabled = state
+        deleteBarButton.isEnabled = state
+        moveBarButton.isEnabled = state
+        shareBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
     }
         

@@ -1,5 +1,5 @@
 //
-//  AlbumImageTableViewController+Fetch.swift
+//  AlbumViewController+Fetch.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/04/2024.
@@ -10,7 +10,7 @@ import Foundation
 import piwigoKit
 import uploadKit
 
-extension AlbumImageTableViewController
+extension AlbumViewController
 {
     // MARK: Fetch Album Data in the Background
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
@@ -18,7 +18,7 @@ extension AlbumImageTableViewController
         // from main context before calling background tasks
         /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
         /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
-        let oldImageIds = Set((imageCollectionVC.images.fetchedObjects ?? []).map({$0.pwgID}))
+        let oldImageIds = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
         let query = albumData.query
 
         // Use the AlbumProvider to create the album data. On completion,
@@ -127,14 +127,14 @@ extension AlbumImageTableViewController
                     DispatchQueue.main.async { [self] in
                         navigationController?.hideHUD {
                             // Set navigation bar buttons
-                            if self.imageCollectionVC.isSelect {
+                            if self.isSelect {
                                 self.updateBarsInSelectMode()
                             } else {
                                 self.updateBarsInPreviewMode()
                             }
 
                             // End refreshing if needed
-                            self.albumImageTableView.refreshControl?.endRefreshing()
+                            self.collectionView.refreshControl?.endRefreshing()
                         }
                     }
                     // Is user editing the search string?
@@ -235,7 +235,7 @@ extension AlbumImageTableViewController
                 // Hide HUD
                 navigationController?.hideHUD() {
                     // End refreshing if needed
-                    self.albumImageTableView.refreshControl?.endRefreshing()
+                    self.collectionView.refreshControl?.endRefreshing()
                 }
             }
         }

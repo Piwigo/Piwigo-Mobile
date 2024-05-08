@@ -1,8 +1,8 @@
 //
-//  ImageCollectionViewController+Delete.swift
+//  AlbumViewController+Delete.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 14/04/2024.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-extension ImageCollectionViewController
+extension AlbumViewController
 {
     // MARK: - Delete Bar Button
     func getDeleteBarButton() -> UIBarButtonItem {
@@ -61,7 +61,7 @@ extension ImageCollectionViewController
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
-                imageSelectionDelegate?.updateSelectMode(withInit: false)
+                updateBarsInSelectMode()
             })
         alert.addAction(cancelAction)
 
@@ -136,7 +136,7 @@ extension ImageCollectionViewController
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         }
-        if let parent = parent as? AlbumImageTableViewController {
+        if let parent = parent as? AlbumViewController {
             alert.popoverPresentationController?.barButtonItem = parent.deleteBarButton
         }
         present(alert, animated: true) {
@@ -159,7 +159,7 @@ extension ImageCollectionViewController
                     }
                     // Hide HUD and deselect images
                     navigationController?.hideHUD() { [self] in
-                        imageSelectionDelegate?.deselectImages()
+                        cancelSelect()
                     }
                 }
             } else {
@@ -231,7 +231,7 @@ extension ImageCollectionViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
-                    imageSelectionDelegate?.updateSelectMode(withInit: false)
+                    updateBarsInSelectMode()
                 }
             } dismiss: { [unowned self] in
                 // Bypass image
@@ -250,7 +250,7 @@ extension ImageCollectionViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
-                    imageSelectionDelegate?.updateSelectMode(withInit: false)
+                    updateBarsInSelectMode()
                 }
             }
         }
@@ -267,7 +267,7 @@ extension ImageCollectionViewController
                 }
                 // Hide HUD and deselect images
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    imageSelectionDelegate?.deselectImages()
+                    cancelSelect()
                 }
             }
             return
@@ -309,7 +309,7 @@ extension ImageCollectionViewController
                     // Hide HUD
                     self.navigationController?.updateHUDwithSuccess() { [self] in
                         self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                            imageSelectionDelegate?.deselectImages()
+                            cancelSelect()
                         }
                     }
                 }
@@ -343,7 +343,7 @@ extension ImageCollectionViewController
                 }
                 // Hide HUD and update buttons
                 navigationController?.hideHUD() { [self] in
-                    imageSelectionDelegate?.updateSelectMode(withInit: false)
+                    updateBarsInSelectMode()
                 }
             }
         }
