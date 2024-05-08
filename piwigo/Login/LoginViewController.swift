@@ -228,7 +228,7 @@ class LoginViewController: UIViewController {
     
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
-        NetworkUtilities.requestServerMethods { [self] in
+        PwgSession.requestServerMethods { [self] in
             // Pursue logging in…
             DispatchQueue.main.async {
                 self.performLogin()

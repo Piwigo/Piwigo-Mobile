@@ -16,7 +16,8 @@ public enum PwgSessionError: Error {
     case authenticationFailed
     case unexpectedError
     case incompatiblePwgVersion
-    
+    case failedToPrepareDownload
+
     // Piwigo server errors
     case invalidURL             // 404
     case invalidMethod          // 501
@@ -63,6 +64,8 @@ extension PwgSessionError: LocalizedError {
                                      comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
         case .invalidURL:
             return NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address.")
+        case .failedToPrepareDownload:
+            return NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
         }
     }
 }

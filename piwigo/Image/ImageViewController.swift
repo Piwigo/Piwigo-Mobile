@@ -276,7 +276,7 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            NetworkUtilities.checkSession(ofUser: user) { [self] in
+            PwgSession.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
                 print("••> Retrieving data of image \(imageID)")
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
@@ -352,7 +352,7 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
@@ -774,7 +774,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
            let imageURL = imageDVC.imageURL {
             // Pause download
-            ImageSession.shared.pauseDownload(atURL: imageURL)
+            PwgSession.shared.pauseDownload(atURL: imageURL)
         }
     }
     
@@ -846,6 +846,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         else { return nil }
 
         // Create video detail view
+        videoDVC.user = user
         videoDVC.imageIndex = index
         videoDVC.imageData = imageData
         return videoDVC

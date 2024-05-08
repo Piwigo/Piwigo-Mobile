@@ -12,6 +12,7 @@ import piwigoKit
 
 class VideoDetailViewController: UIViewController
 {
+    var user: User!
     var imageIndex = 0
     var imageData: Image! {
         didSet {

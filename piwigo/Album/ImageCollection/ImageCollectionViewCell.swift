@@ -149,10 +149,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let cellSize = self.bounds.size
         let scale = self.traitCollection.displayScale
         DispatchQueue.global(qos: .userInitiated).async {
-            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: size,
-                                         atURL: ImageUtilities.getURL(imageData, ofMinSize: size),
-                                         fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                         placeHolder: placeHolder) { cachedImageURL in
+            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size,
+                                       atURL: ImageUtilities.getURL(imageData, ofMinSize: size),
+                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                       placeHolder: placeHolder) { cachedImageURL in
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
                 DispatchQueue.main.async {
                     self.configImage(cachedImage)

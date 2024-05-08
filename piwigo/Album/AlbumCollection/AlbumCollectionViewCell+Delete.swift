@@ -202,7 +202,7 @@ extension AlbumCollectionViewCell {
         guard let albumData = albumData else { return }
 
         // Delete the category
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
                 // Hide swipe buttons
                 DispatchQueue.main.async {

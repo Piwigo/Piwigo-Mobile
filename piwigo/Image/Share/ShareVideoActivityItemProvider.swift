@@ -118,9 +118,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
-                                     fromServer: serverID, fileSize: imageData.fileSize,
-                                     placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
+                                   fromServer: serverID, fileSize: imageData.fileSize,
+                                   placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
         } completion: { fileURL in
@@ -352,7 +352,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel video file download
-        ImageSession.shared.cancelDownload(atURL: pwgImageURL)
+        PwgSession.shared.cancelDownload(atURL: pwgImageURL)
         // Cancel video export
         exportSession?.cancelExport()
     }

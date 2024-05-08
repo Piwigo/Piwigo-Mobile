@@ -129,7 +129,7 @@ class TagsViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
                 didFetchTagsWithError(error as Error)

@@ -33,14 +33,14 @@ public class Album: NSManagedObject {
         if pwgID != newPwgId {
             pwgID = newPwgId
         }
-        let newNameUtf8mb4 = NetworkUtilities.utf8mb4String(from: newName)
+        let newNameUtf8mb4 = PwgSession.utf8mb4String(from: newName)
         if name != newNameUtf8mb4 {
             name = newNameUtf8mb4
         }
 
         // Album description and rank
-        let description = NetworkUtilities.utf8mb4String(from: albumData.comment ?? "")
-                                          .htmlToAttributedString
+        let description = PwgSession.utf8mb4String(from: albumData.comment ?? "")
+                                    .htmlToAttributedString
         if comment.string != description.string {
             comment = description
         }
@@ -86,7 +86,7 @@ public class Album: NSManagedObject {
         if thumbnailId != newThumbailId {
             thumbnailId = newThumbailId
         }
-        let newThumbnailUrl = NetworkUtilities.encodedImageURL(albumData.thumbnailUrl ?? "")
+        let newThumbnailUrl = PwgSession.encodedImageURL(albumData.thumbnailUrl ?? "")
         if thumbnailUrl != newThumbnailUrl {
             thumbnailUrl = newThumbnailUrl
         }

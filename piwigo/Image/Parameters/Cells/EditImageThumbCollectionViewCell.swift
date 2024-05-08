@@ -115,9 +115,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         let cellSize = self.imageThumbnail.bounds.size
         let scale = self.imageThumbnail.traitCollection.displayScale
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize,
-                                     atURL: ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize),
-                                     fromServer: imageData.server?.uuid, placeHolder: placeHolder) { cachedImageURL in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize,
+                                   atURL: ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize),
+                                   fromServer: imageData.server?.uuid, placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
             DispatchQueue.main.async {
                 self.imageThumbnail.image = cachedImage

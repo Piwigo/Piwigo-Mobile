@@ -20,7 +20,7 @@ extension SelectCategoryViewController {
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Move album
-        NetworkUtilities.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) {  [self] in
             AlbumUtilities.move(self.inputAlbum.pwgID,
                                 intoAlbumWithId: parentData.pwgID) { [self] in
                 // Remember that the app is fetching all album data
@@ -73,7 +73,7 @@ extension SelectCategoryViewController {
         showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
-        NetworkUtilities.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) {  [self] in
             AlbumUtilities.setRepresentative(albumData, with: imageData)
             {
                 DispatchQueue.main.async { [self] in

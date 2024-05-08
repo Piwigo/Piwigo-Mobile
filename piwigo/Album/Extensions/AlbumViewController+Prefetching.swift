@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 // MARK: - UICollectionViewDataSourcePrefetching
 extension AlbumViewController: UICollectionViewDataSourcePrefetching
@@ -22,28 +23,24 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 let album = albums.object(at: indexPath)
                 
                 // Download image if needed
-                ImageSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize,
-                                             atURL: album.thumbnailUrl as? URL,
-                                             fromServer: album.user?.server?.uuid,
-                                             placeHolder: albumPlaceHolder) { cachedImageURL in
+                PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize,
+                                           atURL: album.thumbnailUrl as? URL,
+                                           fromServer: album.user?.server?.uuid,
+                                           placeHolder: albumPlaceHolder) { cachedImageURL in
                     let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: self.albumCellSize, scale: scale)
-                } failure: { _ in
-                    // No image available
-                }
+                } failure: { _ in }
             default /* Images */:
                 // Retrieve image data
                 let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
                 let imageData = images.object(at: imageIndexPath)
 
                 // Download image if needed
-                ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize,
-                                             atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
-                                             fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                             placeHolder: imagePlaceHolder) { cachedImageURL in
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize,
+                                           atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                           placeHolder: imagePlaceHolder) { cachedImageURL in
                     let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: self.imageCellSize, scale: scale)
-                } failure: { _ in
-                    // No image available
-                }
+                } failure: { _ in }
             }
         }
     }
@@ -59,7 +56,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 // Cancel download if needed
                 guard let imageURL = album.thumbnailUrl as? URL
                 else { return }
-                ImageSession.shared.cancelDownload(atURL: imageURL)
+                PwgSession.shared.cancelDownload(atURL: imageURL)
                 
             default /* Images */:
                 // Retrieve image data
@@ -69,7 +66,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 // Cancel download if needed
                 guard let imageURL = ImageUtilities.getURL(image, ofMinSize: imageSize)
                 else { return }
-                ImageSession.shared.cancelDownload(atURL: imageURL)
+                PwgSession.shared.cancelDownload(atURL: imageURL)
             }
         }
     }

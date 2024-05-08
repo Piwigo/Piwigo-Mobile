@@ -125,6 +125,7 @@ extension AlbumViewController: UICollectionViewDataSource
             let album = albums.object(at: indexPath)
             if album.isFault {
                 // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
                 album.didAccessValue(forKey: nil)
             }
             cell.albumData = album

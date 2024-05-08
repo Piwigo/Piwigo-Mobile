@@ -533,7 +533,7 @@ class AlbumViewController: UIViewController
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
            noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600) {
-            NetworkUtilities.checkSession(ofUser: user) {
+            PwgSession.checkSession(ofUser: user) {
                 self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
             } failure: { error in
                 // Session logout required?
@@ -730,16 +730,6 @@ class AlbumViewController: UIViewController
                 $0.cancel()
             })
         }
-        ImageSession.shared.dataSession.getAllTasks { tasks in
-            // Select tasks related with this album if any
-            let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
-            // Cancel remaining tasks related with this completed upload request
-            tasksToCancel.forEach({
-                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
-                $0.cancel()
-            })
-        }
         
         // Hide upload button during transition
         addButton.isHidden = true
@@ -838,7 +828,7 @@ class AlbumViewController: UIViewController
         }
         
         // Re-login and then fetch album and image data
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             self.startFetchingAlbumAndImages(withHUD: true)
         } failure: { error in
             // End refreshing anyway

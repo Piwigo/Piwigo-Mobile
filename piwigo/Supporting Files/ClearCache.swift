@@ -147,10 +147,7 @@ class ClearCache: NSObject {
                 // Cancel other tasks
                 PwgSession.shared.dataSession.getAllTasks { tasks in
                     tasks.forEach({$0.cancel()})
-                    ImageSession.shared.dataSession.getAllTasks { tasks in
-                        tasks.forEach({$0.cancel()})
-                        completion()
-                    }
+                    completion()
                 }
             }
         }

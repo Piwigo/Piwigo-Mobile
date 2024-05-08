@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import piwigoKit
 
 class ImageDownload {
     
@@ -53,7 +52,7 @@ class ImageDownload {
 // MARK: - Image Cached File URL and Thumbnail
 extension Image
 {
-    func cacheURL(ofSize size: pwgImageSize) -> URL? {
+    public func cacheURL(ofSize size: pwgImageSize) -> URL? {
         // Retrieve server ID
         let serverID = self.server?.uuid ?? ""
         if serverID.isEmpty { return nil }
@@ -64,7 +63,7 @@ extension Image
             .appendingPathComponent(String(self.pwgID))
     }
     
-    func cachedThumbnail(ofSize size: pwgImageSize) -> UIImage? {
+    public func cachedThumbnail(ofSize size: pwgImageSize) -> UIImage? {
         guard let fileURL = self.cacheURL(ofSize: size),
               let image = UIImage(contentsOfFile: fileURL.path)
         else { return nil }

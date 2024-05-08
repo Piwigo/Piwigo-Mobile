@@ -148,7 +148,7 @@ extension AlbumViewController: UISearchBarDelegate
 //                self.albumCollectionVC.updateNberOfImagesInFooter()
 //                
 //                // Determine if the session is active before fetching
-//                NetworkUtilities.checkSession(ofUser: self.user) {
+//                PwgSession.checkSession(ofUser: self.user) {
 //                    self.startFetchingAlbumAndImages(withHUD: true)
 //                } failure: { error in
 //                    // Session logout required?

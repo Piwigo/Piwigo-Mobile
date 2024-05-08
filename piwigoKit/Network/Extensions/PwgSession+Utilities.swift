@@ -1,5 +1,5 @@
 //
-//  NetworkUtilities.swift
+//  PwgSession+Utilities.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 08/06/2021.
@@ -10,14 +10,7 @@ import os
 import Foundation
 import UIKit
 
-public class NetworkUtilities: NSObject {
-    
-    // Logs networking activities
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigoKit", category: "Networking")
-
-
+extension PwgSession {
     // MARK: - Sessionn Management
     public static
     func requestServerMethods(completion: @escaping () -> Void,
@@ -92,10 +85,7 @@ public class NetworkUtilities: NSObject {
         let oldToken = NetworkVars.pwgToken
         PwgSession.shared.sessionGetStatus { username in
             if #available(iOSApplicationExtension 14.0, *) {
-                logger.notice("Expected user: \(NetworkVars.username, privacy: .private(mask: .hash))")
-                logger.notice("Current user: \(username, privacy: .private(mask: .hash))")
-                logger.notice("Old token: \(oldToken, privacy: .private(mask: .hash))")
-                logger.notice("New token: \(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+                logger.notice("Session Status: \(NetworkVars.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
             }
             if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server

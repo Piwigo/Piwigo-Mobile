@@ -35,7 +35,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             ImageUtilities.addToFavorites(imageData) {
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -85,7 +85,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {

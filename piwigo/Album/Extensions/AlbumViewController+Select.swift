@@ -191,7 +191,7 @@ extension AlbumViewController
                               inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
                 
                 // Retrieve image data if needed
-                NetworkUtilities.checkSession(ofUser: user) {  [self] in
+                PwgSession.checkSession(ofUser: user) {  [self] in
                     retrieveImageData(beforeAction: action)
                 } failure: { [unowned self] error in
                     retrieveImageDataError(error)

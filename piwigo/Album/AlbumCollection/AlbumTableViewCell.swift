@@ -88,10 +88,10 @@ class AlbumTableViewCell: UITableViewCell {
         let cellSize = self.backgroundImage.bounds.size
         let scale = self.backgroundImage.traitCollection.displayScale
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        ImageSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
-                                     atURL: albumData?.thumbnailUrl as? URL,
-                                     fromServer: albumData?.user?.server?.uuid,
-                                     placeHolder: placeHolder) { cachedImageURL in
+        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
+                                   atURL: albumData?.thumbnailUrl as? URL,
+                                   fromServer: albumData?.user?.server?.uuid,
+                                   placeHolder: placeHolder) { cachedImageURL in
             let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
             self.configImage(cachedImage)
         } failure: { _ in

@@ -134,7 +134,7 @@ extension AlbumCollectionViewCell
         topViewController?.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             AlbumUtilities.setInfos(albumId, withName: albumName, description: albumComment) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Hide swipe buttons

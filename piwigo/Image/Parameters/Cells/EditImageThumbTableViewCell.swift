@@ -22,6 +22,7 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
     
     @IBOutlet private var editImageThumbCollectionView: UICollectionView!
 
+    var user: User!
     private var images: [Image]?
     private var startingScrollingOffset = CGPoint.zero
 

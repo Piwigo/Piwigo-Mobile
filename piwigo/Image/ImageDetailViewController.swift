@@ -56,9 +56,9 @@ class ImageDetailViewController: UIViewController
             // Download high-resolution image
             imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
             if let imageURL = self.imageURL {
-                ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                             fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                             placeHolder: placeHolder) { fractionCompleted in
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                           placeHolder: placeHolder) { fractionCompleted in
                     DispatchQueue.main.async {
                         // Show download progress
                         self.progressView.progress = fractionCompleted
@@ -200,9 +200,9 @@ class ImageDetailViewController: UIViewController
         let placeHolder = imageView.image ?? UIImage(named: "unknownImage")!
         imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
         if let imageURL = self.imageURL {
-            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                         fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                         placeHolder: placeHolder) { fractionCompleted in
+            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                       placeHolder: placeHolder) { fractionCompleted in
                 DispatchQueue.main.async {
                     // Show download progress
                     self.progressView.progress = fractionCompleted

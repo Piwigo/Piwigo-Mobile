@@ -68,22 +68,26 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.shared.setInfos(with: paramsDict) { [self] in
-            DispatchQueue.main.async {
-                // Add image to album
-                albumData.addToImages(imageData)
-                
-                // Update albums
-                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-                
-                // Set album thumbnail with first copied image if necessary
-                if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
-                    albumData.thumbnailId = imageData.pwgID
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+        PwgSession.checkSession(ofUser: user) {  [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+                DispatchQueue.main.async {
+                    // Add image to album
+                    albumData.addToImages(imageData)
+                    
+                    // Update albums
+                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+                    if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+                        albumData.thumbnailId = imageData.pwgID
+                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                        albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    }
                 }
+                completion()
+            } failure: { error in
+                fail(error)
             }
-            completion()
         } failure: { error in
             fail(error)
         }
@@ -151,28 +155,32 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.shared.setInfos(with: paramsDict) { [self] in
-            DispatchQueue.main.async {
-                // Add image to target album
-                albumData.addToImages(imageData)
-
-                // Update target albums
-                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-                
-                // Set album thumbnail with first copied image if necessary
-                if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
-                    albumData.thumbnailId = imageData.pwgID
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+        PwgSession.checkSession(ofUser: user) {  [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+                DispatchQueue.main.async {
+                    // Add image to target album
+                    albumData.addToImages(imageData)
+                    
+                    // Update target albums
+                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+                    if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+                        albumData.thumbnailId = imageData.pwgID
+                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                        albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    }
+                    
+                    // Remove image from source album
+                    imageData.removeFromAlbums(self.inputAlbum)
+                    
+                    // Update albums
+                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
                 }
-
-                // Remove image from source album
-                imageData.removeFromAlbums(self.inputAlbum)
-                
-                // Update albums
-                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
+                completion()
+            } failure: { error in
+                fail(error)
             }
-            completion()
         } failure: { error in
             fail(error)
         }

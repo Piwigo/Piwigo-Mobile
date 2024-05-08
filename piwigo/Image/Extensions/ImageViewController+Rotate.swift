@@ -60,7 +60,7 @@ extension ImageViewController
         showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
                 // Retrieve updated image data i.e. width, height, URLs
                 /// We retrieve URLs of thumbnails which are not in cache anymore:

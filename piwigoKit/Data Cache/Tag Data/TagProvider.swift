@@ -278,7 +278,7 @@ public class TagProvider: NSObject {
                     return
                 }
                 let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
-                                           name: NetworkUtilities.utf8mb4String(from: name),
+                                           name: PwgSession.utf8mb4String(from: name),
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.

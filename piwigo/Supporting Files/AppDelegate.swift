@@ -322,9 +322,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Save cached data in the main thread
         mainContext.saveIfNeeded()
 
-        // Cancel tasks and close sessions
+        // Cancel tasks and close session
         PwgSession.shared.dataSession.invalidateAndCancel()
-        ImageSession.shared.dataSession.invalidateAndCancel()
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)

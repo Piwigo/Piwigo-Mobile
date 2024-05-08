@@ -136,7 +136,7 @@ class SettingsViewController: UIViewController {
             // Update server statistics if possible
             if user.hasAdminRights {
                 // Check session before collecting server statistics
-                NetworkUtilities.checkSession(ofUser: self.user) {
+                PwgSession.checkSession(ofUser: self.user) {
                     // Collect stats from server and store them in cache
                     PwgSession.shared.getInfos()
                 } failure: { _ in
