@@ -27,7 +27,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
     // Icon showing that it is a movie
     @IBOutlet weak var playImg: UIImageView!
-    @IBOutlet weak var playBckg: UIImageView!
+    @IBOutlet weak var playBckg: UIView!
     @IBOutlet weak var playLeft: NSLayoutConstraint!
     @IBOutlet weak var playTop: NSLayoutConstraint!
     
@@ -43,11 +43,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var selImgBot: NSLayoutConstraint!
     
     // On iPad, thumbnails are presented with native aspect ratio
-    private var deltaX: CGFloat = 1.0       // Must be initialised with margin value
-    private var deltaY: CGFloat = 1.0       // Must be initialised with margin value
+    private var deltaX: CGFloat = 0.0       // Extra horizotal offset
+    private var deltaY: CGFloat = 0.0       // Extra vertical offset
 
     // Constants used to place and resize objects
-    private let margin: CGFloat = 1.0
     private let offset: CGFloat = 1.0
     private let bannerHeight: CGFloat = 16.0
     private let favScale: CGFloat = 0.12
@@ -64,7 +63,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         set(isSelection) {
             _isSelection = isSelection
             selectedImg?.isHidden = !isSelection
-//            darkenView?.frame = cellImage?.image
             darkenView?.isHidden = !isSelection
         }
     }
@@ -83,7 +81,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 favBottom?.constant = deltaY
             } else {
                 // Place icon at the bottom but above the title
-                let height = CGFloat(fmax(bannerHeight + margin, deltaY))
+                let height = CGFloat(fmax(bannerHeight, deltaY))
                 favBottom?.constant = height
             }
 
@@ -221,60 +219,39 @@ class ImageCollectionViewCell: UICollectionViewCell {
         self.cellImage?.image = image
 
         // Favorite image position depends on device
-        self.deltaX = self.margin
-        self.deltaY = self.margin
+        self.deltaX = CGFloat.zero
+        self.deltaY = CGFloat.zero
         let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
                                      self.bounds.size.height / image.size.height))
         if UIDevice.current.userInterfaceIdiom == .pad {
             // Case of an iPad: respect aspect ratio
-            // Image width smaller than collection view cell?
             let imageWidth = image.size.width * imageScale
-            if imageWidth < self.bounds.size.width {
-                // The image does not fill the cell horizontally
-                if self.darkImgWidth?.constant ?? -1 != imageWidth {
-                    self.darkImgWidth?.constant = imageWidth
-                }
-                self.deltaX += (self.bounds.size.width - imageWidth) / 2.0
-            }
-            // Image height smaller than collection view cell?
+            self.darkImgWidth?.constant = imageWidth
+            self.deltaX += max(0, (self.bounds.size.width - imageWidth) / 2.0)
+
             let imageHeight = image.size.height * imageScale
-            if imageHeight < self.bounds.size.height {
-                // The image does not fill the cell vertically
-                if self.darkImgHeight?.constant ?? -1 != imageHeight {
-                    self.darkImgHeight?.constant = imageHeight
-                }
-                self.deltaY += (self.bounds.size.height - imageHeight) / 2.0
-            }
+            self.darkImgHeight?.constant = imageHeight
+            self.deltaY += max(0, (self.bounds.size.height - imageHeight) / 2.0)
         }
         
         // Update horizontal constraints
-        if self.selImgRight?.constant ?? -1 != self.deltaX {
-            self.selImgRight?.constant = self.deltaX
-            self.favLeft?.constant = self.deltaX
-            self.playLeft?.constant = self.deltaX
-        }
+        let horOffset: CGFloat = 3.0 + self.deltaX
+        self.selImgRight?.constant = horOffset
+        self.favLeft?.constant = horOffset
+        self.playLeft?.constant = horOffset
         
         // Update vertical constraints
-        if self.playTop?.constant ?? -1 != self.deltaY {
-            self.playTop?.constant = self.deltaY
-        }
+        let vertOffset: CGFloat = 3.0 + self.deltaY
+        self.playTop?.constant = vertOffset
         if self.bottomLayer?.isHidden ?? false {
-            // The title is not displayed
-            if self.favBottom?.constant ?? -1 != self.deltaY {
-                self.favBottom?.constant = self.deltaY
-            }
-            if self.selImgBot?.constant ?? -1 != self.deltaY {
-                self.selImgBot?.constant = self.deltaY
-            }
+            // Image title not displayed
+            self.favBottom?.constant = vertOffset
+            self.selImgBot?.constant = vertOffset
         } else {
-            // The title is displayed
-            let deltaYmax = CGFloat(fmax(bannerHeight + margin, self.deltaY))
-            if self.favBottom?.constant ?? -1 != deltaYmax {
-                self.favBottom?.constant = deltaYmax
-            }
-            if self.selImgBot?.constant ?? -1 != deltaYmax {
-                self.selImgBot?.constant = deltaYmax
-            }
+            // Image title displayed
+            let banOffset: CGFloat = max(vertOffset, bannerHeight + 3.0)
+            self.favBottom?.constant = banOffset
+            self.selImgBot?.constant = banOffset
         }
         applyColorPalette()
     }
