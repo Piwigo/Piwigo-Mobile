@@ -45,13 +45,9 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            let size = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
-            return CGSize(width: size, height: 156.5)
+            return albumCellSize
         default /* Images */:
-            // Calculates size of image cells
-            let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
-            let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
-            return CGSize(width: size, height: size)
+            return imageCellSize
         }
     }
     

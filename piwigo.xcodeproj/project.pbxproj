@@ -10,6 +10,7 @@
 		AD018D8028D728A40003D5DB /* ImageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D7F28D728A40003D5DB /* ImageError.swift */; };
 		AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */; };
 		AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D8328D73AE60003D5DB /* ImagePrivacy.swift */; };
+		AD06B6E12BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */; };
 		AD06E3822A42275D007CACD7 /* pwg.images.exist.json in Resources */ = {isa = PBXBuildFile; fileRef = AD06E3812A42275D007CACD7 /* pwg.images.exist.json */; };
 		AD06E3842A4227AA007CACD7 /* pwg.images.exist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06E3832A4227AA007CACD7 /* pwg.images.exist.swift */; };
 		AD06E3852A423051007CACD7 /* pwg.images.search.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23882628FAB4050037696E /* pwg.images.search.swift */; };
@@ -608,6 +609,7 @@
 		AD018D7F28D728A40003D5DB /* ImageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageError.swift; sourceTree = "<group>"; };
 		AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageSort.swift; sourceTree = "<group>"; };
 		AD018D8328D73AE60003D5DB /* ImagePrivacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePrivacy.swift; sourceTree = "<group>"; };
+		AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Prefetching.swift"; sourceTree = "<group>"; };
 		AD06E3812A42275D007CACD7 /* pwg.images.exist.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.exist.json; sourceTree = "<group>"; };
 		AD06E3832A4227AA007CACD7 /* pwg.images.exist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.images.exist.swift; sourceTree = "<group>"; };
 		AD074F6523F8498A00D6016A /* ClearCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearCache.swift; sourceTree = "<group>"; };
@@ -2244,6 +2246,7 @@
 			isa = PBXGroup;
 			children = (
 				ADF29DC42BCD96AC0012FF66 /* AlbumViewController+Fetch.swift */,
+				AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */,
 				ADBE0C352BE979BB00F16A50 /* AlbumViewController+FetchResults.swift */,
 				ADBE0C2E2BE967F000F16A50 /* AlbumViewController+DataSource.swift */,
 				ADBE0C322BE9687100F16A50 /* AlbumViewController+FlowLayout.swift */,
@@ -3415,6 +3418,7 @@
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,
+				AD06B6E12BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift in Sources */,
 				AD6BA0FE2BA5D15900755257 /* PasteboardImagesViewController+Data.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */,

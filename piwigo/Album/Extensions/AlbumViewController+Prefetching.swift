@@ -1,0 +1,76 @@
+//
+//  AlbumViewController+Prefetching.swift
+//  piwigo
+//
+//  Created by Eddy Lelièvre-Berna on 08/05/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
+//
+
+import Foundation
+import UIKit
+
+// MARK: - UICollectionViewDataSourcePrefetching
+extension AlbumViewController: UICollectionViewDataSourcePrefetching
+{
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        print("••> prefetchingItemsAt \(indexPaths.debugDescription)")
+        let scale = self.traitCollection.displayScale
+        for indexPath in indexPaths {
+            switch indexPath.section {
+            case 0 /* Albums (see XIB file) */:
+                // Retrieve album data
+                let album = albums.object(at: indexPath)
+                
+                // Download image if needed
+                ImageSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize,
+                                             atURL: album.thumbnailUrl as? URL,
+                                             fromServer: album.user?.server?.uuid,
+                                             placeHolder: albumPlaceHolder) { cachedImageURL in
+                    let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: self.albumCellSize, scale: scale)
+                } failure: { _ in
+                    // No image available
+                }
+            default /* Images */:
+                // Retrieve image data
+                let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+                let imageData = images.object(at: imageIndexPath)
+
+                // Download image if needed
+                ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize,
+                                             atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
+                                             fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                             placeHolder: imagePlaceHolder) { cachedImageURL in
+                    let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: self.imageCellSize, scale: scale)
+                } failure: { _ in
+                    // No image available
+                }
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        print("••> cancelPrefetchingForItemsAt \(indexPaths.debugDescription)")
+        for indexPath in indexPaths {
+            switch indexPath.section {
+            case 0 /* Albums (see XIB file) */:
+                // Retrieve album data
+                let album = albums.object(at: indexPath)
+
+                // Cancel download if needed
+                guard let imageURL = album.thumbnailUrl as? URL
+                else { return }
+                ImageSession.shared.cancelDownload(atURL: imageURL)
+                
+            default /* Images */:
+                // Retrieve image data
+                let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+                let image = images.object(at: imageIndexPath)
+                
+                // Cancel download if needed
+                guard let imageURL = ImageUtilities.getURL(image, ofMinSize: imageSize)
+                else { return }
+                ImageSession.shared.cancelDownload(atURL: imageURL)
+            }
+        }
+    }
+}

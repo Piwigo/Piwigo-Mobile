@@ -72,8 +72,20 @@ class AlbumViewController: UIViewController
 
     // MARK: - Cached Values
     private var timeCounter = CFAbsoluteTime(0)
-    let imagePlaceHolder = UIImage(named: "unknownImage")!
-    let imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+    lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+    lazy var albumCellSize: CGSize = {
+        let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
+        return CGSize(width: albumWidth, height: 156.5)
+    }()
+    lazy var albumPlaceHolder = UIImage(named: "placeholder")!
+    lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+    lazy var imageCellSize: CGSize = {
+        let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
+        let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
+        return CGSize(width: size, height: size)
+    }()
+    lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
+
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -354,7 +366,7 @@ class AlbumViewController: UIViewController
         view.insertSubview(uploadImagesButton, belowSubview: addButton)
         
         // Register classes
-        collectionView?.isPrefetchingEnabled = false
+        collectionView?.isPrefetchingEnabled = true
         collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
         collectionView?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")

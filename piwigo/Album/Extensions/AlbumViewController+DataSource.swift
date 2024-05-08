@@ -122,13 +122,12 @@ extension AlbumViewController: UICollectionViewDataSource
             else { preconditionFailure("Could not load AlbumCollectionViewCell") }
             
             // Configure cell with album data
-            let albumCell = albums.object(at: indexPath)
-            if albumCell.isFault {
+            let album = albums.object(at: indexPath)
+            if album.isFault {
                 // The album is not fired yet.
-                albumCell.willAccessValue(forKey: nil)
-                albumCell.didAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
             }
-            cell.albumData = albumCell
+            cell.albumData = album
             cell.pushAlbumDelegate = self
             cell.deleteAlbumDelegate = self
             
@@ -140,7 +139,7 @@ extension AlbumViewController: UICollectionViewDataSource
                 cell.contentView.alpha = 1.0
                 cell.isUserInteractionEnabled = true
             }
-            debugPrint("••> Adds album cell at \(indexPath.item)")
+//            debugPrint("••> Adds album cell at \(indexPath.item)")
             return cell
             
         default /* Images */:
@@ -174,8 +173,31 @@ extension AlbumViewController: UICollectionViewDataSource
             // The image being retrieved in a background task,
             // config() must be called after setting all other parameters
             cell.config(with: image, placeHolder: imagePlaceHolder, size: imageSize)
-            debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
+//            debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
             return cell
         }
     }
+    
+//    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//        switch indexPath.section {
+//        case 0 /* Albums (see XIB file) */:
+//            // Retrieve album data
+//            guard let cell = cell as? AlbumCollectionViewCell,
+//                  let imageURL = cell.albumData?.thumbnailUrl as? URL
+//            else { preconditionFailure("AlbumCollectionViewCell class expected") }
+//
+//            // Cancel download if needed
+//            ImageSession.shared.cancelDownload(atURL: imageURL)
+//            break
+//        default /* Images */:
+//            // Retrieve image data
+//            guard let cell = cell as? ImageCollectionViewCell
+//            else { preconditionFailure("ImageCollectionViewCell class expected") }
+//            
+//            // Cancel download if needed
+//            guard let imageURL = ImageUtilities.getURL(cell.imageData, ofMinSize: imageSize)
+//            else { return }
+//            ImageSession.shared.cancelDownload(atURL: imageURL)
+//        }
+//    }
 }
