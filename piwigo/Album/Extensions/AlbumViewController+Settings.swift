@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 // MARK: "Settings" Button
 extension AlbumViewController
@@ -49,13 +50,13 @@ extension AlbumViewController: ChangedSettingsDelegate
 {
     func didChangeDefaultAlbum() {
         // Change default album
-//        categoryId = AlbumVars.shared.defaultCategory
-//        albumData = currentAlbumData()
-//        changeAlbumID()
+        categoryId = AlbumVars.shared.defaultCategory
+        albumData = currentAlbumData()
+        changeAlbumID()
     }
-
+    
     func didChangeRecentPeriod() {
-        // Reload album
-//        albumImageTableView.reloadData()
+        // Reload album to update "recent" icons
+        collectionView?.reloadData()
     }
 }

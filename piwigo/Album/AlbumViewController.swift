@@ -673,7 +673,12 @@ class AlbumViewController: UIViewController
         
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
-            // Reload collection
+            // Recalculate cell sizes and reload collection
+            let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
+            let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
+            imageCellSize = CGSize(width: size, height: size)
+            let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
+            albumCellSize = CGSize(width: albumWidth, height: 156.5)
             collectionView.reloadData()
             
             // Update buttons
