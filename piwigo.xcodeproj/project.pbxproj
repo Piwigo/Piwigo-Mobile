@@ -1421,8 +1421,8 @@
 		AD0F70202946260E008F1394 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				AD43733E2B432862009BC454 /* SettingsViewController+UITableViewDelegate.swift */,
 				AD4373402B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift */,
+				AD43733E2B432862009BC454 /* SettingsViewController+UITableViewDelegate.swift */,
 				AD43733C2B4326ED009BC454 /* SettingsViewController+UITextField.swift */,
 				AD9F9C302B4B211900943A96 /* SettingsViewController+Keyboard.swift */,
 				AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */,

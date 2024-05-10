@@ -115,6 +115,7 @@
 
 "loginError_title" = "Login Fail";
 "loginError_message" = "The username and password don't match on the given web address";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Enter a Web Address";
 "loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
 

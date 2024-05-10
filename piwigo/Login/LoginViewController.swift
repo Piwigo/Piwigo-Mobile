@@ -523,18 +523,44 @@ class LoginViewController: UIViewController {
         // Error returned
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
+        var buttonSelector = #selector(hideLoading)
         if let pwgError = error as? PwgSessionError,
            pwgError == PwgSessionError.incompatiblePwgVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
+        }
+        else if let pwgError = error as? PwgSessionError,
+                pwgError == PwgSessionError.invalidCredentials {
+            title = NSLocalizedString("loginError_title", comment: "loginError_title")
+            buttonSelector = #selector(suggestPwdRetrieval)
         }
         else if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
         }
         updateHUD(title: title, detail: detail,
                   buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                  buttonTarget: self, buttonSelector: #selector(hideLoading),
+                  buttonTarget: self, buttonSelector: buttonSelector,
                   inMode: .text)
+    }
+    
+    @objc func suggestPwdRetrieval() {
+        // Hide HUD
+        hideLoading()
+        
+        // Suggest to retrieve password
+        let title = NSLocalizedString("loginError_title", comment: "loginError_title")
+        let message = NSLocalizedString("loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            style: .cancel, handler: { _ in })
+        let retrieveAction = UIAlertAction(
+            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            style: .default, handler: { _ in
+                if let url = URL(string: NetworkVars.service + "/password.php") {
+                    UIApplication.shared.open(url)
+                }
+            })
+        presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, retrieveAction])
     }
 
     @objc func hideLoading() {
