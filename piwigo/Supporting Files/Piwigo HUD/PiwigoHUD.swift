@@ -138,8 +138,7 @@ class PiwigoHUD: UIView
             let height = attributedDetail.boundingRect(with: CGSize(width: view.frame.size.width - 32.0,
                                                                   height: CGFloat.greatestFiniteMagnitude),
                                                        options: .usesLineFragmentOrigin, context: context).height
-            print(ceil(height + 3.5))
-            detailBottomToTitleBottom.constant = ceil(height + 3.5)
+            detailBottomToTitleBottom.constant = ceil(height + 3.5)     // i.e. 20 for a single line
         } else {
             detailLabel.text = ""
             detailLabel.isHidden = true
@@ -168,9 +167,6 @@ class PiwigoHUD: UIView
                 button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             }
         }
-        
-        view.setNeedsLayout()
-        view.layoutIfNeeded()
     }
     
     func hide() {
