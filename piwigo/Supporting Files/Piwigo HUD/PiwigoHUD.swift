@@ -129,9 +129,17 @@ class PiwigoHUD: UIView
         
         // Update HUD detail
         if let detail = detail, detail.isEmpty == false {
-            detailLabel.attributedText = getAttributed(detail: detail, forMaxWidth: screenWidth)
+            let attributedDetail = getAttributed(detail: detail, forMaxWidth: screenWidth)
+            detailLabel.attributedText = attributedDetail
+            detailLabel.sizeToFit()
             detailLabel.isHidden = false
-            detailBottomToTitleBottom.constant = 20
+            let context = NSStringDrawingContext()
+            context.minimumScaleFactor = 1.0
+            let height = attributedDetail.boundingRect(with: CGSize(width: view.frame.size.width - 32.0,
+                                                                  height: CGFloat.greatestFiniteMagnitude),
+                                                       options: .usesLineFragmentOrigin, context: context).height
+            print(ceil(height + 3.5))
+            detailBottomToTitleBottom.constant = ceil(height + 3.5)
         } else {
             detailLabel.text = ""
             detailLabel.isHidden = true
@@ -160,6 +168,9 @@ class PiwigoHUD: UIView
                 button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             }
         }
+        
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
     }
     
     func hide() {
