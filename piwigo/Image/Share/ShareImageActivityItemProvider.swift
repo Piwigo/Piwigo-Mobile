@@ -173,9 +173,14 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
 
         // Copy original file to /tmp directly with appropriate file name
+        // and set creation date as the photo creation date
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let attrs = [FileAttributeKey.creationDate     : creationDate,
+                     FileAttributeKey.modificationDate : creationDate]
         do {
             try? FileManager.default.removeItem(at: imageFileURL)
-            try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try  FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
         }
         catch {
             // Cancel task
@@ -271,6 +276,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
                 // Notify the delegate on the main thread that the processing has finished.
                 preprocessingDidEnd()
 
+                // Set creation date as the photo creation date
+                try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
+
                 // Return image to share
                 return imageFileURL
             }
@@ -314,6 +322,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
         // Notify the delegate on the main thread that the processing has finished.
         preprocessingDidEnd()
+
+        // Set creation date as the photo creation date
+        try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
 
         // Return image to share
         return imageFileURL

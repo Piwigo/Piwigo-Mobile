@@ -162,9 +162,14 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
 
         // Copy original file to /tmp directly with appropriate file name
+        // and set creation date as the photo creation date
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let attrs = [FileAttributeKey.creationDate     : creationDate,
+                     FileAttributeKey.modificationDate : creationDate]
         do {
             try? FileManager.default.removeItem(at: imageFileURL)
-            try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try  FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
         }
         catch {
             // Cancel task
@@ -289,6 +294,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Shared files w/ or w/o private metadata are saved in the /tmp directory and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
+        try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
         return imageFileURL
     }
     

@@ -61,6 +61,12 @@ extension UploadManager {
             }
         }
         
+        // Set creation date as the photo creation date
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: upload.creationDate)
+        let attrs = [FileAttributeKey.creationDate     : creationDate,
+                     FileAttributeKey.modificationDate : creationDate]
+        do { try FileManager.default.setAttributes(attrs, ofItemAtPath: fileURL.path) } catch { }
+        
         // Determine MD5 checksum of image file to upload
         let error: NSError?
         (upload.md5Sum, error) = fileURL.MD5checksum()
