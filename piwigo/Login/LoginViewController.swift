@@ -528,10 +528,8 @@ class LoginViewController: UIViewController {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
         }
-        else {
-            if detail.isEmpty {
+        else if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
-            }
         }
         updateHUD(title: title, detail: detail,
                   buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),

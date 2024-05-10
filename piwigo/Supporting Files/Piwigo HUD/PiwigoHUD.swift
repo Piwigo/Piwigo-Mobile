@@ -22,6 +22,8 @@ let pwgDelayHUD = 500
 class PiwigoHUD: UIView
 {
     let margin = CGFloat(16)            // See XIB file
+    let stepWidth = CGFloat(10)         // Steps by which the HUD width is increased to limit # of lines
+    let context = NSStringDrawingContext()
     var minWidth = CGFloat.zero         // Calculated when setting label and button titles
     let duration = 0.25                 // Animation duration
     
@@ -64,7 +66,7 @@ class PiwigoHUD: UIView
         
         // Configure HUD detail
         if let detail = detail, detail.isEmpty == false {
-            detailLabel.attributedText = getAttributed(detail: detail, forMaxWidth: screenWidth)
+            (detailLabel.attributedText, detailBottomToTitleBottom.constant) = getAttributed(detail: detail, forMaxWidth: screenWidth)
             detailLabel.isHidden = false
             detailBottomToTitleBottom.constant = 20
         } else {
@@ -129,16 +131,9 @@ class PiwigoHUD: UIView
         
         // Update HUD detail
         if let detail = detail, detail.isEmpty == false {
-            let attributedDetail = getAttributed(detail: detail, forMaxWidth: screenWidth)
-            detailLabel.attributedText = attributedDetail
-            detailLabel.sizeToFit()
+            (detailLabel.attributedText, detailBottomToTitleBottom.constant) = getAttributed(detail: detail, forMaxWidth: screenWidth)
             detailLabel.isHidden = false
-            let context = NSStringDrawingContext()
-            context.minimumScaleFactor = 1.0
-            let height = attributedDetail.boundingRect(with: CGSize(width: view.frame.size.width - 32.0,
-                                                                  height: CGFloat.greatestFiniteMagnitude),
-                                                       options: .usesLineFragmentOrigin, context: context).height
-            detailBottomToTitleBottom.constant = ceil(height + 3.5)     // i.e. 20 for a single line
+
         } else {
             detailLabel.text = ""
             detailLabel.isHidden = true
@@ -167,6 +162,9 @@ class PiwigoHUD: UIView
                 button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             }
         }
+
+        // Change HUD view width after labels and button configurations if needed
+        viewWidth.constant = self.minWidth
     }
     
     func hide() {
@@ -226,7 +224,6 @@ class PiwigoHUD: UIView
         attTitle.addAttributes(attributes, range: wholeRange)
         
         // Determine size and number of lines
-        let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
         let titleLineHeight = (titleLabel.font ?? UIFont.systemFont(ofSize: fontSize, weight: .semibold)).lineHeight
         let titleRect = attTitle.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude,
@@ -238,13 +235,13 @@ class PiwigoHUD: UIView
         }
         
         // Increase minWidth to display title on a single line
-        minWidth += missing
+        minWidth += min(ceil(missing), screenWidth - minWidth - 40)
         return attTitle
     }
     
     
     // MARK: - HUD Detail
-    private func getAttributed(detail: String, forMaxWidth screenWidth: CGFloat) -> NSAttributedString {
+    private func getAttributed(detail: String, forMaxWidth screenWidth: CGFloat) -> (NSAttributedString, CGFloat) {
         // Font size depends on screen size (https://iosref.com/res)
         let fontSize: CGFloat = screenWidth > 370 ? 13 : 10
         
@@ -260,21 +257,21 @@ class PiwigoHUD: UIView
         let attDetail = NSMutableAttributedString(string: detail)
         attDetail.addAttributes(attributes, range: wholeRange)
         
-        // Determine size and number of lines
-        let context = NSStringDrawingContext()
+        // Determine height to limit number of lines
         context.minimumScaleFactor = 1.0
-        let detailLineHeight = (detailLabel.font ?? UIFont.systemFont(ofSize: 10)).lineHeight
-        let detailRect = attDetail.boundingRect(with: CGSize(width: viewWidth.constant - 2*margin,
-                                                             height: CGFloat.greatestFiniteMagnitude),
-                                                options: .usesLineFragmentOrigin, context: context)
-        if detailRect.height / detailLineHeight < 3 {
-            // Displayed on 1 or 2 lines
-            return attDetail
-        }
+        let detailLineHeight = UIFont.systemFont(ofSize: fontSize).lineHeight
+        var detailHeight = CGFloat.zero
+        var HUDwidth: CGFloat = minWidth - stepWidth
+        repeat {
+            HUDwidth += stepWidth
+            detailHeight = attDetail.boundingRect(with: CGSize(width: HUDwidth - 2*margin,
+                                                               height: CGFloat.greatestFiniteMagnitude),
+                                                  options: .usesLineFragmentOrigin, context: context).height
+        } while (detailHeight / detailLineHeight > 2) && (HUDwidth + stepWidth + 40 < screenWidth)
         
-        // Try increasing minWidth to display detail on fewer lines
-        minWidth += min(100, screenWidth - minWidth - 40)
-        return attDetail
+        // Try increase minWidth to display detail on fewer lines
+        minWidth = HUDwidth
+        return (attDetail, detailHeight + 3.5)
     }
     
     
