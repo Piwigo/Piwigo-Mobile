@@ -115,6 +115,7 @@
 
 "loginError_title" = "Ошибка входа";
 "loginError_message" = "Имя пользователя и пароль не совпадают на данном веб-адресе";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Введите адрес";
 "loginEmptyServer_message" = "Пожалуйста, выберите протокол и введите адрес сервера Piwigo для продолжения.";
 

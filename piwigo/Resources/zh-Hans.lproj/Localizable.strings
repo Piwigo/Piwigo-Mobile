@@ -115,6 +115,7 @@
 
 "loginError_title" = "登录失败";
 "loginError_message" = "用户名和密码与给定的网站不匹配";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "输入一个网址";
 "loginEmptyServer_message" = "请选择一项协议，并输入一个Piwigo Web地址，以便继续。";
 

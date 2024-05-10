@@ -115,6 +115,7 @@
 
 "loginError_title" = "Anmeldung fehlgeschlagen";
 "loginError_message" = "Benutzername und Passwort stimmen für die angegebene Webadresse nicht überein";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Webadresse eingeben";
 "loginEmptyServer_message" = "Bitte wähle ein Protokoll und gib eine Piwigo Webadresse ein, um fortfahren zu können.";
 

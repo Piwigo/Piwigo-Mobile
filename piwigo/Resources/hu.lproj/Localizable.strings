@@ -115,6 +115,7 @@
 
 "loginError_title" = "Bejelentkezési Hiba";
 "loginError_message" = "A felhasználó és jelszó párosa nem megfelelő a megadott weboldalhoz";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Adj meg egy web címet";
 "loginEmptyServer_message" = "Kérlek válassz protocollt, és add meg a Piwigo web címet a továbblépéshez!";
 

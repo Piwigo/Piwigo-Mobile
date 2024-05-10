@@ -115,6 +115,7 @@
 
 "loginError_title" = "Mislukte aanmelding";
 "loginError_message" = "De gebruikersnaam en het wachtwoord komen niet overeen op het opgegeven webadres";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Voer een webadres in";
 "loginEmptyServer_message" = "Selecteer een protocol en voeg een Piwigo webadres toe om door te gaan.";
 

@@ -115,6 +115,7 @@
 
 "loginError_title" = "أخفق تسجيل الدخول";
 "loginError_message" = "لا يتطابق اسم المستخدم وكلمة المرور مع عنوان الويب المحدد";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "أدخل عنوان ويب";
 "loginEmptyServer_message" = "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة.";
 

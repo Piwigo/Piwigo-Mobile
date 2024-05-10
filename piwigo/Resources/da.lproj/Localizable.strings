@@ -115,6 +115,7 @@
 
 "loginError_title" = "Log ind Mislykkedes";
 "loginError_message" = "Brugernavnet og adgangskoden er ikke korrekt";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Indtast en Webadresse";
 "loginEmptyServer_message" = "Venligst Vælg en protokol og indtast en Piwigo web-adresse for at fortsætte.";
 

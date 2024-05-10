@@ -115,6 +115,7 @@
 
 "loginError_title" = "Accesso fallito";
 "loginError_message" = "Il nome utente e la password non corrispondono all'indirizzo web specificato";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Immettere un indirizzo Web";
 "loginEmptyServer_message" = "Si prega di selezionare un protocollo e inserire un indirizzo web di Piwigo per procedere.";
 

@@ -115,6 +115,7 @@
 
 "loginError_title" = "Error en el inicio de sesión";
 "loginError_message" = "El nombre de usuario y la contraseña no coinciden en la dirección web especificada";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Especifica una dirección web";
 "loginEmptyServer_message" = "Selecciona un protocolo y especifica una dirección web de Piwigo para continuar.";
 

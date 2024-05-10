@@ -115,6 +115,7 @@
 
 "loginError_title" = "Inloggning Misslyckades";
 "loginError_message" = "Användarnamnet och lösenordet matchar inte den angivna webbadressen";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Ange en webbadress";
 "loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
 

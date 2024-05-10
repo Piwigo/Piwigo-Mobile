@@ -115,6 +115,7 @@
 
 "loginError_title" = "登入失敗";
 "loginError_message" = "帳號密碼無法於提供的網址登入";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "請輸入網址";
 "loginEmptyServer_message" = "請選擇連線方式並且輸入Piwigo網址以繼續。";
 

@@ -115,6 +115,7 @@
 
 "loginError_title" = "ログインに失敗しました";
 "loginError_message" = "ユーザ名とパスワードが、指定したwebアドレスで一致しません";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Web アドレスを入力してください";
 "loginEmptyServer_message" = "先に進むために、プロトコルを選択してPiwigoウェブアドレスを入力して下さい。";
 

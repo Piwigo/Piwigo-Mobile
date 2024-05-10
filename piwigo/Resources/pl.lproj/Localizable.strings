@@ -115,6 +115,7 @@
 
 "loginError_title" = "Logowanie nieudane";
 "loginError_message" = "Nazwa użytkownika i hasło nie pasują do podanego serwera";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Wprowadź Adres Strony";
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
 

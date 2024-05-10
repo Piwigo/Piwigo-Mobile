@@ -115,6 +115,7 @@
 
 "loginError_title" = "Échec de connexion";
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
+"loginError_resetPwd" = "Voulez-vous réinitialiser votre mot de passe depuis l'interface web ?";
 "loginEmptyServer_title" = "Entrez une adresse web";
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
 

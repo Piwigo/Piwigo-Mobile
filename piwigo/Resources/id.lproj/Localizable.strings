@@ -115,6 +115,7 @@
 
 "loginError_title" = "Gagal Masuk";
 "loginError_message" = "Nama pengguna dan kata sandi tidak sesuai dengan alamat web yang diberikan";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Masukkan Alamat Web";
 "loginEmptyServer_message" = "Silakan pilih sebuah protokol dan masukkan alamat web Piwigo untuk melanjutkan.";
 
