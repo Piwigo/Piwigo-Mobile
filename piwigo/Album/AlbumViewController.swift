@@ -222,9 +222,17 @@ class AlbumViewController: UIViewController
         return rootAlbum
     }
     
-    lazy var data = AlbumViewData(withAlbum: albumData, forDelegate: self)
-    lazy var albums: NSFetchedResultsController<Album> = data.albums
-    lazy var images: NSFetchedResultsController<Image> = data.images()
+    lazy var data = AlbumViewData(withAlbum: albumData)
+    lazy var albums: NSFetchedResultsController<Album> = {
+        let albums = data.albums
+        albums.delegate = self
+        return albums
+    }()
+    lazy var images: NSFetchedResultsController<Image> = {
+        let images = data.images()
+        images.delegate = self
+        return images
+    }()
     
 
     // MARK: - View Lifecycle

@@ -16,17 +16,16 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
         if view.window == nil || [images, albums].contains(controller) == false {
-            debugPrint("••> Tries to update album #\(categoryId)")
+            debugPrint("••> Tried to update album #\(categoryId)")
             return
         }
+        debugPrint("••> Tries to update album #\(categoryId)")
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
         // Check that this update should be managed by this view controller
-        guard let fetchDelegate = controller.delegate as? AlbumViewController,
-              view.window != nil
-        else { return }
+        guard view.window != nil else { return }
 
         // Collect operation changes
         switch controller {

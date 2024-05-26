@@ -13,11 +13,9 @@ import piwigoKit
 class AlbumViewData: NSObject
 {
     private var albumData: Album
-    private var delegate: AlbumViewController!
 
-    init(withAlbum albumData: Album, forDelegate delegate: AlbumViewController) {
+    init(withAlbum albumData: Album) {
         self.albumData = albumData
-        self.delegate = delegate
         super.init()
     }
     
@@ -52,7 +50,6 @@ class AlbumViewData: NSObject
         let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
-        albums.delegate = delegate
         return albums
     }()
     
@@ -206,7 +203,6 @@ class AlbumViewData: NSObject
         let images = NSFetchedResultsController(fetchRequest: fetchImagesRequest,
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: nil, cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
@@ -215,7 +211,6 @@ class AlbumViewData: NSObject
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: pwgImageGroup.day.dateCreatedSectionKey,
                                                 cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
@@ -224,7 +219,6 @@ class AlbumViewData: NSObject
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: pwgImageGroup.week.dateCreatedSectionKey,
                                                 cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
@@ -233,7 +227,6 @@ class AlbumViewData: NSObject
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: pwgImageGroup.month.dateCreatedSectionKey,
                                                 cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
@@ -242,7 +235,6 @@ class AlbumViewData: NSObject
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: pwgImageGroup.day.datePostedSectionKey,
                                                 cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
@@ -251,7 +243,6 @@ class AlbumViewData: NSObject
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: pwgImageGroup.week.datePostedSectionKey,
                                                 cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
@@ -260,7 +251,6 @@ class AlbumViewData: NSObject
                                                 managedObjectContext: mainContext,
                                                 sectionNameKeyPath: pwgImageGroup.month.datePostedSectionKey,
                                                 cacheName: nil)
-        images.delegate = delegate
         return images
     }()
 
