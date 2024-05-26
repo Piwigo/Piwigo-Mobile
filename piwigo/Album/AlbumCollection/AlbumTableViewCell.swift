@@ -54,19 +54,19 @@ class AlbumTableViewCell: UITableViewCell {
         }
 
         // Added "0 day" option in version 3.1.2 for allowing user to disable "recent" icon
-        if AlbumVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
+        if CacheVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
            let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           version.compare(AlbumVars.shared.recentPeriodListChangedInVersion312) == .orderedSame {
-            AlbumVars.shared.recentPeriodIndex += 1
-            AlbumVars.shared.recentPeriodIndexCorrectedInVersion321 = true
+           version.compare(CacheVars.shared.recentPeriodListChangedInVersion312) == .orderedSame {
+            CacheVars.shared.recentPeriodIndex += 1
+            CacheVars.shared.recentPeriodIndexCorrectedInVersion321 = true
         }
 
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
-        var indexOfPeriod: Int = AlbumVars.shared.recentPeriodIndex
-        indexOfPeriod = min(indexOfPeriod, AlbumVars.shared.recentPeriodList.count - 1)
+        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
         indexOfPeriod = max(0, indexOfPeriod)
-        let periodInDays: Int = AlbumVars.shared.recentPeriodList[indexOfPeriod]
+        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
         if self.recentBckg.isHidden == isRecent {
             self.recentBckg.isHidden = !isRecent

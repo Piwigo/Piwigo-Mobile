@@ -12,13 +12,7 @@ import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: - Select Buttons
-    func getSelectBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"), style: .plain, target: self, action: #selector(didTapSelect))
-        button.accessibilityIdentifier = "Select"
-        return button
-    }
-    
+    // MARK: - Cancel Buttons
     func getCancelBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         button.accessibilityIdentifier = "Cancel"
@@ -33,7 +27,7 @@ extension AlbumViewController
     // MARK: - Select Menu
     /// - for switching to the selection mode
     func selectMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.select")
+        let menuId = UIMenu.Identifier("org.piwigo.images.selectMode")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: [selectAction()])
@@ -41,7 +35,7 @@ extension AlbumViewController
     }
     
     private func selectAction() -> UIAction {
-        let actionId = UIAction.Identifier("Select")
+        let actionId = UIAction.Identifier("org.piwigo.images.select")
         let action = UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
                               image: UIImage(systemName: "checkmark.circle"),
                               identifier: actionId, handler: { [self] action in
@@ -56,7 +50,7 @@ extension AlbumViewController
     /// - for copying images to another album
     /// - for moving images to another album
     func albumMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.album")
+        let menuId = UIMenu.Identifier("org.piwigo.images.album")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: [imagesCopyAction(),
@@ -68,7 +62,7 @@ extension AlbumViewController
     // MARK: - Images Menu
     /// - for editing image parameters
     func imagesMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.piwigoImages.edit")
+        let menuId = UIMenu.Identifier("org.piwigo.images.edit")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: [rotateMenu(),
@@ -95,7 +89,7 @@ extension AlbumViewController
         
         // Disable interaction with category cells and scroll to first image cell if needed
         var numberOfImageCells = 0
-        for cell in collectionView.visibleCells
+        for cell in collectionView?.visibleCells ?? []
         {
             // Disable user interaction with category cell
             if let categoryCell = cell as? AlbumCollectionViewCell {
@@ -112,7 +106,7 @@ extension AlbumViewController
         // Scroll to position of images if needed
         if numberOfImageCells == 0, (images.fetchedObjects ?? []).count != 0 {
             let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
-            collectionView.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
+            collectionView?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
 
         // Initialisae navigation bar and toolbar
@@ -372,15 +366,19 @@ extension AlbumViewController: UIGestureRecognizerDelegate
 // MARK: - ImageDetailDelegate Methods
 extension AlbumViewController: ImageDetailDelegate
 {
-    func didSelectImage(atIndex imageIndex: Int) {
+    func didSelectImage(atIndexPath indexPath: IndexPath) {
+        // Correspondinng collection view index path
+        let collIndexPath = IndexPath(item: indexPath.item, section: indexPath.section + 1)
+        
         // Scroll view to center image
-        if collectionView.numberOfItems(inSection: 1) > imageIndex {
-            let indexPath = IndexPath(item: imageIndex, section: 1)
-            imageOfInterest = indexPath
-            collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+        if collectionView?.numberOfSections ?? 0 > collIndexPath.section,
+           collectionView?.numberOfItems(inSection: collIndexPath.section) ?? 0 > collIndexPath.item {
+            
+            imageOfInterest = collIndexPath
+            collectionView?.scrollToItem(at: collIndexPath, at: .centeredVertically, animated: true)
             
             // Prepare variables for transitioning delegate
-            if let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+            if let selectedCell = collectionView?.cellForItem(at: collIndexPath) as? ImageCollectionViewCell {
                 animatedCell = selectedCell
                 albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
                 cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
@@ -389,34 +387,3 @@ extension AlbumViewController: ImageDetailDelegate
         }
     }
 }
-
-//extension AlbumCollectionViewCell
-//{
-//    func updatePreviewMode(withInit: Bool) {
-//        if withInit {
-//            initBarsInPreviewMode()
-//        } else {
-//            updateBarsInPreviewMode()
-//        }
-//    }
-//    
-//    func updateSelectMode(withInit: Bool) {
-//        if withInit {
-//            initBarsInSelectMode()
-//        } else {
-//            updateBarsInSelectMode()
-//        }
-//    }
-//    
-//    func setButtonsState(_ enabled: Bool) {
-//        setEnableStateOfButtons(enabled)
-//    }
-//    
-//    func pushSelectionToView(_ viewController: UIViewController?) {
-//        pushView(viewController)
-//    }
-//    
-//    func deselectImages() {
-//        cancelSelect()
-//    }
-//}

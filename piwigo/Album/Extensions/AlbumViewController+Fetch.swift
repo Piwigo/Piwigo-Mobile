@@ -99,8 +99,7 @@ extension AlbumViewController
                      completion: @escaping () -> Void) {
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query,
-                                  sort: AlbumVars.shared.defaultSort,
+        imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
                                   fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
             guard let error = error else {
                 // No error ► Smart album?
@@ -134,7 +133,7 @@ extension AlbumViewController
                             }
 
                             // End refreshing if needed
-                            self.collectionView.refreshControl?.endRefreshing()
+                            self.collectionView?.refreshControl?.endRefreshing()
                         }
                     }
                     // Is user editing the search string?
@@ -235,7 +234,7 @@ extension AlbumViewController
                 // Hide HUD
                 navigationController?.hideHUD() {
                     // End refreshing if needed
-                    self.collectionView.refreshControl?.endRefreshing()
+                    self.collectionView?.refreshControl?.endRefreshing()
                 }
             }
         }

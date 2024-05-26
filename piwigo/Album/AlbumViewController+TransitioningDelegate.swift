@@ -1,5 +1,5 @@
 //
-//  AlbumImageTableViewController+TransitioningDelegate.swift
+//  AlbumViewController+TransitioningDelegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/04/2024.

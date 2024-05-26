@@ -65,10 +65,11 @@ extension AlbumViewController: UICollectionViewDelegate
         // Create ImageViewController
         let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
         guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { preconditionFailure("Could not load ImageViewController") }
-        imageDetailView.imageIndex = indexPath.item
+        imageDetailView.user = user
         imageDetailView.categoryId = albumData.pwgID
         imageDetailView.images = images
-        imageDetailView.user = user
+        let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+        imageDetailView.indexPath = imageIndexPath
         imageDetailView.imgDetailDelegate = self
         
         // Prepare image animated transitioning

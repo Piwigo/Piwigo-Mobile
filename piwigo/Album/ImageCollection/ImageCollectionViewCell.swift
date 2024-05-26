@@ -99,7 +99,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         playImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize) {
+    func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
         // Do we have any info on that image ?
         if imageData.pwgID == Int64.zero { return }
 
@@ -117,11 +117,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 
         // Title
-        let sortOption = AlbumVars.shared.defaultSort
         let displayTitle = AlbumVars.shared.displayImageTitles ||
             [.visitsAscending, .visitsDescending,
-             .ratingScoreAscending, .ratingScoreDescending,
-                .datePostedAscending, .datePostedDescending].contains(sortOption)
+             .ratingScoreAscending, .ratingScoreDescending].contains(sortOption)
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
         let title = getImageTitle(forSortOption: sortOption)

@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
-
 "categorySort_videosOnly" = "Soli Video";
 "categorySort_imagesOnly" = "Solo Immagini";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Nessuna immagine";
 "pullToRefresh" = "Carica immagini";
 "andMore" = " & altro";
-"Months" = "Mesi";
-"Weeks" = "Settimane";
-"Days" = "Giorni";
 "Date" = "Data";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Ottieni l'errore di foto dell'album";

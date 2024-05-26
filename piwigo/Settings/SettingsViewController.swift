@@ -55,6 +55,19 @@ class SettingsViewController: UIViewController {
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
+    // The image sort type is returned with album data since Piwigo 14.0.
+    lazy var defaultSortUnknown: Bool = NetworkVars.pwgVersion
+        .compare("14.0", options: .numeric) == .orderedAscending
+    
+    // Present image title option on iOS 12.0 - 13.x
+    lazy var showTitleOption: Bool = {
+        if #available(iOS 14, *) {
+            return false
+        } else {
+            return true
+        }
+    }()
+    
     // For displaying cache sizes
     var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
         didSet {

@@ -232,14 +232,14 @@ class piwigoScreenshots: XCTestCase {
         images.element(boundBy: 8).children(matching: .other).element.tap()
         let moreButton = app.navigationBars["LocalImagesNav"].buttons["Action"]
         moreButton.tap()
-        app.collectionViews.buttons["Days"].tap()
+        app.collectionViews.buttons["Day"].tap()
         sleep(1)                        // Leave time for animation
         moreButton.tap()
         sleep(1)                        // Leave time for animation
         snapshot("Image07")
         
         // Screenshot #8: upload images, parameters
-        app.collectionViews.buttons["Days"].tap()
+        app.collectionViews.buttons["Day"].tap()
         sleep(1)                        // Leave time for animation
         if deviceType.contains("iPhone") {
             app.toolbars.buttons["Upload"].tap()

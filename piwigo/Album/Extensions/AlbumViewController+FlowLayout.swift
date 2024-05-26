@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension AlbumViewController: UICollectionViewDelegateFlowLayout
@@ -36,10 +37,28 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                                                options: .usesLineFragmentOrigin, context: context)
             return CGSize(width: collectionView.frame.size.width - 30.0,
                           height: ceil(headerRect.size.height + 8.0))
-        default:
-              break
+        default: /* Images */
+            // Are images grouped by day, week or month?
+            let validSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
+                                                  .dateCreatedAscending, .dateCreatedDescending]
+            if validSortTypes.contains(sortOption) == false {
+                return CGSize.zero
+            }
+            
+            // Images are grouped by day, week or month
+            if #available(iOS 14, *) {
+                // Grouping options accessible from menu ► Only display date and location (see XIB)
+                return CGSize(width: collectionView.frame.size.width, height: 49)
+            }
+            else {
+                // Segmented controller for selecting grouping option on iOS 12 - 13.x (see XIB)
+                if section == 1 {
+                    return CGSize(width: collectionView.frame.size.width, height: 88)
+                } else {
+                    return CGSize(width: collectionView.frame.size.width, height: 49)
+                }
+            }
         }
-        return CGSize.zero
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -57,6 +76,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         case 0 /* Albums */:
             return CGSize.zero
         default /* Images */:
+            // Footer only at the bottom of the collection
+            if section != collectionView.numberOfSections - 1 {
+                return CGSize.zero
+            }
+            
             // Get number of images and status
             let footer = getImageCount()
             if footer.isEmpty { return CGSize.zero }

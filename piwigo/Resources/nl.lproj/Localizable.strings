@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
-
 "categorySort_videosOnly" = "Alleen video's";
 "categorySort_imagesOnly" = "Alleen foto's";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
 "andMore" = " & meer";
-"Months" = "Maanden";
-"Weeks" = "Weken";
-"Days" = "Dagen";
 "Date" = "Datum";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";

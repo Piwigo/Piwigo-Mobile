@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23E214" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Album" representedClassName=".Album" syncable="YES">
         <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
         <attribute name="dateGetImages" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
@@ -41,6 +41,9 @@
         <attribute name="rankManual" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
         <attribute name="rankRandom" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
         <attribute name="ratingScore" attributeType="Float" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="sectionDayCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionMonthCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionWeekCreated" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
         <attribute name="titleStr" attributeType="String" defaultValueString=""/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>

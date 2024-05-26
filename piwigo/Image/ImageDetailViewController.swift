@@ -13,7 +13,7 @@ import piwigoKit
 
 class ImageDetailViewController: UIViewController
 {
-    var imageIndex = 0
+    var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image!
     var imageURL: URL?
     

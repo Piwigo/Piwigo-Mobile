@@ -79,7 +79,7 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 1 + (images.sections?.count ?? 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -89,13 +89,15 @@ extension AlbumViewController: UICollectionViewDataSource
             return objects?.count ?? 0
             
         default /* Images */:
-            let objects = images.fetchedObjects
-            return objects?.count ?? 0
+            guard let sections = images.sections
+            else { preconditionFailure("No sections in fetchedResultsController")}
+            return sections[section - 1].numberOfObjects
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
+        let emptyView = UICollectionReusableView(frame: CGRect.zero)
         switch indexPath.section {
         case 0 /* Albums */:
             if kind == UICollectionView.elementKindSectionHeader {
@@ -104,15 +106,78 @@ extension AlbumViewController: UICollectionViewDataSource
                 return header
             }
         default /* Images */:
-            if kind == UICollectionView.elementKindSectionFooter {
-                guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView else { preconditionFailure("Could not load ImageFooterReusableView")}
-                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                footer.nberImagesLabel?.text = getImageCount()
-                return footer
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                // Are images grouped by day, week or month?
+                let validSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
+                                                      .dateCreatedAscending, .dateCreatedDescending]
+                if validSortTypes.contains(sortOption) == false {
+                    return emptyView
+                }
+                
+                // Images are grouped by day, week or month
+                if #available(iOS 14, *) {
+                    // Grouping options accessible from menu ► Only display date and location
+                    guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
+                    else { preconditionFailure("Could not load ImageHeaderReusableView") }
+                    
+                    // Determine place names from first images
+                    var imagesInSection: [Image] = []
+                    for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
+                        let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
+                    header.config(with: imagesInSection, sortOption: sortOption)
+                    header.imageHeaderDelegate = self
+                    return header
+                }
+                else {
+                    // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
+                    if indexPath.section == 1 {
+                        // Display segmented controller
+                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView
+                        else { preconditionFailure("Could not load ImageOldHeaderReusableView")}
+                        
+                        // Determine place names from first images
+                        var imagesInSection: [Image] = []
+                        for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
+                            let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
+                            imagesInSection.append(images.object(at: imageIndexPath))
+                        }
+                        
+                        header.config(with: imagesInSection, sortOption: sortOption, group: AlbumVars.shared.defaultGroup)
+                        header.imageHeaderDelegate = self
+                        return header
+                    } else {
+                        // Grouping options accessible from menu ► Only display date and location
+                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
+                        else { preconditionFailure("Could not load ImageHeaderReusableView") }
+                        
+                        // Determine place names from first images
+                        var imagesInSection: [Image] = []
+                        for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
+                            let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
+                            imagesInSection.append(images.object(at: imageIndexPath))
+                        }
+                        
+                        header.config(with: imagesInSection, sortOption: sortOption)
+                        header.imageHeaderDelegate = self
+                        return header
+                    }
+                }
+            case UICollectionView.elementKindSectionFooter:
+                if indexPath.section ==  collectionView.numberOfSections - 1 {
+                    guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
+                    else { preconditionFailure("Could not load ImageFooterReusableView")}
+                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                    footer.nberImagesLabel?.text = getImageCount()
+                    return footer
+                }
+            default:
+                break
             }
         }
-        let view = UICollectionReusableView(frame: CGRect.zero)
-        return view
+        return emptyView
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -159,7 +224,7 @@ extension AlbumViewController: UICollectionViewDataSource
             }
 
             // Retrieve image data
-            let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+            let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
             let image = images.object(at: imageIndexPath)
 
             // Is this cell selected?
@@ -173,32 +238,9 @@ extension AlbumViewController: UICollectionViewDataSource
             
             // The image being retrieved in a background task,
             // config() must be called after setting all other parameters
-            cell.config(with: image, placeHolder: imagePlaceHolder, size: imageSize)
+            cell.config(with: image, placeHolder: imagePlaceHolder, size: imageSize, sortOption: sortOption)
 //            debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
             return cell
         }
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        switch indexPath.section {
-//        case 0 /* Albums (see XIB file) */:
-//            // Retrieve album data
-//            guard let cell = cell as? AlbumCollectionViewCell,
-//                  let imageURL = cell.albumData?.thumbnailUrl as? URL
-//            else { preconditionFailure("AlbumCollectionViewCell class expected") }
-//
-//            // Cancel download if needed
-//            ImageSession.shared.cancelDownload(atURL: imageURL)
-//            break
-//        default /* Images */:
-//            // Retrieve image data
-//            guard let cell = cell as? ImageCollectionViewCell
-//            else { preconditionFailure("ImageCollectionViewCell class expected") }
-//            
-//            // Cancel download if needed
-//            guard let imageURL = ImageUtilities.getURL(cell.imageData, ofMinSize: imageSize)
-//            else { return }
-//            ImageSession.shared.cancelDownload(atURL: imageURL)
-//        }
-//    }
 }

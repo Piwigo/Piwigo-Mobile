@@ -13,7 +13,7 @@ import piwigoKit
 class VideoDetailViewController: UIViewController
 {
     var user: User!
-    var imageIndex = 0
+    var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
         didSet {
             video = imageData.video

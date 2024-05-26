@@ -192,9 +192,11 @@
 "categorySort_id" = "識別碼";
 "categorySort_idDescending" = "識別碼, 9 → 1";
 "categorySort_idAscending" = "識別碼, 1 → 9";
-
 "categorySort_videosOnly" = "只有影片";
 "categorySort_imagesOnly" = "只有照片";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "相簿";
@@ -320,10 +322,11 @@
 "noImages" = "沒有照片";
 "pullToRefresh" = "重新整理照片";
 "andMore" = " & 更多";
-"Months" = "月";
-"Weeks" = "周";
-"Days" = "日";
 "Date" = "日期";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "取得相簿照片錯誤";

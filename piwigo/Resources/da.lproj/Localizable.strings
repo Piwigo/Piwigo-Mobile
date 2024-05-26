@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
-
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Ingen Billeder";
 "pullToRefresh" = "Genindlæs Billeder";
 "andMore" = " & mere";
-"Months" = "Måneder";
-"Weeks" = "Uger";
-"Days" = "Dage";
 "Date" = "Dato";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Hent Albummets Fotofejl";

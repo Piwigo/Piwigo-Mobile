@@ -115,7 +115,7 @@
 
 "loginError_title" = "Anmeldung fehlgeschlagen";
 "loginError_message" = "Benutzername und Passwort stimmen für die angegebene Webadresse nicht überein";
-"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
+"loginError_resetPwd" = "Möchten Sie Ihr Passwort über die Webschnittstelle zurücksetzen?";
 "loginEmptyServer_title" = "Webadresse eingeben";
 "loginEmptyServer_message" = "Bitte wähle ein Protokoll und gib eine Piwigo Webadresse ein, um fortfahren zu können.";
 
@@ -166,35 +166,37 @@
 "categoryDiscoverFavorites_title" = "Ihre Favoriten";
 
 // Albums sort
-"categorySort_sort" = "Sort Images By…";
-"categorySort_default" = "Default";
-"categorySort_name" = "Photo Title";
+"categorySort_sort" = "Sortiere Bilder nach…";
+"categorySort_default" = "Standard";
+"categorySort_name" = "Fototitel";
 "categorySort_nameAscending" = "Fototitel, A → Z";
 "categorySort_nameDescending" = "Fototitel, Z → A";
-"categorySort_fileName" = "File Name";
+"categorySort_fileName" = "Dateiname";
 "categorySort_fileNameAscending" = "Dateiname, A → Z";
 "categorySort_fileNameDescending" = "Dateiname, Z → A";
-"categorySort_dateCreated" = "Date Created";
+"categorySort_dateCreated" = "Erstellungsdatum";
 "categorySort_dateCreatedDescending" = "Erstelldatum, Neu → Alt";
 "categorySort_dateCreatedAscending" = "Erstelldatum, Alt → Neu";
-"categorySort_datePosted" = "Date Posted";
+"categorySort_datePosted" = "Veröffentlichungsdatum";
 "categorySort_datePostedDescending" = "Veröffentlichung, Neu → Alt";
 "categorySort_datePostedAscending" = "Veröffentlichung, Alt → Neu";
-"categorySort_ratingScore" = "Rating Score";
+"categorySort_ratingScore" = "Bewertungswert";
 "categorySort_ratingScoreDescending" = "Bewertung, hoch → niedrig";
 "categorySort_ratingScoreAscending" = "Bewertung, niedrig → hoch";
-"categorySort_visits" = "Visits";
+"categorySort_visits" = "Besuche";
 "categorySort_visitsDescending" = "Besuche, hoch → niedrig";
 "categorySort_visitsAscending" = "Besuche, niedrig → hoch";
 "categorySort_manual" = "Manuelle Bestellung";
-"categorySort_randomly" = "Randomly";
+"categorySort_randomly" = "Zufällig";
 "categorySort_random" = "Zufällige Reihenfolge";
-"categorySort_id" = "Identifier";
-"categorySort_idDescending" = "Identifier, 9 → 1";
-"categorySort_idAscending" = "Identifier, 1 → 9";
-
+"categorySort_id" = "Kennung";
+"categorySort_idDescending" = "Kennung, 9 → 1";
+"categorySort_idAscending" = "Kennung, 1 → 9";
 "categorySort_videosOnly" = "Nur Videos";
 "categorySort_imagesOnly" = "Nur Fotos";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Keine Fotos";
 "pullToRefresh" = "Fotos erneut laden";
 "andMore" = " & mehr";
-"Months" = "Monate";
-"Weeks" = "Wochen";
-"Days" = "Tage";
 "Date" = "Datum";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Fotofehler im Album";
@@ -419,15 +422,15 @@
 "imageFavoritesRemoveError_message" = "Fehler beim Entfernen des Fotos von ihren Favoriten.";
 
 // Image rotate
-"rotateImage_rotate" = "Rotate 90°…";
-"rotateImage_left" = "Counterclockwise";
-"rotateImage_right" = "Clockwise";
-"rotateSingleImageHUD_rotating" = "Rotating Photo…";
-"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+"rotateImage_rotate" = "Um 90° drehen…";
+"rotateImage_left" = "Gegen den Uhrzeigersinn";
+"rotateImage_right" = "Im Uhrzeigersinn";
+"rotateSingleImageHUD_rotating" = "Drehe Foto…";
+"rotateSeveralImageHUD_rotating" = "Drehe Fotos…";
 
 // Image rotate — Errors
-"rotateImageFail_title" = "Rotation Failed";
-"rotateImageFail_message" = "Image could not be rotated";
+"rotateImageFail_title" = "Drehung fehlgeschlagen";
+"rotateImageFail_message" = "Bild konnte nicht gedreht werden";
 
 // Image delete
 "deleteImage_delete" = "Löschen";

@@ -529,9 +529,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                                  image: nil, handler: { _ in self.swapSortOrder()})
         }
         swapOrder.accessibilityIdentifier = "Date"
-        let sortByDay = UIAction(title: NSLocalizedString("Days", comment: "Days"),
+        let sortByDay = UIAction(title: NSLocalizedString("Day", comment: "Day"),
                                  image: UIImage(named: "imageDay"), handler: { _ in
-            // Did select new sort option "Days"
+            // Did select grouping option by day
             self.sortType = .day
             
             // Refresh collection (may be called from background queue)
@@ -540,10 +540,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        sortByDay.accessibilityIdentifier = "Days"
-        let sortByWeek = UIAction(title: NSLocalizedString("Weeks", comment: "Weeks"),
+        sortByDay.accessibilityIdentifier = "Day"
+        let sortByWeek = UIAction(title: NSLocalizedString("Week", comment: "Week"),
                                   image: UIImage(named: "imageWeek"), handler: { _ in
-            // Did select new sort option "Weeks""
+            // Did select grouping option by week
             self.sortType = .week
             
             // Refresh collection (may be called from background queue)
@@ -552,10 +552,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        sortByWeek.accessibilityIdentifier = "Weeks"
-        let sortByMonth = UIAction(title: NSLocalizedString("Months", comment: "Months"),
+        sortByWeek.accessibilityIdentifier = "Week"
+        let sortByMonth = UIAction(title: NSLocalizedString("Month", comment: "Month"),
                                    image: UIImage(named: "imageMonth"), handler: { _ in
-            // Did select new sort option "Months""
+            // Did select grouping option by months
             self.sortType = .month
             
             // Refresh collection (may be called from background queue)
@@ -564,7 +564,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        sortByMonth.accessibilityIdentifier = "Months"
+        sortByMonth.accessibilityIdentifier = "Month"
         let noSort = UIAction(title: NSLocalizedString("All Photos", comment: "All Photos"),
                               image: nil, handler: { _ in
             // Did select new sort option "All""

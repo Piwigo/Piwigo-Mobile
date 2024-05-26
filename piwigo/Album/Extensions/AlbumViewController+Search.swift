@@ -43,52 +43,52 @@ extension AlbumViewController: UISearchControllerDelegate
 //    }
     
     func willPresentSearchController(_ searchController: UISearchController) {
-//        debugPrint("willPresentSearchController…")
-//        // Switch to Search album
-//        categoryId = pwgSmartAlbum.search.rawValue
-//        
-//        // Initialise albumData
-//        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
-//        resetSearchAlbum(withQuery: "")
-//        
-//        // Update albums and images
-//        resetPredicatesAndPerformFetch()
-//        
-//        // Reload collection
-//        albumImageTableView.reloadData()
-//        
-//        // Hide buttons and toolbar
-//        initBarsInPreviewMode()
-//        updateBarsInPreviewMode()
-//        navigationController?.setToolbarHidden(true, animated: true)
+        debugPrint("willPresentSearchController…")
+        // Switch to Search album
+        categoryId = pwgSmartAlbum.search.rawValue
+        
+        // Initialise albumData
+        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
+        resetSearchAlbum(withQuery: "")
+        
+        // Update albums and images
+        resetPredicatesAndPerformFetch()
+        
+        // Reload collection
+        collectionView?.reloadData()
+        
+        // Hide buttons and toolbar
+        initBarsInPreviewMode()
+        updateBarsInPreviewMode()
+        navigationController?.setToolbarHidden(true, animated: true)
     }
         
     func willDismissSearchController(_ searchController: UISearchController) {
 //        debugPrint("willDismissSearchController…")
-//        // Back to default album
-//        categoryId = AlbumVars.shared.defaultCategory
-//        
-//        // Title forgotten when searching immediately after launch
-//        title = NSLocalizedString("tabBar_albums", comment: "Albums")
-//        
-//        // Reset navigation bar
-//        applyColorPalette()
+        // Back to default album
+        categoryId = AlbumVars.shared.defaultCategory
+        
+        // Title forgotten when searching immediately after launch
+        title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        
+        // Reset navigation bar
+        applyColorPalette()
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
         debugPrint("didDismissSearchController…")
         // Update albumData
-//        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
-//        
-//        // Update albums and images
-//        resetPredicatesAndPerformFetch()
-//        
-//        // Reload collection
-//        albumImageTableView.reloadData()
-//        
-//        // Show buttons
-//        initBarsInPreviewMode()
-//        updateBarsInPreviewMode()
+        albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
+        
+        // Update albums and images
+        resetPredicatesAndPerformFetch()
+        
+        // Reload collection
+        collectionView?.reloadData()
+        
+        // Show buttons
+        initBarsInPreviewMode()
+        updateBarsInPreviewMode()
     }
     
     func resetSearchAlbum(withQuery query: String) {
@@ -130,39 +130,39 @@ extension AlbumViewController: UISearchBarDelegate
         if albumData.query == query {
             // Continue downloading images
             // Load next page of images
-//            self.fetchImages(withInitialImageIds: self.oldImageIds, query: query,
-//                             fromPage: self.onPage + 1, toPage: self.lastPage) {
-//                self.fetchCompleted()
-//            }
+            self.fetchImages(withInitialImageIds: self.oldImageIds, query: query,
+                             fromPage: self.onPage + 1, toPage: self.lastPage) {
+                self.fetchCompleted()
+            }
             return
         }
         
         // Cancel active image data session if any
         ClearCache.cancelTasks {
             DispatchQueue.main.async {
-//                // Reset search
-//                self.pauseSearch = false
-//                self.resetSearchAlbum(withQuery: query)
-//                
-//                // The query string has changed
-//                self.albumCollectionVC.updateNberOfImagesInFooter()
-//                
-//                // Determine if the session is active before fetching
-//                PwgSession.checkSession(ofUser: self.user) {
-//                    self.startFetchingAlbumAndImages(withHUD: true)
-//                } failure: { error in
-//                    // Session logout required?
-//                    if let pwgError = error as? PwgSessionError,
-//                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-//                        .contains(pwgError) {
-//                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-//                        return
-//                    }
-//                    
-//                    // Report error
-//                    let title = "Error \(error.code)"
-//                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
-//                }
+                // Reset search
+                self.pauseSearch = false
+                self.resetSearchAlbum(withQuery: query)
+                
+                // The query string has changed
+                self.updateNberOfImagesInFooter()
+                
+                // Determine if the session is active before fetching
+                PwgSession.checkSession(ofUser: self.user) {
+                    self.startFetchingAlbumAndImages(withHUD: true)
+                } failure: { error in
+                    // Session logout required?
+                    if let pwgError = error as? PwgSessionError,
+                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                        .contains(pwgError) {
+                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                        return
+                    }
+                    
+                    // Report error
+                    let title = "Error \(error.code)"
+                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
+                }
             }
         }
     }

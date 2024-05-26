@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
-
 "categorySort_videosOnly" = "Videók";
 "categorySort_imagesOnly" = "Fotók";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Összes videó";
 "pullToRefresh" = "Fotók újratöltése";
 "andMore" = " és több";
-"Months" = "Hónap";
-"Weeks" = "Hét";
-"Days" = "Nap";
 "Date" = "Dátum";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Albumfotók letöltése nem sikerült";

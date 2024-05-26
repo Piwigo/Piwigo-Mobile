@@ -18,7 +18,7 @@ extension AlbumViewController
         if selectedVideosIds.isEmpty {
             return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
                           image: nil,
-                          identifier: UIMenu.Identifier("org.piwigo.piwigoImages.rotate"),
+                          identifier: UIMenu.Identifier("org.piwigo.images.rotate"),
                           children: [rotateRightAction(), rotateLeftAction()])
         }
         return nil

@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifiant";
 "categorySort_idDescending" = "Identifiant, 9 → 1";
 "categorySort_idAscending" = "Identifiant, 1 → 9";
-
 "categorySort_videosOnly" = "Vidéos uniquement";
 "categorySort_imagesOnly" = "Photos uniquement";
+
+"categoryView_options" = "Options de présentation";
+"categoryGroup_group" = "Grouper les images par…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Pas de photos";
 "pullToRefresh" = "Rechargement des photos";
 "andMore" = " & plus";
-"Months" = "Mois";
-"Weeks" = "Semaines";
-"Days" = "Jours";
 "Date" = "Date";
+"None" = "Aucun";
+"Day" = "Jour";
+"Week" = "Semaine";
+"Month" = "Mois";
 
 // Errors
 "albumPhotoError_title" = "Photos d'album non récupérées";

@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
-
 "categorySort_videosOnly" = "Hanya Video";
 "categorySort_imagesOnly" = "Hanya Gambar";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -320,10 +322,11 @@
 "noImages" = "Tidak Ada Gambar";
 "pullToRefresh" = "Muat Ulang Gambar";
 "andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
 "Date" = "Date";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Galat dalam Mendapatkan Foto Album";

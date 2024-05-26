@@ -24,6 +24,37 @@ class AlbumViewController: UIViewController
     @IBOutlet weak var collectionView: UICollectionView!
     
     var categoryId = Int32.zero
+    lazy var sortOption: pwgImageSort = {
+        switch categoryId {
+        case pwgSmartAlbum.visits.rawValue:
+            // As with the web UI, uses the below sort option w/o possibility to change it.
+            // Note: 'visits' is always accessible
+            return pwgImageSort.visitsDescending
+        case pwgSmartAlbum.best.rawValue:
+            // As with the web UI, uses the below sort option w/o possibility to change it.
+            // Note: 'ratingScore' is not always accessible (only returned by pwg.images.getInfo)
+            // so the image collection might not be sorted as with the web UI.
+            return pwgImageSort.ratingScoreDescending
+        case pwgSmartAlbum.search.rawValue:
+            // pwg.images.search returns: 'isFavorite', 'datePosted', 'dateCreated', 'visits'
+            // The webUI proposes all sort options, so we do the same even if the result may be different.
+            fallthrough
+        case pwgSmartAlbum.favorites.rawValue:
+            // pwg.users.favorites.getList returns: 'datePosted', 'dateCreated', 'visits'
+            // The webUI proposes all sort options, so we do the same even if the result may be different.
+            fallthrough
+        case pwgSmartAlbum.tagged.rawValue:
+            // pwg.tags.getImages returns: 'datePosted', 'dateCreated'
+            // The webUI proposes all sort options, so we do the same even if the result may be different.
+            fallthrough
+        case pwgSmartAlbum.recent.rawValue:
+            // Adopts sort option used by pwg.category.getImages
+            // Note: 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
+            fallthrough
+        default:  // Sorting option chosen by user
+            return AlbumVars.shared.defaultSort
+        }
+    }()
     
     // MARK: - Bar Buttons
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
@@ -190,150 +221,11 @@ class AlbumViewController: UIViewController
         changeAlbumID()
         return rootAlbum
     }
-
-    private lazy var albumPredicate: NSPredicate = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "parentId == $catId"))
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-    }()
     
-    lazy var nberSubAlbums: Int = {
-        let fetchRequest = Album.fetchRequest()
-        fetchRequest.resultType = .countResultType
-        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
-        return (try? mainContext.count(for: fetchRequest)) ?? 0
-    }()
+    lazy var data = AlbumViewData(withAlbum: albumData, forDelegate: self)
+    lazy var albums: NSFetchedResultsController<Album> = data.albums
+    lazy var images: NSFetchedResultsController<Image> = data.images()
     
-    private lazy var fetchAlbumsRequest: NSFetchRequest = {
-        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
-        let fetchRequest = Album.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
-                                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
-        fetchRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
-        fetchRequest.fetchBatchSize = 20
-        return fetchRequest
-    }()
-    
-    lazy var albums: NSFetchedResultsController<Album> = {
-        let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
-                                                managedObjectContext: self.mainContext,
-                                                sectionNameKeyPath: nil, cacheName: nil)
-        albums.delegate = self
-        return albums
-    }()
-
-    lazy var imagePredicate: NSPredicate = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catId"))
-        andPredicates.append(NSPredicate(format: "ANY albums.user.username == %@", NetworkVars.username))
-        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-    }()
-    
-    func sortDescriptors(for sortKeys: String) -> [NSSortDescriptor] {
-        var descriptors = [NSSortDescriptor]()
-        let items = sortKeys.components(separatedBy: ",")
-        for item in items {
-            var fixedItem = item
-            // Remove extra space at the begining and end
-            while fixedItem.hasPrefix(" ") {
-                fixedItem.removeFirst()
-            }
-            while fixedItem.hasSuffix(" ") {
-                fixedItem.removeLast()
-            }
-            // Convert to sort descriptors
-            let sortDesc = fixedItem.components(separatedBy: " ")
-            if sortDesc[0].contains(pwgImageOrder.random.rawValue) {
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.rankRandom), ascending: true))
-                continue
-            }
-            if sortDesc.count != 2 { continue }
-            let isAscending = sortDesc[1].lowercased() == pwgImageOrder.ascending.rawValue ? true : false
-            switch sortDesc[0] {
-            case pwgImageAttr.title.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.titleStr), ascending: isAscending, selector: #selector(NSString.localizedCaseInsensitiveCompare)))
-            case pwgImageAttr.dateCreated.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.dateCreated), ascending: isAscending))
-            case pwgImageAttr.datePosted.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: isAscending))
-            case pwgImageAttr.fileName.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.fileName), ascending: isAscending, selector: #selector(NSString.localizedCompare)))
-            case pwgImageAttr.rating.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.ratingScore), ascending: isAscending))
-            case pwgImageAttr.visits.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.visits), ascending: isAscending))
-            case pwgImageAttr.identifier.rawValue:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: isAscending))
-            case pwgImageAttr.rank.rawValue, "`\(pwgImageAttr.rank.rawValue)`":
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.rankManual), ascending: isAscending))
-            default:
-                descriptors.append(NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: isAscending))
-            }
-        }
-        if descriptors.isEmpty {
-            let sortByPosted = NSSortDescriptor(key: #keyPath(Image.datePosted), ascending: false)
-            let sortByFile = NSSortDescriptor(key: #keyPath(Image.fileName), ascending: true)
-            let sortById = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)
-            return [sortByPosted, sortByFile, sortById]
-        } else {
-            return descriptors
-        }
-    }
-    
-    lazy var fetchImagesRequest: NSFetchRequest = {
-        // Sort images according to default settings
-        // PS: Comparator blocks are not supported with Core Data
-        let fetchRequest = Image.fetchRequest()
-        let sortByIdDesc = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: false)
-        let sortByIdAsc = NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)
-        switch albumData.pwgID {
-        case pwgSmartAlbum.search.rawValue:
-            // 'datePosted' is always accessible (returned by pwg.images.search)
-            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.datePostedAscending.param)
-            
-        case pwgSmartAlbum.visits.rawValue:
-            // 'visits' is always accessible (returned by pwg.category.getImages)
-            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.visitsDescending.param)
-            
-        case pwgSmartAlbum.best.rawValue:
-            // 'ratingScore' is not always accessible (returned by pwg.images.getInfo)
-            // so the image list might not be identical to the one returned by the web UI.
-            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.ratingScoreDescending.param)
-            
-        case pwgSmartAlbum.recent.rawValue:
-            // 'datePosted' can be unknown and defaults to 01/01/1900 in such situation
-            fetchRequest.sortDescriptors = sortDescriptors(for: pwgImageSort.datePostedDescending.param)
-            
-        default:    // Sorting option chosen by user
-            if albumData.imageSort.isEmpty {
-                // Piwigo version < 14
-                if AlbumVars.shared.defaultSort.rawValue > pwgImageSort.random.rawValue {
-                    AlbumVars.shared.defaultSort = .dateCreatedAscending
-                }
-                fetchRequest.sortDescriptors = sortDescriptors(for: AlbumVars.shared.defaultSort.param)
-            }
-            else if AlbumVars.shared.defaultSort == pwgImageSort.albumDefault {
-                fetchRequest.sortDescriptors = sortDescriptors(for: albumData.imageSort)
-            }
-            else {
-                fetchRequest.sortDescriptors = sortDescriptors(for: AlbumVars.shared.defaultSort.param)
-            }
-        }
-        fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
-        fetchRequest.fetchBatchSize = 20
-        return fetchRequest
-    }()
-    
-    lazy var images: NSFetchedResultsController<Image> = {
-        let images = NSFetchedResultsController(fetchRequest: fetchImagesRequest,
-                                                managedObjectContext: self.mainContext,
-                                                sectionNameKeyPath: nil, cacheName: nil)
-        images.delegate = self
-        return images
-    }()
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -370,12 +262,14 @@ class AlbumViewController: UIViewController
         collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
         collectionView?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
+        collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
+        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
         collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
 
         // Refresh view
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-        collectionView.refreshControl = refreshControl
+        collectionView?.refreshControl = refreshControl
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -385,7 +279,7 @@ class AlbumViewController: UIViewController
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
-        collectionView.backgroundColor = UIColor.piwigoColorBackground()
+        collectionView?.backgroundColor = UIColor.piwigoColorBackground()
         
         // Navigation bar title
         setTitleViewFromAlbumData(whileUpdating: false)
@@ -459,13 +353,13 @@ class AlbumViewController: UIViewController
         }
 
         // Refresh controller
-        collectionView.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-        collectionView.refreshControl?.tintColor = UIColor.piwigoColorHeader()
+        collectionView?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
+        collectionView?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
         let attributesRefresh = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
-        collectionView.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
+        collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -679,7 +573,7 @@ class AlbumViewController: UIViewController
             imageCellSize = CGSize(width: size, height: size)
             let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
             albumCellSize = CGSize(width: albumWidth, height: 156.5)
-            collectionView.reloadData()
+            collectionView?.reloadData()
             
             // Update buttons
             if isSelect {
@@ -777,7 +671,7 @@ class AlbumViewController: UIViewController
         resetPredicatesAndPerformFetch()
 
         // Reload album
-        collectionView.reloadData()
+        collectionView?.reloadData()
         
         // Reset buttons and menus
         initBarsInPreviewMode()
@@ -785,12 +679,9 @@ class AlbumViewController: UIViewController
     }
     
     func resetPredicatesAndPerformFetch() {
-        // Update albums
-        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
+        // Update album content
+        data.switchToAlbum(withID: categoryId)
         try? albums.performFetch()
-
-        // Update images
-        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catId" : albumData.pwgID])
         try? images.performFetch()
     }
 
@@ -838,7 +729,7 @@ class AlbumViewController: UIViewController
         } failure: { error in
             // End refreshing anyway
             DispatchQueue.main.async {
-                self.collectionView.refreshControl?.endRefreshing()
+                self.collectionView?.refreshControl?.endRefreshing()
                 // Session logout required?
                 if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -866,7 +757,7 @@ class AlbumViewController: UIViewController
             self.updateNberOfImagesInFooter()
 
             // End refreshing if needed
-            self.collectionView.refreshControl?.endRefreshing()
+            self.collectionView?.refreshControl?.endRefreshing()
         }
         
         // Fetch favorites in the background if needed

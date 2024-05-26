@@ -192,9 +192,11 @@
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
-
 "categorySort_videosOnly" = "مقاطع الفيديو فقط";
 "categorySort_imagesOnly" = "الصور فقط";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "ألبوم";
@@ -320,10 +322,11 @@
 "noImages" = "لا توجد صور";
 "pullToRefresh" = "إعادة تحميل الصور";
 "andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
 "Date" = "Date";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "احصل على خطأ صور الألبوم";

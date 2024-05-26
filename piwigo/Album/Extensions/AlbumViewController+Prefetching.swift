@@ -31,7 +31,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 } failure: { _ in }
             default /* Images */:
                 // Retrieve image data
-                let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+                let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
                 let imageData = images.object(at: imageIndexPath)
 
                 // Download image if needed
@@ -60,7 +60,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 
             default /* Images */:
                 // Retrieve image data
-                let imageIndexPath = IndexPath(item: indexPath.item, section: 0)
+                let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
                 let image = images.object(at: imageIndexPath)
                 
                 // Cancel download if needed

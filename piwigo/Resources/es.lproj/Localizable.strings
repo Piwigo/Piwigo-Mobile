@@ -115,7 +115,7 @@
 
 "loginError_title" = "Error en el inicio de sesión";
 "loginError_message" = "El nombre de usuario y la contraseña no coinciden en la dirección web especificada";
-"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
+"loginError_resetPwd" = "¿Le gustaría restablecer su contraseña desde la interfaz web?";
 "loginEmptyServer_title" = "Especifica una dirección web";
 "loginEmptyServer_message" = "Selecciona un protocolo y especifica una dirección web de Piwigo para continuar.";
 
@@ -192,9 +192,11 @@
 "categorySort_id" = "Identificador";
 "categorySort_idDescending" = "Identificador, 9 → 1";
 "categorySort_idAscending" = "Identificador, 1 → 9";
-
 "categorySort_videosOnly" = "Solo vídeos";
 "categorySort_imagesOnly" = "Solo fotos";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Álbum";
@@ -320,10 +322,11 @@
 "noImages" = "No hay fotos";
 "pullToRefresh" = "Recargar fotos";
 "andMore" = " y más";
-"Months" = "Meses";
-"Weeks" = "Semanas";
-"Days" = "Días";
 "Date" = "Fecha";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Error al obtener las fotos del álbum";

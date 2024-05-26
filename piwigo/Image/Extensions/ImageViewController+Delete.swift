@@ -245,51 +245,58 @@ extension ImageViewController
 extension ImageViewController: SelectCategoryImageRemovedDelegate
 {
     func didRemoveImage() {
-        // Return to the album view if the album is empty
+        // Is the album empty?
         let nbImages = images?.fetchedObjects?.count ?? 0
-        if nbImages == 0 {
+        guard nbImages != 0, let sections = images.sections
+        else {
             // Return to the Album/Images collection view
             navigationController?.dismiss(animated: true)
             return
         }
 
         // Was user scrolling towards next images?
-        if didPresentPageAfter {
-            // Can we present the next image?
-            if imageIndex < nbImages {
-                presentNextImage()
-                return
-            }
-
-            // Can we present the preceding image?
-            if imageIndex > 0 {
-                presentPreviousImage()
-                return
+        if didPresentNextPage {
+            // Can we present a next image having the same index path?
+            if indexPath.section < sections.count,
+               indexPath.item < sections[indexPath.section].numberOfObjects {
+                // Present the next image
+                presentImage(inDirection: .forward)
+            } else if let newIndexPath = getIndexPath(before: indexPath) {
+                // Present the preceding image
+                indexPath = newIndexPath
+                presentImage(inDirection: .reverse)
             }
         } else {
             // Can we present the preceding image?
-            if imageIndex > 0 {
-                presentPreviousImage()
+            if let newIndexPath = getIndexPath(before: indexPath) {
+                indexPath = newIndexPath
+                presentImage(inDirection: .reverse)
+                return
+            } else if let newIndexPath = getIndexPath(after: indexPath) {
+                indexPath = newIndexPath
+                presentImage(inDirection: .forward)
                 return
             }
-
-            // Can we present the next image?
-            if imageIndex < nbImages {
-                presentNextImage()
-                return
-            }
-        }        
+        }
+        
+        // Return to the Album/Images collection view
+        navigationController?.dismiss(animated: true)
+        return
     }
     
-    private func presentNextImage() {
-        // Create view controller for presenting next image
-        let imageData = getImageData(atIndex: imageIndex)
-        guard let nextImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
-        else { return }
+    private func presentImage(inDirection direction: UIPageViewController.NavigationDirection) {
+        // Create image view controller
+        let imageData = getImageData(atIndexPath: indexPath)
+        guard let newImageVC = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndexPath: indexPath) : imageDetailViewController(ofImage: imageData, atIndexPath: indexPath)
+        else {
+            // Return to the Album/Images collection view
+            navigationController?.dismiss(animated: true)
+            return
+        }
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
-        pageViewController?.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+        pageViewController?.setViewControllers([newImageVC], direction: direction, animated: true) { [unowned self] finished in
             // Update image data
             self.imageData = imageData
             // Set title view
@@ -300,30 +307,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             // pwg.users.favorites… methods available from Piwigo version 2.10
             self.favoriteBarButton = getFavoriteBarButton()
             // Scroll album collection view to keep the selected image centred on the screen
-            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
-        }
-    }
-    
-    private func presentPreviousImage() {
-        // Create view controller for presenting next image
-        imageIndex -= 1
-        let imageData = getImageData(atIndex: imageIndex)
-        guard let prevImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
-        else { return }
-
-        // This changes the View Controller
-        // and calls the presentationIndexForPageViewController datasource method
-        pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-            // Update image data
-            self.imageData = imageData
-            // Set title view
-            self.setTitleViewFromImageData()
-            // Re-enable buttons
-            self.setEnableStateOfButtons(true)
-            // Reset favorites button
-            self.favoriteBarButton = getFavoriteBarButton()
-            // Scroll album collection view to keep the selected image centred on the screen
-            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
+            self.imgDetailDelegate?.didSelectImage(atIndexPath: indexPath)
         }
     }
 }
