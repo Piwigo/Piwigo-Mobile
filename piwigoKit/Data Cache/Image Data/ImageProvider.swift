@@ -112,12 +112,10 @@ public class ImageProvider: NSObject {
 
         case pwgSmartAlbum.visits.rawValue:
             paramsDict["recursive"] = true
-            paramsDict["order"] = "hit desc, id desc"
             paramsDict["f_min_hit"] = 1
             
         case pwgSmartAlbum.best.rawValue:
             paramsDict["recursive"] = true
-            paramsDict["order"] = "rating_score desc, id desc"
             paramsDict["f_min_rate"] = 1
             
         case pwgSmartAlbum.recent.rawValue:
