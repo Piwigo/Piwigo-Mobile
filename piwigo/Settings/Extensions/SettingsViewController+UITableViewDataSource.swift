@@ -218,7 +218,7 @@ extension SettingsViewController: UITableViewDataSource
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showTitleOption && (row > 1)) ? 1 : 0
+            row += (!showTitleOption && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
