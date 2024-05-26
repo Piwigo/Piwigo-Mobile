@@ -15,8 +15,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleAspectFill" restorationIdentifier="ImageHeaderReusableView" translatesAutoresizingMaskIntoConstraints="NO" id="48f-AC-xRm" customClass="ImageHeaderReusableView" customModule="piwigo" customModuleProvider="target">
+        <view autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleAspectFill" restorationIdentifier="ImageHeaderReusableView" id="48f-AC-xRm" customClass="ImageHeaderReusableView" customModule="piwigo" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDz-SW-5Hc">
                     <rect key="frame" x="8" y="8" width="76.333333333333329" height="18"/>
