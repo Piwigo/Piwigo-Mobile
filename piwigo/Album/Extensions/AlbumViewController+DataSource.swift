@@ -166,7 +166,7 @@ extension AlbumViewController: UICollectionViewDataSource
                     }
                 }
             case UICollectionView.elementKindSectionFooter:
-                if indexPath.section ==  collectionView.numberOfSections - 1 {
+                if indexPath.section ==  images.fetchedObjects?.count ?? 0 {
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}
                     footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()

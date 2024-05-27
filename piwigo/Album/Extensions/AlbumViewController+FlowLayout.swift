@@ -13,6 +13,19 @@ import piwigoKit
 // MARK: - UICollectionViewDelegateFlowLayout
 extension AlbumViewController: UICollectionViewDelegateFlowLayout
 {
+    func getAlbumCellSize() -> CGSize {
+        let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
+//        debugPrint("••> getAlbumCellSize: \(albumWidth) x 156.5 points")
+        return CGSize(width: albumWidth, height: 156.5)
+    }
+    
+    func getImageCellSize() -> CGSize {
+        let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
+        let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
+//        debugPrint("••> getImageCellSize: \(size) x \(size) points")
+        return CGSize(width: size, height: size)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         if (elementKind == UICollectionView.elementKindSectionHeader) ||
             (elementKind == UICollectionView.elementKindSectionFooter) {
@@ -77,7 +90,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             return CGSize.zero
         default /* Images */:
             // Footer only at the bottom of the collection
-            if section != collectionView.numberOfSections - 1 {
+            if section != images.fetchedObjects?.count ?? 0 {
                 return CGSize.zero
             }
             

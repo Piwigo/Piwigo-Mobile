@@ -104,17 +104,10 @@ class AlbumViewController: UIViewController
     // MARK: - Cached Values
     private var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-    lazy var albumCellSize: CGSize = {
-        let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
-        return CGSize(width: albumWidth, height: 156.5)
-    }()
+    lazy var albumCellSize: CGSize = getAlbumCellSize()
     lazy var albumPlaceHolder = UIImage(named: "placeholder")!
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-    lazy var imageCellSize: CGSize = {
-        let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
-        let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
-        return CGSize(width: size, height: size)
-    }()
+    lazy var imageCellSize: CGSize = getImageCellSize()
     lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
 
     var updateOperations = [BlockOperation]()
@@ -575,14 +568,11 @@ class AlbumViewController: UIViewController
         
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] context in
-            // Recalculate cell sizes and reload collection
-            let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
-            let size = AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: nbImages)
-            imageCellSize = CGSize(width: size, height: size)
-            let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
-            albumCellSize = CGSize(width: albumWidth, height: 156.5)
+            // Reload collection with appropriate cell sizes
+            albumCellSize = getAlbumCellSize()
+            imageCellSize = getImageCellSize()
             collectionView?.reloadData()
-            
+
             // Update buttons
             if isSelect {
                 initBarsInSelectMode()
@@ -593,6 +583,16 @@ class AlbumViewController: UIViewController
                 uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
                 createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
                 uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+            }
+            
+            // Update parent collection layouts
+            (navigationController?.viewControllers ?? []).forEach { viewController in
+                // Look for AlbumImagesViewControllers
+                if let thisViewController = viewController as? AlbumViewController {
+                    // Is this the view controller of the default album?
+                    thisViewController.albumCellSize = albumCellSize
+                    thisViewController.imageCellSize = imageCellSize
+                }
             }
         })
     }
