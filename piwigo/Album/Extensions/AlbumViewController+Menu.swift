@@ -43,7 +43,7 @@ extension AlbumViewController
             let defaultSortAction = UIAlertAction(title: title, style: .default) { [self] _ in
                 sortOption = .albumDefault
                 images.delegate = nil
-                images = data.images(sortedBy: .albumDefault, groupedBy: .none)
+                images = data.images(sortedBy: .albumDefault)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -59,7 +59,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .nameDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .nameDescending, groupedBy: .none)
+                images = data.images(sortedBy: .nameDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -68,7 +68,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .nameAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .nameAscending, groupedBy: .none)
+                images = data.images(sortedBy: .nameAscending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -76,7 +76,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .nameAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .nameAscending, groupedBy: .none)
+                images = data.images(sortedBy: .nameAscending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -92,7 +92,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .dateCreatedDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -101,7 +101,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .dateCreatedAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .dateCreatedAscending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -109,7 +109,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .dateCreatedDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -125,7 +125,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .datePostedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .datePostedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .datePostedDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -134,7 +134,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .datePostedAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .datePostedAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .datePostedAscending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -142,7 +142,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .datePostedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .datePostedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .datePostedDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -158,7 +158,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .ratingScoreDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -167,7 +167,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .ratingScoreAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .ratingScoreAscending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -175,7 +175,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .ratingScoreDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -191,7 +191,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .visitsDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .visitsDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .visitsDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -200,7 +200,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .visitsAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .visitsAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .visitsAscending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -208,7 +208,7 @@ extension AlbumViewController
             handler = { [self] action in
                 sortOption = .visitsDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .visitsDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .visitsDescending)
                 images.delegate = self
                 updateImageCollection()
             }
@@ -222,7 +222,7 @@ extension AlbumViewController
                                              style: .default, handler: { [self] action in
                 sortOption = .random
                 images.delegate = nil
-                images = data.images(sortedBy: .random, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .random)
                 images.delegate = self
                 updateImageCollection()
             })
@@ -315,7 +315,7 @@ extension AlbumViewController
             // Change image sorting
             sortOption = .albumDefault
             images.delegate = nil
-            images = data.images(sortedBy: .albumDefault, groupedBy: .none)
+            images = data.images(sortedBy: .albumDefault)
             images.delegate = self
             updateCollectionAndMenu()
         })
@@ -333,7 +333,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .nameDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .nameDescending, groupedBy: .none)
+                images = data.images(sortedBy: .nameDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -342,7 +342,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .nameAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .nameAscending, groupedBy: .none)
+                images = data.images(sortedBy: .nameAscending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -351,7 +351,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .nameAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .nameAscending, groupedBy: .none)
+                images = data.images(sortedBy: .nameAscending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -370,7 +370,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .dateCreatedDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -379,7 +379,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .dateCreatedAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .dateCreatedAscending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -388,7 +388,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .dateCreatedDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -407,7 +407,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .datePostedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .datePostedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .datePostedDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -416,7 +416,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .datePostedAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .datePostedAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .datePostedAscending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -425,7 +425,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .datePostedDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .datePostedDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .datePostedDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -444,7 +444,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .ratingScoreDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -453,7 +453,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .ratingScoreAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .ratingScoreAscending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -462,7 +462,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .ratingScoreDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -481,7 +481,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .visitsDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .visitsDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .visitsDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -490,7 +490,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .visitsAscending
                 images.delegate = nil
-                images = data.images(sortedBy: .visitsAscending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .visitsAscending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -499,7 +499,7 @@ extension AlbumViewController
                               identifier: actionId, handler: { [self] action in
                 sortOption = .visitsDescending
                 images.delegate = nil
-                images = data.images(sortedBy: .visitsDescending, groupedBy: AlbumVars.shared.defaultGroup)
+                images = data.images(sortedBy: .visitsDescending)
                 images.delegate = self
                 updateCollectionAndMenu()
             })
@@ -520,7 +520,7 @@ extension AlbumViewController
             // Change image sorting
             sortOption = .random
             images.delegate = nil
-            images = data.images(sortedBy: .random, groupedBy: AlbumVars.shared.defaultGroup)
+            images = data.images(sortedBy: .random)
             images.delegate = self
             updateCollectionAndMenu()
         })

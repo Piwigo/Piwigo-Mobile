@@ -42,8 +42,11 @@
         <attribute name="rankRandom" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
         <attribute name="ratingScore" attributeType="Float" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="sectionDayCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionDayPosted" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="sectionMonthCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionMonthPosted" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="sectionWeekCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionWeekPosted" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
         <attribute name="titleStr" attributeType="String" defaultValueString=""/>
         <attribute name="uuid" attributeType="String" defaultValueString=""/>

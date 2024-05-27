@@ -37,11 +37,11 @@ extension pwgImageGroup
         case .none:
             return nil
         case .day:
-            return "sectionDayCreated"
+            return "sectionDayPosted"
         case .week:
-            return "sectionWeekCreated"
+            return "sectionWeekPosted"
         case .month:
-            return "sectionMonthCreated"
+            return "sectionMonthPosted"
         }
     }
     

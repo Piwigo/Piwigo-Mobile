@@ -73,12 +73,52 @@ extension Image {
     
     @objc var sectionMonthCreated: String? {
         /* Sections are ogranised by month. The section identifier is a string representing
-           the number (year * 100) + month so it will be ordered chronologically
-           regardless of the actual day/month/year */
+         the number (year * 100) + month so it will be ordered chronologically
+         regardless of the actual day/month/year */
         let calendar = Calendar.current
         let byMonth: Set<Calendar.Component> = [.year, .month]
         let dateCreated = Date(timeIntervalSinceReferenceDate: self.dateCreated)
         let monthComponents = calendar.dateComponents(byMonth, from: dateCreated)
+        var monthIdentifier: Int = (monthComponents.year ?? 0) * 100
+        monthIdentifier += (monthComponents.month ?? 0)
+        return String(format: "%d", monthIdentifier)
+    }
+    
+    @objc var sectionDayPosted: String? {
+        /* Sections are ogranised by day. The section identifier is a string representing
+         the number (year * 100000) + (month * 1000) + day so it will be ordered chronologically
+         regardless of the actual day/month/year */
+        let calendar = Calendar.current
+        let byDay: Set<Calendar.Component> = [.year, .month, .day]
+        let datePosted = Date(timeIntervalSinceReferenceDate: self.datePosted)
+        let dayComponents = calendar.dateComponents(byDay, from: datePosted)
+        var dayIdentifier: Int = (dayComponents.year ?? 0) * 100000
+        dayIdentifier += (dayComponents.month ?? 0) * 1000
+        dayIdentifier += (dayComponents.day ?? 0)
+        return String(format: "%d", dayIdentifier)
+    }
+    
+    @objc var sectionWeekPosted: String? {
+        /* Sections are ogranised by week. The section identifier is a string representing
+         the number (year * 100) + weekOfYear so it will be ordered chronologically
+         regardless of the actual day/month/year */
+        let calendar = Calendar.current
+        let byWeek: Set<Calendar.Component> = [.year, .weekOfYear]
+        let datePosted = Date(timeIntervalSinceReferenceDate: self.datePosted)
+        let weekComponents = calendar.dateComponents(byWeek, from: datePosted)
+        var weekIdentifier: Int = (weekComponents.year ?? 0) * 100
+        weekIdentifier += (weekComponents.weekOfYear ?? 0)
+        return String(format: "%d", weekIdentifier)
+    }
+    
+    @objc var sectionMonthPosted: String? {
+        /* Sections are ogranised by month. The section identifier is a string representing
+           the number (year * 100) + month so it will be ordered chronologically
+           regardless of the actual day/month/year */
+        let calendar = Calendar.current
+        let byMonth: Set<Calendar.Component> = [.year, .month]
+        let datePosted = Date(timeIntervalSinceReferenceDate: self.datePosted)
+        let monthComponents = calendar.dateComponents(byMonth, from: datePosted)
         var monthIdentifier: Int = (monthComponents.year ?? 0) * 100
         monthIdentifier += (monthComponents.month ?? 0)
         return String(format: "%d", monthIdentifier)
