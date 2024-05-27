@@ -54,7 +54,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             // Are images grouped by day, week or month?
             let validSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
                                                   .dateCreatedAscending, .dateCreatedDescending]
-            if validSortTypes.contains(sortOption) == false || AlbumVars.shared.defaultGroup == .none {
+            if validSortTypes.contains(sortOption) == false {
                 return CGSize.zero
             }
             
