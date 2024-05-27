@@ -58,8 +58,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         // Check that this update should be managed by this view controller
-        guard let fetchDelegate = controller.delegate as? AlbumViewController,
-              view.window != nil
+        guard view.window != nil
         else { return }
 
         // Collect operation changes
@@ -69,27 +68,27 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 guard let newIndexPath = newIndexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
-                    debugPrint("••> Insert sub-album of album #\(fetchDelegate.categoryId) at \(newIndexPath)")
+                    debugPrint("••> Insert sub-album of album #\(self?.categoryId ?? Int32.min) at \(newIndexPath)")
                     self?.collectionView?.insertItems(at: [newIndexPath])
                 })
             case .delete:
                 guard let indexPath = indexPath else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Delete sub-album of album #\(fetchDelegate.categoryId) at \(indexPath)")
+                    debugPrint("••> Delete sub-album of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
                     self?.collectionView?.deleteItems(at: [indexPath])
                 })
             case .move:
                 guard let indexPath = indexPath, let newIndexPath = newIndexPath,
                       indexPath != newIndexPath else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Move sub-album of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
+                    debugPrint("••> Move sub-album of album #\(self?.categoryId ?? Int32.min) from \(indexPath) to \(newIndexPath)")
                     self?.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
                 guard let indexPath = indexPath, let album = anObject as? Album
                 else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Update sub-album at \(indexPath) of album #\(fetchDelegate.categoryId)")
+                    debugPrint("••> Update sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
                     if let cell = self?.collectionView?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
                         // Re-configure album cell
                         cell.albumData = album
@@ -106,7 +105,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 newIndexPath.section += 1
                 // Insert image
                 updateOperations.append( BlockOperation { [weak self] in
-                    debugPrint("••> Insert image of album #\(fetchDelegate.categoryId) at \(newIndexPath)")
+                    debugPrint("••> Insert image of album #\(self?.categoryId ?? Int32.min) at \(newIndexPath)")
                     self?.collectionView?.insertItems(at: [newIndexPath])
                 })
                 // Enable menu if this is the first added image
@@ -124,7 +123,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 selectedImageIds.remove(image.pwgID)
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Delete image of album #\(fetchDelegate.categoryId) at \(indexPath)")
+                    debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
                     self?.collectionView?.deleteItems(at: [indexPath])
                 })
                 // Disable menu if this is the last deleted image
@@ -142,7 +141,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 newIndexPath.section += 1
                 // Move image
                 updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Move item of album #\(fetchDelegate.categoryId) from \(indexPath) to \(newIndexPath)")
+                    debugPrint("••> Move item of album #\(self?.categoryId ?? Int32.min) from \(indexPath) to \(newIndexPath)")
                     self?.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
@@ -150,9 +149,11 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 else { return }
                 indexPath.section += 1
                 // Update image
-                updateOperations.append( BlockOperation {  [self] in
-                    debugPrint("••> Update image at \(indexPath) of album #\(fetchDelegate.categoryId)")
-                    if let cell = self.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                updateOperations.append( BlockOperation {  [weak self] in
+                    debugPrint("••> Update image at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
+                    if let cell = self?.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+                       let imagePlaceHolder = self?.imagePlaceHolder, let hasFavorites = self?.hasFavorites,
+                       let imageSize = self?.imageSize, let sortOption = self?.sortOption {
                         // Re-configure image cell
                         cell.config(with: image, placeHolder: imagePlaceHolder, size: imageSize, sortOption: sortOption)
                         // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -172,8 +173,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        guard let fetchDelegate = controller.delegate as? AlbumViewController,
-              view.window != nil, updateOperations.isEmpty == false
+        guard view.window != nil, updateOperations.isEmpty == false
         else { return }
 
         // Update objects
