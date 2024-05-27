@@ -20,6 +20,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
             switch indexPath.section {
             case 0 /* Albums (see XIB file) */:
                 // Retrieve album data
+                if indexPath.item >= albums.fetchedObjects?.count ?? 0 { return }
                 let album = albums.object(at: indexPath)
                 
                 // Download image if needed
@@ -32,6 +33,9 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
             default /* Images */:
                 // Retrieve image data
                 let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+                if imageIndexPath.section >= (images.sections?.count ?? 0) { return }
+                guard let sections = images.sections else { return }
+                if imageIndexPath.item > sections[imageIndexPath.section].numberOfObjects { return }
                 let imageData = images.object(at: imageIndexPath)
 
                 // Download image if needed
@@ -51,6 +55,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
             switch indexPath.section {
             case 0 /* Albums (see XIB file) */:
                 // Retrieve album data
+                if indexPath.item >= albums.fetchedObjects?.count ?? 0 { return }
                 let album = albums.object(at: indexPath)
 
                 // Cancel download if needed
@@ -61,6 +66,9 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
             default /* Images */:
                 // Retrieve image data
                 let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+                if imageIndexPath.section >= (images.sections?.count ?? 0) { return }
+                guard let sections = images.sections else { return }
+                if imageIndexPath.item > sections[imageIndexPath.section].numberOfObjects { return }
                 let image = images.object(at: imageIndexPath)
                 
                 // Cancel download if needed
