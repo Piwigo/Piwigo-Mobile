@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import CoreLocation
 import Foundation
 import piwigoKit
 import UIKit
@@ -621,7 +622,7 @@ class AlbumUtilities: NSObject {
         // Creation date of images (or of availability)
         var dateLabelText = ""
         var optionalDateLabelText = ""
-
+        
         // Determine if images of this section were all taken today
         if let date1 = date1 {
             
@@ -637,7 +638,7 @@ class AlbumUtilities: NSObject {
                 let lastImageDate = (date1 > date2) ? date1 : date2
                 let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: firstImageDate)
                 let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: lastImageDate)
-
+                
                 // Images taken the same day?
                 if firstImageDay == lastImageDay {
                     // Images were taken the same day
@@ -651,7 +652,7 @@ class AlbumUtilities: NSObject {
                     }
                     return (dateLabelText, optionalDateLabelText)
                 }
-
+                
                 // => Images taken the same week?
                 let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: firstImageDate)
                 let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: lastImageDate)
@@ -675,7 +676,7 @@ class AlbumUtilities: NSObject {
                     }
                     return (dateLabelText, optionalDateLabelText)
                 }
-
+                
                 // => Images taken the same month?
                 let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: firstImageDate)
                 let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: lastImageDate)
@@ -697,7 +698,7 @@ class AlbumUtilities: NSObject {
                     }
                     return (dateLabelText, optionalDateLabelText)
                 }
-
+                
                 // => Images taken the same year?
                 let firstImageYear = Calendar.current.dateComponents([.year], from: firstImageDate)
                 let lastImageYear = Calendar.current.dateComponents([.year], from: lastImageDate)
@@ -736,5 +737,23 @@ class AlbumUtilities: NSObject {
             }
         }
         return (dateLabelText, optionalDateLabelText)
+    }
+    
+    static func getLabels(fromDate date: String, optionalDate: String, location: CLLocation) -> (String, String) {
+        // Get place name from location (will geodecode location for future use if needed)
+        guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
+            return (date, optionalDate)
+        }
+
+        // Use label according to name availabilities
+        if let placeLabelName = placeNames["placeLabel"] {
+            if let dateLabelName = placeNames["dateLabel"] {
+                return (placeLabelName, String(format: "%@ • %@", date, dateLabelName))
+            } else {
+                return (placeLabelName, String(format: "%@ • %@", date, optionalDate))
+            }
+        } else {
+            return (date, optionalDate)
+        }
     }
 }

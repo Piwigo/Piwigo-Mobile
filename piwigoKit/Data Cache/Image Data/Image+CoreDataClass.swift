@@ -251,6 +251,16 @@ public class Image: NSManagedObject {
             sizes.xxlarge = newXxlarge
         }
         
+        // Location
+        let latitude = imageData.latitude?.doubleValue ?? 0.0
+        if latitude != 0, self.latitude != latitude {
+            self.latitude = latitude
+        }
+        let longitude = imageData.longitude?.doubleValue ?? 0.0
+        if longitude != 0, self.longitude != longitude {
+            self.longitude = longitude
+        }
+        
         // Rank of image in album
         switch sort {
         case .rankAscending:

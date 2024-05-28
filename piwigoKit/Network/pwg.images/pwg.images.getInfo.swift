@@ -34,7 +34,7 @@ public struct ImagesGetInfoJSON: Decodable {
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
-//        dump(rootContainer.allKeys)
+        dump(rootContainer.allKeys)
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
@@ -93,6 +93,9 @@ public struct ImagesGetInfo: Decodable
     public var md5checksum: String?             // "2141e377254a429be151900e4bedb520"
     public var categories: [CategoryData]?      // Defined in pwg.category.getList
     public let derivatives: Derivatives         // See below
+    
+    public var latitude: StringOrDouble?        // "0.000000"
+    public var longitude: StringOrDouble?       // "0.000000"
 
     public enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -117,6 +120,9 @@ public struct ImagesGetInfo: Decodable
         case md5checksum = "md5sum"
         case categories = "categories"
         case derivatives = "derivatives"
+        
+        case latitude = "latitude"
+        case longitude = "longitude"
     }
 }
 
@@ -139,7 +145,8 @@ extension ImagesGetInfo {
                   author: author, privacyLevel: privacyLevel,
                   tags: nil, ratingScore: nil,
                   fileSize: nil, md5checksum: nil,
-                  categories: nil, derivatives: derivatives)
+                  categories: nil, derivatives: derivatives,
+                  latitude: StringOrDouble(), longitude: StringOrDouble())
         self.fixingUnknowns()
     }
     
@@ -164,6 +171,8 @@ extension ImagesGetInfo {
         if self.ratingScore == nil { self.ratingScore = "" }
         if self.fileSize == nil { self.fileSize = Int64.zero }
         if self.md5checksum == nil { self.md5checksum = "" }
+        if self.latitude == nil { self.latitude = StringOrDouble()}
+        if self.longitude == nil { self.longitude = StringOrDouble()}
     }
 }
 

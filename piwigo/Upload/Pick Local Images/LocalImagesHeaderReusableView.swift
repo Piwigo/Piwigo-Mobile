@@ -24,8 +24,6 @@ enum SelectButtonState : Int {
 
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
-    private var dateLabelText: String = ""
-    private var optionalDateLabelText: String = ""
     var section = 0
 
     // MARK: - View
@@ -59,13 +57,13 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         placeLabel.textColor = .piwigoColorLeftLabel()
 
         // Get date labels from images in section
-        (dateLabelText, optionalDateLabelText) = AlbumUtilities.getDateLabels(for: images.first?.creationDate, 
-                                                                              to: images.last?.creationDate)
+        var dates = AlbumUtilities.getDateLabels(for: images.first?.creationDate,
+                                                 to: images.last?.creationDate)
         // Determine location from images in section
         let location = getLocation(of: images)
         
         // Set up labels from dates and place name
-        setLabelsFromDatesAndLocation(location: location)
+        (placeLabel.text, dateLabel.text) = AlbumUtilities.getLabels(fromDate: dates.0, optionalDate: dates.1, location: location)
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
@@ -105,28 +103,6 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         selectButton.setTitle(title, for: .normal)
         selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
         selectButton.accessibilityIdentifier = "SelectAll"
-    }
-
-    private func setLabelsFromDatesAndLocation(location: CLLocation) {
-        // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
-            placeLabel.text = dateLabelText
-            dateLabel.text = optionalDateLabelText
-            return
-        }
-
-        // Use label according to name availabilities
-        if let placeLabelName = placeNames["placeLabel"] {
-            placeLabel.text = placeLabelName
-            if let dateLabelName = placeNames["dateLabel"] {
-                self.dateLabel.text = String(format: "%@ • %@", dateLabelText, dateLabelName)
-            } else {
-                self.dateLabel.text = String(format: "%@ • %@", dateLabelText, optionalDateLabelText)
-            }
-        } else {
-            placeLabel.text = dateLabelText
-            dateLabel.text = optionalDateLabelText
-        }
     }
         
     private func getLocation(of images: [PHAsset]) -> CLLocation {

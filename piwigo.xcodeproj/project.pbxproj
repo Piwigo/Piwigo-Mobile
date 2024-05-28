@@ -1082,6 +1082,7 @@
 		ADC592672C0333B0002B6F82 /* ImageHeaderReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageHeaderReusableView.xib; sourceTree = "<group>"; };
 		ADC592692C036BD9002B6F82 /* ImageOldHeaderReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageOldHeaderReusableView.xib; sourceTree = "<group>"; };
 		ADC5926B2C036BF0002B6F82 /* ImageOldHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOldHeaderReusableView.swift; sourceTree = "<group>"; };
+		ADC592762C0674AE002B6F82 /* DataModel 0E (Image).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0E (Image).xcdatamodel"; sourceTree = "<group>"; };
 		ADC69F24285DF50C009BF9AF /* TagSelectorViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagSelectorViewController+Search.swift"; sourceTree = "<group>"; };
 		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help05ViewController.swift; sourceTree = "<group>"; };
@@ -4614,6 +4615,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				ADC592762C0674AE002B6F82 /* DataModel 0E (Image).xcdatamodel */,
 				AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */,
 				AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */,
 				AD1BB5EA29ADCE330041E24E /* DataModel 0B (Image).xcdatamodel */,

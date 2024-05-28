@@ -44,6 +44,9 @@ extension Image {
     @NSManaged public var users: Set<User>?
     @NSManaged public var albums: Set<Album>?
     
+    @NSManaged public var latitude: Double
+    @NSManaged public var longitude: Double
+    
     @objc var sectionDayCreated: String? {
         /* Sections are ogranised by day. The section identifier is a string representing
          the number (year * 100000) + (month * 1000) + day so it will be ordered chronologically
