@@ -34,7 +34,7 @@ public struct ImagesGetInfoJSON: Decodable {
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
-        dump(rootContainer.allKeys)
+//        dump(rootContainer.allKeys)
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)

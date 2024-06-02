@@ -1054,7 +1054,8 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if view.window == nil || [recentAlbums, albums].contains(controller) == false ||
+        if #available(iOS 13, *), view.window == nil { return }
+        if [recentAlbums, albums].contains(controller) == false ||
             (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
             return
         }
@@ -1065,7 +1066,8 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         // Check that this update should be managed by this view controller
-        if view.window == nil || [recentAlbums, albums].contains(controller) == false ||
+        if #available(iOS 13, *), view.window == nil { return }
+        if [recentAlbums, albums].contains(controller) == false ||
             (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
             return
         }
@@ -1108,7 +1110,8 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if view.window == nil || [recentAlbums, albums].contains(controller) == false ||
+        if #available(iOS 13, *), view.window == nil { return }
+        if [recentAlbums, albums].contains(controller) == false ||
             (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
             return
         }

@@ -25,15 +25,14 @@ enum SelectButtonState : Int {
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
     var section = 0
+    var locationHash = Int.zero
 
-    // MARK: - View
-    
     @objc weak var headerDelegate: LocalImagesHeaderDelegate?
     
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var mainLabel: UILabel!
+    @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
-    @IBOutlet weak var placeLabel: UILabel!
-
+    
     func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
@@ -42,32 +41,60 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         // Keep section for future use
         self.section = section
         
-        // Date label used when place name known
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.numberOfLines = 1
-        dateLabel.adjustsFontSizeToFitWidth = false
-        dateLabel.font = .systemFont(ofSize: 13)
-        dateLabel.textColor = .piwigoColorRightLabel()
-
-        // Place name of location
-        placeLabel.translatesAutoresizingMaskIntoConstraints = false
-        placeLabel.numberOfLines = 1
-        placeLabel.adjustsFontSizeToFitWidth = false
-        placeLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        placeLabel.textColor = .piwigoColorLeftLabel()
+        // Date and place name of location
+        mainLabel.textColor = .piwigoColorLeftLabel()
+        detailLabel.textColor = .piwigoColorRightLabel()
 
         // Get date labels from images in section
-        var dates = AlbumUtilities.getDateLabels(for: images.first?.creationDate,
+        let dates = AlbumUtilities.getDateLabels(for: images.first?.creationDate,
                                                  to: images.last?.creationDate)
-        // Determine location from images in section
-        let location = getLocation(of: images)
-        
-        // Set up labels from dates and place name
-        (placeLabel.text, dateLabel.text) = AlbumUtilities.getLabels(fromDate: dates.0, optionalDate: dates.1, location: location)
+        self.mainLabel.text = dates.0
+
+        // Set labels from dates and place name
+        if images.isEmpty {
+            self.detailLabel.text = dates.1
+        } else {
+            // Determine location from images in section
+            let location = getLocation(of: images)
+            LocationProvider.shared.getPlaceName(for: location) { [unowned self] placeName, streetName in
+                if placeName.isEmpty {
+                    self.detailLabel.text = dates.1
+                } else if streetName.isEmpty {
+                    self.detailLabel.text = placeName
+                } else {
+                    self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+                }
+            } pending: { hash in
+                // Show date details until place name availability
+                self.detailLabel.text = dates.1
+                // Register location provider
+                self.locationHash = hash
+                NotificationCenter.default.addObserver(self, selector: #selector(self.updateDetailLabel(_:)),
+                                                       name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
+            } failure: {
+                self.detailLabel.text = dates.1
+            }
+        }
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
         setButtonTitle(forState: selectState)
+    }
+
+    @objc func updateDetailLabel(_ notification: NSNotification) {
+        guard let info = notification.userInfo,
+              let hash = info["hash"] as? Int, hash == locationHash,
+              let placeName = info["placeName"] as? String,
+              let streetName = info["streetName"] as? String
+        else { return }
+        
+        // Update detail label
+        if streetName.isEmpty {
+            self.detailLabel.text = placeName
+        } else {
+            self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+        }
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
@@ -78,8 +105,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        dateLabel.text = ""
-        placeLabel.text = ""
+        detailLabel.text = ""
+        mainLabel.text = ""
         selectButton.setTitle("", for: .normal)
         selectButton.backgroundColor = .piwigoColorBackground()
     }

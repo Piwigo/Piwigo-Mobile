@@ -10,7 +10,13 @@ import Foundation
 
 public extension Notification.Name {
     
+    // MARK: - Images
+    /// - Notifies that place names are available
+    static let pwgPlaceNamesAvailable = Notification.Name("pwgPlaceNamesAvailable")
+
+    
     // MARK: - Uploads
     /// - Notifies that auto-uploading should be disabled
     static let pwgDisableAutoUpload = Notification.Name("pwgNotificationDisableAutoUpload")
 }
+

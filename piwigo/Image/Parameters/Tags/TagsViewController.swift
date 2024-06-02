@@ -412,7 +412,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Do not update items if the album is not presented.
-        if view.window == nil { return }
+        if #available(iOS 13, *), view.window == nil { return }
         
         // Any update to perform?
         if updateOperations.isEmpty || view.window == nil { return }

@@ -540,11 +540,7 @@ extension AlbumViewController
     
     func groupMenu() -> UIMenu? {
         // Only available when images are sorted by date
-        let validSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
-                                              .dateCreatedAscending, .dateCreatedDescending]
-        if validSortTypes.contains(sortOption) == false {
-            return nil
-        }
+        if dateSortTypes.contains(sortOption) == false { return nil }
 
         // Create a menu for selecting how to group images
         let children = [byNoneAction(), byDayAction(), byWeekAction(), byMonthAction()].compactMap({$0})

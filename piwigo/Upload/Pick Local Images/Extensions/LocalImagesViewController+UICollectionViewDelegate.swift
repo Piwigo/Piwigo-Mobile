@@ -15,7 +15,8 @@ extension LocalImagesViewController: UICollectionViewDelegate
 {
     // MARK: - Headers & Footers
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if (elementKind == UICollectionView.elementKindSectionHeader) || (elementKind == UICollectionView.elementKindSectionFooter) {
+        if (elementKind == UICollectionView.elementKindSectionHeader) || 
+            (elementKind == UICollectionView.elementKindSectionFooter) {
             view.layer.zPosition = 0 // Below scroll indicator
         }
     }

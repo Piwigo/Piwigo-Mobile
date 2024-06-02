@@ -25,8 +25,8 @@ public class Location: NSManagedObject {
     func update(with locationProperties: LocationProperties) throws {
         
         // Update the location only if the latitude and longitude properties have values.
-        guard let newLatitude = locationProperties.coordinate?.latitude,
-            let newLongitude = locationProperties.coordinate?.longitude else {
+        guard let newLatitude = locationProperties.latitude,
+              let newLongitude = locationProperties.longitude else {
                 throw LocationError.missingData
         }
         latitude = newLatitude as Double
@@ -41,10 +41,26 @@ public class Location: NSManagedObject {
  A struct for manipulating Piwigo locations.
  All members are optional in case they are missing from the data.
 */
-struct LocationProperties
+struct LocationProperties: Hashable
 {
-    var coordinate: CLLocationCoordinate2D?     //
-    var radius: CLLocationDistance?             //
-    var placeName: String?                      //
-    var streetName: String?                     //
+    var latitude: CLLocationDegrees?
+    var longitude: CLLocationDegrees?
+    var radius: CLLocationDistance?
+    var placeName: String?
+    var streetName: String?
+}
+
+extension LocationProperties
+{
+    static func == (lhs: LocationProperties, rhs: LocationProperties) -> Bool {
+        return lhs.latitude == rhs.latitude &&
+                lhs.longitude == rhs.longitude &&
+                lhs.radius == rhs.radius
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(latitude ?? 0)
+        hasher.combine(longitude ?? 0)
+        hasher.combine(radius ?? kCLLocationAccuracyThreeKilometers)
+    }
 }

@@ -52,7 +52,7 @@
                 <constraint firstItem="Itr-Ur-qXZ" firstAttribute="leading" secondItem="HIb-ek-pFu" secondAttribute="leading" constant="8" id="dyK-nd-mhz"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="fDz-SW-5Hc" secondAttribute="trailing" constant="10" id="h0y-H0-Oiy"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="bottom" secondItem="Itr-Ur-qXZ" secondAttribute="bottom" id="iwk-6g-HUr"/>
-                <constraint firstItem="Itr-Ur-qXZ" firstAttribute="firstBaseline" secondItem="fDz-SW-5Hc" secondAttribute="baseline" constant="16.666666666666668" symbolType="layoutAnchor" id="jEE-NY-puX"/>
+                <constraint firstItem="Itr-Ur-qXZ" firstAttribute="firstBaseline" secondItem="fDz-SW-5Hc" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="jEE-NY-puX"/>
                 <constraint firstItem="fDz-SW-5Hc" firstAttribute="leading" secondItem="HIb-ek-pFu" secondAttribute="leading" constant="8" id="mlX-pS-yHZ"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Itr-Ur-qXZ" secondAttribute="trailing" constant="10" id="rtQ-es-ogk"/>
             </constraints>
@@ -60,8 +60,8 @@
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="dateLabel" destination="Itr-Ur-qXZ" id="OCX-cs-q99"/>
-                <outlet property="placeLabel" destination="fDz-SW-5Hc" id="gGL-xQ-paG"/>
+                <outlet property="detailLabel" destination="Itr-Ur-qXZ" id="yDd-0f-Xv1"/>
+                <outlet property="mainLabel" destination="fDz-SW-5Hc" id="8zV-Hh-aVr"/>
                 <outlet property="selectButton" destination="cU4-a8-hx4" id="HXv-tu-Oda"/>
             </connections>
             <point key="canvasLocation" x="-311" y="374"/>

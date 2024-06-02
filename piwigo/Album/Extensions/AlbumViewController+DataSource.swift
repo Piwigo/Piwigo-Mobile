@@ -71,7 +71,17 @@ extension AlbumViewController: UICollectionViewDataSource
     func updateNberOfImagesInFooter() {
         // Update number of images in footer
         DispatchQueue.main.async { [self] in
-            let indexPath = IndexPath(item: 0, section: (images.sections?.count ?? 0))
+            // Determine index path
+            var indexPath: IndexPath
+            if categoryId == Int32.zero {
+                // Number of images in footer of album collection
+                indexPath = IndexPath(item: 0, section: 0)
+            }
+            else {
+                // Number of images in fotter of image collection
+                indexPath = IndexPath(item: 0, section: (images.sections?.count ?? 0))
+            }
+            // Update footer if needed
             if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
                 footer.nberImagesLabel?.text = getImageCount()
             }
@@ -79,7 +89,7 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1 + (images.sections?.count ?? 0)
+        return categoryId == Int32.zero ? 1 : 1 + (images.sections?.count ?? 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -100,20 +110,27 @@ extension AlbumViewController: UICollectionViewDataSource
         let emptyView = UICollectionReusableView(frame: CGRect.zero)
         switch indexPath.section {
         case 0 /* Albums */:
-            if kind == UICollectionView.elementKindSectionHeader {
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
                 guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView", for: indexPath) as? AlbumHeaderReusableView else { preconditionFailure("Could not load AlbumHeaderReusableView")}
                 header.commentLabel?.attributedText = attributedComment()
                 return header
+            case UICollectionView.elementKindSectionFooter:
+                if categoryId == Int32.zero {
+                    guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
+                    else { preconditionFailure("Could not load ImageFooterReusableView")}
+                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                    footer.nberImagesLabel?.text = getImageCount()
+                    return footer
+                }
+            default:
+                break
             }
         default /* Images */:
             switch kind {
             case UICollectionView.elementKindSectionHeader:
                 // Are images grouped by day, week or month?
-                let validSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
-                                                      .dateCreatedAscending, .dateCreatedDescending]
-                if validSortTypes.contains(sortOption) == false {
-                    return emptyView
-                }
+                if dateSortTypes.contains(sortOption) == false { return emptyView }
                 
                 // Images are grouped by day, week or month
                 if #available(iOS 14, *) {

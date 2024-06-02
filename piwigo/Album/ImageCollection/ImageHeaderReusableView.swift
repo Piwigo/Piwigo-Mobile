@@ -17,10 +17,12 @@ protocol ImageHeaderDelegate: NSObjectProtocol {
 
 class ImageHeaderReusableView: UICollectionReusableView
 {
+    var locationHash = Int.zero
+    
     weak var imageHeaderDelegate: ImageHeaderDelegate?
 
-    @IBOutlet weak var placeLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var mainLabel: UILabel!
+    @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     
     func config(with images: [Image], sortOption: pwgImageSort) {
@@ -28,11 +30,9 @@ class ImageHeaderReusableView: UICollectionReusableView
         // General settings
         backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
         
-        // Date label used when place name known
-        dateLabel.textColor = .piwigoColorRightLabel()
-        
-        // Place name of location
-        placeLabel.textColor = .piwigoColorLeftLabel()
+        // Date & place name labels
+        mainLabel.textColor = .piwigoColorLeftLabel()
+        detailLabel.textColor = .piwigoColorRightLabel()
 
         // Get date labels from images in section
         var date1: Date?, date2: Date?, dates = ("", "")
@@ -58,95 +58,60 @@ class ImageHeaderReusableView: UICollectionReusableView
             break
         }
 
-        // Determine location from images in section
-        let location = getLocation(of: images)
-        
-        // Set up labels from dates and place name
-        (placeLabel.text, dateLabel.text) = AlbumUtilities.getLabels(fromDate: dates.0, optionalDate: dates.1, location: location)
+        // Set labels from dates and place name
+        self.mainLabel.text = dates.0
+        if images.isEmpty {
+            self.detailLabel.text = dates.1
+        } else {
+            // Determine location from images in section
+            let location = AlbumUtilities.getLocation(of: images)
+            LocationProvider.shared.getPlaceName(for: location) { [unowned self] placeName, streetName in
+                if placeName.isEmpty {
+                    self.detailLabel.text = dates.1
+                } else if streetName.isEmpty {
+                    self.detailLabel.text = placeName
+                } else {
+                    self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+                }
+            } pending: { hash in
+                // Show date details until place name availability
+                self.detailLabel.text = dates.1
+                // Register location provider
+                self.locationHash = hash
+                NotificationCenter.default.addObserver(self, selector: #selector(self.updateDetailLabel(_:)),
+                                                       name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
+            } failure: {
+                self.detailLabel.text = dates.1
+            }
+        }
     }
     
-    private func getLocation(of images: [Image]) -> CLLocation {
-        // Initialise location of section with invalid location
-        var verticalAccuracy = CLLocationAccuracy.zero
-        if #available(iOS 14, *) {
-            verticalAccuracy = kCLLocationAccuracyReduced
-        } else {
-            verticalAccuracy = kCLLocationAccuracyThreeKilometers
-        }
-        var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
-                                            altitude: CLLocationDistance(0.0),
-                                            horizontalAccuracy: CLLocationAccuracy(0.0),
-                                            verticalAccuracy: CLLocationAccuracy(0.0),
-                                            timestamp: Date())
-
-        // Loop over images in section
-        for image in images {
-
-            // Any location data ?
-            guard image.latitude != 0.0, image.longitude != 0.0 else {
-                // Image has no valid location data => Next image
-                continue
-            }
-
-            // Location found => Store if first found and move to next section
-            if !CLLocationCoordinate2DIsValid(locationForSection.coordinate) {
-                // First valid location => Store it
-                locationForSection = CLLocation(latitude: image.latitude, longitude: image.longitude)
-            } else {
-                // Another valid location => Compare to first one
-                let newLocation = CLLocation(latitude: image.latitude, longitude: image.longitude)
-                let distance = locationForSection.distance(from: newLocation)
-                
-                // Similar location?
-                let meanLatitude: CLLocationDegrees = (locationForSection.coordinate.latitude + newLocation.coordinate.latitude)/2
-                let meanLongitude: CLLocationDegrees = (locationForSection.coordinate.longitude + newLocation.coordinate.longitude)/2
-                let newCoordinate = CLLocationCoordinate2DMake(meanLatitude,meanLongitude)
-                if distance < kCLLocationAccuracyBest {
-                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
-                                                    horizontalAccuracy: kCLLocationAccuracyBest,
-                                                    verticalAccuracy: verticalAccuracy,
-                                                    timestamp: locationForSection.timestamp)
-                    return locationForSection
-                } else if distance < kCLLocationAccuracyNearestTenMeters {
-                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
-                                                    horizontalAccuracy: kCLLocationAccuracyNearestTenMeters,
-                                                    verticalAccuracy: verticalAccuracy,
-                                                    timestamp: locationForSection.timestamp)
-                    return locationForSection
-                } else if distance < kCLLocationAccuracyHundredMeters {
-                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
-                                                    horizontalAccuracy: kCLLocationAccuracyHundredMeters,
-                                                    verticalAccuracy: verticalAccuracy,
-                                                    timestamp: locationForSection.timestamp)
-                    return locationForSection
-                } else if distance < kCLLocationAccuracyKilometer {
-                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
-                                                    horizontalAccuracy: kCLLocationAccuracyKilometer,
-                                                    verticalAccuracy: verticalAccuracy,
-                                                    timestamp: locationForSection.timestamp)
-                    return locationForSection
-                } else if distance < kCLLocationAccuracyThreeKilometers {
-                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
-                                                    horizontalAccuracy: kCLLocationAccuracyThreeKilometers,
-                                                    verticalAccuracy: verticalAccuracy,
-                                                    timestamp: locationForSection.timestamp)
-                    return locationForSection
-                } else {
-                    // Above 3 km, we estimate that it is a different location
-                    return locationForSection
-                }
-             }
-        }
+    @objc func updateDetailLabel(_ notification: NSNotification) {
+        guard let info = notification.userInfo,
+              let hash = info["hash"] as? Int, hash == locationHash,
+              let placeName = info["placeName"] as? String,
+              let streetName = info["streetName"] as? String
+        else { return }
         
-        return locationForSection
+        // Update detail label
+        if streetName.isEmpty {
+            self.detailLabel.text = placeName
+        } else {
+            self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+        }
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        dateLabel.text = ""
-        placeLabel.text = ""
+        mainLabel.text = ""
+        detailLabel.text = ""
         selectButton.setTitle("", for: .normal)
         selectButton.backgroundColor = .piwigoColorBackground()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

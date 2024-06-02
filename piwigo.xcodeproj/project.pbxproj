@@ -4630,7 +4630,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */;
+			currentVersion = ADC592762C0674AE002B6F82 /* DataModel 0E (Image).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

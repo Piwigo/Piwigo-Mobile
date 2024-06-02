@@ -620,18 +620,21 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Image Section
     static func getDateLabels(for date1: Date?, to date2: Date?) -> (String, String) {
         // Creation date of images (or of availability)
+        let refDate = TimeInterval(-3187209600)     // "1900-01-02 00:00:00" relative to ref. date
         var dateLabelText = ""
         var optionalDateLabelText = ""
         
         // Determine if images of this section were all taken today
-        if let date1 = date1 {
+        // and after "1900-01-02 00:00:00"
+        if let date1 = date1, date1.timeIntervalSinceReferenceDate > refDate {
             
             // Display date of day by default, will add time in the absence of location data
             dateLabelText = DateFormatter.localizedString(from: date1, dateStyle: .long, timeStyle: .none)
             optionalDateLabelText = DateFormatter.localizedString(from: date1, dateStyle: .none, timeStyle: .long)
             
             // Get creation date of last image
-            if let date2 = date2 {
+            // and check that it is after "1900-01-02 00:00:00"
+            if let date2 = date2, date2.timeIntervalSinceReferenceDate > refDate {
                 
                 // Set dates in right order in case user sorted images in reverse order
                 let firstImageDate = (date1 < date2) ? date1 : date2
@@ -739,21 +742,82 @@ class AlbumUtilities: NSObject {
         return (dateLabelText, optionalDateLabelText)
     }
     
-    static func getLabels(fromDate date: String, optionalDate: String, location: CLLocation) -> (String, String) {
-        // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
-            return (date, optionalDate)
-        }
-
-        // Use label according to name availabilities
-        if let placeLabelName = placeNames["placeLabel"] {
-            if let dateLabelName = placeNames["dateLabel"] {
-                return (placeLabelName, String(format: "%@ • %@", date, dateLabelName))
-            } else {
-                return (placeLabelName, String(format: "%@ • %@", date, optionalDate))
-            }
+    static func getLocation(of images: [Image]) -> CLLocation {
+        // Initialise location of section with invalid location
+        var verticalAccuracy = CLLocationAccuracy.zero
+        if #available(iOS 14, *) {
+            verticalAccuracy = kCLLocationAccuracyReduced
         } else {
-            return (date, optionalDate)
+            verticalAccuracy = kCLLocationAccuracyThreeKilometers
         }
+        var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
+                                            altitude: CLLocationDistance(0.0),
+                                            horizontalAccuracy: kCLLocationAccuracyBest,
+                                            verticalAccuracy: verticalAccuracy,
+                                            timestamp: Date())
+
+        // Loop over images in section
+        for image in images {
+
+            // Any location data ?
+            guard image.latitude != 0.0, image.longitude != 0.0 else {
+                // Image has no valid location data => Next image
+                continue
+            }
+
+            // Location found => Store if first found and move to next section
+            if !CLLocationCoordinate2DIsValid(locationForSection.coordinate) {
+                // First valid location => Store it
+                let coordinate = CLLocationCoordinate2DMake(image.latitude, image.longitude)
+                locationForSection = CLLocation(coordinate: coordinate, altitude: 0,
+                                                horizontalAccuracy: kCLLocationAccuracyBest,
+                                                verticalAccuracy: verticalAccuracy,
+                                                timestamp: locationForSection.timestamp)
+            } else {
+                // Another valid location => Compare to first one
+                let newLocation = CLLocation(latitude: image.latitude, longitude: image.longitude)
+                let distance = locationForSection.distance(from: newLocation)
+                
+                // Similar location?
+                let meanLatitude: CLLocationDegrees = (locationForSection.coordinate.latitude + newLocation.coordinate.latitude)/2
+                let meanLongitude: CLLocationDegrees = (locationForSection.coordinate.longitude + newLocation.coordinate.longitude)/2
+                let newCoordinate = CLLocationCoordinate2DMake(meanLatitude,meanLongitude)
+                if distance < kCLLocationAccuracyBest {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyBest,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyNearestTenMeters {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyNearestTenMeters,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyHundredMeters {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyHundredMeters,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyKilometer {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyKilometer,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyThreeKilometers {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyThreeKilometers,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else {
+                    // Above 3 km, we estimate that it is a different location
+                    return locationForSection
+                }
+             }
+        }
+        return locationForSection
     }
 }

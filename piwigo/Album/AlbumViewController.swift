@@ -109,6 +109,8 @@ class AlbumViewController: UIViewController
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
     lazy var imageCellSize: CGSize = getImageCellSize()
     lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
+    let dateSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
+                                         .dateCreatedAscending, .dateCreatedDescending]
 
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
@@ -828,9 +830,8 @@ class AlbumViewController: UIViewController
     }
 
     func pushView(_ viewController: UIViewController?) {
-        guard let viewController = viewController else {
-            return
-        }
+        guard let viewController = viewController
+        else { return }
         
         // Push album list or tag list
         if UIDevice.current.userInterfaceIdiom == .pad {
