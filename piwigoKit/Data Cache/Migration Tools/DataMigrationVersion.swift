@@ -61,7 +61,7 @@ enum DataMigrationVersion: String, CaseIterable {
         case .version0B:
             return .version0C
         case .version0C:
-            return .version0D
+            return .version0E
         case .version0D:
             return .version0E
         case .version0E:
