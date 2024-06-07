@@ -102,20 +102,18 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 guard var newIndexPath = newIndexPath, anObject is Image
                 else { return }
                 newIndexPath.section += 1
-                // Insert image
                 updateOperations.append( BlockOperation { [weak self] in
                     // Insert image
                     debugPrint("••> Insert image of album #\(self?.categoryId ?? Int32.min) at \(newIndexPath)")
                     self?.collectionView?.insertItems(at: [newIndexPath])
                     self?.updateHeader(ofSection: newIndexPath.section)
-                })
-                // Enable menu if this is the first added image
-                if albumData.nbImages == 1 {
-                    updateOperations.append( BlockOperation { [weak self] in
+                    
+                    // Enable menu if this is the first added image
+                    if self?.albumData.nbImages == 1 {
                         debugPrint("••> First added image ► enable menu")
                         self?.initBarsInPreviewMode()
-                    })
-                }
+                    }
+                })
             case .delete:
                 guard var indexPath = indexPath, let image = anObject as? Image
                 else { return }
@@ -126,16 +124,17 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
                     self?.collectionView?.deleteItems(at: [indexPath])
-                    self?.updateHeader(ofSection: indexPath.section)
-                })
-                // Disable menu if this is the last deleted image
-                if albumData.nbImages == 0 {
-                    updateOperations.append( BlockOperation { [weak self] in
+                    if self?.albumData.nbImages == 0 {
+                        // Disable menu
                         debugPrint("••> Last removed image ► disable menu")
                         self?.isSelect = false
                         self?.initBarsInPreviewMode()
-                    })
-                }
+                    } else {
+                        // Update header of section
+                        debugPrint("••> Update hedaer of section #\(indexPath.section)")
+                        self?.updateHeader(ofSection: indexPath.section)
+                    }
+                })
             case .move:
                 guard var indexPath = indexPath, var newIndexPath = newIndexPath,
                       anObject is Image, indexPath != newIndexPath else { return }
@@ -191,12 +190,18 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     }
     
     func updateHeader(ofSection section: Int) {
+        // does this section exist?
+        if let collectionView = collectionView,
+           section >= numberOfSections(in: collectionView) { return }
+
         // Are images grouped by day, week or month?
         if dateSortTypes.contains(sortOption) == false { return }
 
         // Images are grouped by day, week or month: section header visible?
         let indexPath = IndexPath(item: 0, section: section)
-        if let indexPaths = self.collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader), indexPaths.contains(indexPath)
+        if let indexPaths = collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader),
+           indexPaths.contains(indexPath),
+           collectionView.numberOfItems(inSection: section) > 0
         {
             // Determine place names from first images
             var imagesInSection: [Image] = []
