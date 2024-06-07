@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
-"whatsNew_title1" = "Új gesztusok";
-"whatsNew_desc1" = "Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.";
-"whatsNew_title2" = "PiP támogatás";
-"whatsNew_desc2" = "Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues.";
 "whatsNew_continue" = "Folytatás";

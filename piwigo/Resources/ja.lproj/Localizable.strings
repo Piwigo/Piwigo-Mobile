@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
-"whatsNew_title1" = "新しいジェスチャー";
-"whatsNew_desc1" = "画像を下にスワイプまたはピンチすると、個々の写真や動画を見るときにアルバムに戻ります。";
-"whatsNew_title2" = "PiPサポート";
-"whatsNew_desc2" = "Piwigoに保存されているビデオを他のアプリで視聴しましょう。";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues.";
 "whatsNew_continue" = "続ける";

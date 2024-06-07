@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
-"whatsNew_title1" = "新手勢";
-"whatsNew_desc1" = "在觀看照片或影片時向下滑或縮小以回到相簿。";
-"whatsNew_title2" = "子母畫面支援";
-"whatsNew_desc2" = "在使用其他應用程式時觀看儲存在Piwigo的影片。";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues.";
 "whatsNew_continue" = "繼續";

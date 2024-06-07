@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Hvad er nyt i Piwigo";
-"whatsNew_title1" = "Nye Bevægelser";
-"whatsNew_desc1" = "Stryg ned eller klemme billedet for at vende tilbage til albummet, når du ser individuelle billeder eller videoer.";
-"whatsNew_title2" = "PiP Understøttelse";
-"whatsNew_desc2" = "Se en video, der er gemt på din Piwigo, mens du bruger andre apps.";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues.";
 "whatsNew_continue" = "Fortsæt";

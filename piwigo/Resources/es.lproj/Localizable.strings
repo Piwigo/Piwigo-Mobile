@@ -195,8 +195,8 @@
 "categorySort_videosOnly" = "Solo vídeos";
 "categorySort_imagesOnly" = "Solo fotos";
 
-"categoryView_options" = "View Options";
-"categoryGroup_group" = "Group Images By…";
+"categoryView_options" = "Opciones de Visualización";
+"categoryGroup_group" = "Agrupar imágenes por…";
 
 // Album selection
 "categorySelection_title" = "Álbum";
@@ -323,10 +323,10 @@
 "pullToRefresh" = "Recargar fotos";
 "andMore" = " y más";
 "Date" = "Fecha";
-"None" = "None";
-"Day" = "Day";
-"Week" = "Week";
-"Month" = "Month";
+"None" = "Ninguna";
+"Day" = "Día";
+"Week" = "Semana";
+"Month" = "Mes";
 
 // Errors
 "albumPhotoError_title" = "Error al obtener las fotos del álbum";
@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
-"whatsNew_title1" = "Nuevos gestos";
-"whatsNew_desc1" = "Deslice hacia abajo o pellizque la imagen para volver al álbum cuando vea fotos individuales o vídeos.";
-"whatsNew_title2" = "Soporte PiP";
-"whatsNew_desc2" = "Mira un vídeo almacenado en tu Piwigo mientras usas otras aplicaciones.";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues.";
 "whatsNew_continue" = "Continuar";

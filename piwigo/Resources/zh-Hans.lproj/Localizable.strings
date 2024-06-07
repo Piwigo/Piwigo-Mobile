@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
-"whatsNew_title1" = "新手势";
-"whatsNew_desc1" = "当查看单个照片或视频时，向下滑动或固定图像返回相册。";
-"whatsNew_title2" = "PiP 支持";
-"whatsNew_desc2" = "当您使用其他应用时，观看您Piwigo上存储的视频。";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues.";
 "whatsNew_continue" = "继续储值";
