@@ -384,7 +384,7 @@ extension LocalImagesViewController
             default:
                 return 0
             }
-        case .all:
+        case .none:
             switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 return indexPath.row
@@ -588,7 +588,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
                     let selectState = self.updateSelectButton(ofSection:  indexPath.section)
                     let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
                     if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? LocalImagesHeaderReusableView {
-                        header.setButtonTitle(forState: selectState)
+                        header.selectButton.setTitle(forState: selectState)
                     }
                 }
             }

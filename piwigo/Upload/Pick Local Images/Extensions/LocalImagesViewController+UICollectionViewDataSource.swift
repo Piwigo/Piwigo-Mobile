@@ -59,7 +59,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
             return indexOfImageSortedByWeek.count
         case .day:
             return indexOfImageSortedByDay.count
-        case .all:
+        case .none:
             return 1
         }
     }
@@ -96,7 +96,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
             default:
                 return 0
             }
-        case .all:
+        case .none:
             return fetchedImages.count
         }
     }

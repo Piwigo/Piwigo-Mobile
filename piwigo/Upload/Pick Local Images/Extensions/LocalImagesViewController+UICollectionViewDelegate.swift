@@ -78,7 +78,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
         let selectState = updateSelectButton(ofSection: indexPath.section)
         let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
         if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? LocalImagesHeaderReusableView {
-            header.setButtonTitle(forState: selectState)
+            header.selectButton.setTitle(forState: selectState)
         }
     }
     

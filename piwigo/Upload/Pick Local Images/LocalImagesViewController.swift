@@ -18,7 +18,7 @@ enum SectionType: Int {
     case month
     case week
     case day
-    case all
+    case none
 }
 
 class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate {
@@ -75,7 +75,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
-    var sortType: SectionType = .all                // [Months, Weeks, Days, All images in one section]
+    var sortType: SectionType = .none                // [Months, Weeks, Days, All images in one section]
     var indexOfImageSortedByMonth: [IndexSet] = []  // Indices of images sorted by month
     var indexOfImageSortedByWeek: [IndexSet] = []   // Indices of images sorted week
     var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
@@ -174,7 +174,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+),
             /// - to allow/disallow  re-uploading photos,
             /// - and to delete photos already uploaded to the Piwigo server on iPhone only.
-            let menu = UIMenu(title: "", children: [getMenuForSorting(),
+            let menu = UIMenu(title: "", children: [swapOrder(), groupMenu(),
                                                     getMenuForSelectingPhotos(),
                                                     getMenuForDeletingPhotos()].compactMap({$0}))
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
@@ -456,7 +456,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+),
             /// - to allow/disallow re-uploading photos,
             /// - to delete photos already uploaded to the Piwigo server on iPhone only.
-            actionBarButton.menu = UIMenu(title: "", children: [getMenuForSorting(),
+            actionBarButton.menu = UIMenu(title: "", children: [swapOrder(), groupMenu(),
                                                                 getMenuForSelectingPhotos(),
                                                                 getMenuForDeletingPhotos()].compactMap({$0}))
         } else {
@@ -514,7 +514,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     }
 
     @available(iOS 14, *)
-    private func getMenuForSorting() -> UIMenu {
+    func swapOrder() -> UIAction {
         // Initialise menu items
         let swapOrder: UIAction!
         switch UploadVars.localImagesSort {
@@ -529,9 +529,31 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                                  image: nil, handler: { _ in self.swapSortOrder()})
         }
         swapOrder.accessibilityIdentifier = "Date"
-        let sortByDay = UIAction(title: NSLocalizedString("Day", comment: "Day"),
-                                 image: UIImage(named: "imageDay"), handler: { _ in
-            // Did select grouping option by day
+        return swapOrder
+    }
+    
+    @available(iOS 14, *)
+    func groupMenu() -> UIMenu {
+        // Create a menu for selecting how to group images
+        let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
+        return UIMenu(title: NSLocalizedString("categoryGroup_group", comment: "Group Images By…"),
+                      image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
+                      options: UIMenu.Options.displayInline,
+                      children: children)
+    }
+    
+    @available(iOS 14, *)
+    func byDayAction() -> UIAction {
+        let isActive = sortType == .day
+        let action = UIAction(title: NSLocalizedString("Day", comment: "Day"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.group.day"),
+                              handler: { [self] action in
+            // Should image grouping be changed?
+            if isActive { return }
+            
+            // Change image grouping
             self.sortType = .day
             
             // Refresh collection (may be called from background queue)
@@ -540,10 +562,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        sortByDay.accessibilityIdentifier = "Day"
-        let sortByWeek = UIAction(title: NSLocalizedString("Week", comment: "Week"),
-                                  image: UIImage(named: "imageWeek"), handler: { _ in
-            // Did select grouping option by week
+        action.accessibilityIdentifier = "groupByDay"
+        return action
+    }
+    
+    @available(iOS 14, *)
+    func byWeekAction() -> UIAction {
+        let isActive = sortType == .week
+        let action = UIAction(title: NSLocalizedString("Week", comment: "Week"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.group.week"),
+                              handler: { [self] action in
+            // Should image grouping be changed?
+            if isActive { return }
+            
+            // Change image grouping
             self.sortType = .week
             
             // Refresh collection (may be called from background queue)
@@ -552,10 +585,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        sortByWeek.accessibilityIdentifier = "Week"
-        let sortByMonth = UIAction(title: NSLocalizedString("Month", comment: "Month"),
-                                   image: UIImage(named: "imageMonth"), handler: { _ in
-            // Did select grouping option by months
+        action.accessibilityIdentifier = "groupByWeek"
+        return action
+    }
+    
+    @available(iOS 14, *)
+    func byMonthAction() -> UIAction {
+        let isActive = sortType == .month
+        let action = UIAction(title: NSLocalizedString("Month", comment: "Month"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.group.month"),
+                              handler: { [self] action in
+            // Should sorting be changed?
+            if isActive { return }
+            
+            // Should image grouping be changed?
             self.sortType = .month
             
             // Refresh collection (may be called from background queue)
@@ -564,11 +608,22 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        sortByMonth.accessibilityIdentifier = "Month"
-        let noSort = UIAction(title: NSLocalizedString("All Photos", comment: "All Photos"),
-                              image: nil, handler: { _ in
-            // Did select new sort option "All""
-            self.sortType = .all
+        action.accessibilityIdentifier = "groupByMonth"
+        return action
+    }
+    
+    @available(iOS 14, *)
+    func byNoneAction() -> UIAction {
+        let isActive = sortType == .none
+        let action = UIAction(title: NSLocalizedString("None", comment: "None"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.group.none"),
+                              handler: { [self] action in
+            // Should image grouping be changed?
+            if isActive { return }
+            
+            // Change image grouping
+            self.sortType = .none
             
             // Refresh collection (may be called from background queue)
             DispatchQueue.main.async {
@@ -576,10 +631,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
                 self.localImagesCollection.reloadData()
             }
         })
-        return UIMenu(title: "", image: nil,
-                      identifier: UIMenu.Identifier("org.piwigo.localImages.action"),
-                      options: .displayInline,
-                      children: [swapOrder, sortByDay, sortByWeek, sortByMonth, noSort])
+        action.accessibilityIdentifier = "groupByNone"
+        return action
     }
 
     @objc func swapSortOrder() {
@@ -603,7 +656,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     
     @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
         // Did select new sort option [Months, Weeks, Days, All in one section]
-        sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .all
+        sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .none
                 
         // Refresh collection (may be called from background queue)
         DispatchQueue.main.async {
@@ -709,7 +762,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         headers.forEach { header in
             if let sectionHeader = header as? LocalImagesHeaderReusableView {
                 let selectState = updateSelectButton(ofSection: sectionHeader.section)
-                sectionHeader.setButtonTitle(forState: selectState)
+                sectionHeader.selectButton.setTitle(forState: selectState)
             }
         }
         self.updateNavBar()
@@ -827,11 +880,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             }
         }
         
-        // Update button
+        // Update select buttons
         let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         headers.forEach { header in
             if let header = header as? LocalImagesHeaderReusableView {
-                header.setButtonTitle(forState: .select)
+                header.selectButton.setTitle(forState: .select)
             }
         }
     }
@@ -849,21 +902,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     }
 
     @objc func touchedImages(_ gestureRecognizer: UIPanGestureRecognizer?) {
-        // To prevent a crash
-        if gestureRecognizer?.view == nil {
-            return
-        }
-
-        // Point and direction
-        let point = gestureRecognizer?.location(in: localImagesCollection)
-
-        // Get index path at touch position
-        guard let indexPath = localImagesCollection.indexPathForItem(at: point ?? CGPoint.zero) else {
-            return
-        }
-
+        // Just in case…
+        guard let gestureRecognizerState = gestureRecognizer?.state,
+              let point = gestureRecognizer?.location(in: localImagesCollection),
+              let indexPath = localImagesCollection.indexPathForItem(at: point)
+        else { return }
+        
         // Select/deselect the cell or scroll the view
-        if (gestureRecognizer?.state == .began) || (gestureRecognizer?.state == .changed) {
+        if [.began, .changed].contains(gestureRecognizerState) {
 
             // Get cell at touch position
             guard let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
@@ -904,7 +950,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         }
 
         // Is this the end of the gesture?
-        if gestureRecognizer?.state == .ended {
+        if gestureRecognizerState == .ended {
             // Clear list of touched images
             imagesBeingTouched = []
 
@@ -912,7 +958,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             let selectState = updateSelectButton(ofSection: indexPath.section)
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? LocalImagesHeaderReusableView {
-                header.setButtonTitle(forState: selectState)
+                header.selectButton.setTitle(forState: selectState)
             }
         }
     }

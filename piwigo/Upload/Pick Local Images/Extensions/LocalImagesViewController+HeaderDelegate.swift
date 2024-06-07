@@ -70,7 +70,7 @@ extension LocalImagesViewController: LocalImagesHeaderDelegate
         localImagesCollection.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader).forEach { indexPath in
             if indexPath.section == section,
                let header = localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? LocalImagesHeaderReusableView {
-                header.setButtonTitle(forState: selectedSections[section])
+                header.selectButton.setTitle(forState: selectedSections[section])
             }
         }
     }

@@ -12,12 +12,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-enum SelectButtonState : Int {
-    case none
-    case select
-    case deselect
-}
-
 @objc protocol LocalImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)
 }
@@ -25,7 +19,7 @@ enum SelectButtonState : Int {
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
     var section = 0
-    var locationHash = Int.zero
+    private var locationHash = Int.zero
 
     @objc weak var headerDelegate: LocalImagesHeaderDelegate?
     
@@ -78,7 +72,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
-        setButtonTitle(forState: selectState)
+        selectButton.setTitle(forState: selectState)
     }
 
     @objc func updateDetailLabel(_ notification: NSNotification) {
@@ -113,25 +107,6 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     
     // MARK: Utilities
-    func setButtonTitle(forState state: SelectButtonState) {
-        let title: String, bckgColor: UIColor
-        switch state {
-        case .select:
-            title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
-            bckgColor = .piwigoColorCellBackground()
-        case .deselect:
-            title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
-            bckgColor = .piwigoColorCellBackground()
-        case .none:
-            title = ""
-            bckgColor = .clear
-        }
-        selectButton.backgroundColor = bckgColor
-        selectButton.setTitle(title, for: .normal)
-        selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
-        selectButton.accessibilityIdentifier = "SelectAll"
-    }
-        
     private func getLocation(of images: [PHAsset]) -> CLLocation {
         // Initialise location of section with invalid location
         var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
