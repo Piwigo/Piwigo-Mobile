@@ -41,6 +41,10 @@ class PiwigoHUD: UIView
     
     override func awakeFromNib() {
         super.awakeFromNib()
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     // MARK: - Create/Update HUD
@@ -58,10 +62,10 @@ class PiwigoHUD: UIView
         // Configure HUD title (always shown and non-empty)
         let screenWidth = view.window?.screen.bounds.width ?? view.bounds.width
         if title.isEmpty {
-            titleLabel.attributedText = getAttributed(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+            titleLabel?.attributedText = getAttributed(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
                                                       forMaxWidth: screenWidth)
         } else {
-            titleLabel.attributedText = getAttributed(title: title, forMaxWidth: screenWidth)
+            titleLabel?.attributedText = getAttributed(title: title, forMaxWidth: screenWidth)
         }
         
         // Configure HUD detail
@@ -70,22 +74,22 @@ class PiwigoHUD: UIView
             detailLabel.isHidden = false
             detailBottomToTitleBottom.constant = 20
         } else {
-            detailLabel.isHidden = true
-            detailBottomToTitleBottom.constant = 0
+            detailLabel?.isHidden = true
+            detailBottomToTitleBottom?.constant = 0
         }
         
         // Configure HUD button
         if let buttonTitle = buttonTitle, buttonTitle.isEmpty == false,
            let buttonTarget = buttonTarget, let buttonSelector = buttonSelector {
             let attrTitle = getAttributed(button: buttonTitle, forWidth: screenWidth)
-            button.setAttributedTitle(attrTitle, for: .normal)
-            button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
-            button.backgroundColor = .piwigoColorCellBackground()
-            button.isHidden = false
-            buttonBottomToDetailBottom.constant = 36
+            button?.setAttributedTitle(attrTitle, for: .normal)
+            button?.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
+            button?.backgroundColor = .piwigoColorCellBackground()
+            button?.isHidden = false
+            buttonBottomToDetailBottom?.constant = 36
         } else {
-            button.isHidden = true
-            buttonBottomToDetailBottom.constant = 0
+            button?.isHidden = true
+            buttonBottomToDetailBottom?.constant = 0
         }
         
         // Set HUD view width after labels and button configurations
@@ -94,7 +98,7 @@ class PiwigoHUD: UIView
         // Add HUD to superview
         self.alpha = 0
         self.backgroundColor = UIColor(white: 0, alpha: 0.5)
-        self.view.backgroundColor = .piwigoColorBackground()
+        self.view?.backgroundColor = .piwigoColorBackground()
         view.addSubview(self)
         self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -110,6 +114,16 @@ class PiwigoHUD: UIView
         UIView.animate(withDuration: duration) {
             self.alpha = 1
         }
+    }
+    
+    @objc func applyColorPalette() {
+        backgroundColor = UIColor(white: 0, alpha: 0.5)
+        view?.backgroundColor = .piwigoColorBackground()
+        titleLabel?.textColor = UIColor.piwigoColorText()
+        detailLabel?.textColor = UIColor.piwigoColorText()
+        button?.backgroundColor = .piwigoColorCellBackground()
+        activityIndicator?.color = UIColor.piwigoColorText()
+        completedImage?.tintColor = UIColor.piwigoColorLeftLabel()
     }
     
     func update(title: String? = nil, detail: String? = nil,
