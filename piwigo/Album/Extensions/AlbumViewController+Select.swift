@@ -145,7 +145,9 @@ extension AlbumViewController
         selectedImageIds = Set<Int64>()
         selectedFavoriteIds = Set<Int64>()
         selectedVideosIds = Set<Int64>()
-        selectedSections = [Int : SelectButtonState]()
+        for key in selectedSections.keys {
+            selectedSections[key] = .select
+        }
 
         // Update select buttons if needed
         if dateSortTypes.contains(sortOption),
