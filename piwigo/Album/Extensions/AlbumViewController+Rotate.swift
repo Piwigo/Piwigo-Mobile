@@ -106,8 +106,17 @@ extension AlbumViewController
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
                     // Update HUD
                     DispatchQueue.main.async {
+                        // Update progress indicator
                         let progress: Float = 1 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages)
                         self.navigationController?.updateHUD(withProgress: progress)
+                        // Rotate cell image
+                        for cell in (self.collectionView?.visibleCells ?? []) {
+                            if let cell = cell as? ImageCollectionViewCell, cell.imageData.pwgID == imageID,
+                               let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
+                                cell.config(with: updatedImage, placeHolder: self.imagePlaceHolder,
+                                            size: self.imageSize, sortOption: self.sortOption)
+                            }
+                        }
                     }
                     
                     // Next image
