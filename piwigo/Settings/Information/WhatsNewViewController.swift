@@ -33,20 +33,20 @@ class WhatsNewViewController: UIViewController {
 //            firstNewsImage.image = UIImage(systemName: "server.rack")
 //        } else {
             // Fallback on ealier version
-            firstNewsImage.image = UIImage(named: "whatsNew1")
+            firstNewsImage.image = UIImage(named: "imageDay")
 //        }
-        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "New Gestures")
-        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Swipe down or pinch the image to return to the album when viewing individual photos or videos.")
+        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "Group Photos")
+        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "By day, week or month.")
         
         // What's new — 2nd annoucement
         if #available(iOS 13.0, *) {
-            secondNewsImage.image = UIImage(systemName: "pip")
+            secondNewsImage.image = UIImage(systemName: "rotate.right")
         } else {
             // Fallback on ealier version
             secondNewsImage.image = UIImage(named: "whatsNew2")
         }
-        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "PiP Support")
-        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Watch a video stored on your Piwigo while you use other apps.")
+        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Rotate Photos")
+        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Fix orientation issues.")
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)
