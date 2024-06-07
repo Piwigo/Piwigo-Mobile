@@ -66,10 +66,12 @@ extension AlbumViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            navigationController?.updateHUDwithSuccess() { [self] in
-                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    // Deselect images
-                    cancelSelect()
+            DispatchQueue.main.async {
+                self.navigationController?.updateHUDwithSuccess() { [self] in
+                    navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                        // Deselect images
+                        cancelSelect()
+                    }
                 }
             }
             return
@@ -83,8 +85,11 @@ extension AlbumViewController
             selectedVideosIds.remove(imageId)
 
             // Update HUD
-            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
-
+            DispatchQueue.main.async {
+                let progress: Float = 1 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages)
+                self.navigationController?.updateHUD(withProgress: progress)
+            }
+            
             // Next image
             rotateImages(by: angle)
             return
