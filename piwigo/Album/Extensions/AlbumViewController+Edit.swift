@@ -16,7 +16,7 @@ extension AlbumViewController
     @available(iOS 14.0, *)
     func editParamsAction() -> UIAction {
         let actionId = UIAction.Identifier("Edit Parameters")
-        let action = UIAction(title: NSLocalizedString("imageOptions_properties", comment: "Modify Information"),
+        let action = UIAction(title: NSLocalizedString("imageOptions_properties", comment: "Modify Properties"),
                               image: UIImage(systemName: "pencil"),
                               identifier: actionId, handler: { [self] action in
            // Edit image informations

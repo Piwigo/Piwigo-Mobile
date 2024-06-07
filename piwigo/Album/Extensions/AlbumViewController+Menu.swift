@@ -12,9 +12,9 @@ import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: - Action/Select Buttons
-    func getActionBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+    // MARK: - Sort/Select Buttons
+    func getSortBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapSortButton))
         button.accessibilityIdentifier = "Action"
         return button
     }
@@ -28,7 +28,7 @@ extension AlbumViewController
     
     // MARK: - Sort Image
     /// - for selecting image sort options
-    @objc func didTapActionButton() {
+    @objc func didTapSortButton() {
         let alert = UIAlertController(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
                                       message: nil, preferredStyle: .actionSheet)
         

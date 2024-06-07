@@ -29,7 +29,7 @@ extension AlbumViewController
         let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
                               handler: { _ in
-            // Edit image informations
+            // Rotate images right
             self.rotateImagesRight()
         })
         action.accessibilityIdentifier = "Rotate Right"
@@ -41,7 +41,7 @@ extension AlbumViewController
         let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
                               handler: { _ in
-            // Edit image informations
+            // Rotate images left
             self.rotateImagesLeft()
         })
         action.accessibilityIdentifier = "Rotate Left"

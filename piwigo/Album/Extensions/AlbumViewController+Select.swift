@@ -18,6 +18,58 @@ extension AlbumViewController
         button.accessibilityIdentifier = "Cancel"
         return button
     }
+    
+    func getActionBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        button.accessibilityIdentifier = "Action"
+        return button
+    }
+    
+    func getEditBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
+        button.accessibilityIdentifier = "Edit"
+        return button
+    }
+
+    
+    // MARK: - Edit/Rotate Images
+    /// - for selecting image sort options
+    @objc func didTapActionButton() {
+        let alert = UIAlertController(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
+                                      message: nil, preferredStyle: .actionSheet)
+        
+        // Cancel action
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                         style: .cancel, handler: { action in })
+        alert.addAction(cancelAction)
+        
+        // Rotate clockwise
+        var title = NSLocalizedString("rotateImage_right", comment: "Clockwise")
+        let rotateRightAction = UIAlertAction(title: title, style: .default) { [self] _ in
+            self.rotateImagesRight()
+        }
+        alert.addAction(rotateRightAction)
+        
+        // Rotate counterclockwise
+        title = NSLocalizedString("rotateImage_left", comment: "Counterclockwise")
+        let rotateLeftAction = UIAlertAction(title: title, style: .default) { [self] _ in
+            self.rotateImagesLeft()
+        }
+        alert.addAction(rotateLeftAction)
+        
+        // Present list of actions
+        alert.view.tintColor = .piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        alert.popoverPresentationController?.barButtonItem = actionBarButton
+        present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = .piwigoColorOrange()
+        }
+    }
 }
 
 

@@ -42,7 +42,7 @@ extension AlbumViewController
                 selectBarButton?.accessibilityIdentifier = "select"
             } else {
                 // Button for sorting photos
-                actionBarButton = getActionBarButton()
+                actionBarButton = getSortBarButton()
                 // Button for activating the selection mode (not for guests)
                 selectBarButton = getSelectBarButton()
             }
@@ -185,17 +185,17 @@ extension AlbumViewController
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
             if user.hasUploadRights(forCatID: categoryId) {
-                // The action button only proposes to edit image parameters
-                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self,
-                                                  action: #selector(editSelection))
-                actionBarButton?.accessibilityIdentifier = "actions"
+                // Button for rotating photos
+                actionBarButton = getActionBarButton()
+                // Button for editing properties
+                selectBarButton = getEditBarButton()
 
                 if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
                     // Left side of navigation bar
                     navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
                     // Right side of navigation bar
-                    navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
+                    navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
 
                     // Remaining buttons in navigation toolbar
                     /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
@@ -211,7 +211,7 @@ extension AlbumViewController
                     navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton, moveBarButton].compactMap { $0 }, animated: true)
 
                     // Right side of navigation bar
-                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+                    let rightBarButtonItems = [selectBarButton, actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
 
                     // Hide toolbar
@@ -269,6 +269,7 @@ extension AlbumViewController
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
         if user.hasUploadRights(forCatID: categoryId) {
+            selectBarButton?.isEnabled = hasImagesSelected
             actionBarButton?.isEnabled = hasImagesSelected
             shareBarButton.isEnabled = hasImagesSelected
             deleteBarButton.isEnabled = hasImagesSelected
