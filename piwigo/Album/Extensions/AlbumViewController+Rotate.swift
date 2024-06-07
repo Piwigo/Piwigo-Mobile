@@ -100,7 +100,10 @@ extension AlbumViewController
                 let imageID = imageData.pwgID
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
                     // Update HUD
-                    navigationController?.updateHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    DispatchQueue.main.async {
+                        let progress: Float = 1 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages)
+                        self.navigationController?.updateHUD(withProgress: progress)
+                    }
                     
                     // Next image
                     selectedImageIds.removeFirst()
