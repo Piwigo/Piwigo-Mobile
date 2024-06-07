@@ -140,14 +140,58 @@ extension AlbumViewController
             }
         }
         
-        // Clear array of selected images and allow iOS device to sleep
+        // Clear array of selected images
         touchedImageIds = []
         selectedImageIds = Set<Int64>()
         selectedFavoriteIds = Set<Int64>()
         selectedVideosIds = Set<Int64>()
-        UIApplication.shared.isIdleTimerDisabled = false
+        selectedSections = [Int : SelectButtonState]()
+
+        // Update select buttons if needed
+        if dateSortTypes.contains(sortOption),
+           let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        {
+            headers.forEach { header in
+                if let header = header as? ImageHeaderReusableView {
+                    header.selectButton.setTitle(forState: .select)
+                }
+                else if let header = header as? ImageOldHeaderReusableView {
+                    header.selectButton.setTitle(forState: .select)
+                }
+            }
+        }
     }
     
+    func updateSelectButton(ofSection section: Int) -> SelectButtonState {
+        // Number of images in section
+        let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+        if nberOfImagesInSection == 0 {
+            selectedSections[section] = SelectButtonState.none
+            return .none
+        }
+
+        // Number of selected images
+        let imageSection = section - 1
+        var nberOfSelectedImagesInSection = 0
+        for item in 0..<nberOfImagesInSection {
+            let imageIndexPath = IndexPath(item: item, section: imageSection)
+            if selectedImageIds.contains(images.object(at: imageIndexPath).pwgID) {
+                nberOfSelectedImagesInSection += 1
+            }
+        }
+        
+        // Update state of Select button only if needed
+        if nberOfImagesInSection == nberOfSelectedImagesInSection {
+            // All images are selected
+            selectedSections[section] = SelectButtonState.deselect
+            return .deselect
+        } else {
+            // Not all images are selected
+            selectedSections[section] = SelectButtonState.select
+            return .select
+        }
+    }
+
     
     // MARK: - Prepare Selection
     func initSelection(beforeAction action: pwgImageAction) {
@@ -240,19 +284,24 @@ extension AlbumViewController
     private func retrieveImageData(beforeAction action:pwgImageAction) {
         // Get image ID if any
         guard let imageId = selectedImageIdsLoop.first else {
-            navigationController?.hideHUD() { [self] in
-                doAction(action)
+            DispatchQueue.main.async {
+                self.navigationController?.hideHUD() { [self] in
+                    doAction(action)
+                }
             }
             return
         }
-                        
+        
         // Image data are not complete when retrieved using pwg.categories.getImages
         imageProvider.getInfos(forID: imageId, inCategoryId: self.albumData.pwgID) {  [self] in
             // Image info retrieved
             selectedImageIdsLoop.remove(imageId)
 
             // Update HUD
-            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
+            DispatchQueue.main.async {
+                let progress: Float = 1 - Float(self.selectedImageIdsLoop.count) / Float(self.totalNumberOfImages)
+                self.navigationController?.updateHUD(withProgress: progress)
+            }
 
             // Next image
             retrieveImageData(beforeAction: action)
@@ -284,7 +333,7 @@ extension AlbumViewController
     }
 }
 
-// MARK: -
+// MARK: - UIGestureRecognizerDelegate Methods
 extension AlbumViewController: UIGestureRecognizerDelegate
 {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
@@ -309,20 +358,18 @@ extension AlbumViewController: UIGestureRecognizerDelegate
     
     @objc func touchedImages(_ gestureRecognizer: UIPanGestureRecognizer?) {
         // Just in case…
-        guard let gestureRecognizer = gestureRecognizer,
-              let collectionView = collectionView
+        guard let collectionView = collectionView,
+              let gestureRecognizerState = gestureRecognizer?.state,
+              let point = gestureRecognizer?.location(in: collectionView),
+              let indexPath = collectionView.indexPathForItem(at: point)
         else { return }
         
         // Select/deselect cells
         //        let start = CFAbsoluteTimeGetCurrent()
-        switch gestureRecognizer.state {
-        case .began, .changed:
-            // Get touch point
-            let point = gestureRecognizer.location(in: collectionView)
-            
+        if [.began, .changed].contains(gestureRecognizerState)
+        {
             // Get cell at touch position
-            if let indexPath = collectionView.indexPathForItem(at: point),
-               let imageCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+            if let imageCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
                let imageId = imageCell.imageData?.pwgID
             {
                 // Update the selection if not already done
@@ -351,11 +398,21 @@ extension AlbumViewController: UIGestureRecognizerDelegate
                 // Update the navigation bar
                 updateBarsInSelectMode()
             }
-            
-        case .ended:
+        }
+        
+        // Is this the end of the gesture?
+        if gestureRecognizerState == .ended {
+            // Clear list of touched images
             touchedImageIds = []
-        default:
-            debugPrint("NOP")
+            
+            // Update state of Select button if needed
+            let selectState = updateSelectButton(ofSection: indexPath.section)
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            } else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            }
         }
         //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
         //        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")

@@ -262,6 +262,7 @@
 		AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD76646A298867FC00CFD66F /* AlbumDeletion.swift */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */; };
 		AD778357267E34F800317F36 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
+		AD7A0CC22C10FF4A008AB50F /* UIButton+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */; };
 		AD7A8FE52849252F00171592 /* pwg.categories.move.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE42849252F00171592 /* pwg.categories.move.json */; };
 		AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */; };
 		AD7A8FEB284944EA00171592 /* pwg.categories.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */; };
@@ -869,6 +870,7 @@
 		AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = piwigoIntentsRelease.entitlements; sourceTree = "<group>"; };
 		AD778368267E384500317F36 /* UploadPhotosHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadPhotosHandler.swift; sourceTree = "<group>"; };
 		AD7783B1267E4AB700317F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
+		AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+AppTools.swift"; sourceTree = "<group>"; };
 		AD7A8FE42849252F00171592 /* pwg.categories.move.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.move.json; sourceTree = "<group>"; };
 		AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setRepresentative.swift; sourceTree = "<group>"; };
 		AD7A8FE8284944B200171592 /* pwg.categories.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.delete.json; sourceTree = "<group>"; };
@@ -2442,6 +2444,7 @@
 				AD7DE08F2A8587E600C1424E /* Notification.Name+AppTools.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
 				ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */,
+				AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
@@ -3310,6 +3313,7 @@
 				AD4373412B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
 				AD07CABC26DBDC4500BEAEFB /* EditImageTextFieldTableViewCell.swift in Sources */,
+				AD7A0CC22C10FF4A008AB50F /* UIButton+AppTools.swift in Sources */,
 				AD6BA0F82BA5C18100755257 /* PasteboardImagesViewController+UICollectionViewDelegate.swift in Sources */,
 				AD07CABA26DBD82700BEAEFB /* EditImagePrivacyTableViewCell.swift in Sources */,
 				AD9698242BE6548400520614 /* AlbumViewController+Discover.swift in Sources */,

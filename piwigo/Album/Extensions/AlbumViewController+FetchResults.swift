@@ -168,8 +168,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     }
                     self?.updateHeader(ofSection: indexPath.section)
                 })
-                // Update section containing that image if needed
-                
             @unknown default:
                 fatalError("Unknown NSFetchedResultsChangeType of object in AlbumViewController")
             }
@@ -208,20 +206,12 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             }
 
             // Retrieve the appropriate section header
-            if #available(iOS 14, *), let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.config(with: imagesInSection, sortOption: self.sortOption)
+            let selectState = updateSelectButton(ofSection: section)
+            if let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.config(with: imagesInSection, sortOption: self.sortOption, section: section, selectState: selectState)
             }
-            else {
-                // Segmented controller for selecting grouping option on iOS 12 - 13.x (see XIB)
-                if section == 1 {
-                    if let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                        header.config(with: imagesInSection, sortOption: self.sortOption, group: AlbumVars.shared.defaultGroup)
-                    }
-                } else {
-                    if let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                        header.config(with: imagesInSection, sortOption: self.sortOption)
-                    }
-                }
+            else if let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.config(with: imagesInSection, sortOption: self.sortOption, group: AlbumVars.shared.defaultGroup, section: section, selectState: selectState)
             }
         }
     }

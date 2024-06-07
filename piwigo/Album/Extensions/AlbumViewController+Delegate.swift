@@ -49,6 +49,16 @@ extension AlbumViewController: UICollectionViewDelegate
                 
                 // Update nav buttons
                 updateBarsInSelectMode()
+
+                // Update state of Select button if needed
+                let selectState = updateSelectButton(ofSection: indexPath.section)
+                let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
+                if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageHeaderReusableView {
+                    header.selectButton.setTitle(forState: selectState)
+                }
+                else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageOldHeaderReusableView {
+                    header.selectButton.setTitle(forState: selectState)
+                }
                 return
             }
             

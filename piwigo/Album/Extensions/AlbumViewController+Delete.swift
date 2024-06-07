@@ -15,8 +15,7 @@ extension AlbumViewController
 {
     // MARK: - Delete Bar Button
     func getDeleteBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .trash, target: self,
-                               action: #selector(deleteSelection))
+        return UIBarButtonItem.deleteImageButton(self, action: #selector(deleteSelection))
     }
 
     

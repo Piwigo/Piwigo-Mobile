@@ -13,11 +13,13 @@ import piwigoKit
 
 protocol ImageHeaderDelegate: NSObjectProtocol {
     func changeImageGrouping(for group: pwgImageGroup)
+    func didSelectImagesOfSection(_ section: Int)
 }
 
 class ImageHeaderReusableView: UICollectionReusableView
 {
-    var locationHash = Int.zero
+    var section = 0
+    private var locationHash = Int.zero
     
     weak var imageHeaderDelegate: ImageHeaderDelegate?
 
@@ -25,14 +27,14 @@ class ImageHeaderReusableView: UICollectionReusableView
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     
-    func config(with images: [Image], sortOption: pwgImageSort) {
+    func config(with images: [Image], sortOption: pwgImageSort,
+                section: Int, selectState: SelectButtonState)
+    {
+        // Keep section for future use
+        self.section = section
         
-        // General settings
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        
-        // Date & place name labels
-        mainLabel.textColor = .piwigoColorLeftLabel()
-        detailLabel.textColor = .piwigoColorRightLabel()
+        // Set colors
+        applyColorPalette()
 
         // Get date labels from images in section
         var date1: Date?, date2: Date?, dates = ("", "")
@@ -84,6 +86,17 @@ class ImageHeaderReusableView: UICollectionReusableView
                 self.detailLabel.text = dates.1
             }
         }
+
+        // Select/deselect button
+        selectButton.layer.cornerRadius = 13.0
+        selectButton.setTitle(forState: selectState)
+    }
+    
+    func applyColorPalette() {
+        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+        mainLabel.textColor = .piwigoColorLeftLabel()
+        detailLabel.textColor = .piwigoColorRightLabel()
+        selectButton.backgroundColor = .piwigoColorBackground()
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {
@@ -102,13 +115,17 @@ class ImageHeaderReusableView: UICollectionReusableView
         NotificationCenter.default.removeObserver(self, name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
     }
 
+    @IBAction func tappedSelectButton(_ sender: Any) {
+        // Select/deselect images
+        imageHeaderDelegate?.didSelectImagesOfSection(section)
+    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
         
         mainLabel.text = ""
         detailLabel.text = ""
         selectButton.setTitle("", for: .normal)
-        selectButton.backgroundColor = .piwigoColorBackground()
     }
     
     deinit {

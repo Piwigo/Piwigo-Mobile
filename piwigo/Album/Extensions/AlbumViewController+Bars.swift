@@ -15,7 +15,8 @@ extension AlbumViewController
     // MARK: - Preview Mode
     func initBarsInPreviewMode() {
         // Set title
-        setTitleViewFromAlbumData(whileUpdating: false)
+        let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)
+        setTitleViewFromAlbumData(whileUpdating: isFetching)
 
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
@@ -74,7 +75,7 @@ extension AlbumViewController
         if NetworkVars.userStatus != .guest {
             if #available(iOS 14, *) {
                 // Menu for activating the selection mode or change the way images are sorted
-                let children = [selectMenu(), sortMenu(), groupMenu()].compactMap({$0})
+                let children = [selectMenu(), sortMenu(), viewOptionsMenu()].compactMap({$0})
                 let updatedMenu = selectBarButton?.menu?.replacingChildren(children)
                 selectBarButton?.menu = updatedMenu
             }

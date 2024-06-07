@@ -114,6 +114,7 @@ extension AlbumViewController: UICollectionViewDataSource
             case UICollectionView.elementKindSectionHeader:
                 guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView", for: indexPath) as? AlbumHeaderReusableView else { preconditionFailure("Could not load AlbumHeaderReusableView")}
                 header.commentLabel?.attributedText = attributedComment()
+                header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
                 return header
             case UICollectionView.elementKindSectionFooter:
                 if categoryId == Int32.zero {
@@ -132,19 +133,24 @@ extension AlbumViewController: UICollectionViewDataSource
                 // Are images grouped by day, week or month?
                 if dateSortTypes.contains(sortOption) == false { return emptyView }
                 
+                // Determine place names from first images
+                let imageSection = indexPath.section - 1
+                var imagesInSection: [Image] = []
+                for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
+                    let imageIndexPath = IndexPath(item: item, section: imageSection)
+                    imagesInSection.append(images.object(at: imageIndexPath))
+                }
+
+                // Determine state of Select button
+                let selectState = updateSelectButton(ofSection: indexPath.section)
+
                 // Images are grouped by day, week or month
                 if #available(iOS 14, *) {
                     // Grouping options accessible from menu ► Only display date and location
                     guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
                     else { preconditionFailure("Could not load ImageHeaderReusableView") }
                     
-                    // Determine place names from first images
-                    var imagesInSection: [Image] = []
-                    for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
-                        let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
-                        imagesInSection.append(images.object(at: imageIndexPath))
-                    }
-                    header.config(with: imagesInSection, sortOption: sortOption)
+                    header.config(with: imagesInSection, sortOption: sortOption, section: indexPath.section, selectState: selectState)
                     header.imageHeaderDelegate = self
                     return header
                 }
@@ -155,14 +161,8 @@ extension AlbumViewController: UICollectionViewDataSource
                         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView
                         else { preconditionFailure("Could not load ImageOldHeaderReusableView")}
                         
-                        // Determine place names from first images
-                        var imagesInSection: [Image] = []
-                        for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
-                            let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
-                            imagesInSection.append(images.object(at: imageIndexPath))
-                        }
-                        
-                        header.config(with: imagesInSection, sortOption: sortOption, group: AlbumVars.shared.defaultGroup)
+                        header.config(with: imagesInSection, sortOption: sortOption, group: AlbumVars.shared.defaultGroup,
+                                      section: indexPath.section, selectState: selectState)
                         header.imageHeaderDelegate = self
                         return header
                     } else {
@@ -170,14 +170,8 @@ extension AlbumViewController: UICollectionViewDataSource
                         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
                         else { preconditionFailure("Could not load ImageHeaderReusableView") }
                         
-                        // Determine place names from first images
-                        var imagesInSection: [Image] = []
-                        for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
-                            let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
-                            imagesInSection.append(images.object(at: imageIndexPath))
-                        }
-                        
-                        header.config(with: imagesInSection, sortOption: sortOption)
+                        header.config(with: imagesInSection, sortOption: sortOption,
+                                      section: indexPath.section, selectState: selectState)
                         header.imageHeaderDelegate = self
                         return header
                     }

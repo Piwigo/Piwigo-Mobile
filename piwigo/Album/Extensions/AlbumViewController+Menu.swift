@@ -257,6 +257,92 @@ extension AlbumViewController: ImageHeaderDelegate
         images = data.images(groupedBy: group)
         updateImageCollection()
     }
+    
+    func didSelectImagesOfSection(_ section: Int) {
+        // Is the selection mode active?
+        if isSelect == false {
+            // Hide buttons
+            hideButtons()
+            
+            // Activate Images Selection mode
+            isSelect = true
+            
+            // Disable interaction with category cells
+            for cell in collectionView?.visibleCells ?? []
+            {
+                // Disable user interaction with category cell
+                if let categoryCell = cell as? AlbumCollectionViewCell {
+                    categoryCell.contentView.alpha = 0.5
+                    categoryCell.isUserInteractionEnabled = false
+                }
+            }
+            
+            // Initialisae navigation bar and toolbar
+            initBarsInSelectMode()
+        }
+        
+        let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+//        let start = CFAbsoluteTimeGetCurrent()
+        if selectedSections[section] == .select {
+            // Loop over all images in section to select them
+            for item in 0..<nberOfImagesInSection {
+                // Retrieve image data
+                let imageIndexPath = IndexPath(item: item, section: section - 1)
+                let image = images.object(at: imageIndexPath)
+
+                // Is this image already selected?
+                if selectedImageIds.contains(image.pwgID) { continue }
+                
+                // Select this image
+                selectedImageIds.insert(image.pwgID)
+                let indexPath = IndexPath(item: item, section: section)
+                if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    cell.isSelection = true
+                }
+            }
+            // Change section button state
+            selectedSections[section] = .deselect
+        } 
+        else {
+            // Loop over all images in section to deselect them
+            for item in 0..<nberOfImagesInSection {
+                // Retrieve image data
+                let imageIndexPath = IndexPath(item: item, section: section - 1)
+                let image = images.object(at: imageIndexPath)
+
+                // Is this image already deselected?
+                if selectedImageIds.contains(image.pwgID) == false { continue }
+                
+                // Deselect this image
+                selectedImageIds.remove(image.pwgID)
+                let indexPath = IndexPath(item: item, section: section)
+                if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    cell.isSelection = false
+                }
+            }
+            
+            // Change section button state
+            selectedSections[section] = .select
+        }
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
+        
+        // Update navigation bar and toolbar
+        updateBarsInSelectMode()
+
+        // Update button
+        collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader).forEach { indexPath in
+            guard indexPath.section == section ,
+                  let sectionState = selectedSections[section]
+            else { return }
+            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.selectButton.setTitle(forState: sectionState)
+            }
+            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.selectButton.setTitle(forState: sectionState)
+            }
+        }
+    }
 }
 
 
@@ -543,31 +629,12 @@ extension AlbumViewController
         if dateSortTypes.contains(sortOption) == false { return nil }
 
         // Create a menu for selecting how to group images
-        let children = [byNoneAction(), byDayAction(), byWeekAction(), byMonthAction()].compactMap({$0})
+        let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
         return UIMenu(title: NSLocalizedString("categoryGroup_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
                       options: UIMenu.Options.displayInline,
                       children: children)
-    }
-    
-    func byNoneAction() -> UIAction? {
-        let isActive = AlbumVars.shared.defaultGroup == .none
-        let action = UIAction(title: NSLocalizedString("None", comment: "None"),
-                              image: isActive ? UIImage(systemName: "checkmark") : nil,
-                              identifier: UIAction.Identifier("org.piwigo.images.group.none"),
-                              handler: { [self] action in
-            // Should image grouping be changed?
-            if isActive { return }
-            
-            // Change image grouping
-            images.delegate = nil
-            images = data.images(groupedBy: .none)
-            images.delegate = self
-            updateCollectionAndMenu()
-        })
-        action.accessibilityIdentifier = "groupByNone"
-        return action
     }
     
     func byDayAction() -> UIAction? {
@@ -624,6 +691,25 @@ extension AlbumViewController
             updateCollectionAndMenu()
         })
         action.accessibilityIdentifier = "groupByMonth"
+        return action
+    }
+    
+    func byNoneAction() -> UIAction? {
+        let isActive = AlbumVars.shared.defaultGroup == .none
+        let action = UIAction(title: NSLocalizedString("None", comment: "None"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.group.none"),
+                              handler: { [self] action in
+            // Should image grouping be changed?
+            if isActive { return }
+            
+            // Change image grouping
+            images.delegate = nil
+            images = data.images(groupedBy: .none)
+            images.delegate = self
+            updateCollectionAndMenu()
+        })
+        action.accessibilityIdentifier = "groupByNone"
         return action
     }
     

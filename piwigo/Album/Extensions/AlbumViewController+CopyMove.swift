@@ -14,8 +14,10 @@ extension AlbumViewController
 {
     // MARK: - Copy/Move Bar Button & Actions
     func getMoveBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .reply, target: self,
-                               action: #selector(copyMoveSelection))
+        let button = UIBarButtonItem(barButtonSystemItem: .reply, target: self,
+                                     action: #selector(copyMoveSelection))
+        button.tintColor = UIColor.piwigoColorOrange()
+        return button
     }
 
     @available(iOS 14.0, *)

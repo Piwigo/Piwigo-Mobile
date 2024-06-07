@@ -99,7 +99,8 @@ class AlbumViewController: UIViewController
     var selectedFavoriteIds = Set<Int64>()
     var selectedVideosIds = Set<Int64>()
     var totalNumberOfImages = 0
-    
+    var selectedSections = [Int : SelectButtonState]()    // State of Select buttons
+
 
     // MARK: - Cached Values
     private var timeCounter = CFAbsoluteTime(0)
@@ -282,10 +283,10 @@ class AlbumViewController: UIViewController
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
-        collectionView?.backgroundColor = UIColor.piwigoColorBackground()
-        
+
         // Navigation bar title
-        setTitleViewFromAlbumData(whileUpdating: false)
+        let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)
+        setTitleViewFromAlbumData(whileUpdating: isFetching)
         navigationController?.navigationBar.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
         
         // Buttons appearance
@@ -334,12 +335,21 @@ class AlbumViewController: UIViewController
         }
         
         // Collection view
+        collectionView?.backgroundColor = UIColor.piwigoColorBackground()
         collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
-        if (headers?.count ?? 0) > 0 {
-            let header = headers?.first as? AlbumHeaderReusableView
-            header?.commentLabel?.textColor = UIColor.piwigoColorHeader()
-            header?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
+            if let header = header as? AlbumHeaderReusableView {
+                header.commentLabel?.attributedText = attributedComment()
+                header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+            }
+            else if let header = header as? ImageHeaderReusableView {
+                header.applyColorPalette()
+                header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
+            }
+            else if let header = header as? ImageOldHeaderReusableView {
+                header.applyColorPalette()
+                header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
+            }
         }
         (collectionView?.visibleCells ?? []).forEach { cell in
             if let albumCell = cell as? AlbumCollectionViewCell {
@@ -349,10 +359,10 @@ class AlbumViewController: UIViewController
                 imageCell.applyColorPalette()
             }
         }
-        let footers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter)
-        if let footer = footers?.first as? ImageFooterReusableView {
-            footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
-            footer.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter) ?? []).forEach { footer in
+            if let footer = footer as? ImageFooterReusableView {
+                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+            }
         }
 
         // Refresh controller

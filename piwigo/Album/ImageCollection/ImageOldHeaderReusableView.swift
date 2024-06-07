@@ -12,7 +12,8 @@ import piwigoKit
 
 class ImageOldHeaderReusableView: UICollectionReusableView
 {
-    var locationHash = Int.zero
+    var section = 0
+    private var locationHash = Int.zero
     
     weak var imageHeaderDelegate: ImageHeaderDelegate?
 
@@ -24,18 +25,17 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     
-    func config(with images: [Image], sortOption: pwgImageSort, group: pwgImageGroup) {
+    func config(with images: [Image], sortOption: pwgImageSort, group: pwgImageGroup,
+                section: Int, selectState: SelectButtonState)
+    {
+        // Set colors
+        applyColorPalette()
+
         // Segmented controller
-        if #available(iOS 13.0, *) {
-            segmentedControl?.selectedSegmentTintColor = .piwigoColorOrange()
-        } else {
-            segmentedControl?.tintColor = .piwigoColorOrange()
-        }
         segmentedControl?.selectedSegmentIndex = group.segmentIndex
 
-        // Date & place name labels
-        mainLabel.textColor = .piwigoColorLeftLabel()
-        detailLabel.textColor = .piwigoColorRightLabel()
+        // Keep section for future use
+        self.section = section
 
         // Get date labels
         var date1: Date?, date2: Date?, dates = ("", "")
@@ -87,6 +87,21 @@ class ImageOldHeaderReusableView: UICollectionReusableView
                 self.detailLabel.text = dates.1
             }
         }
+
+        // Select/deselect button
+        selectButton.layer.cornerRadius = 13.0
+        selectButton.setTitle(forState: selectState)
+    }
+    
+    func applyColorPalette() {
+        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+        mainLabel.textColor = .piwigoColorLeftLabel()
+        detailLabel.textColor = .piwigoColorRightLabel()
+        if #available(iOS 13.0, *) {
+            segmentedControl?.selectedSegmentTintColor = .piwigoColorOrange()
+        } else {
+            segmentedControl?.tintColor = .piwigoColorOrange()
+        }
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {
@@ -105,11 +120,18 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         NotificationCenter.default.removeObserver(self, name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
     }
 
+    @IBAction func tappedSelectButton(_ sender: Any) {
+        // Select/deselect images
+        imageHeaderDelegate?.didSelectImagesOfSection(section)
+    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
 
         mainLabel.text = ""
         detailLabel.text = ""
+        selectButton.setTitle("", for: .normal)
+        selectButton.backgroundColor = .piwigoColorBackground()
     }
 
     @IBAction func didChangeGroupType(_ sender: Any) {
