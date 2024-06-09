@@ -217,6 +217,9 @@ extension AlbumViewController
     }
     
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
+        // Album section?
+        if section == 0 { return .none}
+        
         // Number of images in section
         let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
         if nberOfImagesInSection == 0 {
@@ -225,10 +228,9 @@ extension AlbumViewController
         }
 
         // Number of selected images
-        let imageSection = section - 1
         var nberOfSelectedImagesInSection = 0
         for item in 0..<nberOfImagesInSection {
-            let imageIndexPath = IndexPath(item: item, section: imageSection)
+            let imageIndexPath = IndexPath(item: item, section: section - 1)
             if selectedImageIds.contains(images.object(at: imageIndexPath).pwgID) {
                 nberOfSelectedImagesInSection += 1
             }

@@ -17,14 +17,12 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
         if #available(iOS 13, *), view.window == nil { return }
-        if [images, albums].contains(controller) == false { return }
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
         // Check that this update should be managed by this view controller
         if #available(iOS 13, *), view.window == nil { return }
-        if [images, albums].contains(controller) == false { return }
         
         // Collect operation changes
         switch controller {
@@ -58,7 +56,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         
         // Check that this update should be managed by this view controller
         if #available(iOS 13, *), view.window == nil { return }
-        if [images, albums].contains(controller) == false { return }
         
         // Collect operation changes
         switch controller {
@@ -94,7 +91,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     }
                 })
             @unknown default:
-                fatalError("Unknown NSFetchedResultsChangeType of object in AlbumViewController")
+                debugPrint("Unknown NSFetchedResultsChangeType of object in AlbumViewController")
             }
         case images:
             switch type {
@@ -106,8 +103,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     // Insert image
                     debugPrint("••> Insert image of album #\(self?.categoryId ?? Int32.min) at \(newIndexPath)")
                     self?.collectionView?.insertItems(at: [newIndexPath])
-                    self?.updateHeader(ofSection: newIndexPath.section)
-                    
                     // Enable menu if this is the first added image
                     if self?.albumData.nbImages == 1 {
                         debugPrint("••> First added image ► enable menu")
@@ -129,10 +124,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                         debugPrint("••> Last removed image ► disable menu")
                         self?.isSelect = false
                         self?.initBarsInPreviewMode()
-                    } else {
-                        // Update header of section
-                        debugPrint("••> Update hedaer of section #\(indexPath.section)")
-                        self?.updateHeader(ofSection: indexPath.section)
                     }
                 })
             case .move:
@@ -144,8 +135,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Move item of album #\(self?.categoryId ?? Int32.min) from \(indexPath) to \(newIndexPath)")
                     self?.collectionView?.moveItem(at: indexPath, to: newIndexPath)
-                    self?.updateHeader(ofSection: indexPath.section)
-                    self?.updateHeader(ofSection: newIndexPath.section)
                 })
             case .update:
                 guard var indexPath = indexPath, let image = anObject as? Image
@@ -165,10 +154,9 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                                 .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
                         }
                     }
-                    self?.updateHeader(ofSection: indexPath.section)
                 })
             @unknown default:
-                fatalError("Unknown NSFetchedResultsChangeType of object in AlbumViewController")
+                debugPrint("Unknown NSFetchedResultsChangeType of object in AlbumViewController")
             }
         default:
             return
@@ -184,39 +172,41 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         collectionView?.performBatchUpdates({ [weak self] in
             self?.updateOperations.forEach({ $0.start()})
         }) { [weak self] _ in
+            // Update headers if needed
+            self?.updateHeaders()
             // Update footer
             self?.updateNberOfImagesInFooter()
         }
     }
     
-    func updateHeader(ofSection section: Int) {
-        // does this section exist?
-        if let collectionView = collectionView,
-           section >= numberOfSections(in: collectionView) { return }
-
-        // Are images grouped by day, week or month?
-        if dateSortTypes.contains(sortOption) == false { return }
+    func updateHeaders() {
+        // Does this section exist?
+        guard dateSortTypes.contains(sortOption),
+              let collectionView = collectionView
+        else { return }
 
         // Images are grouped by day, week or month: section header visible?
-        let indexPath = IndexPath(item: 0, section: section)
-        if let indexPaths = collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader),
-           indexPaths.contains(indexPath),
-           collectionView.numberOfItems(inSection: section) > 0
-        {
+        let indexPaths = collectionView.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader)
+        indexPaths.forEach { indexPath in
+            // Album section?
+            if indexPath.section == 0 { return }
+
             // Determine place names from first images
             var imagesInSection: [Image] = []
-            for item in 0..<min(collectionView.numberOfItems(inSection: section), 20) {
-                let imageIndexPath = IndexPath(item: item, section: section - 1)
+            for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
+                let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
                 imagesInSection.append(images.object(at: imageIndexPath))
             }
 
             // Retrieve the appropriate section header
-            let selectState = updateSelectButton(ofSection: section)
-            if let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.config(with: imagesInSection, sortOption: self.sortOption, section: section, selectState: selectState)
+            let selectState = updateSelectButton(ofSection: indexPath.section)
+            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.config(with: imagesInSection, sortOption: self.sortOption,
+                              section: indexPath.section, selectState: selectState)
             }
-            else if let header = self.collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.config(with: imagesInSection, sortOption: self.sortOption, group: AlbumVars.shared.defaultGroup, section: section, selectState: selectState)
+            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.config(with: imagesInSection, sortOption: self.sortOption, group: AlbumVars.shared.defaultGroup, 
+                              section: indexPath.section, selectState: selectState)
             }
         }
     }
