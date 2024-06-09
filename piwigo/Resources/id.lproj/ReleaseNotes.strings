@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.0_text" = "Version 3.2\n\n• Adopt album photo sorting options\n• Adds on-the-fly photo sorting options\n• Adds rotation of uploaded photos\n• Bug fixes";
+"v3.2.0_text" = "Version 3.2\n\n• Adopts album photo sorting options\n• Adds on-the-fly photo sorting options\n• Adds rotation of uploaded photos\n• Bug fixes";
 
 "v3.1.4_text" = "Version 3.1.4\nFebruary 27, 2024\n\n• Fixes a crash occurring on iOS 12";
 

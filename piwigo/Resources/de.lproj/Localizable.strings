@@ -864,8 +864,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Was ist neu in Piwigo";
-"whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
-"whatsNew_title2" = "Rotate Photos";
-"whatsNew_desc2" = "Fix orientation issues.";
+"whatsNew_title1" = "Fotos gruppieren";
+"whatsNew_desc1" = "Nach Tag, Woche oder Monat.";
+"whatsNew_title2" = "Fotos drehen";
+"whatsNew_desc2" = "Ausrichtungsprobleme behoben.";
 "whatsNew_continue" = "Fortsetzen";
