@@ -795,7 +795,7 @@ public class AlbumProvider: NSObject {
             if (upperID == 0) || (upperID == album.pwgID) { continue }
 
             // Get a parent album
-            if let upperAlbum =  getAlbum(ofUser: user, withId: upperID) {
+            if let upperAlbum = getAlbum(ofUser: user, withId: upperID) {
                 // Update number of images
                 upperAlbum.totalNbImages += nbImages
             }
