@@ -466,9 +466,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func updateBadge(_ notification: Notification) {
         guard let nberOfUploadsToComplete = notification.userInfo?["nberOfUploadsToComplete"] as? Int else {
-            fatalError("!!! Did not provide an integer !!!")
+            preconditionFailure("!!! Did not provide an integer !!!")
         }
-        UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+        if #available(iOS 16, *) {
+            UNUserNotificationCenter.current().setBadgeCount(nberOfUploadsToComplete)
+        } else {
+            UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+        }
+        // Re-enable sleep mode if uploads are completed
+        if nberOfUploadsToComplete == 0 {
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
     }
 
     @objc func displayAutoUploadErrorAndResume(_ notification: Notification) {

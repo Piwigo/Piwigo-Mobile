@@ -73,6 +73,11 @@ extension LocalImagesViewController: UploadSwitchDelegate
             selectedImages[index] = updatedRequest
         }
         
+        // Disable sleep mode if needed
+        if selectedImages.count > 0 {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        
         // Add selected images to upload queue
         let uploads = selectedImages.compactMap({$0})
         UploadManager.shared.backgroundQueue.async {
