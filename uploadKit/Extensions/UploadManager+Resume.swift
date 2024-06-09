@@ -58,13 +58,6 @@ extension UploadManager
     private func resumeOperations() {
         // Resume failed uploads
         self.resumeAllFailedUploads()
-
-        // Append auto-upload requests if requested
-        if UploadVars.isAutoUploadActive {
-            self.appendAutoUploadRequests()
-        } else {
-            self.disableAutoUpload()
-        }
         
         // Propose to delete uploaded image of the photo Library once a day
         if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
@@ -108,7 +101,15 @@ extension UploadManager
         
         // Delete upload requests
         uploadProvider.delete(uploadRequests: toDelete) { [unowned self] _ in
+            // Restart activities
             self.findNextImageToUpload()
+            
+            // Append auto-upload requests if requested
+            if UploadVars.isAutoUploadActive {
+                self.appendAutoUploadRequests()
+            } else {
+                self.disableAutoUpload()
+            }
         }
     }
     
