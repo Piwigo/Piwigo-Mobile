@@ -135,9 +135,7 @@ extension AlbumViewController
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         }
-        if let parent = parent as? AlbumViewController {
-            alert.popoverPresentationController?.barButtonItem = parent.deleteBarButton
-        }
+        alert.popoverPresentationController?.barButtonItem = deleteBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()
