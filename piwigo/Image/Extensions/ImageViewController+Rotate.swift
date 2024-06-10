@@ -113,10 +113,19 @@ extension ImageViewController
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
+            
+            // Plugin rotateImage installed?
+            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
+            var message = ""
+            if let pwgError = error as? PwgSessionError,
+               pwgError == .invalidMethod {
+                message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
+            }
+            else {
+                message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
+            }
 
             // Report error
-            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
-            let message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD

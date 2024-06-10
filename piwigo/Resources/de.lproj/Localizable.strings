@@ -430,6 +430,7 @@
 
 // Image rotate — Errors
 "rotateImageFail_title" = "Drehung fehlgeschlagen";
+"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
 "rotateImageFail_message" = "Bild konnte nicht gedreht werden";
 
 // Image delete

@@ -430,6 +430,7 @@
 
 // Image rotate — Errors
 "rotateImageFail_title" = "Échec de la rotation";
+"rotateImageFail_plugin" = "Le plugin rotateImage n'est pas activé.";
 "rotateImageFail_message" = "La photo n'a pas pu être tournée";
 
 // Image delete
@@ -867,5 +868,5 @@
 "whatsNew_title1" = "Regrouper les photos";
 "whatsNew_desc1" = "Par jour, par semaine ou par mois.";
 "whatsNew_title2" = "Faire pivoter les photos";
-"whatsNew_desc2" = "Corriger les problèmes d'orientation.";
+"whatsNew_desc2" = "Corriger les problèmes d'orientation (nécessite le plugin rotateImage).";
 "whatsNew_continue" = "Continuer";
