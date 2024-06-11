@@ -430,7 +430,7 @@
 
 // Image rotate — Errors
 "rotateImageFail_title" = "Drehung fehlgeschlagen";
-"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
+"rotateImageFail_plugin" = "Das rotateImage Plugin ist nicht aktiviert.";
 "rotateImageFail_message" = "Bild konnte nicht gedreht werden";
 
 // Image delete
@@ -868,5 +868,5 @@
 "whatsNew_title1" = "Fotos gruppieren";
 "whatsNew_desc1" = "Nach Tag, Woche oder Monat.";
 "whatsNew_title2" = "Fotos drehen";
-"whatsNew_desc2" = "Ausrichtungsprobleme behoben.";
+"whatsNew_desc2" = "Behebung von Ausrichtungsproblemen (erfordert das rotateImage Plugin).";
 "whatsNew_continue" = "Fortsetzen";
