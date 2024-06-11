@@ -28,14 +28,14 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     func config(with images: [Image], sortOption: pwgImageSort, group: pwgImageGroup,
                 section: Int, selectState: SelectButtonState)
     {
+        // Keep section for future use
+        self.section = section
+
         // Set colors
         applyColorPalette()
 
         // Segmented controller
         segmentedControl?.selectedSegmentIndex = group.segmentIndex
-
-        // Keep section for future use
-        self.section = section
 
         // Get date labels
         var date1: Date?, date2: Date?, dates = ("", "")

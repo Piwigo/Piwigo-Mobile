@@ -30,7 +30,6 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         if (elementKind == UICollectionView.elementKindSectionHeader) ||
             (elementKind == UICollectionView.elementKindSectionFooter) {
             view.layer.zPosition = 0 // Below scroll indicator
-            view.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
         }
     }
     
