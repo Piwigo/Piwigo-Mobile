@@ -773,17 +773,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _loginVC?.removeFromParent()
             _loginVC = nil
 
-            // Resume upload operations in background queue
-            // and update badge, upload button of album navigator
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
-            
             // Observe the UIScreenBrightnessDidChangeNotification
             NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
                                                    name: UIScreen.brightnessDidChangeNotification, object: nil)
         }
 
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.resumeAll()
+        }
+        
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
                                                name: Notification.Name.pwgAddRecentAlbum, object: nil)

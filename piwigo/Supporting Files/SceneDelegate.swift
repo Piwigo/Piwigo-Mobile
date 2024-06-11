@@ -458,34 +458,16 @@ extension SceneDelegate: AppLockDelegate {
 
         // Should we log in?
         if let rootVC = window?.rootViewController,
-            let child = rootVC.children.first, child is LoginViewController {
-            // Is user logging out?
-            if AppVars.shared.isLoggingOut {
-                return
-            }
-            
-            // Look for credentials if server address provided
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
-            var password = ""
-
-            // Look for paswword in Keychain if server address and username are provided
-            if service.isEmpty == false, username.isEmpty == false {
-                password = KeychainUtilities.password(forService: service, account: username)
-            }
-
-            // Login?
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-               service.isEmpty == false || ((username.isEmpty == false) && (password.isEmpty == false)) {
-                appDelegate.loginVC.launchLogin()
-            }
+           let child = rootVC.children.first, child is LoginViewController {
             return
         }
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
+            if UploadManager.shared.isPaused {
+                UploadManager.shared.resumeAll()
+            }
         }
     }
 }

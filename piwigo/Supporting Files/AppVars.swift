@@ -96,9 +96,6 @@ class AppVars: NSObject {
     /// - Number of albums in cache (excepted smart albums) calculated before connecting other scenes
     var nberOfAlbumsInCache: Int = 0
     
-    /// - Flag informing the scene delegate that the user asked to logout
-    var isLoggingOut: Bool = false
-    
     /// - Flag indicating if an external display is connected
     var inSingleDisplayMode: Bool = true
 }

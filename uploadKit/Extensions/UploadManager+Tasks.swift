@@ -28,7 +28,7 @@ extension UploadManager
         // for debugging background tasks
 //        return
 
-        // Perform fetch
+        // Perform fetches
         do {
             try uploads.performFetch()
             try completed.performFetch()

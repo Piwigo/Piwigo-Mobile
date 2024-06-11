@@ -20,8 +20,22 @@ extension UploadManager
         isPreparing = false; isFinishing = false
         isExecutingBackgroundUploadTask = false
         isUploading = Set<NSManagedObjectID>()
-        print("••> Resume upload operations…")
         
+        // Reset predicates in casse user switched to another Piwigo
+        let variables = ["serverPath" : NetworkVars.serverPath,
+                         "userName"   : NetworkVars.username]
+        uploads.fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
+        completed.fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
+
+        // Perform fetches
+        do {
+            try uploads.performFetch()
+            try completed.performFetch()
+        }
+        catch {
+            print("••> Could not fetch pending uploads: \(error)")
+        }
+
         // Get active upload tasks
         bckgSession.getAllTasks { uploadTasks in
             // Loop over the tasks
