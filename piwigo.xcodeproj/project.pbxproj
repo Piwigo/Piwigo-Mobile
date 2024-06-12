@@ -1219,6 +1219,7 @@
 		ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.uploadCompleted.json; sourceTree = "<group>"; };
 		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+AppFonts.swift"; sourceTree = "<group>"; };
+		ADFD63762C1A040800FBA514 /* DataModel 0F (None).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0F (None).xcdatamodel"; sourceTree = "<group>"; };
 		ADFD9B3B22F981F3008FE480 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ADFFD445268A2952001F00E8 /* Upload+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Upload+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ADFFD446268A2953001F00E8 /* Upload+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Upload+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -4619,6 +4620,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				ADFD63762C1A040800FBA514 /* DataModel 0F (None).xcdatamodel */,
 				ADC592762C0674AE002B6F82 /* DataModel 0E (Image).xcdatamodel */,
 				AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */,
 				AD25374B2A14158100FBFF2A /* DataModel 0C (Sizes).xcdatamodel */,
@@ -4634,7 +4636,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = ADC592762C0674AE002B6F82 /* DataModel 0E (Image).xcdatamodel */;
+			currentVersion = ADFD63762C1A040800FBA514 /* DataModel 0F (None).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
