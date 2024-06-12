@@ -115,7 +115,7 @@
 
 "loginError_title" = "Inloggning Misslyckades";
 "loginError_message" = "Användarnamnet och lösenordet matchar inte den angivna webbadressen";
-"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
+"loginError_resetPwd" = "Vill du återställa ditt lösenord från webbgränssnittet?";
 "loginEmptyServer_title" = "Ange en webbadress";
 "loginEmptyServer_message" = "Välj ett protokoll och ange en Piwigo webbadress för att gå vidare.";
 
@@ -166,28 +166,28 @@
 "categoryDiscoverFavorites_title" = "Mina favoriter";
 
 // Albums sort
-"categorySort_sort" = "Sort Images By…";
-"categorySort_default" = "Default";
-"categorySort_name" = "Photo Title";
+"categorySort_sort" = "Sortera bilder efter…";
+"categorySort_default" = "Standard";
+"categorySort_name" = "Foto titel";
 "categorySort_nameAscending" = "Bildtitel, A → Ö";
 "categorySort_nameDescending" = "Bildtitel, Z → A";
-"categorySort_fileName" = "File Name";
+"categorySort_fileName" = "Filnamn";
 "categorySort_fileNameAscending" = "Filnamn, A → Ö";
 "categorySort_fileNameDescending" = "Filnamn, Ö → A";
-"categorySort_dateCreated" = "Date Created";
+"categorySort_dateCreated" = "Skapad datum";
 "categorySort_dateCreatedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_dateCreatedAscending" = "Skapelsedatum, gammal → ny";
-"categorySort_datePosted" = "Date Posted";
+"categorySort_datePosted" = "Datum postad";
 "categorySort_datePostedDescending" = "Skapelsedatum, ny → gammal";
 "categorySort_datePostedAscending" = "Skapelsedatum, gammal → ny";
-"categorySort_ratingScore" = "Rating Score";
+"categorySort_ratingScore" = "Betyg Poäng";
 "categorySort_ratingScoreDescending" = "Betyg, hög → låg";
 "categorySort_ratingScoreAscending" = "Betyg, låg → hög";
-"categorySort_visits" = "Visits";
+"categorySort_visits" = "Besök";
 "categorySort_visitsDescending" = "Besökare, hög → låg";
 "categorySort_visitsAscending" = "Besökare, låg → hög";
 "categorySort_manual" = "Manuell sortering";
-"categorySort_randomly" = "Randomly";
+"categorySort_randomly" = "Slumpmässigt";
 "categorySort_random" = "Slumpmässig ordning";
 "categorySort_id" = "Identifier";
 "categorySort_idDescending" = "Identifier, 9 → 1";
@@ -195,8 +195,8 @@
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
 
-"categoryView_options" = "View Options";
-"categoryGroup_group" = "Group Images By…";
+"categoryView_options" = "Visningsalternativ";
+"categoryGroup_group" = "Gruppera bilder av…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -323,10 +323,10 @@
 "pullToRefresh" = "Ladda om bilderna";
 "andMore" = " & mer";
 "Date" = "Datum";
-"None" = "None";
-"Day" = "Day";
-"Week" = "Week";
-"Month" = "Month";
+"None" = "Ingen";
+"Day" = "Dag";
+"Week" = "Vecka";
+"Month" = "Månad";
 
 // Errors
 "albumPhotoError_title" = "Hämta albumets bildfel";
@@ -422,16 +422,16 @@
 "imageFavoritesRemoveError_message" = "Det gick inte att ta bort detta foto från dina favoriter.";
 
 // Image rotate
-"rotateImage_rotate" = "Rotate 90°…";
-"rotateImage_left" = "Counterclockwise";
-"rotateImage_right" = "Clockwise";
-"rotateSingleImageHUD_rotating" = "Rotating Photo…";
-"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+"rotateImage_rotate" = "Rotera 90°…";
+"rotateImage_left" = "Motsols";
+"rotateImage_right" = "Medurs";
+"rotateSingleImageHUD_rotating" = "Roterar bild…";
+"rotateSeveralImageHUD_rotating" = "Roterar bilder…";
 
 // Image rotate — Errors
-"rotateImageFail_title" = "Rotation Failed";
-"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
-"rotateImageFail_message" = "Image could not be rotated";
+"rotateImageFail_title" = "Rotationen misslyckades";
+"rotateImageFail_plugin" = "RotateImage plugin är inte aktiverad.";
+"rotateImageFail_message" = "Bilden kunde inte roteras";
 
 // Image delete
 "deleteImage_delete" = "Radera";
@@ -865,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Vad är nytt i Piwigo";
-"whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
-"whatsNew_title2" = "Rotate Photos";
-"whatsNew_desc2" = "Fix orientation issues (requires the rotateImage plugin).";
+"whatsNew_title1" = "Gruppera foton";
+"whatsNew_desc1" = "Efter dag, vecka eller månad.";
+"whatsNew_title2" = "Rotera foton";
+"whatsNew_desc2" = "Åtgärda orienteringsproblem (kräver rotateImage plugin).";
 "whatsNew_continue" = "Fortsätt";

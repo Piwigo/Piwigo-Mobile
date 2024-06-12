@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.0_text" = "Version 3.2\n\n• Adopts album photo sorting options\n• Adds on-the-fly photo sorting options\n• Adds rotation of uploaded photos (requires the rotateImage plugin)\n• Bug fixes";
+"v3.2.0_text" = "Версия 3.2\n\n• Принимает сортировку фото альбома\n• Добавляет параметры сортировки на лету\n• Добавляет поворот загруженных фотографий (требуется плагин rotateImage)\n• Исправления ошибок";
 
 "v3.1.4_text" = "Версия 3.1.4\n27 февраля 2024\n\n• Исправлен сбой в iOS 12";
 

@@ -430,7 +430,7 @@
 
 // Image rotate — Errors
 "rotateImageFail_title" = "Obracanie nie powiodło się";
-"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
+"rotateImageFail_plugin" = "Wtyczka rotateImage nie jest aktywowana.";
 "rotateImageFail_message" = "Zdjęcie nie może być obrócone";
 
 // Image delete
@@ -865,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Co nowego w Piwigo";
-"whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
-"whatsNew_title2" = "Rotate Photos";
-"whatsNew_desc2" = "Fix orientation issues (requires the rotateImage plugin).";
+"whatsNew_title1" = "Zdjęcia grupowe";
+"whatsNew_desc1" = "Według dnia, tygodnia lub miesiąca.";
+"whatsNew_title2" = "Obróć zdjęcia";
+"whatsNew_desc2" = "Napraw problemy z orientacją (wymaga wtyczki rotateImage plugin).";
 "whatsNew_continue" = "Kontynuuj";

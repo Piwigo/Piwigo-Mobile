@@ -115,7 +115,7 @@
 
 "loginError_title" = "登录失败";
 "loginError_message" = "用户名和密码与给定的网站不匹配";
-"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
+"loginError_resetPwd" = "您想要从 web 界面重置您的密码吗？";
 "loginEmptyServer_title" = "输入一个网址";
 "loginEmptyServer_message" = "请选择一项协议，并输入一个Piwigo Web地址，以便继续。";
 
@@ -166,37 +166,37 @@
 "categoryDiscoverFavorites_title" = "你的最爱";
 
 // Albums sort
-"categorySort_sort" = "Sort Images By…";
-"categorySort_default" = "Default";
-"categorySort_name" = "Photo Title";
+"categorySort_sort" = "按… 排序图像";
+"categorySort_default" = "默认值";
+"categorySort_name" = "照片标题";
 "categorySort_nameAscending" = "照片标题，A → Z";
 "categorySort_nameDescending" = "照片标题，Z → A";
-"categorySort_fileName" = "File Name";
+"categorySort_fileName" = "文件名";
 "categorySort_fileNameAscending" = "文件名，A → Z";
 "categorySort_fileNameDescending" = "文件名，Z → A";
-"categorySort_dateCreated" = "Date Created";
+"categorySort_dateCreated" = "创建日期";
 "categorySort_dateCreatedDescending" = "创建日期，新 → 旧";
 "categorySort_dateCreatedAscending" = "创建日期，旧 → 新";
-"categorySort_datePosted" = "Date Posted";
+"categorySort_datePosted" = "发表日期";
 "categorySort_datePostedDescending" = "发布日期，新 → 旧";
 "categorySort_datePostedAscending" = "发布日期，旧 → 新";
-"categorySort_ratingScore" = "Rating Score";
+"categorySort_ratingScore" = "评分";
 "categorySort_ratingScoreDescending" = "评分分数，高 → 低";
 "categorySort_ratingScoreAscending" = "评分分数，低 → 高";
-"categorySort_visits" = "Visits";
+"categorySort_visits" = "次数";
 "categorySort_visitsDescending" = "点击量，高 → 低";
 "categorySort_visitsAscending" = "点击量，低 → 高";
 "categorySort_manual" = "手动排序";
-"categorySort_randomly" = "Randomly";
+"categorySort_randomly" = "其它";
 "categorySort_random" = "随机顺序";
-"categorySort_id" = "Identifier";
+"categorySort_id" = "标识符";
 "categorySort_idDescending" = "Identifier, 9 → 1";
 "categorySort_idAscending" = "Identifier, 1 → 9";
 "categorySort_videosOnly" = "仅视频";
 "categorySort_imagesOnly" = "仅图片";
 
-"categoryView_options" = "View Options";
-"categoryGroup_group" = "Group Images By…";
+"categoryView_options" = "查看选项";
+"categoryGroup_group" = "按… 分组图像";
 
 // Album selection
 "categorySelection_title" = "相册";
@@ -323,10 +323,10 @@
 "pullToRefresh" = "刷新照片";
 "andMore" = " & 更多";
 "Date" = "日期";
-"None" = "None";
-"Day" = "Day";
-"Week" = "Week";
-"Month" = "Month";
+"None" = "无";
+"Day" = "天";
+"Week" = "周";
+"Month" = "月";
 
 // Errors
 "albumPhotoError_title" = "无法获取相册中的照片";
@@ -422,16 +422,16 @@
 "imageFavoritesRemoveError_message" = "从您的收藏夹中删除此照片失败。";
 
 // Image rotate
-"rotateImage_rotate" = "Rotate 90°…";
-"rotateImage_left" = "Counterclockwise";
-"rotateImage_right" = "Clockwise";
-"rotateSingleImageHUD_rotating" = "Rotating Photo…";
-"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+"rotateImage_rotate" = "旋转 90°...";
+"rotateImage_left" = "逆时针";
+"rotateImage_right" = "顺时针";
+"rotateSingleImageHUD_rotating" = "旋转式照片...";
+"rotateSeveralImageHUD_rotating" = "旋转照片...";
 
 // Image rotate — Errors
-"rotateImageFail_title" = "Rotation Failed";
-"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
-"rotateImageFail_message" = "Image could not be rotated";
+"rotateImageFail_title" = "旋转失败";
+"rotateImageFail_plugin" = "旋转图像插件未激活。";
+"rotateImageFail_message" = "无法旋转图像";
 
 // Image delete
 "deleteImage_delete" = "删除";
@@ -865,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
-"whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
-"whatsNew_title2" = "Rotate Photos";
-"whatsNew_desc2" = "Fix orientation issues (requires the rotateImage plugin).";
+"whatsNew_title1" = "群组照片";
+"whatsNew_desc1" = "按日、周或月份。";
+"whatsNew_title2" = "旋转照片";
+"whatsNew_desc2" = "修复方向问题 (需要 rotateImage 插件)。";
 "whatsNew_continue" = "继续储值";

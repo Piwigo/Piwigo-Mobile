@@ -8,12 +8,12 @@
 
 "description" = "Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 2.10 lub wyższej). Aplikacja pozwala na:\n\n• Przeglądanie albumów.\n• Tworzenie, usuwanie, przenoszenie i zmianę nazw albumów.\n• Wyszukiwanie, edycję, pobieranie i usuwanie zdjęć i filmów.\n• Kopiowanie i przenoszenie zdjęć i filmów między albumami.\n• Dodawanie i usuwanie zdjęć i filmów z Twoich Ulubionych.\n• Ustawianie zdjęcia jako zdjęcia albumu.\n• Przesyłanie zdjęć i filmów:\n  - z możliwością modyfikacji rozmiaru i jakości,\n  - z opisem, autorem, znacznikami, metadanymi EXIF,\n  - z metadanymi GPS lub bez nich.\n• Udostępnianie zdjęć i filmów.\n\nPiwigo umożliwia Ci tworzenie własnej galerii zdjęć w sieci. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz czy statystyki.\n\nPiwigo jest oprogramowaniem bezpłatnym i otwartym.";
 
-"compatibility" = "Piwigo jest również kompatybilny z następującymi rozszerzeniami:\n- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora\n- piwigo-videojs: dodaje obsługę wideo";
+"compatibility" = "Piwigo jest również kompatybilny z następującymi rozszerzeniami:\n- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora\n- rotateImage: umożliwia obracanie obrazów\n- piwigo-videojs: dodaje obsługę wideo";
 
 "feedback" = "Opinie lub pytania? \nPiwigo oferuje bezpłatną pomoc w %@ i chcielibyśmy poznać Twoje zdanie.";
 
 "promotional_text" = "Twoja biblioteka zdjęć w chmurze Piwigo pod ręką!";
 
-"subtitle" = "Twoje zdjęcia w chmurze";
+"subtitle" = "Twórz kopie zapasowe zdjęć w chmurze";
 
 "keywords" = "Piwigo, Cloud, album, zdjęcie, video, obraz, wysyłanie, pobieranie";

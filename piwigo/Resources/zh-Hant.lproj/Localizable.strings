@@ -115,7 +115,7 @@
 
 "loginError_title" = "登入失敗";
 "loginError_message" = "帳號密碼無法於提供的網址登入";
-"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
+"loginError_resetPwd" = "您想從網路介面重設密碼嗎？";
 "loginEmptyServer_title" = "請輸入網址";
 "loginEmptyServer_message" = "請選擇連線方式並且輸入Piwigo網址以繼續。";
 
@@ -195,8 +195,8 @@
 "categorySort_videosOnly" = "只有影片";
 "categorySort_imagesOnly" = "只有照片";
 
-"categoryView_options" = "View Options";
-"categoryGroup_group" = "Group Images By…";
+"categoryView_options" = "查看選項";
+"categoryGroup_group" = "圖像分組依據...";
 
 // Album selection
 "categorySelection_title" = "相簿";
@@ -323,10 +323,10 @@
 "pullToRefresh" = "重新整理照片";
 "andMore" = " & 更多";
 "Date" = "日期";
-"None" = "None";
-"Day" = "Day";
-"Week" = "Week";
-"Month" = "Month";
+"None" = "沒有任何";
+"Day" = "天";
+"Week" = "星期";
+"Month" = "月";
 
 // Errors
 "albumPhotoError_title" = "取得相簿照片錯誤";
@@ -422,15 +422,15 @@
 "imageFavoritesRemoveError_message" = "無法從最愛移除此照片。";
 
 // Image rotate
-"rotateImage_rotate" = "Rotate 90°…";
-"rotateImage_left" = "Counterclockwise";
-"rotateImage_right" = "Clockwise";
+"rotateImage_rotate" = "旋轉90°…";
+"rotateImage_left" = "逆時針";
+"rotateImage_right" = "順時針";
 "rotateSingleImageHUD_rotating" = "正在旋轉圖片...";
 "rotateSeveralImageHUD_rotating" = "正在旋轉多張圖片...";
 
 // Image rotate — Errors
 "rotateImageFail_title" = "旋轉失敗";
-"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
+"rotateImageFail_plugin" = "“rotateImage”外掛程式未啟用。";
 "rotateImageFail_message" = "圖片無法被旋轉";
 
 // Image delete
@@ -865,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
-"whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
-"whatsNew_title2" = "Rotate Photos";
-"whatsNew_desc2" = "Fix orientation issues (requires the rotateImage plugin).";
+"whatsNew_title1" = "集體照";
+"whatsNew_desc1" = "按天、週或月。";
+"whatsNew_title2" = "旋轉照片";
+"whatsNew_desc2" = "修復方向問題（需要“rotateImage”插件）。";
 "whatsNew_continue" = "繼續";
