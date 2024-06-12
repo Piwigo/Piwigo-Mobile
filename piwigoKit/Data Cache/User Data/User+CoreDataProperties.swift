@@ -18,6 +18,7 @@ extension User {
     }
 
     @NSManaged public var lastUsed: TimeInterval
+    @NSManaged public var id: Int16
     @NSManaged public var name: String
     @NSManaged public var username: String
     @NSManaged public var status: String
