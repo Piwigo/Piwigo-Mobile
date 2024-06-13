@@ -621,8 +621,8 @@ class AlbumUtilities: NSObject {
     static func getDateLabels(for timeIntervals: [TimeInterval]) -> (String, String) {
         // Creation date of images (or of availability)
         let refDate = TimeInterval(-3187209600)     // "1900-01-02 00:00:00" relative to ref. date
-        var dateLabelText = "—"                     // Displayed when there iss no date available
-        var optionalDateLabelText = "—"
+        var dateLabelText = " "                     // Displayed when there iss no date available
+        var optionalDateLabelText = " "
         
         // Determine lowest time interval after "1900-01-01 00:00:00"
         var lowest = TimeInterval.greatestFiniteMagnitude
@@ -641,7 +641,7 @@ class AlbumUtilities: NSObject {
         }
         
         // Determine if images of this section were all taken after "1900-01-02 00:00:00"
-        if lowest > refDate {
+        if lowest > refDate, lowest < TimeInterval.greatestFiniteMagnitude {
             // Get correspondig date
             let startDate = Date(timeIntervalSinceReferenceDate: lowest)
             
