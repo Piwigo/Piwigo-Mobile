@@ -43,10 +43,10 @@
 # A list of devices you want to take the screenshots from
 # https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
 devices([
-# "iPhone SE (1st generation)",				# 4-inch    iOS 15.5
+ "iPhone SE (1st generation)",				# 4-inch    iOS 15.5
 # "iPhone SE (3rd generation)",				# 4.7-inch
 # "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
- "iPhone 14",								# 5.8-inch
+# "iPhone 14",								# 5.8-inch
 # "iPhone 13 Pro",							# Wiki
 # "iPhone 14 Pro",							# 6.1-inch
 # "iPhone 14 Plus",							# 6.5-inch

@@ -43,14 +43,6 @@ class piwigoScreenshots: XCTestCase {
         let deviceType = UIDevice().modelName
         sleep(3);
         
-        // Select Photos Title A->Z sort order
-        //        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
-        //        sleep(1);
-        //        app.tables["settings"].cells["defaultSort"].tap()
-        //        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
-        //        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
-        //        app.navigationBars.buttons["Done"].tap()
-        
         // Screenshot #1: swipe left and reveal album actions
         var index = 1
         if deviceType.hasPrefix("iPad") {
@@ -134,16 +126,6 @@ class piwigoScreenshots: XCTestCase {
         sleep(1)                        // Leave time for animation
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        app.buttons["rootAlbum"].tap()
-        app.buttons["settings"].tap()
-        sleep(2);
-        app.tables["settings"].cells["server"].swipeUp()
-        sleep(2);
-        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
-        app.navigationBars.buttons["Done"].tap()
-        sleep(1);
-        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
-        sleep(1);
         if deviceType.hasPrefix("iPhone") {
             app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
             sleep(2);
@@ -152,13 +134,16 @@ class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: i).swipeUp(velocity: 200)
             sleep(1)
         }
-        app.navigationBars.buttons["Select"].tap()
+        app.navigationBars.buttons["select"].tap()
+        sleep(1)
+        app.buttons["Select"].tap()
+        sleep(1)
         if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 6).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 10).tap()
         } else {
             if (deviceType == "iPad Pro 9.7\"") {
                 app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
@@ -177,14 +162,19 @@ class piwigoScreenshots: XCTestCase {
                 app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
             }
         }
+        app.navigationBars.buttons["actions"].tap()
         snapshot("Image04")
         
         // Screenshot #5: Edit parameters
-        app.navigationBars.buttons["Cancel"].tap()
-        sleep(1);
+        app.collectionViews.buttons["editProperties"].tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["Properties"].buttons["Cancel"].tap()
+        sleep(1)                        // Leave time for animation
         app.collectionViews.cells["Hotel de Coimbra"].tap()
         sleep(2)
         switch deviceType {
+        case "iPhone SE":                                           // 4-inch
+            break
         case "iPad Pro (9.7-inch)":                                 // 9.7-inch
             break
         case "iPad Pro (10.5-inch)":                                // 10.5-inch
@@ -210,8 +200,8 @@ class piwigoScreenshots: XCTestCase {
         sleep(2)                        // Leave time for animation
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
-        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
+        app.collectionViews.children(matching: .cell).element(boundBy: 8).swipeUp()
+        app.collectionViews.children(matching: .cell).element(boundBy: 8).swipeUp()
         app.buttons["add"].tap()
         sleep(2)                        // Leave time for animation
         snapshot("Image06")
@@ -267,7 +257,6 @@ class piwigoScreenshots: XCTestCase {
         sleep(1)                        // Leave time for animation
         app.tables["settings"].cells["server"].swipeUp()
         sleep(2)                        // Leave time for animation
-        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
         snapshot("Image10")
     }
 }

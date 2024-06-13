@@ -15,13 +15,14 @@ extension AlbumViewController
     // MARK: Edit Images Parameters Action
     @available(iOS 14.0, *)
     func editParamsAction() -> UIAction {
-        let actionId = UIAction.Identifier("Edit Parameters")
+        let actionId = UIAction.Identifier("org.piwigo.images.edit")
         let action = UIAction(title: NSLocalizedString("imageOptions_properties", comment: "Modify Properties"),
                               image: UIImage(systemName: "pencil"),
                               identifier: actionId, handler: { [self] action in
            // Edit image informations
             editSelection()
         })
+        action.accessibilityIdentifier = "editProperties"
         return action
     }
 
