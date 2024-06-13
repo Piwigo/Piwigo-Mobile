@@ -146,8 +146,8 @@ class AlbumTableViewCell: UITableViewCell {
             // There are no sub-albums
             let nberImages = numberFormatter.string(from: NSNumber(value: albumData?.nbImages ?? 0))
             text = (albumData?.nbImages ?? 0 > 1)
-                ? String.localizedStringWithFormat(singleImage, nberImages ?? "")
-                : String.localizedStringWithFormat(severalImages, nberImages ?? "")
+                ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
+                : String.localizedStringWithFormat(singleImage, nberImages ?? "")
         }
         else if albumData?.totalNbImages ?? Int64.zero == Int64.zero {
             // There are no images but sub-albums
