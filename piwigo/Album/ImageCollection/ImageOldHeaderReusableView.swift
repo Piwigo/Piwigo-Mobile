@@ -38,29 +38,18 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         segmentedControl?.selectedSegmentIndex = group.segmentIndex
 
         // Get date labels
-        var date1: Date?, date2: Date?, dates = ("", "")
+        var dates = ("", "")
         switch sortOption {
         case .dateCreatedAscending, .dateCreatedDescending:
-            if let ti = images.first?.dateCreated {
-                date1 = Date(timeIntervalSinceReferenceDate: ti)
-            }
-            if let ti = images.last?.dateCreated {
-                date2 = Date(timeIntervalSinceReferenceDate: ti)
-            }
-            dates = AlbumUtilities.getDateLabels(for: date1, to: date2)
-
+            let dateIntervals = images.map {$0.dateCreated}
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals)
         case .datePostedAscending, .datePostedDescending:
-            if let ti = images.first?.datePosted {
-                date1 = Date(timeIntervalSinceReferenceDate: ti)
-            }
-            if let ti = images.last?.datePosted {
-                date2 = Date(timeIntervalSinceReferenceDate: ti)
-            }
-            dates = AlbumUtilities.getDateLabels(for: date1, to: date2)
+            let dateIntervals = images.map {$0.datePosted}
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals)
         default:
             break
         }
-
+        
         // Set labels from dates and place name
         self.mainLabel.text = dates.0
         if images.isEmpty {
