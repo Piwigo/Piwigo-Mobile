@@ -123,6 +123,7 @@ class EditImageParamsViewController: UIViewController
         navigationController?.isNavigationBarHidden = false
         navigationItem.leftBarButtonItem = cancel
         navigationItem.rightBarButtonItem = done
+        navigationController?.navigationBar.accessibilityIdentifier = "editParams"
         
         // Register thumbnails cell
         editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
