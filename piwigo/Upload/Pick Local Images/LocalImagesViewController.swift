@@ -555,12 +555,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             
             // Change image grouping
             self.sortType = .day
-            
-            // Refresh collection (may be called from background queue)
-            DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
-            }
+            self.reloadCollectionAndUpdateMenu()
         })
         action.accessibilityIdentifier = "groupByDay"
         return action
@@ -578,12 +573,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             
             // Change image grouping
             self.sortType = .week
-            
-            // Refresh collection (may be called from background queue)
-            DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
-            }
+            self.reloadCollectionAndUpdateMenu()
         })
         action.accessibilityIdentifier = "groupByWeek"
         return action
@@ -601,12 +591,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             
             // Should image grouping be changed?
             self.sortType = .month
-            
-            // Refresh collection (may be called from background queue)
-            DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
-            }
+            self.reloadCollectionAndUpdateMenu()
         })
         action.accessibilityIdentifier = "groupByMonth"
         return action
@@ -624,12 +609,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             
             // Change image grouping
             self.sortType = .none
-            
-            // Refresh collection (may be called from background queue)
-            DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
-            }
+            self.reloadCollectionAndUpdateMenu()
         })
         action.accessibilityIdentifier = "groupByNone"
         return action
@@ -647,20 +627,22 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         }
 
         // Change button icon and refresh collection
-        DispatchQueue.main.async {
-            self.updateActionButton()
-            self.updateNavBar()
-            self.localImagesCollection.reloadData()
-        }
+        reloadCollectionAndUpdateMenu()
     }
     
     @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
         // Did select new sort option [Months, Weeks, Days, All in one section]
         sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .none
                 
-        // Refresh collection (may be called from background queue)
+        // Change button icon and refresh collection
+        reloadCollectionAndUpdateMenu()
+    }
+    
+    private func reloadCollectionAndUpdateMenu() {
+        // May be called from background queue
         DispatchQueue.main.async {
-            // Refresh collection view
+            self.updateActionButton()
+            self.updateNavBar()
             self.localImagesCollection.reloadData()
         }
     }
