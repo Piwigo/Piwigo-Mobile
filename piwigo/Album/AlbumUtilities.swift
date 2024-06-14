@@ -645,115 +645,98 @@ class AlbumUtilities: NSObject {
             // Get correspondig date
             let startDate = Date(timeIntervalSinceReferenceDate: lowest)
             
-            // Display date of day by default, will add time in the absence of location data
-            dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-            optionalDateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .none, timeStyle: .long)
+            // Display date/month/year by default, will add weekday/time in the absence of location data
+            let dateStyle: DateFormatter.Style = UIScreen.main.bounds.size.width > 400 ? .long : .medium
+            dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
+            
+            // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+            let dayFormatter = DateFormatter()
+            dayFormatter.locale = .current
+            switch UIScreen.main.bounds.size.width {
+            case 0..<400:
+                dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+            case 400...600:
+                dayFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm")
+            default:
+                dayFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm:ss")
+            }
+            optionalDateLabelText = dayFormatter.string(from: startDate)
             
             // Get creation date of last image and check that it is after "1900-01-02 00:00:00"
-            if greatest > refDate {
-                
+            if greatest > refDate, greatest != lowest {
                 // Get correspondig date
                 let endDate = Date(timeIntervalSinceReferenceDate: greatest)
 
-                // Set dates in right order in case user sorted images in reverse order
+                // Images taken the same day?
                 let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
                 let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
-                
-                // Images taken the same day?
                 if firstImageDay == lastImageDay {
                     // Images were taken the same day
-                    // => Keep dataLabel as already set and define optional string with starting and ending times
-                    let firstImageDateStr = DateFormatter.localizedString(from: startDate, dateStyle: .none, timeStyle: .short)
-                    let lastImageDateStr = DateFormatter.localizedString(from: endDate, dateStyle: .none, timeStyle: .short)
-                    if (firstImageDateStr == lastImageDateStr) {
-                        optionalDateLabelText = firstImageDateStr
-                    } else {
-                        optionalDateLabelText = "\(firstImageDateStr) - \(lastImageDateStr)"
-                    }
-                    return (dateLabelText, optionalDateLabelText)
-                }
-                
-                // => Images taken the same week?
-                let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: startDate)
-                let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: endDate)
-                if (firstImageWeek == lastImageWeek) {
-                    // Images taken during the same week
-                    // => Display dates of week
-                    let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                    dateFormatter1.locale = .current
-                    dateFormatter2.locale = .current
-                    dateFormatter1.setLocalizedDateFormatFromTemplate("d")
-                    dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
-                    dateLabelText = dateFormatter1.string(from: startDate) + " - " + dateFormatter2.string(from: endDate)
-                    // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                        optionalDateLabelText = dateFormatter1.string(from: startDate) + " — " + dateFormatter1.string(from: endDate)
-                    } else {
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
-                        optionalDateLabelText = dateFormatter1.string(from: startDate) + " — " + dateFormatter1.string(from: endDate)
-                    }
+                    // => Keep dateLabel as already set
+                    // => Add ending time to optional string
+                    let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
+                    dayFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
+                    optionalDateLabelText += " - " + dayFormatter.string(from: endDate)
                     return (dateLabelText, optionalDateLabelText)
                 }
                 
                 // => Images taken the same month?
                 let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
                 let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
-                if (firstImageMonth == lastImageMonth) {
-                    // Images taken during the sme month
-                    // => Display month instead of dates
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.locale = .current
-                    dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
-                    dateLabelText = dateFormatter.string(from: startDate)
-                    // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                        optionalDateLabelText = dateFormatter.string(from: startDate) + " — " + dateFormatter.string(from: endDate)
-                    } else {
-                        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d")
-                        optionalDateLabelText = dateFormatter.string(from: startDate) + " — " + dateFormatter.string(from: endDate)
+                if firstImageMonth == lastImageMonth {
+                    // Images taken during the sme month => Display days of month
+                    let dateFormatter = DateIntervalFormatter()
+                    dateFormatter.timeStyle = .none
+                    switch UIScreen.main.bounds.size.width {
+                    case 0..<400:
+                        dateFormatter.dateStyle = .medium
+                    default:
+                        dateFormatter.dateStyle = .long
                     }
+                    dateLabelText = dateFormatter.string(from: startDate, to: endDate)
+                    
+                    // Define optional string with day/time values
+                    // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+                    let dayFormatter = DateFormatter()
+                    dayFormatter.locale = .current
+                    switch UIScreen.main.bounds.size.width {
+                    case 0..<400:
+                        dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                    case 400..<600:
+                        dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                    default:
+                        dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                    }
+                    optionalDateLabelText = dayFormatter.string(from: startDate) + " — " + dayFormatter.string(from: endDate)
                     return (dateLabelText, optionalDateLabelText)
                 }
                 
-                // => Images taken the same year?
-                let firstImageYear = Calendar.current.dateComponents([.year], from: startDate)
-                let lastImageYear = Calendar.current.dateComponents([.year], from: endDate)
-                if (firstImageYear == lastImageYear) {
-                    // Images taken during the sme year
-                    // => Display day/month followed by year
-                    // See https://iosref.com/res
-                    let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                    dateFormatter1.locale = .current
-                    dateFormatter2.locale = .current
-                    if UIScreen.main.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
-                        dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
-                        dateLabelText = dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate)
-                    } else {
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("MMd")
-                        dateFormatter2.setLocalizedDateFormatFromTemplate("YYMMd")
-                        dateLabelText = dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate)
-                    }
-                    return (dateLabelText, optionalDateLabelText)
+                // => Images not taken the same month => Display day/month of year
+                let dateFormatter = DateIntervalFormatter()
+                dateFormatter.timeStyle = .none
+                switch UIScreen.main.bounds.size.width {
+                case 0..<400:
+                    dateFormatter.dateTemplate = "YYMMdd"
+                case 400..<600:
+                    dateFormatter.dateStyle = .medium
+                default:
+                    dateFormatter.dateStyle = .long
                 }
+                dateLabelText = dateFormatter.string(from: startDate, to: endDate)
                 
-                // => Images taken on several years
-                let dateFormatter = DateFormatter()
-                dateFormatter.locale = .current
-                if UIScreen.main.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
-                    dateLabelText = dateFormatter.string(from: startDate) + " — " + dateFormatter.string(from: endDate)
-                } else {
-                    dateFormatter.setLocalizedDateFormatFromTemplate("YYMMd")
-                    dateLabelText = dateFormatter.string(from: startDate) + " — " + dateFormatter.string(from: endDate)
+                // Define optional string with day/time values
+                // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+                let dayFormatter = DateFormatter()
+                dayFormatter.locale = .current
+                switch UIScreen.main.bounds.size.width {
+                case 0..<400:
+                    dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                case 400..<600:
+                    dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                default:
+                    dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
                 }
-                return (dateLabelText, optionalDateLabelText)
+                optionalDateLabelText = dayFormatter.string(from: startDate) + " — " + dayFormatter.string(from: endDate)
             }
         }
         return (dateLabelText, optionalDateLabelText)
