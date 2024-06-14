@@ -865,7 +865,7 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Co nowego w Piwigo";
-"whatsNew_title1" = "Zdjęcia grupowe";
+"whatsNew_title1" = "Grupuj zdjęcia";
 "whatsNew_desc1" = "Według dnia, tygodnia lub miesiąca.";
 "whatsNew_title2" = "Obróć zdjęcia";
 "whatsNew_desc2" = "Napraw problemy z orientacją (wymaga wtyczki rotateImage plugin).";

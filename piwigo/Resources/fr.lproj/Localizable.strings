@@ -720,7 +720,7 @@
 "imageSizexFullRes" = "Haute résolution";
 
 // Settings — Upload
-"settingsHeader_upload" = "Paramètres de téléchargement";
+"settingsHeader_upload" = "Téléchargements";
 "settings_defaultAuthor" = "Auteur";
 "settings_defaultAuthor>320px" = "Nom d'auteur";
 "settings_defaultAuthorPlaceholder" = "Nom de l'auteur";
