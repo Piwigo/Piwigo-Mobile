@@ -1,2 +1,4 @@
-• Demande la mise à jour du serveur Piwigo si nécessaire
+• Adopte les options de tri des photos des albums
+• Ajoute des options de tri des photos à la volée
+• Ajoute la rotation des photos téléchargées (nécessite le plugin rotateImage)
 • Corrections de bugs

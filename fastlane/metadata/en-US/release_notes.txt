@@ -1,2 +1,4 @@
-• Requests Piwigo server update if necessary
+• Adopts album photo sorting options
+• Adds on-the-fly photo sorting options
+• Adds rotation of uploaded photos (requires the rotateImage plugin)
 • Bug fixes

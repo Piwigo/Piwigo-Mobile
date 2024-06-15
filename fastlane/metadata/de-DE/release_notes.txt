@@ -1,2 +1,4 @@
-• Erfordert das Piwigo Server Update falls erforderlich
+• Übernimmt die Sortieroptionen für Albenfotos
+• Fügt Optionen für die fliegende Sortierung von Fotos hinzu
+• Rotation der hochgeladenen Fotos (erfordert das rotateImage-Plugin)
 • Fehlerbehebungen
