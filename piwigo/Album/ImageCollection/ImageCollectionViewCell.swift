@@ -260,6 +260,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         isAccessibilityElement = false
         cellImage.image = nil
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        accessibilityIdentifier = ""
     }
 
     func highlight(onCompletion completion: @escaping () -> Void) {
