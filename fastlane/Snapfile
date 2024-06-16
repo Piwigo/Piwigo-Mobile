@@ -45,13 +45,13 @@
 devices([
 # "iPhone SE (1st generation)",				# 4-inch    iOS 15.5
 # "iPhone SE (3rd generation)",				# 4.7-inch
- "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
- "iPhone 14",								# 5.8-inch
+# "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
+# "iPhone 14",								# 5.8-inch
 # "iPhone 13 Pro",							# Wiki
- "iPhone 14 Pro",							# 6.1-inch
- "iPhone 14 Plus",							# 6.5-inch
- "iPhone 15 Pro Max",						# 6.7-inch
-# "iPad Pro (9.7-inch)",					# 9.7-inch  iOS 16.4
+# "iPhone 14 Pro",							# 6.1-inch
+# "iPhone 14 Plus",							# 6.5-inch
+# "iPhone 15 Pro Max",						# 6.7-inch
+ "iPad Pro (9.7-inch)",					# 9.7-inch  iOS 16.4
 # "iPad Pro (10.5-inch)",					# 10.5-inch
 # "iPad Pro (11-inch) (4th generation)",	# 11-inch
 # "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
@@ -83,7 +83,7 @@ test_without_building(true)
 output_directory("fastlane/screenshots")
 concurrent_simulators(true)
 skip_open_summary(true)
-number_of_retries(0)
+number_of_retries(1)
 
 # Command below fails with iOS +16.1, 17.x:
 #override_status_bar(true)

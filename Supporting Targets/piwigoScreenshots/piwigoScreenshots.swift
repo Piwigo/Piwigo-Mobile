@@ -54,7 +54,7 @@ class piwigoScreenshots: XCTestCase {
         tableQuery.swipeLeft()
         snapshot("Image01")
         
-        // Screenshot #2: collection of images with titles
+        // Screenshot #2: collection of images
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(2);
         if deviceType.hasPrefix("iPhone") {
@@ -100,7 +100,7 @@ class piwigoScreenshots: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
-        case "iPad Pro (9.7-inch)":                                 // 9.7-inch
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
         case "iPad Pro (10.5-inch)":                                // 10.5-inch
             break
@@ -162,6 +162,19 @@ class piwigoScreenshots: XCTestCase {
                 app.collectionViews.firstMatch.swipeUp(velocity: 200)
                 sleep(1)
             }
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+            break
+        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+            break
+        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+            break
+        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+            break
         default:
             break
         }
@@ -205,13 +218,13 @@ class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
-        case "iPad Pro 9.7\"":
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
         default:
             app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
@@ -265,6 +278,16 @@ class piwigoScreenshots: XCTestCase {
                 app.collectionViews.firstMatch.swipeDown(velocity: 200)
                 sleep(1)
             }
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            break
+        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+            break
+        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+            break
+        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+            break
+        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+            break
         default:
             break
         }
@@ -279,7 +302,7 @@ class piwigoScreenshots: XCTestCase {
              "iPhone 14 Plus",                                      // 6.5-inch
              "iPhone 15 Pro Max":                                   // 6.7-inch
             break
-        case "iPad Pro (9.7-inch)":                                 // 9.7-inch
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
         case "iPad Pro (10.5-inch)":                                // 10.5-inch
             break
@@ -314,6 +337,11 @@ class piwigoScreenshots: XCTestCase {
              "iPhone 15 Pro Max":                                   // 6.7-inch
             for _ in 1...4 {
                 app.collectionViews.firstMatch.swipeUp()
+            }
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
             }
         default:
             break
