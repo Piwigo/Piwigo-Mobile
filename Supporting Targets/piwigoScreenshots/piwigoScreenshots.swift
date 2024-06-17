@@ -102,15 +102,15 @@ class piwigoScreenshots: XCTestCase {
             app.images.element(boundBy: 0).tap()
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
-        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             break
-        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
-        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
-        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
             break
         default:
             break
@@ -167,13 +167,26 @@ class piwigoScreenshots: XCTestCase {
                 app.collectionViews.firstMatch.swipeUp(velocity: 200)
                 sleep(1)
             }
-        case "iPad Pro (10.5-inch)":                                // 10.5-inch
-            break
-        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
-            break
-        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
-            break
-        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
             break
         default:
             break
@@ -225,14 +238,36 @@ class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
         default:
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
+            break
         }
         app.navigationBars.buttons["actions"].tap()
         snapshot("Image04")
@@ -280,13 +315,13 @@ class piwigoScreenshots: XCTestCase {
             }
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
-        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             break
-        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
             break
-        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
-        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
             break
         default:
             break
@@ -304,14 +339,14 @@ class piwigoScreenshots: XCTestCase {
             break
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
-        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             break
-        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).tap()
-        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
-        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
             break
         default:
             break
@@ -340,6 +375,26 @@ class piwigoScreenshots: XCTestCase {
             }
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            for _ in 1...4 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
                 app.collectionViews.firstMatch.swipeUp(velocity: 200)
                 sleep(1)
             }
