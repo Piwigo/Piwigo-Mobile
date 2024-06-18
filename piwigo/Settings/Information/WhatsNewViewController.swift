@@ -12,6 +12,7 @@ class WhatsNewViewController: UIViewController {
     
     @IBOutlet weak var titleLabel: UILabel!
     
+    @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var firstNewsImage: UIImageView!
     @IBOutlet weak var firstNewsTitle: UILabel!
     @IBOutlet weak var firstNewsDescription: UILabel!
@@ -50,6 +51,50 @@ class WhatsNewViewController: UIViewController {
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)
+        if #available(iOS 13.0, *) {
+            continueButton.layer.cornerCurve = .continuous
+        }
+    }
+    
+    override func updateViewConstraints() {
+        // Distance to top introduced in iOS 13 for modal controllers
+        let TOP_CARD_DISTANCE: CGFloat = 40.0
+
+        // Calculate width
+        let width = titleLabel.frame.width + 120.0
+        
+        // Calculate height of everything inside that view
+        var height: CGFloat = 50.0
+        height += titleLabel.frame.height
+        height += 80.0
+        stackView.subviews.forEach { subView in
+            height += subView.frame.height
+        }
+        height += 80.0
+        height += continueButton.frame.height
+        height += 30.0
+        
+        // Change size view size
+        view.frame.size.width = min(view.bounds.width, width)
+        view.frame.size.height = min(view.bounds.height, height)
+        
+        // Reposition the view (if not it will be near the top)
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            view.frame.origin.x = max(0, (UIScreen.main.bounds.width - width) / 2.0)
+            view.frame.origin.y = max(0, UIScreen.main.bounds.height - height - TOP_CARD_DISTANCE)
+        }
+        
+        // Apply corner radius only to top corners
+        let mask = CAShapeLayer()
+        let path = UIBezierPath(roundedRect: view.bounds, cornerRadius: 40.0)
+        mask.path = path.cgPath
+        if #available(iOS 13.0, *) {
+            mask.cornerCurve = .continuous
+        }
+        view.layer.mask = mask
+        
+        // Update constraints
+        super.updateViewConstraints()
     }
     
     @objc func applyColorPalette() {
@@ -62,7 +107,7 @@ class WhatsNewViewController: UIViewController {
         firstNewsDescription.textColor = .piwigoColorText()
         secondNewsTitle.textColor = .piwigoColorText()
         secondNewsDescription.textColor = .piwigoColorText()
-    }
+}
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
