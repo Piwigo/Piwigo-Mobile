@@ -128,7 +128,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 })
             case .move:
                 guard var indexPath = indexPath, var newIndexPath = newIndexPath,
-                      anObject is Image, indexPath != newIndexPath else { return }
+                      anObject is Image else { return }
                 indexPath.section += 1
                 newIndexPath.section += 1
                 // Move image

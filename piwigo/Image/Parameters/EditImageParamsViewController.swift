@@ -475,6 +475,9 @@ class EditImageParamsViewController: UIViewController
                         imageData.comment = newComment.htmlToAttributedString
                     }
                     
+                    // Save changes
+                    mainContext.saveIfNeeded()
+                    
                     // Notify album/image view of modification
                     self.delegate?.didChangeImageParameters(imageData)
                 }
