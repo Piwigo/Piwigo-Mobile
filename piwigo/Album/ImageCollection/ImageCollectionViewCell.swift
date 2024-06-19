@@ -117,9 +117,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 
         // Title
-        let displayTitle = AlbumVars.shared.displayImageTitles ||
-            [.visitsAscending, .visitsDescending,
-             .ratingScoreAscending, .ratingScoreDescending].contains(sortOption)
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
         let title = getImageTitle(forSortOption: sortOption)
@@ -129,12 +126,12 @@ class ImageCollectionViewCell: UICollectionViewCell {
             self.accessibilityIdentifier = "Hotel de Coimbra"
         }
 #endif
-        if displayTitle {
+        if AlbumVars.shared.displayImageTitles {
             let title = getImageTitle(forSortOption: sortOption)
             nameLabel?.attributedText = title
         }
-        bottomLayer?.isHidden = !displayTitle
-        nameLabel?.isHidden = !displayTitle
+        bottomLayer?.isHidden = !AlbumVars.shared.displayImageTitles
+        nameLabel?.isHidden = !AlbumVars.shared.displayImageTitles
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
