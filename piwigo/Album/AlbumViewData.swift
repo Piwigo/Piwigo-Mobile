@@ -268,9 +268,11 @@ class AlbumViewData: NSObject
     
     func images(sortedBy sort: pwgImageSort = AlbumVars.shared.defaultSort,
                 groupedBy group: pwgImageGroup = AlbumVars.shared.defaultGroup) -> NSFetchedResultsController<Image> {
-        // Update default settings
-        AlbumVars.shared.defaultSort = sort
-        AlbumVars.shared.defaultGroup = group
+        // Update default settings if the album is not a specific smart album
+        if [pwgSmartAlbum.best.rawValue, pwgSmartAlbum.visits.rawValue].contains(albumData.pwgID) == false {
+            AlbumVars.shared.defaultSort = sort
+            AlbumVars.shared.defaultGroup = group
+        }
         
         // Update sort descriptors
         /// when sort = .default, the image sort option is the one returned with the album data

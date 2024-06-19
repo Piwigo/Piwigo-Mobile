@@ -371,9 +371,9 @@ extension AlbumViewController
         // The menu is not available for all smart albums
         let validSmartAlbums: [Int32] = [pwgSmartAlbum.search.rawValue,
                                          pwgSmartAlbum.favorites.rawValue,
-                                         pwgSmartAlbum.tagged.rawValue,
                                          pwgSmartAlbum.recent.rawValue]
-        if categoryId <= 0, validSmartAlbums.contains(categoryId) == false {
+        if categoryId <= 0, categoryId > pwgSmartAlbum.tagged.rawValue,
+           validSmartAlbums.contains(categoryId) == false {
             return nil
         }
         

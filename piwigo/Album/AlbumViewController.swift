@@ -225,7 +225,7 @@ class AlbumViewController: UIViewController
         return albums
     }()
     lazy var images: NSFetchedResultsController<Image> = {
-        let images = data.images()
+        let images = data.images(sortedBy: sortOption)
         images.delegate = self
         return images
     }()
