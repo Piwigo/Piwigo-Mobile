@@ -12,7 +12,7 @@ import uploadKit
 
 extension AlbumViewController
 {
-    // MARK: Fetch Album Data in the Background
+    // MARK: - Fetch Album Data in the Background
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
         // Remember query and which images belong to the album
         // from main context before calling background tasks
@@ -93,7 +93,7 @@ extension AlbumViewController
     }
     
 
-    // MARK: Fetch Image Data in the Background
+    // MARK: - Fetch Image Data in the Background
     func fetchImages(withInitialImageIds oldImageIds: Set<Int64>, query: String,
                      fromPage onPage: Int, toPage lastPage: Int,
                      completion: @escaping () -> Void) {
