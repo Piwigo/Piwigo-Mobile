@@ -16,7 +16,7 @@ extension EditImageParamsViewController
               let info = notification.userInfo,
               let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let window = editImageParamsTableView.window,
-              let parentVC = self.navigationController?.presentingViewController
+              let parentVC = navigationController?.presentingViewController
         else { return }
         
         // Calc intersection between the keyboard's frame and the view's bounds
@@ -32,18 +32,23 @@ extension EditImageParamsViewController
     }
     
     @objc func onKeyboardDidShow(_ notification: NSNotification) {
-        guard let editedRow = editedRow else { return }
+        guard let editedRow = editedRow,
+              let info = notification.userInfo,
+              let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        else { return }
         
         // If necessary, scroll the table so that the cell remains visible
-        if let cell = editImageParamsTableView.cellForRow(at: editedRow) {
+        if UIDevice.current.userInterfaceIdiom == .phone,
+           let cell = editImageParamsTableView.cellForRow(at: editedRow) {
             let toCoordinateSpace: UICoordinateSpace = view
             let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
-            let heightOfInterest = min(convertedCellFrame.height, view.bounds.height/2.0)
+            let barHeight = convertedCellFrame.origin.y - cell.frame.origin.y   // status & navigation bars
+            let availableHeight = editImageParamsTableView.bounds.height - barHeight - kbInfo.height
             let frameOfInterest = CGRect(origin: convertedCellFrame.origin,
-                                         size: CGSize(width: convertedCellFrame.width, height: heightOfInterest))
+                                         size: CGSize(width: convertedCellFrame.width, height: availableHeight))
             editImageParamsTableView.scrollRectToVisible(frameOfInterest, animated: true)
         } else {
-            editImageParamsTableView.scrollToRow(at: editedRow, at: .none, animated: true)
+            editImageParamsTableView.scrollToRow(at: editedRow, at: .top, animated: true)
         }
     }
     
