@@ -71,14 +71,15 @@ extension SceneDelegate {
         }
         
         // Should we restore an image preview?
-        guard let imagePath = userInfo["imagePath"] as? [Int]?,
+        guard let subAlbumVC = subAlbumVC,
+              let imagePath = userInfo["imagePath"] as? [Int]?,
               let item = imagePath?.first, let section = imagePath?.last
         else { return }
         
         // Perform a fetch because the sub-album is not loaded yet
-        try? subAlbumVC?.images.performFetch()
+        try? subAlbumVC.images.performFetch()
         let indexPath = IndexPath(item: item, section: section)
-        guard let sections = subAlbumVC?.images.sections,
+        guard let sections = subAlbumVC.images.sections,
               section < sections.count,
               item < sections[section].numberOfObjects
         else { return }
