@@ -58,11 +58,10 @@ extension AlbumViewController: UISearchControllerDelegate
         collectionView?.reloadData()
         
         // Hide buttons and toolbar
-        initBarsInPreviewMode()
-        updateBarsInPreviewMode()
+        hideButtons()
         navigationController?.setToolbarHidden(true, animated: true)
     }
-        
+    
     func willDismissSearchController(_ searchController: UISearchController) {
 //        debugPrint("willDismissSearchController…")
         // Back to default album
@@ -89,6 +88,7 @@ extension AlbumViewController: UISearchControllerDelegate
         // Show buttons
         initBarsInPreviewMode()
         updateBarsInPreviewMode()
+        updateButtons()
     }
     
     func resetSearchAlbum(withQuery query: String) {
