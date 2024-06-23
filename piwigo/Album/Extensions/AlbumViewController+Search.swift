@@ -64,6 +64,9 @@ extension AlbumViewController: UISearchControllerDelegate
     
     func willDismissSearchController(_ searchController: UISearchController) {
 //        debugPrint("willDismissSearchController…")
+        // Deselect photos if needed
+        cancelSelect()
+
         // Back to default album
         categoryId = AlbumVars.shared.defaultCategory
         
