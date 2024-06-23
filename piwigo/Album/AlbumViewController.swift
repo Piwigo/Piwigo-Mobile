@@ -772,24 +772,24 @@ class AlbumViewController: UIViewController
     
     func fetchCompleted() {
         DispatchQueue.main.async { [self] in
-            // Hide HUD
-            self.navigationController?.hideHUD {
-                // Update title
-                self.setTitleViewFromAlbumData(whileUpdating: false)
+            // Hide HUD if needed
+            self.navigationController?.hideHUD { }
 
-                // Update number of images in footer
-                self.updateNberOfImagesInFooter()
+            // Update title
+            self.setTitleViewFromAlbumData(whileUpdating: false)
 
-                // Set navigation bar buttons
-                if self.isSelect {
-                    self.updateBarsInSelectMode()
-                } else {
-                    self.updateBarsInPreviewMode()
-                }
+            // Update number of images in footer
+            self.updateNberOfImagesInFooter()
 
-                // End refreshing if needed
-                self.collectionView?.refreshControl?.endRefreshing()
+            // Set navigation bar buttons
+            if self.isSelect {
+                self.updateBarsInSelectMode()
+            } else {
+                self.updateBarsInPreviewMode()
             }
+
+            // End refreshing if needed
+            self.collectionView?.refreshControl?.endRefreshing()
         }
         
         // Fetch favorites in the background if needed
