@@ -43,7 +43,7 @@ extension AlbumViewController: UISearchControllerDelegate
 //    }
     
     func willPresentSearchController(_ searchController: UISearchController) {
-        debugPrint("willPresentSearchController…")
+//        debugPrint("willPresentSearchController…")
         // Switch to Search album
         categoryId = pwgSmartAlbum.search.rawValue
         
@@ -78,7 +78,7 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
-        debugPrint("didDismissSearchController…")
+//        debugPrint("didDismissSearchController…")
         // Update albumData
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
         
