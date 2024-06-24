@@ -87,7 +87,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             
         default /* Images */:
             // Number of images shown at the bottom of the collection
-            if section != images.fetchedObjects?.count ?? 0 {
+            if section != data.imageCount() {
                 return CGSize.zero
             }
         }

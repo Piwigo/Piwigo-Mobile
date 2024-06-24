@@ -15,7 +15,13 @@ extension Image {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Image> {
         return NSFetchRequest<Image>(entityName: "Image")
     }
-    
+
+    @nonobjc public class func fetchCountRequest() -> NSFetchRequest<NSNumber> {
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
+        fetchRequest.resultType = .countResultType
+        return fetchRequest
+    }
+
     @NSManaged public var uuid: String
     @NSManaged public var pwgID: Int64
     @NSManaged public var title: NSAttributedString

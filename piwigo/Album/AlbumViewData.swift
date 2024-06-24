@@ -55,7 +55,7 @@ class AlbumViewData: NSObject
     
 
     // MARK: - Images
-    lazy var imagePredicate: NSPredicate = {
+    private lazy var imagePredicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
         andPredicates.append(NSPredicate(format: "ANY albums.pwgID == $catID"))
@@ -192,6 +192,12 @@ class AlbumViewData: NSObject
         }
     }
     
+    private lazy var fetchImageCountRequest: NSFetchRequest<NSNumber> = {
+        let fetchRequest = Image.fetchCountRequest()
+        fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catID" : albumData.pwgID])
+        return fetchRequest
+    }()
+    
     private lazy var fetchImagesRequest: NSFetchRequest = {
         let fetchRequest = Image.fetchRequest()
         fetchRequest.predicate = imagePredicate.withSubstitutionVariables(["catID" : albumData.pwgID])
@@ -263,7 +269,12 @@ class AlbumViewData: NSObject
         /// - display searched images
         /// Sort and section keys are unchanged.
         fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(["catID" : catID])
+        fetchImageCountRequest.predicate = imagePredicate.withSubstitutionVariables(["catID" : catID])
         fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(["catID" : catID])
+    }
+    
+    func imageCount() -> Int {
+        return (try? mainContext.fetch(fetchImageCountRequest).first)?.intValue ?? 0
     }
     
     func images(sortedBy sort: pwgImageSort = AlbumVars.shared.defaultSort,
