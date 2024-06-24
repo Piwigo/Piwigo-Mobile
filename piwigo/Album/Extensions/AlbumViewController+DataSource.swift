@@ -31,9 +31,9 @@ extension AlbumViewController: UICollectionViewDataSource
         var totalCount = Int64.zero
         if albumData.pwgID == 0 {
             // Root Album only contains albums  => calculate total number of images
-            (albums.fetchedObjects ?? []).forEach({ album in
+            (albums.fetchedObjects ?? []).forEach { album in
                 totalCount += album.totalNbImages
-            })
+            }
         } else {
             // Number of images in current album
             totalCount = albumData.nbImages
@@ -177,7 +177,7 @@ extension AlbumViewController: UICollectionViewDataSource
                     }
                 }
             case UICollectionView.elementKindSectionFooter:
-                if indexPath.section == data.imageCount() {
+                if indexPath.section == images.sections?.count ?? 0 {
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}
                     footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
