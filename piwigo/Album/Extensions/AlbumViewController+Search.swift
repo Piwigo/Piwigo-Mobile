@@ -38,10 +38,6 @@ extension AlbumViewController
 // MARK: - UISearchControllerDelegate
 extension AlbumViewController: UISearchControllerDelegate
 {
-//    func presentSearchController(_ searchController: UISearchController) {
-//        debugPrint("presentSearchController…")
-//    }
-    
     func willPresentSearchController(_ searchController: UISearchController) {
 //        debugPrint("willPresentSearchController…")
         // Switch to Search album
@@ -59,7 +55,13 @@ extension AlbumViewController: UISearchControllerDelegate
         
         // Hide buttons and toolbar
         hideButtons()
+        initBarsInPreviewMode()
         navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    func didPresentSearchController(_ searchController: UISearchController) {
+        debugPrint("didPresentSearchController")
+        searchController.becomeFirstResponder()
     }
     
     func willDismissSearchController(_ searchController: UISearchController) {
@@ -88,10 +90,9 @@ extension AlbumViewController: UISearchControllerDelegate
         // Reload collection
         collectionView?.reloadData()
         
-        // Show buttons
-        initBarsInPreviewMode()
-        updateBarsInPreviewMode()
+        // Show buttons and navigation bar
         updateButtons()
+        initBarsInPreviewMode()
     }
     
     func resetSearchAlbum(withQuery query: String) {

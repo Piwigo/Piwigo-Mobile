@@ -23,6 +23,9 @@ extension AlbumViewController
             // Button for accessing settings
             navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
             navigationItem.hidesBackButton = true
+        } else if categoryId == pwgSmartAlbum.search.rawValue {
+            // Search bar => No action button
+            navigationItem.setLeftBarButtonItems([], animated: true)
         } else {
             // Back button to parent album
             navigationItem.setLeftBarButtonItems([], animated: true)
@@ -33,6 +36,10 @@ extension AlbumViewController
         if categoryId == 0 {
             // Root album => Discover menu button
             navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+        }
+        else if categoryId == pwgSmartAlbum.search.rawValue {
+            // Search bar => No action button
+            navigationItem.setRightBarButtonItems([], animated: true)
         }
         else if NetworkVars.userStatus != .guest {
             if #available(iOS 14, *) {
