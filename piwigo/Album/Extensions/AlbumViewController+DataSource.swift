@@ -40,7 +40,7 @@ extension AlbumViewController: UICollectionViewDataSource
         }
         
         // Build footer content
-        var legend = ""
+        var legend = " "
         if totalCount == Int64.min {
             // Is loading…
             legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
@@ -177,8 +177,7 @@ extension AlbumViewController: UICollectionViewDataSource
                     }
                 }
             case UICollectionView.elementKindSectionFooter:
-                if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-                   indexPath.section == images.sections?.count ?? 0 {
+                if indexPath.section == images.sections?.count ?? 0 {
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}
                     footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
