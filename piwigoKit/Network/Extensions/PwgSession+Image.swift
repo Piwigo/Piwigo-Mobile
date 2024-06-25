@@ -49,42 +49,40 @@ extension PwgSession
                     return
                 }
             } else {
-//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
+//            debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
                 completion(download.fileURL)
                 return
             }
         }
 
         // Download this image in the background thread
-        downloadQueue.async {
-            guard let download = self.activeDownloads[imageURL] else {
-//                debugPrint("••> Launch download of image: \(imageURL)")
-                download.task = self.dataSession.downloadTask(with: request)
-                download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
-                download.task?.countOfBytesClientExpectsToReceive = download.fileSize
-                download.task?.resume()
-                self.activeDownloads[imageURL] = download
-                return
-            }
-            
-            // Resume download
-//            debugPrint("••> Resume download of image: \(imageURL)")
-            download.progressHandler = progress
-            if let progressHandler = download.progressHandler {
-                progressHandler(download.progress)
-            }
-            download.completionHandler = completion
-            download.failureHandler = failure
-            if let resumeData = download.resumeData {
-                download.task = self.dataSession.downloadTask(withResumeData: resumeData)
-            } else {
-                download.task = self.dataSession.downloadTask(with: request)
-            }
+        guard let download = self.activeDownloads[imageURL] else {
+//            debugPrint("••> Launch download of image: \(imageURL)")
+            download.task = self.dataSession.downloadTask(with: request)
             download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
             download.task?.countOfBytesClientExpectsToReceive = download.fileSize
             download.task?.resume()
             self.activeDownloads[imageURL] = download
+            return
         }
+        
+        // Resume download
+//        debugPrint("••> Resume download of image: \(imageURL)")
+        download.progressHandler = progress
+        if let progressHandler = download.progressHandler {
+            progressHandler(download.progress)
+        }
+        download.completionHandler = completion
+        download.failureHandler = failure
+        if let resumeData = download.resumeData {
+            download.task = self.dataSession.downloadTask(withResumeData: resumeData)
+        } else {
+            download.task = self.dataSession.downloadTask(with: request)
+        }
+        download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
+        download.task?.countOfBytesClientExpectsToReceive = download.fileSize
+        download.task?.resume()
+        self.activeDownloads[imageURL] = download
     }
     
     public func pauseDownload(atURL imageURL: URL) {

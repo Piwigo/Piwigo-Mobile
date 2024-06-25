@@ -68,12 +68,7 @@ public class PwgSession: NSObject {
     
     // Active downloads
     lazy var activeDownloads: [URL : ImageDownload] = [ : ]
-    
-    // Background queue in which image uploads are managed
-    let downloadQueue: DispatchQueue = {
-        return DispatchQueue(label: "org.piwigo.imageQueue", qos: .userInitiated)
-    }()
-    
+        
     // Will accept the image formats supported by UIImage
     lazy var acceptedTypes: String = {
         var acceptedTypes = ""
