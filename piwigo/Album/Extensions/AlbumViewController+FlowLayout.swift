@@ -83,13 +83,16 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         switch section {
         case 0 /* Albums */:
             // Number of images shown in footer of root album
-            if categoryId != Int32.zero { return CGSize.zero }
+            if categoryId != Int32.zero {
+                return CGSize.zero
+            }
             
         default /* Images */:
             // Number of images shown at the bottom of the collection
-            if section != images.sections?.count ?? 0 {
-                return CGSize.zero
-            }
+            guard AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false
+            else { return CGSize.zero }
+            guard section == images.sections?.count ?? 0
+            else { return CGSize.zero }
         }
         
         // Get number of images and status
