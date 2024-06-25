@@ -33,9 +33,10 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
             default /* Images */:
                 // Retrieve image data
                 let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
-                if imageIndexPath.section >= (images.sections?.count ?? 0) { return }
-                guard let sections = images.sections else { return }
-                if imageIndexPath.item > sections[imageIndexPath.section].numberOfObjects { return }
+                guard let sections = images.sections,
+                      imageIndexPath.section < sections.count,
+                      imageIndexPath.item < sections[indexPath.section - 1].numberOfObjects
+                else { return }
                 let imageData = images.object(at: imageIndexPath)
 
                 // Download image if needed
