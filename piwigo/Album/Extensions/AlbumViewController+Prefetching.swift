@@ -14,7 +14,7 @@ import piwigoKit
 extension AlbumViewController: UICollectionViewDataSourcePrefetching
 {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        print("••> prefetchingItemsAt \(indexPaths.debugDescription)")
+//        print("••> prefetchingItemsAt \(indexPaths.debugDescription)")
         let scale = self.traitCollection.displayScale
         for indexPath in indexPaths {
             switch indexPath.section {
@@ -51,7 +51,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
     }
     
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        print("••> cancelPrefetchingForItemsAt \(indexPaths.debugDescription)")
+//        print("••> cancelPrefetchingForItemsAt \(indexPaths.debugDescription)")
         for indexPath in indexPaths {
             switch indexPath.section {
             case 0 /* Albums (see XIB file) */:
