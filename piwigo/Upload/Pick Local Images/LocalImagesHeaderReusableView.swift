@@ -12,30 +12,21 @@ import Photos
 import UIKit
 import piwigoKit
 
-enum SelectButtonState : Int {
-    case none
-    case select
-    case deselect
-}
-
 @objc protocol LocalImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)
 }
 
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
-    private var dateLabelText: String = ""
-    private var optionalDateLabelText: String = ""
     var section = 0
+    private var locationHash = Int.zero
 
-    // MARK: - View
-    
     @objc weak var headerDelegate: LocalImagesHeaderDelegate?
     
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var mainLabel: UILabel!
+    @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
-    @IBOutlet weak var placeLabel: UILabel!
-
+    
     func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
@@ -44,32 +35,61 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         // Keep section for future use
         self.section = section
         
-        // Data label used when place name known
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.numberOfLines = 1
-        dateLabel.adjustsFontSizeToFitWidth = false
-        dateLabel.font = .systemFont(ofSize: 13)
-        dateLabel.textColor = .piwigoColorRightLabel()
-
-        // Place name of location
-        placeLabel.translatesAutoresizingMaskIntoConstraints = false
-        placeLabel.numberOfLines = 1
-        placeLabel.adjustsFontSizeToFitWidth = false
-        placeLabel.font = .systemFont(ofSize: 17, weight: .semibold)
-        placeLabel.textColor = .piwigoColorLeftLabel()
+        // Date and place name of location
+        mainLabel.textColor = .piwigoColorLeftLabel()
+        detailLabel.textColor = .piwigoColorRightLabel()
 
         // Get date labels from images in section
-        (dateLabelText, optionalDateLabelText) = getDateLabels(of: images)
+        let oldest = TimeInterval(-3187296000) // i.e. "1900-01-01 00:00:00" relative to reference date
+        let dateIntervals = images.map { $0.creationDate?.timeIntervalSinceReferenceDate ?? oldest}
+        let dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+        self.mainLabel.text = dates.0
 
-        // Determine location from images in section
-        let location = getLocation(of: images)
-        
-        // Set up labels from dates and place name
-        setLabelsFromDatesAndLocation(location: location)
+        // Set labels from dates and place name
+        if images.isEmpty {
+            self.detailLabel.text = dates.1
+        } else {
+            // Determine location from images in section
+            let location = getLocation(of: images)
+            LocationProvider.shared.getPlaceName(for: location) { [unowned self] placeName, streetName in
+                if placeName.isEmpty {
+                    self.detailLabel.text = dates.1
+                } else if streetName.isEmpty {
+                    self.detailLabel.text = placeName
+                } else {
+                    self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+                }
+            } pending: { hash in
+                // Show date details until place name availability
+                self.detailLabel.text = dates.1
+                // Register location provider
+                self.locationHash = hash
+                NotificationCenter.default.addObserver(self, selector: #selector(self.updateDetailLabel(_:)),
+                                                       name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
+            } failure: {
+                self.detailLabel.text = dates.1
+            }
+        }
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
-        setButtonTitle(forState: selectState)
+        selectButton.setTitle(forState: selectState)
+    }
+
+    @objc func updateDetailLabel(_ notification: NSNotification) {
+        guard let info = notification.userInfo,
+              let hash = info["hash"] as? Int, hash == locationHash,
+              let placeName = info["placeName"] as? String,
+              let streetName = info["streetName"] as? String
+        else { return }
+        
+        // Update detail label
+        if streetName.isEmpty {
+            self.detailLabel.text = placeName
+        } else {
+            self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+        }
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
@@ -80,178 +100,14 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        dateLabel.text = ""
-        placeLabel.text = ""
+        detailLabel.text = ""
+        mainLabel.text = ""
         selectButton.setTitle("", for: .normal)
         selectButton.backgroundColor = .piwigoColorBackground()
     }
 
     
     // MARK: Utilities
-    func setButtonTitle(forState state: SelectButtonState) {
-        let title: String, bckgColor: UIColor
-        switch state {
-        case .select:
-            title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
-            bckgColor = .piwigoColorCellBackground()
-        case .deselect:
-            title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
-            bckgColor = .piwigoColorCellBackground()
-        case .none:
-            title = ""
-            bckgColor = .clear
-        }
-        selectButton.backgroundColor = bckgColor
-        selectButton.setTitle(title, for: .normal)
-        selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
-        selectButton.accessibilityIdentifier = "SelectAll"
-    }
-
-    private func setLabelsFromDatesAndLocation(location: CLLocation) {
-        // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationProvider.shared.getPlaceName(for: location) else {
-            placeLabel.text = dateLabelText
-            dateLabel.text = optionalDateLabelText
-            return
-        }
-
-        // Use label according to name availabilities
-        if let placeLabelName = placeNames["placeLabel"] {
-            placeLabel.text = placeLabelName
-            if let dateLabelName = placeNames["dateLabel"] {
-                self.dateLabel.text = String(format: "%@ • %@", dateLabelText, dateLabelName)
-            } else {
-                self.dateLabel.text = String(format: "%@ • %@", dateLabelText, optionalDateLabelText)
-            }
-        } else {
-            placeLabel.text = dateLabelText
-            dateLabel.text = optionalDateLabelText
-        }
-    }
-    
-    private func getDateLabels(of images: [PHAsset]) -> (String, String) {
-        // Creation date of images (or of availability)
-        var imageAsset = images.first
-        var dateLabelText = ""
-        var optionalDateLabelText = ""
-
-        // Determine if images of this section were all taken today
-        if let dateCreated1 = imageAsset?.creationDate {
-            
-            // Display date of day by default, will add time in the absence of location data
-            dateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .long, timeStyle: .none)
-            optionalDateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .none, timeStyle: .long)
-            
-            // Get creation date of last image
-            imageAsset = images.last
-            if let dateCreated2 = imageAsset?.creationDate {
-                
-                // Set dates in right order in case user sorted images in reverse order
-                let firstImageDate = (dateCreated1 < dateCreated2) ? dateCreated1 : dateCreated2
-                let lastImageDate = (dateCreated1 > dateCreated2) ? dateCreated1 : dateCreated2
-                let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: firstImageDate)
-                let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: lastImageDate)
-
-                // Images taken the same day?
-                if firstImageDay == lastImageDay {
-                    // Images were taken the same day
-                    // => Keep dataLabel as already set and define optional string with starting and ending times
-                    let firstImageDateStr = DateFormatter.localizedString(from: firstImageDate, dateStyle: .none, timeStyle: .short)
-                    let lastImageDateStr = DateFormatter.localizedString(from: lastImageDate, dateStyle: .none, timeStyle: .short)
-                    if (firstImageDateStr == lastImageDateStr) {
-                        optionalDateLabelText = firstImageDateStr
-                    } else {
-                        optionalDateLabelText = "\(firstImageDateStr) - \(lastImageDateStr)"
-                    }
-                    return (dateLabelText, optionalDateLabelText)
-                }
-
-                // => Images taken the same week?
-                let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: firstImageDate)
-                let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: lastImageDate)
-                if (firstImageWeek == lastImageWeek) {
-                    // Images taken during the same week
-                    // => Display dates of week
-                    let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                    dateFormatter1.locale = .current
-                    dateFormatter2.locale = .current
-                    dateFormatter1.setLocalizedDateFormatFromTemplate("d")
-                    dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
-                    dateLabelText = dateFormatter1.string(from: dateCreated1) + " - " + dateFormatter2.string(from: dateCreated2)
-                    // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                        optionalDateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter1.string(from: dateCreated2)
-                    } else {
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
-                        optionalDateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter1.string(from: dateCreated2)
-                    }
-                    return (dateLabelText, optionalDateLabelText)
-                }
-
-                // => Images taken the same month?
-                let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: firstImageDate)
-                let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: lastImageDate)
-                if (firstImageMonth == lastImageMonth) {
-                    // Images taken during the sme month
-                    // => Display month instead of dates
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.locale = .current
-                    dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
-                    dateLabelText = dateFormatter.string(from: dateCreated1)
-                    // Define optional string with days
-                    if UIScreen.main.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                        optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                    } else {
-                        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d")
-                        optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                    }
-                    return (dateLabelText, optionalDateLabelText)
-                }
-
-                // => Images taken the same year?
-                let firstImageYear = Calendar.current.dateComponents([.year], from: firstImageDate)
-                let lastImageYear = Calendar.current.dateComponents([.year], from: lastImageDate)
-                if (firstImageYear == lastImageYear) {
-                    // Images taken during the sme year
-                    // => Display day/month followed by year
-                    // See https://iosref.com/res
-                    let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                    dateFormatter1.locale = .current
-                    dateFormatter2.locale = .current
-                    if UIScreen.main.bounds.size.width > 430 {
-                        // i.e. larger than iPhone 14 Pro Max screen width
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
-                        dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
-                        dateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter2.string(from: dateCreated2)
-                    } else {
-                        dateFormatter1.setLocalizedDateFormatFromTemplate("MMd")
-                        dateFormatter2.setLocalizedDateFormatFromTemplate("YYMMd")
-                        dateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter2.string(from: dateCreated2)
-                    }
-                    return (dateLabelText, optionalDateLabelText)
-                }
-                
-                // => Images taken on several years
-                let dateFormatter = DateFormatter()
-                dateFormatter.locale = .current
-                if UIScreen.main.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
-                    dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                } else {
-                    dateFormatter.setLocalizedDateFormatFromTemplate("YYMMd")
-                    dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                }
-                return (dateLabelText, optionalDateLabelText)
-            }
-        }
-        return (dateLabelText, optionalDateLabelText)
-    }
-    
     private func getLocation(of images: [PHAsset]) -> CLLocation {
         // Initialise location of section with invalid location
         var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,

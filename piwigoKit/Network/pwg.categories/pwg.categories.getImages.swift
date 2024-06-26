@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.categories.getImages
 public let pwgCategoriesGetImages = "format=json&method=pwg.categories.getImages"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesGetImagesJSON: Decodable {
 
     public var status: String?
@@ -85,7 +85,6 @@ public struct CategoriesGetImagesJSON: Decodable {
     }
 }
 
-// MARK: - Page Data
 public struct PageData: Decodable
 {
     // The following data is returned by pwg.categories.getImages

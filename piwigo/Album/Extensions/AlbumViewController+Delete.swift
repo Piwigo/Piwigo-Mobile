@@ -2,17 +2,24 @@
 //  AlbumViewController+Delete.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 15/06/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 
-// MARK: Delete Images
 extension AlbumViewController
 {
+    // MARK: - Delete Bar Button
+    func getDeleteBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem.deleteImageButton(self, action: #selector(deleteSelection))
+    }
+
+    
+    // MARK: - Delete Images
     @objc func deleteSelection() {
         initSelection(beforeAction: .delete)
     }
@@ -33,7 +40,7 @@ extension AlbumViewController
         let totalNberToDelete = toDelete.count + toRemove.count
 
         // We cannot propose to remove images from a smart albums
-        if categoryId < 0 {
+        if albumData.pwgID < 0 {
             toDelete.formUnion(toRemove)
             toRemove = []
         }
@@ -53,7 +60,7 @@ extension AlbumViewController
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
             style: .cancel, handler: { [self] action in
-                updateButtonsInSelectionMode()
+                updateBarsInSelectMode()
             })
         alert.addAction(cancelAction)
 
@@ -75,13 +82,11 @@ extension AlbumViewController
                 if totalNumberOfImages > 1 {
                     msgHUD = NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
                 } else if let imageData = toDelete.first, imageData.isVideo {
-                    msgHUD = NSLocalizedString("deleteSingleVideo_title", comment: "Deleting Video…")
+                    msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
                 } else {
-                    msgHUD = NSLocalizedString("deleteSingleImage_message", comment: "Deleting Photo…")
+                    msgHUD = NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
                 }
-                showPiwigoHUD(withTitle: msgHUD, detail: "",
-                              buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                              inMode: .indeterminate)
+                navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
 
                 // Start deleting images
                 deleteImages(toDelete)
@@ -100,19 +105,15 @@ extension AlbumViewController
                         msgHUD = toDelete.isEmpty
                         ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
                         : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
-                        showPiwigoHUD(withTitle: msgHUD, detail: "", buttonTitle: "",
-                                      buttonTarget: nil, buttonSelector: nil,
-                                      inMode: .annularDeterminate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: .determinate)
                     } else if toRemove.isEmpty {
                         // Delete a single image
                         if let imageData = toDelete.first, imageData.isVideo {
-                            msgHUD = NSLocalizedString("deleteSingleVideo_title", comment: "Deleting Video…")
+                            msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
                         } else {
-                            msgHUD = NSLocalizedString("deleteSingleImage_message", comment: "Deleting Photo…")
+                            msgHUD = NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…")
                         }
-                        showPiwigoHUD(withTitle: msgHUD, detail: "",
-                                      buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                                      inMode: .indeterminate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
                     } else {
                         // Remove a single image
                         if let imageData = toRemove.first, imageData.isVideo {
@@ -120,9 +121,7 @@ extension AlbumViewController
                         } else {
                             msgHUD = NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…")
                         }
-                        showPiwigoHUD(withTitle: msgHUD, detail: "",
-                                      buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                                      inMode: .indeterminate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: .indeterminate)
                     }
 
                     // Start removing images
@@ -148,7 +147,7 @@ extension AlbumViewController
         guard let imageData = imagesToRemove.first,
               let albums = imageData.albums else {
             if toDelete.isEmpty {
-                updatePiwigoHUDwithSuccess() { [self] in
+                navigationController?.updateHUDwithSuccess() { [self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
@@ -156,7 +155,7 @@ extension AlbumViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and deselect images
-                    hidePiwigoHUD() { [self] in
+                    navigationController?.hideHUD() { [self] in
                         cancelSelect()
                     }
                 }
@@ -168,7 +167,7 @@ extension AlbumViewController
 
         // Update image category list
         var categoryIds = albums.compactMap({$0.pwgID})
-        categoryIds.removeAll(where: {$0 == categoryId})
+        categoryIds.removeAll(where: {$0 == albumData.pwgID})
 
         // Prepare parameters for removing the images/videos from the category
         let newImageCategories = categoryIds.map({"\($0)"}).joined(separator: ";")
@@ -179,7 +178,7 @@ extension AlbumViewController
         ]
 
         // Send request to Piwigo server
-        NetworkUtilities.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) {  [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Remove image from source album
                 imageData.removeFromAlbums(albumData)
@@ -191,7 +190,8 @@ extension AlbumViewController
                 imagesToRemove.removeFirst()
 
                 // Update HUD
-                updatePiwigoHUD(withProgress: 1.0 - Float(imagesToRemove.count) / Float(totalNumberOfImages))
+                let ratio = Float(imagesToRemove.count) / Float(totalNumberOfImages)
+                navigationController?.updateHUD(withProgress: 1.0 - ratio)
 
                 // Next image
                 removeImages(imagesToRemove, andThenDelete:toDelete)
@@ -220,7 +220,7 @@ extension AlbumViewController
         if imagesToRemove.count > 1 {
             cancelDismissPiwigoError(withTitle: title, message: message,
                                      errorMessage: error.localizedDescription) { [unowned self] in
-                hidePiwigoHUD() { [unowned self] in
+                navigationController?.hideHUD() { [unowned self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
@@ -228,7 +228,7 @@ extension AlbumViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
-                    updateButtonsInSelectionMode()
+                    updateBarsInSelectMode()
                 }
             } dismiss: { [unowned self] in
                 // Bypass image
@@ -239,7 +239,7 @@ extension AlbumViewController
         } else {
             dismissPiwigoError(withTitle: title, message: message,
                                      errorMessage: error.localizedDescription) { [unowned self] in
-                hidePiwigoHUD() { [unowned self] in
+                navigationController?.hideHUD() { [unowned self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
@@ -247,7 +247,7 @@ extension AlbumViewController
                         print("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
-                    updateButtonsInSelectionMode()
+                    updateBarsInSelectMode()
                 }
             }
         }
@@ -255,7 +255,7 @@ extension AlbumViewController
 
     func deleteImages(_ toDelete: Set<Image>) {
         if toDelete.isEmpty {
-            updatePiwigoHUDwithSuccess() { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
                 // Save changes
                 do {
                     try self.mainContext.save()
@@ -263,7 +263,7 @@ extension AlbumViewController
                     print("Could not save moved images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and deselect images
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     cancelSelect()
                 }
             }
@@ -271,9 +271,9 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        NetworkUtilities.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.delete(toDelete) { [unowned self] in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [unowned self] in
                     // Save image IDs for marking Upload requests in the background
                     let imageIDs = Array(toDelete).map({$0.pwgID})
 
@@ -304,8 +304,8 @@ extension AlbumViewController
                     }
 
                     // Hide HUD
-                    self.updatePiwigoHUDwithSuccess() { [self] in
-                        hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                    self.navigationController?.updateHUDwithSuccess() { [self] in
+                        self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             cancelSelect()
                         }
                     }
@@ -339,8 +339,8 @@ extension AlbumViewController
                     print("Could not save moved images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and update buttons
-                hidePiwigoHUD() { [self] in
-                    updateButtonsInSelectionMode()
+                navigationController?.hideHUD() { [self] in
+                    updateBarsInSelectMode()
                 }
             }
         }

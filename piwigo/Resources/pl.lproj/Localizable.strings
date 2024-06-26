@@ -115,6 +115,7 @@
 
 "loginError_title" = "Logowanie nieudane";
 "loginError_message" = "Nazwa użytkownika i hasło nie pasują do podanego serwera";
+"loginError_resetPwd" = "Czy chcesz zresetować hasło używając interfejsu internetowego?";
 "loginEmptyServer_title" = "Wprowadź Adres Strony";
 "loginEmptyServer_message" = "Proszę wybrać protokół i wprowadzić adres internetowy Piwigo, aby kontynuować.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Moje ulubione";
 
 // Albums sort
+"categorySort_sort" = "Sortuj obrazy według…";
+"categorySort_default" = "Domyślnie";
+"categorySort_name" = "Tytuł zdjęcia";
 "categorySort_nameAscending" = "Tytuł Zdjęcia, A → Z";
 "categorySort_nameDescending" = "Tytuł Zdjęcia, Z → A";
+"categorySort_fileName" = "Nazwa pliku";
 "categorySort_fileNameAscending" = "Nazwa Pliku, A → Z";
 "categorySort_fileNameDescending" = "Nazwa Pliku, Z → A";
+"categorySort_dateCreated" = "Data utworzenia";
 "categorySort_dateCreatedDescending" = "Data Utworzenia, nowe → stare";
 "categorySort_dateCreatedAscending" = "Data Utworzenia, stare → nowe";
+"categorySort_datePosted" = "Data publikacji";
 "categorySort_datePostedDescending" = "Data Wysłania, nowe → stare";
 "categorySort_datePostedAscending" = "Data Wysłania, stare → nowe";
+"categorySort_ratingScore" = "Wynik oceny";
 "categorySort_ratingScoreDescending" = "Ocena, wysoka → niska";
 "categorySort_ratingScoreAscending" = "Ocena, niska → wysoka";
+"categorySort_visits" = "Ilość odwiedzin";
 "categorySort_visitsDescending" = "Odwiedzin, mniej → więcej";
 "categorySort_visitsAscending" = "Odwiedzin, mniej → więcej";
 "categorySort_manual" = "Ustaw ręcznie";
+"categorySort_randomly" = "Losowo";
 "categorySort_random" = "Kolejność losowa";
-
+"categorySort_id" = "Identyfikator";
+"categorySort_idDescending" = "Identyfikator, 9 → 1";
+"categorySort_idAscending" = "Identyfikator, 1 → 9";
 "categorySort_videosOnly" = "Tylko filmy";
 "categorySort_imagesOnly" = "Tylko zdjęcia";
+
+"categoryView_options" = "Opcje widoku";
+"categoryGroup_group" = "Grupuj zdjęcia wg…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -228,14 +243,14 @@
 "createAlbumError_message" = "Nie można utworzyć nowego albumu";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Zmień\nNazwę";
+"categoryCellOption_rename" = "Zmień\nnazwę";
 "categoryCellOption_move" = "Przenieść";
 "categoryCellOption_delete" = "Usuń";
 
 // Album rename
-"renameCategory_title" = "Zmień Nazwę Albumu";
+"renameCategory_title" = "Zmień nazwę albumu";
 "renameCategory_message" = "Wprowadź nową nazwę dla tego albumu";
-"renameCategory_button" = "Zmień Nazwę";
+"renameCategory_button" = "Zmień nazwę";
 "renameCategoryHUD_label" = "Zmiana nazwy albumu…";
 
 // Album rename — Errors
@@ -307,10 +322,11 @@
 "noImages" = "Brak zdjęć";
 "pullToRefresh" = "Wczytaj zdjęcia ponownie";
 "andMore" = " i więcej";
-"Months" = "miesięcy";
-"Weeks" = "tygodni";
-"Days" = "dni";
 "Date" = "Data";
+"None" = "Brak";
+"Day" = "Dzień";
+"Week" = "Tydzień";
+"Month" = "Miesiąc";
 
 // Errors
 "albumPhotoError_title" = "Błąd Pobierania Zdjęć Albumu";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Nie udało się dodać tego zdjęcia do ulubionych.";
 "imageFavoritesRemoveError_message" = "Nie udało się usunąć tego zdjęcia z ulubionych.";
+
+// Image rotate
+"rotateImage_rotate" = "Obróć o 90°…";
+"rotateImage_left" = "Przeciwnie do ruchu wskazówek zegara";
+"rotateImage_right" = "Zgodnie z ruchem wskazówek zegara";
+"rotateSingleImageHUD_rotating" = "Obracanie zdjęcia…";
+"rotateSeveralImageHUD_rotating" = "Obracanie zdjęć…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Obracanie nie powiodło się";
+"rotateImageFail_plugin" = "Wtyczka rotateImage nie jest aktywowana.";
+"rotateImageFail_message" = "Zdjęcie nie może być obrócone";
 
 // Image delete
 "deleteImage_delete" = "Usuń";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Co nowego w Piwigo";
-"whatsNew_title1" = "Nowe gesty";
-"whatsNew_desc1" = "Przesuń palcem w dół lub uszczypnij obraz, aby powrócić do albumu podczas przeglądania pojedynczych zdjęć lub filmów.";
-"whatsNew_title2" = "Obsługa PiP";
-"whatsNew_desc2" = "Oglądaj film przechowywany na twoim Piwigo podczas korzystania z innych aplikacji.";
+"whatsNew_title1" = "Grupuj zdjęcia";
+"whatsNew_desc1" = "Według dnia, tygodnia lub miesiąca.";
+"whatsNew_title2" = "Obróć zdjęcia";
+"whatsNew_desc2" = "Napraw problemy z orientacją (wymaga wtyczki rotateImage plugin).";
 "whatsNew_continue" = "Kontynuuj";

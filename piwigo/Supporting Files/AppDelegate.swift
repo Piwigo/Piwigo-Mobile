@@ -43,7 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        print("••> App did finish launching with options.")
         // Register notifications for displaying number of uploads to perform in app badge
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { print("request succeeded!") }
@@ -117,11 +116,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
-                                               name: .pwgLeftUploads, object: nil)
+                                               name: Notification.Name.pwgLeftUploads, object: nil)
         
         // Register auto-upload appender failures
         NotificationCenter.default.addObserver(self, selector: #selector(displayAutoUploadErrorAndResume),
-                                               name: .pwgAppendAutoUploadRequestsFailed, object: nil)
+                                               name: Notification.Name.pwgAppendAutoUploadRequestsFailed, object: nil)
         return true
     }
 
@@ -323,9 +322,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Save cached data in the main thread
         mainContext.saveIfNeeded()
 
-        // Cancel tasks and close sessions
+        // Cancel tasks and close session
         PwgSession.shared.dataSession.invalidateAndCancel()
-        ImageSession.shared.dataSession.invalidateAndCancel()
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
@@ -468,9 +466,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func updateBadge(_ notification: Notification) {
         guard let nberOfUploadsToComplete = notification.userInfo?["nberOfUploadsToComplete"] as? Int else {
-            fatalError("!!! Did not provide an integer !!!")
+            preconditionFailure("!!! Did not provide an integer !!!")
         }
-        UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+        if #available(iOS 16, *) {
+            UNUserNotificationCenter.current().setBadgeCount(nberOfUploadsToComplete)
+        } else {
+            UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+        }
+        // Re-enable sleep mode if uploads are completed
+        if nberOfUploadsToComplete == 0 {
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
     }
 
     @objc func displayAutoUploadErrorAndResume(_ notification: Notification) {
@@ -749,8 +755,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let window = window else { return }
         
         // Display default album
-        let defaultAlbum = AlbumViewController(albumId: AlbumVars.shared.defaultCategory)
-        window.rootViewController = AlbumNavigationController(rootViewController: defaultAlbum)
+        let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+        guard let albumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+        else { preconditionFailure("Could not load AlbumViewController") }
+        albumVC.categoryId = AlbumVars.shared.defaultCategory
+        window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
         if #available(iOS 13.0, *) {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
@@ -764,24 +773,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _loginVC?.removeFromParent()
             _loginVC = nil
 
-            // Resume upload operations in background queue
-            // and update badge, upload button of album navigator
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.resumeAll()
-            }
-            
             // Observe the UIScreenBrightnessDidChangeNotification
             NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
                                                    name: UIScreen.brightnessDidChangeNotification, object: nil)
         }
 
+        // Resume upload operations in background queue
+        // and update badge, upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.resumeAll()
+        }
+        
         // Observe the PiwigoAddRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(addRecentAlbumWithAlbumId),
-                                               name: .pwgAddRecentAlbum, object: nil)
+                                               name: Notification.Name.pwgAddRecentAlbum, object: nil)
 
         // Observe the PiwigoRemoveRecentAlbumNotification
         NotificationCenter.default.addObserver(self, selector: #selector(removeRecentAlbumWithAlbumId),
-                                               name: .pwgRemoveRecentAlbum, object: nil)
+                                               name: Notification.Name.pwgRemoveRecentAlbum, object: nil)
 
         // Observe the Power State notification
         let name = Notification.Name.NSProcessInfoPowerStateDidChange

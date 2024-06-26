@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 protocol ImageDetailDelegate: NSObjectProtocol {
-    func didSelectImage(atIndex imageIndex: Int)
+    func didSelectImage(atIndexPath indexPath: IndexPath)
 }
 
 class ImageViewController: UIViewController {
@@ -20,10 +20,10 @@ class ImageViewController: UIViewController {
     weak var imgDetailDelegate: ImageDetailDelegate?
     var images: NSFetchedResultsController<Image>!
     var categoryId = Int32.zero
-    var imageIndex = 0
+    var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image!
     var isToolbarRequired = false
-    var didPresentPageAfter = true
+    var didPresentNextPage = true
     var pageViewController: UIPageViewController?
     let playbackController = PlaybackController.shared
 
@@ -43,7 +43,7 @@ class ImageViewController: UIViewController {
         return provider
     }()
     
-    private lazy var imageProvider: ImageProvider = {
+    lazy var imageProvider: ImageProvider = {
         let provider : ImageProvider = ImageProvider.shared
         return provider
     }()
@@ -56,7 +56,9 @@ class ImageViewController: UIViewController {
                                                         // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
-    lazy var backButton: UIBarButtonItem = getBackButton()
+    lazy var backButton: UIBarButtonItem = {
+        return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
+    }()
     lazy var shareBarButton: UIBarButtonItem = getShareButton()
     lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
@@ -64,7 +66,11 @@ class ImageViewController: UIViewController {
     var favoriteBarButton: UIBarButtonItem?
     var playBarButton: UIBarButtonItem?
     var muteBarButton: UIBarButtonItem?
-
+    
+    // MARK: - Rotate View & Buttons
+    var rotateView: UIView?
+    var rotateLeftButton: UIButton?
+    var rotateRightButton: UIButton?
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -73,23 +79,19 @@ class ImageViewController: UIViewController {
         // Initialise video players and PiP management
         playbackController.videoItemDelegate = self
 
-        // Check current image index
-        var index = max(0, imageIndex)
-        index = min(imageIndex, (images.fetchedObjects?.count ?? 0) - 1)
-        imageData = getImageData(atIndex: index)
-
         // Initialise pageViewController
         pageViewController = children[0] as? UIPageViewController
         pageViewController?.delegate = self
         pageViewController?.dataSource = self
 
         // Load initial image preview view controller
+        imageData = getImageData(atIndexPath: indexPath)
         if imageData.isVideo {
-            if let videoDVC = videoDetailViewController(ofImage: imageData, atIndex: index) {
+            if let videoDVC = videoDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
                 pageViewController?.setViewControllers([videoDVC], direction: .forward, animated: false)
             }
         } else {
-            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndex: index) {
+            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
                 pageViewController!.setViewControllers([imageDVC], direction: .forward, animated: false)
             }
         }
@@ -125,12 +127,12 @@ class ImageViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         // Register video player changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
-                                               name: .pwgVideoPlaybackStatus, object: nil)
+                                               name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeMuteOption),
-                                               name: .pwgVideoMutedOrNot, object: nil)
+                                               name: Notification.Name.pwgVideoMutedOrNot, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -246,8 +248,81 @@ class ImageViewController: UIViewController {
 
 
     // MARK: - Image Data
-    func getImageData(atIndex index: Int) -> Image {
-        let imageData = images.object(at: IndexPath(item: index, section: 0))
+//    func getIndexPath(atOrBefore indexPath: IndexPath) -> IndexPath? {
+//        // Any image left?
+//        if images?.fetchedObjects?.count ?? 0 == 0 {
+//            return nil
+//        }
+//
+//        // Select the current section, or the previous one if not available
+//        guard let sections = images.sections
+//        else { preconditionFailure("No sections in fetchedResultsController")}
+//        let section = min(indexPath.section, sections.count - 1)
+//        
+//        // Images still available in the current section?
+//        let count = sections[indexPath.section].numberOfObjects
+//        if section == indexPath.section {
+//            // Select the item the nearest to the current one
+//            let item = min(indexPath.item, count - 1)
+//            return IndexPath(item: item, section: section)
+//        } else {
+//            // Select the last item of a previous section
+//            let count = sections[indexPath.section].numberOfObjects
+//            return IndexPath(item: count - 1, section: section)
+//        }
+//    }
+    
+    func getIndexPath(after indexPath: IndexPath) -> IndexPath? {
+        // Check that the current section is still accessible
+        guard let sections = images.sections,
+              sections.count > indexPath.section
+        else { return nil}
+        
+        // Return the next image of the current section if available
+        let nextItem = indexPath.item + 1
+        if nextItem  < sections[indexPath.section].numberOfObjects {
+            return IndexPath(item: nextItem, section: indexPath.section)
+        }
+        
+        // Return the first image of the next section if available
+        let nextSection = indexPath.section + 1
+        if nextSection < sections.count,
+           sections[nextSection].numberOfObjects > 0 {
+            return IndexPath(item: 0, section: nextSection)
+        }
+        
+        return nil
+    }
+    
+    func getIndexPath(before indexPath: IndexPath) -> IndexPath? {
+        // Retrieve available sections
+        guard let sections = images.sections
+        else { return nil}
+        
+        // Return the previous image of the current section if available
+        var section = indexPath.section
+        if section < sections.count {
+            let previousItem = indexPath.item - 1
+            if previousItem >= 0, previousItem < sections[section].numberOfObjects {
+                return IndexPath(item: previousItem, section: section)
+            }
+        }
+        
+        // Return the last image of a previous section if possible
+        repeat {
+            section -= 1
+            if section >= 0, section < sections.count,
+               sections[section].numberOfObjects > 0 {
+                return IndexPath(item: sections[section].numberOfObjects - 1, section: section)
+            }
+        } while (section > 1)
+        
+        return nil
+    }
+    
+    func getImageData(atIndexPath indexPath: IndexPath) -> Image {
+        // Retrieve image data
+        let imageData = images.object(at: indexPath)
         if imageData.isFault {
             // The album is not fired yet.
             imageData.willAccessValue(forKey: nil)
@@ -269,24 +344,22 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            NetworkUtilities.checkSession(ofUser: user) { [self] in
+            PwgSession.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
-                print("••> Retrieving data of image \(imageID)")
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [self] in
                         // Look for the corresponding view controller
                         guard let vcs = self.pageViewController?.viewControllers else { return }
                         for vc in vcs {
-                            if let pvc = vc as? ImageDetailViewController,
-                               pvc.imageData.pwgID == imageID {
+                            if let pvc = vc as? ImageDetailViewController, pvc.imageData.pwgID == imageID,
+                               let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
                                 // Update image data
-                                let index = pvc.imageIndex
-                                pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
-                                if pvc.imageData.isFault {
+                                if updatedImage.isFault {
                                     // The album is not fired yet.
-                                    pvc.imageData.willAccessValue(forKey: nil)
-                                    pvc.imageData.didAccessValue(forKey: nil)
+                                    updatedImage.willAccessValue(forKey: nil)
+                                    updatedImage.didAccessValue(forKey: nil)
                                 }
+                                pvc.imageData = updatedImage
                                 // Update navigation bar and enable buttons
                                 self.updateNavBar()
                                 self.setEnableStateOfButtons(true)
@@ -294,8 +367,8 @@ class ImageViewController: UIViewController {
                             } else if let pvc = vc as? VideoDetailViewController,
                                       pvc.imageData.pwgID == imageID {
                                 // Update image data
-                                let index = pvc.imageIndex
-                                pvc.imageData = self.images.object(at: IndexPath(item: index, section: 0))
+                                let indexPath = pvc.indexPath
+                                pvc.imageData = self.images.object(at: indexPath)
                                 if pvc.imageData.isFault {
                                     // The album is not fired yet.
                                     pvc.imageData.willAccessValue(forKey: nil)
@@ -346,7 +419,7 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
@@ -764,11 +837,11 @@ extension ImageViewController: UIPageViewControllerDelegate
     // Called before a gesture-driven transition begins
     func pageViewController(_ pageViewController: UIPageViewController,
                             willTransitionTo pendingViewControllers: [UIViewController]) {
-        // Case of an image
+        // Image disappearing
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
            let imageURL = imageDVC.imageURL {
             // Pause download
-            ImageSession.shared.pauseDownload(atURL: imageURL)
+            PwgSession.shared.pauseDownload(atURL: imageURL)
         }
     }
     
@@ -780,7 +853,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         // Case of an image
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController {
             // Store index and image data of presented page
-            imageIndex = imageDVC.imageIndex
+            indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
             // Reset video player buttons
@@ -789,7 +862,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         }
         else if let videoDVC = pageViewController.viewControllers?.first as? VideoDetailViewController {
             // Store index and image data of presented page
-            imageIndex = videoDVC.imageIndex
+            indexPath = videoDVC.indexPath
             imageData = videoDVC.imageData
             
             // Set video player buttons
@@ -804,13 +877,13 @@ extension ImageViewController: UIPageViewControllerDelegate
         }
         
         // Set title and buttons
-        print("••> Did finish animating page view controller for image at index \(imageIndex)")
+        print("••> Did finish animating page view controller for image at index \(indexPath)")
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
 
         // Scroll album collection view to keep the selected image centered on the screen
-        imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
+        imgDetailDelegate?.didSelectImage(atIndexPath: indexPath)
         
         // Update server statistics
         logImageVisitIfNeeded(imageData.pwgID)
@@ -822,25 +895,26 @@ extension ImageViewController: UIPageViewControllerDelegate
 extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
-    func imageDetailViewController(ofImage imageData: Image, atIndex index:Int) -> ImageDetailViewController? {
-        print("••> Create page view controller for image at index \(index)")
+    func imageDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> ImageDetailViewController? {
+        print("••> Create page view controller for image #\(imageData.pwgID) at index \(indexPath)")
         guard let imageDVC = storyboard?.instantiateViewController(withIdentifier: "ImageDetailViewController") as? ImageDetailViewController
         else { return nil }
 
         // Create image detail view
-        imageDVC.imageIndex = index
+        imageDVC.indexPath = indexPath
         imageDVC.imageData = imageData
         return imageDVC
     }
     
     // Create view controller for presenting the video at the provided index
-    func videoDetailViewController(ofImage imageData: Image, atIndex index:Int) -> VideoDetailViewController? {
-        print("••> Create page view controller for video at index \(index)")
+    func videoDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> VideoDetailViewController? {
+        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
         guard let videoDVC = storyboard?.instantiateViewController(withIdentifier: "VideoDetailViewController") as? VideoDetailViewController
         else { return nil }
 
         // Create video detail view
-        videoDVC.imageIndex = index
+        videoDVC.user = user
+        videoDVC.indexPath = indexPath
         videoDVC.imageData = imageData
         return videoDVC
     }
@@ -849,22 +923,21 @@ extension ImageViewController: UIPageViewControllerDataSource
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
         // Did we reach the last image?
-        let nextIndex = imageIndex + 1
-        let maxIndex = max(0, (images.fetchedObjects ?? []).count - 1)
-        if nextIndex > maxIndex {
-            // Reached the end of the category
+        guard let nextIndexPath = getIndexPath(after: indexPath)
+        else {
+            // Reached the end of the album
             return nil
         }
         
         // Remember that the next page was presented
-        didPresentPageAfter = true
+        didPresentNextPage = true
 
         // Create view controller for presenting next image
-        let imageData = getImageData(atIndex: nextIndex)
+        let imageData = getImageData(atIndexPath: nextIndexPath)
         if imageData.isVideo {
-            return videoDetailViewController(ofImage: imageData, atIndex: nextIndex)
+            return videoDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
         } else {
-            return imageDetailViewController(ofImage: imageData, atIndex: nextIndex)
+            return imageDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
         }
     }
 
@@ -872,20 +945,21 @@ extension ImageViewController: UIPageViewControllerDataSource
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
         // Did we reach the first image?
-        let previousIndex = imageIndex - 1
-        if previousIndex < 0 {
+        guard let previousIndexPath = getIndexPath(before: indexPath)
+        else {
+            // Reached the beginning of the album
             return nil
         }
         
         // Remember that the previous page was presented
-        didPresentPageAfter = false
+        didPresentNextPage = false
 
         // Create view controller
-        let imageData = getImageData(atIndex: previousIndex)
+        let imageData = getImageData(atIndexPath: previousIndexPath)
         if imageData.isVideo {
-            return videoDetailViewController(ofImage: imageData, atIndex: previousIndex)
+            return videoDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
         } else {
-            return imageDetailViewController(ofImage: imageData, atIndex: previousIndex)
+            return imageDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
         }
     }
 }

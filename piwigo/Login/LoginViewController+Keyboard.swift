@@ -6,6 +6,8 @@
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
+import UIKit
+
 extension LoginViewController
 {    
     @objc func onKeyboardWillShow(_ notification: NSNotification) {
@@ -21,15 +23,15 @@ extension LoginViewController
         let viewIntersection = scrollView.bounds.intersection(convertedKeyboardFrameEnd)
 
         // Calc missing height
-        let oldVertOffset = scrollView.contentOffset.y
+        let oldVertOffset: CGFloat = scrollView.contentOffset.y
         var missingHeight = loginButton.frame.maxY - oldVertOffset
-        missingHeight += viewIntersection.height + 3.0
+        missingHeight += viewIntersection.height + CGFloat(3)
         missingHeight -= scrollView.bounds.height
 
         // Update vertical inset and offset if needed
-        if missingHeight > 0 {
+        if missingHeight > CGFloat.zero {
             // Update vertical inset and offset
-            let insets = UIEdgeInsets(top: 0, left: 0, bottom: missingHeight, right: 0)
+            let insets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: missingHeight, right: 0.0)
             scrollView.contentInset = insets
             let point = CGPointMake(0, oldVertOffset + missingHeight)
             scrollView.setContentOffset(point, animated: true)

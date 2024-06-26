@@ -9,40 +9,44 @@
 import os
 import Foundation
 
+#if canImport(UniformTypeIdentifiers)
+import UniformTypeIdentifiers        // Requires iOS 14
+#endif
+
 public class PwgSession: NSObject {
     
+    // Logs networking activities
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigoKit", category: "Networking")
+
     // Singleton
     public static let shared = PwgSession()
     
     // Create single instance
     public lazy var dataSession: URLSession = {
         let config = URLSessionConfiguration.default
-
-        // Additional headers that are added to all tasks
-        config.httpAdditionalHeaders = ["Content-Type"   : "application/x-www-form-urlencoded",
-                                        "Accept"         : "application/json",
-                                        "Accept-Charset" : "utf-8"]
-
+        
         /// Network service type for data that the user is actively waiting for.
         config.networkServiceType = .responsiveData
         
         /// The foreground session should wait for connectivity to become available.
-//        config.waitsForConnectivity = true
+        //        config.waitsForConnectivity = true
         
         /// Connections should use the network when the user has specified Low Data Mode
-//        if #available(iOSApplicationExtension 13.0, *) {
-//            config.allowsConstrainedNetworkAccess = true
-//        }
+        //        if #available(iOSApplicationExtension 13.0, *) {
+        //            config.allowsConstrainedNetworkAccess = true
+        //        }
         
         /// Indicates that the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true
-
+        
         /// How long a task should wait for additional data to arrive before giving up (30 seconds)
         config.timeoutIntervalForRequest = 30
         
-        /// How long a task should be allowed to be retried or transferred (10 minutes).
-        config.timeoutIntervalForResource = 600
-        
+        /// How long a task should be allowed to be retried or transferred (1 minute).
+        config.timeoutIntervalForResource = 60
+
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
         config.httpMaximumConnectionsPerHost = 4
         
@@ -62,303 +66,22 @@ public class PwgSession: NSObject {
         return session
     }()
     
-
-    // MARK: - Session Methods
-    public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
-                                          jsonObjectClientExpectsToReceive: T.Type,
-                                          countOfBytesClientExpectsToReceive: Int64,
-                                          success: @escaping (Data) -> Void,
-                                          failure: @escaping (NSError) -> Void) {
-        // Create POST request
-        let url = URL(string: NetworkVars.service + "/ws.php?\(method)")
-        var request = URLRequest(url: url!)
-        request.httpMethod = "POST"
-        request.networkServiceType = .responsiveData
-        switch method {
-        case pwgCategoriesGetList, pwgCategoriesGetImages:
-            // Identify requests performed for a specific album
-            // so that they can be easily cancelled.
-            if let albumId = paramDict["cat_id"] as? Int {
-                request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.HTTPCatID)
-            }
-        default:
-            break
-        }
-
-        // Combine percent encoded parameters
-        var encPairs = [String]()
-        for (key, value) in paramDict {
-            if let valStr = value as? String, valStr.isEmpty == false {
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
-                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                let utf8mb3Str = NetworkUtilities.utf8mb3String(from: valStr)
-                let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
-                encPairs.append(String(format: "%@=%@", encKey, encVal))
-                continue
-            }
-            else if let val = value as? NSNumber {
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
-                let encVal = val.stringValue
-                encPairs.append(String(format: "%@=%@", encKey, encVal))
-                continue
-            }
-            else {
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
-                encPairs.append(encKey)
-            }
-        }
-        let encParams = encPairs.joined(separator: "&")
-        let httpBody = encParams.data(using: .utf8, allowLossyConversion: true)
-        request.httpBody = httpBody
-
-        // Launch the HTTP(S) request
-        let task = dataSession.dataTask(with: request) { data, response, error in
-            // Transaction completed?
-            guard let httpResponse = response as? HTTPURLResponse,
-                (200...299).contains(httpResponse.statusCode) else {
-                // Transaction error
-                guard let error = error else {
-                    // No communication error returned,
-                    // so Piwigo returned an error to be handled by the caller.
-                    guard var jsonData = data, jsonData.isEmpty == false else {
-                        // Empty JSON data
-                        guard let httpResponse = response as? HTTPURLResponse else {
-                            // Nothing to report
-                            failure(PwgSessionError.emptyJSONobject as NSError)
-                            return
-                        }
-                        
-                        // Return error code
-                        let error = self.localizedError(for: httpResponse.statusCode)
-                        failure(error as NSError)
-                        return
-                    }
-
-                    // Data returned, is this a valid JSON object?
-                    guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
-                        // Invalid JSON data
-						#if DEBUG
-						let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            NetworkUtilities.logger.notice("PwgSession: \(method, privacy: .public)")
-                            NetworkUtilities.logger.notice("Received invalid JSON: \(dataStr, privacy: .public)")
-                        }
-						#endif
-                        guard let httpResponse = response as? HTTPURLResponse else {
-                            // Nothing to report
-                            failure(PwgSessionError.invalidJSONobject as NSError)
-                            return
-                        }
-                        
-                        // Return error code
-                        let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                        let error = self.localizedError(for: httpResponse.statusCode,
-                                                        errorMessage: errorMessage)
-                        failure(error as NSError)
-                        return
-                    }
-                    
-                    // The caller will decode the returned data
-                    success(jsonData)
-                    return
-                }
-                
-                // Return transaction error
-                failure(error as NSError)
-                return
-            }
-            
-            // No error, check that the JSON object is not empty
-            guard var jsonData = data, jsonData.isEmpty == false else {
-                // Empty JSON data
-                failure(PwgSessionError.emptyJSONobject as NSError)
-                return
-            }
-            
-            // Check returned data
-            /// - The following 2 lines are used to determine the count of returned bytes.
-            /// - This value can then be used to provide the expected count of returned bytes.
-            /// - The last 2 lines display the content of the returned data for debugging.
-            #if DEBUG
-            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
-                jsonData.count * MemoryLayout<Data>.stride
-//            let dataStr = String(decoding: jsonData, as: UTF8.self)
-            let dataStr = String(decoding: jsonData.prefix(128), as: UTF8.self) + "…"
-            if #available(iOSApplicationExtension 14.0, *) {
-                NetworkUtilities.logger.notice("PwgSession: \(method, privacy: .public)")
-                NetworkUtilities.logger.notice("Received JSON of \(countsOfByte, privacy: .public) bytes\r\(dataStr, privacy: .public)")
-             }
-            #endif
-            
-            // Return Piwigo error if no error and no data returned.
-            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
-                failure(PwgSessionError.invalidJSONobject as NSError)
-                return
-            }
-
-            // The caller will decode the returned data
-            success(jsonData)
-        }
+    // Active downloads
+    lazy var activeDownloads: [URL : ImageDownload] = [ : ]
         
-        // Tell the system how many bytes are expected to be exchanged
-        task.countOfBytesClientExpectsToSend = Int64((httpBody ?? Data()).count +
-                                                        (request.allHTTPHeaderFields ?? [:]).count)
-        task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
-
-        // Sets the task description from the method
-        if let pos = method.lastIndex(of: "=") {
-            task.taskDescription = String(method[pos...].dropFirst())
+    // Will accept the image formats supported by UIImage
+    lazy var acceptedTypes: String = {
+        var acceptedTypes = ""
+        if #available(iOS 14.0, *) {
+            let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
+            acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
         } else {
-            task.taskDescription = method.components(separatedBy: "=").last
+            // Fallback on earlier versions
+            acceptedTypes = "image/heic, image/heif, image/vnd.microsoft.icon, image/png, image/gif, image/jpeg, image/jpg, image/webp, image/tiff, image/bmp, image/svg+xml, "
         }
         
-        // Execute the task
-        task.resume()
-    }
-}
-
-
-// MARK: - Session Delegate
-extension PwgSession: URLSessionDelegate {
-
-//    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
-//        print("    > The upload session is waiting for connectivity (offline mode)")
-//    }
-        
-//    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
-//        print("    > The upload session will begin delayed request (back to online)")
-//    }
-
-    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            NetworkUtilities.logger.notice("The data session has been invalidated.")
-        }
-    }
-    
-    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
-                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            NetworkUtilities.logger.notice("Session-level authentication requested…")
-        }
-        // Get protection space for current domain
-        let protectionSpace = challenge.protectionSpace
-        guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {
-                completionHandler(.rejectProtectionSpace, nil)
-                return
-        }
-
-        // Initialise SSL certificate approval flag
-        NetworkVars.didRejectCertificate = false
-
-        // Get state of the server SSL transaction state
-        guard let serverTrust = protectionSpace.serverTrust else {
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-
-        // Check validity of certificate
-        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.domain()) {
-            let credential = URLCredential(trust: serverTrust)
-            completionHandler(.useCredential, credential)
-            return
-        }
-        
-        // If there is no certificate, reject server (should rarely happen)
-        if SecTrustGetCertificateCount(serverTrust) == 0 {
-            completionHandler(.performDefaultHandling, nil)
-        }
-
-        // Retrieve the certificate of the server
-        guard let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0)) else {
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-
-        // Check if the certificate is trusted by user (i.e. is in the Keychain)
-        // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain()) {
-            let credential = URLCredential(trust: serverTrust)
-            completionHandler(.useCredential, credential)
-            return
-        }
-        
-        // No certificate or different non-trusted certificate found in Keychain
-        // Did the user approve this certificate?
-        if NetworkVars.didApproveCertificate {
-            // Delete certificate in Keychain (updating the certificate data is not sufficient)
-            KeychainUtilities.deleteCertificate(for: NetworkVars.domain())
-
-            // Store server certificate in Keychain with same label "Piwigo:<host>"
-            KeychainUtilities.storeCertificate(certificate, for: NetworkVars.domain())
-
-            // Will reject a connection if the certificate is changed during a session
-            // but it will still be possible to logout.
-            NetworkVars.didApproveCertificate = false
-            
-            // Accept connection
-            let credential = URLCredential(trust: serverTrust)
-            completionHandler(.useCredential, credential)
-            return
-        }
-        
-        // Will ask the user whether we should trust this server.
-        NetworkVars.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.domain())
-        NetworkVars.didRejectCertificate = true
-
-        // Reject the request
-        completionHandler(.performDefaultHandling, nil)
-    }
-}
-
-
-// MARK: - Session Task Delegate
-extension PwgSession: URLSessionDataDelegate {
-        
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            NetworkUtilities.logger.notice("Task-level authentication requested…")
-        }
-        // Check authentication method
-        let authMethod = challenge.protectionSpace.authenticationMethod
-        guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod) else {
-            completionHandler(.performDefaultHandling, nil)
-            return
-        }
-        
-        // Initialise HTTP authentication flag
-        NetworkVars.didFailHTTPauthentication = false
-        
-        // Get HTTP basic authentification credentials
-        let service = NetworkVars.service
-        var account = NetworkVars.httpUsername
-        var password = KeychainUtilities.password(forService: service, account: account)
-
-        // Without HTTP credentials available, tries Piwigo credentials
-        if account.isEmpty || password.isEmpty {
-            // Retrieve Piwigo credentials
-            account = NetworkVars.username
-            password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: account)
-            
-            // Adopt Piwigo credentials as HTTP basic authentification credentials
-            NetworkVars.httpUsername = account
-            KeychainUtilities.setPassword(password, forService: NetworkVars.service, account: account)
-        }
-
-        // Supply requested credentials if not provided yet
-        if (challenge.previousFailureCount == 0) {
-            // Try HTTP credentials…
-			let credential = URLCredential(user: account,
-										   password: password,
-										   persistence: .forSession)
-			completionHandler(.useCredential, credential)
-            return
-        }
-
-        // HTTP credentials refused... delete them in Keychain
-        KeychainUtilities.deletePassword(forService: service, account: account)
-
-        // Remember failed HTTP authentication
-        NetworkVars.didFailHTTPauthentication = true
-        completionHandler(.performDefaultHandling, nil)
-    }
+        // Add text types for handling Piwigo errors and redirects
+        acceptedTypes += "text/plain, text/html"
+        return acceptedTypes
+    }()
 }

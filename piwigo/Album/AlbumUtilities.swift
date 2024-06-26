@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import CoreLocation
 import Foundation
 import piwigoKit
 import UIKit
@@ -18,115 +19,115 @@ enum pwgImageCollectionType {
 class AlbumUtilities: NSObject {
     
     // MARK: - Constants
-    static let kAlbumCellSpacing = CGFloat(8)               // Spacing between albums (horizontally and vertically)
-    static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
-
+    static let kAlbumCellSpacing = CGFloat(4)               // Spacing between albums (horizontally and vertically)
+    //    static let kAlbumMarginsSpacing = CGFloat(0)            // Left and right margins for albums
+    
     static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
     static let kImageCellHorSpacing4iPadPopup = CGFloat(1)
     static let kImageCellVertSpacing4iPad = CGFloat(8)
     static let kImageCellVertSpacing4iPadPopup = CGFloat(1)
-    static let kImageMarginsSpacing = CGFloat(4)            // Left and right margins for images
+    //    static let kImageMarginsSpacing = CGFloat(0)            // Left and right margins for images
     static let kThumbnailFileSize = CGFloat(144)            // Default Piwigo thumbnail file size
-
+    
     static let kImageDetailsCellSpacing = CGFloat(8)        // Spacing between image details cells
     static let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
-
+    
     
     // MARK: - Piwigo Server Methods
-//    static func getAlbums(completion: @escaping (Bool) -> Void,
-//                          failure: @escaping (NSError) -> Void) {
-//
-//        // Prepare parameters for setting album thumbnail
-//        let paramsDict: [String : Any] = [
-//            "cat_id"            : 0,
-//            "recursive"         : true,
-//            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
-//            "thumbnail_size"    : thumbnailSizeArg()
-//        ]
-//
-//        let JSONsession = PwgSession.shared
-//        JSONsession.postRequest(withMethod: pwgCategoriesGetList, paramDict: paramsDict,
-//                                jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
-//                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-//            // Decode the JSON object and update the category cache.
-//            do {
-//                // Decode the JSON into codable type CategoriesGetListJSON.
-//                let decoder = JSONDecoder()
-//                let uploadJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
-//
-//                // Piwigo error?
-//                if uploadJSON.errorCode != 0 {
-//                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-//                                                                 errorMessage: uploadJSON.errorMessage)
-//                    failure(error as NSError)
-//                    return
-//                }
-//
-//                // Extract albums data from JSON message
-//                let albums = parseAlbumJSON(uploadJSON.data)
-//
-//                // Update Categories Data cache
-//                let didUpdateCats = CategoriesData.sharedInstance().replaceAllCategories(albums)
-//
-//                // Check whether the auto-upload category still exists
-//                let autoUploadCatId = UploadVars.autoUploadCategoryId
-//                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
-//                if indexOfAutoUpload == Int32.min {
-//                    UploadManager.shared.disableAutoUpload()
-//                }
-//
-//                // Check whether the default album still exists
-//                let defaultCatId = AlbumVars.shared.defaultCategory
-//                if defaultCatId != 0 {
-//                    let indexOfDefault = albums.firstIndex(where: {$0.albumId == defaultCatId})
-//                    if indexOfDefault == Int32.min {
-//                        AlbumVars.shared.defaultCategory = 0    // Back to root album
-//                    }
-//                }
-//
-//                // Update albums if Community extension installed (not needed for admins)
-//                if !NetworkVars.hasAdminRights,
-//                   NetworkVars.usesCommunityPluginV29 {
-//                    getCommunityAlbums { comAlbums in
-//                        // Loop over Community albums
-//                        for comAlbum in comAlbums {
-//                            CategoriesData.sharedInstance().addCommunityCategory(withUploadRights: comAlbum)
-//                        }
-//                        // Return albums
-//                        completion(didUpdateCats)
-//                        return
-//                    } failure: { _ in
-//                        // Continue without Community albums
-//                    }
-//                } else {
-//                    completion(didUpdateCats)
-//                }
-//            }
-//            catch {
-//                // Data cannot be digested
-//                let error = error as NSError
-//                failure(error)
-//            }
-//        } failure: { error in
-//            /// - Network communication errors
-//            /// - Returned JSON data is empty
-//            /// - Cannot decode data returned by Piwigo server
-//            failure(error)
-//        }
-//    }
-        
+    //    static func getAlbums(completion: @escaping (Bool) -> Void,
+    //                          failure: @escaping (NSError) -> Void) {
+    //
+    //        // Prepare parameters for setting album thumbnail
+    //        let paramsDict: [String : Any] = [
+    //            "cat_id"            : 0,
+    //            "recursive"         : true,
+    //            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
+    //            "thumbnail_size"    : thumbnailSizeArg()
+    //        ]
+    //
+    //        let JSONsession = PwgSession.shared
+    //        JSONsession.postRequest(withMethod: pwgCategoriesGetList, paramDict: paramsDict,
+    //                                jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
+    //                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+    //            // Decode the JSON object and update the category cache.
+    //            do {
+    //                // Decode the JSON into codable type CategoriesGetListJSON.
+    //                let decoder = JSONDecoder()
+    //                let uploadJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
+    //
+    //                // Piwigo error?
+    //                if uploadJSON.errorCode != 0 {
+    //                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+    //                                                                 errorMessage: uploadJSON.errorMessage)
+    //                    failure(error as NSError)
+    //                    return
+    //                }
+    //
+    //                // Extract albums data from JSON message
+    //                let albums = parseAlbumJSON(uploadJSON.data)
+    //
+    //                // Update Categories Data cache
+    //                let didUpdateCats = CategoriesData.sharedInstance().replaceAllCategories(albums)
+    //
+    //                // Check whether the auto-upload category still exists
+    //                let autoUploadCatId = UploadVars.autoUploadCategoryId
+    //                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
+    //                if indexOfAutoUpload == Int32.min {
+    //                    UploadManager.shared.disableAutoUpload()
+    //                }
+    //
+    //                // Check whether the default album still exists
+    //                let defaultCatId = AlbumVars.shared.defaultCategory
+    //                if defaultCatId != 0 {
+    //                    let indexOfDefault = albums.firstIndex(where: {$0.albumId == defaultCatId})
+    //                    if indexOfDefault == Int32.min {
+    //                        AlbumVars.shared.defaultCategory = 0    // Back to root album
+    //                    }
+    //                }
+    //
+    //                // Update albums if Community extension installed (not needed for admins)
+    //                if !NetworkVars.hasAdminRights,
+    //                   NetworkVars.usesCommunityPluginV29 {
+    //                    getCommunityAlbums { comAlbums in
+    //                        // Loop over Community albums
+    //                        for comAlbum in comAlbums {
+    //                            CategoriesData.sharedInstance().addCommunityCategory(withUploadRights: comAlbum)
+    //                        }
+    //                        // Return albums
+    //                        completion(didUpdateCats)
+    //                        return
+    //                    } failure: { _ in
+    //                        // Continue without Community albums
+    //                    }
+    //                } else {
+    //                    completion(didUpdateCats)
+    //                }
+    //            }
+    //            catch {
+    //                // Data cannot be digested
+    //                let error = error as NSError
+    //                failure(error)
+    //            }
+    //        } failure: { error in
+    //            /// - Network communication errors
+    //            /// - Returned JSON data is empty
+    //            /// - Cannot decode data returned by Piwigo server
+    //            failure(error)
+    //        }
+    //    }
+    
     static func create(withName name:String, description: String, status: String,
                        inParentWithId parentCategeoryId: Int32,
                        completion: @escaping (Int32) -> Void,
                        failure: @escaping (NSError) -> Void) {
-
+        
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["name"    : name,
                                           "parent"  : parentCategeoryId,
                                           "comment" : description,
                                           "status"  : status]
-
+        
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesAddJSON.self,
@@ -136,7 +137,7 @@ class AlbumUtilities: NSObject {
                 // Decode the JSON into codable type CategoriesAddJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(CategoriesAddJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
@@ -144,12 +145,13 @@ class AlbumUtilities: NSObject {
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Successful?
                 if let catId = uploadJSON.data.id, catId != Int32.min {
                     // Album successfully created ▶ Add it to list of recent albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catId)]
-                    NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+                    NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
+                                                    object: nil, userInfo: userInfo)
                     completion(catId)
                 }
                 else {
@@ -168,16 +170,16 @@ class AlbumUtilities: NSObject {
             failure(error)
         }
     }
-
+    
     static func setInfos(_ albumId: Int32, withName name:String, description: String,
                          completion: @escaping () -> Void,
                          failure: @escaping (NSError) -> Void) {
-
+        
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "name"        : name,
                                           "comment"     : description]
-
+        
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
@@ -187,7 +189,7 @@ class AlbumUtilities: NSObject {
                 // Decode the JSON into codable type CategoriesSetInfoJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(CategoriesSetInfoJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
@@ -195,7 +197,7 @@ class AlbumUtilities: NSObject {
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Successful?
                 if uploadJSON.success {
                     // Album successfully updated
@@ -217,7 +219,7 @@ class AlbumUtilities: NSObject {
             failure(error)
         }
     }
-
+    
     static func move(_ albumId: Int32, intoAlbumWithId newParentId: Int32,
                      completion: @escaping () -> Void,
                      failure: @escaping (NSError) -> Void) {
@@ -225,7 +227,7 @@ class AlbumUtilities: NSObject {
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "parent"      : newParentId,
                                           "pwg_token"   : NetworkVars.pwgToken]
-
+        
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
@@ -235,7 +237,7 @@ class AlbumUtilities: NSObject {
                 // Decode the JSON into codable type CategoriesMoveJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(CategoriesMoveJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
@@ -243,7 +245,7 @@ class AlbumUtilities: NSObject {
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Successful?
                 if uploadJSON.success {
                     // Album successfully moved
@@ -265,13 +267,13 @@ class AlbumUtilities: NSObject {
             failure(error)
         }
     }
-
+    
     static func calcOrphans(_ catID: Int32,
                             completion: @escaping (Int64) -> Void,
                             failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id": catID]
-
+        
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesCalcOrphans, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesCalcOrphansJSON.self,
@@ -281,7 +283,7 @@ class AlbumUtilities: NSObject {
                 // Decode the JSON into codable type CategoriesCalcOrphansJSON.
                 let decoder = JSONDecoder()
                 let orphansJSON = try decoder.decode(CategoriesCalcOrphansJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if orphansJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: orphansJSON.errorCode,
@@ -289,7 +291,7 @@ class AlbumUtilities: NSObject {
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Data retrieved successfully?
                 guard let nberOrphans = orphansJSON.data?.first?.nbImagesBecomingOrphan else {
                     // Could not retrieve number of orphans
@@ -310,7 +312,7 @@ class AlbumUtilities: NSObject {
             failure(error)
         }
     }
-
+    
     static func delete(_ catID: Int32, inMode mode: pwgAlbumDeletionMode,
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
@@ -318,7 +320,7 @@ class AlbumUtilities: NSObject {
         let paramsDict: [String : Any] = ["category_id"         : catID,
                                           "photo_deletion_mode" : mode.pwgArg,
                                           "pwg_token"           : NetworkVars.pwgToken]
-
+        
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
@@ -328,7 +330,7 @@ class AlbumUtilities: NSObject {
                 // Decode the JSON into codable type CategoriesDeleteJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(CategoriesDeleteJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
@@ -336,7 +338,7 @@ class AlbumUtilities: NSObject {
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Successful?
                 if uploadJSON.success {
                     // Album successfully deleted ▶ Remove category from list of recent albums
@@ -361,14 +363,14 @@ class AlbumUtilities: NSObject {
             failure(error)
         }
     }
-
+    
     static func setRepresentative(_ albumData: Album, with imageData: Image,
                                   completion: @escaping () -> Void,
                                   failure: @escaping (NSError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
                                           "image_id"    : imageData.pwgID]
-
+        
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetRepresentative, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetRepresentativeJSON.self,
@@ -378,7 +380,7 @@ class AlbumUtilities: NSObject {
                 // Decode the JSON into codable type CategoriesSetRepresentativeJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(CategoriesSetRepresentativeJSON.self, from: jsonData)
-
+                
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
@@ -386,7 +388,7 @@ class AlbumUtilities: NSObject {
                     failure(error as NSError)
                     return
                 }
-
+                
                 // Successful?
                 if uploadJSON.success {
                     // Album thumbnail successfully changed ▶ Update catagory in cache
@@ -411,33 +413,45 @@ class AlbumUtilities: NSObject {
             failure(error)
         }
     }
-
-
+    
+    
     // MARK: - Album/Images Collections | Common Methods
     static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
-        var pageSize: CGSize = view?.frame.size ?? view?.window?.screen.bounds.size ?? UIScreen.main.bounds.size
-        pageSize.width -= view?.safeAreaInsets.left ?? CGFloat.zero
-        pageSize.width -= view?.safeAreaInsets.right ?? CGFloat.zero
-        return pageSize
+        if let viewBounds = view?.bounds.inset(by: view?.safeAreaInsets ?? UIEdgeInsets.zero) {
+            return viewBounds.size
+        }
+        return UIScreen.main.bounds.size
     }
     
-
+    static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
+        // Available width in portrait mode
+        var orientation: UIInterfaceOrientation = .portrait
+        if #available(iOS 13, *) {
+            // Interface depends on device and orientation
+            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        return orientation == .portrait ? pageSize.width : pageSize.height
+    }
+    
+    
     // MARK: - Album/Images Collections | Album Thumbnails
-    static var minNberOfAlbumsPerRow: Int = {
-        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 2
-    }()
-
-    static var maxNberOfAlbumsPerRow: Int = {
-        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 3
-    }()
-
+    //    static var minNberOfAlbumsPerRow: Int = {
+    //        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 2
+    //    }()
+    
+    //    static var maxNberOfAlbumsPerRow: Int = {
+    //        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 3
+    //    }()
+    
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
         var albumThumbnailSize: CGFloat = 144
         if #available(iOS 13.0, *) {
             albumThumbnailSize *= pwgImageSize.maxSaliencyScale
         }
-
+        
         // Loop over all sizes
         let sizes = pwgImageSize.allCases.dropLast(1)
         for size in sizes {
@@ -449,38 +463,37 @@ class AlbumUtilities: NSObject {
     }
     
     static func albumSize(forView view: UIView?, maxWidth: CGFloat) -> CGFloat {
-        // Size of view or screen
+        // Sizes of view and screen
+        let screenSize = sizeOfPage()
         let pageSize = sizeOfPage(forView: view)
         
         // Number of albums per row in portrait
-        let viewWidth = min(pageSize.width, pageSize.height)
-        let numerator = viewWidth - 2.0 * kAlbumMarginsSpacing + kAlbumCellSpacing
+        let minWidth = min(screenSize.width, screenSize.height)
+        let numerator = minWidth + kAlbumCellSpacing
         let denominator = kAlbumCellSpacing + maxWidth
-        let nbAlbumsPerRowInPortrait = Int(round(numerator / denominator))
-
+        let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
+        
         // Width of album cells determined for the portrait mode
-        let minWidth = min(pageSize.width, pageSize.height)
-        let portraitSpacing = 2.0 * kAlbumMarginsSpacing + (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
+        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
         let albumWidthInPortrait = floor((minWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
-
-        // Album cells per row in whichever mode we are displaying them
-        let spacing = 2.0 * kAlbumMarginsSpacing - kAlbumCellSpacing
-        let albumsPerRow = round((pageSize.width - spacing) / (kAlbumCellSpacing + albumWidthInPortrait))
-
+        
+        // Number of albums per row we should display right now
+        let albumsPerRow = round((pageSize.width + kAlbumCellSpacing) / (kAlbumCellSpacing + albumWidthInPortrait))
+        
         // Width of albums for that number
-        return floor((pageSize.width - 2.0 * kAlbumMarginsSpacing - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
+        return floor((pageSize.width - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
     }
-
-
+    
+    
     // MARK: - Album/Images Collections | Image Thumbnails
     static var minNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
     }()
-
+    
     static var maxNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
     }()
-
+    
     static func optimumThumbnailSizeForDevice() -> pwgImageSize {
         // Returns the lowest size of sufficient resolution
         // to display the minimum number of thumbnails on the device.
@@ -493,7 +506,7 @@ class AlbumUtilities: NSObject {
         }
         return .xxLarge
     }
-
+    
     static func imageCellHorizontalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
         var imageCellHorizontalSpacing = CGFloat.zero
         switch type {
@@ -521,87 +534,290 @@ class AlbumUtilities: NSObject {
         let pageSize = sizeOfPage(forView: nil)
         let viewWidth = min(pageSize.width, pageSize.height)
         let horSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
-        let numerator = viewWidth - 2 * kImageMarginsSpacing + horSpacing
+        let numerator = viewWidth + horSpacing
         let denominator = horSpacing + maxWidth
         let nberOfImagePerRow = Int(round(numerator / denominator))
         return max(minNberOfImagesPerRow, nberOfImagePerRow)
     }
-
+    
     static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int) -> CGFloat {
         return imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait,
                          collectionType: .full)
     }
-
+    
     static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int,
                           collectionType type: pwgImageCollectionType) -> CGFloat {
         // CGFloat version of imagesPerRowInPortrait
         let nberOfImagesInPortrait = CGFloat(imagesPerRowInPortrait)
-
-        // Size of view or screen
+        
+        // Sizes of view and screen
         let screenSize = sizeOfPage()
         let pageSize = sizeOfPage(forView: view)
-
+        
         // Image horizontal cell spacing
         let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: type)
-
+        
         // Size of images determined for the portrait mode in full screen
         let minWidth = min(screenSize.width, screenSize.height)
-        let imagesSizeInPortrait = floor((minWidth - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
+        let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
         
         // Images per row in whichever mode we are displaying them
-        let numerator = screenSize.width - 2.0 * kImageMarginsSpacing + imageCellHorizontalSpacing
+        let numerator = screenSize.width + imageCellHorizontalSpacing
         let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
         let nberOfImages = Int(round(numerator / denominator))
         var imagesPerRow = Double(max(minNberOfImagesPerRow, nberOfImages))
-
+        
         // Images per row for the current size class
         imagesPerRow *= pageSize.width / screenSize.width
         imagesPerRow = max(1.0, round(imagesPerRow))
-
+        
         // Size of squared images for that number
-        let usedWidth = pageSize.width - 2.0 * kImageMarginsSpacing - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
+        let usedWidth = pageSize.width - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
         return CGFloat(floor(usedWidth / imagesPerRow))
     }
-
+    
     static func numberOfImagesToDownloadPerPage() -> Int {
         // CGFloat version of imagesPerRowInPortrait
         let nberOfImagesInPortrait = CGFloat(AlbumVars.shared.thumbnailsPerRowInPortrait)
         
         // Size of screen
-        let pageSize = sizeOfPage()
-
+        let screenSize = sizeOfPage()
+        
         // Image horizontal cell spacing
         let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: .full)
         let imageCellVerticalSpacing = imageCellVerticalSpacing(forCollectionType: .full)
-
+        
         // Size of images determined for the portrait mode
-        let minWidth = min(pageSize.width, pageSize.height)
-        let imagesSizeInPortrait = floor((minWidth - 2.0 * kImageMarginsSpacing - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
+        let minWidth = min(screenSize.width, screenSize.height)
+        let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
         
         // Images per row in portrait and landscape modes
-        let spacing = 2.0 * kImageMarginsSpacing - imageCellHorizontalSpacing
-        var numerator = pageSize.width - spacing
+        var numerator = screenSize.width + imageCellHorizontalSpacing
         let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
         let imagesPerRowInPortrait = Double(max(minNberOfImagesPerRow, Int(round(numerator / denominator))))
-        numerator = pageSize.height - spacing
+        numerator = screenSize.height + imageCellHorizontalSpacing
         let imagesPerRowInLandscape = Double(max(minNberOfImagesPerRow, Int(round(numerator / denominator))))
-
+        
         // Minimum size of squared images
-        let portrait = 2.0 * kImageMarginsSpacing + (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing
-        let sizeInPortrait = floor((pageSize.width - portrait) / imagesPerRowInPortrait)
-        let landscape = 2.0 * kImageMarginsSpacing + (imagesPerRowInLandscape - 1.0) * imageCellVerticalSpacing
-        let sizeInLandscape = floor((pageSize.height - landscape) / imagesPerRowInLandscape)
+        let portrait = (imagesPerRowInPortrait - 1.0) * imageCellHorizontalSpacing
+        let sizeInPortrait = floor((screenSize.width - portrait) / imagesPerRowInPortrait)
+        let landscape = (imagesPerRowInLandscape - 1.0) * imageCellVerticalSpacing
+        let sizeInLandscape = floor((screenSize.height - landscape) / imagesPerRowInLandscape)
         let size = min(sizeInPortrait, sizeInLandscape)
         
         // Number of images to download per page, independently of the orientation
         let cellArea = (size + imageCellVerticalSpacing) * (size + imageCellHorizontalSpacing)
-        let viewArea = pageSize.width * pageSize.height
+        let viewArea = screenSize.width * screenSize.height
         return Int(ceil(viewArea / cellArea))
     }
-
+    
     static func imageDetailsSize(forView view: UIView) -> CGFloat {
         // Size of view or screen
         let cellSize = sizeOfPage(forView:view)
         return CGFloat(min(cellSize.width - 2.0 * kImageDetailsMarginsSpacing, 340.0))
+    }
+    
+    // MARK: - Album/Images Collections | Image Section
+    static func getDateLabels(for timeIntervals: [TimeInterval]) -> (String, String) {
+        // Creation date of images (or of availability)
+        let refDate = TimeInterval(-3187209600)     // "1900-01-02 00:00:00" relative to ref. date
+        var dateLabelText = " "                     // Displayed when there iss no date available
+        var optionalDateLabelText = " "
+        
+        // Determine lowest time interval after "1900-01-01 00:00:00"
+        var lowest = TimeInterval.greatestFiniteMagnitude
+        for ti in timeIntervals {
+            if ti > refDate, ti < lowest {
+                lowest = ti
+            }
+        }
+        
+        // Determine greatest time interval after "1900-01-01 00:00:00"
+        var greatest = TimeInterval(-3187296000) // i.e. "1900-01-01 00:00:00" relative to reference date
+        for ti in timeIntervals {
+            if ti > refDate, ti > greatest {
+                greatest = ti
+            }
+        }
+        
+        // Determine if images of this section were all taken after "1900-01-02 00:00:00"
+        if lowest > refDate, lowest < TimeInterval.greatestFiniteMagnitude {
+            // Get correspondig date
+            let startDate = Date(timeIntervalSinceReferenceDate: lowest)
+            
+            // Display date/month/year by default, will add weekday/time in the absence of location data
+            let dateStyle: DateFormatter.Style = UIScreen.main.bounds.size.width > 400 ? .long : .medium
+            dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
+            
+            // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+            let dayFormatter = DateFormatter()
+            dayFormatter.locale = .current
+            switch UIScreen.main.bounds.size.width {
+            case 0..<400:
+                dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+            case 400...600:
+                dayFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm")
+            default:
+                dayFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm:ss")
+            }
+            optionalDateLabelText = dayFormatter.string(from: startDate)
+            
+            // Get creation date of last image and check that it is after "1900-01-02 00:00:00"
+            if greatest > refDate, greatest != lowest {
+                // Get correspondig date
+                let endDate = Date(timeIntervalSinceReferenceDate: greatest)
+
+                // Images taken the same day?
+                let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+                let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
+                if firstImageDay == lastImageDay {
+                    // Images were taken the same day
+                    // => Keep dateLabel as already set
+                    // => Add ending time to optional string
+                    let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
+                    dayFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
+                    optionalDateLabelText += " - " + dayFormatter.string(from: endDate)
+                    return (dateLabelText, optionalDateLabelText)
+                }
+                
+                // => Images taken the same month?
+                let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
+                let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
+                if firstImageMonth == lastImageMonth {
+                    // Images taken during the sme month => Display days of month
+                    let dateFormatter = DateIntervalFormatter()
+                    dateFormatter.timeStyle = .none
+                    switch UIScreen.main.bounds.size.width {
+                    case 0..<400:
+                        dateFormatter.dateStyle = .medium
+                    default:
+                        dateFormatter.dateStyle = .long
+                    }
+                    dateLabelText = dateFormatter.string(from: startDate, to: endDate)
+                    
+                    // Define optional string with day/time values
+                    // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+                    let dayFormatter = DateFormatter()
+                    dayFormatter.locale = .current
+                    switch UIScreen.main.bounds.size.width {
+                    case 0..<400:
+                        dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                    case 400..<600:
+                        dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                    default:
+                        dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                    }
+                    optionalDateLabelText = dayFormatter.string(from: startDate) + " — " + dayFormatter.string(from: endDate)
+                    return (dateLabelText, optionalDateLabelText)
+                }
+                
+                // => Images not taken the same month => Display day/month of year
+                let dateFormatter = DateIntervalFormatter()
+                dateFormatter.timeStyle = .none
+                switch UIScreen.main.bounds.size.width {
+                case 0..<400:
+                    dateFormatter.dateTemplate = "YYMMdd"
+                case 400..<600:
+                    dateFormatter.dateStyle = .medium
+                default:
+                    dateFormatter.dateStyle = .long
+                }
+                dateLabelText = dateFormatter.string(from: startDate, to: endDate)
+                
+                // Define optional string with day/time values
+                // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
+                let dayFormatter = DateFormatter()
+                dayFormatter.locale = .current
+                switch UIScreen.main.bounds.size.width {
+                case 0..<400:
+                    dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                case 400..<600:
+                    dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                default:
+                    dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                }
+                optionalDateLabelText = dayFormatter.string(from: startDate) + " — " + dayFormatter.string(from: endDate)
+            }
+        }
+        return (dateLabelText, optionalDateLabelText)
+    }
+    
+    static func getLocation(of images: [Image]) -> CLLocation {
+        // Initialise location of section with invalid location
+        var verticalAccuracy = CLLocationAccuracy.zero
+        if #available(iOS 14, *) {
+            verticalAccuracy = kCLLocationAccuracyReduced
+        } else {
+            verticalAccuracy = kCLLocationAccuracyThreeKilometers
+        }
+        var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
+                                            altitude: CLLocationDistance(0.0),
+                                            horizontalAccuracy: kCLLocationAccuracyBest,
+                                            verticalAccuracy: verticalAccuracy,
+                                            timestamp: Date())
+
+        // Loop over images in section
+        for image in images {
+
+            // Any location data ?
+            guard image.latitude != 0.0, image.longitude != 0.0 else {
+                // Image has no valid location data => Next image
+                continue
+            }
+
+            // Location found => Store if first found and move to next section
+            if !CLLocationCoordinate2DIsValid(locationForSection.coordinate) {
+                // First valid location => Store it
+                let coordinate = CLLocationCoordinate2DMake(image.latitude, image.longitude)
+                locationForSection = CLLocation(coordinate: coordinate, altitude: 0,
+                                                horizontalAccuracy: kCLLocationAccuracyBest,
+                                                verticalAccuracy: verticalAccuracy,
+                                                timestamp: locationForSection.timestamp)
+            } else {
+                // Another valid location => Compare to first one
+                let newLocation = CLLocation(latitude: image.latitude, longitude: image.longitude)
+                let distance = locationForSection.distance(from: newLocation)
+                
+                // Similar location?
+                let meanLatitude: CLLocationDegrees = (locationForSection.coordinate.latitude + newLocation.coordinate.latitude)/2
+                let meanLongitude: CLLocationDegrees = (locationForSection.coordinate.longitude + newLocation.coordinate.longitude)/2
+                let newCoordinate = CLLocationCoordinate2DMake(meanLatitude,meanLongitude)
+                if distance < kCLLocationAccuracyBest {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyBest,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyNearestTenMeters {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyNearestTenMeters,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyHundredMeters {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyHundredMeters,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyKilometer {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyKilometer,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else if distance < kCLLocationAccuracyThreeKilometers {
+                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: 0,
+                                                    horizontalAccuracy: kCLLocationAccuracyThreeKilometers,
+                                                    verticalAccuracy: locationForSection.verticalAccuracy,
+                                                    timestamp: locationForSection.timestamp)
+                    return locationForSection
+                } else {
+                    // Above 3 km, we estimate that it is a different location
+                    return locationForSection
+                }
+             }
+        }
+        return locationForSection
     }
 }

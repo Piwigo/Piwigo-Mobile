@@ -6,6 +6,8 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import Foundation
+import UIKit
 import piwigoKit
 
 // MARK: - UITableViewDataSource Methods
@@ -35,6 +37,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 print("Error: tableView.dequeueReusableCell does not return a EditImageThumbTableViewCell!")
                 return EditImageThumbTableViewCell()
             }
+            cell.user = user
             cell.config(withImages: images)
             cell.delegate = self
             tableViewCell = cell

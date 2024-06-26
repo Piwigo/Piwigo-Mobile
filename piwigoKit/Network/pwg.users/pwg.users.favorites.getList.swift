@@ -8,6 +8,5 @@
 
 import Foundation
 
-// MARK: - pwg.users.favorites.getList
 /// Fetches and parses CategoriesGetImagesJSON data — See pwg.categories.getImages.swift
 public let pwgUsersFavoritesGetList = "format=json&method=pwg.users.favorites.getList"

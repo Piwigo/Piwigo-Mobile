@@ -10,93 +10,105 @@ import UIKit
 
 @available(iOS 13.0, *)
 extension SceneDelegate {
-
+    
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
         // Look for an instance of AlbumViewController as first controller
         guard let navController = window?.rootViewController as? UINavigationController,
               let defaultAlbum = navController.viewControllers.first as? AlbumViewController else {
-          return nil
+            return nil
         }
         
         // Create a user activity for displaying albums
         let stateActivity = ActivityType.album.userActivity()
-
+        
         // Create array of sub-album IDs
-        var catIDs = Set<Int32>()
-        var imageIndex = Int.min
+        var albumIDs = Set<Int32>()
         for viewController in navController.viewControllers {
             if let vc = viewController as? AlbumViewController {
                 // Bypass the default album
                 if vc.categoryId == defaultAlbum.categoryId { continue }
                 // Store sub-album ID
-                catIDs.insert(vc.categoryId)
+                albumIDs.insert(vc.categoryId)
             }
         }
                 
         // Determine if an image is presented fullscreen on the device
+        var imagePath = [Int]()
         if let vc = navController.visibleViewController as? ImageViewController {
-            // Store image index
-            imageIndex = vc.imageIndex
+            // Store image index path (IndexPath type not accepted by userActivity)
+            imagePath = [vc.indexPath.item, vc.indexPath.section]
         }
 
         // Create user info
-        let info: [String: Any] = ["catIDs"  : catIDs,
-                                   "imageID" : imageIndex]
+        let info: [String: Any] = ["catIDs"  : albumIDs,
+                                   "imagePath" : imagePath]
         stateActivity.addUserInfoEntries(from: info)
-
         return stateActivity
     }
     
     func scene(_ scene: UIScene, restoreInteractionStateWith stateRestorationActivity: NSUserActivity) {
         // Look for the instance of AlbumViewController
         guard
-          let navController = window?.rootViewController as? UINavigationController,
-          let _ = navController.viewControllers.first as? AlbumViewController,
-          let userInfo = stateRestorationActivity.userInfo
+            let navController = window?.rootViewController as? UINavigationController,
+            let _ = navController.viewControllers.first as? AlbumViewController,
+            let userInfo = stateRestorationActivity.userInfo
         else {
-          return
+            return
         }
 
+        // Should we restore sub-albums?
+        let catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? Set<Int32>()
+        guard catIDs.isEmpty == false else { return }
+
         // Restore sub-albums
-        let catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? [AlbumVars.shared.defaultCategory]
+        let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
         var subAlbumVC: AlbumViewController!
         for catID in catIDs {
-            subAlbumVC = AlbumViewController(albumId: catID)
+            subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            if subAlbumVC == nil { return }
+            subAlbumVC.categoryId = catID
             navController.pushViewController(subAlbumVC, animated: false)
         }
         
-        // Restore image preview if performFetch() has been called and an image is available
-        if subAlbumVC != nil, subAlbumVC?.categoryId != 0,
-           let imageIndex = (userInfo["imageID"] as? Int), imageIndex != Int.min,
-           let images = subAlbumVC.images.fetchedObjects, images.count > 0,
-           (subAlbumVC.imagesCollection?.numberOfItems(inSection: 1) ?? 0) > imageIndex {
-            // Scroll collection view to cell position
-            let indexPath = IndexPath(item: imageIndex, section: 1)
-            subAlbumVC.imageOfInterest = indexPath
-            subAlbumVC.imagesCollection?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-
-            // Prepare image detail view
-            let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-            guard let imageDetailVC = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { return }
-            imageDetailVC.imageIndex = min(imageIndex, images.count - 1)
-            imageDetailVC.categoryId = subAlbumVC.categoryId
-            imageDetailVC.images = subAlbumVC.images
-            imageDetailVC.user = subAlbumVC.user
-            imageDetailVC.imgDetailDelegate = subAlbumVC.self
-            
-            // Push ImageDetailView embedded in navigation controller
-            let navController = UINavigationController(rootViewController: imageDetailVC)
-            navController.hidesBottomBarWhenPushed = true
-            navController.transitioningDelegate = subAlbumVC
-            navController.modalPresentationStyle = .custom
-            navController.modalPresentationCapturesStatusBarAppearance = true
-            subAlbumVC.navigationController?.present(navController, animated: false) {
-                if let selectedCell = subAlbumVC.imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    subAlbumVC.animatedCell = selectedCell
-                    subAlbumVC.albumViewSnapshot = subAlbumVC.view.snapshotView(afterScreenUpdates: true)
-                    subAlbumVC.cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: true)
-                    subAlbumVC.navBarSnapshot = subAlbumVC.navigationController?.navigationBar.snapshotView(afterScreenUpdates: true)
-                }
+        // Should we restore an image preview?
+        guard let subAlbumVC = subAlbumVC,
+              let imagePath = userInfo["imagePath"] as? [Int]?,
+              let item = imagePath?.first, let section = imagePath?.last
+        else { return }
+        
+        // Perform a fetch because the sub-album is not loaded yet
+        try? subAlbumVC.images.performFetch()
+        let indexPath = IndexPath(item: item, section: section)
+        guard let sections = subAlbumVC.images.sections,
+              section < sections.count,
+              item < sections[section].numberOfObjects
+        else { return }
+        
+        // Scroll collection view to cell position
+        subAlbumVC.imageOfInterest = indexPath
+        subAlbumVC.collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+        
+        // Prepare image detail view
+        let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
+        guard let imageDetailVC = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { return }
+        imageDetailVC.user = subAlbumVC.user
+        imageDetailVC.categoryId = subAlbumVC.categoryId
+        imageDetailVC.images = subAlbumVC.images
+        imageDetailVC.indexPath = indexPath
+        imageDetailVC.imgDetailDelegate = subAlbumVC.self
+        
+        // Push ImageDetailView embedded in navigation controller
+        let imgNavController = UINavigationController(rootViewController: imageDetailVC)
+        imgNavController.hidesBottomBarWhenPushed = true
+        imgNavController.transitioningDelegate = subAlbumVC
+        imgNavController.modalPresentationStyle = .custom
+        imgNavController.modalPresentationCapturesStatusBarAppearance = true
+        subAlbumVC.navigationController?.present(imgNavController, animated: false) {
+            if let selectedCell = subAlbumVC.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                subAlbumVC.animatedCell = selectedCell
+                subAlbumVC.albumViewSnapshot = subAlbumVC.view.snapshotView(afterScreenUpdates: true)
+                subAlbumVC.cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: true)
+                subAlbumVC.navBarSnapshot = subAlbumVC.navigationController?.navigationBar.snapshotView(afterScreenUpdates: true)
             }
         }
     }

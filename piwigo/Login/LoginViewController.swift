@@ -91,7 +91,7 @@ class LoginViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
@@ -165,6 +165,20 @@ class LoginViewController: UIViewController {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        // Should we update user interface based on the appearance?
+        if #available(iOS 13.0, *) {
+            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.screenBrightnessChanged()
+            }
+        }
+    }
+
     deinit {
         // Release memory
         
@@ -195,12 +209,10 @@ class LoginViewController: UIViewController {
         }
 
         // Display HUD during login
-        showPiwigoHUD(
-            withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-            detail: NSLocalizedString("login_connecting", comment: "Connecting"),
-            buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-            buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-            inMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
+                detail: NSLocalizedString("login_connecting", comment: "Connecting"),
+                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
+                buttonTarget: self, buttonSelector: #selector(cancelLoggingIn), inMode: .indeterminate)
 
         // Save credentials in Keychain (needed before login when using HTTP Authentication)
         if let username = userTextField.text, username.isEmpty == false {
@@ -216,7 +228,7 @@ class LoginViewController: UIViewController {
     
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
-        NetworkUtilities.requestServerMethods { [self] in
+        PwgSession.requestServerMethods { [self] in
             // Pursue logging in…
             DispatchQueue.main.async {
                 self.performLogin()
@@ -341,12 +353,7 @@ class LoginViewController: UIViewController {
         let password = passwordTextField.text ?? ""
         if username.isEmpty == false {
             // Update HUD during login
-            showPiwigoHUD(
-                withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                detail: NSLocalizedString("login_newSession", comment: "Opening Session"),
-                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                inMode: .indeterminate)
+            updateHUD(detail: NSLocalizedString("login_newSession", comment: "Opening Session"))
 
             // Perform login
             PwgSession.shared.sessionLogin(withUsername: username, password: password) { [self] in
@@ -394,12 +401,7 @@ class LoginViewController: UIViewController {
         // Community plugin installed?
         if NetworkVars.usesCommunityPluginV29 {
             // Update HUD during login
-            showPiwigoHUD(
-                withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-                detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"),
-                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-                buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-                inMode: .indeterminate)
+            updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
 
             // Community extension installed
             PwgSession.shared.communityGetStatus { [self] in
@@ -428,12 +430,7 @@ class LoginViewController: UIViewController {
         print(
             "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         // Update HUD during login
-        showPiwigoHUD(
-            withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-            detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"),
-            buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-            buttonTarget: self, buttonSelector: #selector(cancelLoggingIn),
-            inMode: .indeterminate)
+        updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
         PwgSession.shared.sessionGetStatus() { [self] _ in
             // Is the Piwigo server incompatible?
@@ -454,10 +451,10 @@ class LoginViewController: UIViewController {
 
                 // Piwigo server update recommanded ► Inform user
                 DispatchQueue.main.async { [self] in
-                    hidePiwigoHUD() { [self] in
-                        dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.pwgVersion), completion: { [self] in
+                    hideHUD() {
+                        self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.pwgVersion), completion: {
                                 // Piwigo server version is still appropriate.
-                                launchApp()
+                                self.launchApp()
                         })
                     }
                 }
@@ -485,10 +482,11 @@ class LoginViewController: UIViewController {
             LoginUtilities.checkAvailableSizes()
 
             // Present Album/Images view and resume uploads
+            guard let window = self.view.window else { return }
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            hidePiwigoHUD() {
+            hideHUD() {
                 // Present Album/Images view and resume uploads
-                appDelegate?.loadNavigation(in: self.view.window)
+                appDelegate?.loadNavigation(in: window)
             }
         }
     }
@@ -497,11 +495,7 @@ class LoginViewController: UIViewController {
     // MARK: - HUD methods
     @objc func cancelLoggingIn() {
         // Update login HUD
-        showPiwigoHUD(
-            withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
-            detail: NSLocalizedString("internetCancellingConnection_button", comment: "Cancelling Connection…"),
-            buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
-            buttonTarget: self, buttonSelector: #selector(cancelLoggingIn), inMode: .indeterminate)
+        updateHUD(detail: NSLocalizedString("internetCancellingConnection_button", comment: "Cancelling Connection…"))
 
         // Propagate user's request
         PwgSession.shared.dataSession.getAllTasks() { tasks in
@@ -518,36 +512,60 @@ class LoginViewController: UIViewController {
 
         // Unknown error?
         guard let error = error else {
-            showPiwigoHUD(
-                withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
-                detail: " ",
-                buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                buttonTarget: self, buttonSelector: #selector(hideLoading), inMode: .text)
+            updateHUD(title: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), 
+                      detail: "",
+                      buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+                      buttonTarget: self, buttonSelector: #selector(hideLoading),
+                      inMode: .text)
             return
         }
         
         // Error returned
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
+        var buttonSelector = #selector(hideLoading)
         if let pwgError = error as? PwgSessionError,
            pwgError == PwgSessionError.incompatiblePwgVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
         }
-        else {
-            if detail.isEmpty {
-                detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
-            }
+        else if let pwgError = error as? PwgSessionError,
+                pwgError == PwgSessionError.invalidCredentials {
+            title = NSLocalizedString("loginError_title", comment: "loginError_title")
+            buttonSelector = #selector(suggestPwdRetrieval)
         }
-        showPiwigoHUD(
-            withTitle: title, detail: detail,
-            buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-            buttonTarget: self, buttonSelector: #selector(hideLoading), inMode: .text)
+        else if detail.isEmpty {
+                detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
+        }
+        updateHUD(title: title, detail: detail,
+                  buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+                  buttonTarget: self, buttonSelector: buttonSelector,
+                  inMode: .text)
+    }
+    
+    @objc func suggestPwdRetrieval() {
+        // Hide HUD
+        hideLoading()
+        
+        // Suggest to retrieve password
+        let title = NSLocalizedString("loginError_title", comment: "loginError_title")
+        let message = NSLocalizedString("loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+            style: .cancel, handler: { _ in })
+        let retrieveAction = UIAlertAction(
+            title: NSLocalizedString("alertOkButton", comment: "OK"),
+            style: .default, handler: { _ in
+                if let url = URL(string: NetworkVars.service + "/password.php") {
+                    UIApplication.shared.open(url)
+                }
+            })
+        presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, retrieveAction])
     }
 
     @objc func hideLoading() {
         // Hide and remove login HUD
-        hidePiwigoHUD() { }
+        hideHUD() { }
     }
 
 

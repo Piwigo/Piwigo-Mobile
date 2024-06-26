@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.getInfos
 public let pwgGetInfos = "format=json&method=pwg.getInfos"
 
+// MARK: Piwigo JSON Structures
 public struct GetInfosJSON: Decodable {
     
     public var status: String?
@@ -149,6 +149,56 @@ public enum StringOrInt: Codable {
             return Int64(x)
         case .string(let x):
             return Int64(x)
+        }
+    }
+}
+
+public enum StringOrDouble: Codable {
+    case double(Double)
+    case string(String)
+
+    public init() {
+        self = .double(0)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(Double.self) {
+            self = .double(x)
+            return
+        }
+        if let x = try? container.decode(String.self) {
+            self = .string(x)
+            return
+        }
+        throw DecodingError.typeMismatch(StringOrInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Value"))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .double(let x):
+            try container.encode(x)
+        case .string(let x):
+            try container.encode(x)
+        }
+    }
+    
+    public var stringValue: String {
+        switch self {
+        case .double(let x):
+            return String(x)
+        case .string(let x):
+            return x
+        }
+    }
+
+    public var doubleValue: Double {
+        switch self {
+        case .double(let x):
+            return x
+        case .string(let x):
+            return Double(x) ?? Double.nan
         }
     }
 }

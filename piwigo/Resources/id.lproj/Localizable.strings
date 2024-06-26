@@ -115,6 +115,7 @@
 
 "loginError_title" = "Gagal Masuk";
 "loginError_message" = "Nama pengguna dan kata sandi tidak sesuai dengan alamat web yang diberikan";
+"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Masukkan Alamat Web";
 "loginEmptyServer_message" = "Silakan pilih sebuah protokol dan masukkan alamat web Piwigo untuk melanjutkan.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Your favorites";
 
 // Albums sort
+"categorySort_sort" = "Sort Images By…";
+"categorySort_default" = "Default";
+"categorySort_name" = "Photo Title";
 "categorySort_nameAscending" = "Judul Foto, A → Z";
 "categorySort_nameDescending" = "Judul Foto, Z → A";
+"categorySort_fileName" = "File Name";
 "categorySort_fileNameAscending" = "Nama Berkas, A → Z";
 "categorySort_fileNameDescending" = "Nama Berkas, Z → A";
+"categorySort_dateCreated" = "Date Created";
 "categorySort_dateCreatedDescending" = "Tanggal Dibuat, baru → lama";
 "categorySort_dateCreatedAscending" = "Tanggal Dibuat, lama → baru";
+"categorySort_datePosted" = "Date Posted";
 "categorySort_datePostedDescending" = "Tanggal Dikirim, baru → lama";
 "categorySort_datePostedAscending" = "Tanggal Dikirim, lama → baru";
+"categorySort_ratingScore" = "Rating Score";
 "categorySort_ratingScoreDescending" = "Rating Score, high → low";
 "categorySort_ratingScoreAscending" = "Rating Score, low → high";
+"categorySort_visits" = "Visits";
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_manual" = "Pesanan Manual";
+"categorySort_randomly" = "Randomly";
 "categorySort_random" = "Random Order";
-
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 "categorySort_videosOnly" = "Hanya Video";
 "categorySort_imagesOnly" = "Hanya Gambar";
+
+"categoryView_options" = "View Options";
+"categoryGroup_group" = "Group Images By…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -307,10 +322,11 @@
 "noImages" = "Tidak Ada Gambar";
 "pullToRefresh" = "Muat Ulang Gambar";
 "andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
 "Date" = "Date";
+"None" = "None";
+"Day" = "Day";
+"Week" = "Week";
+"Month" = "Month";
 
 // Errors
 "albumPhotoError_title" = "Galat dalam Mendapatkan Foto Album";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
 "imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+
+// Image rotate
+"rotateImage_rotate" = "Rotate 90°…";
+"rotateImage_left" = "Counterclockwise";
+"rotateImage_right" = "Clockwise";
+"rotateSingleImageHUD_rotating" = "Rotating Photo…";
+"rotateSeveralImageHUD_rotating" = "Rotating Photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Failed";
+"rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
+"rotateImageFail_message" = "Image could not be rotated";
 
 // Image delete
 "deleteImage_delete" = "Hapus";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
-"whatsNew_title1" = "New Gestures";
-"whatsNew_desc1" = "Swipe down or pinch the image to return to the album when viewing individual photos or videos.";
-"whatsNew_title2" = "PiP Support";
-"whatsNew_desc2" = "Watch a video stored on your Piwigo while you use other apps.";
+"whatsNew_title1" = "Group Photos";
+"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_title2" = "Rotate Photos";
+"whatsNew_desc2" = "Fix orientation issues (requires the rotateImage plugin).";
 "whatsNew_continue" = "Continue";

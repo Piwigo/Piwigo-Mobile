@@ -28,7 +28,7 @@ extension UploadManager
         // for debugging background tasks
 //        return
 
-        // Perform fetch
+        // Perform fetches
         do {
             try uploads.performFetch()
             try completed.performFetch()
@@ -195,7 +195,7 @@ extension UploadManager
         }
 
         // Moderate images by category
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             for categoryId in categories {
                 // Set list of images to moderate in that category
                 let categoryImages = uploads.filter({$0.category == categoryId})

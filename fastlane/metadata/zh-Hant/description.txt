@@ -1,24 +1,25 @@
-Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.8 or higher):
+供iPhone/iPad/iPod使用的Piwigo雲端相簿軟體，支援Piwigo雲端主機(v2.10以上) 並提供下列功能:
 
-• Browse your albums,
-• Create, delete, move and rename albums,
-• Search, edit, download and delete photos and videos,
-• Copy and move photos and videos between albums,
-• Add and remove photos and videos from your favorites,
-• Set a photo as album image,
-• Upload photos and videos:
-   - of modifiable size and quality,
-   - with description, author, tags, EXIF metadata,
-   - with or without GPS metadata.
-• Share photos and videos.
+• 檢視您的相簿，
+• 建立，刪除，移動以及重新命名相簿，
+• 搜尋，編輯，下載以及刪除照片及影片，
+• 於相簿之間複製並移動照片及影片，
+• 增加或移除照片及影片至您的最愛，
+• 設定照片為相簿封面，
+• 上傳照片及影片:
+  - 以可調整的大小及品質，
+  - 附上備註，作者，標籤及EXIF中繼資料，
+  - 選擇是否上傳GPS資訊。
+• 分享照片及影片。
 
-Piwigo empowers you to create your own photo gallery on the web. It includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
+Piwigo讓您可以在網路中建立自己的照片圖庫。它包含許多強大的功能像是相簿，標籤，地理位置，多層面的自訂，訪客上傳，隱私及權限管理，行事曆及數據統計。
 
-Piwigo is free and opensource.
+Piwigo是免費及開放原始碼的軟體。
 
-Piwigo is also compatible with the following extensions:
-- Community: allows non-admin users to add photos
-- piwigo-videojs: adds video support
+Piwigo同時支援下列擴充功能:
+- community: 允許非管理員用戶上傳照片
+- rotateImage：使您能夠旋轉影像
+- piwigo-videojs: 新增影片支援
 
-Feedback or questions ?
-Piwigo offers free support at https://piwigo.org/forum and we'd love to hear from you.
+任何意見或問題?
+Piwigo於 %@ 提供免費支援，我們非常樂意聽到您的意見及反應。

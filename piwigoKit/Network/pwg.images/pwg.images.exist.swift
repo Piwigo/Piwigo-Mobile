@@ -11,7 +11,7 @@ import Foundation
 public let pwgImagesExist = "format=json&method=pwg.images.exist"
 public let pwgImagesExistBytes: Int64 = 1250
 
-// MARK: Piwigo JSON Structures
+// MARK: - Piwigo JSON Structures
 public struct ImagesExistJSON: Decodable {
 
     public var status: String?

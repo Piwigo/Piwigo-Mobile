@@ -18,8 +18,7 @@ extension SettingsViewController: UITableViewDataSource
         /// User can upload images/videos if he/she is logged in and has:
         /// — admin rights
         /// — normal rights with upload access to some categories with Community
-        return user.hasAdminRights ||
-        (user.role == .normal && NetworkVars.usesCommunityPluginV29)
+        return user.hasAdminRights || (user.role == .normal && NetworkVars.usesCommunityPluginV29)
     }
     
     func activeSection(_ section: Int) -> SettingsSection {
@@ -51,7 +50,10 @@ extension SettingsViewController: UITableViewDataSource
         case .albums:
             nberOfRows = 4
         case .images:
-            nberOfRows = 5
+            // Present default image sort option only when Piwigo server version < 14.0
+            // Present image title option before iOS 14.0
+            nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
+            nberOfRows += showTitleOption ? 1 : 0
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
@@ -186,20 +188,20 @@ extension SettingsViewController: UITableViewDataSource
                     return SliderTableViewCell()
                 }
                 // Slider value is the index of kRecentPeriods
-                var value:Float = Float(AlbumVars.shared.recentPeriodIndex)
-                value = min(value, Float(AlbumVars.shared.recentPeriodList.count - 1))
+                var value:Float = Float(CacheVars.shared.recentPeriodIndex)
+                value = min(value, Float(CacheVars.shared.recentPeriodList.count - 1))
                 value = max(0.0, value)
 
                 // Slider configuration
                 let title = NSLocalizedString("recentPeriod_title", comment: "Recent Period")
-                cell.configure(with: title, value: value, increment: Float(AlbumVars.shared.recentPeriodKey),
-                               minValue: 0.0, maxValue: Float(AlbumVars.shared.recentPeriodList.count - 1),
+                cell.configure(with: title, value: value, increment: Float(CacheVars.shared.recentPeriodKey),
+                               minValue: 0.0, maxValue: Float(CacheVars.shared.recentPeriodList.count - 1),
                                prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
                 cell.cellSliderBlock = { newValue in
                     // Update settings
                     let index = Int(newValue)
-                    if index >= 0, index < AlbumVars.shared.recentPeriodList.count {
-                        AlbumVars.shared.recentPeriodIndex = index
+                    if index >= 0, index < CacheVars.shared.recentPeriodList.count {
+                        CacheVars.shared.recentPeriodIndex = index
                     }
                     
                     // Reload root/default album
@@ -214,7 +216,10 @@ extension SettingsViewController: UITableViewDataSource
         
         // MARK: Images
         case .images /* Images */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += defaultSortUnknown ? 0 : 1
+            row += (!showTitleOption && (row > 2)) ? 1 : 0
+            switch row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")

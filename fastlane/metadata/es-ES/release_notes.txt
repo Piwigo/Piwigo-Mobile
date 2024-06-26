@@ -1,2 +1,4 @@
-• Solicita la actualización del servidor Piwigo si es necesario
+• Adoptadas opciones de clasificación de las fotografías de un álbum
+• Añadidas opciones de clasificación de fotografías sobre la marcha
+• Añadida rotación de fotos cargadas
 • Corrección de errores

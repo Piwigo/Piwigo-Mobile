@@ -11,7 +11,7 @@ import Foundation
 public let pwgImagesSetInfo = "format=json&method=pwg.images.setInfo"
 public let pwgImagesSetInfoBytes: Int64 = 610
 
-// MARK: Piwigo JSON Structure
+// MARK: Piwigo JSON Structures
 public struct ImagesSetInfoJSON: Decodable {
 
     public var status: String?

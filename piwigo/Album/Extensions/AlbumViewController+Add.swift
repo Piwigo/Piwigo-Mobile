@@ -2,11 +2,12 @@
 //  AlbumViewController+Add.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 16/06/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension AlbumViewController
@@ -84,10 +85,10 @@ extension AlbumViewController
     func addCategory(withName albumName: String, andComment albumComment: String,
                      inParent parentId: Int32) {
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Create album
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             AlbumUtilities.create(withName: albumName, description: albumComment,
                                   status: "public", inParentWithId: parentId) { [self] newCatId in
                 // Album successfully created ▶ Add new album to cache and update parent albums
@@ -97,8 +98,8 @@ extension AlbumViewController
                 }
                 
                 // Hide HUD
-                updatePiwigoHUDwithSuccess() { [self] in
-                    hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                updateHUDwithSuccess() { [self] in
+                    hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Reset buttons
                         didCancelTapAddButton()
                     }
@@ -112,7 +113,7 @@ extension AlbumViewController
     }
     
     private func addCategoryError(_ error: NSError) {
-        self.hidePiwigoHUD() { [self] in
+        self.hideHUD() { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -170,3 +171,4 @@ extension AlbumViewController: UITextFieldDelegate
         return true
     }
 }
+

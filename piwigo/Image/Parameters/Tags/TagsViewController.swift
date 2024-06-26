@@ -129,7 +129,7 @@ class TagsViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
                 didFetchTagsWithError(error as Error)
@@ -206,7 +206,7 @@ class TagsViewController: UITableViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -412,7 +412,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Do not update items if the album is not presented.
-        if view.window == nil { return }
+        if #available(iOS 13, *), view.window == nil { return }
         
         // Any update to perform?
         if updateOperations.isEmpty || view.window == nil { return }

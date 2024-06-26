@@ -14,7 +14,7 @@ public extension PwgSession {
     func communityGetStatus(completion: @escaping () -> Void,
                             failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
-            NetworkUtilities.logger.notice("Get community status")
+            PwgSession.logger.notice("Get community status")
         }
         // Launch request
         postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],

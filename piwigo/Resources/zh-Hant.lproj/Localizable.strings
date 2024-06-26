@@ -115,6 +115,7 @@
 
 "loginError_title" = "登入失敗";
 "loginError_message" = "帳號密碼無法於提供的網址登入";
+"loginError_resetPwd" = "您想從網路介面重設密碼嗎？";
 "loginEmptyServer_title" = "請輸入網址";
 "loginEmptyServer_message" = "請選擇連線方式並且輸入Piwigo網址以繼續。";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "你的最愛";
 
 // Albums sort
+"categorySort_sort" = "排序圖片依...";
+"categorySort_default" = "預設";
+"categorySort_name" = "圖片標題";
 "categorySort_nameAscending" = "照片標題，A → Z";
 "categorySort_nameDescending" = "照片標題，Z → A";
+"categorySort_fileName" = "檔案名稱";
 "categorySort_fileNameAscending" = "檔名，A → Z";
 "categorySort_fileNameDescending" = "檔名，Z → A";
+"categorySort_dateCreated" = "建立日期";
 "categorySort_dateCreatedDescending" = "建立日期，新 → 舊";
 "categorySort_dateCreatedAscending" = "建立日期，舊 → 新";
+"categorySort_datePosted" = "發表日期";
 "categorySort_datePostedDescending" = "發布日期，新 → 舊";
 "categorySort_datePostedAscending" = "發布日期，舊 → 新";
+"categorySort_ratingScore" = "評分";
 "categorySort_ratingScoreDescending" = "評分，高 → 低";
 "categorySort_ratingScoreAscending" = "評分，低 → 高";
+"categorySort_visits" = "訪問次數";
 "categorySort_visitsDescending" = "觀看次數，高 → 低";
 "categorySort_visitsAscending" = "觀看次數，低 → 高";
 "categorySort_manual" = "手動排序";
+"categorySort_randomly" = "隨機";
 "categorySort_random" = "隨機排序";
-
+"categorySort_id" = "識別碼";
+"categorySort_idDescending" = "識別碼, 9 → 1";
+"categorySort_idAscending" = "識別碼, 1 → 9";
 "categorySort_videosOnly" = "只有影片";
 "categorySort_imagesOnly" = "只有照片";
+
+"categoryView_options" = "查看選項";
+"categoryGroup_group" = "圖像分組依據...";
 
 // Album selection
 "categorySelection_title" = "相簿";
@@ -307,10 +322,11 @@
 "noImages" = "沒有照片";
 "pullToRefresh" = "重新整理照片";
 "andMore" = " & 更多";
-"Months" = "月";
-"Weeks" = "周";
-"Days" = "日";
 "Date" = "日期";
+"None" = "沒有任何";
+"Day" = "天";
+"Week" = "星期";
+"Month" = "月";
 
 // Errors
 "albumPhotoError_title" = "取得相簿照片錯誤";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "無法將此照片設為最愛。";
 "imageFavoritesRemoveError_message" = "無法從最愛移除此照片。";
+
+// Image rotate
+"rotateImage_rotate" = "旋轉90°…";
+"rotateImage_left" = "逆時針";
+"rotateImage_right" = "順時針";
+"rotateSingleImageHUD_rotating" = "正在旋轉圖片...";
+"rotateSeveralImageHUD_rotating" = "正在旋轉多張圖片...";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "旋轉失敗";
+"rotateImageFail_plugin" = "“rotateImage”外掛程式未啟用。";
+"rotateImageFail_message" = "圖片無法被旋轉";
 
 // Image delete
 "deleteImage_delete" = "刪除";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
-"whatsNew_title1" = "新手勢";
-"whatsNew_desc1" = "在觀看照片或影片時向下滑或縮小以回到相簿。";
-"whatsNew_title2" = "子母畫面支援";
-"whatsNew_desc2" = "在使用其他應用程式時觀看儲存在Piwigo的影片。";
+"whatsNew_title1" = "集體照";
+"whatsNew_desc1" = "按天、週或月。";
+"whatsNew_title2" = "旋轉照片";
+"whatsNew_desc2" = "修復方向問題（需要“rotateImage”插件）。";
 "whatsNew_continue" = "繼續";

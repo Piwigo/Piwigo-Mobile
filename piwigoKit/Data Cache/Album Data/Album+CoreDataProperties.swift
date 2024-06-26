@@ -24,6 +24,7 @@ extension Album {
     @NSManaged public var dateGetImages: TimeInterval
     @NSManaged public var globalRank: String
     @NSManaged public var name: String
+    @NSManaged public var imageSort: String
     @NSManaged public var nbImages: Int64
     @NSManaged public var nbSubAlbums: Int32
     @NSManaged public var parentId: Int32

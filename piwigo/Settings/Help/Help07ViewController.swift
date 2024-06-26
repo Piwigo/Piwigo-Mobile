@@ -21,38 +21,44 @@ class Help07ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise mutable attributed strings
+        // Initialisation
+        let hasLargeWidth = view.bounds.size.width > 320.0
+        let titleFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17, weight: .bold) : .systemFont(ofSize: 13, weight: .bold)
+        let textFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17) : .systemFont(ofSize: 13)
+        let noteFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 13) : .systemFont(ofSize: 10)
         let legendTopAttributedString = NSMutableAttributedString(string: "")
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = "\(NSLocalizedString("help07_header", comment: "Auto-Uploading"))\n"
+        let titleString = NSLocalizedString("help07_header", comment: "Auto-Uploading") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        let titleFont = view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
 
         // Comment below title
-        var textString = "\(NSLocalizedString("help02_text3", comment: "(requires the uploadAsync extension or Piwigo 11)"))\n"
-        var textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 13) : UIFont.systemFont(ofSize: 10), range: NSRange(location: 0, length: textString.count))
-        legendTopAttributedString.append(textAttributedString)
+        let noteString = NSLocalizedString("help02_text3", comment: "(requires the uploadAsync extension or Piwigo 11)") + "\n"
+        let noteAttributedString = NSMutableAttributedString(string: noteString)
+        let noteRange = NSRange(location: 0, length: noteString.count)
+        noteAttributedString.addAttribute(.font, value: noteFont, range: noteRange)
+        legendTopAttributedString.append(noteAttributedString)
 
         // Text of legend above images
-        textString = NSLocalizedString("help07_text", comment: "Select albums in Piwigo and create automations in Shortcuts.")
-        textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
-        legendTopAttributedString.append(textAttributedString)
+        let aboveString = NSLocalizedString("help07_text", comment: "Select albums in Piwigo and create automations in Shortcuts.")
+        let aboveAttributedString = NSMutableAttributedString(string: aboveString)
+        let aboveRange = NSRange(location: 0, length: aboveString.count)
+        aboveAttributedString.addAttribute(.font, value: textFont, range: aboveRange)
+        legendTopAttributedString.append(aboveAttributedString)
 
         // Set legend at top of screen
         legendTop.attributedText = legendTopAttributedString
 
         // Text of legend between images
-        textString = NSLocalizedString("help02_text2", comment: "Plug the device to its charger and let iOS launch the uploads whenever appropriate.")
-        textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
-        legendBotAttributedString.append(textAttributedString)
+        let betweenString = NSLocalizedString("help02_text2", comment: "Plug the device to its charger and let iOS…")
+        let betweenAttributedString = NSMutableAttributedString(string: betweenString)
+        let betweenRange = NSRange(location: 0, length: betweenString.count)
+        betweenAttributedString.addAttribute(.font, value: textFont, range: betweenRange)
+        legendBotAttributedString.append(betweenAttributedString)
 
         // Set top image view
         guard let topImageUrl = Bundle.main.url(forResource: "help07-top", withExtension: "png") else {
@@ -88,7 +94,7 @@ class Help07ViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {

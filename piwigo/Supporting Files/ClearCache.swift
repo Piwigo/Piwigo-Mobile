@@ -88,7 +88,6 @@ class ClearCache: NSObject {
                     
                     // Present login view in the remaining scene
                     if let window = (deviceScenes.first?.delegate as? SceneDelegate)?.window {
-                        AppVars.shared.isLoggingOut = true
                         appDelegate?.loadLoginView(in: window)
                     }
                 } else {
@@ -133,6 +132,9 @@ class ClearCache: NSObject {
     }
     
     static func cancelTasks(completion: @escaping () -> Void) {
+        // Stop upload manager
+        UploadManager.shared.isPaused = true
+        
         // Cancel upload tasks, then other tasks
         UploadManager.shared.bckgSession.getAllTasks { tasks in
             tasks.forEach({$0.cancel()})
@@ -147,10 +149,7 @@ class ClearCache: NSObject {
                 // Cancel other tasks
                 PwgSession.shared.dataSession.getAllTasks { tasks in
                     tasks.forEach({$0.cancel()})
-                    ImageSession.shared.dataSession.getAllTasks { tasks in
-                        tasks.forEach({$0.cancel()})
-                        completion()
-                    }
+                    completion()
                 }
             }
         }

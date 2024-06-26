@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+    <entity name="Album" representedClassName=".Album" syncable="YES">
+        <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" customClassName=".NSAttributedString"/>
+        <attribute name="dateGetImages" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="dateLast" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="globalRank" attributeType="String" defaultValueString=""/>
+        <attribute name="imageSort" attributeType="String" defaultValueString=""/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="nbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="nbSubAlbums" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="parentId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pwgID" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="query" attributeType="String" defaultValueString=""/>
+        <attribute name="thumbnailId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thumbnailUrl" optional="YES" attributeType="Transformable" valueTransformerName="RelativeURLValueTransformer" customClassName=".NSURL"/>
+        <attribute name="totalNbImages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="upperIds" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int&gt;"/>
+        <attribute name="uuid" attributeType="String" defaultValueString=""/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="albums" inverseEntity="Image"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="albums" inverseEntity="User"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="uuid"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Image" representedClassName=".Image" syncable="YES">
+        <attribute name="author" attributeType="String" defaultValueString=""/>
+        <attribute name="comment" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
+        <attribute name="dateCreated" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
+        <attribute name="dateGetInfos" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="datePosted" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
+        <attribute name="fileName" attributeType="String" defaultValueString=""/>
+        <attribute name="fileSize" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fullRes" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="isVideo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="md5sum" attributeType="String" defaultValueString=""/>
+        <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pwgID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rankManual" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
+        <attribute name="rankRandom" attributeType="Integer 64" defaultValueString="-9223372036854775808" usesScalarValueType="YES"/>
+        <attribute name="ratingScore" attributeType="Float" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="sectionDayCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionDayPosted" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionMonthCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionMonthPosted" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionWeekCreated" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="sectionWeekPosted" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="Transformable" valueTransformerName="DescriptionValueTransformer" defaultValueString="" customClassName=".NSAttributedString"/>
+        <attribute name="titleStr" attributeType="String" defaultValueString=""/>
+        <attribute name="uuid" attributeType="String" defaultValueString=""/>
+        <attribute name="visits" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="albums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Album" inverseName="images" inverseEntity="Album"/>
+        <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="images" inverseEntity="Server"/>
+        <relationship name="sizes" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Sizes" inverseName="image" inverseEntity="Sizes"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="images" inverseEntity="Tag"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="images" inverseEntity="User"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="uuid"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Location" representedClassName=".Location" syncable="YES">
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="placeName" attributeType="String" defaultValueString=""/>
+        <attribute name="radius" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="streetName" attributeType="String" defaultValueString=""/>
+    </entity>
+    <entity name="Server" representedClassName=".Server" syncable="YES">
+        <attribute name="fileTypes" attributeType="String" defaultValueString="jpg,jpeg,png,gif"/>
+        <attribute name="isDemo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="path" attributeType="String" minValueString="0" defaultValueString=""/>
+        <attribute name="uuid" attributeType="String" defaultValueString=""/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Image" inverseName="server" inverseEntity="Image"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Tag" inverseName="server" inverseEntity="Tag"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="User" inverseName="server" inverseEntity="User"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="uuid"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Sizes" representedClassName=".Sizes" syncable="YES" codeGenerationType="class">
+        <attribute name="large" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="medium" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="small" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="square" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="thumb" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="xlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="xsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="xxlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="xxsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="sizes" inverseEntity="Image"/>
+    </entity>
+    <entity name="Tag" representedClassName=".Tag" syncable="YES">
+        <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="YES"/>
+        <attribute name="numberOfImagesUnderTag" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="tagId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="tagName" attributeType="String" defaultValueString=""/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="tags" inverseEntity="Image"/>
+        <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="tags" inverseEntity="Server"/>
+        <relationship name="uploads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Upload" inverseName="tags" inverseEntity="Upload"/>
+    </entity>
+    <entity name="Upload" representedClassName=".Upload" syncable="YES">
+        <attribute name="author" attributeType="String" defaultValueString=""/>
+        <attribute name="category" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="comment" attributeType="String" defaultValueString=""/>
+        <attribute name="compressImageOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="creationDate" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="defaultPrefix" attributeType="String" defaultValueString=""/>
+        <attribute name="deleteImageAfterUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="fileName" attributeType="String" defaultValueString=""/>
+        <attribute name="imageId" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="imageName" attributeType="String" defaultValueString=""/>
+        <attribute name="isVideo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="localIdentifier" attributeType="String"/>
+        <attribute name="markedForAutoUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="md5Sum" attributeType="String" defaultValueString=""/>
+        <attribute name="mimeType" attributeType="String" defaultValueString=""/>
+        <attribute name="photoMaxSize" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="98" usesScalarValueType="YES"/>
+        <attribute name="prefixFileNameBeforeUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="requestDate" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="requestError" attributeType="String" defaultValueString=""/>
+        <attribute name="requestSectionKey" attributeType="String" defaultValueString=""/>
+        <attribute name="requestState" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="resizeImageOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="stripGPSdataOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="videoMaxSize" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="uploads" inverseEntity="Tag"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="uploads" inverseEntity="User"/>
+    </entity>
+    <entity name="User" representedClassName=".User" syncable="YES">
+        <attribute name="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="lastUsed" attributeType="Date" defaultDateTimeInterval="-3600" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="status" attributeType="String" defaultValueString="guest"/>
+        <attribute name="uploadRights" attributeType="String" defaultValueString="" customClassName=".Set&lt;Int32&gt;"/>
+        <attribute name="username" attributeType="String" defaultValueString=""/>
+        <relationship name="albums" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Album" inverseName="user" inverseEntity="Album"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Image" inverseName="users" inverseEntity="Image"/>
+        <relationship name="server" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Server" inverseName="users" inverseEntity="Server"/>
+        <relationship name="uploads" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Upload" inverseName="user" inverseEntity="Upload"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint/>
+        </uniquenessConstraints>
+    </entity>
+</model>

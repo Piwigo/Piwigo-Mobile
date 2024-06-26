@@ -239,20 +239,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configure(window: UIWindow?, session: UISceneSession, with activity: NSUserActivity) -> Bool {
-        var succeeded = false
-        
         // Check the user activity type to know which part of the app to restore.
         if activity.activityType == ActivityType.album.rawValue {
             // The activity type is for restoring AlbumViewController.
-            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                  let window = window
+            else { return false }
             appDelegate.loadNavigation(in: window)
-            succeeded = true
+            return true
         }
-        else {
-            // The incoming userActivity is not recognizable here.
-        }
-        
-        return succeeded
+
+        // The incoming userActivity is not recognizable here.
+        return false
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -460,34 +458,16 @@ extension SceneDelegate: AppLockDelegate {
 
         // Should we log in?
         if let rootVC = window?.rootViewController,
-            let child = rootVC.children.first, child is LoginViewController {
-            // Is user logging out?
-            if AppVars.shared.isLoggingOut {
-                return
-            }
-            
-            // Look for credentials if server address provided
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
-            var password = ""
-
-            // Look for paswword in Keychain if server address and username are provided
-            if service.isEmpty == false, username.isEmpty == false {
-                password = KeychainUtilities.password(forService: service, account: username)
-            }
-
-            // Login?
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-               service.isEmpty == false || ((username.isEmpty == false) && (password.isEmpty == false)) {
-                appDelegate.loginVC.launchLogin()
-            }
+           let child = rootVC.children.first, child is LoginViewController {
             return
         }
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
         UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.resumeAll()
+            if UploadManager.shared.isPaused {
+                UploadManager.shared.resumeAll()
+            }
         }
     }
 }

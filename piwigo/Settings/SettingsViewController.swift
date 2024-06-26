@@ -55,6 +55,19 @@ class SettingsViewController: UIViewController {
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
+    // The image sort type is returned with album data since Piwigo 14.0.
+    lazy var defaultSortUnknown: Bool = NetworkVars.pwgVersion
+        .compare("14.0", options: .numeric) == .orderedAscending
+    
+    // Present image title option on iOS 12.0 - 13.x
+    lazy var showTitleOption: Bool = {
+        if #available(iOS 14, *) {
+            return false
+        } else {
+            return true
+        }
+    }()
+    
     // For displaying cache sizes
     var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
         didSet {
@@ -136,7 +149,7 @@ class SettingsViewController: UIViewController {
             // Update server statistics if possible
             if user.hasAdminRights {
                 // Check session before collecting server statistics
-                NetworkUtilities.checkSession(ofUser: self.user) {
+                PwgSession.checkSession(ofUser: self.user) {
                     // Collect stats from server and store them in cache
                     PwgSession.shared.getInfos()
                 } failure: { _ in
@@ -232,11 +245,11 @@ class SettingsViewController: UIViewController {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
-                                               name: .pwgAutoUploadChanged, object: nil)
+                                               name: Notification.Name.pwgAutoUploadChanged, object: nil)
         
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),

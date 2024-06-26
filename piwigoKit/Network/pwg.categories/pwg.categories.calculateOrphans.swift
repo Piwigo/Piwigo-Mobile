@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.categories.calculateOrphans
 public let pwgCategoriesCalcOrphans = "format=json&method=pwg.categories.calculateOrphans"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesCalcOrphansJSON: Decodable {
 
     public var status: String?
@@ -73,8 +73,6 @@ public struct CategoriesCalcOrphansJSON: Decodable {
     }
 }
 
-
-// MARK: - Result
 public struct CategoriesCalcOrphans: Decodable {
     public let nbImagesAssociatedOutside,
                nbImagesBecomingOrphan,

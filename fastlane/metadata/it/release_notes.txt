@@ -1,2 +1,4 @@
-• Richiede l'aggiornamento del server Piwigo se necessario
+• Adotta opzioni di ordinamento foto album
+• Aggiunge opzioni di ordinamento foto al volo
+• Aggiunge la rotazione delle foto caricate (richiede il plugin rotateimage)
 • Correzioni di bug

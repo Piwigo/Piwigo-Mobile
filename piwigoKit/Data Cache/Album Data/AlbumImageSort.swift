@@ -9,6 +9,23 @@
 import Foundation
 
 // MARK: - Image Sort Options
+public enum pwgImageAttr: String {
+    case identifier = "id"
+    case rank = "rank"
+    case title = "name"
+    case fileName = "file"
+    case dateCreated = "date_creation"
+    case datePosted = "date_available"
+    case rating = "rating_score"
+    case visits = "hits"
+}
+
+public enum pwgImageOrder: String {
+    case ascending = "asc"
+    case descending = "desc"
+    case random = "random"
+}
+
 public enum pwgImageSort: Int16, CaseIterable {
     case nameAscending = 0              // Photo title, A → Z
     case nameDescending                 // Photo title, Z → A
@@ -28,57 +45,92 @@ public enum pwgImageSort: Int16, CaseIterable {
     case visitsDescending               // Visits, high → low
     case visitsAscending                // Visits, low → high
         
-    case manual                         // Manual order
+    case rankAscending                  // Manual order
     case random                         // Random order
+    
+    case idAscending                    // Identifier, 1 → 9
+    case idDescending                   // Identifier, 9 → 1
+    
+    case albumDefault                   // Returned by Piwigo 14+
 }
 
 extension pwgImageSort {
     public var param: String {
-        let pwgImageOrderFileName = "file"
-        let pwgImageOrderName = "name"
-        let pwgImageOrderVisits = "hit"
-        let pwgImageOrderRating = "rating_score"
-        let pwgImageOrderDateCreated = "date_creation"
-        let pwgImageOrderDatePosted = "date_available"
-        let pwgImageOrderRandom = "random"
-        let pwgImageOrderAscending = "asc"
-        let pwgImageOrderDescending = "desc"
-
         switch self {
         case .nameAscending:            // Photo title, A → Z
-            return String(format: "%@ %@", pwgImageOrderName, pwgImageOrderAscending)
+            return String(format: "%@ %@, %@ %@, %@ %@",
+                          pwgImageAttr.title.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.descending.rawValue)
         case .nameDescending:           // Photo title, Z → A
-            return String(format: "%@ %@", pwgImageOrderName, pwgImageOrderDescending)
+            return String(format: "%@ %@, %@ %@, %@ %@",
+                          pwgImageAttr.title.rawValue, pwgImageOrder.descending.rawValue,
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.ascending.rawValue)
         
         case .dateCreatedDescending:    // Date created, new → old
-            return String(format: "%@ %@", pwgImageOrderDateCreated, pwgImageOrderDescending)
+            return String(format: "%@ %@, %@ %@, %@ %@", 
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.descending.rawValue,
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.descending.rawValue)
         case .dateCreatedAscending:     // Date created, old → new
-            return String(format: "%@ %@", pwgImageOrderDateCreated, pwgImageOrderAscending)
-            
+            return String(format: "%@ %@, %@ %@, %@ %@", 
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.ascending.rawValue)
+
         case .datePostedDescending:     // Date posted, old → new
-            return String(format: "%@ %@", pwgImageOrderDatePosted, pwgImageOrderDescending)
+            return String(format: "%@ %@, %@ %@, %@ %@", 
+                          pwgImageAttr.datePosted.rawValue, pwgImageOrder.descending.rawValue,
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.ascending.rawValue)
         case .datePostedAscending:      // Date posted, new → old
-            return String(format: "%@ %@", pwgImageOrderDatePosted, pwgImageOrderAscending)
-            
+            return String(format: "%@ %@, %@ %@, %@ %@", 
+                          pwgImageAttr.datePosted.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.descending.rawValue)
+
         case .fileNameAscending:        // File name, A → Z
-            return String(format: "%@ %@", pwgImageOrderFileName, pwgImageOrderAscending)
+            return String(format: "%@ %@, %@ %@",
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.ascending.rawValue)
         case .fileNameDescending:       // File name, Z → A
-            return String(format: "%@ %@", pwgImageOrderFileName, pwgImageOrderDescending)
+            return String(format: "%@ %@, %@ %@",
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.descending.rawValue,
+                          pwgImageAttr.identifier.rawValue, pwgImageOrder.descending.rawValue)
             
         case .ratingScoreDescending:    // Rating score, high → low
-            return String(format: "%@ %@", pwgImageOrderRating, pwgImageOrderDescending)
+            return String(format: "%@ %@, %@ %@", 
+                          pwgImageAttr.rating.rawValue, pwgImageOrder.descending.rawValue,
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue)
         case .ratingScoreAscending:     // Rating score, low → high
-            return String(format: "%@ %@", pwgImageOrderRating, pwgImageOrderAscending)
+            return String(format: "%@ %@, %@ %@", 
+                          pwgImageAttr.rating.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue)
 
-        case .visitsAscending:        // Visits, high → low
-            return String(format: "%@ %@", pwgImageOrderVisits, pwgImageOrderAscending)
-        case .visitsDescending:       // Visits, low → high
-            return String(format: "%@ %@", pwgImageOrderVisits, pwgImageOrderDescending)
+        case .visitsAscending:          // Visits, low → high
+            return String(format: "%@ %@, %@ %@, %@ %@",
+                          pwgImageAttr.visits.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue)
+        case .visitsDescending:         // Visits, high → low
+            return String(format: "%@ %@, %@ %@, %@ %@",
+                          pwgImageAttr.visits.rawValue, pwgImageOrder.descending.rawValue,
+                          pwgImageAttr.dateCreated.rawValue, pwgImageOrder.ascending.rawValue,
+                          pwgImageAttr.fileName.rawValue, pwgImageOrder.ascending.rawValue)
 
-        case .manual:               // Manual order
-            return pwgImageOrderAscending
+        case .rankAscending:            // Manual order
+            return String(format: "%@ %@", pwgImageAttr.rank.rawValue, pwgImageOrder.ascending.rawValue)
         case .random:               // Random order
-            return pwgImageOrderRandom
+            return pwgImageOrder.random.rawValue
+
+        case .idAscending:              // Identifier, 1 → 9
+            return String(format: "%@ %@", pwgImageAttr.identifier.rawValue, pwgImageOrder.ascending.rawValue)
+        case .idDescending:             // Identifier, 9 → 1
+            return String(format: "%@ %@", pwgImageAttr.identifier.rawValue, pwgImageOrder.descending.rawValue)
+            
+        case .albumDefault:             // Use album.imageSort attribute
+            return ""
         }
     }
     
@@ -114,10 +166,18 @@ extension pwgImageSort {
         case .visitsAscending:
             return NSLocalizedString("categorySort_visitsAscending", comment: "Visits, low → high")
         
-        case .manual:
+        case .rankAscending:
             return NSLocalizedString("categorySort_manual", comment: "Manual Order")
         case .random:
             return NSLocalizedString("categorySort_random", comment: "Random Order")
+            
+        case .idDescending:
+            return NSLocalizedString("categorySort_idDescending", comment: "Identifier, 9 → 1")
+        case .idAscending:
+            return NSLocalizedString("categorySort_idAscending", comment: "Identifier, 1 → 9")
+            
+        case .albumDefault:
+            return NSLocalizedString("categorySort_default", comment: "Default")
         }
     }
 }

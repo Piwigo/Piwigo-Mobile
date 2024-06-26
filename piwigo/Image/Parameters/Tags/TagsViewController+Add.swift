@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension TagsViewController
 {
@@ -58,18 +59,18 @@ extension TagsViewController
         }
         
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
+        showHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
 
         // Add new tag
         DispatchQueue.global(qos: .userInteractive).async {
             self.tagProvider.addTag(with: tagName, completionHandler: { error in
                 guard let error = error else {
-                    self.updatePiwigoHUDwithSuccess {
-                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
+                    self.updateHUDwithSuccess {
+                        self.hideHUD(afterDelay: pwgDelayHUD, completion: {})
                     }
                     return
                 }
-                self.hidePiwigoHUD {
+                self.hideHUD {
                     self.dismissPiwigoError(
                         withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
                         message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),

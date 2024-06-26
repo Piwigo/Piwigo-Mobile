@@ -1,2 +1,4 @@
-• Anmodninger om opdatering af Piwigo server om nødvendigt
+• Vedtager album foto sortering muligheder
+• Tilføjer on-the-fly foto sortering muligheder
+• Tilføjer rotation af uploadede fotos (kræver rotateImage plugin)
 • Fejlrettelser

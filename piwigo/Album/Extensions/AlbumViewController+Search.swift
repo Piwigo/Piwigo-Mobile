@@ -2,11 +2,12 @@
 //  AlbumViewController+Search.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 29/05/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 04/05/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 // MARK: - Search Images
@@ -29,19 +30,16 @@ extension AlbumViewController
         navigationItem.searchController = searchController
 
         // Hide the search bar when scrolling
-        navigationItem.hidesSearchBarWhenScrolling = true
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
 }
+
 
 // MARK: - UISearchControllerDelegate
 extension AlbumViewController: UISearchControllerDelegate
 {
-//    func presentSearchController(_ searchController: UISearchController) {
-//        debugPrint("presentSearchController…")
-//    }
-    
     func willPresentSearchController(_ searchController: UISearchController) {
-        //        debugPrint("willPresentSearchController…")
+//        debugPrint("willPresentSearchController…")
         // Switch to Search album
         categoryId = pwgSmartAlbum.search.rawValue
         
@@ -49,25 +47,28 @@ extension AlbumViewController: UISearchControllerDelegate
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
         resetSearchAlbum(withQuery: "")
         
-        // Update albums
-        let substitute: [String : Any] = ["catId" : categoryId]
-        fetchAlbumsRequest.predicate = albumPredicate.withSubstitutionVariables(substitute)
-        try? albums.performFetch()
-        
-        // Update images
-        fetchImagesRequest.predicate = imagePredicate.withSubstitutionVariables(substitute)
-        try? images.performFetch()
+        // Update albums and images
+        resetPredicatesAndPerformFetch()
         
         // Reload collection
-        imagesCollection?.reloadData()
+        collectionView?.reloadData()
         
         // Hide buttons and toolbar
-        updateButtonsInPreviewMode()
+        hideButtons()
+        initBarsInPreviewMode()
         navigationController?.setToolbarHidden(true, animated: true)
     }
-        
+    
+    func didPresentSearchController(_ searchController: UISearchController) {
+        debugPrint("didPresentSearchController")
+        searchController.becomeFirstResponder()
+    }
+    
     func willDismissSearchController(_ searchController: UISearchController) {
-        //        debugPrint("willDismissSearchController…")
+//        debugPrint("willDismissSearchController…")
+        // Deselect photos if needed
+        cancelSelect()
+
         // Back to default album
         categoryId = AlbumVars.shared.defaultCategory
         
@@ -79,7 +80,7 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
-        debugPrint("didDismissSearchController…")
+//        debugPrint("didDismissSearchController…")
         // Update albumData
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
         
@@ -87,27 +88,24 @@ extension AlbumViewController: UISearchControllerDelegate
         resetPredicatesAndPerformFetch()
         
         // Reload collection
-        imagesCollection?.reloadData()
+        collectionView?.reloadData()
         
-        // Show buttons
-        updateButtonsInPreviewMode()
+        // Show buttons and navigation bar
+        updateButtons()
+        initBarsInPreviewMode()
     }
     
     func resetSearchAlbum(withQuery query: String) {
         // Reset search album
         albumData.query = query
-        if query.isEmpty {
-            albumData.nbImages = Int64.zero
-            albumData.totalNbImages = Int64.zero
-            if let images = albumData.images {
-                albumData.removeFromImages(images)
-            }
-            // Store changes
-            try? mainContext.save()
-        } else {
-            albumData.nbImages = Int64.min
-            albumData.totalNbImages = Int64.min
+        albumData.nbImages = query.isEmpty ? Int64.zero : Int64.min
+        albumData.totalNbImages = query.isEmpty ? Int64.zero : Int64.min
+        
+        // Remove images
+        if let images = albumData.images {
+            albumData.removeFromImages(images)
         }
+        try? mainContext.save()
     }
 }
 
@@ -154,7 +152,7 @@ extension AlbumViewController: UISearchBarDelegate
                 self.updateNberOfImagesInFooter()
                 
                 // Determine if the session is active before fetching
-                NetworkUtilities.checkSession(ofUser: self.user) {
+                PwgSession.checkSession(ofUser: self.user) {
                     self.startFetchingAlbumAndImages(withHUD: true)
                 } failure: { error in
                     // Session logout required?

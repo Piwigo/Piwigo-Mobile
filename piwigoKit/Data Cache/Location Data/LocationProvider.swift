@@ -26,12 +26,12 @@ public class LocationProvider: NSObject {
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue
         queue.qualityOfService = .background    // fetch location names in the background
         // Initialise locations in queue
-        queuedLocations = []
+        queuedLocations = Set<LocationProperties>()
     }
     
     private var geocoder = CLGeocoder()
     private var queue = OperationQueue()
-    private var queuedLocations: [LocationProperties]
+    private var queuedLocations: Set<LocationProperties>
 
     
     // MARK: - Core Data object context
@@ -50,16 +50,15 @@ public class LocationProvider: NSObject {
      and notify views when the new place name is available.
      The requests are stored in a queue and performed one after the other by a shared instance.
     */
-    private func fetchPlaceName(at location: LocationProperties, completionHandler: @escaping (Error?) -> Void) {
+    private func fetchPlaceName(at location: LocationProperties, 
+                                completionHandler: @escaping (Error?) -> Void) {
         
-        // Add Geocoder request
+        // Add Geocoder request in queue
         let operation = BlockOperation(block: {
             let semaphore = DispatchSemaphore(value: 0)
 
-            // Initialise
-            let latitude = location.coordinate!.latitude as CLLocationDistance
-            let longitude = location.coordinate!.longitude as CLLocationDistance
-            let newLocation = CLLocation(latitude: latitude, longitude: longitude)
+            // Initialisation
+            let newLocation = CLLocation(latitude: location.latitude!, longitude: location.longitude!)
 
             // Request place name
             self.geocoder.reverseGeocodeLocation(newLocation, completionHandler: { placemarks, error in
@@ -75,6 +74,7 @@ public class LocationProvider: NSObject {
                     let locality: String = placeMark?.locality ?? ""
                     let subLocality: String = placeMark?.subLocality ?? ""
                     let thoroughfare: String = placeMark?.thoroughfare ?? ""
+                    let subThoroughfare: String = placeMark?.subThoroughfare ?? ""
                     let inlandWater: String = placeMark?.inlandWater ?? ""
                     let ocean: String = placeMark?.ocean ?? ""
 
@@ -99,13 +99,16 @@ public class LocationProvider: NSObject {
                     // => Display thoroughfare if available
                     else if thoroughfare.count != 0 {
                         placeName = thoroughfare
-                        if subLocality.count != 0 && subLocality != thoroughfare {
+                        if subThoroughfare.count != 0, subThoroughfare != thoroughfare {
+                            placeName = String(format: "%@ %@", subThoroughfare, thoroughfare)
+                        }
+                        if subLocality.count != 0, subLocality != thoroughfare {
                             streetName = subLocality
-                        } else if locality.count != 0 && locality != subLocality {
+                        } else if locality.count != 0, locality != subLocality {
                             streetName = locality
-                        } else if subAdministrativeArea.count != 0 && subAdministrativeArea != subLocality {
+                        } else if subAdministrativeArea.count != 0, subAdministrativeArea != subLocality {
                             streetName = subAdministrativeArea
-                        } else if administrativeArea.count != 0 && administrativeArea != subLocality{
+                        } else if administrativeArea.count != 0, administrativeArea != subLocality{
                             streetName = administrativeArea
                         } else if country.count != 0 {
                             streetName = country
@@ -114,11 +117,11 @@ public class LocationProvider: NSObject {
                     // => Display sublocality if available
                     else if subLocality.count != 0 {
                         placeName = subLocality
-                        if locality.count != 0 && locality != subLocality {
+                        if locality.count != 0, locality != subLocality {
                             streetName = locality
-                        } else if subAdministrativeArea.count != 0 && subAdministrativeArea != subLocality {
+                        } else if subAdministrativeArea.count != 0, subAdministrativeArea != subLocality {
                             streetName = subAdministrativeArea
-                        } else if administrativeArea.count != 0 && administrativeArea != subLocality{
+                        } else if administrativeArea.count != 0, administrativeArea != subLocality{
                             streetName = administrativeArea
                         } else if country.count != 0 {
                             streetName = country
@@ -127,9 +130,9 @@ public class LocationProvider: NSObject {
                     // => Display locality if available
                     else if locality.count != 0 {
                         placeName = locality
-                        if subAdministrativeArea.count != 0 && subAdministrativeArea != locality {
+                        if subAdministrativeArea.count != 0, subAdministrativeArea != locality {
                             streetName = subAdministrativeArea
-                        } else if administrativeArea.count != 0 && administrativeArea != locality{
+                        } else if administrativeArea.count != 0, administrativeArea != locality{
                             streetName = administrativeArea
                         } else if country.count != 0 {
                             streetName = country
@@ -138,7 +141,7 @@ public class LocationProvider: NSObject {
                     // Locality not available, use administrative info if possible
                     else if subAdministrativeArea.count != 0 {
                         placeName = subAdministrativeArea
-                        if administrativeArea.count != 0 && administrativeArea != subAdministrativeArea {
+                        if administrativeArea.count != 0, administrativeArea != subAdministrativeArea {
                             streetName = administrativeArea
                         } else if country.count != 0 {
                             streetName = country
@@ -158,17 +161,29 @@ public class LocationProvider: NSObject {
                     }
 
                     // Log placemarks[0]
-//                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""),inlandWater:\(inlandWater), ocean:\(ocean)\n")
+//                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""), inlandWater:\(inlandWater), ocean:\(ocean)\n")
 
                     DispatchQueue.global(qos: .background).async {
                         // Create a private queue context.
                         let taskContext = DataController.shared.newTaskContext()
                                 
                         // Add new location to CoreData store
-                        let newLocation = LocationProperties(coordinate: location.coordinate,
+                        let newLocation = LocationProperties(latitude: location.latitude,
+                                                             longitude: location.longitude,
                                                              radius: region.radius,
                                                              placeName: placeName, streetName: streetName)
-                        self.importOneLocation(newLocation, taskContext: taskContext)
+                        self.importOneLocation(newLocation, taskContext: taskContext) {
+                            // Remove location from queue
+                            self.queuedLocations.remove(location)
+                            // Update corresponding headers
+                            DispatchQueue.main.async {
+                                let userInfo = ["hash" : location.hashValue,
+                                                "placeName" : placeName,
+                                                "streetName" : streetName]
+                                NotificationCenter.default.post(name: Notification.Name.pwgPlaceNamesAvailable,
+                                                                object: nil, userInfo: userInfo)
+                            }
+                        }
                     }
                 } else {
                     // Did not return place names
@@ -190,14 +205,16 @@ public class LocationProvider: NSObject {
      and saving them to the persistent store, on a private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
     */
-    private func importOneLocation(_ locationData: LocationProperties, taskContext: NSManagedObjectContext) -> Void {
+    private func importOneLocation(_ locationData: LocationProperties, taskContext: NSManagedObjectContext,
+                                   completion: @escaping () -> Void) -> Void {
         
-        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // taskContext.performAndWait runs on a background queue
         // so it won’t block the main thread.
         taskContext.performAndWait {
             
             // Create a Location managed object on the private queue context.
-            guard let newLocation = NSEntityDescription.insertNewObject(forEntityName: "Location", into: taskContext) as? Location else {
+            guard let newLocation = NSEntityDescription.insertNewObject(forEntityName: "Location", into: taskContext) as? Location
+            else {
                 print(LocationError.creationError.localizedDescription)
                 return
             }
@@ -221,20 +238,16 @@ public class LocationProvider: NSObject {
                     try taskContext.save()
                 }
                 catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
+                    print("Error: \(error.localizedDescription)\nCould not save Core Data context.")
                     return
                 }
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 taskContext.reset()
-
-                // Remove location from queue
-                queuedLocations.removeAll { (item) -> Bool in
-                    item.coordinate?.latitude == locationData.coordinate?.latitude &&
-                        item.coordinate?.longitude == locationData.coordinate?.longitude &&
-                        item.radius == locationData.radius
-                }
             }
         }
+        
+        // Remove location from queue and update headers
+        completion()
     }
     
 
@@ -280,12 +293,17 @@ public class LocationProvider: NSObject {
      Routine returning the place name of a location
      This routine adds an operation fetching the place name if necessary
      */
-    public func getPlaceName(for location: CLLocation) -> [String : String]? {
+    public func getPlaceName(for location: CLLocation,
+                             completion: @escaping (String, String) -> Void,
+                             pending: @escaping (Int) -> Void,
+                             failure: @escaping () -> Void) -> Void {
 
         // Check coordinates
-        if !CLLocationCoordinate2DIsValid(location.coordinate) {
+        if !CLLocationCoordinate2DIsValid(location.coordinate) ||
+            ((location.coordinate.latitude == -180.0) && (location.coordinate.longitude == -180.0)) {
             // Invalid location -> No place name
-            return nil
+            failure()
+            return
         }
 
         // Create a fetch request for the location
@@ -316,7 +334,6 @@ public class LocationProvider: NSObject {
         let knownPlaceNames = controller.fetchedObjects ?? []
         
         // Loop over known places
-        var placeNames: [String: String] = .init(minimumCapacity: 2)
         for knownPlace: Location in knownPlaceNames {
             // Known location
             let knownLatitude = knownPlace.latitude
@@ -325,40 +342,37 @@ public class LocationProvider: NSObject {
 
             // Do we know the place of this location?
             if location.distance(from: knownLocation) <= knownPlace.radius {
-                placeNames["placeLabel"] = knownPlace.placeName
-                placeNames["dateLabel"] = knownPlace.streetName
-                return placeNames
+                completion(knownPlace.placeName, knownPlace.streetName)
+                return
             }
         }
         
         // Place names unknown —> Prepare fetch
-        let newLocation = LocationProperties(coordinate: location.coordinate,
+        let newLocation = LocationProperties(latitude: location.coordinate.latitude,
+                                             longitude: location.coordinate.longitude,
                                              radius: location.horizontalAccuracy,
                                              placeName: "", streetName: "")
         
         // Place names not in cache, but may be in queue
-        if queuedLocations.contains(where: { (item) -> Bool in
-            item.coordinate?.latitude == newLocation.coordinate?.latitude &&
-                item.coordinate?.longitude == newLocation.coordinate?.longitude &&
-                item.radius == newLocation.radius
-        }) {
-            return placeNames
+        if queuedLocations.contains(newLocation) {
+            pending(newLocation.hashValue)
+            return
         }
         
-        // Add operation to queue if possible
+        // Try to retrieve place names
         if queue.operationCount < pwgMaxNberOfLocationsToDecode {
             // Add location to queue
-            queuedLocations.append(newLocation)
+            queuedLocations.insert(newLocation)
             
-            // Fetch place names at location
+            // Fetch place names at location in serial queue
             fetchPlaceName(at: newLocation) { (error) in
-                if error == nil {
-                    print("=> location could not be requested")
-                }
+                debugPrint("=> location could not be requested: \(error?.localizedDescription ?? "Unknnown error")")
             }
+            pending(newLocation.hashValue)
+            return
         }
         
-        return placeNames
+        failure()
     }
     
     private func getDeltaLatitude(for latitude: CLLocationDegrees, radius: CLLocationDistance) -> CLLocationDegrees {
@@ -367,7 +381,7 @@ public class LocationProvider: NSObject {
         let num = a * (1.0 - e2)
         let den = pow(1.0 - e2 * pow(sin(latitude * Double.pi / 180.0),2), 1.5)
         deltaLat = deltaLat / num * den
-        return (deltaLat * 180.0 / Double.pi) as CLLocationDegrees
+        return abs(deltaLat * 180.0 / Double.pi) as CLLocationDegrees
     }
 
     private func getDeltaLongitude(for latitude: CLLocationDegrees, radius: CLLocationDistance) -> CLLocationDegrees {
@@ -376,31 +390,32 @@ public class LocationProvider: NSObject {
         let num = a * cos(latitude * Double.pi / 180.0)
         let den = pow(1.0 - e2 * pow(sin(latitude * Double.pi / 180.0),2), 0.5)
         deltaLong = deltaLong / num * den
-        return (deltaLong * 180.0 / Double.pi) as CLLocationDegrees
+        return abs(deltaLong * 180.0 / Double.pi) as CLLocationDegrees
     }
 
     /**
-     A fetched results controller to fetch Location records sorted by name.
+     A fetched results controller to fetch Location records sorted by coordinate and radius.
      */
-    public lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
-        
-        // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = Location.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Location.latitude), ascending: true),
-                                        NSSortDescriptor(key: #keyPath(Location.longitude), ascending: true)]
-
-        // Create a fetched results controller and set its fetch request, context, and delegate.
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: mainContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
-        
-        // Perform the fetch.
-        do {
-            try controller.performFetch()
-        } catch {
-            fatalError("Unresolved error \(error)")
-        }
-        
-        return controller
-    }()
+//    public lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
+//        
+//        // Create a fetch request for the Tag entity sorted by name.
+//        let fetchRequest = Location.fetchRequest()
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Location.latitude), ascending: true),
+//                                        NSSortDescriptor(key: #keyPath(Location.longitude), ascending: true),
+//                                        NSSortDescriptor(key: #keyPath(Location.radius), ascending: true)]
+//
+//        // Create a fetched results controller and set its fetch request, context, and delegate.
+//        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                            managedObjectContext: mainContext,
+//                                              sectionNameKeyPath: nil, cacheName: nil)
+//        
+//        // Perform the fetch.
+//        do {
+//            try controller.performFetch()
+//        } catch {
+//            fatalError("Unresolved error \(error)")
+//        }
+//        
+//        return controller
+//    }()
 }

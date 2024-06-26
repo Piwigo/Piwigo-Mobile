@@ -71,7 +71,7 @@ class ExternalDisplayViewController: UIViewController {
         
         // Pause download if needed
         if let imageURL = imageURL {
-            ImageSession.shared.pauseDownload(atURL: imageURL)
+            PwgSession.shared.pauseDownload(atURL: imageURL)
         }
 
         // Presents video if needed
@@ -118,9 +118,9 @@ class ExternalDisplayViewController: UIViewController {
             self.imageURL = imageURL
 
             // Image of right size for that display
-            ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
-                                         fromServer: serverID, fileSize: imageData.fileSize,
-                                         placeHolder: placeHolder) { fractionCompleted in
+            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
+                                       fromServer: serverID, fileSize: imageData.fileSize,
+                                       placeHolder: placeHolder) { fractionCompleted in
                 DispatchQueue.main.async {
                     self.progressView.progress = fractionCompleted
                 }

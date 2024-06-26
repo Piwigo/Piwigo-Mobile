@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-@available(iOS 14.0, *)
+@available(iOS 14, *)
 extension ImageViewController
 {
     // MARK: - Albums related Actions & Menus
@@ -31,66 +31,19 @@ extension ImageViewController
         }
     }
 
-    private func copyAction() -> UIAction {
-        // Copy image to album
-        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
-                              handler: { [unowned self] _ in
-            // Disable buttons during action
-            setEnableStateOfButtons(false)
-            // Present album selector for copying image
-            selectCategory(withAction: .copyImage)
-        })
-        action.accessibilityIdentifier = "Copy"
-        return action
-    }
-
-    private func moveAction() -> UIAction {
-        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-                              image: UIImage(systemName: "arrowshape.turn.up.right"),
-                              handler: { [unowned self] _ in
-            // Disable buttons during action
-            setEnableStateOfButtons(false)
-
-            // Present album selector for moving image
-            selectCategory(withAction: .moveImage)
-        })
-        action.accessibilityIdentifier = "Move"
-        return action
-    }
-
-    private func setAsThumbnailAction() -> UIAction {
-        let action = UIAction(title: NSLocalizedString("imageOptions_setAlbumImage",
-                                                       comment:"Set as Album Thumbnail"),
-                              image: UIImage(systemName: "rectangle.and.paperclip"),
-                              handler: { [unowned self] _ in
-            // Present album selector for setting album thumbnail
-            self.setAsAlbumImage()
-        })
-        action.accessibilityIdentifier = "SetThumbnail"
-        return action
-    }
-
 
     // MARK: - Images related Actions & Menus
+    /// - for rotating image (not video)
     /// - for editing image parameters
     func editMenu() -> UIMenu {
+        var children = [UIMenuElement]()
+        if imageData.isVideo == false {
+            children.append(rotateMenu())
+        }
+        children.append(editParamsAction())
         return UIMenu(title: "", image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.edit"),
                       options: .displayInline,
-                      children: [editParamsAction()])
-    }
-
-    private func editParamsAction() -> UIAction {
-        // Edit image parameters
-        let action = UIAction(title: NSLocalizedString("imageOptions_properties",
-                                                       comment: "Modify Information"),
-                              image: UIImage(systemName: "pencil"),
-                              handler: { _ in
-            // Edit image informations
-            self.editImage()
-        })
-        action.accessibilityIdentifier = "Edit Parameters"
-        return action
+                      children: children)
     }
 }

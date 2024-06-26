@@ -2,267 +2,146 @@
 //  AlbumViewController+Select.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 16/06/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 12/04/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: - Buttons in Selection Mode
-    func getSelectBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"), style: .plain, target: self, action: #selector(didTapSelect))
-        button.accessibilityIdentifier = "Select"
-        return button
-    }
-    
+    // MARK: - Cancel Buttons
     func getCancelBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         button.accessibilityIdentifier = "Cancel"
         return button
     }
     
-    func getMoveBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .reply, target: self,
-                               action: #selector(copyMoveSelection))
+    func getActionBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        button.accessibilityIdentifier = "Action"
+        return button
     }
     
-    func getDeleteBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .trash, target: self,
-                               action: #selector(deleteSelection))
-    }
-    
-    func getShareBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
-                                     action: #selector(shareSelection))
-        button.tintColor = UIColor.piwigoColorOrange()
+    func getEditBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
+        button.accessibilityIdentifier = "Edit"
         return button
     }
 
-    func initButtonsInSelectionMode() {
-        // Hide back, Settings, Upload and Home buttons
-        navigationItem.hidesBackButton = true
-        addButton.isHidden = true
-        homeAlbumButton.isHidden = true
-
-        // Favorites button depends on Piwigo server version, user role and image data
-        favoriteBarButton = getFavoriteBarButton()
-
-        // Button displayed in all circumstances
-        if #available(iOS 14, *) {
-            // Interface depends on device and orientation
-            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-
-            // User with admin or upload rights can do everything
-            if user.hasUploadRights(forCatID: categoryId) {
-                // The action button proposes:
-                /// - to copy or move images to other albums
-                /// - to set the image as album thumbnail
-                /// - to edit image parameters
-                let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                actionBarButton?.accessibilityIdentifier = "actions"
-
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
-
-                    // Remaining buttons in navigation toolbar
-                    /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
-                    /// They also disappear when coming back to portrait orientation.
-                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
-                                        favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                        deleteBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
-                } else {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
-
-                    // Hide toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            } else if favoriteBarButton != nil {
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    
-                    // No button on the right
-                    navigationItem.setRightBarButtonItems([], animated: true)
-                    
-                    // Remaining buttons in navigation toolbar
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
-                } else {
-                    // All buttons in navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
-                    
-                    // Hide navigation toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.userStatus != .guest {
-                // All buttons in navigation bar
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
-
-                // Hide navigation toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
-            else {
-                // Guest cannot share images
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([].compactMap { $0 }, animated: true)
-
-                // Hide navigation toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
+    
+    // MARK: - Edit/Rotate Images
+    /// - for selecting image sort options
+    @objc func didTapActionButton() {
+        let alert = UIAlertController(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
+                                      message: nil, preferredStyle: .actionSheet)
+        
+        // Cancel action
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                         style: .cancel, handler: { action in })
+        alert.addAction(cancelAction)
+        
+        // Rotate clockwise
+        var title = NSLocalizedString("rotateImage_right", comment: "Clockwise")
+        let rotateRightAction = UIAlertAction(title: title, style: .default) { [self] _ in
+            self.rotateImagesRight()
+        }
+        alert.addAction(rotateRightAction)
+        
+        // Rotate counterclockwise
+        title = NSLocalizedString("rotateImage_left", comment: "Counterclockwise")
+        let rotateLeftAction = UIAlertAction(title: title, style: .default) { [self] _ in
+            self.rotateImagesLeft()
+        }
+        alert.addAction(rotateLeftAction)
+        
+        // Present list of actions
+        alert.view.tintColor = .piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
-            // Interface depends on device and orientation
-            let orientation = UIApplication.shared.statusBarOrientation
-
-            // User with admin or upload rights can do everything
-            // WRONG =====> 'normal' user with upload access to the current category can edit images
-            // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-            if user.hasUploadRights(forCatID: categoryId) {
-                // The action button only proposes to edit image parameters
-                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
-                actionBarButton?.accessibilityIdentifier = "actions"
-
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
-
-                    // Remaining buttons in navigation toolbar
-                    /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
-                    /// They also disappear when coming back to portrait orientation.
-                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
-                                        moveBarButton, UIBarButtonItem.space(),
-                                        favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                        deleteBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
-                } else {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton, moveBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
-
-                    // Hide toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            } else if favoriteBarButton != nil {
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    
-                    // No button on the right
-                    navigationItem.setRightBarButtonItems([], animated: true)
-                    
-                    // Remaining buttons in navigation toolbar
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
-                } else {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    
-                    // All other buttons in navigation bar
-                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
-                    
-                    // Hide navigation toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.userStatus != .guest {
-                // Non-guest can only share images
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
-
-                // Hide toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
-            else {
-                // Guest cannot share images
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([].compactMap { $0 }, animated: true)
-
-                // Hide toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
         }
-
-        // Set initial status
-        updateButtonsInSelectionMode()
-    }
-
-    func updateButtonsInSelectionMode() {
-        let hasImagesSelected = !selectedImageIds.isEmpty
-        cancelBarButton.isEnabled = true
-
-        // User with admin or upload rights can do everything
-        // WRONG =====> 'normal' user with upload access to the current category can edit images
-        // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-        if user.hasUploadRights(forCatID: categoryId) {
-            actionBarButton?.isEnabled = hasImagesSelected
-            shareBarButton.isEnabled = hasImagesSelected
-            deleteBarButton.isEnabled = hasImagesSelected
-            favoriteBarButton?.isEnabled = hasImagesSelected
-            let areFavorites = selectedImageIds == selectedFavoriteIds
-            favoriteBarButton?.setFavoriteImage(for: areFavorites)
-            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
-
-            if #available(iOS 14, *) {
-                } else {
-                moveBarButton.isEnabled = hasImagesSelected
-            }
-        } else {
-            // Right side of navigation bar
-            /// — guests can share photo of high-resolution or not
-            /// — non-guest users can set favorites in addition
-            shareBarButton.isEnabled = hasImagesSelected
-            favoriteBarButton?.isEnabled = hasImagesSelected
-            let areFavorites = selectedImageIds == selectedFavoriteIds
-            favoriteBarButton?.setFavoriteImage(for: areFavorites)
-            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+        alert.popoverPresentationController?.barButtonItem = actionBarButton
+        present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
+}
 
-    // Buttons are disabled (greyed) when retrieving image data
-    // They are also disabled during an action
-    func setEnableStateOfButtons(_ state: Bool) {
-        cancelBarButton.isEnabled = state
-        actionBarButton?.isEnabled = state
-        deleteBarButton.isEnabled = state
-        moveBarButton.isEnabled = state
-        shareBarButton.isEnabled = state
-        favoriteBarButton?.isEnabled = state
+
+@available(iOS 14, *)
+extension AlbumViewController
+{
+    // MARK: - Select Menu
+    /// - for switching to the selection mode
+    func selectMenu() -> UIMenu {
+        let menuId = UIMenu.Identifier("org.piwigo.images.selectMode")
+        let menu = UIMenu(title: "", image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: [selectAction()])
+        return menu
     }
+    
+    private func selectAction() -> UIAction {
+        let actionId = UIAction.Identifier("org.piwigo.images.select")
+        let action = UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+                              image: UIImage(systemName: "checkmark.circle"),
+                              identifier: actionId, handler: { [self] action in
+            self.didTapSelect()
+        })
+        action.accessibilityIdentifier = "Select"
+        return action
+    }
+    
+    
+    // MARK: - Album Menu
+    /// - for copying images to another album
+    /// - for moving images to another album
+    func albumMenu() -> UIMenu {
+        let menuId = UIMenu.Identifier("org.piwigo.images.album")
+        let menu = UIMenu(title: "", image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: [imagesCopyAction(),
+                                     imagesMoveAction()].compactMap({$0}))
+        return menu
+    }
+    
+    
+    // MARK: - Images Menu
+    /// - for editing image parameters
+    func imagesMenu() -> UIMenu {
+        let menuId = UIMenu.Identifier("org.piwigo.images.edit")
+        let menu = UIMenu(title: "", image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: [rotateMenu(),
+                                     editParamsAction()].compactMap({$0}))
+        return menu
+    }
+}
 
 
-    // MARK: - Select Images
+// MARK: - Selection Management
+extension AlbumViewController
+{
     @objc func didTapSelect() {
+        // Should we really enable this mode?
+        if albumData.nbImages == 0 {
+            return
+        }
+        
+        // Hide buttons
+        hideButtons()
+        
         // Activate Images Selection mode
         isSelect = true
-
+        
         // Disable interaction with category cells and scroll to first image cell if needed
         var numberOfImageCells = 0
-        for cell in imagesCollection?.visibleCells ?? []
+        for cell in collectionView?.visibleCells ?? []
         {
             // Disable user interaction with category cell
             if let categoryCell = cell as? AlbumCollectionViewCell {
@@ -279,113 +158,98 @@ extension AlbumViewController
         // Scroll to position of images if needed
         if numberOfImageCells == 0, (images.fetchedObjects ?? []).count != 0 {
             let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
-            imagesCollection?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
+            collectionView?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
 
         // Initialisae navigation bar and toolbar
-        initButtonsInSelectionMode()
+        initBarsInSelectMode()
     }
-
+    
     @objc func cancelSelect() {
         // Disable Images Selection mode
         isSelect = false
-
+        
         // Update navigation bar and toolbar
-        updateButtonsInPreviewMode()
-
-        // Enable interaction with category cells and deselect image cells
-        for cell in imagesCollection?.visibleCells ?? []
-        {
-            // Enable user interaction with category cell
-            if let categoryCell = cell as? AlbumCollectionViewCell {
-                categoryCell.contentView.alpha = 1.0
-                categoryCell.isUserInteractionEnabled = true
+        initBarsInPreviewMode()
+        updateBarsInPreviewMode()
+        updateButtons()
+        
+        // Enable interaction with album cells and deselect image cells
+        for cell in collectionView?.visibleCells ?? [] {
+            // Enable user interaction with album cell
+            if let albumCell = cell as? AlbumCollectionViewCell {
+                albumCell.contentView.alpha = 1.0
+                albumCell.isUserInteractionEnabled = true
             }
-
+        }
+        
+        // Deselect image cells
+        for cell in collectionView?.visibleCells ?? [] {
             // Deselect image cell and disable interaction
             if let imageCell = cell as? ImageCollectionViewCell,
                imageCell.isSelection {
                 imageCell.isSelection = false
             }
         }
-
-        // Clear array of selected images and allow iOS device to sleep
+        
+        // Clear array of selected images
         touchedImageIds = []
         selectedImageIds = Set<Int64>()
         selectedFavoriteIds = Set<Int64>()
-        UIApplication.shared.isIdleTimerDisabled = false
-    }
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // Will examine touchs only in select mode
-        if isSelect {
-            return true
+        selectedVideosIds = Set<Int64>()
+        for key in selectedSections.keys {
+            selectedSections[key] = .select
         }
-        return false
-    }
 
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Will interpret touches only in horizontal direction
-        if let gPR = gestureRecognizer as? UIPanGestureRecognizer {
-            let translation = gPR.translation(in: imagesCollection)
-            if abs(translation.x) > abs(translation.y) {
-                return true
-            }
-        }
-        return false
-    }
-
-    @objc func touchedImages(_ gestureRecognizer: UIPanGestureRecognizer?) {
-        // Just in case…
-        guard let gestureRecognizer = gestureRecognizer else { return }
-
-        // Select/deselect cells
-//        let start = CFAbsoluteTimeGetCurrent()
-        switch gestureRecognizer.state {
-        case .began, .changed:
-            // Get touch point
-            let point = gestureRecognizer.location(in: imagesCollection)
-
-            // Get cell at touch position
-            if let indexPath = imagesCollection?.indexPathForItem(at: point),
-               indexPath.section == 1,
-               let imageCell = imagesCollection?.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-               let imageId = imageCell.imageData?.pwgID
-            {
-                // Update the selection if not already done
-                if touchedImageIds.contains(imageId) { return }
-
-                // Store that the user touched this cell during this gesture
-                touchedImageIds.append(imageId)
-
-                // Update the selection state
-                if !selectedImageIds.contains(imageId) {
-                    selectedImageIds.insert(imageId)
-                    imageCell.isSelection = true
-                    if imageCell.isFavorite {
-                        selectedFavoriteIds.insert(imageId)
-                    }
-                } else {
-                    imageCell.isSelection = false
-                    selectedImageIds.remove(imageId)
-                    selectedFavoriteIds.remove(imageId)
+        // Update select buttons if needed
+        if dateSortTypes.contains(sortOption),
+           let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
+        {
+            headers.forEach { header in
+                if let header = header as? ImageHeaderReusableView {
+                    header.selectButton.setTitle(forState: .select)
                 }
-
-                // Update the navigation bar
-                updateButtonsInSelectionMode()
+                else if let header = header as? ImageOldHeaderReusableView {
+                    header.selectButton.setTitle(forState: .select)
+                }
             }
-            
-        case .ended:
-            touchedImageIds = []
-        default:
-            debugPrint("NOP")
         }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")
+    }
+    
+    func updateSelectButton(ofSection section: Int) -> SelectButtonState {
+        // Album section?
+        if section == 0 { return .none}
+        
+        // Number of images in section
+        let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+        if nberOfImagesInSection == 0 {
+            selectedSections[section] = SelectButtonState.none
+            return .none
+        }
+
+        // Number of selected images
+        var nberOfSelectedImagesInSection = 0
+        for item in 0..<nberOfImagesInSection {
+            let imageIndexPath = IndexPath(item: item, section: section - 1)
+            if selectedImageIds.contains(images.object(at: imageIndexPath).pwgID) {
+                nberOfSelectedImagesInSection += 1
+            }
+        }
+        
+        // Update state of Select button only if needed
+        if nberOfImagesInSection == nberOfSelectedImagesInSection {
+            // All images are selected
+            selectedSections[section] = SelectButtonState.deselect
+            return .deselect
+        } else {
+            // Not all images are selected
+            selectedSections[section] = SelectButtonState.select
+            return .select
+        }
     }
 
-
-    // MARK: - Initialise Selection Before Action
+    
+    // MARK: - Prepare Selection
     func initSelection(beforeAction action: pwgImageAction) {
         if selectedImageIds.isEmpty { return }
 
@@ -417,12 +281,11 @@ extension AlbumViewController
             } else {
                 // Display HUD
                 totalNumberOfImages = selectedImageIdsLoop.count
-                showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                              detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                              inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
+                navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                              inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
                 
                 // Retrieve image data if needed
-                NetworkUtilities.checkSession(ofUser: user) {  [self] in
+                PwgSession.checkSession(ofUser: user) {  [self] in
                     retrieveImageData(beforeAction: action)
                 } failure: { [unowned self] error in
                     retrieveImageDataError(error)
@@ -434,11 +297,19 @@ extension AlbumViewController
             // Display HUD
             totalNumberOfImages = selectedImageIds.count
             let title = totalNumberOfImages > 1 ? NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") : NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
-            showPiwigoHUD(withTitle: title,
-                          detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil,
-                          inMode: totalNumberOfImages > 1 ? .annularDeterminate : .indeterminate)
+            navigationController?.showHUD(withTitle: title, inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
             
-            // Retrieve image data if needed
+            // Add or remove image from favorites
+            doAction(action)
+            
+        case .rotateImagesLeft      /* Rotate photos 90° to left */,
+             .rotateImagesRight     /* Rotate photos 90° to right */:
+            // Display HUD
+            totalNumberOfImages = selectedImageIds.count
+            let title = totalNumberOfImages > 1 ? NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") : NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
+            navigationController?.showHUD(withTitle: title, inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
+            
+            // Add or remove image from favorites
             doAction(action)
         }
     }
@@ -459,25 +330,34 @@ extension AlbumViewController
             addImageToFavorites()
         case .removeFromFavorites:
             removeImageFromFavorites()
+        case .rotateImagesLeft:
+            rotateImages(by: 90.0)
+        case .rotateImagesRight:
+            rotateImages(by: -90.0)
         }
     }
 
     private func retrieveImageData(beforeAction action:pwgImageAction) {
         // Get image ID if any
         guard let imageId = selectedImageIdsLoop.first else {
-            hidePiwigoHUD() { [self] in
-                doAction(action)
+            DispatchQueue.main.async {
+                self.navigationController?.hideHUD() { [self] in
+                    doAction(action)
+                }
             }
             return
         }
-                        
+        
         // Image data are not complete when retrieved using pwg.categories.getImages
-        imageProvider.getInfos(forID: imageId, inCategoryId: self.categoryId) {  [self] in
+        imageProvider.getInfos(forID: imageId, inCategoryId: self.albumData.pwgID) {  [self] in
             // Image info retrieved
             selectedImageIdsLoop.remove(imageId)
 
             // Update HUD
-            updatePiwigoHUD(withProgress: 1.0 - Float(selectedImageIdsLoop.count) / Float(totalNumberOfImages))
+            DispatchQueue.main.async {
+                let progress: Float = 1 - Float(self.selectedImageIdsLoop.count) / Float(self.totalNumberOfImages)
+                self.navigationController?.updateHUD(withProgress: progress)
+            }
 
             // Next image
             retrieveImageData(beforeAction: action)
@@ -501,9 +381,121 @@ extension AlbumViewController
             let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
             dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
-                hidePiwigoHUD() { [unowned self] in
-                    updateButtonsInSelectionMode()
+                navigationController?.hideHUD() { [unowned self] in
+                    updateBarsInSelectMode()
                 }
+            }
+        }
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate Methods
+extension AlbumViewController: UIGestureRecognizerDelegate
+{
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // Will examine touchs only in select mode
+        if isSelect {
+            return true
+        }
+        return false
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Will interpret touches only in horizontal direction
+        if let gPR = gestureRecognizer as? UIPanGestureRecognizer,
+           let collectionView = collectionView {
+            let translation = gPR.translation(in: collectionView)
+            if abs(translation.x) > abs(translation.y) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    @objc func touchedImages(_ gestureRecognizer: UIPanGestureRecognizer?) {
+        // Just in case…
+        guard let collectionView = collectionView,
+              let gestureRecognizerState = gestureRecognizer?.state,
+              let point = gestureRecognizer?.location(in: collectionView),
+              let indexPath = collectionView.indexPathForItem(at: point)
+        else { return }
+        
+        // Select/deselect cells
+        //        let start = CFAbsoluteTimeGetCurrent()
+        if [.began, .changed].contains(gestureRecognizerState)
+        {
+            // Get cell at touch position
+            if let imageCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+               let imageId = imageCell.imageData?.pwgID
+            {
+                // Update the selection if not already done
+                if touchedImageIds.contains(imageId) { return }
+                
+                // Store that the user touched this cell during this gesture
+                touchedImageIds.append(imageId)
+                
+                // Update the selection state
+                if !selectedImageIds.contains(imageId) {
+                    selectedImageIds.insert(imageId)
+                    imageCell.isSelection = true
+                    if imageCell.isFavorite {
+                        selectedFavoriteIds.insert(imageId)
+                    }
+                    if imageCell.imageData.isVideo {
+                        selectedVideosIds.insert(imageId)
+                    }
+                } else {
+                    imageCell.isSelection = false
+                    selectedImageIds.remove(imageId)
+                    selectedFavoriteIds.remove(imageId)
+                    selectedVideosIds.remove(imageId)
+                }
+                
+                // Update the navigation bar
+                updateBarsInSelectMode()
+            }
+        }
+        
+        // Is this the end of the gesture?
+        if gestureRecognizerState == .ended {
+            // Clear list of touched images
+            touchedImageIds = []
+            
+            // Update state of Select button if needed
+            let selectState = updateSelectButton(ofSection: indexPath.section)
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            } else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            }
+        }
+        //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        //        debugPrint("••> image selected/deselected in \(diff.rounded()) ms")
+    }
+}
+
+
+// MARK: - ImageDetailDelegate Methods
+extension AlbumViewController: ImageDetailDelegate
+{
+    func didSelectImage(atIndexPath indexPath: IndexPath) {
+        // Correspondinng collection view index path
+        let collIndexPath = IndexPath(item: indexPath.item, section: indexPath.section + 1)
+        
+        // Scroll view to center image
+        if collectionView?.numberOfSections ?? 0 > collIndexPath.section,
+           collectionView?.numberOfItems(inSection: collIndexPath.section) ?? 0 > collIndexPath.item {
+            
+            imageOfInterest = collIndexPath
+            collectionView?.scrollToItem(at: collIndexPath, at: .centeredVertically, animated: true)
+            
+            // Prepare variables for transitioning delegate
+            if let selectedCell = collectionView?.cellForItem(at: collIndexPath) as? ImageCollectionViewCell {
+                animatedCell = selectedCell
+                albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
+                cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)
+                navBarSnapshot = navigationController?.navigationBar.snapshotView(afterScreenUpdates: false)
             }
         }
     }

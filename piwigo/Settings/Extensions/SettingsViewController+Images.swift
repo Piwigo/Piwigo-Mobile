@@ -41,7 +41,8 @@ extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
         AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings
-        let indexPath = IndexPath(row: 1, section: SettingsSection.images.rawValue)
+        let offset = defaultSortUnknown ? 1 : 0
+        let indexPath = IndexPath(row: 0 + offset, section: SettingsSection.images.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = thumbnailSize.name
@@ -82,7 +83,9 @@ extension SettingsViewController: DefaultImageSizeDelegate {
         ImageVars.shared.defaultImagePreviewSize = imageSize.rawValue
 
         // Refresh settings
-        let indexPath = IndexPath(row: 4, section: SettingsSection.images.rawValue)
+        var offset = defaultSortUnknown ? 1 : 0
+        offset += showTitleOption ? 1 : 0
+        let indexPath = IndexPath(row: 2 + offset, section: SettingsSection.images.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
             cell.detailLabel.text = imageSize.name

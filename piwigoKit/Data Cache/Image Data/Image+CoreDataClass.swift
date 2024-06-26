@@ -41,7 +41,7 @@ public class Image: NSManagedObject {
         
         // Image title
         if let newTitle = imageData.title {
-            let titleUTF8 = NetworkUtilities.utf8mb4String(from: newTitle)
+            let titleUTF8 = PwgSession.utf8mb4String(from: newTitle)
             let titleAttrStr = titleUTF8.htmlToAttributedString
             if title.string != titleUTF8 {
                 title = titleAttrStr
@@ -51,7 +51,7 @@ public class Image: NSManagedObject {
         
         // Image description
         if let desc = imageData.comment {
-            let newDesc = NetworkUtilities.utf8mb4String(from: desc).htmlToAttributedString
+            let newDesc = PwgSession.utf8mb4String(from: desc).htmlToAttributedString
             if comment.string != newDesc.string {
                 comment = newDesc
             }
@@ -85,7 +85,7 @@ public class Image: NSManagedObject {
         if newMD5.isEmpty == false, md5sum != newMD5 {
             md5sum = newMD5
         }
-        let newFile = NetworkUtilities.utf8mb4String(from: imageData.fileName ?? "")
+        let newFile = PwgSession.utf8mb4String(from: imageData.fileName ?? "")
         if newFile.isEmpty == false {
             if fileName != newFile {
                 fileName = newFile
@@ -128,7 +128,7 @@ public class Image: NSManagedObject {
         
         // Author
         if let newAuthor = imageData.author {
-           let newAuthorUTF8 = NetworkUtilities.utf8mb4String(from: newAuthor)
+           let newAuthorUTF8 = PwgSession.utf8mb4String(from: newAuthor)
             if author != newAuthorUTF8 {
                 author = newAuthorUTF8
             }
@@ -159,17 +159,19 @@ public class Image: NSManagedObject {
         }
 
         // Full resolution image
-        let fullResUrl = NetworkUtilities.encodedImageURL(imageData.fullResPath ?? "")
+        let fullResUrl = PwgSession.encodedImageURL(imageData.fullResPath ?? "")
         let newFull = Resolution(imageWidth: imageData.fullResWidth ?? 1,
                                  imageHeight: imageData.fullResHeight ?? 1,
                                  imageURL: NSURL(string: fullResUrl?.absoluteString ?? ""))
         if fullRes == nil || fullRes?.isEqual(newFull) == false {
             fullRes = newFull
+            // Delete cached image files (image updated, was probably rotated)
+            deleteCachedFiles()
         }
 
         // Derivatives
         let squareRes = imageData.derivatives.squareImage
-        let squareUrl = NetworkUtilities.encodedImageURL(squareRes?.url ?? "")
+        let squareUrl = PwgSession.encodedImageURL(squareRes?.url ?? "")
         let newSquare = Resolution(imageWidth: squareRes?.width?.intValue ?? 1,
                                    imageHeight: squareRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: squareUrl?.absoluteString ?? ""))
@@ -178,7 +180,7 @@ public class Image: NSManagedObject {
         }
         
         let thumbRes = imageData.derivatives.thumbImage
-        let thumbUrl = NetworkUtilities.encodedImageURL(thumbRes?.url ?? "")
+        let thumbUrl = PwgSession.encodedImageURL(thumbRes?.url ?? "")
         let newThumb = Resolution(imageWidth: thumbRes?.width?.intValue ?? 1,
                                   imageHeight: thumbRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: thumbUrl?.absoluteString ?? ""))
@@ -187,7 +189,7 @@ public class Image: NSManagedObject {
         }
         
         let mediumRes = imageData.derivatives.mediumImage
-        let mediumUrl = NetworkUtilities.encodedImageURL(mediumRes?.url ?? "")
+        let mediumUrl = PwgSession.encodedImageURL(mediumRes?.url ?? "")
         let newMedium = Resolution(imageWidth: mediumRes?.width?.intValue ?? 1,
                                    imageHeight: mediumRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: mediumUrl?.absoluteString ?? ""))
@@ -196,7 +198,7 @@ public class Image: NSManagedObject {
         }
         
         let smallRes = imageData.derivatives.smallImage
-        let smallUrl = NetworkUtilities.encodedImageURL(smallRes?.url ?? "")
+        let smallUrl = PwgSession.encodedImageURL(smallRes?.url ?? "")
         let newSmall = Resolution(imageWidth: smallRes?.width?.intValue ?? 1,
                                   imageHeight: smallRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: smallUrl?.absoluteString ?? ""))
@@ -205,7 +207,7 @@ public class Image: NSManagedObject {
         }
         
         let xsmallRes = imageData.derivatives.xSmallImage
-        let xsmallUrl = NetworkUtilities.encodedImageURL(xsmallRes?.url ?? "")
+        let xsmallUrl = PwgSession.encodedImageURL(xsmallRes?.url ?? "")
         let newXsmall = Resolution(imageWidth: xsmallRes?.width?.intValue ?? 1,
                                    imageHeight: xsmallRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: xsmallUrl?.absoluteString ?? ""))
@@ -214,7 +216,7 @@ public class Image: NSManagedObject {
         }
         
         let xxsmallRes = imageData.derivatives.xxSmallImage
-        let xxsmallUrl = NetworkUtilities.encodedImageURL(xxsmallRes?.url ?? "")
+        let xxsmallUrl = PwgSession.encodedImageURL(xxsmallRes?.url ?? "")
         let newXxsmall = Resolution(imageWidth: xxsmallRes?.width?.intValue ?? 1,
                                     imageHeight: xxsmallRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxsmallUrl?.absoluteString ?? ""))
@@ -223,7 +225,7 @@ public class Image: NSManagedObject {
         }
         
         let largeRes = imageData.derivatives.largeImage
-        let largeUrl = NetworkUtilities.encodedImageURL(largeRes?.url ?? "")
+        let largeUrl = PwgSession.encodedImageURL(largeRes?.url ?? "")
         let newLarge = Resolution(imageWidth: largeRes?.width?.intValue ?? 1,
                                   imageHeight: largeRes?.height?.intValue ?? 1,
                                   imageURL: NSURL(string: largeUrl?.absoluteString ?? ""))
@@ -232,7 +234,7 @@ public class Image: NSManagedObject {
         }
         
         let xlargeRes = imageData.derivatives.xLargeImage
-        let xlargeUrl = NetworkUtilities.encodedImageURL(xlargeRes?.url ?? "")
+        let xlargeUrl = PwgSession.encodedImageURL(xlargeRes?.url ?? "")
         let newXlarge = Resolution(imageWidth: xlargeRes?.width?.intValue ?? 1,
                                    imageHeight: xlargeRes?.height?.intValue ?? 1,
                                    imageURL: NSURL(string: xlargeUrl?.absoluteString ?? ""))
@@ -241,7 +243,7 @@ public class Image: NSManagedObject {
         }
         
         let xxlargeRes = imageData.derivatives.xxLargeImage
-        let xxlargeUrl = NetworkUtilities.encodedImageURL(xxlargeRes?.url ?? "")
+        let xxlargeUrl = PwgSession.encodedImageURL(xxlargeRes?.url ?? "")
         let newXxlarge = Resolution(imageWidth: xxlargeRes?.width?.intValue ?? 1,
                                     imageHeight: xxlargeRes?.height?.intValue ?? 1,
                                     imageURL: NSURL(string: xxlargeUrl?.absoluteString ?? ""))
@@ -249,9 +251,19 @@ public class Image: NSManagedObject {
             sizes.xxlarge = newXxlarge
         }
         
+        // Location
+        let latitude = imageData.latitude?.doubleValue ?? 0.0
+        if latitude != 0, self.latitude != latitude {
+            self.latitude = latitude
+        }
+        let longitude = imageData.longitude?.doubleValue ?? 0.0
+        if longitude != 0, self.longitude != longitude {
+            self.longitude = longitude
+        }
+        
         // Rank of image in album
         switch sort {
-        case .manual:
+        case .rankAscending:
             if rank != Int64.min, rankManual != rank {
                 rankManual = rank
             }

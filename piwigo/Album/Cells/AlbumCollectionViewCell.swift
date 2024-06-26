@@ -12,16 +12,21 @@ import CoreData
 import UIKit
 import piwigoKit
 
-protocol AlbumCollectionViewCellDelegate: NSObjectProtocol {
-    func pushCategoryView(_ viewController: UIViewController?,
-                          completion: @escaping (Bool) -> Void)
-    func didDeleteCategory(withError error: NSError?,
-                           viewController topViewController: UIViewController?)
+protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
+    func pushAlbumView(_ viewController: UIViewController?,
+                       completion: @escaping (Bool) -> Void)
+}
+
+protocol DeleteAlbumCollectionViewCellDelegate: NSObjectProtocol {
+    func didDeleteAlbum(withError error: NSError?,
+                        viewController topViewController: UIViewController?)
 }
 
 class AlbumCollectionViewCell: UICollectionViewCell
 {
-    weak var categoryDelegate: AlbumCollectionViewCellDelegate?
+    weak var pushAlbumDelegate: PushAlbumCollectionViewCellDelegate?
+    weak var deleteAlbumDelegate: DeleteAlbumCollectionViewCellDelegate?
+    
     var albumData: Album? {
         didSet {
             tableView?.reloadData()
@@ -66,6 +71,7 @@ class AlbumCollectionViewCell: UICollectionViewCell
                             forCellReuseIdentifier: "AlbumTableViewCell")
         tableView?.delegate = self
         tableView?.dataSource = self
+        tableView?.isScrollEnabled = false
         if let tableView = tableView {
             contentView.addSubview(tableView)
         }
@@ -129,8 +135,11 @@ extension AlbumCollectionViewCell: UITableViewDelegate
 
         // Push new album view
         if let albumData = albumData {
-            let albumView = AlbumViewController(albumId: albumData.pwgID)
-            categoryDelegate?.pushCategoryView(albumView, completion: {_ in })
+            let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
+            subAlbumVC.categoryId = albumData.pwgID
+            pushAlbumDelegate?.pushAlbumView(subAlbumVC, completion: {_ in })
         }
     }
     

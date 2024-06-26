@@ -115,6 +115,7 @@
 
 "loginError_title" = "Ошибка входа";
 "loginError_message" = "Имя пользователя и пароль не совпадают на данном веб-адресе";
+"loginError_resetPwd" = "Вы хотите сбросить пароль из веб-интерфейса?";
 "loginEmptyServer_title" = "Введите адрес";
 "loginEmptyServer_message" = "Пожалуйста, выберите протокол и введите адрес сервера Piwigo для продолжения.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Ваши избранные";
 
 // Albums sort
+"categorySort_sort" = "Сортировать изображения по…";
+"categorySort_default" = "По умолчанию";
+"categorySort_name" = "Название фото";
 "categorySort_nameAscending" = "Заголовок фотографии, A → Я";
 "categorySort_nameDescending" = "Заголовок фотографии, Я → А";
+"categorySort_fileName" = "Имя файла";
 "categorySort_fileNameAscending" = "Имя файла, A → Z";
 "categorySort_fileNameDescending" = "Имя файла, Я → А";
+"categorySort_dateCreated" = "Дата создания";
 "categorySort_dateCreatedDescending" = "Дата создания, новая → старая";
 "categorySort_dateCreatedAscending" = "Дата создания, старые → новые";
+"categorySort_datePosted" = "Дата публикации";
 "categorySort_datePostedDescending" = "Дата публикации, новая → старая";
 "categorySort_datePostedAscending" = "Дата публикации, старая → новая";
+"categorySort_ratingScore" = "Оценка рейтинга";
 "categorySort_ratingScoreDescending" = "Рейтинг, высокий → низкий";
 "categorySort_ratingScoreAscending" = "Рейтинг, низкий → высокий";
+"categorySort_visits" = "Визиты";
 "categorySort_visitsDescending" = "Посещения, высокие → низкие";
 "categorySort_visitsAscending" = "Посещения, низкий → высокий";
 "categorySort_manual" = "Ручная сортировка";
+"categorySort_randomly" = "Случайно";
 "categorySort_random" = "Случайный порядок";
-
+"categorySort_id" = "Идентификатор";
+"categorySort_idDescending" = "Идентификатор, 9 → 1";
+"categorySort_idAscending" = "Идентификатор, 1 → 9";
 "categorySort_videosOnly" = "Только Видео";
 "categorySort_imagesOnly" = "Только Фото";
+
+"categoryView_options" = "Посмотреть опции";
+"categoryGroup_group" = "Группировать изображения по…";
 
 // Album selection
 "categorySelection_title" = "Альбом";
@@ -307,10 +322,11 @@
 "noImages" = "Нет фото";
 "pullToRefresh" = "Перезагрузить фотографии";
 "andMore" = " и многое другое";
-"Months" = "Месяца(-ев)";
-"Weeks" = "неделя(-ль)";
-"Days" = "дней";
 "Date" = "Дата";
+"None" = "Нет";
+"Day" = "День";
+"Week" = "Неделя";
+"Month" = "Месяц";
 
 // Errors
 "albumPhotoError_title" = "Ошибка установки фотографий альбома";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Не удалось добавить эту фотографию в избранное.";
 "imageFavoritesRemoveError_message" = "Не удалось удалить эту фотографию из избранного.";
+
+// Image rotate
+"rotateImage_rotate" = "Поворот на 90°…";
+"rotateImage_left" = "Против часовой стрелки";
+"rotateImage_right" = "По часовой";
+"rotateSingleImageHUD_rotating" = "Вращение фото…";
+"rotateSeveralImageHUD_rotating" = "Поворот фотографий…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Поворот не удался";
+"rotateImageFail_plugin" = "Плагин RotateImage не активирован.";
+"rotateImageFail_message" = "Не удалось повернуть изображение";
 
 // Image delete
 "deleteImage_delete" = "Удалить";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Что нового в Piwigo";
-"whatsNew_title1" = "Новые жесты";
-"whatsNew_desc1" = "Проведите пальцем вниз или прикрепите изображение, чтобы вернуться к альбому при просмотре отдельных фотографий или видео.";
-"whatsNew_title2" = "Поддержка PiP";
-"whatsNew_desc2" = "Смотрите видео, хранящееся в вашем Piwigo, пока вы используете другие приложения.";
+"whatsNew_title1" = "Групповые фото";
+"whatsNew_desc1" = "По дням или месяцам.";
+"whatsNew_title2" = "Повернуть фото";
+"whatsNew_desc2" = "Исправлены проблемы ориентации (требуется плагин rotateImage).";
 "whatsNew_continue" = "Продолжить";

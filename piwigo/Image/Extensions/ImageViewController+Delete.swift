@@ -7,11 +7,18 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 import uploadKit
 
 extension ImageViewController
 {
+    // MARK: - Delete/Remove Image Bar Button
+    func getDeleteBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+    }
+
+
     // MARK: - Delete or Remove Image from Album
     @objc func deleteImage() {
         // Disable buttons during action
@@ -65,14 +72,14 @@ extension ImageViewController
     
     func removeImageFromAlbum() {
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"))
         
         // Remove selected category ID from image category list
         guard let imageData = imageData,
               var catIDs = imageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}) else {
             dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
                 // Hide HUD
-                self.hidePiwigoHUD { [unowned self] in
+                self.hideHUD { [unowned self] in
                     // Re-enable buttons
                     self.setEnableStateOfButtons(true)
                 }
@@ -89,7 +96,7 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
@@ -109,8 +116,8 @@ extension ImageViewController
                 }
 
                 // Hide HUD
-                self.updatePiwigoHUDwithSuccess { [unowned self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                self.updateHUDwithSuccess { [unowned self] in
+                    self.hideHUD(afterDelay: pwgDelayHUD) { [unowned self] in
                         // Display preceding/next image or return to album view
                         self.didRemoveImage()
                     }
@@ -139,7 +146,7 @@ extension ImageViewController
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
-                hidePiwigoHUD { [unowned self] in
+                hideHUD { [unowned self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
@@ -152,7 +159,7 @@ extension ImageViewController
         guard let imageData = imageData else {
             dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
                 // Hide HUD
-                self.hidePiwigoHUD { [self] in
+                self.hideHUD { [self] in
                     // Re-enable buttons
                     self.setEnableStateOfButtons(true)
                 }
@@ -161,10 +168,10 @@ extension ImageViewController
         }
 
         // Display HUD during deletion
-        showPiwigoHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
+        showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
-        NetworkUtilities.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
                 // Save image ID for marking Upload request in the background
                 let imageID = imageData.pwgID
@@ -194,8 +201,8 @@ extension ImageViewController
                 }
 
                 // Hide HUD
-                self.updatePiwigoHUDwithSuccess { [self] in
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+                self.updateHUDwithSuccess { [self] in
+                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Display preceding/next image or return to album view
                         self.didRemoveImage()
                     }
@@ -224,7 +231,7 @@ extension ImageViewController
             self.dismissPiwigoError(withTitle: title, message: message,
                                     errorMessage: error.localizedDescription) { [unowned self] in
                 // Hide HUD
-                hidePiwigoHUD { [self] in
+                hideHUD { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
@@ -238,51 +245,58 @@ extension ImageViewController
 extension ImageViewController: SelectCategoryImageRemovedDelegate
 {
     func didRemoveImage() {
-        // Return to the album view if the album is empty
+        // Is the album empty?
         let nbImages = images?.fetchedObjects?.count ?? 0
-        if nbImages == 0 {
+        guard nbImages != 0, let sections = images.sections
+        else {
             // Return to the Album/Images collection view
             navigationController?.dismiss(animated: true)
             return
         }
 
         // Was user scrolling towards next images?
-        if didPresentPageAfter {
-            // Can we present the next image?
-            if imageIndex < nbImages {
-                presentNextImage()
-                return
-            }
-
-            // Can we present the preceding image?
-            if imageIndex > 0 {
-                presentPreviousImage()
-                return
+        if didPresentNextPage {
+            // Can we present a next image having the same index path?
+            if indexPath.section < sections.count,
+               indexPath.item < sections[indexPath.section].numberOfObjects {
+                // Present the next image
+                presentImage(inDirection: .forward)
+            } else if let newIndexPath = getIndexPath(before: indexPath) {
+                // Present the preceding image
+                indexPath = newIndexPath
+                presentImage(inDirection: .reverse)
             }
         } else {
             // Can we present the preceding image?
-            if imageIndex > 0 {
-                presentPreviousImage()
+            if let newIndexPath = getIndexPath(before: indexPath) {
+                indexPath = newIndexPath
+                presentImage(inDirection: .reverse)
+                return
+            } else if let newIndexPath = getIndexPath(after: indexPath) {
+                indexPath = newIndexPath
+                presentImage(inDirection: .forward)
                 return
             }
-
-            // Can we present the next image?
-            if imageIndex < nbImages {
-                presentNextImage()
-                return
-            }
-        }        
+        }
+        
+        // Return to the Album/Images collection view
+        navigationController?.dismiss(animated: true)
+        return
     }
     
-    private func presentNextImage() {
-        // Create view controller for presenting next image
-        let imageData = getImageData(atIndex: imageIndex)
-        guard let nextImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
-        else { return }
+    private func presentImage(inDirection direction: UIPageViewController.NavigationDirection) {
+        // Create image view controller
+        let imageData = getImageData(atIndexPath: indexPath)
+        guard let newImageVC = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndexPath: indexPath) : imageDetailViewController(ofImage: imageData, atIndexPath: indexPath)
+        else {
+            // Return to the Album/Images collection view
+            navigationController?.dismiss(animated: true)
+            return
+        }
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
-        pageViewController?.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+        pageViewController?.setViewControllers([newImageVC], direction: direction, animated: true) { [unowned self] finished in
             // Update image data
             self.imageData = imageData
             // Set title view
@@ -293,30 +307,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
             // pwg.users.favorites… methods available from Piwigo version 2.10
             self.favoriteBarButton = getFavoriteBarButton()
             // Scroll album collection view to keep the selected image centred on the screen
-            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
-        }
-    }
-    
-    private func presentPreviousImage() {
-        // Create view controller for presenting next image
-        imageIndex -= 1
-        let imageData = getImageData(atIndex: imageIndex)
-        guard let prevImage = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndex: imageIndex) : imageDetailViewController(ofImage: imageData, atIndex: imageIndex)
-        else { return }
-
-        // This changes the View Controller
-        // and calls the presentationIndexForPageViewController datasource method
-        pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-            // Update image data
-            self.imageData = imageData
-            // Set title view
-            self.setTitleViewFromImageData()
-            // Re-enable buttons
-            self.setEnableStateOfButtons(true)
-            // Reset favorites button
-            self.favoriteBarButton = getFavoriteBarButton()
-            // Scroll album collection view to keep the selected image centred on the screen
-            self.imgDetailDelegate?.didSelectImage(atIndex: imageIndex)
+            self.imgDetailDelegate?.didSelectImage(atIndexPath: indexPath)
         }
     }
 }

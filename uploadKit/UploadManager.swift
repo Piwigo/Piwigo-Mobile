@@ -80,7 +80,7 @@ public class UploadManager: NSObject {
     var isFinishing = false                                 // Finish transfer one image at once
     var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
 
-    public var isExecutingBackgroundUploadTask = false      // true is called by the background task
+    public var isExecutingBackgroundUploadTask = false      // True if called by the background task
     public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
     public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
@@ -113,7 +113,7 @@ public class UploadManager: NSObject {
     public override init() {
         super.init()
         
-        // Perform fetch
+        // Perform fetches
         do {
             try uploads.performFetch()
             try completed.performFetch()
@@ -124,7 +124,7 @@ public class UploadManager: NSObject {
 
         // Register auto-upload disabler
         NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
-                                               name: .pwgDisableAutoUpload, object: nil)
+                                               name: Notification.Name.pwgDisableAutoUpload, object: nil)
     }
 
     deinit {
@@ -162,20 +162,36 @@ public class UploadManager: NSObject {
 
     
     // MARK: - Core Data Source
-    lazy var fetchPendingRequest: NSFetchRequest = {
-        let fetchRequest = Upload.fetchRequest()
+    private lazy var sortDescriptors: [NSSortDescriptor] = {
         // Priority to uploads requested manually, oldest ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
+        return sortDescriptors
+    }()
+    
+    private lazy var accountPredicates: [NSPredicate] = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == $serverPath"))
+        andPredicates.append(NSPredicate(format: "user.username == $userName"))
+        return andPredicates
+    }()
+    
+    lazy var pendingPredicate: NSPredicate = {
+        // Retrieves only non-completed upload requests
+        var andPredicates = accountPredicates
+        let unwantedStates: [pwgUploadState] = [.finished, .moderated]
+        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    private lazy var fetchPendingRequest: NSFetchRequest = {
+        let fetchRequest = Upload.fetchRequest()
         fetchRequest.sortDescriptors = sortDescriptors
 
         // Retrieves only non-completed upload requests
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var unwantedStates: [pwgUploadState] = [.finished, .moderated]
-        andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        let variables = ["serverPath" : NetworkVars.serverPath,
+                         "userName"   : NetworkVars.username]
+        fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
 
@@ -188,20 +204,21 @@ public class UploadManager: NSObject {
         return uploads
     }()
 
-    lazy var fetchCompletedRequest: NSFetchRequest = {
+    lazy var completedPredicate: NSPredicate = {
+        var andPredicates = accountPredicates
+        let states: [pwgUploadState] = [.finished, .moderated]
+        andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+    }()
+    
+    private lazy var fetchCompletedRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
-        // Priority to uploads requested manually, oldest ones first
-        var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
-        sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
 
         // Retrieves only completed upload requests
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        var states: [pwgUploadState] = [.finished, .moderated]
-        andPredicates.append(NSPredicate(format: "requestState IN %@", states.map({$0.rawValue})))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        let variables = ["serverPath" : NetworkVars.serverPath,
+                         "userName"   : NetworkVars.username]
+        fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
 

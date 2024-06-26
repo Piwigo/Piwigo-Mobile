@@ -115,6 +115,7 @@
 
 "loginError_title" = "Bejelentkezési Hiba";
 "loginError_message" = "A felhasználó és jelszó párosa nem megfelelő a megadott weboldalhoz";
+"loginError_resetPwd" = "Szeretné visszaállítani jelszavát a webes felületről?";
 "loginEmptyServer_title" = "Adj meg egy web címet";
 "loginEmptyServer_message" = "Kérlek válassz protocollt, és add meg a Piwigo web címet a továbblépéshez!";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Kedvencek";
 
 // Albums sort
+"categorySort_sort" = "Képek rendezése…";
+"categorySort_default" = "Alapértelmezett";
+"categorySort_name" = "Kép címe";
 "categorySort_nameAscending" = "Név szerint, A → Z";
 "categorySort_nameDescending" = "Név szerint, Z → A";
+"categorySort_fileName" = "Fájlnév";
 "categorySort_fileNameAscending" = "Vezetéknév, A → Z";
 "categorySort_fileNameDescending" = "Vezetéknév, Z → A";
+"categorySort_dateCreated" = "Létrehozás dátuma";
 "categorySort_dateCreatedDescending" = "Létrehozás, új → régi";
 "categorySort_dateCreatedAscending" = "Létrehozás, régi → új";
+"categorySort_datePosted" = "Elküldés ideje";
 "categorySort_datePostedDescending" = "Feltöltés, új → régi";
 "categorySort_datePostedAscending" = "Feltöltés, régi → új";
+"categorySort_ratingScore" = "Értékelési pontszám";
 "categorySort_ratingScoreDescending" = "Értékelés, magas → alacsony";
 "categorySort_ratingScoreAscending" = "Értékelés, alacsony → magas";
+"categorySort_visits" = "Látogatások";
 "categorySort_visitsDescending" = "Népszerűség, magas → alacsony";
 "categorySort_visitsAscending" = "Népszerűség, alacsony → magas";
 "categorySort_manual" = "Kézi rendezés";
+"categorySort_randomly" = "Véletlenszerűen";
 "categorySort_random" = "Véletlen sorrend";
-
+"categorySort_id" = "Identifikátor";
+"categorySort_idDescending" = "Identifikátor, 9 → 1";
+"categorySort_idAscending" = "Identifikátor, 1 → 9";
 "categorySort_videosOnly" = "Videók";
 "categorySort_imagesOnly" = "Fotók";
+
+"categoryView_options" = "Nézet beállításai";
+"categoryGroup_group" = "Képek csoportosítása…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -307,10 +322,11 @@
 "noImages" = "Összes videó";
 "pullToRefresh" = "Fotók újratöltése";
 "andMore" = " és több";
-"Months" = "Hónap";
-"Weeks" = "Hét";
-"Days" = "Nap";
 "Date" = "Dátum";
+"None" = "Semmi";
+"Day" = "Nap";
+"Week" = "Hét";
+"Month" = "Hónap";
 
 // Errors
 "albumPhotoError_title" = "Albumfotók letöltése nem sikerült";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Nem sikerült felvenni a fotót a kedvencekhez.";
 "imageFavoritesRemoveError_message" = "Nem sikerült eltávolítani a fotót a kedvencekből.";
+
+// Image rotate
+"rotateImage_rotate" = "90°-kal elforgatni…";
+"rotateImage_left" = "Balra forgó";
+"rotateImage_right" = "Jobbra forgó";
+"rotateSingleImageHUD_rotating" = "Fénykép elforgatása…";
+"rotateSeveralImageHUD_rotating" = "Fényképek elforgatása…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "A forgatás nem sikerült";
+"rotateImageFail_plugin" = "A rotateImage beépülő modul nincs aktiválva.";
+"rotateImageFail_message" = "A képet nem lehetett elforgatni";
 
 // Image delete
 "deleteImage_delete" = "Törlés";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
-"whatsNew_title1" = "Új gesztusok";
-"whatsNew_desc1" = "Az egyes fényképek vagy videók megtekintésekor a képet lefelé húzva vagy megcsípve visszatérhet az albumba.";
-"whatsNew_title2" = "PiP támogatás";
-"whatsNew_desc2" = "Nézzen meg egy Piwigo-n tárolt videót, miközben más alkalmazásokat használ.";
+"whatsNew_title1" = "Csoportképek";
+"whatsNew_desc1" = "Nap, hét vagy hónap szerint.";
+"whatsNew_title2" = "Fényképek elforgatása";
+"whatsNew_desc2" = "Javítsa ki a tájolási problémákat (a rotateImage beépülő modul szükséges).";
 "whatsNew_continue" = "Folytatás";

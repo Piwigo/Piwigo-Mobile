@@ -6,6 +6,8 @@
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
+import UIKit
+
 extension SettingsViewController
 {
     @objc func onKeyboardWillShow(_ notification: NSNotification) {

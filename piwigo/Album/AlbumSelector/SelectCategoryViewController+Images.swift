@@ -20,7 +20,7 @@ extension SelectCategoryViewController {
         // Check image data
         guard let imageData = inputImages.first else {
             // Close HUD
-            updatePiwigoHUDwithSuccess() {
+            updateHUDwithSuccess() {
                 // Save changes
                 do {
                     try self.mainContext.save()
@@ -28,7 +28,7 @@ extension SelectCategoryViewController {
                     print("Could not save copied images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and dismiss album selector
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                self.hideHUD(afterDelay: pwgDelayHUD) {
                     self.dismiss(animated: true) {
                         // Update image data in current view (ImageDetailImage view)
                         self.imageCopiedDelegate?.didCopyImage()
@@ -42,12 +42,12 @@ extension SelectCategoryViewController {
         self.copyImage(imageData, toAlbum: albumData) { [self] in
             // Next image…
             self.inputImages.remove(imageData)
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
             self.copyImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showError(error)
             }
         }
@@ -68,22 +68,26 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.shared.setInfos(with: paramsDict) { [self] in
-            DispatchQueue.main.async {
-                // Add image to album
-                albumData.addToImages(imageData)
-                
-                // Update albums
-                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-                
-                // Set album thumbnail with first copied image if necessary
-                if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
-                    albumData.thumbnailId = imageData.pwgID
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+        PwgSession.checkSession(ofUser: user) {  [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+                DispatchQueue.main.async {
+                    // Add image to album
+                    albumData.addToImages(imageData)
+                    
+                    // Update albums
+                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+                    if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+                        albumData.thumbnailId = imageData.pwgID
+                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                        albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    }
                 }
+                completion()
+            } failure: { error in
+                fail(error)
             }
-            completion()
         } failure: { error in
             fail(error)
         }
@@ -99,7 +103,7 @@ extension SelectCategoryViewController {
         // Jobe done?
         guard let imageData = inputImages.first else {
             // Close HUD
-            updatePiwigoHUDwithSuccess() {
+            updateHUDwithSuccess() {
                 // Save changes
                 do {
                     try self.mainContext.save()
@@ -108,7 +112,7 @@ extension SelectCategoryViewController {
                 }
 
                 // Hide HUD and dismiss album selector
-                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                self.hideHUD(afterDelay: pwgDelayHUD) {
                     self.dismiss(animated: true) {
                         // Remove image from ImageViewController
                         self.imageRemovedDelegate?.didRemoveImage()
@@ -122,12 +126,12 @@ extension SelectCategoryViewController {
         moveImage(imageData, toCategory: albumData) { [self] in
             // Next image…
             self.inputImages.remove(imageData)
-            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
             self.moveImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
-            self.hidePiwigoHUD {
+            self.hideHUD {
                 self.showError(error)
             }
         }
@@ -151,28 +155,32 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.shared.setInfos(with: paramsDict) { [self] in
-            DispatchQueue.main.async {
-                // Add image to target album
-                albumData.addToImages(imageData)
-
-                // Update target albums
-                self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
-                
-                // Set album thumbnail with first copied image if necessary
-                if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
-                    albumData.thumbnailId = imageData.pwgID
-                    let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+        PwgSession.checkSession(ofUser: user) {  [self] in
+            PwgSession.shared.setInfos(with: paramsDict) { [self] in
+                DispatchQueue.main.async {
+                    // Add image to target album
+                    albumData.addToImages(imageData)
+                    
+                    // Update target albums
+                    self.albumProvider.updateAlbums(addingImages: 1, toAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+                    if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil {
+                        albumData.thumbnailId = imageData.pwgID
+                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                        albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    }
+                    
+                    // Remove image from source album
+                    imageData.removeFromAlbums(self.inputAlbum)
+                    
+                    // Update albums
+                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
                 }
-
-                // Remove image from source album
-                imageData.removeFromAlbums(self.inputAlbum)
-                
-                // Update albums
-                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: self.inputAlbum)
+                completion()
+            } failure: { error in
+                fail(error)
             }
-            completion()
         } failure: { error in
             fail(error)
         }

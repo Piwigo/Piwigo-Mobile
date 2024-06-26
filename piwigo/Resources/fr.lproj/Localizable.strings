@@ -115,6 +115,7 @@
 
 "loginError_title" = "Échec de connexion";
 "loginError_message" = "Les nom d’utilisateur et mot de passe ne correspondent pas à l’adresse donnée";
+"loginError_resetPwd" = "Voulez-vous réinitialiser votre mot de passe depuis l'interface web ?";
 "loginEmptyServer_title" = "Entrez une adresse web";
 "loginEmptyServer_message" = "S’il vous plaît, sélectionnez un protocole et entrez une adresse de serveur Piwigo pour continuer.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Mes favoris";
 
 // Albums sort
+"categorySort_sort" = "Trier les images par…";
+"categorySort_default" = "Défaut";
+"categorySort_name" = "Titre de la photo";
 "categorySort_nameAscending" = "Titre de la photo, A → Z";
 "categorySort_nameDescending" = "Titre de la photo, Z → A";
+"categorySort_fileName" = "Nom du fichier";
 "categorySort_fileNameAscending" = "Nom de fichier, A → Z";
 "categorySort_fileNameDescending" = "Nom de fichier, Z → A";
+"categorySort_dateCreated" = "Date de création";
 "categorySort_dateCreatedDescending" = "Date de création, récent → ancien";
 "categorySort_dateCreatedAscending" = "Date de création, ancien → récent";
+"categorySort_datePosted" = "Date d'ajout";
 "categorySort_datePostedDescending" = "Date d'ajout, récent → ancien";
 "categorySort_datePostedAscending" = "Date d'ajout, ancien → récent";
+"categorySort_ratingScore" = "Note";
 "categorySort_ratingScoreDescending" = "Note, haute → basse";
 "categorySort_ratingScoreAscending" = "Note, basse → haute";
+"categorySort_visits" = "Nombre de visites";
 "categorySort_visitsDescending" = "Nombre de visites, élevé → faible";
 "categorySort_visitsAscending" = "Nombre de visites, faible → élevé";
 "categorySort_manual" = "Tri manuel";
+"categorySort_randomly" = "Au hasard";
 "categorySort_random" = "Ordre aléatoire";
-
+"categorySort_id" = "Identifiant";
+"categorySort_idDescending" = "Identifiant, 9 → 1";
+"categorySort_idAscending" = "Identifiant, 1 → 9";
 "categorySort_videosOnly" = "Vidéos uniquement";
 "categorySort_imagesOnly" = "Photos uniquement";
+
+"categoryView_options" = "Options de présentation";
+"categoryGroup_group" = "Grouper les images par…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -307,10 +322,11 @@
 "noImages" = "Pas de photos";
 "pullToRefresh" = "Rechargement des photos";
 "andMore" = " & plus";
-"Months" = "Mois";
-"Weeks" = "Semaines";
-"Days" = "Jours";
 "Date" = "Date";
+"None" = "Aucun";
+"Day" = "Jour";
+"Week" = "Semaine";
+"Month" = "Mois";
 
 // Errors
 "albumPhotoError_title" = "Photos d'album non récupérées";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Echec de l'ajout de cette photo à vos favoris.";
 "imageFavoritesRemoveError_message" = "Echec de la suppression de cette photo de vos favoris.";
+
+// Image rotate
+"rotateImage_rotate" = "Tourner de 90°…";
+"rotateImage_left" = "Sens anti-horaire";
+"rotateImage_right" = "Sens horaire";
+"rotateSingleImageHUD_rotating" = "Rotation de la photo…";
+"rotateSeveralImageHUD_rotating" = "Rotation des photos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Échec de la rotation";
+"rotateImageFail_plugin" = "Le plugin rotateImage n'est pas activé.";
+"rotateImageFail_message" = "La photo n'a pas pu être tournée";
 
 // Image delete
 "deleteImage_delete" = "Supprimer";
@@ -692,7 +720,7 @@
 "imageSizexFullRes" = "Haute résolution";
 
 // Settings — Upload
-"settingsHeader_upload" = "Paramètres de téléchargement";
+"settingsHeader_upload" = "Téléchargements";
 "settings_defaultAuthor" = "Auteur";
 "settings_defaultAuthor>320px" = "Nom d'auteur";
 "settings_defaultAuthorPlaceholder" = "Nom de l'auteur";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Nouveautés de Piwigo";
-"whatsNew_title1" = "Nouveaux gestes";
-"whatsNew_desc1" = "Balayez vers le bas ou pincez l'image pour revenir à l'album lors de la visualisation de photos ou vidéos individuelles.";
-"whatsNew_title2" = "Compatibilité PiP";
-"whatsNew_desc2" = "Regarder une vidéo stockée sur votre Piwigo pendant que vous utilisez d'autres applications.";
+"whatsNew_title1" = "Regrouper les photos";
+"whatsNew_desc1" = "Par jour, par semaine ou par mois.";
+"whatsNew_title2" = "Faire pivoter les photos";
+"whatsNew_desc2" = "Corriger les problèmes d'orientation (nécessite le plugin rotateImage).";
 "whatsNew_continue" = "Continuer";

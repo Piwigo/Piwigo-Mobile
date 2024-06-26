@@ -72,9 +72,9 @@ extension UploadManager {
         let creationDate = dateFormat.string(from: date)
 
         // Prepare parameters for setting the image/video data
-        let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
-        let author = NetworkUtilities.utf8mb3String(from: upload.author)
-        let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
+        let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
+        let author = PwgSession.utf8mb3String(from: upload.author)
+        let comment = PwgSession.utf8mb3String(from: upload.comment)
         let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         let paramsDict: [String : Any] = [
             "image_id"            : "\(NSNumber(value: upload.imageId))",
@@ -150,7 +150,7 @@ extension UploadManager {
             self.didFinishTransfer(for: upload, error: nil)
             return
         }
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             self.processImages(withIds: "\(upload.imageId)",
                                inCategory: upload.category) { [unowned self] _ in
                 self.didFinishTransfer(for: upload, error: nil)

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -27,110 +27,13 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" restorationIdentifier="LocalImageCollectionViewCell" reuseIdentifier="LocalImageCollectionViewCell" id="qky-sZ-b4s" customClass="LocalImageCollectionViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="91" y="44" width="232" height="232"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Vk2-RQ-2he">
-                                            <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownImage" translatesAutoresizingMaskIntoConstraints="NO" id="1Ip-Rc-cgb">
-                                                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                                                </imageView>
-                                                <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="afV-l1-ozu">
-                                                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                </view>
-                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="yeh-C5-01s">
-                                                    <rect key="frame" x="3" y="3" width="25" height="19"/>
-                                                    <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="25" id="3Ye-7t-6u3"/>
-                                                        <constraint firstAttribute="height" constant="19" id="gFo-iu-kOR"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkMark" translatesAutoresizingMaskIntoConstraints="NO" id="5EM-Fc-OAt">
-                                                    <rect key="frame" x="212" y="5" width="17" height="25"/>
-                                                    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="17" id="Os0-Be-VnA"/>
-                                                        <constraint firstAttribute="height" constant="25" id="sns-XZ-VTB"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigo" translatesAutoresizingMaskIntoConstraints="NO" id="M9R-W8-VZi">
-                                                    <rect key="frame" x="204" y="204" width="25" height="25"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="25" id="iM7-Iy-eEi"/>
-                                                        <constraint firstAttribute="height" constant="25" id="qIn-fi-Xef"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warning" translatesAutoresizingMaskIntoConstraints="NO" id="nZH-9q-Ryi">
-                                                    <rect key="frame" x="58" y="58" width="116" height="116"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" secondItem="nZH-9q-Ryi" secondAttribute="height" multiplier="1:1" id="pSg-Mz-Kf7"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <activityIndicatorView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="mgO-bk-bwA">
-                                                    <rect key="frame" x="58" y="58" width="116" height="116"/>
-                                                    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" secondItem="mgO-bk-bwA" secondAttribute="height" multiplier="1:1" id="sAG-yR-x7u"/>
-                                                    </constraints>
-                                                    <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </activityIndicatorView>
-                                                <progressView contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2SQ-zp-7GR">
-                                                    <rect key="frame" x="10" y="218" width="212" height="4"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="trackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </progressView>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <constraints>
-                                                <constraint firstItem="nZH-9q-Ryi" firstAttribute="width" secondItem="Vk2-RQ-2he" secondAttribute="width" multiplier="0.5" id="3F5-au-BYc"/>
-                                                <constraint firstItem="yeh-C5-01s" firstAttribute="leading" secondItem="Vk2-RQ-2he" secondAttribute="leading" constant="3" id="57B-vH-2nc"/>
-                                                <constraint firstAttribute="trailing" secondItem="2SQ-zp-7GR" secondAttribute="trailing" constant="10" id="6aU-Yx-MWV"/>
-                                                <constraint firstItem="mgO-bk-bwA" firstAttribute="width" secondItem="1Ip-Rc-cgb" secondAttribute="width" multiplier="0.5" id="7t2-tB-bib"/>
-                                                <constraint firstAttribute="bottom" secondItem="1Ip-Rc-cgb" secondAttribute="bottom" id="A5b-tL-rhs"/>
-                                                <constraint firstAttribute="bottom" secondItem="M9R-W8-VZi" secondAttribute="bottom" constant="3" id="DqD-Uv-2UA"/>
-                                                <constraint firstAttribute="trailing" secondItem="1Ip-Rc-cgb" secondAttribute="trailing" id="JmN-HQ-ddE"/>
-                                                <constraint firstItem="mgO-bk-bwA" firstAttribute="centerY" secondItem="Vk2-RQ-2he" secondAttribute="centerY" id="QdL-Ql-rgx"/>
-                                                <constraint firstItem="yeh-C5-01s" firstAttribute="top" secondItem="Vk2-RQ-2he" secondAttribute="top" constant="3" id="Qo4-9v-zgo"/>
-                                                <constraint firstItem="5EM-Fc-OAt" firstAttribute="top" secondItem="Vk2-RQ-2he" secondAttribute="top" constant="5" id="SHB-pJ-AvE"/>
-                                                <constraint firstAttribute="bottom" secondItem="2SQ-zp-7GR" secondAttribute="bottom" constant="10" id="SOh-AX-I4C"/>
-                                                <constraint firstItem="nZH-9q-Ryi" firstAttribute="centerX" secondItem="Vk2-RQ-2he" secondAttribute="centerX" id="Vma-Hy-GXL"/>
-                                                <constraint firstItem="afV-l1-ozu" firstAttribute="top" secondItem="Vk2-RQ-2he" secondAttribute="top" id="dO4-tn-WUr"/>
-                                                <constraint firstAttribute="trailing" secondItem="M9R-W8-VZi" secondAttribute="trailing" constant="3" id="dYb-Lu-0me"/>
-                                                <constraint firstAttribute="trailing" secondItem="afV-l1-ozu" secondAttribute="trailing" id="dcY-Ml-v2P"/>
-                                                <constraint firstItem="nZH-9q-Ryi" firstAttribute="centerY" secondItem="Vk2-RQ-2he" secondAttribute="centerY" id="hJK-1e-p3k"/>
-                                                <constraint firstItem="afV-l1-ozu" firstAttribute="leading" secondItem="Vk2-RQ-2he" secondAttribute="leading" id="jJI-9v-WmR"/>
-                                                <constraint firstItem="mgO-bk-bwA" firstAttribute="centerX" secondItem="Vk2-RQ-2he" secondAttribute="centerX" id="oqX-xX-4In"/>
-                                                <constraint firstItem="1Ip-Rc-cgb" firstAttribute="leading" secondItem="Vk2-RQ-2he" secondAttribute="leading" id="qXY-Mn-gbw"/>
-                                                <constraint firstItem="2SQ-zp-7GR" firstAttribute="leading" secondItem="Vk2-RQ-2he" secondAttribute="leading" constant="10" id="rKq-vf-lNr"/>
-                                                <constraint firstAttribute="bottom" secondItem="afV-l1-ozu" secondAttribute="bottom" id="s0V-Vj-CjA"/>
-                                                <constraint firstAttribute="trailing" secondItem="5EM-Fc-OAt" secondAttribute="trailing" constant="3" id="w6p-k5-CY7"/>
-                                                <constraint firstItem="1Ip-Rc-cgb" firstAttribute="top" secondItem="Vk2-RQ-2he" secondAttribute="top" id="xG1-Eo-wO0"/>
-                                            </constraints>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" restorationIdentifier="LocalImageCollectionViewCell" reuseIdentifier="LocalImageCollectionViewCell" id="Ab9-a1-Vbz" customClass="LocalImageCollectionViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="44" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="0c0-kn-fIv">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
-                                        <size key="customSize" width="232" height="232"/>
-                                        <connections>
-                                            <outlet property="cellImage" destination="1Ip-Rc-cgb" id="8s8-NR-uBl"/>
-                                            <outlet property="darkenView" destination="afV-l1-ozu" id="1Hu-dT-EJH"/>
-                                            <outlet property="failedUploadImage" destination="nZH-9q-Ryi" id="BFE-iA-txl"/>
-                                            <outlet property="playBckg" destination="yeh-C5-01s" id="LSl-5x-tZQ"/>
-                                            <outlet property="playBckgHeight" destination="gFo-iu-kOR" id="2IN-Rb-aNy"/>
-                                            <outlet property="playBckgWidth" destination="3Ye-7t-6u3" id="4OZ-9u-Zy0"/>
-                                            <outlet property="selectImgHeight" destination="sns-XZ-VTB" id="hfn-9m-lOy"/>
-                                            <outlet property="selectImgWidth" destination="Os0-Be-VnA" id="GJO-1U-dtI"/>
-                                            <outlet property="selectedImage" destination="5EM-Fc-OAt" id="r65-TG-FdA"/>
-                                            <outlet property="uploadedImage" destination="M9R-W8-VZi" id="dfu-Mc-5pg"/>
-                                            <outlet property="uploadedImgHeight" destination="qIn-fi-Xef" id="RvI-4e-29b"/>
-                                            <outlet property="uploadedImgWidth" destination="iM7-Iy-eEi" id="9FV-U4-CDs"/>
-                                            <outlet property="uploadingProgress" destination="2SQ-zp-7GR" id="KKW-Ng-4mg"/>
-                                            <outlet property="waitingActivity" destination="mgO-bk-bwA" id="fYD-Ps-nJH"/>
-                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="PasteboardImagesHeaderReusableView" preservesSuperviewLayoutMargins="YES" reuseIdentifier="PasteboardImagesHeaderReusableView" id="80M-ek-Ose" customClass="PasteboardImagesHeaderReusableView" customModule="piwigo" customModuleProvider="target">
@@ -183,7 +86,7 @@
                                     </connections>
                                 </collectionReusableView>
                                 <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="LocalImagesFooterReusableView" reuseIdentifier="LocalImagesFooterReusableView" id="abx-zd-WA3" customClass="LocalImagesFooterReusableView" customModule="piwigo" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="276" width="414" height="34"/>
+                                    <rect key="frame" x="0.0" y="172" width="414" height="34"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 Photos" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u7N-dh-tIi">
@@ -229,11 +132,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="checkMark" width="17.5" height="25"/>
-        <image name="piwigo" width="25" height="25"/>
-        <image name="unknownImage" width="512" height="512"/>
-        <image name="video" width="25" height="19"/>
-        <image name="warning" width="37" height="37"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

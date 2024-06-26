@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.4_text" = "Versie 3.1.4\n\n• Oplossing voor een crash die zich voordeed op iOS 12";
+"v3.2.0_text" = "Versie 3.2\n\n• Voegt albumfoto sortering opties \n• Voegt op-the-fly foto sortering opties\n• Voegt rotatie van geüploade foto's toe (vereist de rotateImage plugin)\n• Foutjes verbeterd";
+
+"v3.1.4_text" = "Versie 3.1.4\n27 februari 2024\n\n• Oplossing voor een crash die zich voordeed op iOS 12";
 
 "v3.1.3_text" = "Versie 3.1.3\n11 februari 2024\n\n• Foutjes verbeterd";
 

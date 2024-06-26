@@ -12,8 +12,4 @@
 
 "translators_text" = "我們由衷感謝下列用戶為翻譯Piwigo所付出的時間及精力:\n\n- 阿拉伯語: Rachid Haddani,\n- 中文(簡體): Benjamin Chris,\n- 中文(繁體): Sean Pai,\n- 丹麥語: Thomas Christfort,\n- 荷蘭語: Robert Mulder and Wim Woonings,\n- 法語: Eddy Lelièvre-Berna,\n- 德語: Jörg Knörchen,\n- 匈牙利語:  Miklos Bagi,\n- 印尼語: Arvin Noer and Alfian Silaban,\n- 義大利語: Alessio Perilli,\n- 日語: Takahiro Yakoh,\n- 波蘭語: Michał Majchrowicz and T00kie,\n- 俄語: Eugene Vivdich,\n- 西班牙語: Armando Bello and Albert Parera,\n- 瑞典語: Elger Lindgren.";
 
-"about_text" = "此軟體包含部分依照其原始協議重新發行的第三方軟體。\n\n";
-
-"licenceMBProgHUD_text" = "MBProgressHUD\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
-
 "licenceMIT_text" = "The MIT License (MIT)\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";

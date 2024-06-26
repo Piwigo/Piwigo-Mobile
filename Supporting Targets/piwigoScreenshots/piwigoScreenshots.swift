@@ -43,14 +43,6 @@ class piwigoScreenshots: XCTestCase {
         let deviceType = UIDevice().modelName
         sleep(3);
         
-        // Select Photos Title A->Z sort order
-        //        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
-        //        sleep(1);
-        //        app.tables["settings"].cells["defaultSort"].tap()
-        //        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
-        //        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
-        //        app.navigationBars.buttons["Done"].tap()
-        
         // Screenshot #1: swipe left and reveal album actions
         var index = 1
         if deviceType.hasPrefix("iPad") {
@@ -62,11 +54,11 @@ class piwigoScreenshots: XCTestCase {
         tableQuery.swipeLeft()
         snapshot("Image01")
         
-        // Screenshot #2: collection of images with titles
+        // Screenshot #2: collection of images
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(2);
         if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
+            app.collectionViews.children(matching: .cell).element(boundBy: 2).swipeUp()
             sleep(2);
         }
         snapshot("Image02")
@@ -74,7 +66,7 @@ class piwigoScreenshots: XCTestCase {
         // Screenshot #3: image previewed
         // https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
         app.collectionViews.cells["Clos de Vougeot"].tap()
-        sleep(2)
+        sleep(3)
         switch deviceType {
         case "iPhone SE":                                           // 4-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
@@ -85,7 +77,7 @@ class piwigoScreenshots: XCTestCase {
             sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 8 Plus":                                       // 5.5-inch
-            app.images.element(boundBy: 0).pinch(withScale: 1.16, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
         case "iPhone 14":                                           // 5.8-inch
@@ -96,7 +88,7 @@ class piwigoScreenshots: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
-        case "iPhone 15 Pro":                                       // 6.1-inch
+        case "iPhone 14 Pro":                                       // 6.1-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.13, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
@@ -108,17 +100,17 @@ class piwigoScreenshots: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 1.18, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
-        case "iPad Pro (9.7-inch)":                                 // 9.7-inch
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
-        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             break
-        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
-        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
-        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
             break
         default:
             break
@@ -134,67 +126,227 @@ class piwigoScreenshots: XCTestCase {
         sleep(1)                        // Leave time for animation
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        app.buttons["rootAlbum"].tap()
-        app.buttons["settings"].tap()
-        sleep(2);
-        app.tables["settings"].cells["server"].swipeUp()
-        sleep(2);
-        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
-        app.navigationBars.buttons["Done"].tap()
-        sleep(1);
-        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
-        sleep(1);
-        if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-            sleep(2);
-        }
-        for i in 1...4 {
-            app.collectionViews.children(matching: .cell).element(boundBy: i).swipeUp(velocity: 200)
-            sleep(1)
-        }
-        app.navigationBars.buttons["Select"].tap()
-        if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
-        } else {
-            if (deviceType == "iPad Pro 9.7\"") {
-                app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            } else {
-                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
+        switch deviceType {
+        case "iPhone SE":                                           // 4-inch
+            for _ in 1...6 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
             }
+        case "iPhone SE (3rd generation)":                          // 4.7-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 8 Plus":                                       // 5.5-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 14":                                           // 5.8-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 14 Pro":                                       // 6.1-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 14 Plus":                                      // 6.5-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 15 Pro Max":                                   // 6.7-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+            break
+        default:
+            break
         }
+        app.navigationBars.buttons["select"].tap()
+        sleep(1)
+        app.buttons["Select"].tap()
+        sleep(1)
+        switch deviceType {
+        case "iPhone SE":                                           // 4-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPhone SE (3rd generation)":                          // 4.7-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 4).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 5).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+        case "iPhone 8 Plus":                                       // 5.5-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPhone 14":                                           // 5.8-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPhone 14 Pro":                                       // 6.1-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPhone 14 Plus":                                      // 6.5-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPhone 15 Pro Max":                                   // 6.7-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 14).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 15).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+        default:
+            break
+        }
+        app.navigationBars.buttons["actions"].tap()
         snapshot("Image04")
         
         // Screenshot #5: Edit parameters
-        app.navigationBars.buttons["Cancel"].tap()
-        sleep(1);
+        app.collectionViews.buttons["editProperties"].tap()
+        sleep(1)                        // Leave time for animation
+        app.navigationBars["editParams"].buttons["Cancel"].tap()
+        sleep(1)                        // Leave time for animation
+        switch deviceType {
+        case "iPhone SE":                                           // 4-inch
+            for _ in 1...6 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone SE (3rd generation)":                          // 4.7-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 8 Plus":                                       // 5.5-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 14":                                           // 5.8-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 14 Pro":                                       // 6.1-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 14 Plus":                                      // 6.5-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPhone 15 Pro Max":                                   // 6.7-inch
+            for _ in 1...7 {
+                app.collectionViews.firstMatch.swipeDown(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            break
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            break
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            break
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            break
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            break
+        default:
+            break
+        }
         app.collectionViews.cells["Hotel de Coimbra"].tap()
         sleep(2)
         switch deviceType {
-        case "iPad Pro (9.7-inch)":                                 // 9.7-inch
+        case "iPhone SE",                                           // 4-inch
+             "iPhone SE (3rd generation)",                          // 4.7-inch
+             "iPhone 8 Plus",                                       // 5.5-inch
+             "iPhone 14",                                           // 5.8-inch
+             "iPhone 14 Pro",                                       // 6.1-inch
+             "iPhone 14 Plus",                                      // 6.5-inch
+             "iPhone 15 Pro Max":                                   // 6.7-inch
             break
-        case "iPad Pro (10.5-inch)":                                // 10.5-inch
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
-        case "iPad Pro (11-inch) (4th generation)":                 // 11-inch
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            break
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).tap()
-        case "iPad Pro (12.9-inch) (2nd generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
-        case "iPad Pro (12.9-inch) (6th generation)":               // 12.9-inch
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
             break
         default:
             break
@@ -210,8 +362,45 @@ class piwigoScreenshots: XCTestCase {
         sleep(2)                        // Leave time for animation
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
-        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
+        switch deviceType {
+        case "iPhone SE",                                           // 4-inch
+             "iPhone SE (3rd generation)",                          // 4.7-inch
+             "iPhone 8 Plus",                                       // 5.5-inch
+             "iPhone 14",                                           // 5.8-inch
+             "iPhone 14 Pro",                                       // 6.1-inch
+             "iPhone 14 Plus",                                      // 6.5-inch
+             "iPhone 15 Pro Max":                                   // 6.7-inch
+            for _ in 1...4 {
+                app.collectionViews.firstMatch.swipeUp()
+            }
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
+            for _ in 1...3 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 11-inch (4th generation) (Wi-Fi)":           // 11-inch
+            for _ in 1...4 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        case "iPad Pro 12.9-inch (6th generation) (Wi-Fi)":         // 12.9-inch
+            for _ in 1...2 {
+                app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                sleep(1)
+            }
+        default:
+            break
+        }
         app.buttons["add"].tap()
         sleep(2)                        // Leave time for animation
         snapshot("Image06")
@@ -232,14 +421,14 @@ class piwigoScreenshots: XCTestCase {
         images.element(boundBy: 8).children(matching: .other).element.tap()
         let moreButton = app.navigationBars["LocalImagesNav"].buttons["Action"]
         moreButton.tap()
-        app.collectionViews.buttons["Days"].tap()
+        app.collectionViews.buttons["groupByWeek"].tap()
         sleep(1)                        // Leave time for animation
         moreButton.tap()
         sleep(1)                        // Leave time for animation
         snapshot("Image07")
         
         // Screenshot #8: upload images, parameters
-        app.collectionViews.buttons["Days"].tap()
+        app.collectionViews.buttons["groupByWeek"].tap()
         sleep(1)                        // Leave time for animation
         if deviceType.contains("iPhone") {
             app.toolbars.buttons["Upload"].tap()
@@ -266,8 +455,8 @@ class piwigoScreenshots: XCTestCase {
         app.buttons["settings"].tap()
         sleep(1)                        // Leave time for animation
         app.tables["settings"].cells["server"].swipeUp()
+        app.tables["settings"].firstMatch.swipeUp(velocity: 200)
         sleep(2)                        // Leave time for animation
-        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
         snapshot("Image10")
     }
 }

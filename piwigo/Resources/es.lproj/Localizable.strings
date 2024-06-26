@@ -115,6 +115,7 @@
 
 "loginError_title" = "Error en el inicio de sesión";
 "loginError_message" = "El nombre de usuario y la contraseña no coinciden en la dirección web especificada";
+"loginError_resetPwd" = "¿Le gustaría restablecer su contraseña desde la interfaz web?";
 "loginEmptyServer_title" = "Especifica una dirección web";
 "loginEmptyServer_message" = "Selecciona un protocolo y especifica una dirección web de Piwigo para continuar.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Tus favoritos";
 
 // Albums sort
+"categorySort_sort" = "Ordenar imágenes por…";
+"categorySort_default" = "Por defecto";
+"categorySort_name" = "Título de la foto";
 "categorySort_nameAscending" = "Título de la foto, A → Z";
 "categorySort_nameDescending" = "Título de la foto, Z → A";
+"categorySort_fileName" = "Nombre del archivo";
 "categorySort_fileNameAscending" = "Nombre de archivo, A → Z";
 "categorySort_fileNameDescending" = "Nombre de archivo, Z → A";
+"categorySort_dateCreated" = "Fecha de creación";
 "categorySort_dateCreatedDescending" = "Fecha de creación, nuevo → antiguo";
 "categorySort_dateCreatedAscending" = "Fecha de creación, antiguo → nuevo";
+"categorySort_datePosted" = "Fecha de publicación";
 "categorySort_datePostedDescending" = "Fecha de publicación, nuevo → antiguo";
 "categorySort_datePostedAscending" = "Fecha de publicación, antiguo → nuevo";
+"categorySort_ratingScore" = "Puntuación";
 "categorySort_ratingScoreDescending" = "Puntuación de valoraciones, alta → baja";
 "categorySort_ratingScoreAscending" = "Puntuación de valoraciones, baja → alta";
+"categorySort_visits" = "Visitas";
 "categorySort_visitsDescending" = "Visitas, alto → bajo";
 "categorySort_visitsAscending" = "Visitas, bajo → alto";
 "categorySort_manual" = "Ordenar manualmente";
+"categorySort_randomly" = "Aleatorio";
 "categorySort_random" = "Orden aleatorio";
-
+"categorySort_id" = "Identificador";
+"categorySort_idDescending" = "Identificador, 9 → 1";
+"categorySort_idAscending" = "Identificador, 1 → 9";
 "categorySort_videosOnly" = "Solo vídeos";
 "categorySort_imagesOnly" = "Solo fotos";
+
+"categoryView_options" = "Opciones de Visualización";
+"categoryGroup_group" = "Agrupar imágenes por…";
 
 // Album selection
 "categorySelection_title" = "Álbum";
@@ -307,10 +322,11 @@
 "noImages" = "No hay fotos";
 "pullToRefresh" = "Recargar fotos";
 "andMore" = " y más";
-"Months" = "Meses";
-"Weeks" = "Semanas";
-"Days" = "Días";
 "Date" = "Fecha";
+"None" = "Ninguna";
+"Day" = "Día";
+"Week" = "Semana";
+"Month" = "Mes";
 
 // Errors
 "albumPhotoError_title" = "Error al obtener las fotos del álbum";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "No se ha podido añadir esta foto a tus favoritos.";
 "imageFavoritesRemoveError_message" = "No se ha podido eliminar esta foto de tus favoritos.";
+
+// Image rotate
+"rotateImage_rotate" = "Rotar 90º…";
+"rotateImage_left" = "Sentido antihorario";
+"rotateImage_right" = "Sentido horario";
+"rotateSingleImageHUD_rotating" = "Rotando la foto…";
+"rotateSeveralImageHUD_rotating" = "Rotando las fotos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "La rotación ha fallado";
+"rotateImageFail_plugin" = "El plugin RotateImage no está activado.";
+"rotateImageFail_message" = "No se ha podido rotar la imagen";
 
 // Image delete
 "deleteImage_delete" = "Eliminar";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
-"whatsNew_title1" = "Nuevos gestos";
-"whatsNew_desc1" = "Deslice hacia abajo o pellizque la imagen para volver al álbum cuando vea fotos individuales o vídeos.";
-"whatsNew_title2" = "Soporte PiP";
-"whatsNew_desc2" = "Mira un vídeo almacenado en tu Piwigo mientras usas otras aplicaciones.";
+"whatsNew_title1" = "Agrupar fotos";
+"whatsNew_desc1" = "Por día, semana o mes.";
+"whatsNew_title2" = "Rotar fotos";
+"whatsNew_desc2" = "Solucionar problemas de orientación.";
 "whatsNew_continue" = "Continuar";

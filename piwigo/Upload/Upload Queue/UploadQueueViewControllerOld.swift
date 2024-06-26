@@ -91,9 +91,18 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
         updateNavBar()
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
-        // Header informing user on network status
-        mainHeader()
+        // Register Low Power Mode status
+        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), 
+                                               name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+
+        // Register upload progress
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
     }
 
     override func viewWillLayoutSubviews() {
@@ -163,16 +172,8 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
-        
-        // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
-
-        // Register upload progress
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadProgress, object: nil)
+        // Header informing user on network status
+        mainHeader()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -277,32 +278,33 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
     // MARK: - UITableView - Header
     @objc func mainHeader() {
-        DispatchQueue.main.async {
-            if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+        if queueTableView?.window == nil { return }
+        DispatchQueue.main.async { [self] in
+            // Any upload request in the queue?
+            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
-                let headerView = UploadQueueHeaderView(frame: .zero)
+                let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.width,
                                      text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
                 self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Low Power mode enabled
-                let headerView = UploadQueueHeaderView(frame: .zero)
+                let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.width,
                                      text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
                 self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
             }
             else {
-                // Prevent device from sleeping if uploads are in progress
-                self.queueTableView.tableHeaderView = nil
-                let states: [pwgUploadState] = [.waiting, .preparing, .prepared,
-                                                .uploading, .uploaded, .finishing]
-                let uploading = (self.uploads.fetchedObjects ?? []).filter({states.contains($0.state)})
-                if uploading.isEmpty {
-                    UIApplication.shared.isIdleTimerDisabled = false
-                } else {
-                    UIApplication.shared.isIdleTimerDisabled = true
-                }
+                // Uploads in progress ► Prevents device to sleep
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = true
             }
             self.viewWillLayoutSubviews()
         }

@@ -13,7 +13,7 @@ import piwigoKit
 
 class ImageDetailViewController: UIViewController
 {
-    var imageIndex = 0
+    var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image!
     var imageURL: URL?
     
@@ -30,6 +30,13 @@ class ImageDetailViewController: UIViewController
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
     private var startingZoomScale = CGFloat(1)
+    private var didRotateImage = false
+    
+    // Variable introduced to cope with iOS not updating view bounds
+    // upon device rotation of preloaded page views
+    private lazy var viewSize: CGSize =  {
+        return view.bounds.size
+    }()
     
     
     // MARK: - View Lifecycle
@@ -45,8 +52,11 @@ class ImageDetailViewController: UIViewController
         }
         
         // Check if we already have the high-resolution image in cache
-        let wantedImage = imageData.cachedThumbnail(ofSize: previewSize)
-        if wantedImage == nil {
+        if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
+            // Show high-resolution image in cache
+            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize, scale: scale)
+            setImageView(with: cachedImage)
+        } else {
             // Display thumbnail image which should be in cache
             let placeHolder = UIImage(named: "unknownImage")!
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
@@ -55,9 +65,9 @@ class ImageDetailViewController: UIViewController
             // Download high-resolution image
             imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
             if let imageURL = self.imageURL {
-                ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                             fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                             placeHolder: placeHolder) { fractionCompleted in
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                           placeHolder: placeHolder) { fractionCompleted in
                     DispatchQueue.main.async {
                         // Show download progress
                         self.progressView.progress = fractionCompleted
@@ -72,15 +82,11 @@ class ImageDetailViewController: UIViewController
                     }
                 } failure: { _ in }
             }
-        } else {
-            // Show high-resolution image in cache
-            let cachedImage = ImageUtilities.downsample(image: wantedImage!, to: viewSize, scale: scale)
-            setImageView(with: cachedImage)
         }
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {
@@ -154,7 +160,13 @@ class ImageDetailViewController: UIViewController
                 descContainer.applyColorPalette()
             }
 
+            // Preloaded page views not updated as expected!
+//            debugPrint("••> viewWillTransition: ")
+//            debugPrint("    Size: \(size.width) x \(size.height)")
+//            debugPrint("    Screen: \(view.bounds.width) x \(view.bounds.height)")
+
             // Update scale, insets and offsets
+            self.viewSize = size
             configScrollView()
 //            applyImagePositionInScrollView()
         })
@@ -191,29 +203,69 @@ class ImageDetailViewController: UIViewController
         configScrollView()
     }
     
+    func rotateImageView(by angle: Double, completion: @escaping () -> Void) {
+        // Download high-resolution image
+        let viewSize = view.bounds.size
+        let scale = view.traitCollection.displayScale * pwgImageSize.maxZoomScale // to limit photo size in memory
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        let placeHolder = imageView.image ?? UIImage(named: "unknownImage")!
+        imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
+        if let imageURL = self.imageURL {
+            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                       placeHolder: placeHolder) { fractionCompleted in
+                DispatchQueue.main.async {
+                    // Show download progress
+                    self.progressView.progress = fractionCompleted
+                }
+            } completion: { cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
+                DispatchQueue.main.async { [self] in
+                    // Hide progress view
+                    self.progressView.isHidden = true
+                    
+                    // Rotate image keeping it displayed in fullscreen
+                    let aspectRatio = cachedImage.size.height / cachedImage.size.width
+                    UIView.animate(withDuration: 0.5) { [self] in
+                        let scale = scrollView.minimumZoomScale * aspectRatio
+                        let angleRad = -angle * .pi / 180.0
+                        imageView.transform = CGAffineTransform(rotationAngle: angleRad).scaledBy(x: scale, y: scale)
+                    }
+                    completion: { [self] _ in
+                        // Reset image view with rotated image
+                        didRotateImage = true
+                        self.setImageView(with: cachedImage)
+
+                        // Hide HUD
+                        completion()
+                    }
+                }
+            } failure: { _ in }
+        }
+    }
+    
     /*
      This method calculates the zoom scale for the scroll view.
      A zoom scale of 1 indicates that the content displays at its normal size.
      A zoom scale of less than 1 shows a zoomed-out version of the content,
      and a zoom scale greater than 1 shows the content zoomed in.
      */
-    private func configScrollView() {
-        guard let imageSize = imageView?.image?.size else { return }
-
+    func configScrollView() {
         // Initialisation
+        guard let imageSize = imageView?.image?.size else { return }
         scrollView.isPagingEnabled = false    // Do not stop on multiples of the scroll view’s bounds
         scrollView.contentInsetAdjustmentBehavior = .never  // Do not add/remove safe area insets
 
         // Calc new zoom scale range
         scrollView.bounds = view.bounds
-        let widthScale = view.bounds.size.width / imageSize.width
-        let heightScale = view.bounds.size.height / imageSize.height
+        let widthScale = viewSize.width / imageSize.width
+        let heightScale = viewSize.height / imageSize.height
         let minScale = min(widthScale, heightScale)
         let maxScale = max(widthScale, heightScale)
         
         // Calc zoom scale change
         var zoomFactor = 1.0
-        if scrollView.minimumZoomScale > 1e-6 {
+        if scrollView.zoomScale > 1e-6, scrollView.minimumZoomScale > 1e-6 {
             zoomFactor = scrollView.zoomScale / scrollView.minimumZoomScale
         }
 
@@ -221,7 +273,7 @@ class ImageDetailViewController: UIViewController
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = max(maxScale, 1)
 //        debugPrint("••> Did reset scrollView scale: ")
-//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
+//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon x \(zoomFactor)")
 //        debugPrint("    Offset: \(scrollView.contentOffset)")
 //        debugPrint("    Inset : \(scrollView.contentInset)")
 
@@ -244,25 +296,35 @@ class ImageDetailViewController: UIViewController
         }
 
         // Center image horizontally
-        let imageWidth = imageSize.width * scrollView.zoomScale
-        let horizontalSpace = max(0, (view.bounds.width - imageWidth) / 2)
+        let imageWidth: CGFloat = imageSize.width * scrollView.zoomScale
+        let leftWidth: CGFloat = (viewSize.width - imageWidth) / 2
+        let horizontalSpace = max(0, leftWidth).rounded(.towardZero)
         scrollView.contentInset.left = horizontalSpace
         scrollView.contentInset.right = horizontalSpace
         if horizontalSpace > 0 {
             scrollView.contentOffset.x = -horizontalSpace
+        } else if didRotateImage {
+            scrollView.contentOffset.x = 0.0
         }
         
         // Center image vertically
-        let imageHeight = imageSize.height * scrollView.zoomScale
-        let verticalSpace = max(0, (view.bounds.height - imageHeight) / 2)
+        let imageHeight: CGFloat = imageSize.height * scrollView.zoomScale
+        let leftHeight: CGFloat = (viewSize.height - imageHeight) / 2
+        let verticalSpace = max(0, leftHeight).rounded(.towardZero)
         scrollView.contentInset.top = verticalSpace
         scrollView.contentInset.bottom = verticalSpace
         if verticalSpace > 0 {
             scrollView.contentOffset.y = -verticalSpace
+        } else if didRotateImage {
+            scrollView.contentOffset.y = 0.0
         }
         
+        // Reset flag
+         didRotateImage = false
+
+        // For debugging
 //        debugPrint("••> Did updateScrollViewInset: ")
-//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+//        debugPrint("    View: \(viewSize.width) x \(viewSize.height)")
 //        debugPrint("    Offset: \(scrollView.contentOffset)")
 //        debugPrint("    Inset : \(scrollView.contentInset)")
 
@@ -328,17 +390,19 @@ extension ImageDetailViewController: UIScrollViewDelegate
         if scrollView.zoomScale < 0.9 * scrollView.minimumZoomScale,
            startingZoomScale < 1.1 * scrollView.minimumZoomScale {
             dismiss(animated: true)
-        } else {
-            // Hide navigation bar, toolbar and description if needed
-            if navigationController?.isNavigationBarHidden == false,
-               scrollView.zoomScale > scrollView.minimumZoomScale {
-                if let imageVC = parent?.parent as? ImageViewController {
-                    imageVC.didTapOnce()
-                }
-            }
-            // Keep image centred
-            updateScrollViewInset()
+            return
         }
+        
+        // Hide navigation bar, toolbar and description if needed
+        if navigationController?.isNavigationBarHidden == false,
+           scrollView.zoomScale > scrollView.minimumZoomScale {
+            if let imageVC = parent?.parent as? ImageViewController {
+                imageVC.didTapOnce()
+            }
+        }
+        
+        // Keep image centred
+        updateScrollViewInset()
     }
     
     // Zooming of the content in the scroll view completed

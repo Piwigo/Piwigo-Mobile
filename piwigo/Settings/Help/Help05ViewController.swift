@@ -21,32 +21,36 @@ class Help05ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise mutable attributed strings
+        // Initialisation
+        let hasLargeWidth = view.bounds.size.width > 320.0
+        let titleFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17, weight: .bold) : .systemFont(ofSize: 13, weight: .bold)
+        let textFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17) : .systemFont(ofSize: 13)
         let legendTopAttributedString = NSMutableAttributedString(string: "")
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = "\(NSLocalizedString("help05_header", comment: "Upload Photos"))\n"
+        let titleString = NSLocalizedString("help05_header", comment: "Upload Photos") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        let titleFont = view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendTopAttributedString.append(titleAttributedString)
 
         // Text of legend above images
-        var textString = NSLocalizedString("help05_text", comment: "Submit requests and let go")
-        var textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
-        legendTopAttributedString.append(textAttributedString)
+        let aboveString = NSLocalizedString("help05_text", comment: "Submit requests and let go")
+        let aboveAttributedString = NSMutableAttributedString(string: aboveString)
+        let aboveRange = NSRange(location: 0, length: aboveString.count)
+        aboveAttributedString.addAttribute(.font, value: textFont, range: aboveRange)
+        legendTopAttributedString.append(aboveAttributedString)
 
         // Set legend at top of screen
         legendTop.attributedText = legendTopAttributedString
 
         // Text of legend between images
-        textString = NSLocalizedString("help05_text2", comment: "Access the UploadQueue.")
-        textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
-        legendBotAttributedString.append(textAttributedString)
+        let betweenString = NSLocalizedString("help05_text2", comment: "Access the UploadQueue.")
+        let betweenAttributedString = NSMutableAttributedString(string: betweenString)
+        let betweenRange: NSRange = NSRange(location: 0, length: betweenString.count)
+        betweenAttributedString.addAttribute(.font, value: textFont, range: betweenRange)
+        legendBotAttributedString.append(betweenAttributedString)
 
         // Set legend
         legendBot.attributedText = legendBotAttributedString
@@ -82,7 +86,7 @@ class Help05ViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {

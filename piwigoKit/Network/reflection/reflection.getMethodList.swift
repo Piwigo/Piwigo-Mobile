@@ -11,7 +11,7 @@ import Foundation
 public let kReflectionGetMethodList = "format=json&method=reflection.getMethodList"
 public let kReflectionGetMethodListBytes: Int64 = 34528
 
-// MARK: Piwigo JSON Structure
+// MARK: Piwigo JSON Structures
 public struct ReflectionGetMethodListJSON: Decodable {
     
     public var status: String?

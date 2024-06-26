@@ -1,4 +1,4 @@
-This version informs users when they should update their server and fixes a few bugs described in TestFlight. The IQKeyboardManagerSwift library has also been removed.
+This version adopts the album sorting options of the web UI, introduces an option for sorting photos on-the-fly and a command for rotating photos already uploaded to the Piwigo server. The MBProgressHUD library has also been removed and the app now uses no third party library.
 
 Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/Dev/
 And here are servers you can try without credentials: https://raia.com, https://www.neilfitzgeraldphoto.co.nz/gallery, http://www.dongshawhwei.com/photos.

@@ -101,12 +101,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
         updateNavBar()
         
-        // Header informing user on network status
-        setTableViewMainHeader()
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
@@ -114,7 +111,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
         // Register upload progress
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: .pwgUploadProgress, object: nil)
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -189,6 +186,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Update title of current scene (iPad only)
         view.window?.windowScene?.title = title
+
+        // Header informing user on network status
+        setTableViewMainHeader()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -309,31 +309,33 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - UITableView - Headers
     @objc func setTableViewMainHeader() {
-        DispatchQueue.main.async {
-            if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+        if queueTableView?.window == nil { return }
+        DispatchQueue.main.async { [self] in
+            // No upload request in the queue?
+            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
-                let headerView = UploadQueueHeaderView(frame: .zero)
+                let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
                                      text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
                 self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Low Power mode enabled
-                let headerView = UploadQueueHeaderView(frame: .zero)
+                let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
                                      text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
                 self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
             }
             else {
-                // Prevent device from sleeping if uploads are in progress
-                self.queueTableView.tableHeaderView = nil
-                if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section3.rawValue) {
-                    if self.diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section3.rawValue) > 0 {
-                        UIApplication.shared.isIdleTimerDisabled = true
-                    } else {
-                        UIApplication.shared.isIdleTimerDisabled = false
-                    }
-                }
+                // Uploads in progress
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = true
             }
         }
     }
@@ -451,9 +453,6 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             
         // Update the navigation bar
         self.updateNavBar()
-        
-        // Refresh header informing user on network status when UploadManager restarted running
-        self.setTableViewMainHeader()
         
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
         if snapshot.numberOfItems == 0 {

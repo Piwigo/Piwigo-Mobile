@@ -75,9 +75,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Register image share methods to perform on completion
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingVideo),
-                                               name: .pwgDidShare, object: nil)
+                                               name: Notification.Name.pwgDidShare, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadVideoTask),
-                                               name: .pwgCancelDownload, object: nil)
+                                               name: Notification.Name.pwgCancelDownload, object: nil)
     }
 
     // MARK: - Download & Prepare Video
@@ -118,9 +118,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
-                                     fromServer: serverID, fileSize: imageData.fileSize,
-                                     placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
+                                   fromServer: serverID, fileSize: imageData.fileSize,
+                                   placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
         } completion: { fileURL in
@@ -162,9 +162,14 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
 
         // Copy original file to /tmp directly with appropriate file name
+        // and set creation date as the photo creation date
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let attrs = [FileAttributeKey.creationDate     : creationDate,
+                     FileAttributeKey.modificationDate : creationDate]
         do {
             try? FileManager.default.removeItem(at: imageFileURL)
-            try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try  FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
         }
         catch {
             // Cancel task
@@ -289,6 +294,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Shared files w/ or w/o private metadata are saved in the /tmp directory and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
+        try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
         return imageFileURL
     }
     
@@ -352,7 +358,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel video file download
-        ImageSession.shared.cancelDownload(atURL: pwgImageURL)
+        PwgSession.shared.cancelDownload(atURL: pwgImageURL)
         // Cancel video export
         exportSession?.cancelExport()
     }

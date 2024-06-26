@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.4_text" = "Version 3.1.4\n\n• Corrige un plantage survenant sur iOS 12";
+"v3.2.0_text" = "Version 3.2\n\n• Adopte les options de tri des photos des albums\n• Ajoute des options de tri des photos à la volée\n• Ajoute la rotation des photos téléchargées (nécessite le plugin rotateImage)\n• Corrections de bugs";
+
+"v3.1.4_text" = "Version 3.1.4\n27 février 2024\n\n• Corrige un plantage survenant sur iOS 12";
 
 "v3.1.3_text" = "Version 3.1.3\n11 février 2024\n\n• Correction de bugs";
 

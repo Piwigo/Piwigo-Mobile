@@ -19,13 +19,15 @@ class Help06ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise mutable attributed string
+        // Initialisation
+        let hasLargeWidth = view.bounds.size.width > 320.0
+        let titleFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17, weight: .bold) : .systemFont(ofSize: 13, weight: .bold)
+        let textFont: UIFont = hasLargeWidth ? .systemFont(ofSize: 17) : .systemFont(ofSize: 13)
         let legendAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = "\(NSLocalizedString("help06_header", comment: "Upload Management"))\n"
+        let titleString = NSLocalizedString("help06_header", comment: "Upload Management") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        let titleFont = view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17, weight: .bold) : UIFont.systemFont(ofSize: 17, weight: .semibold)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)
         legendAttributedString.append(titleAttributedString)
@@ -33,7 +35,8 @@ class Help06ViewController: UIViewController {
         // Text
         let textString = NSLocalizedString("help06_text", comment: "How to manage upload requests")
         let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.systemFont(ofSize: 17) : UIFont.systemFont(ofSize: 13), range: NSRange(location: 0, length: textString.count))
+        let textRange = NSRange(location: 0, length: textString.count)
+        textAttributedString.addAttribute(.font, value: textFont, range: textRange)
         legendAttributedString.append(textAttributedString)
 
         // Set legend
@@ -61,7 +64,7 @@ class Help06ViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {

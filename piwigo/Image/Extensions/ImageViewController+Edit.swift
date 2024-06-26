@@ -7,11 +7,31 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
+// MARK: - Edit Image Propertites Action
+@available(iOS 14, *)
 extension ImageViewController
 {
-    // MARK: - Edit Image
+    func editParamsAction() -> UIAction {
+        // Edit image parameters
+        let action = UIAction(title: NSLocalizedString("imageOptions_properties",
+                                                       comment: "Modify Information"),
+                              image: UIImage(systemName: "pencil"),
+                              handler: { _ in
+            // Edit image informations
+            self.editImage()
+        })
+        action.accessibilityIdentifier = "Edit Parameters"
+        return action
+    }
+}
+
+
+// MARK: - Edit Image Properties
+extension ImageViewController
+{
     @objc func editImage() {
         guard let imageData = imageData else { return }
         // Disable buttons during action

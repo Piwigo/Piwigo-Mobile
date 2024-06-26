@@ -21,7 +21,13 @@ enum PresentationType {
 // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
 final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
 
-    static let duration: TimeInterval = 0.23
+    static let duration: TimeInterval = {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return 0.5
+        } else {
+            return 0.25
+        }
+    }()
 
     private let type: PresentationType
     private let albumViewController: AlbumViewController
@@ -46,7 +52,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         self.cellImageViewSnapshot = cellImageViewSnapshot
         self.navBarSnapshot = navBarSnapshot
         
-        guard let window = albumViewController.view.window ?? imageNavViewController.view.window,
+        guard let window = albumViewController.view.window,
               let animatedCell = albumViewController.animatedCell,
               let navBar = albumViewController.navigationController?.navigationBar
             else { return nil } // i.e. use default present/dismiss animation

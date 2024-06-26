@@ -11,7 +11,7 @@ import Foundation
 public let kCommunitySessionGetStatus = "format=json&method=community.session.getStatus"
 public let kCommunitySessionGetStatusBytes: Int64 = 2100
 
-// MARK: Piwigo JSON Structure
+// MARK: Piwigo JSON Structures
 public struct CommunitySessionGetStatusJSON: Decodable
 {    
     public var status: String?

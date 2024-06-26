@@ -115,6 +115,7 @@
 
 "loginError_title" = "Log ind Mislykkedes";
 "loginError_message" = "Brugernavnet og adgangskoden er ikke korrekt";
+"loginError_resetPwd" = "Vil du nulstille din adgangskode fra webgrænsefladen?";
 "loginEmptyServer_title" = "Indtast en Webadresse";
 "loginEmptyServer_message" = "Venligst Vælg en protokol og indtast en Piwigo web-adresse for at fortsætte.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Dine favoritter";
 
 // Albums sort
+"categorySort_sort" = "Sortér Billeder Efter…";
+"categorySort_default" = "Standard";
+"categorySort_name" = "Billede titel";
 "categorySort_nameAscending" = "Billedtitel, A → Z";
 "categorySort_nameDescending" = "Billedtitel, Z → A";
+"categorySort_fileName" = "Filens navn";
 "categorySort_fileNameAscending" = "Filnavn, A → Z";
 "categorySort_fileNameDescending" = "Filnavn, Z → A";
+"categorySort_dateCreated" = "Oprettet dato";
 "categorySort_dateCreatedDescending" = "Oprettelsdato, ny → gammel";
 "categorySort_dateCreatedAscending" = "Oprettelsdato, gammel → ny";
+"categorySort_datePosted" = "Indlægsdato";
 "categorySort_datePostedDescending" = "Oprettelsdato, ny → gammel";
 "categorySort_datePostedAscending" = "Oprettelsdato, gammel → ny";
+"categorySort_ratingScore" = "Bedømmelse Score";
 "categorySort_ratingScoreDescending" = "Bedømmelse, høj → lav";
 "categorySort_ratingScoreAscending" = "Bedømmelse, lav → høj";
+"categorySort_visits" = "Besøg";
 "categorySort_visitsDescending" = "Besøg, høj → lav";
 "categorySort_visitsAscending" = "Besøg, lav → høj";
 "categorySort_manual" = "Manuel sortering";
+"categorySort_randomly" = "Tilfældigt";
 "categorySort_random" = "Tilfældig rækkefølge";
-
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
+
+"categoryView_options" = "Vis Indstillinger";
+"categoryGroup_group" = "Gruppér Billeder Efter…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -307,10 +322,11 @@
 "noImages" = "Ingen Billeder";
 "pullToRefresh" = "Genindlæs Billeder";
 "andMore" = " & mere";
-"Months" = "Måneder";
-"Weeks" = "Uger";
-"Days" = "Dage";
 "Date" = "Dato";
+"None" = "Ingen";
+"Day" = "Dag";
+"Week" = "Uge";
+"Month" = "Måned";
 
 // Errors
 "albumPhotoError_title" = "Hent Albummets Fotofejl";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Kunne ikke tilføje dette billede til dine favoritter.";
 "imageFavoritesRemoveError_message" = "Kunne ikke fjerne dette billede fra dine favoritter.";
+
+// Image rotate
+"rotateImage_rotate" = "Rotér 90°…";
+"rotateImage_left" = "Mod Uret";
+"rotateImage_right" = "Med uret";
+"rotateSingleImageHUD_rotating" = "Roterende Foto…";
+"rotateSeveralImageHUD_rotating" = "Roterende Fotos…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotation Mislykkedes";
+"rotateImageFail_plugin" = "RotateImage plugin er ikke aktiveret.";
+"rotateImageFail_message" = "Billede kunne ikke roteres";
 
 // Image delete
 "deleteImage_delete" = "Slet";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Hvad er nyt i Piwigo";
-"whatsNew_title1" = "Nye Bevægelser";
-"whatsNew_desc1" = "Stryg ned eller klemme billedet for at vende tilbage til albummet, når du ser individuelle billeder eller videoer.";
-"whatsNew_title2" = "PiP Understøttelse";
-"whatsNew_desc2" = "Se en video, der er gemt på din Piwigo, mens du bruger andre apps.";
+"whatsNew_title1" = "Gruppe Fotos";
+"whatsNew_desc1" = "Efter dag, uge eller måned.";
+"whatsNew_title2" = "Rotér Fotos";
+"whatsNew_desc2" = "Løs orienteringsproblemer (kræver rotateImage pluginet).";
 "whatsNew_continue" = "Fortsæt";

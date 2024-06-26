@@ -95,7 +95,7 @@ class ReleaseNotesViewController: UIViewController {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -154,6 +154,9 @@ class ReleaseNotesViewController: UIViewController {
     private func notesAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
+
+        // Release 3.2.x — Bundle string
+        notesAttributedString.append(releaseNotes("v3.2.0_text", comment: "v3.2.0 Release Notes text"))
 
         // Release 3.1.x — Bundle string
         notesAttributedString.append(releaseNotes("v3.1.4_text", comment: "v3.1.4 Release Notes text"))

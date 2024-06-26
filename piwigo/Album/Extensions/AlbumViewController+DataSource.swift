@@ -2,340 +2,256 @@
 //  AlbumViewController+DataSource.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 29/07/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import piwigoKit
-import uploadKit
 
-extension AlbumViewController
+extension AlbumViewController: UICollectionViewDataSource
 {
-    // MARK: Album and Image Data
-    func fetchAlbumsAndImages(completion: @escaping () -> Void) {
-        // Remember query and which images belong to the album
-        // from main context before calling background tasks
-        /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
-        /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
-        let oldImageIds = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
-        let query = albumData.query
-
-        // Use the AlbumProvider to create the album data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
-            // Fetch albums and images
-            if categoryId < 0 {
-                // The number of images is unknown when a smart album is created.
-                // Use the ImageProvider to fetch image data. On completion,
-                // handle general UI updates and error alerts on the main queue.
-                self.fetchImages(withInitialImageIds: oldImageIds, query: query,
-                                 fromPage: 0, toPage: 0) {
-                    completion()
-                }
-            } else {
-                fetchAlbums(withInitialImageIds: oldImageIds, query: query) {
-                    completion()
-                }
-            }
-        }
+    func attributedComment() -> NSMutableAttributedString {
+        let desc = NSMutableAttributedString(attributedString: albumData.comment)
+        let wholeRange = NSRange(location: 0, length: desc.string.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        desc.addAttributes(attributes, range: wholeRange)
+        return desc
     }
     
-    private func fetchAlbums(withInitialImageIds oldImageIds: Set<Int64>, query: String,
-                             completion: @escaping () -> Void) {
-        // Use the AlbumProvider to fetch album data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        albumProvider.fetchAlbums(forUser: user, inParentWithId: categoryId,
-                                  thumbnailSize: thumnailSize) { [self] error in
-            guard let error = error else {
-                // No error ► Fetch image data?
-                let nbImages = self.albumData.nbImages
-                if self.categoryId == 0 || nbImages == 0 {
-                    // Done fetching images
-                    // ► Check if the album has been deleted
-                    if self.albumData.isDeleted {
-                        DispatchQueue.main.async { [self] in
-                            navigationController?.hidePiwigoHUD { [self] in
-                                navigationController?.popViewController(animated: true)
-                            }
-                        }
-                        return
-                    }
-                    // ► Remove non-fetched images from album
-                    self.removeImageWithIDs(oldImageIds)
-                    // ► Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-                    completion()
-                    return
-                }
-                
-                // Use the ImageProvider to fetch image data. On completion,
-                // handle general UI updates and error alerts on the main queue.
-                let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
-                let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
-                self.fetchImages(withInitialImageIds: oldImageIds, query: query,
-                                 fromPage: 0, toPage: lastPage - 1,
-                                 completion: completion)
-                return
+    func getImageCount() -> String {
+        // Get total number of images
+        var totalCount = Int64.zero
+        if albumData.pwgID == 0 {
+            // Root Album only contains albums  => calculate total number of images
+            (albums.fetchedObjects ?? []).forEach { album in
+                totalCount += album.totalNbImages
             }
-            
-            // Show the error
-            DispatchQueue.main.async { [self] in
-                // Done fetching album data
-                // ► Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-
-                completion()
-                self.showError(error)
-            }
-        }
-    }
-    
-    func fetchImages(withInitialImageIds oldImageIds: Set<Int64>, query: String,
-                     fromPage onPage: Int, toPage lastPage: Int,
-                     completion: @escaping () -> Void) {
-        // Use the ImageProvider to fetch image data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query,
-                                  sort: AlbumVars.shared.defaultSort,
-                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
-            guard let error = error else {
-                // No error ► Smart album?
-                var newLastPage = lastPage
-                if albumData.pwgID < 0, onPage == 0 {
-                    // Re-calculate number of pages
-                    newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
-
-                    // Update smart album data
-                    if albumData.nbImages != totalCount {
-                        albumData.nbImages = totalCount
-                    }
-                    if albumData.totalNbImages != totalCount {
-                        albumData.totalNbImages = totalCount
-                    }
-                }
-                
-                // Will not remove fetched images from album image list
-                let imageIds = oldImageIds.subtracting(fetchedImageIds)
-                
-                // Should we continue?
-                if onPage < newLastPage, query == albumData.query {
-                    // Pursue fetch without HUD
-                    DispatchQueue.main.async { [self] in
-                        navigationController?.hidePiwigoHUD {
-                            // Set navigation bar buttons
-                            if self.isSelect {
-                                self.updateButtonsInSelectionMode()
-                            } else {
-                                self.updateButtonsInPreviewMode()
-                            }
-
-                            // End refreshing if needed
-                            self.imagesCollection?.refreshControl?.endRefreshing()
-                        }
-                    }
-                    // Is user editing the search string?
-                    if pauseSearch {
-                        // Remove non-fetched images from album
-                        removeImageWithIDs(imageIds)
-                        // Store parameters
-                        self.oldImageIds = imageIds
-                        self.onPage = onPage + 1
-                        self.lastPage = newLastPage
-                        self.perPage = perPage
-                        return
-                    }
-                    // Load next page of images
-                    self.fetchImages(withInitialImageIds: imageIds, query: query,
-                                     fromPage: onPage + 1, toPage: newLastPage,
-                                     completion: completion)
-                    return
-                }
-                
-                // Done fetching images
-                // ► Remove non-fetched images from album
-                removeImageWithIDs(imageIds)
-                // ► Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-                // ► Delete orphaned images in the background
-                imageProvider.purgeOrphans()
-
-                completion()
-                return
-            }
-            
-            // Show the error
-            DispatchQueue.main.async { [self] in
-                // Done fetching images
-                // ► Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-                
-                completion()
-                self.showError(error)
-            }
-        }
-    }
-    
-    private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
-        // Done fetching images ► Remove non-fetched images from album
-        DispatchQueue.main.async {
-            // Remember when images were fetched
-            self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
-            
-            // Remove images if necessary
-            if let images = self.albumData.images {
-                if imageIDs.isEmpty == false {
-                    let toRemove = images.filter({ imageIDs.contains($0.pwgID) })
-                    self.albumData.removeFromImages(toRemove)
-                    try? self.mainContext.save()
-                } else if self.albumData.nbImages == Int64.zero,
-                          images.isEmpty == false {
-                    self.albumData.removeFromImages(images)
-                    try? self.mainContext.save()
-                }
-            }
+        } else {
+            // Number of images in current album
+            totalCount = albumData.nbImages
         }
         
-        // Delete upload requests of images deleted from the Piwigo server
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: Array(imageIDs))
+        // Build footer content
+        var legend = " "
+        if totalCount == Int64.min {
+            // Is loading…
+            legend = NSLocalizedString("loadingHUD_label", comment:"Loading…")
         }
+        else if totalCount == Int64.zero {
+            // Not loading and no images
+            if albumData.pwgID == Int64.zero {
+                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+            } else {
+                legend = NSLocalizedString("noImages", comment:"No Images")
+            }
+        }
+        else {
+            // Display number of images…
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
+                let format:String = totalCount > 1 ? NSLocalizedString("severalImagesCount", comment:"%@ photos") : NSLocalizedString("singleImageCount", comment:"%@ photo")
+                legend = String(format: format, number)
+            }
+            else {
+                legend = String(format: NSLocalizedString("severalImagesCount", comment:"%@ photos"), "?")
+            }
+        }
+        return legend
     }
     
     func updateNberOfImagesInFooter() {
         // Update number of images in footer
         DispatchQueue.main.async { [self] in
-            let indexPath = IndexPath(item: 0, section: 1)
-            if let footer = self.imagesCollection?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? NberImagesFooterCollectionReusableView {
-                footer.noImagesLabel?.text = getImageCount()
+            // Determine index path
+            var indexPath: IndexPath
+            if categoryId == Int32.zero {
+                // Number of images in footer of album collection
+                indexPath = IndexPath(item: 0, section: 0)
+            }
+            else {
+                // Number of images in footer of image collection
+                indexPath = IndexPath(item: 0, section: (images.sections?.count ?? 0))
+            }
+            // Update footer if needed
+            if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
+                footer.nberImagesLabel?.text = getImageCount()
             }
         }
     }
     
-    private func showError(_ error: Error?) {
-        DispatchQueue.main.async { [unowned self] in
-            guard let error = error as? NSError else {
-                navigationController?.showPiwigoHUD(
-                    withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
-                    detail: " ",
-                    buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                    buttonTarget: self, buttonSelector: #selector(hideLoading),
-                    inMode: .text)
-                return
-            }
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return categoryId == Int32.zero ? 1 : 1 + (images.sections?.count ?? 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0 /* Albums */:
+            let objects = albums.fetchedObjects
+            return objects?.count ?? 0
             
-            // Returns to login view only when credentials are rejected
-            if [NSURLErrorUserAuthenticationRequired, 401, 403].contains(error.code) ||
-                NetworkVars.didFailHTTPauthentication {
-                // Invalid Piwigo or HTTP credentials
-                navigationController?.showPiwigoHUD(
-                    withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
-                    detail: error.localizedDescription,
-                    buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                    buttonTarget: self, buttonSelector: #selector(hideLoading),
-                    inMode: .text)
-            }
-            else if let err = error as? PwgSessionError, err == .missingParameter {
-                // Hide HUD
-                navigationController?.hidePiwigoHUD() {
-                    // End refreshing if needed
-                    self.imagesCollection?.refreshControl?.endRefreshing()
+        default /* Images */:
+            guard let sections = images.sections
+            else { preconditionFailure("No sections in fetchedResultsController")}
+            return sections[section - 1].numberOfObjects
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+    {
+        let emptyView = UICollectionReusableView(frame: CGRect.zero)
+        switch indexPath.section {
+        case 0 /* Albums */:
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView", for: indexPath) as? AlbumHeaderReusableView else { preconditionFailure("Could not load AlbumHeaderReusableView")}
+                header.commentLabel?.attributedText = attributedComment()
+                header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+                return header
+            case UICollectionView.elementKindSectionFooter:
+                if categoryId == Int32.zero {
+                    guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
+                    else { preconditionFailure("Could not load ImageFooterReusableView")}
+                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                    footer.nberImagesLabel?.text = getImageCount()
+                    return footer
                 }
+            default:
+                break
+            }
+        default /* Images */:
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                // Are images grouped by day, week or month?
+                if dateSortTypes.contains(sortOption) == false { return emptyView }
+                
+                // Determine place names from first images
+                let imageSection = indexPath.section - 1
+                var imagesInSection: [Image] = []
+                for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
+                    let imageIndexPath = IndexPath(item: item, section: imageSection)
+                    imagesInSection.append(images.object(at: imageIndexPath))
+                }
+
+                // Determine state of Select button
+                let selectState = updateSelectButton(ofSection: indexPath.section)
+
+                // Images are grouped by day, week or month
+                if #available(iOS 14, *) {
+                    // Grouping options accessible from menu ► Only display date and location
+                    guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
+                    else { preconditionFailure("Could not load ImageHeaderReusableView") }
+                    
+                    header.config(with: imagesInSection, sortOption: sortOption, section: indexPath.section, selectState: selectState)
+                    header.imageHeaderDelegate = self
+                    return header
+                }
+                else {
+                    // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
+                    if indexPath.section == 1 {
+                        // Display segmented controller
+                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView
+                        else { preconditionFailure("Could not load ImageOldHeaderReusableView")}
+                        
+                        header.config(with: imagesInSection, sortOption: sortOption, group: AlbumVars.shared.defaultGroup,
+                                      section: indexPath.section, selectState: selectState)
+                        header.imageHeaderDelegate = self
+                        return header
+                    } else {
+                        // Grouping options accessible from menu ► Only display date and location
+                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
+                        else { preconditionFailure("Could not load ImageHeaderReusableView") }
+                        
+                        header.config(with: imagesInSection, sortOption: sortOption,
+                                      section: indexPath.section, selectState: selectState)
+                        header.imageHeaderDelegate = self
+                        return header
+                    }
+                }
+            case UICollectionView.elementKindSectionFooter:
+                if indexPath.section == images.sections?.count ?? 0 {
+                    guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
+                    else { preconditionFailure("Could not load ImageFooterReusableView")}
+                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                    footer.nberImagesLabel?.text = getImageCount()
+                    return footer
+                }
+            default:
+                break
             }
         }
+        return emptyView
     }
-
-    @objc func hideLoading() {
-        // Hide HUD
-        navigationController?.hidePiwigoHUD() {
-            // Return to login view
-            ClearCache.closeSession()
-        }
-    }
-
     
-    // MARK: - Fetch Favorites in the background
-    /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
-    func loadFavoritesInBckg() {
-        // Check that an album of favorites exists in cache (create it if necessary)
-        guard let album = self.albumProvider.getAlbum(withId: pwgSmartAlbum.favorites.rawValue) else {
-            // Remove favorite album from list of album being fetched
-            AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-            return
-        }
-        if album.isFault {
-            album.willAccessValue(forKey: nil)
-            album.didAccessValue(forKey: nil)
-        }
-
-        // Remember which images belong to this album
-        // from main context before calling background tasks
-        let oldImageIds = Set(album.images?.map({$0.pwgID}) ?? [])
-
-        // Load favorites data in the background
-        // Use the ImageProvider to fetch image data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        let albumNbImages = album.nbImages
-        let (quotient, remainer) = albumNbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
-        let lastPage = Int(quotient) + Int(remainer) > 0 ? 1 : 0
-        self.fetchFavorites(ofAlbum: album, imageIds: oldImageIds,
-                            fromPage: 0, toPage: lastPage, perPage: perPage)
-    }
-    
-    private func fetchFavorites(ofAlbum album: Album, imageIds: Set<Int64>,
-                                fromPage onPage: Int, toPage lastPage: Int, perPage: Int) {
-        // Use the ImageProvider to fetch image data. On completion,
-        // handle general UI updates and error alerts on the main queue.
-        imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "",
-                                  sort: .dateCreatedAscending,
-                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
-            // Any error?
-            if error != nil {
-                // Remove favorite album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-                return
-            }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch indexPath.section {
+        case 0 /* Albums (see XIB file) */:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell
+            else { preconditionFailure("Could not load AlbumCollectionViewCell") }
             
-            // No error
-            var newLastPage = lastPage
-            // Re-calculate number of pages
-            newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
-
-            // Update smart album data
-            if album.nbImages != totalCount {
-                album.nbImages = totalCount
+            // Configure cell with album data
+            let album = albums.object(at: indexPath)
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
             }
-            if album.totalNbImages != totalCount {
-                album.totalNbImages = totalCount
+            cell.albumData = album
+            cell.pushAlbumDelegate = self
+            cell.deleteAlbumDelegate = self
+            
+            // Disable category cells in Image selection mode
+            if isSelect {
+                cell.contentView.alpha = 0.5
+                cell.isUserInteractionEnabled = false
+            } else {
+                cell.contentView.alpha = 1.0
+                cell.isUserInteractionEnabled = true
+            }
+//            debugPrint("••> Adds album cell at \(indexPath.item)")
+            return cell
+            
+        default /* Images */:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell
+            else { preconditionFailure("Could not load ImageCollectionViewCell") }
+            
+            // Add pan gesture recognition if needed
+            if cell.gestureRecognizers == nil {
+                let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
+                imageSeriesRocognizer.minimumNumberOfTouches = 1
+                imageSeriesRocognizer.maximumNumberOfTouches = 1
+                imageSeriesRocognizer.cancelsTouchesInView = false
+                imageSeriesRocognizer.delegate = self
+                cell.addGestureRecognizer(imageSeriesRocognizer)
+                cell.isUserInteractionEnabled = true
             }
 
-            // Will not remove fetched images from album image list
-            let newImageIds = imageIds.subtracting(fetchedImageIds)
+            // Retrieve image data
+            let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+            let image = images.object(at: imageIndexPath)
+
+            // Is this cell selected?
+            cell.isSelection = selectedImageIds.contains(image.pwgID)
             
-            // Should we continue?
-            if onPage < newLastPage {
-                // Load next page of images
-                self.fetchFavorites(ofAlbum: album, imageIds: newImageIds,
-                                    fromPage: onPage + 1, toPage: newLastPage, perPage: perPage)
-                return
+            // pwg.users.favorites… methods available from Piwigo version 2.10
+            if hasFavorites {
+                cell.isFavorite = (image.albums ?? Set<Album>())
+                    .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
             }
             
-            // Done fetching images
-            // ► Remove non-fetched images from album
-            let images = imageProvider.getImages(inContext: bckgContext, withIds: newImageIds)
-            album.removeFromImages(images)
-            // ► Remember when favorites were fetched
-            album.dateGetImages = Date().timeIntervalSinceReferenceDate
-            // ► Remove favorite album from list of album being fetched
-            AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-            
-            // Save changes
-            bckgContext.saveIfNeeded()
-            DispatchQueue.main.async {
-                self.mainContext.saveIfNeeded()
-            }
+            // The image being retrieved in a background task,
+            // config() must be called after setting all other parameters
+            cell.config(with: image, placeHolder: imagePlaceHolder, size: imageSize, sortOption: sortOption)
+//            debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
+            return cell
         }
     }
 }

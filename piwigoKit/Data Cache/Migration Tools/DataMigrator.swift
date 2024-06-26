@@ -353,7 +353,11 @@ private extension DataMigrationVersion {
         //            print("••> \(appVersion) is smaller than 3.00")
                     return .version09
                 }
-                return .version0C
+                else if appVersion.compare("3.20", options: .numeric) == .orderedAscending {
+        //            print("••> \(appVersion) is smaller than 3.2")
+                    return .version0C
+                }
+                return .version0F
             }
         }
         return compatibleVersion

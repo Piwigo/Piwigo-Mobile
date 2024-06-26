@@ -115,6 +115,7 @@
 
 "loginError_title" = "ログインに失敗しました";
 "loginError_message" = "ユーザ名とパスワードが、指定したwebアドレスで一致しません";
+"loginError_resetPwd" = "Webインターフェイスからパスワードをリセットしますか？";
 "loginEmptyServer_title" = "Web アドレスを入力してください";
 "loginEmptyServer_message" = "先に進むために、プロトコルを選択してPiwigoウェブアドレスを入力して下さい。";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "お気に入り";
 
 // Albums sort
+"categorySort_sort" = "画像を並べ替える...";
+"categorySort_default" = "デフォルト";
+"categorySort_name" = "写真のタイトル";
 "categorySort_nameAscending" = "写真題名、A → Z";
 "categorySort_nameDescending" = "写真題名、Z → A";
+"categorySort_fileName" = "ファイル名";
 "categorySort_fileNameAscending" = "ファイル名、A → Z";
 "categorySort_fileNameDescending" = "ファイル名、Z → A";
+"categorySort_dateCreated" = "作成日";
 "categorySort_dateCreatedDescending" = "作成日、新しい → 古い";
 "categorySort_dateCreatedAscending" = "作成日、古い → 新しい";
+"categorySort_datePosted" = "投稿日";
 "categorySort_datePostedDescending" = "掲載日、新しい → 古い";
 "categorySort_datePostedAscending" = "掲載日、古い → 新しい";
+"categorySort_ratingScore" = "評価スコア";
 "categorySort_ratingScoreDescending" = "評価スコア、高い→低い";
 "categorySort_ratingScoreAscending" = "評価スコア、低い→高い";
+"categorySort_visits" = "訪問";
 "categorySort_visitsDescending" = "訪問回数, 高 → 低";
 "categorySort_visitsAscending" = "訪問回数, 低 → 高";
 "categorySort_manual" = "手動注文";
+"categorySort_randomly" = "ランダムに";
 "categorySort_random" = "ランダムな順序";
-
+"categorySort_id" = "識別子";
+"categorySort_idDescending" = "識別子, 9 → 1";
+"categorySort_idAscending" = "識別子, 1 → 9";
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "写真のみ";
+
+"categoryView_options" = "表示オプション";
+"categoryGroup_group" = "グループ画像の…";
 
 // Album selection
 "categorySelection_title" = "アルバム";
@@ -307,10 +322,11 @@
 "noImages" = "写真がありません";
 "pullToRefresh" = "写真の再読み込み";
 "andMore" = " & さらに";
-"Months" = "ヶ月間";
-"Weeks" = "週間";
-"Days" = "日間";
 "Date" = "日付";
+"None" = "なし";
+"Day" = "日";
+"Week" = "週";
+"Month" = "月";
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "お気に入りにこの写真を追加できませんでした。";
 "imageFavoritesRemoveError_message" = "お気に入りからこの写真を削除できませんでした。";
+
+// Image rotate
+"rotateImage_rotate" = "90°回転します…";
+"rotateImage_left" = "反時計回りに";
+"rotateImage_right" = "時計回りに表示";
+"rotateSingleImageHUD_rotating" = "写真を回転します…";
+"rotateSeveralImageHUD_rotating" = "写真を回転しています…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "回転失敗";
+"rotateImageFail_plugin" = "rotateImageプラグインが有効化されていません。";
+"rotateImageFail_message" = "画像を回転できませんでした";
 
 // Image delete
 "deleteImage_delete" = "削除";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
-"whatsNew_title1" = "新しいジェスチャー";
-"whatsNew_desc1" = "画像を下にスワイプまたはピンチすると、個々の写真や動画を見るときにアルバムに戻ります。";
-"whatsNew_title2" = "PiPサポート";
-"whatsNew_desc2" = "Piwigoに保存されているビデオを他のアプリで視聴しましょう。";
+"whatsNew_title1" = "グループ写真";
+"whatsNew_desc1" = "日、週、または月で。";
+"whatsNew_title2" = "写真を回転";
+"whatsNew_desc2" = "方向の問題を修正（rotateImageプラグインが必要）";
 "whatsNew_continue" = "続ける";

@@ -12,7 +12,8 @@ import piwigoKit
 
 class VideoDetailViewController: UIViewController
 {
-    var imageIndex = 0
+    var user: User!
+    var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
         didSet {
             video = imageData.video
@@ -55,7 +56,7 @@ class VideoDetailViewController: UIViewController
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
     @objc func applyColorPalette() {

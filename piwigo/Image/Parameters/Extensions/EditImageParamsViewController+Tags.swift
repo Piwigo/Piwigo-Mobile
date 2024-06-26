@@ -6,6 +6,7 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 
 // MARK: - TagsViewControllerDelegate Methods
@@ -14,7 +15,7 @@ extension EditImageParamsViewController: TagsViewControllerDelegate
     func didSelectTags(_ selectedTags: Set<Tag>) {
         // Check if the user decided to leave the Edit mode
         if !(navigationController?.visibleViewController is EditImageParamsViewController) {
-            // Return updated parameters
+            // Returned to image
             delegate?.didFinishEditingParameters()
             return
         }

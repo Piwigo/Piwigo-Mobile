@@ -6,6 +6,7 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import UIKit
 import piwigoKit
 
 // MARK: - SelectPrivacyDelegate Methods
@@ -14,10 +15,8 @@ extension EditImageParamsViewController: SelectPrivacyDelegate
     func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
         // Check if the user decided to leave the Edit mode
         if !(navigationController?.visibleViewController is EditImageParamsViewController) {
-            // Return updated parameters
-            if delegate?.responds(to: #selector(EditImageParamsDelegate.didFinishEditingParameters)) ?? false {
-                delegate?.didFinishEditingParameters()
-            }
+            // Returned to image
+            delegate?.didFinishEditingParameters()
             return
         }
 

@@ -115,6 +115,7 @@
 
 "loginError_title" = "Mislukte aanmelding";
 "loginError_message" = "De gebruikersnaam en het wachtwoord komen niet overeen op het opgegeven webadres";
+"loginError_resetPwd" = "Wilt u uw wachtwoord opnieuw instellen vanuit de webinterface?";
 "loginEmptyServer_title" = "Voer een webadres in";
 "loginEmptyServer_message" = "Selecteer een protocol en voeg een Piwigo webadres toe om door te gaan.";
 
@@ -165,23 +166,37 @@
 "categoryDiscoverFavorites_title" = "Jouw favorieten";
 
 // Albums sort
+"categorySort_sort" = "Sorteer afbeeldingen op…";
+"categorySort_default" = "Standaard";
+"categorySort_name" = "Fototitel";
 "categorySort_nameAscending" = "Foto titel, A → Z";
 "categorySort_nameDescending" = "Foto titel, Z → A";
+"categorySort_fileName" = "File naam";
 "categorySort_fileNameAscending" = "Bestandsnaam A → Z";
 "categorySort_fileNameDescending" = "Bestandsnaam, Z → A";
+"categorySort_dateCreated" = "Datum aangemaakt";
 "categorySort_dateCreatedDescending" = "Aanmaakdatum, nieuw → oud";
 "categorySort_dateCreatedAscending" = "Datum gemaakt, oud → nieuw";
+"categorySort_datePosted" = "Datum geplaatst";
 "categorySort_datePostedDescending" = "Datum geplaatst, nieuw → oud";
 "categorySort_datePostedAscending" = "Datum geplaatst, oud → nieuw";
+"categorySort_ratingScore" = "Score beoordeling";
 "categorySort_ratingScoreDescending" = "Waarderingsscore, hoog → laag";
 "categorySort_ratingScoreAscending" = "Waarderingsscore, laag → hoog";
+"categorySort_visits" = "Bezoeken";
 "categorySort_visitsDescending" = "Bezoeken, hoog → laag";
 "categorySort_visitsAscending" = "Bezoeken, laag → hoog";
 "categorySort_manual" = "Handmatige volgorde";
+"categorySort_randomly" = "Willekeurig";
 "categorySort_random" = "Willekeurige volgorde";
-
+"categorySort_id" = "Identifier";
+"categorySort_idDescending" = "Identifier, 9 → 1";
+"categorySort_idAscending" = "Identifier, 1 → 9";
 "categorySort_videosOnly" = "Alleen video's";
 "categorySort_imagesOnly" = "Alleen foto's";
+
+"categoryView_options" = "Bekijk opties";
+"categoryGroup_group" = "Afbeeldingen groeperen op…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -307,10 +322,11 @@
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
 "andMore" = " & meer";
-"Months" = "Maanden";
-"Weeks" = "Weken";
-"Days" = "Dagen";
 "Date" = "Datum";
+"None" = "Geen";
+"Day" = "Dag";
+"Week" = "Week";
+"Month" = "Maand";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";
@@ -404,6 +420,18 @@
 // Image in favorites — Error
 "imageFavoritesAddError_message" = "Foto kan niet toegevoegd worden aan favorieten.";
 "imageFavoritesRemoveError_message" = "Fout bij het verwijderen van deze foto uit je favorieten.";
+
+// Image rotate
+"rotateImage_rotate" = "90° draaien…";
+"rotateImage_left" = "Tegen de klok in";
+"rotateImage_right" = "Met de klok mee";
+"rotateSingleImageHUD_rotating" = "Roterende foto…";
+"rotateSeveralImageHUD_rotating" = "Foto's roteren…";
+
+// Image rotate — Errors
+"rotateImageFail_title" = "Rotatie mislukt";
+"rotateImageFail_plugin" = "De rotateImage plugin is niet geactiveerd.";
+"rotateImageFail_message" = "Afbeelding kon niet worden gedraaid";
 
 // Image delete
 "deleteImage_delete" = "Verwijderen";
@@ -837,8 +865,8 @@
 
 // What's New in Piwigo
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
-"whatsNew_title1" = "Nieuwe Gebaren";
-"whatsNew_desc1" = "Veeg naar beneden of zet de afbeelding om terug te gaan naar het album bij het bekijken van individuele foto's of video's.";
-"whatsNew_title2" = "PiP Ondersteuning";
-"whatsNew_desc2" = "Bekijk een video die is opgeslagen op je Piwigo terwijl je andere apps gebruikt.";
+"whatsNew_title1" = "Groep foto's";
+"whatsNew_desc1" = "Per dag, week of maand.";
+"whatsNew_title2" = "Foto's roteren";
+"whatsNew_desc2" = "Repareer oriëntatie problemen (vereist de rotateImage plugin).";
 "whatsNew_continue" = "Doorgaan";

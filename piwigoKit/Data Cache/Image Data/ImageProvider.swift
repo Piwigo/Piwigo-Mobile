@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import Foundation
 
 public class ImageProvider: NSObject {
     
@@ -111,21 +112,21 @@ public class ImageProvider: NSObject {
 
         case pwgSmartAlbum.visits.rawValue:
             paramsDict["recursive"] = true
-            paramsDict["order"] = "hit desc, id desc"
             paramsDict["f_min_hit"] = 1
             
         case pwgSmartAlbum.best.rawValue:
             paramsDict["recursive"] = true
-            paramsDict["order"] = "rating_score desc, id desc"
             paramsDict["f_min_rate"] = 1
             
         case pwgSmartAlbum.recent.rawValue:
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            let threeMonthsAgo = Date(timeIntervalSinceNow: TimeInterval(-3600*24*31*3))
-            let dateAvailableString = dateFormatter.string(from: threeMonthsAgo)
+            let recentPeriod = CacheVars.shared.recentPeriodList[CacheVars.shared.recentPeriodIndex]
+            let maxPeriod = TimeInterval(CacheVars.shared.recentPeriodList.last ?? 99)
+            let nberDays: TimeInterval = recentPeriod == 0 ? maxPeriod : TimeInterval(recentPeriod)
+            let daysAgo = Date(timeIntervalSinceNow: TimeInterval(-3600 * 24 * nberDays))
+            let dateAvailableString = dateFormatter.string(from: daysAgo)
             paramsDict["recursive"] = true
-            paramsDict["order"] = "date_available desc, id desc"
             paramsDict["f_min_date_available"] = dateAvailableString
             
         case pwgSmartAlbum.favorites.rawValue:
@@ -163,7 +164,7 @@ public class ImageProvider: NSObject {
                     }
                     
                     // Import the imageJSON into Core Data.
-                    if [.manual, .random].contains(sort) {
+                    if [.rankAscending, .random].contains(sort) {
                         let startRank = Int64(page * perPage)
                         try self.importImages(imageJSON.data, inAlbum: albumId,
                                               sort: sort, fromRank: startRank)

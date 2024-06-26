@@ -15,6 +15,56 @@ import UIKit
 class ImageUtilities: NSObject {
     
     // MARK: - Piwigo Server Methods    
+    static func rotate(_ image: Image, by angle: Double,
+                       completion: @escaping () -> Void,
+                       failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for rotating image
+        let paramsDict: [String : Any] = ["image_id"  : image.pwgID,
+                                          "angle"     : angle,
+                                          "pwg_token" : NetworkVars.pwgToken,
+                                          "rotate_hd" : true]
+        
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: pwgImageRotate, paramDict: paramsDict,
+                                jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
+            // Decode the JSON if successful.
+            do {
+                // Decode the JSON into codable type ImageRotateJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(ImageRotateJSON.self, from: jsonData)
+                
+                // Piwigo error?
+                if uploadJSON.errorCode != 0 {
+                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                                                                 errorMessage: uploadJSON.errorMessage)
+                    failure(error as NSError)
+                    return
+                }
+                
+                // Successful?
+                if uploadJSON.result {
+                    // Images rotated successfully ► Delete images in cache
+                    image.deleteCachedFiles()
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    failure(PwgSessionError.unexpectedError as NSError)
+                }
+            } catch {
+                // Data cannot be digested
+                let error = error as NSError
+                failure(error)
+            }
+        } failure: { error in
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            failure(error)
+        }
+    }
+    
     static func delete(_ images: Set<Image>,
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
@@ -168,13 +218,12 @@ class ImageUtilities: NSObject {
             return optImage
         }
         
-        // Check that the image can be properly downsampled
-        // by checking if it is possible to create a context from the image.
+        // Check that the image can be properly downsampled by checking its pixel format.
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions),
               let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
-              let _ = CGContext(data: nil, width: imageRef.width, height: imageRef.height, bitsPerComponent: imageRef.bitsPerComponent, bytesPerRow: imageRef.bytesPerRow, space: imageRef.colorSpace ?? CGColorSpace.displayP3 as! CGColorSpace, bitmapInfo: imageRef.bitmapInfo.rawValue),
+              imageRef.hasCGContextSupportedPixelFormat,
               let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale)
         else {
             return couldNotDownsample(imageAt: imageURL)
@@ -190,13 +239,15 @@ class ImageUtilities: NSObject {
         guard pointSize.equalTo(CGSize.zero) == false,
               let imageData = image.jpegData(compressionQuality: 1.0),
               let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
+              let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
+              imageRef.hasCGContextSupportedPixelFormat,
               let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale) else {
             return image
         }
         return downsampledImage
     }
     
-    static func downsampledImage(from imageSource:CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
+    static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
         // The default display scale for a trait collection is 0.0 (indicating unspecified).
         // We therefore adopt a scale of 1.0 when the display scale is unspecified.
         let maxDimensionInPixels = max(pointSize.width, pointSize.height) * max(scale, 1.0)
@@ -400,5 +451,66 @@ class ImageUtilities: NSObject {
             pwgURL = imageURL
         }
         return pwgURL as URL?
+    }
+}
+
+
+// MARK: - Supported Pixel Formats
+/// https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html#//apple_ref/doc/uid/TP30001066-CH203-BCIBHHBB
+extension CGImage {
+    public var hasCGContextSupportedPixelFormat: Bool {
+        guard let colorSpace = self.colorSpace else {
+          return false
+        }
+        #if os(iOS) || os(watchOS) || os(tvOS)
+        let iOS = true
+        #else
+        let iOS = false
+        #endif
+
+        #if os(OSX)
+        let macOS = true
+        #else
+        let macOS = false
+        #endif
+        
+        switch (colorSpace.model, bitsPerPixel, bitsPerComponent, alphaInfo, bitmapInfo.contains(.floatComponents)) {
+        case (.unknown, 8, 8, .alphaOnly, _):
+            return macOS || iOS
+        case (.monochrome, 8, 8, .none, _):
+            return macOS || iOS
+        case (.monochrome, 8, 8, .alphaOnly, _):
+            return macOS || iOS
+        case (.monochrome, 16, 16, .none, _):
+            return macOS
+        case (.monochrome, 32, 32, .none, true):
+            return macOS
+        case (.rgb, 16, 5, .noneSkipFirst, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .noneSkipFirst, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .noneSkipLast, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .premultipliedFirst, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .premultipliedLast, _):
+            return macOS || iOS
+        case (.rgb, 64, 16, .premultipliedLast, _):
+            return macOS
+        case (.rgb, 64, 16, .noneSkipLast, _):
+            return macOS
+        case (.rgb, 128, 32, .noneSkipLast, true):
+            return macOS
+        case (.rgb, 128, 32, .premultipliedLast, true):
+            return macOS
+        case (.cmyk, 32, 8, .none, _):
+            return macOS
+        case (.cmyk, 64, 16, .none, _):
+            return macOS
+        case (.cmyk, 128, 32, .none, true):
+            return macOS
+        default:
+            return false
+        }
     }
 }

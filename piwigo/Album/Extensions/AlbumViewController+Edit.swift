@@ -2,16 +2,32 @@
 //  AlbumViewController+Edit.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 15/06/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
-// MARK: Edit Images Parameters
 extension AlbumViewController
 {
+    // MARK: Edit Images Parameters Action
+    @available(iOS 14.0, *)
+    func editParamsAction() -> UIAction {
+        let actionId = UIAction.Identifier("org.piwigo.images.edit")
+        let action = UIAction(title: NSLocalizedString("imageOptions_properties", comment: "Modify Properties"),
+                              image: UIImage(systemName: "pencil"),
+                              identifier: actionId, handler: { [self] action in
+           // Edit image informations
+            editSelection()
+        })
+        action.accessibilityIdentifier = "editProperties"
+        return action
+    }
+
+
+    // MARK: Edit Images Parameters
     @objc func editSelection() {
         initSelection(beforeAction: .edit)
     }
@@ -19,8 +35,8 @@ extension AlbumViewController
     func editImages() {
         if selectedImageIds.isEmpty {
             // No image => End (should never happen)
-            updatePiwigoHUDwithSuccess() { [self] in
-                hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
+            navigationController?.updateHUDwithSuccess() { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     cancelSelect()
                 }
             }
@@ -33,7 +49,8 @@ extension AlbumViewController
             fatalError("No EditImageParamsViewController!")
         }
         editImageVC.user = user
-        editImageVC.images = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
+        let albumImages = images.fetchedObjects ?? []
+        editImageVC.images = albumImages.filter({selectedImageIds.contains($0.pwgID)})
         editImageVC.delegate = self
         pushView(editImageVC)
     }
@@ -47,24 +64,13 @@ extension AlbumViewController: EditImageParamsDelegate
         // Deselect image
         selectedImageIds.remove(imageId)
         selectedFavoriteIds.remove(imageId)
-        imagesCollection?.reloadSections(IndexSet(integer: 1))
+        selectedVideosIds.remove(imageId)
+        collectionView?.reloadData()
     }
 
     func didChangeImageParameters(_ params: Image) {
-//        // Update cached image data
-//        /// Note: the current category cannot be a smart album.
-//        if let categoryIds = params.categoryIds {
-//            for catId in categoryIds {
-//                CategoriesData.sharedInstance().getCategoryById(catId.intValue).updateImage(afterEdit: params)
-//            }
-//        }
-
-        // Update data source
-//        let indexOfUpdatedImage = albumData?.updateImage(params) ?? NSNotFound
-//        if indexOfUpdatedImage == NSNotFound { return }
-
         // Refresh image cell
-//        let indexPath = IndexPath(item: indexOfUpdatedImage, section: 1)
+//        let indexPath = IndexPath(item: indexOfUpdatedImage, section: 0)
 //        if imagesCollection?.indexPathsForVisibleItems.contains(indexPath) ?? false {
 //            imagesCollection?.reloadItems(at: [indexPath])
 //        }

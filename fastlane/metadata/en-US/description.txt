@@ -17,7 +17,8 @@ Piwigo empowers you to create your own photo gallery on the web. It includes man
 Piwigo is free and opensource.
 
 Piwigo is also compatible with the following extensions:
-- Community: allows non-admin users to add photos
+- Community: allows users to create albums and add photos
+- rotateImage: enables you to rotate images
 - piwigo-videojs: adds video support
 
 Feedback or questions ?

@@ -8,6 +8,5 @@
 
 import Foundation
 
-// MARK: - pwg.images.search
 /// Fetches and parses CategoriesGetImagesJSON data — See pwg.categories.getImages.swift
 public let pwgImagesSearch = "format=json&method=pwg.images.search"

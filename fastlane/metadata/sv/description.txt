@@ -1,4 +1,4 @@
-Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v2.8 eller högre):
+Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v2.10 eller högre):
 
 • Bläddra bland dina album,
 • Skapa, radera, flytta och byt namn på album,
@@ -18,6 +18,7 @@ Piwigo är gratis och opensource.
 
 Piwigo är också kompatibel med följande tillägg:
 - Community: tillåter icke-administratörsanvändare att lägga till bilder
+- rotateImage: låter dig rotera bilder
 - piwigo-videos: lägger till stöd för video
 
 Återkoppling eller frågor?

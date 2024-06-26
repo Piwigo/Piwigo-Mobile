@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.images.upload
 public let pwgCategoriesAdd = "format=json&method=pwg.categories.add"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesAddJSON: Decodable {
 
     public var status: String?
@@ -73,7 +73,6 @@ public struct CategoriesAddJSON: Decodable {
     }
 }
 
-// MARK: - Result
 public struct CategoriesAdd: Decodable
 {
     public let id: Int32?            // 1042

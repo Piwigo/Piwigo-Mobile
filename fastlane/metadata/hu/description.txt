@@ -1,4 +1,4 @@
-A Piwigo for iPhone/iPad/iPod a Piwigo (v2.8 vagy újabb) cloud fotógaléria-szoftver kiegészítője.
+A Piwigo for iPhone/iPad/iPod a Piwigo (v2.10 vagy újabb) cloud fotógaléria-szoftver kiegészítője.
 
 • Böngészhetsz az albumjaidban,
 • Létrehozhatsz, törölhetsz, mozgathatsz és átnevezhetsz albumokat,
@@ -7,9 +7,9 @@ A Piwigo for iPhone/iPad/iPod a Piwigo (v2.8 vagy újabb) cloud fotógaléria-sz
 • Kedvenc fotók és videók kezelése,
 • Beállíthatod albumok nyitóképét,
 • Feltölthetsz fotókat és videókat:
- - változtatható méretben és minőségben,
- - megjegyzésekkel, szerzői információval, címkékkel és EXIF adatokkal,
- - GPS adatokkal, vagy akár nélkülük is.
+  - változtatható méretben és minőségben,
+  - megjegyzésekkel, szerzői információval, címkékkel és EXIF adatokkal,
+  - GPS adatokkal, vagy akár nélkülük is.
 • Megoszthatsz fotókat és videókat.
 
 A Piwigoval saját fotógalériát hozhatsz létre a weben. Számos hatékony funkciót tartalmaz, mint például albumok, címkék, helymeghatározás, több szintű testreszabhatóság, látogatók általi feltöltések, adatvédelem, naptár és statisztikák.
@@ -18,6 +18,7 @@ A Piwigo ingyenes és nyílt forráskódú.
 
 A Piwigo a következő bővítményekkel is kompatibilis:
 - Community: nem-admin felhasználók is tölthetnek fel képeket
+- rotateImage: lehetővé teszi a képek elforgatását
 - piwigo-videojs: videófájlok támogatása
 
 Visszajelzés vagy kérdések?

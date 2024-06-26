@@ -2,16 +2,26 @@
 //  AlbumViewController+Share.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 29/05/2022.
-//  Copyright © 2022 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 06/05/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
 import Foundation
 import Photos
+import UIKit
 
-// MARK: Share Images
 extension AlbumViewController
 {
+    // MARK: Share Bar Button
+    func getShareBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                     action: #selector(shareSelection))
+        button.tintColor = UIColor.piwigoColorOrange()
+        return button
+    }
+
+
+    // MARK: Share Images
     @objc func shareSelection() {
         initSelection(beforeAction: .share)
     }
@@ -103,19 +113,20 @@ extension AlbumViewController
                 // Delete shared files & remove observers
                 NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
+                // Deselect images
+                cancelSelect()
+
                 // Close HUD with success
-                updatePiwigoHUDwithSuccess() { [self] in
-                    hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                        // Deselect images
-                        cancelSelect()
+                presentedViewController?.updateHUDwithSuccess() { [self] in
+                    presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Close ActivityView
                         presentedViewController?.dismiss(animated: true)
                     }
                 }
             } else {
                 if activityType == nil {
-//                    debugPrint("User dismissed the view controller without making a selection.")
-                    updateButtonsInSelectionMode()
+                    // User dismissed the view controller without making a selection.
+                    updateBarsInSelectMode()
                 } else {
                     // Check what to do with selection
                     if selectedImageIds.isEmpty {
@@ -137,7 +148,9 @@ extension AlbumViewController
         }
 
         // Present share image activity view controller
-        activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
+        if let parent = parent as? AlbumViewController {
+            activityViewController.popoverPresentationController?.barButtonItem = parent.shareBarButton
+        }
         present(activityViewController, animated: true)
     }
 
@@ -155,16 +168,20 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
                                                         withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
         let detail = String(format: "%d / %d", totalNumberOfImages - selectedImageIds.count + 1, totalNumberOfImages)
-        presentedViewController?.showPiwigoHUD(withTitle: title, detail: detail,
-                                               buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                               buttonTarget: self, buttonSelector: #selector(cancelShareImages),
-                                               inMode: .annularDeterminate)
+        if presentedViewController?.isShowingHUD() ?? false {
+            presentedViewController?.updateHUD(title: title, detail: detail)
+        } else {
+            presentedViewController?.showHUD(withTitle: title, detail: detail,
+                                             buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                             buttonTarget: self, buttonSelector: #selector(cancelShareImages),
+                                             inMode: .determinate)
+        }
     }
     
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
                                    preprocessingProgressDidUpdate progress: Float) {
         // Update HUD
-        presentedViewController?.updatePiwigoHUD(withProgress: progress)
+        presentedViewController?.updateHUD(withProgress: progress)
     }
     
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
@@ -174,17 +191,18 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
         
         // Close HUD
         if imageActivityItemProvider.isCancelled {
-            presentedViewController?.hidePiwigoHUD { }
+            presentedViewController?.hideHUD { }
         } else if selectedImageIds.contains(imageId) {
             // Remove image from selection
             selectedImageIds.remove(imageId)
             selectedFavoriteIds.remove(imageId)
-            updateButtonsInSelectionMode()
+            selectedVideosIds.remove(imageId)
+            updateBarsInSelectMode()
 
             // Close HUD if last image
             if selectedImageIds.count == 0 {
-                presentedViewController?.updatePiwigoHUDwithSuccess {
-                    self.presentedViewController?.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { }
+                presentedViewController?.updateHUDwithSuccess { [self] in
+                    self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                 }
             }
         }
@@ -195,13 +213,12 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
         cancelShareImages()
         
         // Close HUD if needed
-        presentedViewController?.hidePiwigoHUD { }
+        presentedViewController?.hideHUD { }
         
         // Display error alert after trying to share image
-        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") {
+        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") { [self] in
             // Close ActivityView
             self.presentedViewController?.dismiss(animated: true)
         }
     }
 }
-

@@ -1,4 +1,4 @@
-Piwigo para iPhone / iPad / iPod complementa el software de la galería de fotos en la nube Piwigo (v2.8 o superior):
+Piwigo para iPhone / iPad / iPod complementa el software de la galería de fotos en la nube Piwigo (v2.10 o superior):
 
 • Explore sus álbumes,
 • Crear, eliminar, mover y renombrar álbumes,
@@ -18,6 +18,7 @@ Piwigo es gratis y de código abierto.
 
 Piwigo también es compatible con las siguientes extensiones:
 - Community: permite a los usuarios que no son administradores agregar fotos
+- rotateImage: le permite rotar imágenes
 - piwigo-videojs: agrega soporte de video
 
 Comentarios o preguntas?

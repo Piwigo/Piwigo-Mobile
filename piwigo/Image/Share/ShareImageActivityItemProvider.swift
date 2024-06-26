@@ -84,9 +84,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
         // Register image share methods to perform on completion
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage),
-                                               name: .pwgDidShare, object: nil)
+                                               name: Notification.Name.pwgDidShare, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask),
-                                               name: .pwgCancelDownload, object: nil)
+                                               name: Notification.Name.pwgCancelDownload, object: nil)
     }
 
     // MARK: - Download & Prepare Image
@@ -130,9 +130,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
         // Download image synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        ImageSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
-                                     fromServer: serverID, fileSize: imageData.fileSize,
-                                     placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
+                                   fromServer: serverID, fileSize: imageData.fileSize,
+                                   placeHolder: placeholderItem as! UIImage) { fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
         } completion: { fileURL in
@@ -173,9 +173,14 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURL: imageURL)
 
         // Copy original file to /tmp directly with appropriate file name
+        // and set creation date as the photo creation date
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let attrs = [FileAttributeKey.creationDate     : creationDate,
+                     FileAttributeKey.modificationDate : creationDate]
         do {
             try? FileManager.default.removeItem(at: imageFileURL)
-            try FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try  FileManager.default.copyItem(at: cachedFileURL, to: imageFileURL)
+            try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
         }
         catch {
             // Cancel task
@@ -271,6 +276,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
                 // Notify the delegate on the main thread that the processing has finished.
                 preprocessingDidEnd()
 
+                // Set creation date as the photo creation date
+                try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
+
                 // Return image to share
                 return imageFileURL
             }
@@ -315,6 +323,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         // Notify the delegate on the main thread that the processing has finished.
         preprocessingDidEnd()
 
+        // Set creation date as the photo creation date
+        try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
+
         // Return image to share
         return imageFileURL
     }
@@ -330,7 +341,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         // Will cancel share when operation starts
         isCancelledByUser = true
         // Cancel image file download
-        ImageSession.shared.cancelDownload(atURL: pwgImageURL)
+        PwgSession.shared.cancelDownload(atURL: pwgImageURL)
     }
 
     @objc func didFinishSharingImage() {

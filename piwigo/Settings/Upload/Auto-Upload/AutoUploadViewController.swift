@@ -104,11 +104,11 @@ class AutoUploadViewController: UIViewController {
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
 
         // Register auto-upload option disabler
         NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
-                                               name: .pwgAutoUploadChanged, object: nil)
+                                               name: Notification.Name.pwgAutoUploadChanged, object: nil)
         
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardAppear(_:)),

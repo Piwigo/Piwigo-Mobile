@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.1.4_text" = "Wersja 3.1.4\n\n• Naprawia awarię występującą w systemie iOS 12";
+"v3.2.0_text" = "Wersja 3.2\n\n• Można dopasować opcje sortowania zdjęć w albumie\n• Dodaje opcje sortowania zdjęć w locie\n• Dodaje możliwość obracania przesyłanych zdjęć\n• Poprawki błędów";
+
+"v3.1.4_text" = "Wersja 3.1.4\n27 lutego 2024\n\n• Naprawa awarii występującej w systemie iOS 12";
 
 "v3.1.3_text" = "Wersja 3.1.3\n11 lutego 2024\n\n• Poprawki błędów";
 

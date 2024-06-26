@@ -92,7 +92,7 @@ class TagSelectorViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             self.tagProvider.fetchTags(asAdmin: false) { error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error else { return }
@@ -164,7 +164,7 @@ class TagSelectorViewController: UITableViewController {
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: .pwgPaletteChanged, object: nil)
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
     deinit {
@@ -237,7 +237,7 @@ class TagSelectorViewController: UITableViewController {
         let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
         
         // Check that an album of tagged images exists in cache (create it if necessary)
-        guard let _ = albumProvider.getAlbum(ofUser: user, withId: catID) else {
+        guard let _ = albumProvider.getAlbum(ofUser: user, withId: catID, name: tag.tagName) else {
             return
         }
         
@@ -247,7 +247,10 @@ class TagSelectorViewController: UITableViewController {
         // Dismiss tag select
         dismiss(animated: true) { [self] in
             // Push tagged images view with AlbumViewController
-            let taggedImagesVC = AlbumViewController(albumId: catID)
+            let taggedImagesSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let taggedImagesVC = taggedImagesSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
+            taggedImagesVC.categoryId = catID
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
         }
     }

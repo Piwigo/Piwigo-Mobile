@@ -46,7 +46,7 @@ extension UploadManager {
         upload.setState(.uploading, save: true)
         
         // Is this image already stored on the Piwigo server?
-        NetworkUtilities.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) {
             PwgSession.shared.getIDofImage(withMD5: upload.md5Sum) { imageID in
                 self.backgroundQueue.async {
                     if let imageID = imageID {
@@ -252,7 +252,7 @@ extension UploadManager {
         }
 
         // Prepare first chunk
-        NetworkUtilities.checkSession(ofUser: upload.user) {
+        PwgSession.checkSession(ofUser: upload.user) {
             // Set total number of bytes to upload
             UploadSessions.shared.addBytes(Int64(imageData.count), toCounterWithID: upload.localIdentifier)
             // Start uploading
@@ -635,11 +635,11 @@ extension UploadManager {
                 httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
                 httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
                 httpBody.append(convertFormField(named: "filename", value: upload.fileName, using: boundary).data(using: .utf8)!)
-                let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
+                let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
                 httpBody.append(convertFormField(named: "name", value: imageTitle, using: boundary).data(using: .utf8)!)
-                let author = NetworkUtilities.utf8mb3String(from: upload.author)
+                let author = PwgSession.utf8mb3String(from: upload.author)
                 httpBody.append(convertFormField(named: "author", value: author, using: boundary).data(using: .utf8)!)
-                let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
+                let comment = PwgSession.utf8mb3String(from: upload.comment)
                 httpBody.append(convertFormField(named: "comment", value: comment, using: boundary).data(using: .utf8)!)
                 httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
                 httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
@@ -902,12 +902,12 @@ extension UploadManager {
 
                 // Get data returned by the server
                 upload.imageId    = imageId
-                upload.imageName  = NetworkUtilities.utf8mb4String(from: getInfos.title ?? "")
-                upload.author     = NetworkUtilities.utf8mb4String(from: getInfos.author ?? "")
+                upload.imageName  = PwgSession.utf8mb4String(from: getInfos.title ?? "")
+                upload.author     = PwgSession.utf8mb4String(from: getInfos.author ?? "")
                 if let privacyLevelStr = getInfos.privacyLevel {
                     upload.privacyLevel = Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue
                 }
-                upload.comment    = NetworkUtilities.utf8mb4String(from: getInfos.comment ?? "")
+                upload.comment    = PwgSession.utf8mb4String(from: getInfos.comment ?? "")
                 if let tags = getInfos.tags {
                     let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
                     let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: uploadProvider.bckgContext).map({$0.objectID})

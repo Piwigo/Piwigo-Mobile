@@ -1,4 +1,4 @@
-Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.8 of hoger):
+Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.10 of hoger):
 
 • Blader door jouw albums,
 • Albums maken, verwijderen, verplaatsen en hernoemen,
@@ -17,7 +17,8 @@ Piwigo stelt je in staat om jouw eigen fotogalerij op het web te maken. Het beva
 Piwigo is gratis en opensource.
 
 Piwigo is ook compatibel met de volgende extensies:
-- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen 
+- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen
+- rotateImage: hiermee kunt u afbeeldingen roteren
 - piwigo-videos: voegt video ondersteuning toe
 
 Feedback of vragen?

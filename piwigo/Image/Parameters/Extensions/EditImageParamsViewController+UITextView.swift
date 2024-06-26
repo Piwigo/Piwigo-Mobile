@@ -6,6 +6,8 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
+import UIKit
+
 // MARK: - UITextViewDelegate Methods
 extension EditImageParamsViewController: UITextViewDelegate
 {

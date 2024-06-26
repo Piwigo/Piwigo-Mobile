@@ -19,6 +19,7 @@ Piwigo能帮助你简单创建属于自己的在线图库，支持相册、标�
 
 Piwigo兼容以下扩展：
 - Community插件：允许非管理员用户添加照片
+- rotateImage插件：可以旋转图像
 - piwigo-videojs插件：使Piwigo支持视频功能
 
 如果你在使用过程中遇到了问题，可以在 https://piwigo.org/forum 获取免费支持，我们非常乐意聆听你的反馈与意见。

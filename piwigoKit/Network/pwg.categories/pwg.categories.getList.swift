@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - pwg.categories.getList
 public let pwgCategoriesGetList = "format=json&method=pwg.categories.getList"
 
+// MARK: Piwigo JSON Structures
 public struct CategoriesGetListJSON: Decodable {
 
     public var status: String?
@@ -79,7 +79,6 @@ public struct CategoriesGetListJSON: Decodable {
     }
 }
 
-// MARK: - Category Data
 public struct CategoryData: Decodable
 {
     // The following data is returned by pwg.categories.getList
@@ -92,6 +91,7 @@ public struct CategoryData: Decodable
     public let upperCat: String?            // "41"
     public let upperCats: String?           // "32"
 
+    public let imageSort: String?           // "date_creation ASC, file ASC, id ASC"
     public let nbImages: Int64?             // 6
     public let totalNbImages: Int64?        // 6
     public let nbCategories: Int32?         // 0
@@ -131,6 +131,7 @@ public struct CategoryData: Decodable
         case upperCat = "id_uppercat"
         case upperCats = "uppercats"
         
+        case imageSort = "image_order"
         case nbImages = "nb_images"
         case totalNbImages = "total_nb_images"
         case nbCategories = "nb_categories"
@@ -155,6 +156,7 @@ public struct CategoryData: Decodable
         globalRank = albumId <= 0 ? "0" : (parentId == "0" ? "0" : albumRank + ".0")
         upperCat = parentId
         upperCats = parentIds
+        imageSort = ""
         nbImages = nberImages
         totalNbImages = totalNberImages
         nbCategories = Int32.zero

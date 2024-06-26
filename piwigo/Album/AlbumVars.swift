@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 class AlbumVars: NSObject {
@@ -45,13 +46,25 @@ class AlbumVars: NSObject {
     var maxNberRecentCategories: Int
 
     /// - Default image sort option
-    @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.dateCreatedAscending.rawValue)
+    @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.albumDefault.rawValue)
     private var defaultSortRaw: Int16
     var defaultSort: pwgImageSort {
-        get { return pwgImageSort(rawValue: defaultSortRaw) ?? .dateCreatedAscending }
+        get { return pwgImageSort(rawValue: defaultSortRaw) ?? .albumDefault }
         set(value) {
             if pwgImageSort.allCases.contains(value) {
                 defaultSortRaw = value.rawValue
+            }
+        }
+    }
+
+    /// - Default grouping option when sorting images by date
+    @UserDefault("defaultGroupRaw", defaultValue: pwgImageGroup.none.rawValue)
+    private var defaultGroupRaw: Int16
+    var defaultGroup: pwgImageGroup {
+        get { return pwgImageGroup(rawValue: defaultGroupRaw) ?? .none }
+        set(value) {
+            if pwgImageGroup.allCases.contains(value) {
+                defaultGroupRaw = value.rawValue
             }
         }
     }
@@ -67,16 +80,6 @@ class AlbumVars: NSObject {
     /// - Number of images per row in portrait mode
     @UserDefault("thumbnailsPerRowInPortrait", defaultValue: UIDevice.current.userInterfaceIdiom == .phone ? 4 : 6)
     var thumbnailsPerRowInPortrait: Int
-
-    /// - Recent period in number of days
-    let recentPeriodKey = 594 // i.e. key used to detect the behaviour of the slider (sum of all periods)
-    let recentPeriodList:[Int] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,40,50,60,80,99]
-    @UserDefault("recentPeriodIndex", defaultValue: 7)      // i.e index of the period of 7 days
-    var recentPeriodIndex: Int
-    
-    let recentPeriodListChangedInVersion312 = "3.1.2"
-    @UserDefault("recentPeriodIndexCorrectedInVersion321", defaultValue: false)
-    var recentPeriodIndexCorrectedInVersion321: Bool
     
 
     // MARK: - Vars in UserDefaults / App Group

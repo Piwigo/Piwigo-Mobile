@@ -8,10 +8,10 @@
 
 import Foundation
 
-// MARK: - pwg.tags.getList & pwg.tags.getAdminList
 public let pwgTagsGetList = "format=json&method=pwg.tags.getList"
 public let pwgTagsGetAdminList = "format=json&method=pwg.tags.getAdminList"
 
+// MARK: Piwigo JSON Structures
 public struct TagJSON: Decodable {
 
     public var status: String?
