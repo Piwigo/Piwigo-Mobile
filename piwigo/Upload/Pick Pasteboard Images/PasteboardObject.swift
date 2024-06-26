@@ -177,7 +177,7 @@ class ObjectPreparation : Operation {
 
     private func storePasteboardObject(_ data: Data) -> Void {
         // For debugging purposes
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
 
         // Set file URL
         let fileURL = UploadManager.shared.uploadsDirectory
@@ -211,7 +211,7 @@ class ObjectPreparation : Operation {
             pbObject.state = .failed
         }
         
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   did try to write clipboard object at index \(index) on disk in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   did try to write clipboard object at index \(index) on disk in \(diff) ms")
     }
 }

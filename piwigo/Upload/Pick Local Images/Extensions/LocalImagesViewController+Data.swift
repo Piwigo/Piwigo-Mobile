@@ -152,7 +152,7 @@ extension LocalImagesViewController
         selectedImages = .init(repeating: nil, count: images.count)
 
         // Initialisation
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
@@ -229,8 +229,8 @@ extension LocalImagesViewController
         indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<images.count))
         indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<images.count))
         indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<images.count))
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
     }
     
     private func sortByMonthWeekDayAndUpdateSelection(images: PHFetchResult<PHAsset>) -> (Void)  {
@@ -240,7 +240,7 @@ extension LocalImagesViewController
         selectedImages = .init(repeating: nil, count: fetchedImages.count)
 
         // Initialisation
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
@@ -323,8 +323,8 @@ extension LocalImagesViewController
         indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<images.count))
         indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<images.count))
         indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<images.count))
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   sorted \(fetchedImages.count) images by days, weeks and months and updated selection in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   sorted \(fetchedImages.count) images by days, weeks and months and updated selection in \(diff) ms")
     }
     
     // Return image index from indexPath
@@ -398,7 +398,7 @@ extension LocalImagesViewController
 
     private func cachingUploadIndicesIteratingFetchedImages() -> (Void) {
         // For debugging purposes
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         
         // Check if this operation was cancelled every 1000 iterations
         let step = 1_000
@@ -424,13 +424,13 @@ extension LocalImagesViewController
                 }
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
     }
 
     private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
         // For debugging purposes
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         
         // Determine fetched images already in upload queue
         let fetchOptions = PHFetchOptions()
@@ -471,8 +471,8 @@ extension LocalImagesViewController
                 }
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   cached \(count) images by iterating uploads in queue in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   cached \(count) images by iterating uploads in queue in \(diff) ms")
     }
     
     func getUploadStateOfImage(at index: Int,

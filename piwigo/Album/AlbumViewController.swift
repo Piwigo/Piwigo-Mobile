@@ -385,7 +385,7 @@ class AlbumViewController: UIViewController
         print("••> viewWillAppear in AlbumViewController: Album #\(categoryId)")
         
         // For testing…
-        timeCounter = CFAbsoluteTimeGetCurrent()
+//        timeCounter = CFAbsoluteTimeGetCurrent()
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -422,8 +422,8 @@ class AlbumViewController: UIViewController
         /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
         /// hasFavorites  cached —> a very little quicker but less memory impacting (-195 MB transcient allocations for 3020 photos)
         /// placeHolder & size cached —> 0 photo: 526 ms, 24 photos: 585 ms, 3020 photos: 14 586 ms i.e. -6% (memory crash after repeating tests)
-        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
-        print("••> completed in \(duration.rounded()) ms")
+//        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
+//        print("••> completed in \(duration.rounded()) ms")
 
         // The user may have cleared the cached data
         // Display an empty root album in that case
