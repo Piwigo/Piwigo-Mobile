@@ -346,7 +346,6 @@ class ImageViewController: UIViewController {
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             PwgSession.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
-                print("••> Retrieving data of image \(imageID)")
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
                     DispatchQueue.main.async { [self] in
                         // Look for the corresponding view controller
@@ -838,7 +837,7 @@ extension ImageViewController: UIPageViewControllerDelegate
     // Called before a gesture-driven transition begins
     func pageViewController(_ pageViewController: UIPageViewController,
                             willTransitionTo pendingViewControllers: [UIViewController]) {
-        // Case of an image
+        // Image disappearing
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController,
            let imageURL = imageDVC.imageURL {
             // Pause download
@@ -897,7 +896,7 @@ extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
     func imageDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> ImageDetailViewController? {
-        debugPrint("••> Create page view controller for image at index \(indexPath)")
+        print("••> Create page view controller for image #\(imageData.pwgID) at index \(indexPath)")
         guard let imageDVC = storyboard?.instantiateViewController(withIdentifier: "ImageDetailViewController") as? ImageDetailViewController
         else { return nil }
 
@@ -909,7 +908,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     
     // Create view controller for presenting the video at the provided index
     func videoDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> VideoDetailViewController? {
-        debugPrint("••> Create page view controller for video at index \(indexPath)")
+        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
         guard let videoDVC = storyboard?.instantiateViewController(withIdentifier: "VideoDetailViewController") as? VideoDetailViewController
         else { return nil }
 
