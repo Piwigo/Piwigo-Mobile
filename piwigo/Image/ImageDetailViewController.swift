@@ -30,6 +30,7 @@ class ImageDetailViewController: UIViewController
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
     private var startingZoomScale = CGFloat(1)
+    private var didRotateImage = false
     
     // Variable introduced to cope with iOS not updating view bounds
     // upon device rotation of preloaded page views
@@ -160,9 +161,9 @@ class ImageDetailViewController: UIViewController
             }
 
             // Preloaded page views not updated as expected!
-            debugPrint("••> viewWillTransition: ")
-            debugPrint("    Size: \(size.width) x \(size.height)")
-            debugPrint("    Screen: \(view.bounds.width) x \(view.bounds.height)")
+//            debugPrint("••> viewWillTransition: ")
+//            debugPrint("    Size: \(size.width) x \(size.height)")
+//            debugPrint("    Screen: \(view.bounds.width) x \(view.bounds.height)")
 
             // Update scale, insets and offsets
             self.viewSize = size
@@ -232,6 +233,7 @@ class ImageDetailViewController: UIViewController
                     }
                     completion: { [self] _ in
                         // Reset image view with rotated image
+                        didRotateImage = true
                         self.setImageView(with: cachedImage)
 
                         // Hide HUD
@@ -299,6 +301,11 @@ class ImageDetailViewController: UIViewController
         let horizontalSpace = max(0, leftWidth).rounded(.towardZero)
         scrollView.contentInset.left = horizontalSpace
         scrollView.contentInset.right = horizontalSpace
+        if horizontalSpace > 0 {
+            scrollView.contentOffset.x = -horizontalSpace
+        } else if didRotateImage {
+            scrollView.contentOffset.x = 0.0
+        }
         
         // Center image vertically
         let imageHeight: CGFloat = imageSize.height * scrollView.zoomScale
@@ -306,20 +313,15 @@ class ImageDetailViewController: UIViewController
         let verticalSpace = max(0, leftHeight).rounded(.towardZero)
         scrollView.contentInset.top = verticalSpace
         scrollView.contentInset.bottom = verticalSpace
-        
-        // Position image
-        if horizontalSpace > 0 {
-            scrollView.contentOffset.x = -horizontalSpace
-            if verticalSpace == 0 {
-                scrollView.contentOffset.y = 0
-            }
-        } else if verticalSpace > 0 {
+        if verticalSpace > 0 {
             scrollView.contentOffset.y = -verticalSpace
-            if horizontalSpace == 0 {
-                scrollView.contentOffset.x = 0
-            }
+        } else if didRotateImage {
+            scrollView.contentOffset.y = 0.0
         }
         
+        // Reset flag
+         didRotateImage = false
+
         // For debugging
 //        debugPrint("••> Did updateScrollViewInset: ")
 //        debugPrint("    View: \(viewSize.width) x \(viewSize.height)")
