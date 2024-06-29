@@ -620,7 +620,7 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Image Section
     static func getDateLabels(for timeIntervals: [TimeInterval]) -> (String, String) {
         // Creation date of images (or of availability)
-        let refDate = DateUtilities.weekAfterInterval       // i.e. a week after unknown date
+        let refDate = DateUtilities.refDateInterval         // i.e. a week after unknown date
         var dateLabelText = " "                             // Displayed when there is no date available
         var optionalDateLabelText = " "
         
@@ -641,7 +641,7 @@ class AlbumUtilities: NSObject {
         }
         
         // Determine if images of this section were all taken after "1900-01-08 00:00:00 UTC"
-        if lowest > refDate, lowest < TimeInterval.greatestFiniteMagnitude {
+        if lowest > DateUtilities.weekAfterInterval, lowest < TimeInterval.greatestFiniteMagnitude {
             // Get correspondig date
             let startDate = Date(timeIntervalSinceReferenceDate: lowest)
             
@@ -663,7 +663,7 @@ class AlbumUtilities: NSObject {
             optionalDateLabelText = dayFormatter.string(from: startDate)
             
             // Get creation date of last image and check that it is after "1900-01-08 00:00:00"
-            if greatest > refDate, greatest != lowest {
+            if greatest > DateUtilities.weekAfterInterval, greatest != lowest {
                 // Get correspondig date
                 let endDate = Date(timeIntervalSinceReferenceDate: greatest)
 

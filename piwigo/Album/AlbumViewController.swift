@@ -110,8 +110,6 @@ class AlbumViewController: UIViewController
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
     lazy var imageCellSize: CGSize = getImageCellSize()
     lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
-    let dateSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
-                                         .dateCreatedAscending, .dateCreatedDescending]
 
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {

@@ -51,7 +51,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                           height: ceil(headerRect.size.height + 8.0))
         default: /* Images */
             // Are images grouped by day, week or month?
-            if dateSortTypes.contains(sortOption) == false { return CGSize.zero }
+            if images.sectionNameKeyPath == nil { return CGSize.zero }
             
             // Images are grouped by day, week or month
             if #available(iOS 14, *) {

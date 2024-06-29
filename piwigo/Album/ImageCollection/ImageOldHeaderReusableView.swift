@@ -25,7 +25,7 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     
-    func config(with images: [Image], sortOption: pwgImageSort, group: pwgImageGroup,
+    func config(with images: [Image], sortKey: String, group: pwgImageGroup,
                 section: Int, selectState: SelectButtonState)
     {
         // Keep section for future use
@@ -39,11 +39,11 @@ class ImageOldHeaderReusableView: UICollectionReusableView
 
         // Get date labels
         var dates = ("", "")
-        switch sortOption {
-        case .dateCreatedAscending, .dateCreatedDescending:
+        switch sortKey {
+        case #keyPath(Image.dateCreated):
             let dateIntervals = images.map {$0.dateCreated}
             dates = AlbumUtilities.getDateLabels(for: dateIntervals)
-        case .datePostedAscending, .datePostedDescending:
+        case #keyPath(Image.datePosted):
             let dateIntervals = images.map {$0.datePosted}
             dates = AlbumUtilities.getDateLabels(for: dateIntervals)
         default:

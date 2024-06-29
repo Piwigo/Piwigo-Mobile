@@ -284,7 +284,6 @@ class AlbumViewData: NSObject
         let sectionKey = sectionKey(for: sortKeys)
 
         // Return the appropriate fetch controller
-        /// NB: The section key cannot be changed on the fly.
         switch sectionKey {
         case pwgImageGroup.day.dateCreatedSectionKey:
             return imagesByDayOfDateCreated

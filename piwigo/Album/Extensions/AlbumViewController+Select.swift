@@ -202,7 +202,7 @@ extension AlbumViewController
         }
 
         // Update select buttons if needed
-        if dateSortTypes.contains(sortOption),
+        if images.sectionNameKeyPath != nil,
            let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         {
             headers.forEach { header in

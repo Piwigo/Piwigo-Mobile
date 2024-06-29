@@ -129,10 +129,7 @@ extension AlbumViewController: UICollectionViewDataSource
             }
         default /* Images */:
             switch kind {
-            case UICollectionView.elementKindSectionHeader:
-                // Are images grouped by day, week or month?
-                if dateSortTypes.contains(sortOption) == false { return emptyView }
-                
+            case UICollectionView.elementKindSectionHeader:                
                 // Determine place names from first images
                 let imageSection = indexPath.section - 1
                 var imagesInSection: [Image] = []
@@ -147,10 +144,11 @@ extension AlbumViewController: UICollectionViewDataSource
                 // Images are grouped by day, week or month
                 if #available(iOS 14, *) {
                     // Grouping options accessible from menu ► Only display date and location
-                    guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
+                    guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
+                          let sortKey = images.fetchRequest.sortDescriptors?.first?.key
                     else { preconditionFailure("Could not load ImageHeaderReusableView") }
                     
-                    header.config(with: imagesInSection, sortOption: sortOption, section: indexPath.section, selectState: selectState)
+                    header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
                     header.imageHeaderDelegate = self
                     return header
                 }
@@ -158,19 +156,21 @@ extension AlbumViewController: UICollectionViewDataSource
                     // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
                     if indexPath.section == 1 {
                         // Display segmented controller
-                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView
+                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView,
+                              let sortKey = images.fetchRequest.sortDescriptors?.first?.key
                         else { preconditionFailure("Could not load ImageOldHeaderReusableView")}
                         
-                        header.config(with: imagesInSection, sortOption: sortOption, group: AlbumVars.shared.defaultGroup,
+                        header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
                                       section: indexPath.section, selectState: selectState)
                         header.imageHeaderDelegate = self
                         return header
                     } else {
                         // Grouping options accessible from menu ► Only display date and location
-                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView
+                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
+                              let sortKey = images.fetchRequest.sortDescriptors?.first?.key
                         else { preconditionFailure("Could not load ImageHeaderReusableView") }
                         
-                        header.config(with: imagesInSection, sortOption: sortOption,
+                        header.config(with: imagesInSection, sortKey: sortKey,
                                       section: indexPath.section, selectState: selectState)
                         header.imageHeaderDelegate = self
                         return header
