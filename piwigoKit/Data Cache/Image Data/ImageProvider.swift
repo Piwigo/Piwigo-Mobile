@@ -119,13 +119,11 @@ public class ImageProvider: NSObject {
             paramsDict["f_min_rate"] = 1
             
         case pwgSmartAlbum.recent.rawValue:
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             let recentPeriod = CacheVars.shared.recentPeriodList[CacheVars.shared.recentPeriodIndex]
             let maxPeriod = TimeInterval(CacheVars.shared.recentPeriodList.last ?? 99)
             let nberDays: TimeInterval = recentPeriod == 0 ? maxPeriod : TimeInterval(recentPeriod)
             let daysAgo = Date(timeIntervalSinceNow: TimeInterval(-3600 * 24 * nberDays))
-            let dateAvailableString = dateFormatter.string(from: daysAgo)
+            let dateAvailableString = DateUtilities.dateFormatter.string(from: daysAgo)
             paramsDict["recursive"] = true
             paramsDict["f_min_date_available"] = dateAvailableString
             

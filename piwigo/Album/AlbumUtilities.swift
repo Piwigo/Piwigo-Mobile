@@ -620,11 +620,11 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Image Section
     static func getDateLabels(for timeIntervals: [TimeInterval]) -> (String, String) {
         // Creation date of images (or of availability)
-        let refDate = TimeInterval(-3187209600)     // "1900-01-02 00:00:00" relative to ref. date
-        var dateLabelText = " "                     // Displayed when there iss no date available
+        let refDate = DateUtilities.weekAfterInterval       // i.e. a week after unknown date
+        var dateLabelText = " "                             // Displayed when there is no date available
         var optionalDateLabelText = " "
         
-        // Determine lowest time interval after "1900-01-01 00:00:00"
+        // Determine lowest time interval after "1900-01-08 00:00:00 UTC"
         var lowest = TimeInterval.greatestFiniteMagnitude
         for ti in timeIntervals {
             if ti > refDate, ti < lowest {
@@ -632,15 +632,15 @@ class AlbumUtilities: NSObject {
             }
         }
         
-        // Determine greatest time interval after "1900-01-01 00:00:00"
-        var greatest = TimeInterval(-3187296000) // i.e. "1900-01-01 00:00:00" relative to reference date
+        // Determine greatest time interval after "1900-01-08 00:00:00 UTC"
+        var greatest = refDate
         for ti in timeIntervals {
             if ti > refDate, ti > greatest {
                 greatest = ti
             }
         }
         
-        // Determine if images of this section were all taken after "1900-01-02 00:00:00"
+        // Determine if images of this section were all taken after "1900-01-08 00:00:00 UTC"
         if lowest > refDate, lowest < TimeInterval.greatestFiniteMagnitude {
             // Get correspondig date
             let startDate = Date(timeIntervalSinceReferenceDate: lowest)
@@ -662,7 +662,7 @@ class AlbumUtilities: NSObject {
             }
             optionalDateLabelText = dayFormatter.string(from: startDate)
             
-            // Get creation date of last image and check that it is after "1900-01-02 00:00:00"
+            // Get creation date of last image and check that it is after "1900-01-08 00:00:00"
             if greatest > refDate, greatest != lowest {
                 // Get correspondig date
                 let endDate = Date(timeIntervalSinceReferenceDate: greatest)

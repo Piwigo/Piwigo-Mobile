@@ -372,11 +372,9 @@ class EditImageParamsViewController: UIViewController
 
         // Update image creation date?
         if shouldUpdateDateCreated {
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let newDateCreated = dateCreated.addingTimeInterval(timeOffset)
-            paramsDict["date_creation"] = dateFormat.string(from: newDateCreated)
+            paramsDict["date_creation"] = DateUtilities.dateFormatter.string(from: newDateCreated)
         }
 
         // Update image privacy level?

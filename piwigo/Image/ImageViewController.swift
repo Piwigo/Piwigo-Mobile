@@ -483,7 +483,7 @@ class ImageViewController: UIViewController {
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         if ((UIDevice.current.userInterfaceIdiom == .phone) &&
             (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            imageData.dateCreated < TimeInterval(-3187209600) {  // "1900-01-02 00:00:00" relative to ref. date
+            imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))

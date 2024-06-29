@@ -605,10 +605,8 @@ extension UploadManager {
         guard let validUrl = url else { fatalError() }
         
         // Prepare creation date
-        let dateFormat = DateFormatter()
-        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
-        let creationDate = dateFormat.string(from: date)
+        let creationDate = DateUtilities.dateFormatter.string(from: date)
 
         // Initialise credentials, boundary and upload session
         let username = NetworkVars.username
