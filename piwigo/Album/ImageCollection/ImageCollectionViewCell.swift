@@ -180,11 +180,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 title = attributedTitle(NSAttributedString(string: imageData.fileName))
 //              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
             }
-        case .datePostedAscending, .datePostedDescending:
-            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-            let text = DateFormatter.localizedString(from: dateCreated,
-                                                     dateStyle: .medium, timeStyle: .none)
-            title = attributedTitle(NSAttributedString(string: text))
         default:
             if imageData.title.string.isEmpty == false {
                 title = attributedTitle(imageData.title)
