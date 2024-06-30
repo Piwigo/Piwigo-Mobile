@@ -17,13 +17,11 @@ class ErrorLogsViewController: UIViewController {
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
     
-    private var doneBarButton: UIBarButtonItem?
+    private var clearBarButton: UIBarButtonItem?
     
     // JSON Data
     private lazy var fm: FileManager = {
-        let fm = FileManager.default
-        fm.delegate = self
-        return fm
+        return FileManager.default
     }()
     private lazy var JSONfiles: [URL] = {
         let tmpURL = self.fm.temporaryDirectory
@@ -31,6 +29,7 @@ class ErrorLogsViewController: UIViewController {
             let fileList = try self.fm.contentsOfDirectory(at: tmpURL, includingPropertiesForKeys: [.fileSizeKey],
                                                            options: .skipsHiddenFiles)
             let JSONfiles = fileList.filter({$0.lastPathComponent.hasPrefix(JSONprefix)})
+            clearBarButton?.isEnabled = !JSONfiles.isEmpty
             return JSONfiles.sorted(by: {$0.lastPathComponent < $1.lastPathComponent})
         }
         catch {
@@ -53,8 +52,9 @@ class ErrorLogsViewController: UIViewController {
         title = NSLocalizedString("error_logs", comment: "Error Logs")
         
         // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.accessibilityIdentifier = "Done"
+        clearBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(clearLogs))
+        clearBarButton?.isEnabled = false
+        clearBarButton?.accessibilityIdentifier = "trash"
     }
     
     @objc func applyColorPalette() {
@@ -104,7 +104,7 @@ class ErrorLogsViewController: UIViewController {
         applyColorPalette()
 
         // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setRightBarButtonItems([clearBarButton].compactMap { $0 }, animated: true)
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -121,9 +121,27 @@ class ErrorLogsViewController: UIViewController {
         }, completion: nil)
     }
 
-    @objc func quitSettings() {
-        // Close Settings view
-        dismiss(animated: true)
+    @objc func clearLogs() {
+        // Delete JSON data files
+        if JSONfiles.count > 100 {
+            // Show progress view
+            showHUD(withTitle: "")
+            // Remove files
+            JSONfiles.forEach { fileURL in
+                try? fm.removeItem(at: fileURL)
+            }
+            hideHUD {
+                // Close Settings view
+                self.dismiss(animated: true)
+            }
+        } else {
+            // Remove files
+            JSONfiles.forEach { fileURL in
+                try? fm.removeItem(at: fileURL)
+            }
+            // Close Settings view
+            dismiss(animated: true)
+        }
     }
 
     deinit {
@@ -208,26 +226,5 @@ extension ErrorLogsViewController: UITableViewDelegate
         default:
             break
         }
-    }
-}
-
-
-// MARK: - FileManagerDelegate Methods
-extension ErrorLogsViewController: FileManagerDelegate {
-    
-    func fileManager(_ fileManager: FileManager, shouldMoveItemAt srcURL: URL, to dstURL: URL) -> Bool {
-        return true
-    }
-    
-    func fileManager(_ fileManager: FileManager, shouldCopyItemAt srcURL: URL, to dstURL: URL) -> Bool {
-        return false
-    }
-    
-    func fileManager(_ fileManager: FileManager, shouldRemoveItemAt URL: URL) -> Bool {
-        return true
-    }
-    
-    func fileManager(_ fileManager: FileManager, shouldLinkItemAt srcURL: URL, to dstURL: URL) -> Bool {
-        return false
     }
 }

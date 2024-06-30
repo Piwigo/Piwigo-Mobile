@@ -865,7 +865,7 @@
 
 // Settings - Error Logs
 "error_logs" = "Error Logs";
-"error_JSONheader" = "JSON data";
+"error_JSONheader" = "Corrupted JSON data";
 
 // What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
