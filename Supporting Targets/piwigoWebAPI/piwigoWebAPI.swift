@@ -89,7 +89,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: GetInfosJSON.self) {
+        if !data.isPiwigoResponseValid(for: GetInfosJSON.self, method: pwgGetInfos) {
             XCTFail()
             return
         }
@@ -142,7 +142,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesAddJSON.self) {
+        if !data.isPiwigoResponseValid(for: CategoriesAddJSON.self, method: pwgCategoriesAdd) {
             XCTFail()
             return
         }
@@ -169,7 +169,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesSetInfoJSON.self) {
+        if !data.isPiwigoResponseValid(for: CategoriesSetInfoJSON.self, method: pwgCategoriesSetInfo) {
             XCTFail()
             return
         }
@@ -196,7 +196,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesMoveJSON.self) {
+        if !data.isPiwigoResponseValid(for: CategoriesMoveJSON.self, method: pwgCategoriesMove) {
             XCTFail()
             return
         }
@@ -223,7 +223,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesCalcOrphansJSON.self) {
+        if !data.isPiwigoResponseValid(for: CategoriesCalcOrphansJSON.self, method: pwgCategoriesCalcOrphans) {
             XCTFail()
             return
         }
@@ -250,7 +250,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesDeleteJSON.self) {
+        if !data.isPiwigoResponseValid(for: CategoriesDeleteJSON.self, method: pwgCategoriesDelete) {
             XCTFail()
             return
         }
@@ -277,7 +277,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesSetRepresentativeJSON.self) {
+        if !data.isPiwigoResponseValid(for: CategoriesSetRepresentativeJSON.self, method: pwgCategoriesSetRepresentative) {
             XCTFail()
             return
         }
@@ -500,7 +500,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: SessionLoginJSON.self) {
+        if !data.isPiwigoResponseValid(for: SessionLoginJSON.self, method: pwgSessionLogin) {
             XCTFail()
             return
         }
@@ -551,7 +551,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: SessionLogoutJSON.self) {
+        if !data.isPiwigoResponseValid(for: SessionLogoutJSON.self, method: pwgSessionLogout) {
             XCTFail()
             return
         }
@@ -712,7 +712,7 @@ class piwigoWebAPI: XCTestCase {
         }
         
         // Clean returned data
-        if !data.isPiwigoResponseValid(for: ReflectionGetMethodListJSON.self) {
+        if !data.isPiwigoResponseValid(for: ReflectionGetMethodListJSON.self, method: kReflectionGetMethodList) {
             XCTFail()
             return
         }

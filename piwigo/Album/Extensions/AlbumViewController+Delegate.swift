@@ -74,7 +74,8 @@ extension AlbumViewController: UICollectionViewDelegate
     func presentImage(ofCell selectedCell: ImageCollectionViewCell, at indexPath: IndexPath, animated: Bool) {
         // Create ImageViewController
         let imageDetailSB = UIStoryboard(name: "ImageViewController", bundle: nil)
-        guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController else { preconditionFailure("Could not load ImageViewController") }
+        guard let imageDetailView = imageDetailSB.instantiateViewController(withIdentifier: "ImageViewController") as? ImageViewController 
+        else { preconditionFailure("Could not load ImageViewController") }
         imageDetailView.user = user
         imageDetailView.categoryId = albumData.pwgID
         imageDetailView.images = images

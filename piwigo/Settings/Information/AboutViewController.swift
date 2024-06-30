@@ -73,13 +73,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Piwigo authors
-        updateAuthorsLabel()
-
-        // Piwigo app version
-        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        versionLabel.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
+        // Piwigo authors and app version
+        authorsLabel.text = SettingsUtilities.getAuthors(forView: view)
+        versionLabel.text = SettingsUtilities.getAppVersion()
 
         // Thanks and licenses
         fixTextPositionAfterLoadingViewOnPad = true
@@ -104,38 +100,15 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         // Update Piwigo authors label
         coordinator.animate(alongsideTransition: { (context) in
             // Piwigo authors
-            self.updateAuthorsLabel()
+            self.authorsLabel.text = SettingsUtilities.getAuthors(forView: self.view)
         }, completion: nil)
     }
     
     override func viewDidLayoutSubviews() {
-
         if (fixTextPositionAfterLoadingViewOnPad) {
             // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             textView.setContentOffset(.zero, animated: false)
-        }
-    }
-
-    func updateAuthorsLabel () {
-        // Piwigo authors
-        let authors1 = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
-        let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
-        
-        // Change label according to orientation
-        var orientation: UIInterfaceOrientation
-        if #available(iOS 13.0, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
-        if (UIDevice.current.userInterfaceIdiom == .phone) && orientation.isPortrait {
-            // iPhone in portrait mode
-            authorsLabel.text = "\(authors1)\r\(authors2)"
-        }
-        else {
-            // iPhone in landscape mode, iPad in any orientation
-            authorsLabel.text = "\(authors1) \(authors2)"
         }
     }
 
@@ -151,7 +124,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
 
     
     // MARK: - Acknowledgements
-
     func aboutAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let aboutAttributedString = NSMutableAttributedString(string: "")

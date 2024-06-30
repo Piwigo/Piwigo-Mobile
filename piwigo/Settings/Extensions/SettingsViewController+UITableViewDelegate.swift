@@ -147,7 +147,8 @@ extension SettingsViewController: UITableViewDelegate
                 4 /* Translate Piwigo Mobile */,
                 5 /* Release Notes */,
                 6 /* Acknowledgements */,
-                7 /* Privacy Policy */:
+                7 /* Privacy Policy */,
+                8 /* Error Logs */:
                 result = true
             default:
                 result = false
@@ -416,6 +417,12 @@ extension SettingsViewController: UITableViewDelegate
                 let privacyPolicyVC = privacyPolicySB.instantiateViewController(withIdentifier: "PrivacyPolicyViewController") as? PrivacyPolicyViewController
                 if let privacyPolicyVC = privacyPolicyVC {
                     navigationController?.pushViewController(privacyPolicyVC, animated: true)
+                }
+            case 8 /* Open Error Logs page */:
+                let errorLogsSB = UIStoryboard(name: "ErrorLogsViewController", bundle: nil)
+                let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "ErrorLogsViewController") as? ErrorLogsViewController
+                if let errorLogsVC = errorLogsVC {
+                    navigationController?.pushViewController(errorLogsVC, animated: true)
                 }
             default:
                 break

@@ -84,7 +84,8 @@ extension PwgSession
                     }
 
                     // Data returned, is this a valid JSON object?
-                    guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
+                    guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self,
+                                                         method: method) else {
                         // Invalid JSON data
                         #if DEBUG
                         let dataStr = String(decoding: jsonData, as: UTF8.self)
@@ -140,7 +141,8 @@ extension PwgSession
             #endif
             
             // Return Piwigo error if no error and no data returned.
-            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
+            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self, 
+                                                 method: method) else {
                 failure(PwgSessionError.invalidJSONobject as NSError)
                 return
             }

@@ -485,9 +485,8 @@ class AlbumViewController: UIViewController
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
-                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
-                    fatalError("No WhatsNewViewController available!")
-                }
+                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
+                else { preconditionFailure("Couldd not load WhatsNewViewController") }
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
                     present(whatsNewVC, animated: true)
@@ -534,9 +533,8 @@ class AlbumViewController: UIViewController
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
             let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-            guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController else {
-                fatalError("No HelpViewController available!")
-            }
+            guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
+            else { preconditionFailure("Could not load HelpViewController") }
             helpVC.displayHelpPagesWithID = displayHelpPagesWithID
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up

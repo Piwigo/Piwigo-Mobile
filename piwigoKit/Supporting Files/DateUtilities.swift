@@ -21,10 +21,17 @@ public class DateUtilities: NSObject {
     public static let weekAfterInterval = TimeInterval(-3187209600)
 
     public static let format = "yyyy-MM-dd HH:mm:ss"
+    static let formatFull = "yyyy-MM-dd HH:mm:ss.sss"
     
     public static var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
+        return dateFormatter
+    }()
+    
+    static var dateFormatterFull: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = formatFull
         return dateFormatter
     }()
     

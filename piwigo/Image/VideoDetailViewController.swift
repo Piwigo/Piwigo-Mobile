@@ -114,9 +114,8 @@ class VideoDetailViewController: UIViewController
             else {
                 // Create external display view controller
                 let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
-                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController else {
-                    fatalError("!!! No ExternalDisplayViewController !!!")
-                }
+                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
+                else { preconditionFailure("Could not load ExternalDisplayViewController") }
                 imageVC.imageData = imageData
                 imageVC.videoDetailDelegate = self
 

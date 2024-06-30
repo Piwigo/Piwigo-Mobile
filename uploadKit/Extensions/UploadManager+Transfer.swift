@@ -467,7 +467,8 @@ extension UploadManager {
                 return
             }
             var jsonData = data
-            guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self) else {
+            guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self,
+                                                 method: pwgImagesUpload) else {
                 // Update upload request status
                 #if DEBUG
                 let dataStr = String(decoding: data, as: UTF8.self)
@@ -838,7 +839,8 @@ extension UploadManager {
             return
         }
         var jsonData = data
-        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self) else {
+        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self,
+                                             method: pwgImagesUploadAsync) else {
             // Update upload request status
             #if DEBUG
             let dataStr = String(decoding: data, as: UTF8.self)

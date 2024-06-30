@@ -863,6 +863,10 @@
 "help08_text" = "Long-press on the back button to display the list of parent albums.";
 "help08_text2" = "Tap the parent album of your choice to jump back to it.";
 
+// Settings - Error Logs
+"error_logs" = "Error Logs";
+"error_JSONheader" = "JSON data";
+
 // What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
 "whatsNew_title1" = "Group Photos";
