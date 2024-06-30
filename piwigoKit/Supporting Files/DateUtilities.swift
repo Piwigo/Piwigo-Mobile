@@ -10,7 +10,7 @@ import Foundation
 
 public class DateUtilities: NSObject {
     
-    /* Timeintervals used for managing image dates
+    /* Time intervals used for managing image dates
     let dateFormatterISO = ISO8601DateFormatter()
     let refDate = dateFormatterISO.date(from: "1900-01-01T00:00:00Z")       // 00:00:00 UTC on 1 January 1900
     let refDateInterval = refDate?.timeIntervalSinceReferenceDate           // => -3187296000

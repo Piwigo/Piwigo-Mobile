@@ -1927,7 +1927,6 @@
 			isa = PBXGroup;
 			children = (
 				AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */,
-				ADACD28C2C30473800F8790B /* DateUtilities.swift */,
 				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
 				ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */,
 				AD129E6328C34F4E007A2A52 /* Migration Tools */,
@@ -1947,6 +1946,7 @@
 		AD97CFB6265B0B0700719ED5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ADACD28C2C30473800F8790B /* DateUtilities.swift */,
 				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
 				AD7DE0942A858FC300C1424E /* Notification.Name+AppTools.swift */,
 				ADB49D87295904BC00EE377A /* String+AppTools.swift */,
