@@ -201,7 +201,7 @@ extension AlbumViewController
             selectedSections[key] = .select
         }
 
-        // Update select buttons if needed
+        // Update select buttons of section headers if needed
         if images.sectionNameKeyPath != nil,
            let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         {

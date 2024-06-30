@@ -657,7 +657,9 @@ extension AlbumViewController
     
     func groupMenu() -> UIMenu? {
         // Only available when images are sorted by date
-        if images.sectionNameKeyPath == nil { return nil }
+        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+              [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey)
+        else { return nil }
 
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
