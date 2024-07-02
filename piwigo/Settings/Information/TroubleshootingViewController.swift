@@ -1,5 +1,5 @@
 //
-//  LogsViewController.swift
+//  TroubleshootingViewController.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 30/06/2024.
@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @available(iOS 15, *)
-class LogsViewController: UIViewController {
+class TroubleshootingViewController: UIViewController {
     
     @IBOutlet private weak var piwigoLogo: UIImageView!
     @IBOutlet private weak var authorsLabel: UILabel!
@@ -71,21 +71,21 @@ class LogsViewController: UIViewController {
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
         // Text color depdending on background color
-        authorsLabel.textColor = .piwigoColorText()
-        versionLabel.textColor = .piwigoColorText()
+        authorsLabel?.textColor = .piwigoColorText()
+        versionLabel?.textColor = .piwigoColorText()
         
         // Table view
-        tableView.separatorColor = .piwigoColorSeparator()
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        tableView.reloadData()
+        tableView?.separatorColor = .piwigoColorSeparator()
+        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Piwigo authors and app version
-        authorsLabel.text = SettingsUtilities.getAuthors(forView: view)
-        versionLabel.text = SettingsUtilities.getAppVersion()
+        authorsLabel?.text = SettingsUtilities.getAuthors(forView: view)
+        versionLabel?.text = SettingsUtilities.getAppVersion()
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -115,7 +115,7 @@ class LogsViewController: UIViewController {
         // Update Piwigo authors label
         coordinator.animate(alongsideTransition: { (context) in
             // Piwigo authors
-            self.authorsLabel.text = SettingsUtilities.getAuthors(forView: self.view)
+            self.authorsLabel?.text = SettingsUtilities.getAuthors(forView: self.view)
         }, completion: nil)
     }
     
@@ -144,7 +144,12 @@ class LogsViewController: UIViewController {
                 let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
                 let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
                 print("••> completed in \(duration.rounded()) ms")
-                self.pwgSessionLogs = allEntries.compactMap { $0 as? OSLogEntryLog }
+                self.pwgSessionLogs = allEntries.compactMap({ $0 as? OSLogEntryLog })
+                    .filter({$0.category == "PwgSession"})
+                // For debugging
+                for entry in self.pwgSessionLogs {
+                    print("\(entry.date);  \(entry.subsystem);  \(entry.category);  \(entry.composedMessage)")
+                }
             } catch {
                 debugPrint("••> Could not retrieve logs.")
                 self.pwgSessionLogs = []
@@ -153,7 +158,7 @@ class LogsViewController: UIViewController {
         getLogs.completionBlock = {
             DispatchQueue.main.async {
                 self.navigationController?.hideHUD {
-                    self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+                    self.tableView?.reloadSections(IndexSet(integer: 0), with: .automatic)
                 }
             }
         }
@@ -174,7 +179,7 @@ class LogsViewController: UIViewController {
         }
         getJSONfiles.completionBlock = {
             DispatchQueue.main.async {
-                self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                self.tableView?.reloadSections(IndexSet(integer: 1), with: .automatic)
                 self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
             }
         }
@@ -214,7 +219,7 @@ class LogsViewController: UIViewController {
 
 // MARK: - UITableViewDataSource Methods
 @available(iOS 15, *)
-extension LogsViewController: UITableViewDataSource
+extension TroubleshootingViewController: UITableViewDataSource
 {
     // MARK: - Sections
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -238,15 +243,18 @@ extension LogsViewController: UITableViewDataSource
         
         switch indexPath.section {
         case 0 /* Logs */:
-            if pwgSessionLogs.isEmpty {
-                cell.textLabel?.text = "None"
-                cell.accessoryType = UITableViewCell.AccessoryType.none
-            } else {
-                cell.textLabel?.text = "PwgSession"
-                if let date = pwgSessionLogs.first?.date {
-                    cell.detailTextLabel?.text = DateUtilities.dateFormatter.string(from: date) + " | " + String(pwgSessionLogs.count)
+            switch indexPath.row {
+            case 0 /* PwgSession */:
+                if let entry = pwgSessionLogs.first {
+                    cell.textLabel?.text = "PwgSession"
+                    cell.detailTextLabel?.text = DateUtilities.dateFormatter.string(from: entry.date) + " | piwigoKit"
+                    cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                } else {
+                    cell.textLabel?.text = "None"
+                    cell.accessoryType = UITableViewCell.AccessoryType.none
                 }
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            default:
+                break
             }
         case 1 /* Invalid JSON data */:
             if JSONfiles.isEmpty {
@@ -274,7 +282,7 @@ extension LogsViewController: UITableViewDataSource
 
 // MARK: - UITableViewDelegate Methods
 @available(iOS 15, *)
-extension LogsViewController: UITableViewDelegate
+extension TroubleshootingViewController: UITableViewDelegate
 {
     // MARK: - Headers
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
@@ -308,23 +316,34 @@ extension LogsViewController: UITableViewDelegate
     
     
     // MARK: - Cell Management
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 0 /* Logs */:
+            return !pwgSessionLogs.isEmpty
+        case 1 /* Invalid JSON data */:
+            return !JSONfiles.isEmpty
+        default:
+            return true
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case 0 /* Logs */:
-            guard let JsonVC = storyboard?.instantiateViewController(withIdentifier: "JsonViewController") as? JsonViewController,
-               indexPath.row < pwgSessionLogs.count
-            else { preconditionFailure("Could not load JsonViewController") }
-//            JsonVC.fileURL = pwgSessionLogs[indexPath.row]
-            navigationController?.pushViewController(JsonVC, animated: true)
-
+        case 0 /* PwgSession logs */:
+            guard let LogsVC = storyboard?.instantiateViewController(withIdentifier: "LogsViewController") as? LogsViewController
+            else { preconditionFailure("Could not load LogsViewController") }
+            if indexPath.row >= pwgSessionLogs.count { break }
+            LogsVC.logEntries = pwgSessionLogs
+            navigationController?.pushViewController(LogsVC, animated: true)
+        
         case 1 /* Invalid JSON data */:
-            guard let JsonVC = storyboard?.instantiateViewController(withIdentifier: "JsonViewController") as? JsonViewController,
-               indexPath.row < JSONfiles.count
+            guard let JsonVC = storyboard?.instantiateViewController(withIdentifier: "JsonViewController") as? JsonViewController
             else { preconditionFailure("Could not load JsonViewController") }
+            if indexPath.row >= JSONfiles.count { break }
             JsonVC.fileURL = JSONfiles[indexPath.row]
             navigationController?.pushViewController(JsonVC, animated: true)
-
+        
         default:
             break
         }

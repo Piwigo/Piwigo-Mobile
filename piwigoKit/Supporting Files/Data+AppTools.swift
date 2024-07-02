@@ -237,7 +237,7 @@ extension Data {
         let decoder = JSONDecoder()
         if let _ = try? decoder.decode(type, from: self) {
             // Next line for debugging only
-//            self.saveInvalidJSON(for: method)
+            self.saveInvalidJSON(for: method)
             return true
         }
         

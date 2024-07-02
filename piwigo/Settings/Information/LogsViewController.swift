@@ -1,5 +1,5 @@
 //
-//  JsonViewController.swift
+//  LogsViewController.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 30/06/2024.
@@ -8,15 +8,17 @@
 
 import Foundation
 import MessageUI
+import OSLog
 import UIKit
 import piwigoKit
 
-class JsonViewController: UIViewController {
+@available(iOS 15.0, *)
+class LogsViewController: UIViewController {
     
-    @IBOutlet weak var method: UILabel!
+    @IBOutlet weak var category: UILabel!
     @IBOutlet weak var dateTime: UILabel!
-    @IBOutlet weak var fileContent: UITextView!
-    var fileURL: URL?
+    @IBOutlet weak var messages: UITextView!
+    var logEntries = [OSLogEntryLog]()
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
     private var mailBarButton: UIBarButtonItem?
 
@@ -24,22 +26,13 @@ class JsonViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
+        title = NSLocalizedString("settings_logs", comment: "Logs")
         
         // Initialise content
-        guard let fileURL = fileURL else { return }
-        let prefixCount = JSONprefix.count
-        let suffixCount = JSONextension.count
-        let fileName = String(fileURL.lastPathComponent.dropFirst(prefixCount).dropLast(suffixCount))
-        if let pos = fileName.lastIndex(of: " ") {
-            method?.text = String(fileName[pos...].dropFirst())
-            dateTime?.text = String(fileName[...pos]) + " | " + fileURL.fileSizeString
-        } else {
-            method?.text = fileName
-            dateTime?.text = fileURL.fileSizeString
-        }
-        let content = try? Data(contentsOf: fileURL, options: .alwaysMapped)
-        fileContent.text = String(decoding: content ?? Data(), as: UTF8.self)
+        if logEntries.isEmpty { return }
+        category?.text = logEntries.first?.category
+        dateTime?.text = DateUtilities.dateFormatter.string(from: logEntries.first?.date ?? Date())
+        messages?.text = logEntries.map({"•" + $0.composedMessage + "\n"}).reduce("", +)
 
         // Button for sending file content by mail
         mailBarButton = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(mailFile))
@@ -62,21 +55,19 @@ class JsonViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
         
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+        /// which by default produces a transparent background, to all navigation bars.
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithOpaqueBackground()
+        barAppearance.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.standardAppearance = barAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
         // Text color depdending on background color
-        method.textColor = .piwigoColorText()
-        dateTime.textColor = .piwigoColorText()
-        fileContent.textColor = .piwigoColorText()
-        fileContent.backgroundColor = .piwigoColorBackground()
+        category?.textColor = .piwigoColorText()
+        dateTime?.textColor = .piwigoColorText()
+        messages?.textColor = .piwigoColorText()
+        messages?.backgroundColor = .piwigoColorBackground()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -84,8 +75,8 @@ class JsonViewController: UIViewController {
         
         // Release notes
         fixTextPositionAfterLoadingViewOnPad = true
-        fileContent.scrollsToTop = true
-        fileContent.contentInsetAdjustmentBehavior = .never
+        messages?.scrollsToTop = true
+        messages?.contentInsetAdjustmentBehavior = .never
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -102,7 +93,7 @@ class JsonViewController: UIViewController {
         if (fixTextPositionAfterLoadingViewOnPad) {
             // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
-            fileContent.setContentOffset(.zero, animated: false)
+            messages?.setContentOffset(.zero, animated: false)
         }
     }
     
@@ -124,7 +115,7 @@ class JsonViewController: UIViewController {
 
             // Set subject
             var subject = "[" + NSLocalizedString("settings_appName", comment: "Piwigo Mobile") + "]: "
-            subject += method.text ?? "?"
+            subject += category?.text ?? "?"
             composeVC.setSubject(subject)
 
             // Collect system and device data
@@ -138,7 +129,7 @@ class JsonViewController: UIViewController {
             content += deviceModel + " — " + deviceOS + " " + deviceOSversion + "\n"
             content += (dateTime.text ?? "?") + "\n"
             content += "\n"
-            content += fileContent.text ?? ""
+            content += messages?.text ?? ""
             composeVC.setMessageBody(content, isHTML: false)
 
             // Present the view controller modally.
@@ -149,7 +140,8 @@ class JsonViewController: UIViewController {
 
 
 // MARK: - MFMailComposeViewControllerDelegate
-extension JsonViewController: MFMailComposeViewControllerDelegate {
+@available(iOS 15.0, *)
+extension LogsViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         // Check the result or perform other tasks.
 

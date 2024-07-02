@@ -35,7 +35,14 @@ extension SettingsViewController: UITableViewDataSource
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return SettingsSection.count.rawValue - (hasUploadRights() ? 0 : 1)
+        var nberSections = SettingsSection.count.rawValue
+        nberSections -= (hasUploadRights() ? 0 : 1)
+        if #available(iOS 15, *) {
+            // LogStore requires iOS 15.0+
+        } else {
+            nberSections -= 1
+        }
+        return nberSections
     }
     
     // MARK: - Rows
@@ -68,7 +75,9 @@ extension SettingsViewController: UITableViewDataSource
         case .clear:
             nberOfRows = 1
         case .about:
-            nberOfRows = 9
+            nberOfRows = 6
+        case .troubleshoot:
+            nberOfRows = 3
         default:
             break
         }
@@ -727,7 +736,71 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "piwigoInfo"
                 tableViewCell = cell
                 
-            case 1 /* Contact Us */:
+            case 1 /* Rate Piwigo Mobile */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                if let object = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
+                    cell.configure(with: "\(NSLocalizedString("settings_rateInAppStore", comment: "Rate Piwigo Mobile")) \(object)", detail: "")
+                }
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "ratePiwigo"
+                tableViewCell = cell
+                
+            case 2 /* Translate Piwigo Mobile */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_translateWithCrowdin", comment: "Translate Piwigo Mobile"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                tableViewCell = cell
+                
+            case 3 /* Release Notes */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_releaseNotes", comment: "Release Notes"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "releaseNotes"
+                tableViewCell = cell
+                
+            case 4 /* Acknowledgements */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_acknowledgements", comment: "Acknowledgements"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "acknowledgements"
+                tableViewCell = cell
+                
+            case 5 /* Privacy Policy */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_privacy", comment: "Privacy Policy"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "privacyPolicy"
+                tableViewCell = cell
+                
+            default:
+                break
+            }
+
+        // MARK: Troubleshoot
+        case .troubleshoot /* Troubleshoot */:
+            switch indexPath.row {
+            case 0 /* Logs */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell")}
+                cell.configure(with: NSLocalizedString("settings_logs", comment: "Logs"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "errorLogs"
+                tableViewCell = cell
+
+            case 1 /* Support Forum */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_supportForum", comment: "Support Forum"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "supportForum"
+                tableViewCell = cell
+                
+            case 2 /* Contact Us */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
@@ -738,66 +811,10 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "mailContact"
                 tableViewCell = cell
                 
-            case 2 /* Support Forum */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_supportForum", comment: "Support Forum"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "supportForum"
-                tableViewCell = cell
-                
-            case 3 /* Rate Piwigo Mobile */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                if let object = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
-                    cell.configure(with: "\(NSLocalizedString("settings_rateInAppStore", comment: "Rate Piwigo Mobile")) \(object)", detail: "")
-                }
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "ratePiwigo"
-                tableViewCell = cell
-                
-            case 4 /* Translate Piwigo Mobile */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_translateWithCrowdin", comment: "Translate Piwigo Mobile"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                tableViewCell = cell
-                
-            case 5 /* Release Notes */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_releaseNotes", comment: "Release Notes"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "releaseNotes"
-                tableViewCell = cell
-                
-            case 6 /* Acknowledgements */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_acknowledgements", comment: "Acknowledgements"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "acknowledgements"
-                tableViewCell = cell
-                
-            case 7 /* Privacy Policy */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_privacy", comment: "Privacy Policy"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "privacyPolicy"
-                tableViewCell = cell
-                
-            case 8 /* Error Logs */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-                else { preconditionFailure("Could not load LabelTableViewCell")}
-                cell.configure(with: NSLocalizedString("error_logs", comment: "Error Logs"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "errorLogs"
-                tableViewCell = cell
-
             default:
                 break
             }
+
         default:
             break
         }

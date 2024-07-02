@@ -11,6 +11,7 @@ import MessageUI
 import UIKit
 import piwigoKit
 
+@available(iOS 15, *)
 class JsonViewController: UIViewController {
     
     @IBOutlet weak var method: UILabel!
@@ -24,7 +25,7 @@ class JsonViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = NSLocalizedString("error_logs", comment: "Error Logs")
+        title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
         
         // Initialise content
         guard let fileURL = fileURL else { return }
@@ -39,7 +40,7 @@ class JsonViewController: UIViewController {
             dateTime?.text = fileURL.fileSizeString
         }
         let content = try? Data(contentsOf: fileURL, options: .alwaysMapped)
-        fileContent.text = String(decoding: content ?? Data(), as: UTF8.self)
+        fileContent?.text = String(decoding: content ?? Data(), as: UTF8.self)
 
         // Button for sending file content by mail
         mailBarButton = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(mailFile))
@@ -62,21 +63,19 @@ class JsonViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
         
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+        /// which by default produces a transparent background, to all navigation bars.
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithOpaqueBackground()
+        barAppearance.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.standardAppearance = barAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
         // Text color depdending on background color
-        method.textColor = .piwigoColorText()
-        dateTime.textColor = .piwigoColorText()
-        fileContent.textColor = .piwigoColorText()
-        fileContent.backgroundColor = .piwigoColorBackground()
+        method?.textColor = .piwigoColorText()
+        dateTime?.textColor = .piwigoColorText()
+        fileContent?.textColor = .piwigoColorText()
+        fileContent?.backgroundColor = .piwigoColorBackground()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -84,8 +83,8 @@ class JsonViewController: UIViewController {
         
         // Release notes
         fixTextPositionAfterLoadingViewOnPad = true
-        fileContent.scrollsToTop = true
-        fileContent.contentInsetAdjustmentBehavior = .never
+        fileContent?.scrollsToTop = true
+        fileContent?.contentInsetAdjustmentBehavior = .never
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -102,7 +101,7 @@ class JsonViewController: UIViewController {
         if (fixTextPositionAfterLoadingViewOnPad) {
             // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
-            fileContent.setContentOffset(.zero, animated: false)
+            fileContent?.setContentOffset(.zero, animated: false)
         }
     }
     
@@ -124,7 +123,7 @@ class JsonViewController: UIViewController {
 
             // Set subject
             var subject = "[" + NSLocalizedString("settings_appName", comment: "Piwigo Mobile") + "]: "
-            subject += method.text ?? "?"
+            subject += method?.text ?? "?"
             composeVC.setSubject(subject)
 
             // Collect system and device data
@@ -138,7 +137,7 @@ class JsonViewController: UIViewController {
             content += deviceModel + " — " + deviceOS + " " + deviceOSversion + "\n"
             content += (dateTime.text ?? "?") + "\n"
             content += "\n"
-            content += fileContent.text ?? ""
+            content += fileContent?.text ?? ""
             composeVC.setMessageBody(content, isHTML: false)
 
             // Present the view controller modally.
@@ -149,6 +148,7 @@ class JsonViewController: UIViewController {
 
 
 // MARK: - MFMailComposeViewControllerDelegate
+@available(iOS 15, *)
 extension JsonViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         // Check the result or perform other tasks.

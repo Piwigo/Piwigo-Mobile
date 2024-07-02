@@ -44,7 +44,7 @@ public extension PwgSession {
                 NetworkVars.usesCalcOrphans = methodsJSON.data.contains("pwg.categories.calculateOrphans")
                 
                 if #available(iOSApplicationExtension 14.0, *) {
-                    PwgSession.logger.notice("Has Community: \(NetworkVars.usesUploadAsync, privacy: .public), uploadAsync: \(NetworkVars.usesUploadAsync, privacy: .public), calcOrphans: \(NetworkVars.usesCalcOrphans, privacy: .public)")
+                    PwgSession.logger.notice("Has Community: \(NetworkVars.usesCommunityPluginV29, privacy: .public), uploadAsync: \(NetworkVars.usesUploadAsync, privacy: .public), calcOrphans: \(NetworkVars.usesCalcOrphans, privacy: .public)")
                 }
                 completion()
             }
