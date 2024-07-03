@@ -33,7 +33,7 @@ class LogsViewController: UIViewController {
         if logEntries.isEmpty { return }
         category?.text = logEntries.first?.category
         dateTime?.text = DateUtilities.dateFormatter.string(from: logEntries.first?.date ?? Date())
-        messages?.text = logEntries.map({"•" + $0.composedMessage + "\n"}).reduce("", +)
+        messages?.text = logEntries.map({$0.composedMessage + "\n"}).reduce("", +)
     }
     
     @objc func applyColorPalette() {

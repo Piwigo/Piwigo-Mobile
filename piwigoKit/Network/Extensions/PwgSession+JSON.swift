@@ -88,8 +88,8 @@ extension PwgSession
                                                          method: method) else {
                         // Invalid JSON data
                         #if DEBUG
-                        let dataStr = String(decoding: jsonData, as: UTF8.self)
                         if #available(iOSApplicationExtension 14.0, *) {
+                            let dataStr = String(decoding: jsonData, as: UTF8.self)
                             PwgSession.logger.notice("Received invalid JSON data: \(dataStr, privacy: .public)")
                         }
                         #endif

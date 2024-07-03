@@ -28,7 +28,7 @@ class TroubleshootingViewController: UIViewController {
     private lazy var JSONprefixCount: Int = JSONprefix.count
     private lazy var JSONextensionCount: Int = JSONextension.count
     private var JSONfiles = [URL]()
-    private var pwgSessionLogs = [OSLogEntryLog]()
+    private var pwgLogs = [[OSLogEntryLog]]()
     
     
     // MARK: - View Lifecycle
@@ -140,19 +140,24 @@ class TroubleshootingViewController: UIViewController {
                 let timeCounter = CFAbsoluteTimeGetCurrent()
                 let logStore = try OSLogStore(scope: .currentProcessIdentifier)
                 let oneHourAgo = logStore.position(date: Date().addingTimeInterval(-3600))
-                let predicate = NSPredicate(format: "subsystem IN %@", ["org.piwigo", "org.piwigoKit"])
+                let predicate = NSPredicate(format: "subsystem IN %@", ["org.piwigo", "org.piwigoKit", "org.uploadKit"])
                 let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
                 let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
                 print("••> completed in \(duration.rounded()) ms")
-                self.pwgSessionLogs = allEntries.compactMap({ $0 as? OSLogEntryLog })
-                    .filter({$0.category == "PwgSession"})
-                // For debugging
-                for entry in self.pwgSessionLogs {
-                    print("\(entry.date);  \(entry.subsystem);  \(entry.category);  \(entry.composedMessage)")
-                }
+                let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
+                // Core Data
+                var someLogs = entries.filter({$0.category == "TagToTagMigrationPolicy_09_to_0C"})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                someLogs = entries.filter({$0.category == "UploadToUploadMigrationPolicy_09_to_0C"})
+                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
+                someLogs = entries.filter({$0.category == "Image"})
+                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
+                // Networking
+                someLogs = entries.filter({$0.category == "PwgSession"})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             } catch {
                 debugPrint("••> Could not retrieve logs.")
-                self.pwgSessionLogs = []
+                self.pwgLogs = []
             }
         }
         getLogs.completionBlock = {
@@ -230,7 +235,7 @@ extension TroubleshootingViewController: UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0 /* Logs */:
-            return 1
+            return max(1, pwgLogs.count)
         case 1 /* Invalid JSON data */:
             return max(1, JSONfiles.count)
         default:
@@ -243,18 +248,16 @@ extension TroubleshootingViewController: UITableViewDataSource
         
         switch indexPath.section {
         case 0 /* Logs */:
-            switch indexPath.row {
-            case 0 /* PwgSession */:
-                if let entry = pwgSessionLogs.first {
-                    cell.textLabel?.text = "PwgSession"
-                    cell.detailTextLabel?.text = DateUtilities.dateFormatter.string(from: entry.date) + " | piwigoKit"
-                    cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                } else {
-                    cell.textLabel?.text = "None"
-                    cell.accessoryType = UITableViewCell.AccessoryType.none
-                }
-            default:
-                break
+            if pwgLogs.isEmpty {
+                cell.textLabel?.text = "None"
+                cell.accessoryType = UITableViewCell.AccessoryType.none
+            } else if let entry = pwgLogs[indexPath.row].first {
+                cell.textLabel?.text = entry.category
+                cell.detailTextLabel?.text = DateUtilities.dateFormatter.string(from: entry.date)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            } else {
+                cell.textLabel?.text = "None"
+                cell.accessoryType = UITableViewCell.AccessoryType.none
             }
         case 1 /* Invalid JSON data */:
             if JSONfiles.isEmpty {
@@ -319,7 +322,7 @@ extension TroubleshootingViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
         case 0 /* Logs */:
-            return !pwgSessionLogs.isEmpty
+            return !pwgLogs.isEmpty
         case 1 /* Invalid JSON data */:
             return !JSONfiles.isEmpty
         default:
@@ -330,11 +333,10 @@ extension TroubleshootingViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
-        case 0 /* PwgSession logs */:
+        case 0 /* Logs */:
             guard let LogsVC = storyboard?.instantiateViewController(withIdentifier: "LogsViewController") as? LogsViewController
             else { preconditionFailure("Could not load LogsViewController") }
-            if indexPath.row >= pwgSessionLogs.count { break }
-            LogsVC.logEntries = pwgSessionLogs
+            LogsVC.logEntries = pwgLogs[indexPath.row]
             navigationController?.pushViewController(LogsVC, animated: true)
         
         case 1 /* Invalid JSON data */:

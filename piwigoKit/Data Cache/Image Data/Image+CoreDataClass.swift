@@ -7,6 +7,7 @@
 //
 //
 
+import os
 import CoreData
 import Foundation
 import MobileCoreServices
@@ -21,6 +22,12 @@ import UniformTypeIdentifiers        // Requires iOS 14
     - Image files are automatically deleted from the cache when deleting an instance.
  */
 public class Image: NSManagedObject {
+
+    // Logs Image updates
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigoKit", category: String(describing: Image.self))
+
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.
      NB: A single tag is returned by pwg.categories.getImages!
@@ -39,6 +46,11 @@ public class Image: NSManagedObject {
             pwgID = newPwgID
         }
         
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("Update image \(newPwgID, privacy: .public)")
+        }
+
         // Image title
         if let newTitle = imageData.title {
             let titleUTF8 = PwgSession.utf8mb4String(from: newTitle)
@@ -112,6 +124,10 @@ public class Image: NSManagedObject {
         }
         
         // Image dates
+        if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("… with datePosted: \(imageData.datePosted ?? "nil", privacy: .public)")
+            Image.logger.notice("… with dateCreated: \(imageData.dateCreated ?? "nil", privacy: .public)")
+        }
         // Update date only if new date is after 8 January 1900 at 00:00:00 UTC
         if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted),
            newPostedInterval != datePosted {
