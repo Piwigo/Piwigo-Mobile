@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import MessageUI
 import UIKit
 import piwigoKit
 
@@ -19,7 +18,7 @@ class JsonViewController: UIViewController {
     @IBOutlet weak var fileContent: UITextView!
     var fileURL: URL?
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
-    private var mailBarButton: UIBarButtonItem?
+    private var shareBarButton: UIBarButtonItem?
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -41,10 +40,6 @@ class JsonViewController: UIViewController {
         }
         let content = try? Data(contentsOf: fileURL, options: .alwaysMapped)
         fileContent?.text = String(decoding: content ?? Data(), as: UTF8.self)
-
-        // Button for sending file content by mail
-        mailBarButton = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(mailFile))
-        mailBarButton?.accessibilityIdentifier = "mailFile"
     }
     
     @objc func applyColorPalette() {
@@ -90,8 +85,9 @@ class JsonViewController: UIViewController {
         applyColorPalette()
         
         // Set navigation buttons
-        navigationItem.setRightBarButtonItems([mailBarButton].compactMap { $0 }, animated: true)
-        
+        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(shareJSONdata))
+        navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -112,19 +108,40 @@ class JsonViewController: UIViewController {
     
     
     // MARK: - Mail File
-    @objc private func mailFile() {
-        if MFMailComposeViewController.canSendMail() {
-            let composeVC = MFMailComposeViewController()
-            composeVC.mailComposeDelegate = self
+    @objc private func shareJSONdata() {
+        // Disable buttons during action
+        shareBarButton?.isEnabled = false
+        
+        // Share logs
+        let items = [self]
+        let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        present(ac, animated: true) {
+            self.shareBarButton?.isEnabled = true
+        }
+    }
+}
 
+
+// MARK: - UIActivityItemSource
+@available(iOS 15.0, *)
+extension JsonViewController: UIActivityItemSource
+{
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        // No needd to put a long string here, only to determine that we want to share a string.
+        return "A string"
+    }
+
+    func activityViewController(_ activityViewController: UIActivityViewController,
+                                itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+        switch activityType {
+        case .airDrop, .copyToPasteboard, .message:
+            return fileContent?.text ?? ""
+        case .mail, .print:
+            fallthrough
+        default:
             // Collect version and build numbers
             let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
             let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-
-            // Set subject
-            var subject = "[" + NSLocalizedString("settings_appName", comment: "Piwigo Mobile") + "]: "
-            subject += method?.text ?? "?"
-            composeVC.setSubject(subject)
 
             // Collect system and device data
             let deviceModel = UIDevice.current.modelName
@@ -138,22 +155,14 @@ class JsonViewController: UIViewController {
             content += (dateTime.text ?? "?") + "\n"
             content += "\n"
             content += fileContent?.text ?? ""
-            composeVC.setMessageBody(content, isHTML: false)
-
-            // Present the view controller modally.
-            present(composeVC, animated: true)
+            return content
         }
     }
-}
-
-
-// MARK: - MFMailComposeViewControllerDelegate
-@available(iOS 15, *)
-extension JsonViewController: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        // Check the result or perform other tasks.
-
-        // Dismiss the mail compose view controller.
-        dismiss(animated: true)
+    
+    func activityViewController(_ activityViewController: UIActivityViewController,
+                                subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
+        var subject = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
+        subject += " - " + (method?.text ?? "?")
+        return subject
     }
 }
