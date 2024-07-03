@@ -37,11 +37,6 @@ extension SettingsViewController: UITableViewDataSource
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberSections = SettingsSection.count.rawValue
         nberSections -= (hasUploadRights() ? 0 : 1)
-        if #available(iOS 15, *) {
-            // LogStore requires iOS 15.0+
-        } else {
-            nberSections -= 1
-        }
         return nberSections
     }
     
@@ -77,7 +72,12 @@ extension SettingsViewController: UITableViewDataSource
         case .about:
             nberOfRows = 6
         case .troubleshoot:
-            nberOfRows = 3
+            // LogStore requires iOS 15.0+
+            if #available(iOS 15, *) {
+                nberOfRows = 3
+            } else {
+                nberOfRows = 2
+            }
         default:
             break
         }
@@ -783,7 +783,13 @@ extension SettingsViewController: UITableViewDataSource
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            switch indexPath.row {
+            var row = indexPath.row
+            if #available(iOS 15, *) {
+                // LogStore available
+            } else {
+                row += 1
+            }
+            switch row {
             case 0 /* Logs */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell")}

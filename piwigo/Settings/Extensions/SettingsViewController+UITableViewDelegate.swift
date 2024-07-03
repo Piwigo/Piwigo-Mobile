@@ -154,7 +154,13 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            switch indexPath.row {
+            var row = indexPath.row
+            if #available(iOS 15, *) {
+                // LogStore available
+            } else {
+                row += 1
+            }
+            switch row {
             case 0 /* Error Logs */,
                 1 /* Support Forum */:
                 result = true
@@ -396,7 +402,13 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            switch indexPath.row {
+            var row = indexPath.row
+            if #available(iOS 15, *) {
+                // LogStore available
+            } else {
+                row += 1
+            }
+            switch row {
             case 0 /* Open Logs page */:
                 if #available(iOS 15, *) {
                     let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
