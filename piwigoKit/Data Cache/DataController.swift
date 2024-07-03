@@ -6,10 +6,16 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 import CoreData
 
 public class DataController: NSObject {
+
+    // Logs networking activities
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigoKit", category: String(describing: DataController.self))
 
     // MARK: - Singleton
     public static let shared = DataController()
@@ -70,7 +76,7 @@ extension NSManagedObjectContext {
         }
         catch let error as NSError {
             // Will try later…
-            print("Could not save context: \(error), \(error.userInfo)")
+            debugPrint("Could not save context: \(error), \(error.userInfo)")
         }
     }
 }
