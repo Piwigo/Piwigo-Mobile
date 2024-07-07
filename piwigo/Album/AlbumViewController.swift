@@ -734,10 +734,7 @@ class AlbumViewController: UIViewController
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
-        
-        // Pause upload manager
-//        UploadManager.shared.isPaused = true
-        
+                
         // Check that the root album exists
         // (might have been deleted with a clear of the cache)
         if categoryId == Int32.zero {
