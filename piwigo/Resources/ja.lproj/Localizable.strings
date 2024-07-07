@@ -863,6 +863,11 @@
 "help08_text" = "戻るボタンを長押しすると、アルバムのリストが表示されます。";
 "help08_text2" = "選択した親アルバムをタップしてジャンプします。";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "トラブルシューティング";
+"settings_logs" = "ログ";
+"settings_JSONinvalid" = "無効なサーバー応答";
+
 // What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
 "whatsNew_title1" = "グループ写真";

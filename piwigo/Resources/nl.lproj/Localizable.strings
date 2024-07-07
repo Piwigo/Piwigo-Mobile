@@ -863,6 +863,11 @@
 "help08_text" = "Druk lang op de terugknop om de lijst van bovenliggende albums weer te geven.";
 "help08_text2" = "Tik op het bovenliggende album van je keuze om er naar terug te springen.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Probleemoplossen";
+"settings_logs" = "Logboeken";
+"settings_JSONinvalid" = "Ongeldige serverreacties";
+
 // What's New in Piwigo
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
 "whatsNew_title1" = "Groep foto's";

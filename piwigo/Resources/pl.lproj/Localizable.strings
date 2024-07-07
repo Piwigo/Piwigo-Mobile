@@ -863,6 +863,11 @@
 "help08_text" = "Przytrzymaj przycisk wstecz, aby wyświetlić listę albumów nadrzędnych.";
 "help08_text2" = "Dotknij wybranego albumu nadrzędnego, aby do niego wrócić.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Rozwiązywanie problemów";
+"settings_logs" = "Dzienniki";
+"settings_JSONinvalid" = "Nieprawidłowe odpowiedzi serwera";
+
 // What's New in Piwigo
 "whatsNew_title" = "Co nowego w Piwigo";
 "whatsNew_title1" = "Grupuj zdjęcia";

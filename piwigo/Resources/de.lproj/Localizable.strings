@@ -863,6 +863,11 @@
 "help08_text" = "Drücken Sie lange auf die Zurück-Schaltfläche, um die Liste der übergeordneten Alben anzuzeigen.";
 "help08_text2" = "Tippe auf das übergeordnete Album deiner Wahl, um zu ihm zurückzuspringen.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Fehlerbehebung";
+"settings_logs" = "Protokolle";
+"settings_JSONinvalid" = "Ungültige Serverantworten";
+
 // What's New in Piwigo
 "whatsNew_title" = "Was ist neu in Piwigo";
 "whatsNew_title1" = "Fotos gruppieren";

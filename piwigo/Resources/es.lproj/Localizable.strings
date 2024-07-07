@@ -863,6 +863,11 @@
 "help08_text" = "Pulsación larga en el botón atrás para mostrar la lista de álbumes padre.";
 "help08_text2" = "Toca el álbum padre de tu elección para volver a él.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Resolución de problemas";
+"settings_logs" = "Registros";
+"settings_JSONinvalid" = "Respuestas del servidor no válidas";
+
 // What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
 "whatsNew_title1" = "Agrupar fotos";

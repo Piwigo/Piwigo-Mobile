@@ -863,6 +863,11 @@
 "help08_text" = "長按返回按鈕來顯示母相簿列表。";
 "help08_text2" = "點擊您選擇的母相簿以跳回它。";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "故障排除";
+"settings_logs" = "紀錄";
+"settings_JSONinvalid" = "無效的伺服器回應";
+
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
 "whatsNew_title1" = "集體照";

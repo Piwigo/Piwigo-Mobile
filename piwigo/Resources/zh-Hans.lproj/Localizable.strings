@@ -863,6 +863,11 @@
 "help08_text" = "长按返回按钮以显示父相册列表。";
 "help08_text2" = "点击您选择的父相册以跳回它。";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "故障排除";
+"settings_logs" = "日志";
+"settings_JSONinvalid" = "服务器响应无效";
+
 // What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
 "whatsNew_title1" = "群组照片";

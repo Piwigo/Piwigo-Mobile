@@ -866,7 +866,7 @@
 // Settings - Logs
 "settingsHeader_troubleshoot" = "Troubleshooting";
 "settings_logs" = "Logs";
-"settings_JSONinvalid" = "Invalid JSON data";
+"settings_JSONinvalid" = "Invalid Server Responses";
 
 // What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";

@@ -863,6 +863,11 @@
 "help08_text" = "Långtryck på bakåtknappen för att visa listan över överordnade album.";
 "help08_text2" = "Tryck på det överordnade albumet du väljer för att hoppa tillbaka till det.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Felsökning";
+"settings_logs" = "Loggar";
+"settings_JSONinvalid" = "Ogiltiga serversvar";
+
 // What's New in Piwigo
 "whatsNew_title" = "Vad är nytt i Piwigo";
 "whatsNew_title1" = "Gruppera foton";
