@@ -179,7 +179,7 @@ class TroubleshootingViewController: UIViewController {
             }
             catch {
                 debugPrint("!!! Could not retrieve content of temporary directory. !!!")
-                self.JSONfiles =  []
+                self.JSONfiles = []
             }
         }
         getJSONfiles.completionBlock = {
@@ -197,7 +197,7 @@ class TroubleshootingViewController: UIViewController {
     
     @objc func deleteJSONfiles() {
         // Delete JSON data files
-        if JSONfiles.count > 100 {
+        if JSONfiles.count > 200 {
             // Show progress view
             showHUD(withTitle: "")
             // Remove files
@@ -206,6 +206,7 @@ class TroubleshootingViewController: UIViewController {
             }
             // Hide progress view and reload section
             hideHUD {
+                self.JSONfiles = []
                 self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
                 self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
             }
@@ -215,6 +216,7 @@ class TroubleshootingViewController: UIViewController {
                 try? fm.removeItem(at: fileURL)
             }
             // Reload section
+            self.JSONfiles = []
             self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
             self.clearBarButton?.isEnabled = !self.JSONfiles.isEmpty
         }
