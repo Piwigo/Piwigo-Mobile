@@ -25,13 +25,13 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VKa-FU-aH2">
-                                <rect key="frame" x="20" y="124.66666666666669" width="353" height="12"/>
+                                <rect key="frame" x="20" y="116.66666666666667" width="353" height="12.000000000000014"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="errorLogs" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lw7-Yz-mXF">
-                                <rect key="frame" x="0.0" y="144.66666666666669" width="393" height="707.33333333333326"/>
+                                <rect key="frame" x="0.0" y="128.66666666666669" width="393" height="723.33333333333326"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
@@ -74,8 +74,8 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="VKa-FU-aH2" secondAttribute="trailing" constant="20" id="OSC-Oh-c4u"/>
                             <constraint firstItem="VKa-FU-aH2" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="Y4N-g4-tfu"/>
                             <constraint firstAttribute="bottom" secondItem="lw7-Yz-mXF" secondAttribute="bottom" id="hmA-zA-6vg"/>
-                            <constraint firstItem="VKa-FU-aH2" firstAttribute="top" secondItem="LXi-x4-8LH" secondAttribute="bottom" constant="8" id="mv3-og-eH0"/>
-                            <constraint firstItem="lw7-Yz-mXF" firstAttribute="top" secondItem="VKa-FU-aH2" secondAttribute="bottom" constant="8" id="nxb-NN-kNr"/>
+                            <constraint firstItem="VKa-FU-aH2" firstAttribute="top" secondItem="LXi-x4-8LH" secondAttribute="bottom" id="mv3-og-eH0"/>
+                            <constraint firstItem="lw7-Yz-mXF" firstAttribute="top" secondItem="VKa-FU-aH2" secondAttribute="bottom" id="nxb-NN-kNr"/>
                             <constraint firstItem="LXi-x4-8LH" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="8" id="oQG-Gq-li8"/>
                             <constraint firstItem="LXi-x4-8LH" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="yew-o3-xiT"/>
                         </constraints>
