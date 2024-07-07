@@ -37,8 +37,9 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 
 [Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) is compatible with the following [extensions](https://piwigo.org/ext/):
 
-- [Community](https://piwigo.org/ext/extension_view.php?eid=303): allows non-admin users to add photos
-- [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610): adds video support
+- [Community](https://piwigo.org/ext/index.php?eid=303): allows users to create albums and add photos
+- [rotateImage](https://piwigo.org/ext/index.php?eid=578): enables the rotation of uploaded images
+- [piwigo-videojs](http://piwigo.org/ext/index.php?eid=610): adds video support
 
 ## Videos 
 For uploading videos with your iOS device, make sure the [piwigo-videojs](http://piwigo.org/ext/extension_view.php?eid=610) plugin is installed on your Piwigo server. The wiki contains some [instructions](https://github.com/xbgmsharp/piwigo-videojs/wiki/How-to-add-videos) for installing it.
