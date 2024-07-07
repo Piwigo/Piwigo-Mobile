@@ -66,10 +66,8 @@ extension UploadManager {
         print("\(dbg()) setImageParameters() in", queueName())
         
         // Prepare creation date
-        let dateFormat = DateFormatter()
-        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
-        let creationDate = dateFormat.string(from: date)
+        let creationDate = DateUtilities.dateFormatter.string(from: date)
 
         // Prepare parameters for setting the image/video data
         let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)

@@ -1,6 +1,6 @@
 //
 //  Data+AppTools.swift
-//  piwigo
+//  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 06/02/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
@@ -14,6 +14,9 @@ import typealias CommonCrypto.CC_LONG
 #if canImport(CryptoKit)
 import CryptoKit        // Requires iOS 13
 #endif
+
+public let JSONprefix = "JSON "
+public let JSONextension = ".txt"
 
 extension Data {
     
@@ -224,17 +227,22 @@ extension Data {
         return [0x00, 0x00, 0x02, 0x00]
     }
     
-    // MARK: Piwgo Response Checker
+    // MARK: - Piwgo Response Checker
     // Clean and check the response returned by the server
-    public mutating func isPiwigoResponseValid<T: Decodable>(for type: T.Type) -> Bool {
+    public mutating func isPiwigoResponseValid<T: Decodable>(for type: T.Type, method: String) -> Bool {
         // Is this an empty object?
         if self.isEmpty { return false }
 
         // Is this a valid JSON object?
         let decoder = JSONDecoder()
         if let _ = try? decoder.decode(type, from: self) {
+            // Next line for debugging only
+//            self.saveInvalidJSON(for: method)
             return true
         }
+        
+        // Store the invalid JSON data for helping user debugging issues
+        self.saveInvalidJSON(for: method)
         
         // Remove HTML data located
         /// - before the first opening curly brace
@@ -312,5 +320,20 @@ extension Data {
         
         self = Data()
         return false
+    }
+    
+    private func saveInvalidJSON(for method: String) {
+        // Prepare file name from current date
+        let pwgMethod = method.replacingOccurrences(of: "format=json&method=", with: "")
+        let fileName = JSONprefix + DateUtilities.dateFormatterFull.string(from: Date()) + " " + pwgMethod + JSONextension
+
+        // Logs are saved in the /tmp directory and will be deleted:
+        // - by the app if the user kills it
+        // - by the system after a certain amount of time
+        let filePath = NSTemporaryDirectory().appending(fileName)
+        if FileManager.default.fileExists(atPath: filePath) {
+            try? FileManager.default.removeItem(atPath: filePath)
+        }
+        FileManager.default.createFile(atPath: filePath, contents: self)
     }
 }

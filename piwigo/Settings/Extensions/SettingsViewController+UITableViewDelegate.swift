@@ -43,6 +43,8 @@ extension SettingsViewController: UITableViewDelegate
             title = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings")
         case .about:
             title = NSLocalizedString("settingsHeader_about", comment: "Information")
+        case .troubleshoot:
+            title = NSLocalizedString("settingsHeader_troubleshoot", comment: "Troubleshooting")
         case .logout, .clear:
             fallthrough
         default:
@@ -136,22 +138,38 @@ extension SettingsViewController: UITableViewDelegate
         case .clear /* Cache Settings */:
             result = true
             
-            // MARK: Information
+        // MARK: Information
         case .about /* Information */:
             switch indexPath.row {
-            case 1 /* Contact Us */:
-                result = MFMailComposeViewController.canSendMail() ? true : false
             case 0 /* Twitter */,
-                2 /* Support Forum */,
-                3 /* Rate Piwigo Mobile */,
-                4 /* Translate Piwigo Mobile */,
-                5 /* Release Notes */,
-                6 /* Acknowledgements */,
-                7 /* Privacy Policy */:
+                1 /* Rate Piwigo Mobile */,
+                2 /* Translate Piwigo Mobile */,
+                3 /* Release Notes */,
+                4 /* Acknowledgements */,
+                5 /* Privacy Policy */:
                 result = true
             default:
                 result = false
             }
+
+        // MARK: Troubleshoot
+        case .troubleshoot /* Troubleshoot */:
+            var row = indexPath.row
+            if #available(iOS 15, *) {
+                // LogStore available
+            } else {
+                row += 1
+            }
+            switch row {
+            case 0 /* Error Logs */,
+                1 /* Support Forum */:
+                result = true
+            case 2 /* Contact Us */:
+                result = MFMailComposeViewController.canSendMail() ? true : false
+            default:
+                result = false
+            }
+
         default:
             result = false
         }
@@ -351,7 +369,57 @@ extension SettingsViewController: UITableViewDelegate
                 if let url = URL(string: NSLocalizedString("settings_twitterURL", comment: "https://twitter.com/piwigo")) {
                     UIApplication.shared.open(url)
                 }
-            case 1 /* Prepare draft email */:
+            case 1 /* Open Piwigo App Store page for rating */:
+                // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
+                if let url = URL(string: "itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review") {
+                    UIApplication.shared.open(url)
+                }
+            case 2 /* Open Piwigo Crowdin page for translating */:
+                if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
+                    UIApplication.shared.open(url)
+                }
+            case 3 /* Open Release Notes page */:
+                let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
+                let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
+                if let releaseNotesVC = releaseNotesVC {
+                    navigationController?.pushViewController(releaseNotesVC, animated: true)
+                }
+            case 4 /* Open Acknowledgements page */:
+                let aboutSB = UIStoryboard(name: "AboutViewController", bundle: nil)
+                let aboutVC = aboutSB.instantiateViewController(withIdentifier: "AboutViewController") as? AboutViewController
+                if let aboutVC = aboutVC {
+                    navigationController?.pushViewController(aboutVC, animated: true)
+                }
+            case 5 /* Open Privacy Policy page */:
+                let privacyPolicySB = UIStoryboard(name: "PrivacyPolicyViewController", bundle: nil)
+                let privacyPolicyVC = privacyPolicySB.instantiateViewController(withIdentifier: "PrivacyPolicyViewController") as? PrivacyPolicyViewController
+                if let privacyPolicyVC = privacyPolicyVC {
+                    navigationController?.pushViewController(privacyPolicyVC, animated: true)
+                }
+            default:
+                break
+            }
+
+        // MARK: Troubleshoot
+        case .troubleshoot /* Troubleshoot */:
+            var row = indexPath.row
+            if #available(iOS 15, *) {
+                // LogStore available
+            } else {
+                row += 1
+            }
+            switch row {
+            case 0 /* Open Logs page */:
+                if #available(iOS 15, *) {
+                    let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
+                    guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController else { preconditionFailure("Could not load TroubleshootingViewController") }
+                    navigationController?.pushViewController(errorLogsVC, animated: true)
+                }
+            case 1 /* Open Piwigo support forum webpage with default browser */:
+                if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
+                    UIApplication.shared.open(url)
+                }
+            case 2 /* Prepare draft email */:
                 if MFMailComposeViewController.canSendMail() {
                     let composeVC = MFMailComposeViewController()
                     composeVC.mailComposeDelegate = self
@@ -386,40 +454,10 @@ extension SettingsViewController: UITableViewDelegate
                     // Present the view controller modally.
                     present(composeVC, animated: true)
                 }
-            case 2 /* Open Piwigo support forum webpage with default browser */:
-                if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
-                    UIApplication.shared.open(url)
-                }
-            case 3 /* Open Piwigo App Store page for rating */:
-                // See https://itunes.apple.com/us/app/piwigo/id472225196?ls=1&mt=8
-                if let url = URL(string: "itms-apps://itunes.apple.com/app/piwigo/id472225196?action=write-review") {
-                    UIApplication.shared.open(url)
-                }
-            case 4 /* Open Piwigo Crowdin page for translating */:
-                if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
-                    UIApplication.shared.open(url)
-                }
-            case 5 /* Open Release Notes page */:
-                let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
-                let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
-                if let releaseNotesVC = releaseNotesVC {
-                    navigationController?.pushViewController(releaseNotesVC, animated: true)
-                }
-            case 6 /* Open Acknowledgements page */:
-                let aboutSB = UIStoryboard(name: "AboutViewController", bundle: nil)
-                let aboutVC = aboutSB.instantiateViewController(withIdentifier: "AboutViewController") as? AboutViewController
-                if let aboutVC = aboutVC {
-                    navigationController?.pushViewController(aboutVC, animated: true)
-                }
-            case 7 /* Open Privacy Policy page */:
-                let privacyPolicySB = UIStoryboard(name: "PrivacyPolicyViewController", bundle: nil)
-                let privacyPolicyVC = privacyPolicySB.instantiateViewController(withIdentifier: "PrivacyPolicyViewController") as? PrivacyPolicyViewController
-                if let privacyPolicyVC = privacyPolicyVC {
-                    navigationController?.pushViewController(privacyPolicyVC, animated: true)
-                }
             default:
                 break
             }
+        
         default:
             break
         }

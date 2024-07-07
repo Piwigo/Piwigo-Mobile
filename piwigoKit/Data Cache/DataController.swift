@@ -6,6 +6,7 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 import CoreData
 
@@ -70,7 +71,7 @@ extension NSManagedObjectContext {
         }
         catch let error as NSError {
             // Will try later…
-            print("Could not save context: \(error), \(error.userInfo)")
+            debugPrint("Could not save context: \(error), \(error.userInfo)")
         }
     }
 }

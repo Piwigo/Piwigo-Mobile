@@ -61,8 +61,8 @@ extension AlbumViewController
             }
             
             // Present favorite images
-            guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController else { preconditionFailure("Could not load AlbumViewController")
-            }
+            guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
             favoritesVC.categoryId = pwgSmartAlbum.favorites.rawValue
             navigationController?.pushViewController(favoritesVC, animated: true)
         })

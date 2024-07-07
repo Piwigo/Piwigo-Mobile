@@ -84,13 +84,13 @@ extension PwgSession
                     }
 
                     // Data returned, is this a valid JSON object?
-                    guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
+                    guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self,
+                                                         method: method) else {
                         // Invalid JSON data
                         #if DEBUG
-                        let dataStr = String(decoding: jsonData, as: UTF8.self)
                         if #available(iOSApplicationExtension 14.0, *) {
-                            PwgSession.logger.notice("PwgSession.JSON: \(method, privacy: .public)")
-                            PwgSession.logger.notice("PwgSession.JSON: Received invalid data: \(dataStr, privacy: .public)")
+                            let dataStr = String(decoding: jsonData, as: UTF8.self)
+                            PwgSession.logger.notice("Received invalid JSON data: \(dataStr, privacy: .public)")
                         }
                         #endif
                         guard let httpResponse = response as? HTTPURLResponse else {
@@ -124,23 +124,21 @@ extension PwgSession
                 return
             }
             
-            // Check returned data
-            /// - The following 2 lines are used to determine the count of returned bytes.
-            /// - This value can then be used to provide the expected count of returned bytes.
-            /// - The last 2 lines display the content of the returned data for debugging.
-            #if DEBUG
-            let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
-                jsonData.count * MemoryLayout<Data>.stride
-//            let dataStr = String(decoding: jsonData, as: UTF8.self)
-            let dataStr = String(decoding: jsonData.prefix(128), as: UTF8.self) + "…"
+            // Log returned data
             if #available(iOSApplicationExtension 14.0, *) {
-                PwgSession.logger.notice("PwgSession.JSON: \(method, privacy: .public)")
-                PwgSession.logger.notice("PwgSession.JSON: Received \(countsOfByte, privacy: .public) bytes\r\(dataStr, privacy: .public)")
-             }
+                let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
+            #if DEBUG
+                let dataStr = String(decoding: jsonData.prefix(64), as: UTF8.self) + "…"
+//                let dataStr = String(decoding: jsonData, as: UTF8.self)
+                PwgSession.logger.notice("Received \(countsOfByte, privacy: .public) bytes of JSON data: \(dataStr, privacy: .public)")
+            #else
+                PwgSession.logger.notice("Received \(countsOfByte, privacy: .public) bytes of JSON data")
             #endif
-            
+            }
+
             // Return Piwigo error if no error and no data returned.
-            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self) else {
+            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self, 
+                                                 method: method) else {
                 failure(PwgSessionError.invalidJSONobject as NSError)
                 return
             }

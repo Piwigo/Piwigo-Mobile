@@ -357,13 +357,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Remember to not ask for passcode
             AppVars.shared.isAppUnlocked = true
         }
-
-        // Inform Upload Manager to pause activities
-        if window?.rootViewController is DataMigrationViewController {
-            // User closes app during a database migration ► UploadManager unavailable
-            return
-        }
-        UploadManager.shared.isPaused = true
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

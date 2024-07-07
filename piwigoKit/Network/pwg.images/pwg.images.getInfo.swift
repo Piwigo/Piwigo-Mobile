@@ -163,7 +163,7 @@ extension ImagesGetInfo {
         }
         if self.dateCreated == nil {
             // Adopts the oldest date when the creation date is unknown.
-            self.dateCreated = "1900-01-01 00:00:00"
+            self.dateCreated = "1900-01-01 00:00:00"    // see DataModel
         }
         if self.downloadUrl == nil { self.downloadUrl = "" }
         if self.privacyLevel == nil { self.privacyLevel = "0" }

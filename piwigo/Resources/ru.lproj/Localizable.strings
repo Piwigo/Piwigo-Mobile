@@ -863,6 +863,11 @@
 "help08_text" = "Долгое нажатие на кнопку Назад для отображения списка родительских альбомов.";
 "help08_text2" = "Нажмите на родительский альбом по вашему выбору, чтобы вернуться к нему.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Поиск неисправностей";
+"settings_logs" = "Журналы";
+"settings_JSONinvalid" = "Неверные ответы сервера";
+
 // What's New in Piwigo
 "whatsNew_title" = "Что нового в Piwigo";
 "whatsNew_title1" = "Групповые фото";

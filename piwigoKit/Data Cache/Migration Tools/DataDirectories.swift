@@ -54,7 +54,7 @@ public class DataDirectories
             }
         }
 
-        print("••> appGroupDirectory: \(piwigoURL)")
+        debugPrint("••> appGroupDirectory: \(piwigoURL)")
         return piwigoURL
     }()
 
@@ -75,7 +75,7 @@ public class DataDirectories
             }
         }
 
-        print("••> uploadsDirectory: \(uploadURL)")
+        debugPrint("••> uploadsDirectory: \(uploadURL)")
         return uploadURL
     }()
 
@@ -96,7 +96,7 @@ public class DataDirectories
                 try fm.createDirectory(at: pwgDirectory, withIntermediateDirectories: true, attributes: nil)
             }
 
-            print("••> cacheDirectory: \(pwgDirectory)")
+            debugPrint("••> cacheDirectory: \(pwgDirectory)")
             return pwgDirectory
         } catch {
             fatalError("Unable to create the \"Caches/Piwgo\" directory (\(error.localizedDescription)")
@@ -127,7 +127,7 @@ public class DataDirectories
             }
         }
 
-        print("••> appSupportDirectory: \(piwigoURL)")
+        debugPrint("••> appSupportDirectory: \(piwigoURL)")
         return piwigoURL
     }()
 
@@ -137,7 +137,7 @@ public class DataDirectories
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let appDocumentsDirectory = urls[urls.count-1]
 
-        print("••> appDocumentsDirectory: \(appDocumentsDirectory)")
+        debugPrint("••> appDocumentsDirectory: \(appDocumentsDirectory)")
         return appDocumentsDirectory
     }()
 }

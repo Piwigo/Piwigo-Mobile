@@ -39,15 +39,11 @@ public class Tag: NSManagedObject {
             }
         }
 
-        // In the absence of date, keep 1st January 1900 at 00:00:00 (see DataModel)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        if let newDate = dateFormatter.date(from: tagProperties.lastmodified ?? "") {
-            let newInterval = newDate.timeIntervalSinceReferenceDate
-            if lastModified != newInterval {
-                lastModified = newInterval
-            }
-         }
+        // Update date only if new date is after 8 January 1900 at 00:00:00 UTC
+        if let newInterval = DateUtilities.timeInterval(from: tagProperties.lastmodified),
+           lastModified != newInterval {
+            lastModified = newInterval
+        }
 
         // In the absence of count, use max integer
         if let newCount = tagProperties.counter, newCount != Int64.max,

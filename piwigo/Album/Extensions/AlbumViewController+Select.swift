@@ -201,8 +201,8 @@ extension AlbumViewController
             selectedSections[key] = .select
         }
 
-        // Update select buttons if needed
-        if dateSortTypes.contains(sortOption),
+        // Update select buttons of section headers if needed
+        if images.sectionNameKeyPath != nil,
            let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         {
             headers.forEach { header in
@@ -218,7 +218,7 @@ extension AlbumViewController
     
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
         // Album section?
-        if section == 0 { return .none}
+        if section == 0 || NetworkVars.userStatus == .guest { return .none}
         
         // Number of images in section
         let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0

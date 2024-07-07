@@ -107,7 +107,7 @@ public class DataMigrator: NSObject {
                 try fm.createDirectory(at: applicationIncompatibleStoresDirectory,
                                        withIntermediateDirectories: true, attributes: nil)
             } catch let error {
-                print("Unable to create directory for corrupt data stores: \(error.localizedDescription)")
+                print("Unable to create a directory for corrupted data stores: \(error.localizedDescription)")
             }
         }
         
@@ -127,7 +127,7 @@ public class DataMigrator: NSObject {
             do {
                 try fm.moveItem(at: storeURL, to: corruptURL)
             } catch let error {
-                print("Unable to move corrupt store: \(error.localizedDescription)")
+                print("Unable to move a corrupted data store: \(error.localizedDescription)")
             }
         }
 
@@ -142,7 +142,7 @@ public class DataMigrator: NSObject {
             do {
                 try fm.moveItem(at: shmURL, to: corruptURL)
             } catch let error {
-                print("Unable to move corrupt store: \(error.localizedDescription)")
+                print("Unable to move a corrupted data store: \(error.localizedDescription)")
             }
         }
 
@@ -157,7 +157,7 @@ public class DataMigrator: NSObject {
             do {
                 try fm.moveItem(at: walURL, to: corruptURL)
             } catch let error {
-                print("Unable to move corrupt store: \(error.localizedDescription)")
+                print("Unable to move a corrupted data store: \(error.localizedDescription)")
             }
         }
     }

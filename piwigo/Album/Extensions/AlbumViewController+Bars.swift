@@ -43,9 +43,11 @@ extension AlbumViewController
         }
         else if NetworkVars.userStatus != .guest {
             if #available(iOS 14, *) {
-                // Menu for activating the selection mode or changing the way images are sorted
+                // Menu for activating the selection mode and changing the way images are sorted
                 actionBarButton = nil
-                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: actionMenu())
+                let children = [selectMenu(), sortMenu(), viewOptionsMenu()]
+                let menu = UIMenu(title: "", children: children.compactMap({$0}))
+                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 selectBarButton?.accessibilityIdentifier = "select"
             } else {
                 // Button for sorting photos
@@ -59,12 +61,22 @@ extension AlbumViewController
             selectBarButton?.isEnabled = hasImages
         }
         else {
-            // No button
-            navigationItem.setRightBarButtonItems([], animated: true)
-            
-            // Following 2 lines fixes situation where the Edit button remains visible
-            navigationController?.navigationBar.setNeedsLayout()
-            navigationController?.navigationBar.layoutIfNeeded()
+            if #available(iOS 14, *) {
+                // Menu for changing the way images are sorted
+                actionBarButton = nil
+                let children = [sortMenu(), viewOptionsMenu()]
+                let menu = UIMenu(title: "", children: children.compactMap({$0}))
+                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                selectBarButton?.accessibilityIdentifier = "sort"
+            } else {
+                // Button for sorting photos
+                actionBarButton = getSortBarButton()
+                // Button for activating the selection mode (not for guests)
+                selectBarButton = nil
+            }
+            navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
+            let hasImages = albumData.nbImages != 0
+            actionBarButton?.isEnabled = hasImages
         }
     }
     
@@ -76,9 +88,10 @@ extension AlbumViewController
         }
         
         // Right side of navigation bar
-        if categoryId == 0 {
+        if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
             return
         }
+        
         if NetworkVars.userStatus != .guest {
             if #available(iOS 14, *) {
                 // Menu for activating the selection mode or change the way images are sorted
@@ -91,9 +104,14 @@ extension AlbumViewController
             selectBarButton?.isEnabled = hasImages
         }
         else {
-            // Following 2 lines fixes situation where the Edit button remains visible
-            navigationController?.navigationBar.setNeedsLayout()
-            navigationController?.navigationBar.layoutIfNeeded()
+            if #available(iOS 14, *) {
+                // Menu for activating the selection mode or change the way images are sorted
+                let children = [sortMenu(), viewOptionsMenu()].compactMap({$0})
+                let updatedMenu = selectBarButton?.menu?.replacingChildren(children)
+                selectBarButton?.menu = updatedMenu
+            }
+            let hasImages = albumData.nbImages != 0
+            selectBarButton?.isEnabled = hasImages
         }
     }
     

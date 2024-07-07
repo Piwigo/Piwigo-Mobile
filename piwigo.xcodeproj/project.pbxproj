@@ -366,6 +366,12 @@
 		ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
+		ADACD28D2C30473800F8790B /* DateUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD28C2C30473800F8790B /* DateUtilities.swift */; };
+		ADACD28F2C317CC200F8790B /* TroubleshootingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD28E2C317CC200F8790B /* TroubleshootingViewController.swift */; };
+		ADACD2912C317CFB00F8790B /* TroubleshootingViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADACD2902C317CFB00F8790B /* TroubleshootingViewController.storyboard */; };
+		ADACD2972C31906E00F8790B /* SettingsUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD2962C31906E00F8790B /* SettingsUtilities.swift */; };
+		ADACD2992C31BD0900F8790B /* JsonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD2982C31BD0900F8790B /* JsonViewController.swift */; };
+		ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD29C2C34852800F8790B /* LogsViewController.swift */; };
 		ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */; };
 		ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* PwgSessionErrors.swift */; };
 		ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB27474267661980002DD09 /* ParseXMLData.swift */; };
@@ -1009,6 +1015,12 @@
 		ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+UITextField.swift"; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
 		ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
+		ADACD28C2C30473800F8790B /* DateUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtilities.swift; sourceTree = "<group>"; };
+		ADACD28E2C317CC200F8790B /* TroubleshootingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TroubleshootingViewController.swift; sourceTree = "<group>"; };
+		ADACD2902C317CFB00F8790B /* TroubleshootingViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TroubleshootingViewController.storyboard; sourceTree = "<group>"; };
+		ADACD2962C31906E00F8790B /* SettingsUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUtilities.swift; sourceTree = "<group>"; };
+		ADACD2982C31BD0900F8790B /* JsonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonViewController.swift; sourceTree = "<group>"; };
+		ADACD29C2C34852800F8790B /* LogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogsViewController.swift; sourceTree = "<group>"; };
 		ADAF3B7023DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADAF3B7123DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/About.strings; sourceTree = "<group>"; };
 		ADAF3B7223DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -1944,6 +1956,7 @@
 		AD97CFB6265B0B0700719ED5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ADACD28C2C30473800F8790B /* DateUtilities.swift */,
 				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
 				AD7DE0942A858FC300C1424E /* Notification.Name+AppTools.swift */,
 				ADB49D87295904BC00EE377A /* String+AppTools.swift */,
@@ -2117,6 +2130,10 @@
 				AD3B2C682A293A860001B8B0 /* DataMigrationViewController.storyboard */,
 				AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */,
 				AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */,
+				ADACD28E2C317CC200F8790B /* TroubleshootingViewController.swift */,
+				ADACD2902C317CFB00F8790B /* TroubleshootingViewController.storyboard */,
+				ADACD29C2C34852800F8790B /* LogsViewController.swift */,
+				ADACD2982C31BD0900F8790B /* JsonViewController.swift */,
 			);
 			path = Information;
 			sourceTree = "<group>";
@@ -2539,6 +2556,7 @@
 		D8BDCB611A6F6B5400D106A8 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				ADACD2962C31906E00F8790B /* SettingsUtilities.swift */,
 				ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */,
 				ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */,
 				AD0F70202946260E008F1394 /* Extensions */,
@@ -2890,6 +2908,7 @@
 				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */,
 				ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */,
+				ADACD2912C317CFB00F8790B /* TroubleshootingViewController.storyboard in Resources */,
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD9697DA2BE2536300520614 /* LocalImageCollectionViewCell.xib in Resources */,
 				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
@@ -3080,6 +3099,7 @@
 				AD594C202A2CA7B1009874D5 /* TagToTagMigrationPolicy_09_to_0C.swift in Sources */,
 				AD1BB5EC29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel in Sources */,
 				ADBF95A62A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel in Sources */,
+				ADACD28D2C30473800F8790B /* DateUtilities.swift in Sources */,
 				ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */,
 				ADF35E7928B283A8009F3ECE /* Server+CoreDataClass.swift in Sources */,
 				ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */,
@@ -3269,6 +3289,7 @@
 				AD3B2C622A2932110001B8B0 /* DataMigrationViewController.swift in Sources */,
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
 				ADBE0C292BE9631900F16A50 /* AlbumViewController+Rotate.swift in Sources */,
+				ADACD2992C31BD0900F8790B /* JsonViewController.swift in Sources */,
 				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
@@ -3398,6 +3419,7 @@
 				AD089D042BC2A5F800CE4A3E /* AlbumTableViewCell.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,
 				AD6BA0FA2BA5C1D600755257 /* PasteboardImagesViewController+UICollectionViewDataSource.swift in Sources */,
+				ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */,
 				ADBE0C272BE962D200F16A50 /* AlbumViewController+Favorite.swift in Sources */,
 				AD43733F2B432862009BC454 /* SettingsViewController+UITableViewDelegate.swift in Sources */,
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
@@ -3427,12 +3449,14 @@
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
 				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
 				ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */,
+				ADACD2972C31906E00F8790B /* SettingsUtilities.swift in Sources */,
 				ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */,
 				AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */,
 				ADDB2A6A2B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift in Sources */,
 				AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
 				ADD65C582BE776B7005AC3B8 /* AlbumViewController+Buttons.swift in Sources */,
+				ADACD28F2C317CC200F8790B /* TroubleshootingViewController.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,

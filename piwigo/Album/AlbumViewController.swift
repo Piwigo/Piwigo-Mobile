@@ -110,8 +110,6 @@ class AlbumViewController: UIViewController
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
     lazy var imageCellSize: CGSize = getImageCellSize()
     lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
-    let dateSortTypes: [pwgImageSort] = [.datePostedAscending, .datePostedDescending,
-                                         .dateCreatedAscending, .dateCreatedDescending]
 
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
@@ -487,9 +485,8 @@ class AlbumViewController: UIViewController
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
-                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController else {
-                    fatalError("No WhatsNewViewController available!")
-                }
+                guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
+                else { preconditionFailure("Couldd not load WhatsNewViewController") }
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
                     present(whatsNewVC, animated: true)
@@ -536,9 +533,8 @@ class AlbumViewController: UIViewController
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
             let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-            guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController else {
-                fatalError("No HelpViewController available!")
-            }
+            guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
+            else { preconditionFailure("Could not load HelpViewController") }
             helpVC.displayHelpPagesWithID = displayHelpPagesWithID
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
@@ -738,10 +734,7 @@ class AlbumViewController: UIViewController
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
-        
-        // Pause upload manager
-//        UploadManager.shared.isPaused = true
-        
+                
         // Check that the root album exists
         // (might have been deleted with a clear of the cache)
         if categoryId == Int32.zero {

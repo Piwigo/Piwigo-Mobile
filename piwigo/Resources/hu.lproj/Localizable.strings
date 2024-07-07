@@ -863,6 +863,11 @@
 "help08_text" = "Nyomja meg hosszan a vissza gombot a szülői albumok listájának megjelenítéséhez.";
 "help08_text2" = "Érintse meg a kiválasztott szülőalbumot, ha vissza szeretne ugrani hozzá.";
 
+// Settings - Logs
+"settingsHeader_troubleshoot" = "Hibaelhárítás";
+"settings_logs" = "Naplók";
+"settings_JSONinvalid" = "Érvénytelen szerverválaszok";
+
 // What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
 "whatsNew_title1" = "Csoportképek";

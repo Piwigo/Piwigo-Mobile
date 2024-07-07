@@ -18,7 +18,7 @@ public class PwgSession: NSObject {
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigoKit", category: "Networking")
+    static let logger = Logger(subsystem: "org.piwigoKit", category: String(describing: PwgSession.self))
 
     // Singleton
     public static let shared = PwgSession()

@@ -467,7 +467,8 @@ extension UploadManager {
                 return
             }
             var jsonData = data
-            guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self) else {
+            guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self,
+                                                 method: pwgImagesUpload) else {
                 // Update upload request status
                 #if DEBUG
                 let dataStr = String(decoding: data, as: UTF8.self)
@@ -605,10 +606,8 @@ extension UploadManager {
         guard let validUrl = url else { fatalError() }
         
         // Prepare creation date
-        let dateFormat = DateFormatter()
-        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
-        let creationDate = dateFormat.string(from: date)
+        let creationDate = DateUtilities.dateFormatter.string(from: date)
 
         // Initialise credentials, boundary and upload session
         let username = NetworkVars.username
@@ -840,7 +839,8 @@ extension UploadManager {
             return
         }
         var jsonData = data
-        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self) else {
+        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self,
+                                             method: pwgImagesUploadAsync) else {
             // Update upload request status
             #if DEBUG
             let dataStr = String(decoding: data, as: UTF8.self)

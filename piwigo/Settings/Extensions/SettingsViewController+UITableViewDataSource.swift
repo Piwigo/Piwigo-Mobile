@@ -29,14 +29,15 @@ extension SettingsViewController: UITableViewDataSource
         if !hasUploadRights(), rawSection > SettingsSection.images.rawValue {
             rawSection += 1
         }
-        guard let activeSection = SettingsSection(rawValue: rawSection) else {
-            fatalError("Unknown Section index!")
-        }
+        guard let activeSection = SettingsSection(rawValue: rawSection)
+        else { fatalError("Unknown Section index!") }
         return activeSection
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return SettingsSection.count.rawValue - (hasUploadRights() ? 0 : 1)
+        var nberSections = SettingsSection.count.rawValue
+        nberSections -= (hasUploadRights() ? 0 : 1)
+        return nberSections
     }
     
     // MARK: - Rows
@@ -69,7 +70,14 @@ extension SettingsViewController: UITableViewDataSource
         case .clear:
             nberOfRows = 1
         case .about:
-            nberOfRows = 8
+            nberOfRows = 6
+        case .troubleshoot:
+            // LogStore requires iOS 15.0+
+            if #available(iOS 15, *) {
+                nberOfRows = 3
+            } else {
+                nberOfRows = 2
+            }
         default:
             break
         }
@@ -81,10 +89,8 @@ extension SettingsViewController: UITableViewDataSource
         switch activeSection(indexPath.section) {
         // MARK: Server
         case .server /* Piwigo Server */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                return LabelTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load LabelTableViewCell") }
             switch indexPath.row {
             case 0:
                 // See https://iosref.com/res
@@ -106,10 +112,8 @@ extension SettingsViewController: UITableViewDataSource
             tableViewCell = cell
 
         case .logout /* Login/Logout Button */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
-                return ButtonTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
+            else { preconditionFailure("Could not load ButtonTableViewCell") }
             if NetworkVars.username.isEmpty {
                 cell.configure(with: NSLocalizedString("login", comment: "Login"))
             } else {
@@ -122,10 +126,8 @@ extension SettingsViewController: UITableViewDataSource
         case .albums /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
                 cell.configure(with: title, detail: defaultAlbumName())
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -133,10 +135,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 1 /* Thumbnail file */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -155,10 +155,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 2 /* Number of recent albums */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
                 let value = Float(AlbumVars.shared.maxNberRecentCategories)
 
@@ -183,10 +181,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 3 /* Recent period */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value is the index of kRecentPeriods
                 var value:Float = Float(CacheVars.shared.recentPeriodIndex)
                 value = min(value, Float(CacheVars.shared.recentPeriodList.count - 1))
@@ -221,10 +217,8 @@ extension SettingsViewController: UITableViewDataSource
             row += (!showTitleOption && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 414 {
@@ -242,10 +236,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
  
             case 1 /* Thumbnail file */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -264,10 +256,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 2 /* Number of thumbnails */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 let defaultWidth = thumbnailSize.minPoints
@@ -303,10 +293,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* Display titles on thumbnails */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 320 {
                     cell.configure(with: NSLocalizedString("settings_displayTitles>320px", comment: "Display Titles on Thumbnails"))
@@ -324,10 +312,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 4 /* Default Size of Previewed Images */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
                 if view.bounds.size.width > 430 {
@@ -359,10 +345,8 @@ extension SettingsViewController: UITableViewDataSource
             row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
-                    return TextFieldTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+                else { preconditionFailure("Could not load TextFieldTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
                 let input: String = UploadVars.defaultAuthor
@@ -380,10 +364,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* Privacy Level? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell")}
                 let defaultLevel = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
@@ -397,10 +379,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* Strip private Metadata? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
                     // i.e. larger than iPhone 14 Pro Max screen width
@@ -416,10 +396,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* Resize Before Upload? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
                 cell.cellSwitch.setOn(UploadVars.resizeImageOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -442,10 +420,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 4 /* Upload Photo Size */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
                                detail: pwgPhotoMaxSizes(rawValue: UploadVars.photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -453,10 +429,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 5 /* Upload Video Size */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
                                detail: pwgVideoMaxSizes(rawValue: UploadVars.videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -464,10 +438,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 6 /* Compress before Upload? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhone 14 Pro Max screen width
@@ -495,10 +467,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 7 /* Image Quality slider */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
                 let value = Float(UploadVars.photoQuality)
 
@@ -513,10 +483,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 8 /* Prefix Filename Before Upload switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell 
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
                     // i.e. larger than iPhones 14 Pro Max screen width
@@ -548,10 +516,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 9 /* Filename prefix? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
-                    return TextFieldTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+                else { preconditionFailure("Could not load TextFieldTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
                 let input: String = UploadVars.defaultPrefix
@@ -569,10 +535,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 10 /* Wi-Fi Only? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_wifiOnly", comment: "Wi-Fi Only"))
                 cell.cellSwitch.setOn(UploadVars.wifiOnlyUploading, animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -591,10 +555,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 11 /* Auto-upload */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title: String
                 if view.bounds.size.width > 430 {
                     // i.e. larger than iPhone 14 Pro Max screen width
@@ -614,10 +576,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 12 /* Delete image after upload? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
                     // i.e. larger than iPhone 14 Pro Max screen width
@@ -640,10 +600,8 @@ extension SettingsViewController: UITableViewDataSource
         case .privacy   /* Privacy */:
             switch indexPath.row {
             case 0 /* App Lock */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("settings_appLock", comment: "App Lock")
                 let detail: String
                 if AppVars.shared.isAppLockActive == true {
@@ -657,10 +615,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
             
             case 1 /* Clear Clipboard */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard")
                 let detail = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay)?.delayUnit ?? ""
                 cell.configure(with: title, detail: detail)
@@ -669,10 +625,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* Share Image Metadata Options */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
                     // i.e. larger than iPhone 14 Pro Max screen width
@@ -690,10 +644,8 @@ extension SettingsViewController: UITableViewDataSource
 
         // MARK: Appearance
         case .appearance /* Appearance */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                return LabelTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load LabelTableViewCell") }
             let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
             let detail: String
             if AppVars.shared.isLightPaletteModeActive == true {
@@ -712,10 +664,8 @@ extension SettingsViewController: UITableViewDataSource
         case .cache /* Cache Settings */:
             switch indexPath.row {
             case 0 /* Core Data store */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("settings_database", comment: "Data")
                 cell.configure(with: title, detail: self.dataCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
@@ -723,10 +673,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* Album and Photo Thumbnails */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails")
                 cell.configure(with: title, detail: self.thumbCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
@@ -734,10 +682,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* Photos */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("severalImages", comment: "Photos")
                 cell.configure(with: title, detail: self.photoCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
@@ -745,10 +691,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* Videos */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell!") }
                 let title = NSLocalizedString("severalVideos", comment: "Videos")
                 cell.configure(with: title, detail: self.videoCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
@@ -756,10 +700,8 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 4 /* Upload Requests */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
                 cell.configure(with: title, detail: self.uploadCacheSize)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
@@ -773,10 +715,8 @@ extension SettingsViewController: UITableViewDataSource
         case .clear /* Clear Cache Button */:
             switch indexPath.row {
             case 0 /* Clear */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
-                    return ButtonTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
+                else { preconditionFailure("Could not load ButtonTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"))
                 cell.accessibilityIdentifier = "clearCache"
                 tableViewCell = cell
@@ -789,43 +729,16 @@ extension SettingsViewController: UITableViewDataSource
         case .about /* Information */:
             switch indexPath.row {
             case 0 /* @piwigo (Twitter) */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_twitter", comment: "@piwigo"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "piwigoInfo"
                 tableViewCell = cell
                 
-            case 1 /* Contact Us */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
-                cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                if !MFMailComposeViewController.canSendMail() {
-                    cell.titleLabel.textColor = .piwigoColorRightLabel()
-                }
-                cell.accessibilityIdentifier = "mailContact"
-                tableViewCell = cell
-                
-            case 2 /* Support Forum */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
-                cell.configure(with: NSLocalizedString("settings_supportForum", comment: "Support Forum"), detail: "")
-                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "supportForum"
-                tableViewCell = cell
-                
-            case 3 /* Rate Piwigo Mobile */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+            case 1 /* Rate Piwigo Mobile */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 if let object = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") {
                     cell.configure(with: "\(NSLocalizedString("settings_rateInAppStore", comment: "Rate Piwigo Mobile")) \(object)", detail: "")
                 }
@@ -833,40 +746,32 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "ratePiwigo"
                 tableViewCell = cell
                 
-            case 4 /* Translate Piwigo Mobile */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+            case 2 /* Translate Piwigo Mobile */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_translateWithCrowdin", comment: "Translate Piwigo Mobile"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 tableViewCell = cell
                 
-            case 5 /* Release Notes */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+            case 3 /* Release Notes */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_releaseNotes", comment: "Release Notes"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "releaseNotes"
                 tableViewCell = cell
                 
-            case 6 /* Acknowledgements */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+            case 4 /* Acknowledgements */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_acknowledgements", comment: "Acknowledgements"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "acknowledgements"
                 tableViewCell = cell
                 
-            case 7 /* Privacy Policy */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                    return LabelTableViewCell()
-                }
+            case 5 /* Privacy Policy */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_privacy", comment: "Privacy Policy"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "privacyPolicy"
@@ -875,8 +780,49 @@ extension SettingsViewController: UITableViewDataSource
             default:
                 break
             }
+
+        // MARK: Troubleshoot
+        case .troubleshoot /* Troubleshoot */:
+            var row = indexPath.row
+            if #available(iOS 15, *) {
+                // LogStore available
+            } else {
+                row += 1
+            }
+            switch row {
+            case 0 /* Logs */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell")}
+                cell.configure(with: NSLocalizedString("settings_logs", comment: "Logs"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "errorLogs"
+                tableViewCell = cell
+
+            case 1 /* Support Forum */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_supportForum", comment: "Support Forum"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "supportForum"
+                tableViewCell = cell
+                
+            case 2 /* Contact Us */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                if !MFMailComposeViewController.canSendMail() {
+                    cell.titleLabel.textColor = .piwigoColorRightLabel()
+                }
+                cell.accessibilityIdentifier = "mailContact"
+                tableViewCell = cell
+                
             default:
                 break
+            }
+
+        default:
+            break
         }
 
         tableViewCell.isAccessibilityElement = true

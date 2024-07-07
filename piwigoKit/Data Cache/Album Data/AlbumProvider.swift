@@ -582,7 +582,7 @@ public class AlbumProvider: NSObject {
         }
 
         // Keep 'date_last' set as expected by the server
-        var dateLast = TimeInterval(-3187296000) // i.e. "1900-01-01 00:00:00" relative to reference date
+        var dateLast = DateUtilities.refDateInterval        // i.e. unknown date
         for keptImage in album.images ?? Set<Image>() {
             if dateLast < keptImage.datePosted {
                 dateLast = keptImage.datePosted

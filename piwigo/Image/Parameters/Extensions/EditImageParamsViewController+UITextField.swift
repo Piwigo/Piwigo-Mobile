@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import piwigoKit
+
 
 // MARK: - UITextFieldDelegate Methods
 extension EditImageParamsViewController: UITextFieldDelegate
@@ -34,8 +36,9 @@ extension EditImageParamsViewController: UITextFieldDelegate
             view.endEditing(true)
 
             // The common date can be distant past (i.e. unset)
-            // or before "1900-01-02 00:00:00" relative to reference date
-            if commonDateCreated.timeIntervalSinceReferenceDate < TimeInterval(-3187209600) {
+            // or before "1900-01-08 00:00:00" i.e. a week after unknown date
+            let refDate = DateUtilities.weekAfterInterval
+            if commonDateCreated.timeIntervalSinceReferenceDate < refDate {
                 // Define date as today
                 commonDateCreated = Date()
                 shouldUpdateDateCreated = true

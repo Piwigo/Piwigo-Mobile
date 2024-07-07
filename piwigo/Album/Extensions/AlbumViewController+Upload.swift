@@ -35,9 +35,8 @@ extension AlbumViewController
     private func presentLocalAlbums() {
         // Open local albums view controller in new navigation controller
         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else {
-            fatalError("No LocalAlbumsViewController!")
-        }
+        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController
+        else { preconditionFailure("Cloud not load LocalAlbumsViewController") }
         localAlbumsVC.categoryId = categoryId
         localAlbumsVC.user = user
         let navController = UINavigationController(rootViewController: localAlbumsVC)
@@ -51,17 +50,15 @@ extension AlbumViewController
         var navController: UINavigationController? = nil
         if #available(iOS 13.0, *) {
             let uploadQueueSB = UIStoryboard(name: "UploadQueueViewController", bundle: nil)
-            guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewController") as? UploadQueueViewController else {
-                fatalError("No UploadQueueViewController!")
-            }
+            guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewController") as? UploadQueueViewController
+            else { preconditionFailure("Could not load UploadQueueViewController") }
             navController = UINavigationController(rootViewController: uploadQueueVC)
         }
         else {
             // Fallback on earlier versions
             let uploadQueueSB = UIStoryboard(name: "UploadQueueViewControllerOld", bundle: nil)
-            guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewControllerOld") as? UploadQueueViewControllerOld else {
-                fatalError("No UploadQueueViewControllerOld!")
-            }
+            guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewControllerOld") as? UploadQueueViewControllerOld
+            else { preconditionFailure("Cloud not load UploadQueueViewControllerOld") }
             navController = UINavigationController(rootViewController: uploadQueueVC)
         }
         navController?.modalTransitionStyle = .coverVertical

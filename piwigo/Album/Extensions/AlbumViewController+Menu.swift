@@ -350,17 +350,18 @@ extension AlbumViewController: ImageHeaderDelegate
 extension AlbumViewController
 {
     // MARK: - Menu
-    func actionMenu() -> UIMenu {
-        return UIMenu(title: "", children: [selectMenu(), sortMenu(), viewOptionsMenu()].compactMap({$0}))
-    }
-    
     func updateCollectionAndMenu() {
         // Re-fetch image collection
         updateImageCollection()
 
         // Update menu
-        let children = [selectMenu(), sortMenu(), viewOptionsMenu()].compactMap({$0})
-        let updatedMenu = selectBarButton?.menu?.replacingChildren(children)
+        var children = [UIMenu?]()
+        if NetworkVars.userStatus == .guest {
+            children = [sortMenu(), viewOptionsMenu()]
+        } else {
+            children = [selectMenu(), sortMenu(), viewOptionsMenu()]
+        }
+        let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
     }
     
@@ -368,28 +369,23 @@ extension AlbumViewController
     // MARK: - Sort Image
     /// - for selecting image sort options
     func sortMenu() -> UIMenu? {
-        // The menu is not available for all smart albums
-        let validSmartAlbums: [Int32] = [pwgSmartAlbum.search.rawValue,
-                                         pwgSmartAlbum.favorites.rawValue,
-                                         pwgSmartAlbum.recent.rawValue]
-        if categoryId <= 0, categoryId > pwgSmartAlbum.tagged.rawValue,
-           validSmartAlbums.contains(categoryId) == false {
+        let menuId = UIMenu.Identifier("org.piwigo.images.sort")
+        return UIMenu(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
+                      image: nil, identifier: menuId,
+                      options: UIMenu.Options.displayInline,
+                      children: [defaultSortAction(), titleSortAction(),
+                                 createdSortAction(), postedSortAction(),
+                                 ratingSortAction(), visitsSortAction(),
+                                 randomSortAction()].compactMap({$0}))
+    }
+    
+    func defaultSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
             return nil
         }
         
-        // Create a menu for selecting how to sort images
-        let menuId = UIMenu.Identifier("org.piwigo.images.sort")
-        let menu = UIMenu(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
-                          image: nil, identifier: menuId,
-                          options: UIMenu.Options.displayInline,
-                          children: [defaultSortAction(), titleSortAction(),
-                                     createdSortAction(), postedSortAction(),
-                                     ratingSortAction(), visitsSortAction(),
-                                     randomSortAction()].compactMap({$0}))
-        return menu
-    }
-    
-    func defaultSortAction() -> UIAction {
         let actionId = UIAction.Identifier("org.piwigo.images.sort.default")
         let isActive = sortOption == .albumDefault
         let action = UIAction(title: NSLocalizedString("categorySort_default", comment: "Default"),
@@ -410,6 +406,11 @@ extension AlbumViewController
     }
     
     func titleSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.title")
         let title = NSLocalizedString("categorySort_name", comment: "Photo Title")
@@ -447,6 +448,12 @@ extension AlbumViewController
     }
     
     func createdSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+        
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.created")
         let title = NSLocalizedString("categorySort_dateCreated", comment: "Date Created")
@@ -484,6 +491,12 @@ extension AlbumViewController
     }
     
     func postedSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+        
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.posted")
         let title = NSLocalizedString("categorySort_datePosted", comment: "Date Posted")
@@ -521,6 +534,12 @@ extension AlbumViewController
     }
     
     func ratingSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+        
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.rate")
         let title = NSLocalizedString("categorySort_ratingScore", comment: "Rating Score")
@@ -558,6 +577,12 @@ extension AlbumViewController
     }
     
     func visitsSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.visits")
         let title = NSLocalizedString("categorySort_visits", comment: "Visits")
@@ -595,6 +620,12 @@ extension AlbumViewController
     }
     
     func randomSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+        
         let actionId = UIAction.Identifier("org.piwigo.images.sort.random")
         let isActive = sortOption == .random
         let action = UIAction(title: NSLocalizedString("categorySort_randomly", comment: "Randomly"),
@@ -626,7 +657,9 @@ extension AlbumViewController
     
     func groupMenu() -> UIMenu? {
         // Only available when images are sorted by date
-        if dateSortTypes.contains(sortOption) == false { return nil }
+        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+              [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey)
+        else { return nil }
 
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})

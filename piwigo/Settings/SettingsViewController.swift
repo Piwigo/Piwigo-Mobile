@@ -26,6 +26,7 @@ enum SettingsSection : Int {
     case cache
     case clear
     case about
+    case troubleshoot
     case count
 }
 

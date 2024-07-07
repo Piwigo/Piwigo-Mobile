@@ -45,9 +45,8 @@ extension AlbumViewController
         
         // Present EditImageParams view
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
-        guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else {
-            fatalError("No EditImageParamsViewController!")
-        }
+        guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController
+        else { preconditionFailure("Could not load EditImageParamsViewController") }
         editImageVC.user = user
         let albumImages = images.fetchedObjects ?? []
         editImageVC.images = albumImages.filter({selectedImageIds.contains($0.pwgID)})

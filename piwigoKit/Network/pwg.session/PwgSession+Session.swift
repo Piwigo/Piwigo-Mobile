@@ -15,7 +15,7 @@ public extension PwgSession {
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Open session for \(username, privacy: .private(mask: .hash))")
+            PwgSession.logger.notice("Open session for \(username, privacy: .private(mask: .hash))…")
         }
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
@@ -57,7 +57,7 @@ public extension PwgSession {
     func sessionGetStatus(completion: @escaping (String) -> Void,
                                  failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Get session status")
+            PwgSession.logger.notice("Get session status…")
         }
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
@@ -209,7 +209,7 @@ public extension PwgSession {
     func sessionLogout(completion: @escaping () -> Void,
                               failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Close session")
+            PwgSession.logger.notice("Close session…")
         }
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],

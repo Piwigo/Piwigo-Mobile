@@ -41,7 +41,7 @@ extension URL {
     }
     
     // Returns the unit of the file size
-    var fileSizeString: String {
+    public var fileSizeString: String {
         return ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
     }
     

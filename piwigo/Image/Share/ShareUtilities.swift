@@ -235,7 +235,7 @@ class ShareUtilities {
             }
         }
         
-        // Shared files are saved in the /temp directory and will be deleted:
+        // Shared files are saved in the /tmp directory and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
         let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory())

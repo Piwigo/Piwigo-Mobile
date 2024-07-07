@@ -7,6 +7,7 @@
 //
 //
 
+import os
 import CoreData
 import Foundation
 import MobileCoreServices
@@ -21,16 +22,22 @@ import UniformTypeIdentifiers        // Requires iOS 14
     - Image files are automatically deleted from the cache when deleting an instance.
  */
 public class Image: NSManagedObject {
+
+    // Logs Image updates
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigoKit", category: String(describing: Image.self))
+
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.
      NB: A single tag is returned by pwg.categories.getImages!
      */
     func update(with imageData: ImagesGetInfo, sort: pwgImageSort, rank: Int64,
                 user: User, albums: Set<Album>) throws {
-
+        
         // Update the image only if the Id has a value.
         guard let newPwgID = imageData.id else {
-                throw ImageError.missingData
+            throw ImageError.missingData
         }
         if uuid.isEmpty {
             uuid = UUID().uuidString
@@ -39,6 +46,11 @@ public class Image: NSManagedObject {
             pwgID = newPwgID
         }
         
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("Update image \(newPwgID, privacy: .public)")
+        }
+
         // Image title
         if let newTitle = imageData.title {
             let titleUTF8 = PwgSession.utf8mb4String(from: newTitle)
@@ -80,7 +92,7 @@ public class Image: NSManagedObject {
                 fileSize = newSize
             }
         }
-
+        
         let newMD5 = imageData.md5checksum ?? ""
         if newMD5.isEmpty == false, md5sum != newMD5 {
             md5sum = newMD5
@@ -112,17 +124,17 @@ public class Image: NSManagedObject {
         }
         
         // Image dates
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let unknownDate = Date(timeIntervalSinceReferenceDate: -3187296000) // i.e. "1900-01-01 00:00:00"
-        let newPosted = dateFormatter.date(from: imageData.datePosted ?? "") ?? unknownDate
-        let newPostedInterval = newPosted.timeIntervalSinceReferenceDate
-        if newPosted > unknownDate, datePosted != newPostedInterval {
+        if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("… with datePosted: \(imageData.datePosted ?? "nil", privacy: .public)")
+            Image.logger.notice("… with dateCreated: \(imageData.dateCreated ?? "nil", privacy: .public)")
+        }
+        // Update date only if new date is after 8 January 1900 at 00:00:00 UTC
+        if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted),
+           newPostedInterval != datePosted {
             datePosted = newPostedInterval
         }
-        let newCreated = dateFormatter.date(from: imageData.dateCreated ?? "") ?? unknownDate
-        let newCreatedInterval = newCreated.timeIntervalSinceReferenceDate
-        if newCreated > unknownDate, dateCreated != newCreatedInterval {
+        if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated),
+           newCreatedInterval != dateCreated {
             dateCreated = newCreatedInterval
         }
         

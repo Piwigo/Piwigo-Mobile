@@ -181,8 +181,9 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     
     func updateHeaders() {
         // Does this section exist?
-        guard dateSortTypes.contains(sortOption),
-              let collectionView = collectionView
+        guard images.sectionNameKeyPath != nil,
+              let collectionView = collectionView,
+              let sortKey = images.fetchRequest.sortDescriptors?.first?.key
         else { return }
 
         // Images are grouped by day, week or month: section header visible?
@@ -201,11 +202,11 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             // Retrieve the appropriate section header
             let selectState = updateSelectButton(ofSection: indexPath.section)
             if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.config(with: imagesInSection, sortOption: self.sortOption,
+                header.config(with: imagesInSection, sortKey: sortKey,
                               section: indexPath.section, selectState: selectState)
             }
             else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.config(with: imagesInSection, sortOption: self.sortOption, group: AlbumVars.shared.defaultGroup, 
+                header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
                               section: indexPath.section, selectState: selectState)
             }
         }
