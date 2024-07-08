@@ -48,7 +48,7 @@ public class Image: NSManagedObject {
         
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Update image \(newPwgID, privacy: .public)")
+            Image.logger.notice("Update image \(newPwgID, privacy: .public):")
         }
 
         // Image title
@@ -123,14 +123,15 @@ public class Image: NSManagedObject {
             }
         }
         
-        // Image dates
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("… with datePosted: \(imageData.datePosted ?? "nil", privacy: .public)")
-            Image.logger.notice("… with dateCreated: \(imageData.dateCreated ?? "nil", privacy: .public)")
-        }
         // Update date only if new date is after 8 January 1900 at 00:00:00 UTC
+        if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("… recieved datePosted '\(imageData.datePosted ?? "nil", privacy: .public)'")
+        }
         if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted),
            newPostedInterval != datePosted {
+            if #available(iOSApplicationExtension 14.0, *) {
+                Image.logger.notice("… stores it as TimeInterval(\(newPostedInterval, privacy: .public))")
+            }
             datePosted = newPostedInterval
         }
         if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated),
