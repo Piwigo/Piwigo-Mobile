@@ -620,11 +620,11 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Image Section
     static func getDateLabels(for timeIntervals: [TimeInterval]) -> (String, String) {
         // Creation date of images (or of availability)
-        let refDate = DateUtilities.refDateInterval         // i.e. a week after unknown date
+        let refDate = DateUtilities.unknownDateInterval     // i.e. unknown date
         var dateLabelText = " "                             // Displayed when there is no date available
         var optionalDateLabelText = " "
         
-        // Determine lowest time interval after "1900-01-08 00:00:00 UTC"
+        // Determine lowest time interval after "1900-01-01 00:00:00 UTC"
         var lowest = TimeInterval.greatestFiniteMagnitude
         for ti in timeIntervals {
             if ti > refDate, ti < lowest {
@@ -632,7 +632,7 @@ class AlbumUtilities: NSObject {
             }
         }
         
-        // Determine greatest time interval after "1900-01-08 00:00:00 UTC"
+        // Determine greatest time interval after "1900-01-01 00:00:00 UTC"
         var greatest = refDate
         for ti in timeIntervals {
             if ti > refDate, ti > greatest {
@@ -650,8 +650,7 @@ class AlbumUtilities: NSObject {
             dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
             
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-            let dayFormatter = DateFormatter()
-            dayFormatter.locale = .current
+            let dayFormatter = DateUtilities.dateFormatter()
             switch UIScreen.main.bounds.size.width {
             case 0..<400:
                 dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
@@ -712,7 +711,7 @@ class AlbumUtilities: NSObject {
                 }
                 
                 // => Images not taken the same month => Display day/month of year
-                let dateFormatter = DateIntervalFormatter()
+                let dateFormatter = DateUtilities.dateIntervalFormatter()
                 dateFormatter.timeStyle = .none
                 switch UIScreen.main.bounds.size.width {
                 case 0..<400:
@@ -726,8 +725,7 @@ class AlbumUtilities: NSObject {
                 
                 // Define optional string with day/time values
                 // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                let dayFormatter = DateFormatter()
-                dayFormatter.locale = .current
+                let dayFormatter = DateUtilities.dateFormatter()
                 switch UIScreen.main.bounds.size.width {
                 case 0..<400:
                     dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")

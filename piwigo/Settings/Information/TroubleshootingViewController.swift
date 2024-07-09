@@ -255,7 +255,7 @@ extension TroubleshootingViewController: UITableViewDataSource
                 cell.accessoryType = UITableViewCell.AccessoryType.none
             } else if let entry = pwgLogs[indexPath.row].first {
                 cell.textLabel?.text = entry.category
-                cell.detailTextLabel?.text = DateUtilities.dateFormatter.string(from: entry.date)
+                cell.detailTextLabel?.text = DateUtilities.pwgDateFormatter.string(from: entry.date)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             } else {
                 cell.textLabel?.text = "None"

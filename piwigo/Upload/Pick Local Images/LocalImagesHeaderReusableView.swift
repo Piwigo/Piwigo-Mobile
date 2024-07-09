@@ -40,7 +40,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         detailLabel.textColor = .piwigoColorRightLabel()
 
         // Get date labels from images in section
-        let oldest = DateUtilities.refDateInterval   // i.e. unknown date
+        let oldest = DateUtilities.unknownDateInterval   // i.e. unknown date
         let dateIntervals = images.map { $0.creationDate?.timeIntervalSinceReferenceDate ?? oldest}
         let dates = AlbumUtilities.getDateLabels(for: dateIntervals)
         self.mainLabel.text = dates.0

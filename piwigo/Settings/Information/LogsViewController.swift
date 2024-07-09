@@ -32,7 +32,7 @@ class LogsViewController: UIViewController {
         // Initialise content
         if logEntries.isEmpty { return }
         category?.text = logEntries.first?.category
-        dateTime?.text = DateUtilities.dateFormatter.string(from: logEntries.first?.date ?? Date())
+        dateTime?.text = DateUtilities.pwgDateFormatter.string(from: logEntries.first?.date ?? Date())
         messages?.text = logEntries.map({$0.composedMessage + "\n"}).reduce("", +)
     }
     

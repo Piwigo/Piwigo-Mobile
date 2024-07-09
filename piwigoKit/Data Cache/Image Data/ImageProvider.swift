@@ -120,10 +120,11 @@ public class ImageProvider: NSObject {
             
         case pwgSmartAlbum.recent.rawValue:
             let recentPeriod = CacheVars.shared.recentPeriodList[CacheVars.shared.recentPeriodIndex]
-            let maxPeriod = TimeInterval(CacheVars.shared.recentPeriodList.last ?? 99)
-            let nberDays: TimeInterval = recentPeriod == 0 ? maxPeriod : TimeInterval(recentPeriod)
-            let daysAgo = Date(timeIntervalSinceNow: TimeInterval(-3600 * 24 * nberDays))
-            let dateAvailableString = DateUtilities.dateFormatter.string(from: daysAgo)
+            let maxPeriod = CacheVars.shared.recentPeriodList.last ?? 99
+            let nberDays = recentPeriod == 0 ? maxPeriod : recentPeriod
+            let daysAgo1 = Date(timeIntervalSinceNow: TimeInterval(-3600 * 24 * nberDays))
+            let daysAgo2 = Calendar.current.date(byAdding: .day, value: -nberDays, to: Date()) ?? daysAgo1
+            let dateAvailableString = DateUtilities.string(from: daysAgo2.timeIntervalSinceReferenceDate)
             paramsDict["recursive"] = true
             paramsDict["f_min_date_available"] = dateAvailableString
             

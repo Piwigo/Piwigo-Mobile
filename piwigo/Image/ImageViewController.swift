@@ -505,12 +505,15 @@ class ImageViewController: UIViewController {
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
+            let dateFormatter = DateUtilities.dateFormatter()
             if UIDevice.current.userInterfaceIdiom == .pad {
-                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
-                                                                   dateStyle: .long, timeStyle: .long)
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .long
+                subTitleLabel.text = dateFormatter.string(from: dateCreated)
             } else {
-                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
-                                                                   dateStyle: .medium, timeStyle: .medium)
+                dateFormatter.dateStyle = .medium
+                dateFormatter.timeStyle = .medium
+                subTitleLabel.text = dateFormatter.string(from: dateCreated)
             }
             subTitleLabel.sizeToFit()
 

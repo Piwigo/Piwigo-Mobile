@@ -10,42 +10,71 @@ import Foundation
 
 public class DateUtilities: NSObject {
     
-    /* Time intervals used for managing image dates
-    let dateFormatterISO = ISO8601DateFormatter()
-    let refDate = dateFormatterISO.date(from: "1900-01-01T00:00:00Z")       // 00:00:00 UTC on 1 January 1900
-    let refDateInterval = refDate?.timeIntervalSinceReferenceDate           // => -3187296000
-    let weekAfter = dateFormatterISO.date(from: "1900-01-08T00:00:00Z")     // 00:00:00 UTC on 8 January 1900
-    let weekAfterInterval = weekAfter?.timeIntervalSinceReferenceDate       // => -3186691200
-     */
-    public static let refDateInterval = TimeInterval(-3187296000)
-    public static let weekAfterInterval = TimeInterval(-3187209600)
+    // Unknown date is 00:00:00 UTC on 1 January 1900
+    public static let unknownDate = ISO8601DateFormatter().date(from: "1900-01-01T00:00:00Z")!
+    public static let unknownDateInterval = unknownDate.timeIntervalSinceReferenceDate
+    
+    // A week after unknown date is 00:00:00 UTC on 8 January 1900
+    public static let weekAfter = ISO8601DateFormatter().date(from: "1900-01-08T00:00:00Z")!
+    public static let weekAfterInterval = weekAfter.timeIntervalSinceReferenceDate
 
-    public static let format = "yyyy-MM-dd HH:mm:ss"
-    static let formatFull = "yyyy-MM-dd HH:mm:ss.sss"
-    
-    public static var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = format
-        return dateFormatter
+    // Dates are provided by Piwigo servers as strings in the local time.
+    // We store each date as a TimeInterval since 00:00:00 UTC on 1 January 2001.
+    public static var pwgDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
     }()
     
-    static var dateFormatterFull: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = formatFull
-        return dateFormatter
+    // Logs dates are provided with UTC time
+    public static var logsDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.sss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
     }()
     
+
+    // Return corresponding time interval since 00:00:00 UTC on 1 January 2001
+    // if the converted date is after 00:00:00 UTC on 8 January 1900
     static func timeInterval(from dateStr: String?) -> TimeInterval? {
-        // Convert string to date
-        guard let pwgDate = dateFormatter.date(from: dateStr ?? "")
+        // Convert Piwigo string to date
+        guard let pwgDate = pwgDateFormatter.date(from: dateStr ?? "")
         else { return nil }
         
-        // Return corresponding time interval since 00:00:00 UTC on 1 January 2001
-        // if the converted date is after 00:00:00 UTC on 8 January 1900
         let pwgInterval = pwgDate.timeIntervalSinceReferenceDate
         if pwgInterval < weekAfterInterval {
             return nil
         }
         return pwgInterval
+    }
+    
+    // Return Piwigo date string with UTC time
+    public static func string(from timeInterval: TimeInterval?) -> String {
+        // Return unknown date if nil
+        guard let timeInterval = timeInterval
+        else { return pwgDateFormatter.string(from: unknownDate) }
+        
+        let date = Date(timeIntervalSinceReferenceDate: timeInterval)
+        return pwgDateFormatter.string(from: date)
+    }
+    
+    // Return date formatter in UTC time
+    public static func dateFormatter() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }
+    
+    // Return date interval formatter in UTC time
+    public static func dateIntervalFormatter() -> DateIntervalFormatter {
+        let formatter = DateIntervalFormatter()
+        formatter.locale = .current
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
     }
 }

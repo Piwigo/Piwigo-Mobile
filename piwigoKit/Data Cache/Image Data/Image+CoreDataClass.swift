@@ -123,7 +123,7 @@ public class Image: NSManagedObject {
             }
         }
         
-        // Update date only if new date is after 8 January 1900 at 00:00:00 UTC
+        // Update date only if new date is after 00:00:00 UTC on 8 January 1900
         if #available(iOSApplicationExtension 14.0, *) {
             Image.logger.notice("… recieved datePosted '\(imageData.datePosted ?? "nil", privacy: .public)'")
         }
@@ -134,8 +134,14 @@ public class Image: NSManagedObject {
             }
             datePosted = newPostedInterval
         }
+        if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("… recieved dateCreated '\(imageData.dateCreated ?? "nil", privacy: .public)'")
+        }
         if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated),
            newCreatedInterval != dateCreated {
+            if #available(iOSApplicationExtension 14.0, *) {
+                Image.logger.notice("… stores it as TimeInterval(\(newCreatedInterval, privacy: .public))")
+            }
             dateCreated = newCreatedInterval
         }
         

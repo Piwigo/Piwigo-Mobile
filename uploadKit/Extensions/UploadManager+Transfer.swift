@@ -605,9 +605,8 @@ extension UploadManager {
         let url = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUploadAsync)")
         guard let validUrl = url else { fatalError() }
         
-        // Prepare creation date
-        let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
-        let creationDate = DateUtilities.dateFormatter.string(from: date)
+        // Prepare creation date as Piwigo string
+        let creationDate = DateUtilities.string(from: upload.creationDate)
 
         // Initialise credentials, boundary and upload session
         let username = NetworkVars.username
