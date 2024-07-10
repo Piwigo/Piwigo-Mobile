@@ -95,7 +95,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         formatterLong.dateFormat = formatString
 
         // Define date picker limits in number of days
-        formatter.dateFormat = "YYYY-MM-DD hh:mm:ss"
+        formatter.dateFormat = "yyyy-MM-DD hh:mm:ss"
         pickerRefDate = formatter.date(from: pwgPickerMinDate)!
         let maxDate = formatter.date(from: pwgPickerMaxDate)!
         pickerMaxNberDays = Int(maxDate.timeIntervalSince(pickerRefDate) / Double(pwgPicker1Day))
@@ -127,12 +127,12 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         datePicker.backgroundColor = .piwigoColorCellBackground()
         datePicker.tintColor = .piwigoColorLeftLabel()
 
-        let calendar = Calendar.current
+        // Initialisation
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
         var daysInSec = pickerDate.timeIntervalSince(pickerRefDate)
 
-        // Corrects number of seconds to work in local time zone and substract right amount of time
-        let tzShift = NSTimeZone.local.secondsFromGMT(for: pickerDate)
-        daysInSec += TimeInterval(tzShift)
+        // Substract right amount of time
         let second = calendar.component(.second, from: pickerDate)
         daysInSec -= TimeInterval(second)
         datePicker.selectRow(pwgPickerNberOfLoops * pwgPickerSecondsPerMinute / 2 + second,
@@ -176,11 +176,8 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         let minutes = datePicker.selectedRow(inComponent: PickerComponents.minute.rawValue) % pwgPickerMinutesPerHour
         let seconds = datePicker.selectedRow(inComponent: PickerComponents.second.rawValue) % pwgPickerSecondsPerMinute
 
-        // Date displayed in picker is in local timezone!
-        let tzShift = NSTimeZone.local.secondsFromGMT(for: dateInSeconds)
-        let dhms = dateInSeconds.addingTimeInterval(TimeInterval((hours * 60 + minutes) * 60 + seconds - tzShift))
-
-        return dhms
+        // Return date with UTC time
+        return dateInSeconds.addingTimeInterval(TimeInterval((hours * 60 + minutes) * 60 + seconds))
     }
 
 

@@ -77,9 +77,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         applyColorPalette()
         
         // Check provided image data
-        guard let imageData = imageData else {
-            return
-        }
+        guard let imageData = imageData
+        else { return }
         
         // Store image ID
         imageId = imageData.pwgID
@@ -98,16 +97,20 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
         imageDate.text = ""
         let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let dateFormatter = DateUtilities.dateFormatter()
         if bounds.size.width > CGFloat(430) {
             // i.e. larger than iPhone 14 Pro Max screen width
-            imageDate.text = DateFormatter.localizedString(from: dateCreated,
-                                                           dateStyle: .long, timeStyle: .none)
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .none
+            imageDate.text = dateFormatter.string(from: dateCreated)
         } else {
-            imageDate.text = DateFormatter.localizedString(from: dateCreated,
-                                                           dateStyle: .short, timeStyle: .none)
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeStyle = .none
+            imageDate.text = dateFormatter.string(from: dateCreated)
         }
-        imageTime.text = DateFormatter.localizedString(from: dateCreated,
-                                                       dateStyle: .none, timeStyle: .medium)
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .medium
+        imageTime.text = dateFormatter.string(from: dateCreated)
 
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
