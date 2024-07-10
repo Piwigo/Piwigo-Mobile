@@ -261,10 +261,20 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                indexPath.item < sections[indexPath.section].numberOfObjects {
                 // Present the next image
                 presentImage(inDirection: .forward)
-            } else if let newIndexPath = getIndexPath(before: indexPath) {
+                return
+            } 
+            else if let newIndexPath = getIndexPath(after: indexPath) {
+                // Present the first image of the next section
+                indexPath = newIndexPath
+                presentImage(inDirection: .forward)
+                return
+            }
+            else if let newIndexPath = getIndexPath(before: indexPath) {
                 // Present the preceding image
                 indexPath = newIndexPath
                 presentImage(inDirection: .reverse)
+                didPresentNextPage = false
+                return
             }
         } else {
             // Can we present the preceding image?
@@ -272,8 +282,18 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
                 indexPath = newIndexPath
                 presentImage(inDirection: .reverse)
                 return
-            } else if let newIndexPath = getIndexPath(after: indexPath) {
+            }
+            else if indexPath.section < sections.count,
+                    indexPath.item < sections[indexPath.section].numberOfObjects {
+                // Present the next image having the same indexPath
+                didPresentNextPage = true
+                presentImage(inDirection: .forward)
+                return
+            }
+            else if let newIndexPath = getIndexPath(after: indexPath) {
+                // Present the next image belonging to the next section
                 indexPath = newIndexPath
+                didPresentNextPage = true
                 presentImage(inDirection: .forward)
                 return
             }

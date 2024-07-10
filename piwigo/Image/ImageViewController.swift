@@ -853,6 +853,9 @@ extension ImageViewController: UIPageViewControllerDelegate
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
+        // Check if the user completed the page-turn gesture
+        if completed == false { return }
+        
         // Case of an image
         if let imageDVC = pageViewController.viewControllers?.first as? ImageDetailViewController {
             // Store index and image data of presented page
@@ -884,6 +887,14 @@ extension ImageViewController: UIPageViewControllerDelegate
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
+        
+        // Determine if the page-turn gesture is in forward or reverse direction
+        if let imageDVC = previousViewControllers.first as? ImageDetailViewController {
+            didPresentNextPage = indexPath > imageDVC.indexPath
+        }
+        else if let videoDVC = previousViewControllers.first as? VideoDetailViewController {
+            didPresentNextPage = indexPath > videoDVC.indexPath
+        }
 
         // Scroll album collection view to keep the selected image centered on the screen
         imgDetailDelegate?.didSelectImage(atIndexPath: indexPath)
@@ -932,9 +943,6 @@ extension ImageViewController: UIPageViewControllerDataSource
             return nil
         }
         
-        // Remember that the next page was presented
-        didPresentNextPage = true
-
         // Create view controller for presenting next image
         let imageData = getImageData(atIndexPath: nextIndexPath)
         if imageData.isVideo {
@@ -954,9 +962,6 @@ extension ImageViewController: UIPageViewControllerDataSource
             return nil
         }
         
-        // Remember that the previous page was presented
-        didPresentNextPage = false
-
         // Create view controller
         let imageData = getImageData(atIndexPath: previousIndexPath)
         if imageData.isVideo {
