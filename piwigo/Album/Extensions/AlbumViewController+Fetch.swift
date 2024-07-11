@@ -105,15 +105,25 @@ extension AlbumViewController
                 // No error ► Smart album?
                 var newLastPage = lastPage
                 if albumData.pwgID < 0, onPage == 0 {
-                    // Re-calculate number of pages
-                    newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
+                    // Re-calculate number of pages for some smart albums
+                    if [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue].contains(albumData.pwgID) {
+                        // Update smart album data (limited to 'perPage' photos - 15 on webUI)
+                        if albumData.nbImages != Int64(perPage) {
+                            albumData.nbImages = Int64(perPage)
+                        }
+                        if albumData.totalNbImages != Int64(perPage) {
+                            albumData.totalNbImages = Int64(perPage)
+                        }
+                    } else {
+                        newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
-                    // Update smart album data
-                    if albumData.nbImages != totalCount {
-                        albumData.nbImages = totalCount
-                    }
-                    if albumData.totalNbImages != totalCount {
-                        albumData.totalNbImages = totalCount
+                        // Update smart album data
+                        if albumData.nbImages != totalCount {
+                            albumData.nbImages = totalCount
+                        }
+                        if albumData.totalNbImages != totalCount {
+                            albumData.totalNbImages = totalCount
+                        }
                     }
                 }
                 
