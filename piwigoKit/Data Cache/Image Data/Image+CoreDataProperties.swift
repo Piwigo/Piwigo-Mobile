@@ -61,9 +61,6 @@ extension Image {
         var dayIdentifier: Int = (dayComponents.year ?? 0) * 100000
         dayIdentifier += (dayComponents.month ?? 0) * 1000
         dayIdentifier += (dayComponents.day ?? 0)
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Sort image \(self.pwgID) by day: \(dayIdentifier) for dateCreated \(self.dateCreated, privacy: .public)")
-        }
         return String(format: "%d", dayIdentifier)
     }
     
@@ -75,9 +72,6 @@ extension Image {
         let weekComponents = Image.calendar.dateComponents(Image.byWeek, from: dateCreated)
         var weekIdentifier: Int = (weekComponents.year ?? 0) * 100
         weekIdentifier += (weekComponents.weekOfYear ?? 0)
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Sort image \(self.pwgID) by week: \(weekIdentifier) for dateCreated \(self.dateCreated, privacy: .public)")
-        }
         return String(format: "%d", weekIdentifier)
     }
     
@@ -89,9 +83,6 @@ extension Image {
         let monthComponents = Image.calendar.dateComponents(Image.byMonth, from: dateCreated)
         var monthIdentifier: Int = (monthComponents.year ?? 0) * 100
         monthIdentifier += (monthComponents.month ?? 0)
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Sort image \(self.pwgID) by month: \(monthIdentifier) for dateCreated \(self.dateCreated, privacy: .public)")
-        }
         return String(format: "%d", monthIdentifier)
     }
     
@@ -104,9 +95,6 @@ extension Image {
         var dayIdentifier: Int = (dayComponents.year ?? 0) * 100000
         dayIdentifier += (dayComponents.month ?? 0) * 1000
         dayIdentifier += (dayComponents.day ?? 0)
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Sort image \(self.pwgID) by day: \(dayIdentifier) for datePosted \(self.datePosted, privacy: .public)")
-        }
         return String(format: "%d", dayIdentifier)
     }
     
@@ -118,9 +106,6 @@ extension Image {
         let weekComponents = Image.calendar.dateComponents(Image.byWeek, from: datePosted)
         var weekIdentifier: Int = (weekComponents.year ?? 0) * 100
         weekIdentifier += (weekComponents.weekOfYear ?? 0)
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Sort image \(self.pwgID) by week: \(weekIdentifier) for datePosted \(self.datePosted, privacy: .public)")
-        }
         return String(format: "%d", weekIdentifier)
     }
     
@@ -132,9 +117,6 @@ extension Image {
         let monthComponents = Image.calendar.dateComponents(Image.byMonth, from: datePosted)
         var monthIdentifier: Int = (monthComponents.year ?? 0) * 100
         monthIdentifier += (monthComponents.month ?? 0)
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Sort image \(self.pwgID) by month: \(monthIdentifier) for datePosted \(self.datePosted, privacy: .public)")
-        }
         return String(format: "%d", monthIdentifier)
     }
 }

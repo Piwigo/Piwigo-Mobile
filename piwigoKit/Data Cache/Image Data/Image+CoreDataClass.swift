@@ -46,11 +46,6 @@ public class Image: NSManagedObject {
             pwgID = newPwgID
         }
         
-        // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Update image \(newPwgID, privacy: .public):")
-        }
-
         // Image title
         if let newTitle = imageData.title {
             let titleUTF8 = PwgSession.utf8mb4String(from: newTitle)
@@ -124,25 +119,19 @@ public class Image: NSManagedObject {
         }
         
         // Update date only if new date is after 00:00:00 UTC on 8 January 1900
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("… recieved datePosted '\(imageData.datePosted ?? "nil", privacy: .public)'")
-        }
-        if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted),
-           newPostedInterval != datePosted {
-            if #available(iOSApplicationExtension 14.0, *) {
-                Image.logger.notice("… stores it as TimeInterval(\(newPostedInterval, privacy: .public))")
+        if let newPostedInterval = DateUtilities.timeInterval(from: imageData.datePosted) {
+            if newPostedInterval != datePosted {
+                datePosted = newPostedInterval
             }
-            datePosted = newPostedInterval
+        } else if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID, privacy: .public) from '\(imageData.datePosted ?? "nil", privacy: .public)'")
         }
-        if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("… recieved dateCreated '\(imageData.dateCreated ?? "nil", privacy: .public)'")
-        }
-        if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated),
-           newCreatedInterval != dateCreated {
-            if #available(iOSApplicationExtension 14.0, *) {
-                Image.logger.notice("… stores it as TimeInterval(\(newCreatedInterval, privacy: .public))")
+        if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated) {
+            if newCreatedInterval != dateCreated {
+                dateCreated = newCreatedInterval
             }
-            dateCreated = newCreatedInterval
+        } else if #available(iOSApplicationExtension 14.0, *) {
+            Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID, privacy: .public) from '\(imageData.dateCreated ?? "nil", privacy: .public)'")
         }
         
         // Author
