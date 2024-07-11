@@ -89,11 +89,8 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             
         default /* Images */:
             // Number of images shown at the bottom of the collection
-            guard AlbumVars.shared.isFetchingAlbumData.contains(categoryId) == false,
-                  section == images.sections?.count ?? 0
-            else {
-                return CGSize.zero
-            }
+            guard section == images.sections?.count ?? 0
+            else { return CGSize.zero }
         }
         
         // Get number of images and status

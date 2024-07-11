@@ -42,8 +42,12 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     print("••> Delete image section at ", collectionSectionIndex)
                     self?.collectionView?.deleteSections(IndexSet(integer: collectionSectionIndex))
                 })
-            case .move, .update:
-                fallthrough
+            case .move:
+                let collectionSectionIndex = sectionIndex + 1
+                print("••> Move image section at ", collectionSectionIndex)
+            case .update:
+                let collectionSectionIndex = sectionIndex + 1
+                print("••> Update image section at ", collectionSectionIndex)
             @unknown default:
                 fatalError("Unknown NSFetchedResultsChangeType of section in AlbumViewController")
             }

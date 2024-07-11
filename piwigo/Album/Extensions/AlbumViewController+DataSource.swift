@@ -117,13 +117,11 @@ extension AlbumViewController: UICollectionViewDataSource
                 header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
                 return header
             case UICollectionView.elementKindSectionFooter:
-                if categoryId == Int32.zero {
-                    guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
-                    else { preconditionFailure("Could not load ImageFooterReusableView")}
-                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                    footer.nberImagesLabel?.text = getImageCount()
-                    return footer
-                }
+                guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
+                else { preconditionFailure("Could not load ImageFooterReusableView")}
+                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                footer.nberImagesLabel?.text = getImageCount()
+                return footer
             default:
                 break
             }
@@ -177,13 +175,11 @@ extension AlbumViewController: UICollectionViewDataSource
                     }
                 }
             case UICollectionView.elementKindSectionFooter:
-                if indexPath.section == images.sections?.count ?? 0 {
-                    guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
-                    else { preconditionFailure("Could not load ImageFooterReusableView")}
-                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                    footer.nberImagesLabel?.text = getImageCount()
-                    return footer
-                }
+                guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
+                else { preconditionFailure("Could not load ImageFooterReusableView")}
+                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                footer.nberImagesLabel?.text = getImageCount()
+                return footer
             default:
                 break
             }
