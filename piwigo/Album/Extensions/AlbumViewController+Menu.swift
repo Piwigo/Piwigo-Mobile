@@ -267,11 +267,11 @@ extension AlbumViewController: ImageHeaderDelegate
             // Activate Images Selection mode
             isSelect = true
             
-            // Disable interaction with category cells
+            // Disable interaction with album cells
             for cell in collectionView?.visibleCells ?? []
             {
                 // Disable user interaction with category cell
-                if let categoryCell = cell as? AlbumCollectionViewCell {
+                if let categoryCell = cell as? AlbumCollectionViewCellOld {
                     categoryCell.contentView.alpha = 0.5
                     categoryCell.isUserInteractionEnabled = false
                 }

@@ -1,5 +1,5 @@
 //
-//  AlbumCollectionViewCell+Move.swift
+//  AlbumCollectionViewCellOld+Move.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 25/12/2022.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension AlbumCollectionViewCell {
+extension AlbumCollectionViewCellOld {
     // MARK: - Move Category
     func moveCategory(completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
@@ -23,7 +23,7 @@ extension AlbumCollectionViewCell {
 }
 
 
-// MARK: - AlbumCollectionViewCellDelegate
+// MARK: - AlbumCollectionViewCellOldDelegate
 extension AlbumViewController: PushAlbumCollectionViewCellDelegate
 {
     func pushAlbumView(_ viewController: UIViewController?,

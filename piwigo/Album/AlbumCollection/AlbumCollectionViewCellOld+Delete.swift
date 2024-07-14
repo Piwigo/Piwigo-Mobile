@@ -1,5 +1,5 @@
 //
-//  AlbumCollectionViewCell+Delete.swift
+//  AlbumCollectionViewCellOld+Delete.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 25/12/2022.
@@ -9,7 +9,7 @@
 import UIKit
 import piwigoKit
 
-extension AlbumCollectionViewCell {
+extension AlbumCollectionViewCellOld {
     // MARK: - Delete Album
     func deleteCategory(completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }

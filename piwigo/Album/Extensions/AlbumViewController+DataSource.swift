@@ -190,8 +190,8 @@ extension AlbumViewController: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell
-            else { preconditionFailure("Could not load AlbumCollectionViewCell") }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld
+            else { preconditionFailure("Could not load AlbumCollectionViewCellOld") }
             
             // Configure cell with album data
             let album = albums.object(at: indexPath)

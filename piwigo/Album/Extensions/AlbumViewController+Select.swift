@@ -144,7 +144,7 @@ extension AlbumViewController
         for cell in collectionView?.visibleCells ?? []
         {
             // Disable user interaction with category cell
-            if let categoryCell = cell as? AlbumCollectionViewCell {
+            if let categoryCell = cell as? AlbumCollectionViewCellOld {
                 categoryCell.contentView.alpha = 0.5
                 categoryCell.isUserInteractionEnabled = false
             }
@@ -177,7 +177,7 @@ extension AlbumViewController
         // Enable interaction with album cells and deselect image cells
         for cell in collectionView?.visibleCells ?? [] {
             // Enable user interaction with album cell
-            if let albumCell = cell as? AlbumCollectionViewCell {
+            if let albumCell = cell as? AlbumCollectionViewCellOld {
                 albumCell.contentView.alpha = 1.0
                 albumCell.isUserInteractionEnabled = true
             }

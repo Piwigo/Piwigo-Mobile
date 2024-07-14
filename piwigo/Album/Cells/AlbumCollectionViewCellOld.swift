@@ -1,5 +1,5 @@
 //
-//  AlbumCollectionViewCell.swift
+//  AlbumCollectionViewCellOld.swift
 //  piwigo
 //
 //  Created by Spencer Baker on 3/9/15.
@@ -22,7 +22,7 @@ protocol DeleteAlbumCollectionViewCellDelegate: NSObjectProtocol {
                         viewController topViewController: UIViewController?)
 }
 
-class AlbumCollectionViewCell: UICollectionViewCell
+class AlbumCollectionViewCellOld: UICollectionViewCell
 {
     weak var pushAlbumDelegate: PushAlbumCollectionViewCellDelegate?
     weak var deleteAlbumDelegate: DeleteAlbumCollectionViewCellDelegate?
@@ -99,17 +99,15 @@ class AlbumCollectionViewCell: UICollectionViewCell
 
 
 // MARK: - UITableViewDataSource Methods
-extension AlbumCollectionViewCell: UITableViewDataSource
+extension AlbumCollectionViewCellOld: UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return albumData?.isFault ?? true ? 0 : 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumTableViewCell", for: indexPath) as? AlbumTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a AlbumTableViewCell!")
-            return AlbumTableViewCell()
-        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumTableViewCell", for: indexPath) as? AlbumTableViewCell 
+        else { preconditionFailure("Could not load a AlbumTableViewCell") }
         
         // Configure cell
         cell.config(withAlbumData: albumData)
@@ -124,7 +122,7 @@ extension AlbumCollectionViewCell: UITableViewDataSource
 
 
 // MARK: - UITableViewDelegate
-extension AlbumCollectionViewCell: UITableViewDelegate
+extension AlbumCollectionViewCellOld: UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 148.5 // see XIB file
@@ -194,7 +192,7 @@ extension AlbumCollectionViewCell: UITableViewDelegate
 
 
 // MARK: - UITextField Delegate Methods
-extension AlbumCollectionViewCell: UITextFieldDelegate
+extension AlbumCollectionViewCellOld: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         switch textFieldTag(rawValue: textField.tag) {

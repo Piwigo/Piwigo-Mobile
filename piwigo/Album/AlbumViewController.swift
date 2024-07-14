@@ -262,7 +262,7 @@ class AlbumViewController: UIViewController
         // Register classes
         collectionView?.isPrefetchingEnabled = true
         collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
-        collectionView?.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: "AlbumCollectionViewCell")
+        collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
         collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
@@ -355,7 +355,7 @@ class AlbumViewController: UIViewController
             }
         }
         (collectionView?.visibleCells ?? []).forEach { cell in
-            if let albumCell = cell as? AlbumCollectionViewCell {
+            if let albumCell = cell as? AlbumCollectionViewCellOld {
                 albumCell.applyColorPalette()
             }
             else if let imageCell = cell as? ImageCollectionViewCell {

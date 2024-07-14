@@ -1,5 +1,5 @@
 //
-//  AlbumCollectionViewCell+Rename.swift
+//  AlbumCollectionViewCellOld+Rename.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 25/12/2022.
@@ -10,7 +10,7 @@ import piwigoKit
 import UIKit
 
 // MARK: - Rename Category
-extension AlbumCollectionViewCell
+extension AlbumCollectionViewCellOld
 {
     func renameCategory(completion: @escaping (Bool) -> Void) {
         guard let albumData = albumData else { return }
