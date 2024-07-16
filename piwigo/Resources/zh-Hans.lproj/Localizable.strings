@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "仅图片";
 
 "categoryView_options" = "查看选项";
-"categoryGroup_group" = "按… 分组图像";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "相册";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "最近相册的数量";
 "recentPeriod_title" = "最近期间";
 "recentPeriod_days" = "%@ 天";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "矩形";
 "thumbnailSizeThumbnail" = "缩略图";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "每行数量";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "请选择照片缩略图大小";
-"settings_displayTitles" = "缩略图标题";
-"settings_displayTitles>320px" = "在缩略图上显示标题";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "预览";
 "defaultPreviewFile>320px" = "预览文件";

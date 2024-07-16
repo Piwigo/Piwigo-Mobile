@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.1_text" = "Version 3.2.1\n\n• Adds an option to display albums with or without descriptions\n• Bug fixes";
+
 "v3.2.0_text" = "版本 3.2\n\n• 通过相册照片排序选项\n• 添加实时照片排序选项\n• 增加上传照片的旋转(需要 rotateImage 插件)\n• Bug 修复";
 
 "v3.1.4_text" = "版本 3.1.4\n2024年2月27日\n\n• 修复在 iOS 12 上发生的崩溃问题";

@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "只有照片";
 
 "categoryView_options" = "查看選項";
-"categoryGroup_group" = "圖像分組依據...";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "相簿";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "近期相簿的數量";
 "recentPeriod_title" = "近期的期間";
 "recentPeriod_days" = "%@ 天";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "縮圖";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "每行數量";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "請選擇照片縮圖大小";
-"settings_displayTitles" = "縮圖標題";
-"settings_displayTitles>320px" = "在縮圖上顯示標題";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "預覽";
 "defaultPreviewFile>320px" = "預覽檔案";

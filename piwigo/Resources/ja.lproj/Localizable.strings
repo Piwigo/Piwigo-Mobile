@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "写真のみ";
 
 "categoryView_options" = "表示オプション";
-"categoryGroup_group" = "グループ画像の…";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "アルバム";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "最近のアルバムの数";
 "recentPeriod_title" = "最近の期間";
 "recentPeriod_days" = "%@ 日";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "正方形";
 "thumbnailSizeThumbnail" = "サムネイル";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "1行あたりの個数";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "サムネイルの写真サイズを選択してください";
-"settings_displayTitles" = "サムネイルの題名";
-"settings_displayTitles>320px" = "サムネイルに題名を表示します";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "プレビュー";
 "defaultPreviewFile>320px" = "ファイルのプレビュー";

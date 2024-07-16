@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "Alleen foto's";
 
 "categoryView_options" = "Bekijk opties";
-"categoryGroup_group" = "Afbeeldingen groeperen op…";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Aantal recente albums";
 "recentPeriod_title" = "Recente periode";
 "recentPeriod_days" = "%@ dagen";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "Vierkant";
 "thumbnailSizeThumbnail" = "Miniatuurafbeelding";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Aantal per rij";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Kies een miniatuurformaat";
-"settings_displayTitles" = "Titels op miniaturen";
-"settings_displayTitles>320px" = "Titels op miniaturen weergeven";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "Voorbeeld";
 "defaultPreviewFile>320px" = "Voorbeeldafbeelding";

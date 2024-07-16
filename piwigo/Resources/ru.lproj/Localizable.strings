@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "Только Фото";
 
 "categoryView_options" = "Посмотреть опции";
-"categoryGroup_group" = "Группировать изображения по…";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "Альбом";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Количество последних альбомов";
 "recentPeriod_title" = "Последний период";
 "recentPeriod_days" = "%@ дней";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "Квадрат";
 "thumbnailSizeThumbnail" = "Миниатюра";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Количество в строке";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Пожалуйста, выберите размер миниатюры фото";
-"settings_displayTitles" = "Заголовки миниатюр";
-"settings_displayTitles>320px" = "Отображать названия миниатюр";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "Предпросмотр";
 "defaultPreviewFile>320px" = "Предпросмотр файла";

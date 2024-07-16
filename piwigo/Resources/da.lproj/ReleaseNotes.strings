@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.1_text" = "Version 3.2.1\n\n• Adds an option to display albums with or without descriptions\n• Bug fixes";
+
 "v3.2.0_text" = "Version 3.2\n\n• Vedtager album foto sortering muligheder\n• Tilføjer on-the-fly foto sortering muligheder\n• Tilføjer rotation af uploadede fotos (kræver rotateImage plugin)\n• Fejlrettelser";
 
 "v3.1.4_text" = "Version 3.1.4\n27 februar 2024\n\n• Retter et nedbrud på iOS 12";

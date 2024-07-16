@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "Tylko zdjęcia";
 
 "categoryView_options" = "Opcje widoku";
-"categoryGroup_group" = "Grupuj zdjęcia wg…";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Liczba ostatnio użytych albumów";
 "recentPeriod_title" = "Ostatni okres";
 "recentPeriod_days" = "%@ dni";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "Kwadrat";
 "thumbnailSizeThumbnail" = "Miniaturka";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Liczba w wierszu";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Wybierz rozmiar miniaturki";
-"settings_displayTitles" = "Tytułów na Miniaturkach";
-"settings_displayTitles>320px" = "Wyświetlanie Tytułów na Miniaturkach";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "Podgląd";
 "defaultPreviewFile>320px" = "Podgląd Pliku";
@@ -865,7 +868,7 @@
 
 // Settings - Logs
 "settingsHeader_troubleshoot" = "Rozwiązywanie problemów";
-"settings_logs" = "Dzienniki";
+"settings_logs" = "Rejestry zdarzeń";
 "settings_JSONinvalid" = "Nieprawidłowe odpowiedzi serwera";
 
 // What's New in Piwigo
