@@ -57,13 +57,15 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             return CGSize(width: collectionView.frame.size.width - 30.0,
                           height: ceil(headerRect.size.height + 8.0))
         default: /* Images */
-            // Are images grouped by day, week or month?
-            if images.sectionNameKeyPath == nil { return CGSize.zero }
-            
-            // Images are grouped by day, week or month
             if #available(iOS 14, *) {
-                // Grouping options accessible from menu ► Only display date and location (see XIB)
-                return CGSize(width: collectionView.frame.size.width, height: 49)
+                // Are images grouped by day, week or month?
+                if images.sectionNameKeyPath == nil {
+                    // Images are not grouped by day, week or month
+                    return CGSize.zero
+                } else {
+                    // Grouping options accessible from menu ► Only display date and location (see XIB)
+                    return CGSize(width: collectionView.frame.size.width, height: 49)
+                }
             }
             else {
                 // Segmented controller for selecting grouping option on iOS 12 - 13.x (see XIB)
