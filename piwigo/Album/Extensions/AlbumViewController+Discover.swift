@@ -38,7 +38,16 @@ extension AlbumViewController
 extension AlbumViewController
 {
     func discoverMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.piwigoImage.discover")
+        let menuId = UIMenu.Identifier("org.piwigo.discover")
+        var children = [smartAlbums(), viewOptionsMenu()]
+        let menu = UIMenu(title: "", image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: children)
+        return menu
+    }
+    
+    func smartAlbums() -> UIMenu {
+        let menuId = UIMenu.Identifier("org.piwigo.discover.smart")
         var children = [taggedAction(), mostVisitedAction(), bestRatedAction(), recentAction()]
         if NetworkVars.username.isEmpty == false,
            NetworkVars.username.lowercased() != "guest" {

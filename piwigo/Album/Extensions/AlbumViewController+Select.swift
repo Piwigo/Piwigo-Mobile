@@ -143,10 +143,14 @@ extension AlbumViewController
         var numberOfImageCells = 0
         for cell in collectionView?.visibleCells ?? []
         {
-            // Disable user interaction with category cell
-            if let categoryCell = cell as? AlbumCollectionViewCellOld {
-                categoryCell.contentView.alpha = 0.5
-                categoryCell.isUserInteractionEnabled = false
+            // Disable user interaction with album cell
+            if let albumCell = cell as? AlbumCollectionViewCell {
+                albumCell.contentView.alpha = 0.5
+                albumCell.isUserInteractionEnabled = false
+            }
+            else if let albumCell = cell as? AlbumCollectionViewCellOld {
+                albumCell.contentView.alpha = 0.5
+                albumCell.isUserInteractionEnabled = false
             }
 
             // Will scroll to position if no visible image cell
@@ -177,7 +181,11 @@ extension AlbumViewController
         // Enable interaction with album cells and deselect image cells
         for cell in collectionView?.visibleCells ?? [] {
             // Enable user interaction with album cell
-            if let albumCell = cell as? AlbumCollectionViewCellOld {
+            if let albumCell = cell as? AlbumCollectionViewCell {
+                albumCell.contentView.alpha = 1.0
+                albumCell.isUserInteractionEnabled = true
+            }
+            else if let albumCell = cell as? AlbumCollectionViewCellOld {
                 albumCell.contentView.alpha = 1.0
                 albumCell.isUserInteractionEnabled = true
             }

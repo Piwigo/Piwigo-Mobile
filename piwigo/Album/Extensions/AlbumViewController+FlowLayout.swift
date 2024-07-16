@@ -14,9 +14,16 @@ import piwigoKit
 extension AlbumViewController: UICollectionViewDelegateFlowLayout
 {
     func getAlbumCellSize() -> CGSize {
-        let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
-//        debugPrint("••> getAlbumCellSize: \(albumWidth) x 156.5 points")
-        return CGSize(width: albumWidth, height: 156.5)
+        if AlbumVars.shared.displayAlbumDescriptions {
+            let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 384.0)
+//            debugPrint("••> getAlbumCellSize: \(albumWidth) x 156.5 points")
+            return CGSize(width: albumWidth, height: 156.5)
+        } else {
+            let albumWidth = AlbumUtilities.albumSize(forView: collectionView, maxWidth: 206.0)
+            let albumHeight = albumWidth * 2 / 3 + 50
+//            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
+            return CGSize(width: albumWidth, height: albumHeight)
+        }
     }
     
     func getImageCellSize() -> CGSize {
@@ -110,7 +117,12 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     {
         switch section {
         case 0 /* Albums */:
-            return UIEdgeInsets.zero
+            if AlbumVars.shared.displayAlbumDescriptions {
+                return UIEdgeInsets.zero
+            } else {
+                return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumCellSpacing,
+                                    bottom: 0, right: AlbumUtilities.kAlbumCellSpacing)
+            }
         default /* Images */:
             return UIEdgeInsets.zero
         }
@@ -119,7 +131,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         switch section {
         case 0 /* Albums */:
-            return 0.0
+            if AlbumVars.shared.displayAlbumDescriptions {
+                return 0.0
+            } else {
+                return AlbumUtilities.kAlbumCellVertSpacing
+            }
         default /* Images */:
             return AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .full)
         }

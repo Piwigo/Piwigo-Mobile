@@ -190,30 +190,43 @@ extension AlbumViewController: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld
-            else { preconditionFailure("Could not load AlbumCollectionViewCellOld") }
-            
-            // Configure cell with album data
+            // Retrieve album data
             let album = albums.object(at: indexPath)
             if album.isFault {
                 // The album is not fired yet.
                 album.willAccessValue(forKey: nil)
                 album.didAccessValue(forKey: nil)
             }
-            cell.albumData = album
-            cell.pushAlbumDelegate = self
-            cell.deleteAlbumDelegate = self
-            
-            // Disable category cells in Image selection mode
-            if isSelect {
-                cell.contentView.alpha = 0.5
-                cell.isUserInteractionEnabled = false
-            } else {
-                cell.contentView.alpha = 1.0
-                cell.isUserInteractionEnabled = true
+
+            // Create album cell
+            if AlbumVars.shared.displayAlbumDescriptions {
+                // Dequeue reusable cell with album description
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld
+                else { preconditionFailure("Could not load AlbumCollectionViewCellOld") }
+
+                // Configure cell with album data
+                cell.albumData = album
+                cell.pushAlbumDelegate = self
+                cell.deleteAlbumDelegate = self
+
+                // Disable album cells in Image selection mode
+                cell.contentView.alpha = isSelect ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !isSelect
+                return cell
             }
-//            debugPrint("••> Adds album cell at \(indexPath.item)")
-            return cell
+            else {
+                // Dequeue reusable cell w/o album description
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell
+                else { preconditionFailure("Could not load AlbumCollectionViewCell") }
+
+                // Configure cell with album data
+                cell.config(withAlbumData: album)
+
+                // Disable album cells in Image selection mode
+                cell.contentView.alpha = isSelect ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !isSelect
+                return cell
+            }
             
         default /* Images */:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell

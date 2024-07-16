@@ -85,7 +85,9 @@ extension SettingsViewController: UITableViewDelegate
             
             // MARK: Albums
         case .albums /* Albums */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!showOptions && (row > 1)) ? 1 : 0
+            switch row {
             case 0 /* Default album */, 1 /* Default Thumbnail File */:
                 result = true
             default:
@@ -96,7 +98,7 @@ extension SettingsViewController: UITableViewDelegate
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showTitleOption && (row > 2)) ? 1 : 0
+            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */,
                 1 /* Default Thumbnail File */,
@@ -219,7 +221,9 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Albums
         case .albums /* Albums */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!showOptions && (row > 1)) ? 1 : 0
+            switch row {
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
@@ -242,7 +246,7 @@ extension SettingsViewController: UITableViewDelegate
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showTitleOption && (row > 2)) ? 1 : 0
+            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)

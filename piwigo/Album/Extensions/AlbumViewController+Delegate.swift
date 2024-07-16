@@ -14,6 +14,17 @@ extension AlbumViewController: UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0 /* Albums */:
+            guard let selectedCell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+                  indexPath.item >= 0, indexPath.item < (albums.fetchedObjects ?? []).count
+            else { return }
+            
+            // Push new album view
+            let albumData = albums.object(at: indexPath)
+            let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
+            subAlbumVC.categoryId = albumData.pwgID
+            pushAlbumView(subAlbumVC, completion: {_ in })
             break
             
         default /* Images */:

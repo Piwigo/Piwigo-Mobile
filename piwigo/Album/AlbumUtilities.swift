@@ -19,8 +19,8 @@ enum pwgImageCollectionType {
 class AlbumUtilities: NSObject {
     
     // MARK: - Constants
-    static let kAlbumCellSpacing = CGFloat(4)               // Spacing between albums (horizontally and vertically)
-    //    static let kAlbumMarginsSpacing = CGFloat(0)            // Left and right margins for albums
+    static let kAlbumCellSpacing = CGFloat(4)               // horizontal spacing between albums
+    static let kAlbumCellVertSpacing = CGFloat(4)           // Vertical spacing between albums
     
     static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
@@ -467,21 +467,27 @@ class AlbumUtilities: NSObject {
         let screenSize = sizeOfPage()
         let pageSize = sizeOfPage(forView: view)
         
+        // Margins
+        var margins = CGFloat.zero
+        if AlbumVars.shared.displayAlbumDescriptions == false {
+            margins = 2 * kAlbumCellSpacing
+        }
+
         // Number of albums per row in portrait
         let minWidth = min(screenSize.width, screenSize.height)
-        let numerator = minWidth + kAlbumCellSpacing
-        let denominator = kAlbumCellSpacing + maxWidth
+        let numerator = minWidth + kAlbumCellSpacing - margins
+        let denominator = maxWidth + kAlbumCellSpacing
         let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
         
         // Width of album cells determined for the portrait mode
-        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing
-        let albumWidthInPortrait = floor((minWidth - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
+        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing + margins
+        let albumWidthInPortrait = floor((minWidth + kAlbumCellSpacing - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
         
         // Number of albums per row we should display right now
-        let albumsPerRow = round((pageSize.width + kAlbumCellSpacing) / (kAlbumCellSpacing + albumWidthInPortrait))
+        let albumsPerRow = round((pageSize.width + kAlbumCellSpacing - margins) / (albumWidthInPortrait + kAlbumCellSpacing))
         
         // Width of albums for that number
-        return floor((pageSize.width - (albumsPerRow - 1.0) * kAlbumCellSpacing) / albumsPerRow)
+        return floor((pageSize.width - (albumsPerRow - 1.0) * kAlbumCellSpacing - margins) / albumsPerRow)
     }
     
     

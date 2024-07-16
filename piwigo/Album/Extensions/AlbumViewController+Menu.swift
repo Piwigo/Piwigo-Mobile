@@ -270,10 +270,14 @@ extension AlbumViewController: ImageHeaderDelegate
             // Disable interaction with album cells
             for cell in collectionView?.visibleCells ?? []
             {
-                // Disable user interaction with category cell
-                if let categoryCell = cell as? AlbumCollectionViewCellOld {
-                    categoryCell.contentView.alpha = 0.5
-                    categoryCell.isUserInteractionEnabled = false
+                // Disable user interaction with album cell
+                if let albumCell = cell as? AlbumCollectionViewCell {
+                    albumCell.contentView.alpha = 0.5
+                    albumCell.isUserInteractionEnabled = false
+                }
+                else if let albumCell = cell as? AlbumCollectionViewCellOld {
+                    albumCell.contentView.alpha = 0.5
+                    albumCell.isUserInteractionEnabled = false
                 }
             }
             
@@ -353,7 +357,7 @@ extension AlbumViewController
     func updateCollectionAndMenu() {
         // Re-fetch image collection
         updateImageCollection()
-
+        
         // Update menu
         var children = [UIMenu?]()
         if NetworkVars.userStatus == .guest {
@@ -582,7 +586,7 @@ extension AlbumViewController
         if unwantedAlbums.contains(categoryId) {
             return nil
         }
-
+        
         var action: UIAction?
         let actionId = UIAction.Identifier("org.piwigo.images.sort.visits")
         let title = NSLocalizedString("categorySort_visits", comment: "Visits")
@@ -644,7 +648,7 @@ extension AlbumViewController
         action.accessibilityIdentifier = "RandomSort"
         return action
     }
-        
+    
     
     // MARK: - View Options
     /// - for choosing how to group images
@@ -652,18 +656,19 @@ extension AlbumViewController
         return UIMenu(title: NSLocalizedString("categoryView_options", comment: "View Options"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.view.options"),
-                      children: [groupMenu(), showHideTitlesAction()].compactMap({$0}))
+                      children: [groupMenu(), showMenu()].compactMap({$0}))
     }
     
     func groupMenu() -> UIMenu? {
         // Only available when images are sorted by date
-        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+        guard categoryId != Int32.zero,
+              let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
               [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey)
         else { return nil }
-
+        
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
-        return UIMenu(title: NSLocalizedString("categoryGroup_group", comment: "Group Images By…"),
+        return UIMenu(title: NSLocalizedString("categoryView_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
                       options: UIMenu.Options.displayInline,
@@ -746,13 +751,55 @@ extension AlbumViewController
         return action
     }
     
-    func showHideTitlesAction() -> UIAction {
+    func showMenu() -> UIMenu? {
+        // Create a menu for selecting what to show
+        let children = [showHideDescriptionsAction(), showHideTitlesAction()].compactMap({$0})
+        return UIMenu(title: NSLocalizedString("categoryView_show", comment: "Show…"),
+                      image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.images.show.main"),
+                      options: UIMenu.Options.displayInline,
+                      children: children)
+    }
+    
+    func showHideDescriptionsAction() -> UIAction? {
+        let isActive = AlbumVars.shared.displayAlbumDescriptions
+        let action = UIAction(title: NSLocalizedString("settings_displayDescriptions", comment: "Album Descriptions"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: UIAction.Identifier("org.piwigo.images.show.descriptions"),
+                              handler: { [self] action in
+            // Show or hide album descriptions
+            AlbumVars.shared.displayAlbumDescriptions = !isActive
+            let cellSize = getAlbumCellSize()
+            (navigationController?.viewControllers ?? []).forEach({ viewController in
+                if let albumVC = viewController as? AlbumViewController {
+                    albumVC.albumCellSize = cellSize
+                    albumVC.collectionView?.reloadData()
+                }
+            })
+            if categoryId == Int32.zero {
+                let children = [smartAlbums(), viewOptionsMenu()].compactMap({$0})
+                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
+                discoverBarButton.menu = updatedMenu
+            } else {
+                updateCollectionAndMenu()
+            }
+        })
+        action.accessibilityIdentifier = "showHideAlbumDescriptions"
+        return action
+    }
+
+    func showHideTitlesAction() -> UIAction? {
+        // Don't present this option in root album
+        if categoryId == Int32.zero {
+            return nil
+        }
+        
         let isActive = AlbumVars.shared.displayImageTitles
-        let action = UIAction(title: NSLocalizedString("settings_displayTitles", comment: "Titles on Thumbnails"),
+        let action = UIAction(title: NSLocalizedString("settings_displayTitles", comment: "Image Titles"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.titles"),
                               handler: { [self] action in
-            // Show or hide image titles?
+            // Show or hide image titles
             AlbumVars.shared.displayImageTitles = !isActive
             updateCollectionAndMenu()
         })

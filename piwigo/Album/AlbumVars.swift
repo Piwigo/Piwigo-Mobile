@@ -41,9 +41,13 @@ class AlbumVars: NSObject {
     @UserDefault("recentCategories", defaultValue: "0")
     var recentCategories: String
     
-    /// - Maximum number of recent categories  presented to the user
+    /// - Maximum number of recent abums  presented to the user
     @UserDefault("maxNberRecentCategories", defaultValue: 5)
     var maxNberRecentCategories: Int
+    
+    /// - Display album description in collection views
+    @UserDefault("displayAlbumDescriptions", defaultValue: true)
+    var displayAlbumDescriptions: Bool
 
     /// - Default image sort option
     @UserDefault("defaultSortRaw", defaultValue: pwgImageSort.albumDefault.rawValue)

@@ -89,6 +89,10 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Update sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
+                    if let cell = self?.collectionView?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                        // Re-configure album cell
+                        cell.config(withAlbumData: album)
+                    }
                     if let cell = self?.collectionView?.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld {
                         // Re-configure album cell
                         cell.albumData = album

@@ -262,6 +262,7 @@ class AlbumViewController: UIViewController
         // Register classes
         collectionView?.isPrefetchingEnabled = true
         collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
+        collectionView?.register(UINib(nibName: "AlbumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "AlbumCollectionViewCell")
         collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
@@ -355,7 +356,10 @@ class AlbumViewController: UIViewController
             }
         }
         (collectionView?.visibleCells ?? []).forEach { cell in
-            if let albumCell = cell as? AlbumCollectionViewCellOld {
+            if let albumCell = cell as? AlbumCollectionViewCell {
+                albumCell.applyColorPalette()
+            }
+            else if let albumCell = cell as? AlbumCollectionViewCellOld {
                 albumCell.applyColorPalette()
             }
             else if let imageCell = cell as? ImageCollectionViewCell {
@@ -601,10 +605,10 @@ class AlbumViewController: UIViewController
             // Update parent collection layouts
             (navigationController?.viewControllers ?? []).forEach { viewController in
                 // Look for AlbumImagesViewControllers
-                if let thisViewController = viewController as? AlbumViewController {
+                if let albumController = viewController as? AlbumViewController, albumController != self {
                     // Is this the view controller of the default album?
-                    thisViewController.albumCellSize = albumCellSize
-                    thisViewController.imageCellSize = imageCellSize
+                    albumController.albumCellSize = albumCellSize
+                    albumController.imageCellSize = imageCellSize
                 }
             }
         })
