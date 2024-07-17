@@ -196,8 +196,8 @@
 "categorySort_imagesOnly" = "Solo fotos";
 
 "categoryView_options" = "Opciones de Visualización";
-"categoryView_group" = "Group Images By…";
-"categoryView_show" = "Show…";
+"categoryView_group" = "Agrupar imágenes por…";
+"categoryView_show" = "Mostrar…";
 
 // Album selection
 "categorySelection_title" = "Álbum";
@@ -665,8 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Número de álbumes recientes";
 "recentPeriod_title" = "Período reciente";
 "recentPeriod_days" = "%@ días";
-"settings_displayDescriptions" = "Album Descriptions";
-"settings_displayDescriptions>320px" = "Display Album Descriptions";
+"settings_displayDescriptions" = "Descripciones del álbum";
+"settings_displayDescriptions>320px" = "Mostrar descripciones del álbum";
 
 "thumbnailSizeSquare" = "Cuadrado";
 "thumbnailSizeThumbnail" = "Miniatura";
@@ -693,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Número por fila";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Selecciona un tamaño de miniatura de foto";
-"settings_displayTitles" = "Image Titles";
-"settings_displayTitles>320px" = "Display Image Titles";
+"settings_displayTitles" = "Títulos de imágenes";
+"settings_displayTitles>320px" = "Mostrar títulos de imágenes";
 
 "defaultPreviewFile" = "Previsualizar";
 "defaultPreviewFile>320px" = "Previsualizar archivo";
