@@ -127,11 +127,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 #endif
         if AlbumVars.shared.displayImageTitles {
-            let title = getImageTitle(forSortOption: sortOption)
-            nameLabel?.attributedText = title
+            nameLabel?.attributedText = getImageTitle(forSortOption: sortOption)
+            bottomLayer?.isHidden = false
+            nameLabel?.isHidden = false
+        } else {
+            bottomLayer?.isHidden = true
+            nameLabel?.isHidden = true
         }
-        bottomLayer?.isHidden = !AlbumVars.shared.displayImageTitles
-        nameLabel?.isHidden = !AlbumVars.shared.displayImageTitles
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -140,25 +142,22 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Retrieve image from cache or download it
         let placeHolder = UIImage(named: "unknownImage")!
-        let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         let cellSize = self.bounds.size
         let scale = self.traitCollection.displayScale
-        DispatchQueue.global(qos: .userInitiated).async {
-            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size,
-                                       atURL: ImageUtilities.getURL(imageData, ofMinSize: size),
-                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                       placeHolder: placeHolder) { cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-                DispatchQueue.main.async {
-                    self.configImage(cachedImage)
-                }
-            } failure: { _ in
-                // No image available
-                DispatchQueue.main.async {
-                    self.configImage(placeHolder)
-                    self.noDataLabel?.isHidden = false
-                    self.applyColorPalette()
-                }
+        let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size)
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL,
+                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                   placeHolder: placeHolder) { cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+            DispatchQueue.main.async {
+                self.configImage(cachedImage)
+            }
+        } failure: { _ in
+            // No image available
+            DispatchQueue.main.async {
+                self.configImage(placeHolder)
+                self.noDataLabel?.isHidden = false
+                self.applyColorPalette()
             }
         }
     }
