@@ -49,7 +49,7 @@ extension PwgSession
                     return
                 }
             } else {
-//            debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
+//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
                 completion(download.fileURL)
                 return
             }
