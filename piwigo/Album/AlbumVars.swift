@@ -46,7 +46,7 @@ class AlbumVars: NSObject {
     var maxNberRecentCategories: Int
     
     /// - Display album description in collection views
-    @UserDefault("displayAlbumDescriptions", defaultValue: true)
+    @UserDefault("displayAlbumDescriptions", defaultValue: false)
     var displayAlbumDescriptions: Bool
 
     /// - Default image sort option
