@@ -79,8 +79,11 @@ extension SettingsViewController
 
         var title = String(format: "%@ (%@)", NSLocalizedString("settings_database", comment: "Data"), dataCacheSize)
         let clearDataAction = UIAlertAction(title: title, style: .default, handler: { action in
+            // Display HUD during deletion
+            self.navigationController?.showHUD(withTitle: "")
+
             // Delete all data and directories in foreground queue
-            ClearCache.clearData() {
+            ClearCache.clearData() { [self] in
                 // Get server instance
                 guard let server = self.user.server else {
                     assert(self.user?.server != nil, "••> User not provided!")
@@ -90,12 +93,18 @@ extension SettingsViewController
 
                 // Refresh Settings cell related with data
                 self.dataCacheSize = server.getAlbumImageCount()
+
+                // Hide HUD on completion
+                self.navigationController?.hideHUD { }
             }
         })
         alert.addAction(clearDataAction)
 
         title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
         let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+            // Display HUD during deletion
+            self.navigationController?.showHUD(withTitle: "")
+
             // Delete album and photo thumbnails in foreground queue
             guard let server = self.user?.server else {
                 assert(self.user?.server != nil, "••> User not provided!")
@@ -106,11 +115,17 @@ extension SettingsViewController
 
             // Refresh Settings cell
             self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+
+            // Hide HUD on completion
+            self.navigationController?.hideHUD { }
         })
         alert.addAction(clearThumbCacheAction)
         
         title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
         let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+            // Display HUD during deletion
+            self.navigationController?.showHUD(withTitle: "")
+
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
                 assert(self.user?.server != nil, "••> User not provided!")
@@ -121,11 +136,17 @@ extension SettingsViewController
 
             // Refresh photo cache cell
             self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+
+            // Hide HUD on completion
+            self.navigationController?.hideHUD { }
         })
         alert.addAction(clearPhotoCacheAction)
         
         title = String(format: "%@ (%@)", NSLocalizedString("severalVideos", comment: "Videos"), videoCacheSize)
         let clearVideoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+            // Display HUD during deletion
+            self.navigationController?.showHUD(withTitle: "")
+
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
                 assert(self.user?.server != nil, "••> User not provided!")
@@ -135,12 +156,18 @@ extension SettingsViewController
 
             // Refresh video cache cell
             self.videoCacheSize = server.getCacheSizeOfVideos()
+
+            // Hide HUD on completion
+            self.navigationController?.hideHUD { }
         })
         alert.addAction(clearVideoCacheAction)
         
         if hasUploadRights() {
             title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
+                // Display HUD during deletion
+                self.navigationController?.showHUD(withTitle: "")
+
                 // Delete upload data and Uploads/tempporary folders in foreground queue
                 ClearCache.clearUploads() {
                     // Get server instance
@@ -153,6 +180,9 @@ extension SettingsViewController
                     // Refresh upload cache cell
                     self.uploadCacheSize = server.getUploadCount()
                         + " | " + UploadManager.shared.getUploadsDirectorySize()
+
+                    // Hide HUD on completion
+                    self.navigationController?.hideHUD { }
                 }
             })
             clearUploadCacheAction.accessibilityIdentifier = "uploadCache"
@@ -160,6 +190,9 @@ extension SettingsViewController
         }
         
         let clearAction = UIAlertAction(title: NSLocalizedString("settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
+            // Display HUD during deletion
+            self.navigationController?.showHUD(withTitle: "")
+
             // Delete whole cache and folders in foreground queue
             ClearCache.clearData() {
                 // Get server instance
@@ -180,6 +213,9 @@ extension SettingsViewController
                 self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
                 self.videoCacheSize = server.getCacheSizeOfVideos()
                 self.uploadCacheSize = server.getUploadCount()
+
+                // Hide HUD on completion
+                self.navigationController?.hideHUD { }
             }
         })
         alert.addAction(clearAction)
