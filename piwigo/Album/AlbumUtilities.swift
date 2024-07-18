@@ -12,6 +12,10 @@ import Foundation
 import piwigoKit
 import UIKit
 
+enum pwgAlbumCollectionType {
+    case new, old
+}
+
 enum pwgImageCollectionType {
     case popup, full
 }
@@ -19,8 +23,11 @@ enum pwgImageCollectionType {
 class AlbumUtilities: NSObject {
     
     // MARK: - Constants
-    static let kAlbumCellSpacing = CGFloat(4)               // horizontal spacing between albums
-    static let kAlbumCellVertSpacing = CGFloat(4)           // Vertical spacing between albums
+    static let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
+    static let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
+    static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
+    static let kAlbumOldCellSpacing = CGFloat(4)            // Horizontal spacing between old album cells
+//    static let kAlbumOldCellVertSpacing = CGFloat(0)        // Vertical spacing between old album cells
     
     static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
@@ -437,14 +444,6 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Album/Images Collections | Album Thumbnails
-    //    static var minNberOfAlbumsPerRow: Int = {
-    //        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 2
-    //    }()
-    
-    //    static var maxNberOfAlbumsPerRow: Int = {
-    //        return UIDevice.current.userInterfaceIdiom == .phone ? 1 : 3
-    //    }()
-    
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
         var albumThumbnailSize: CGFloat = 144
@@ -462,32 +461,36 @@ class AlbumUtilities: NSObject {
         return .xxLarge
     }
     
-    static func albumSize(forView view: UIView?, maxWidth: CGFloat) -> CGFloat {
+    static func albumWidth(forView view: UIView?, maxWidth: CGFloat) -> CGFloat {
         // Sizes of view and screen
         let screenSize = sizeOfPage()
         let pageSize = sizeOfPage(forView: view)
         
         // Margins
-        var margins = CGFloat.zero
-        if AlbumVars.shared.displayAlbumDescriptions == false {
-            margins = 2 * kAlbumCellSpacing
+        var margins: CGFloat, spacing: CGFloat
+        if AlbumVars.shared.displayAlbumDescriptions {
+            margins = 0.0
+            spacing = kAlbumOldCellSpacing
+        } else {
+            margins = 2 * kAlbumMarginsSpacing
+            spacing = kAlbumCellSpacing
         }
 
         // Number of albums per row in portrait
         let minWidth = min(screenSize.width, screenSize.height)
-        let numerator = minWidth + kAlbumCellSpacing - margins
-        let denominator = maxWidth + kAlbumCellSpacing
+        let numerator = minWidth + spacing - margins
+        let denominator = maxWidth + spacing
         let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
         
         // Width of album cells determined for the portrait mode
-        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * kAlbumCellSpacing + margins
-        let albumWidthInPortrait = floor((minWidth + kAlbumCellSpacing - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
+        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * spacing + margins
+        let albumWidthInPortrait = floor((minWidth + spacing - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
         
         // Number of albums per row we should display right now
-        let albumsPerRow = round((pageSize.width + kAlbumCellSpacing - margins) / (albumWidthInPortrait + kAlbumCellSpacing))
+        let albumsPerRow = round((pageSize.width + spacing - margins) / (albumWidthInPortrait + spacing))
         
         // Width of albums for that number
-        return floor((pageSize.width - (albumsPerRow - 1.0) * kAlbumCellSpacing - margins) / albumsPerRow)
+        return floor((pageSize.width - (albumsPerRow - 1.0) * spacing - margins) / albumsPerRow)
     }
     
     
@@ -514,25 +517,25 @@ class AlbumUtilities: NSObject {
     }
     
     static func imageCellHorizontalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
-        var imageCellHorizontalSpacing = CGFloat.zero
+        var horizontalSpacing = CGFloat.zero
         switch type {
         case .popup:
-            imageCellHorizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPadPopup
+            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPadPopup
         case .full:
-            imageCellHorizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad
+            horizontalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellHorSpacing4iPad
         }
-        return imageCellHorizontalSpacing
+        return horizontalSpacing
     }
     
     static func imageCellVerticalSpacing(forCollectionType type: pwgImageCollectionType) -> CGFloat {
-        var imageCellVerticalSpacing = CGFloat.zero
+        var verticalSpacing = CGFloat.zero
         switch type {
         case .popup:
-            imageCellVerticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPadPopup
+            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPadPopup
         case .full:
-            imageCellVerticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPad
+            verticalSpacing = UIDevice.current.userInterfaceIdiom == .phone ? kImageCellSpacing4iPhone : kImageCellVertSpacing4iPad
         }
-        return imageCellVerticalSpacing
+        return verticalSpacing
     }
     
     static func imagesPerRowInPortrait(forMaxWidth maxWidth: CGFloat) -> Int {
