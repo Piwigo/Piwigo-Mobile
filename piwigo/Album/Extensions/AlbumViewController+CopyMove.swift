@@ -133,3 +133,43 @@ extension AlbumViewController: SelectCategoryDelegate
         }
     }
 }
+
+
+// MARK: - PushAlbumCollectionViewCellDelegate
+extension AlbumViewController: PushAlbumCollectionViewCellDelegate
+{
+    func pushAlbumView(_ viewController: UIViewController?,
+                       completion: @escaping (Bool) -> Void) {
+        guard let viewController = viewController else {
+            return
+        }
+
+        // Push sub-album, Discover or Favorites album
+        if viewController is AlbumViewController {
+            // Push sub-album view
+            navigationController?.pushViewController(viewController, animated: true)
+        }
+        else {
+            // Push album list
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                viewController.modalPresentationStyle = .popover
+                viewController.popoverPresentationController?.sourceView = view
+                viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+                navigationController?.present(viewController, animated: true) {
+                    // Hide swipe commands
+                    completion(true)
+                }
+            }
+            else {
+                let navController = UINavigationController(rootViewController: viewController)
+                navController.modalPresentationStyle = .popover
+                navController.popoverPresentationController?.sourceView = view
+                navController.modalTransitionStyle = .coverVertical
+                navigationController?.present(navController, animated: true) {
+                    // Hide swipe commands
+                    completion(true)
+                }
+            }
+        }
+    }
+}

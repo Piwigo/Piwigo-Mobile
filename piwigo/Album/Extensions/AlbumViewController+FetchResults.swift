@@ -16,13 +16,10 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
+//        if #available(iOS 13, *), view.window == nil { return }
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        
-        // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
         
         // Collect operation changes
         switch controller {
@@ -57,9 +54,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-        // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
         
         // Collect operation changes
         switch controller {
@@ -173,7 +167,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
         if updateOperations.isEmpty { return }
         
         // Update objects

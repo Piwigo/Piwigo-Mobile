@@ -9,15 +9,13 @@
 import Foundation
 import UIKit
 
+// MARK: UICollectionViewDelegate
 extension AlbumViewController: UICollectionViewDelegate
 {
+    // MARK: - Present Album or Image
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0 /* Albums */:
-            guard let selectedCell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
-                  indexPath.item >= 0, indexPath.item < (albums.fetchedObjects ?? []).count
-            else { return }
-            
             // Push new album view
             let albumData = albums.object(at: indexPath)
             let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
@@ -25,7 +23,6 @@ extension AlbumViewController: UICollectionViewDelegate
             else { preconditionFailure("Could not load AlbumViewController") }
             subAlbumVC.categoryId = albumData.pwgID
             pushAlbumView(subAlbumVC, completion: {_ in })
-            break
             
         default /* Images */:
             // Check data
@@ -112,17 +109,22 @@ extension AlbumViewController: UICollectionViewDelegate
         imageOfInterest = indexPath
     }
     
+    
+    // MARK: - Context Menus
     @available(iOS, introduced: 13.0, deprecated: 16.0, message: "")
     func collectionView(_ collectionView: UICollectionView,
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
         // Only admins can rename, move and delete albums
-        if user.hasAdminRights == false { return nil }
-
-        // Return context menu configuration
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            return self.albumContextMenu(indexPath)
+        if indexPath.section == 0, user.hasAdminRights,
+           let _ = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+            // Return context menu configuration
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
+                return self.albumContextMenu(indexPath)
+            }
         }
+        
+        return nil
     }
     
     @available(iOS 16.0, *)
@@ -130,48 +132,65 @@ extension AlbumViewController: UICollectionViewDelegate
                         contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
                         point: CGPoint) -> UIContextMenuConfiguration? {
         // Only admins can rename, move and delete albums
-        if user.hasAdminRights == false { return nil }
-
-        // Return context menu configuration
-        return UIContextMenuConfiguration(actionProvider: { suggestedActions in
-            if indexPaths.count == 1, let indexPath = indexPaths.first {
+        if indexPaths.count == 1, let indexPath = indexPaths.first,
+           indexPath.section == 0, user.hasAdminRights,
+           let _ = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+            // Return context menu configuration
+            return UIContextMenuConfiguration(actionProvider: { suggestedActions in
                 return self.albumContextMenu(indexPath)
-            } else {
-                return nil
-            }
-        })
+            })
+        }
+        return nil
     }
 
     @available(iOS 13.0, *)
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
-        let inspectAction = self.renameAlbumAction(indexPath)
-        let duplicateAction = self.moveAlbumAction(indexPath)
+        let renameAction = self.renameAlbumAction(indexPath)
+        let moveAction = self.moveAlbumAction(indexPath)
         let deleteAction = self.deleteAlbumAction(indexPath)
-        return UIMenu(title: "", children: [inspectAction, duplicateAction, deleteAction])
+        return UIMenu(title: "", children: [renameAction, moveAction, deleteAction])
     }
     
     @available(iOS 13.0, *)
     private func renameAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_rename", comment: "Rename"),
                         image: UIImage(systemName: "character.cursor.ibeam")) { action in
-           
+            guard let topViewController = self.navigationController
+            else { return }
+            let albumData = self.albums.object(at: indexPath)
+            let rename = AlbumRenaming(albumData: albumData, user: self.user, mainContext: self.mainContext,
+                                       topViewController: topViewController)
+            rename.displayAlert { _ in }
         }
     }
     
     @available(iOS 13.0, *)
     private func moveAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_move", comment: "Move"),
-                        image: UIImage(systemName: "arrowshape.turn.up.left.fill")) { action in
-           
+                        image: UIImage(systemName: "arrowshape.turn.up.left")) { action in
+            let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+            guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+            let albumData = self.albums.object(at: indexPath)
+            debugPrint(albumData.debugDescription)
+            if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
+                moveVC.user = self.user
+                self.pushAlbumView(moveVC) { _ in }
+            }
         }
     }
-        
+    
     @available(iOS 13.0, *)
     private func deleteAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_delete", comment: "Delete"),
                         image: UIImage(systemName: "trash"),
                         attributes: .destructive) { action in
-           
+            guard let topViewController = self.navigationController
+            else { return }
+            let albumData = self.albums.object(at: indexPath)
+            debugPrint(albumData.debugDescription)
+            let delete = AlbumDeletion(albumData: albumData, user: self.user,
+                                       topViewController: topViewController)
+            delete.displayAlert { _ in }
         }
     }
 }

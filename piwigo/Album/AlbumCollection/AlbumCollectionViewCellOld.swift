@@ -34,13 +34,7 @@ class AlbumCollectionViewCellOld: UICollectionViewCell
     }
 
     var tableView: UITableView?
-    var renameAlert: UIAlertController?
-    var renameAction: UIAlertAction?
-    var deleteAction: UIAlertAction?
     var nbOrphans = Int64.min
-    enum textFieldTag: Int {
-        case albumName = 1000, albumDescription, nberOfImages
-    }
 
 
     // MARK: - Core Data Object Contexts
@@ -50,13 +44,6 @@ class AlbumCollectionViewCellOld: UICollectionViewCell
             fatalError("!!! Missing Managed Object Context !!!")
         }
         return context
-    }()
-
-    
-    // MARK: - Core Data Providers
-    private lazy var albumProvider: AlbumProvider = {
-        let provider : AlbumProvider = AlbumProvider.shared
-        return provider
     }()
 
     
@@ -86,10 +73,6 @@ class AlbumCollectionViewCellOld: UICollectionViewCell
     override func prepareForReuse() {
         super.prepareForReuse()
         albumData = nil
-    }
-
-    deinit {
-        renameAction = nil
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -144,13 +127,15 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         // Only admins can rename, move and delete albums
-        if !(user?.hasAdminRights ?? false) { return nil }
+        guard user?.hasAdminRights ?? false,
+              let albumData = self.albumData, let user = self.user,
+              let topViewController = self.window?.topMostViewController()
+        else { return nil }
 
         // Determine number of orphans if album deleted
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             self.nbOrphans = Int64.min
-            guard let catId = albumData?.pwgID else { return }
-            AlbumUtilities.calcOrphans(catId) { nbOrphans in
+            AlbumUtilities.calcOrphans(albumData.pwgID) { nbOrphans in
                 self.nbOrphans = nbOrphans
             } failure: { _ in }
         }
@@ -158,7 +143,9 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album deletion
         let trash = UIContextualAction(style: .normal, title: nil,
                                        handler: { _, _, completionHandler in
-            self.deleteCategory(completion: completionHandler)
+            let delete = AlbumDeletion(albumData: albumData, user: user,
+                                       topViewController: topViewController)
+            delete.displayAlert(completion: completionHandler)
         })
         trash.backgroundColor = .red
         trash.image = UIImage(named: "swipeTrash.png")
@@ -166,7 +153,12 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album move
         let move = UIContextualAction(style: .normal, title: nil,
                                       handler: { action, view, completionHandler in
-            self.moveCategory(completion: completionHandler)
+            let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+            guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+            if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
+                moveVC.user = user
+                self.pushAlbumDelegate?.pushAlbumView(moveVC, completion: completionHandler)
+            }
         })
         move.backgroundColor = .piwigoColorBrown()
         move.image = UIImage(named: "swipeMove.png")
@@ -174,104 +166,19 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         // Album renaming
         let rename = UIContextualAction(style: .normal, title: nil,
                                         handler: { action, view, completionHandler in
-            self.renameCategory(completion: completionHandler)
+            let rename = AlbumRenaming(albumData: albumData, user: user, mainContext: self.mainContext,
+                                       topViewController: topViewController)
+            rename.displayAlert(completion: completionHandler)
         })
         rename.backgroundColor = .piwigoColorOrange()
         rename.image = UIImage(named: "swipeRename.png")
 
         // Disallow user to delete the active auto-upload destination album
-        guard let albumData = albumData else { return nil }
         if (UploadVars.autoUploadCategoryId == Int(albumData.pwgID)),
             UploadVars.isAutoUploadActive {
             return UISwipeActionsConfiguration(actions: [move, rename])
         } else {
             return UISwipeActionsConfiguration(actions: [trash, move, rename])
         }
-    }
-}
-
-
-// MARK: - UITextField Delegate Methods
-extension AlbumCollectionViewCellOld: UITextFieldDelegate
-{
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        switch textFieldTag(rawValue: textField.tag) {
-        case .albumName, .albumDescription:
-            // Check both text fields
-            let newName = renameAlert?.textFields?.first?.text
-            let newDescription = renameAlert?.textFields?.last?.text
-            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
-                                                             newDescription: newDescription)
-        case .nberOfImages:
-            // The album deletion cannot be requested if a number of images is not provided.
-            if let _ = Int(textField.text ?? "") {
-                deleteAction?.isEnabled = true
-            } else {
-                deleteAction?.isEnabled = false
-            }
-        case .none:
-            renameAction?.isEnabled = false
-            deleteAction?.isEnabled = false
-        }
-        return true
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
-        switch textFieldTag(rawValue: textField.tag) {
-        case .albumName:
-            // Check both text fields
-            let newName = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-            let newDescription = renameAlert?.textFields?.last?.text
-            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
-                                                             newDescription: newDescription)
-        case .albumDescription:
-            // Check both text fields
-            let newName = renameAlert?.textFields?.first?.text
-            let newDescription = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
-                                                             newDescription: newDescription)
-        case .nberOfImages:
-            // The album deletion cannot be requested if a number of images is not provided.
-            if let nberAsText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string),
-               let _ = Int(nberAsText) {
-                deleteAction?.isEnabled = true
-            } else {
-                deleteAction?.isEnabled = false
-            }
-        case .none:
-            renameAction?.isEnabled = false
-            deleteAction?.isEnabled = false
-        }
-        return true
-    }
-
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        switch textFieldTag(rawValue: textField.tag) {
-        case .albumName:
-            // The album cannot be renamed with an empty string.
-            renameAction?.isEnabled = false
-        case .albumDescription:
-            // The album cannot be renamed with an empty string or the same name.
-            // Check both text fields
-            let newName = renameAlert?.textFields?.first?.text
-            renameAction?.isEnabled = shouldEnableActionWith(newName: newName,
-                                                             newDescription: "")
-        case .nberOfImages:
-            // The album deletion cannot be requested if a number of images is not provided.
-            deleteAction?.isEnabled = false
-        case .none:
-            renameAction?.isEnabled = false
-            deleteAction?.isEnabled = false
-        }
-        return true
-    }
-
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        return true
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        return true
     }
 }
