@@ -196,8 +196,8 @@
 "categorySort_imagesOnly" = "Kun Billeder";
 
 "categoryView_options" = "Vis Indstillinger";
-"categoryView_group" = "Group Images By…";
-"categoryView_show" = "Show…";
+"categoryView_group" = "Gruppér Billeder Efter…";
+"categoryView_show" = "Vis…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -665,8 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Antal seneste album";
 "recentPeriod_title" = "Seneste Periode";
 "recentPeriod_days" = "%@ dage";
-"settings_displayDescriptions" = "Album Descriptions";
-"settings_displayDescriptions>320px" = "Display Album Descriptions";
+"settings_displayDescriptions" = "Albumbeskrivelser";
+"settings_displayDescriptions>320px" = "Vis Album Beskrivelser";
 
 "thumbnailSizeSquare" = "Firkant";
 "thumbnailSizeThumbnail" = "Miniature";
@@ -693,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Antal pr. Række";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Vælg miniature størrelse";
-"settings_displayTitles" = "Image Titles";
-"settings_displayTitles>320px" = "Display Image Titles";
+"settings_displayTitles" = "Billede Titler";
+"settings_displayTitles>320px" = "Vis Billedtitler";
 
 "defaultPreviewFile" = "Forhåndsvisning";
 "defaultPreviewFile>320px" = "Forhåndsvisning fil";

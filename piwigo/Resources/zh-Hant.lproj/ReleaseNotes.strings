@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.1_text" = "Version 3.2.1\n\n• Adds an option to display albums with or without descriptions\n• Bug fixes";
+"v3.2.1_text" = "版本3.2.1\n\n• 新增一個選項來顯示有或沒有說明的相冊\n• 錯誤修正";
 
-"v3.2.0_text" = "版本 3.2\n\n• 採用相簿圖片旋轉選項\n• 添加即時(on-the-fly)圖片排序選項\n• 新增旋轉上傳圖片的功能\n• 錯誤修正";
+"v3.2.0_text" = "版本 3.2\n2024年7月14日\n\n• 採用相簿圖片旋轉選項\n• 添加即時(on-the-fly)圖片排序選項\n• 新增旋轉上傳圖片的功能\n• 錯誤修正";
 
 "v3.1.4_text" = "版本3.1.4\n2024年2月27日\n\n• 修正了 iOS 12 上發生的崩潰";
 

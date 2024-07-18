@@ -190,14 +190,14 @@
 "categorySort_randomly" = "其它";
 "categorySort_random" = "随机顺序";
 "categorySort_id" = "标识符";
-"categorySort_idDescending" = "Identifier, 9 → 1";
-"categorySort_idAscending" = "Identifier, 1 → 9";
+"categorySort_idDescending" = "标识符，9 → 1";
+"categorySort_idAscending" = "标识符，1 → 9";
 "categorySort_videosOnly" = "仅视频";
 "categorySort_imagesOnly" = "仅图片";
 
 "categoryView_options" = "查看选项";
-"categoryView_group" = "Group Images By…";
-"categoryView_show" = "Show…";
+"categoryView_group" = "按以下方式对图像进行分组…";
+"categoryView_show" = "展示…";
 
 // Album selection
 "categorySelection_title" = "相册";
@@ -665,8 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "最近相册的数量";
 "recentPeriod_title" = "最近期间";
 "recentPeriod_days" = "%@ 天";
-"settings_displayDescriptions" = "Album Descriptions";
-"settings_displayDescriptions>320px" = "Display Album Descriptions";
+"settings_displayDescriptions" = "专辑描述";
+"settings_displayDescriptions>320px" = "显示相册描述";
 
 "thumbnailSizeSquare" = "矩形";
 "thumbnailSizeThumbnail" = "缩略图";
@@ -693,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "每行数量";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "请选择照片缩略图大小";
-"settings_displayTitles" = "Image Titles";
-"settings_displayTitles>320px" = "Display Image Titles";
+"settings_displayTitles" = "图片标题";
+"settings_displayTitles>320px" = "显示图片标题";
 
 "defaultPreviewFile" = "预览";
 "defaultPreviewFile>320px" = "预览文件";
