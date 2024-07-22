@@ -192,6 +192,10 @@ class AlbumDeletion: NSObject
     
     private func deleteCategory(withDeletionMode deletionMode: pwgAlbumDeletionMode,
                                 completion: @escaping (Bool) -> Void) {
+        // Prepare set of parent IDs before deleting album (including root album)
+        let parentIds = Set(albumData.upperIds.components(separatedBy: ",")
+            .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([Int32.zero]))
+        
         // Delete the category
         PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
@@ -205,8 +209,8 @@ class AlbumDeletion: NSObject
                     UploadVars.autoUploadCategoryId = Int32.min
                 }
                 
-                // Reload album data
-                self.fetchAlbumDataRecursively()
+                // Update parent albums data
+                self.fetchAlbumData(ofParentsWithIDs: parentIds)
                 
             } failure: { error in
                 let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
@@ -220,37 +224,39 @@ class AlbumDeletion: NSObject
         }
     }
     
-    private func fetchAlbumDataRecursively() {
-        // Remember that the app is fetching all album data
-        AlbumVars.shared.isFetchingAlbumData.insert(0)
-        
-        // Use the AlbumProvider to fetch album data. On completion,
-        // handle general UI updates and error alerts on the main queue.
+    private func fetchAlbumData(ofParentsWithIDs parentIDs: Set<Int32>) {
+        // Fetch data of parent albums
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                  thumbnailSize: thumnailSize) { [self] error in
-            // ► Remove current album from list of album being fetched
-            AlbumVars.shared.isFetchingAlbumData.remove(0)
+        for parentID in parentIDs {
+            // Remember that the app is fetching album data
+            AlbumVars.shared.isFetchingAlbumData.insert(parentID)
             
-            // Check error
-            guard let error = error as? NSError else {
-                // No error ► Hide HUD, update
-                DispatchQueue.main.async { [self] in
-                    self.topViewController.updateHUDwithSuccess() {
-                        self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
+            // Use the AlbumProvider to fetch album data. On completion,
+            // handle general UI updates and error alerts on the main queue.
+            albumProvider.fetchAlbums(forUser: user, inParentWithId: parentID,
+                                      thumbnailSize: thumnailSize) { [self] error in
+                // ► Remove album from list of albums being fetched
+                AlbumVars.shared.isFetchingAlbumData.remove(parentID)
+                
+                // Any error?
+                if let error = error as? NSError {
+                    DispatchQueue.main.async { [self] in
+                        self.topViewController.hideHUD {
+                            // Display error alert after fetching album data
+                            let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+                            let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
+                            self.deleteAlbumError(error, title: title, message: message)
+                        }
                     }
+                    return
                 }
-                return
             }
-            
-            // Show the error
-            DispatchQueue.main.async { [self] in
-                topViewController.hideHUD {
-                    // Display error alert after fetching album data
-                    let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-                    let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
-                    self.deleteAlbumError(error, title: title, message: message)
-                }
+        }
+        
+        // Work completed ► Hide HUDs
+        DispatchQueue.main.async { [self] in
+            self.topViewController.updateHUDwithSuccess() {
+                self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
             }
         }
     }
@@ -266,10 +272,8 @@ class AlbumDeletion: NSObject
             }
             
             // Report error
-            self.topViewController.hideHUD() {
-                self.topViewController.dismissPiwigoError(withTitle: title, message: message,
-                                                          errorMessage: error.localizedDescription) {
-                }
+            self.topViewController.dismissPiwigoError(withTitle: title, message: message,
+                                                      errorMessage: error.localizedDescription) {
             }
         }
     }
