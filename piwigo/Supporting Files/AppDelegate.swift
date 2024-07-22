@@ -492,11 +492,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Inform user
             visibleVC.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg ?? "") {
                 // Restart UploadManager activities
-                if UploadManager.shared.isPaused {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
-                    }
+                UploadManager.shared.isPaused = false
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.findNextImageToUpload()
                 }
             }
         }

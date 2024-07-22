@@ -48,11 +48,9 @@ extension UploadManager {
             // Restart upload manager if no error
             guard let error = error else {
                 // Restart UploadManager activities
-                if UploadManager.shared.isPaused {
+                UploadManager.shared.backgroundQueue.async {
                     UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
-                    }
+                    UploadManager.shared.findNextImageToUpload()
                 }
                 return
             }
@@ -146,11 +144,9 @@ extension UploadManager {
             // Error encountered?
             guard let error = error else {
                 // Restart UploadManager activities
-                if UploadManager.shared.isPaused {
+                UploadManager.shared.backgroundQueue.async {
                     UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
-                    }
+                    UploadManager.shared.findNextImageToUpload()
                 }
                 return
             }

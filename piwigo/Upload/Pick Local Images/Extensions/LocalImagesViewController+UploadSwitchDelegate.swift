@@ -94,7 +94,6 @@ extension LocalImagesViewController: UploadSwitchDelegate
                     self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {
                         // Restart UploadManager activities
                         UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.updateNberOfUploadsToComplete()
                             UploadManager.shared.isPaused = false
                             UploadManager.shared.findNextImageToUpload()
                         }

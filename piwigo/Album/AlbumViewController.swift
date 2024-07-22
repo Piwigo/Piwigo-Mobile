@@ -806,12 +806,10 @@ class AlbumViewController: UIViewController
         }
 
         // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.isPaused = false
-                UploadManager.shared.findNextImageToUpload()
-            }
+        // and update badge and upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.findNextImageToUpload()
         }
     }
 

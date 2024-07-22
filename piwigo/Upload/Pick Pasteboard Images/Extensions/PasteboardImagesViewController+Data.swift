@@ -129,11 +129,9 @@ extension PasteboardImagesViewController {
                         header.setButtonTitle(forState: .select)
                     }
                 }
-                if UploadManager.shared.isPaused {
+                UploadManager.shared.backgroundQueue.async {
                     UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
-                    }
+                    UploadManager.shared.findNextImageToUpload()
                 }
             }
         }

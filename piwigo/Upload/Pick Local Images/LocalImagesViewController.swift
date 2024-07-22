@@ -333,12 +333,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
 
-        // Restart UploadManager activities
-        if UploadManager.shared.isPaused {
+        // Resume upload operations in background queue
+        // and update badge and upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
             UploadManager.shared.isPaused = false
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.findNextImageToUpload()
-            }
+            UploadManager.shared.findNextImageToUpload()
         }
     }
     
