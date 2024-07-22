@@ -171,7 +171,6 @@ extension AlbumViewController: UICollectionViewDelegate
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
             guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
             let albumData = self.albums.object(at: indexPath)
-            debugPrint(albumData.debugDescription)
             if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
                 moveVC.user = self.user
                 self.pushAlbumView(moveVC) { _ in }
@@ -187,7 +186,6 @@ extension AlbumViewController: UICollectionViewDelegate
             guard let topViewController = self.navigationController
             else { return }
             let albumData = self.albums.object(at: indexPath)
-            debugPrint(albumData.debugDescription)
             let delete = AlbumDeletion(albumData: albumData, user: self.user,
                                        topViewController: topViewController)
             delete.displayAlert { _ in }

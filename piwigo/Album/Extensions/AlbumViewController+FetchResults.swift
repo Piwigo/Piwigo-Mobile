@@ -181,10 +181,10 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     }
     
     func updateHeaders() {
-        // Does this section exist?
-        guard images.sectionNameKeyPath != nil,
-              let collectionView = collectionView,
-              let sortKey = images.fetchRequest.sortDescriptors?.first?.key
+        // Are images sorted by date?
+        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+              [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey),
+              let collectionView = collectionView
         else { return }
 
         // Images are grouped by day, week or month: section header visible?
