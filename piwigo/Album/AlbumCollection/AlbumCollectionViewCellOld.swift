@@ -17,15 +17,9 @@ protocol PushAlbumCollectionViewCellDelegate: NSObjectProtocol {
                        completion: @escaping (Bool) -> Void)
 }
 
-protocol DeleteAlbumCollectionViewCellDelegate: NSObjectProtocol {
-    func didDeleteAlbum(withError error: NSError?,
-                        viewController topViewController: UIViewController?)
-}
-
 class AlbumCollectionViewCellOld: UICollectionViewCell
 {
     weak var pushAlbumDelegate: PushAlbumCollectionViewCellDelegate?
-    weak var deleteAlbumDelegate: DeleteAlbumCollectionViewCellDelegate?
     
     var albumData: Album? {
         didSet {

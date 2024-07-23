@@ -57,7 +57,7 @@ class AlbumDeletion: NSObject
                     topViewController.showHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"))
                     
                     // Delete empty album
-                    deleteCategory(withDeletionMode: .none, completion: completion)
+                    deleteAlbum(withDeletionMode: .none, completion: completion)
                 })
             alert.addAction(emptyCategoryAction)
         } else {
@@ -67,11 +67,11 @@ class AlbumDeletion: NSObject
                 style: .default, handler: { [self] action in
                     if NetworkVars.usesCalcOrphans, nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
-                        deleteCategory(withDeletionMode: .none, completion: completion)
+                        deleteAlbum(withDeletionMode: .none, completion: completion)
                     } else {
                         // There will be orphans, ask confirmation
-                        confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                                deletionMode: .none, completion: completion)
+                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                                             deletionMode: .none, completion: completion)
                     }
                 })
             alert.addAction(keepImagesAction)
@@ -82,8 +82,8 @@ class AlbumDeletion: NSObject
                     title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
                     handler: { [self] action in
-                        confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                                deletionMode: .orphaned, completion: completion)
+                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                                             deletionMode: .orphaned, completion: completion)
                     })
                 alert.addAction(orphanImagesAction)
             }
@@ -92,8 +92,8 @@ class AlbumDeletion: NSObject
                     title: self.nbOrphans > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %@ Orphans"), NSNumber(value: self.nbOrphans)) : NSLocalizedString("deleteCategory_singleOrphanedImage", comment: "Delete Orphan"),
                     style: .destructive,
                     handler: { [self] action in
-                        confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                                deletionMode: .orphaned, completion: completion)
+                        confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                                             deletionMode: .orphaned, completion: completion)
                     })
                 alert.addAction(orphanImagesAction)
             }
@@ -102,8 +102,8 @@ class AlbumDeletion: NSObject
                 title: albumData.totalNbImages > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Images"), NSNumber(value: albumData.totalNbImages)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
                 style: .destructive,
                 handler: { [self] action in
-                    confirmCategoryDeletion(withNumberOfImages: albumData.totalNbImages,
-                                            deletionMode: .all, completion: completion)
+                    confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
+                                         deletionMode: .all, completion: completion)
                 })
             allImagesAction.accessibilityIdentifier = "DeleteAll"
             alert.addAction(allImagesAction)
@@ -123,9 +123,9 @@ class AlbumDeletion: NSObject
         }
     }
     
-    private func confirmCategoryDeletion(withNumberOfImages number: Int64,
-                                         deletionMode: pwgAlbumDeletionMode,
-                                         completion: @escaping (Bool) -> Void) {
+    private func confirmAlbumDeletion(withNumberOfImages number: Int64,
+                                      deletionMode: pwgAlbumDeletionMode,
+                                      completion: @escaping (Bool) -> Void) {
         // Are you sure?
         let alert = UIAlertController(
             title: NSLocalizedString("deleteCategoryConfirm_title", comment: "Are you sure?"),
@@ -187,11 +187,11 @@ class AlbumDeletion: NSObject
         topViewController.showHUD(withTitle: NSLocalizedString("deleteCategoryHUD_label", comment: "Deleting Album…"))
         
         // Delete album (deleted images will remain in cache)
-        deleteCategory(withDeletionMode: deletionMode, completion: completion)
+        deleteAlbum(withDeletionMode: deletionMode, completion: completion)
     }
     
-    private func deleteCategory(withDeletionMode deletionMode: pwgAlbumDeletionMode,
-                                completion: @escaping (Bool) -> Void) {
+    private func deleteAlbum(withDeletionMode deletionMode: pwgAlbumDeletionMode,
+                             completion: @escaping (Bool) -> Void) {
         // Prepare set of parent IDs before deleting album (including root album)
         let parentIds = Set(albumData.upperIds.components(separatedBy: ",")
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([Int32.zero]))
@@ -199,14 +199,16 @@ class AlbumDeletion: NSObject
         // Delete the category
         PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
-                // Hide swipe buttons
-                DispatchQueue.main.async {
-                    completion(true)
-                }
-                
-                // Remove this album from the auto-upload destination
+                // Auto-upload already disabled by AlbumProvider if necessary
+                // Also remove this album from the auto-upload destination
                 if UploadVars.autoUploadCategoryId == albumData.pwgID {
                     UploadVars.autoUploadCategoryId = Int32.min
+                }
+                
+                // Update UI and cache
+                DispatchQueue.main.async {
+                    // Hide swipe buttons
+                    completion(true)
                 }
                 
                 // Update parent albums data
@@ -317,70 +319,5 @@ extension AlbumDeletion: UITextFieldDelegate
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return true
-    }
-}
-
-
-// MARK: - DeleteAlbumCollectionViewCellDelegate
-extension AlbumViewController: DeleteAlbumCollectionViewCellDelegate
-{
-    func didDeleteAlbum(withError error: NSError?, viewController topViewController: UIViewController?) {
-        guard let error = error
-        else {
-            // Remember that the app is fetching all album data
-            AlbumVars.shared.isFetchingAlbumData.insert(0)
-            
-            // Use the AlbumProvider to fetch album data. On completion,
-            // handle general UI updates and error alerts on the main queue.
-            let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
-                                      thumbnailSize: thumnailSize) { [self] error in
-                // ► Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(0)
-                
-                // Check error
-                guard let error = error as? NSError else {
-                    // No error ► Hide HUD, update
-                    DispatchQueue.main.async { [self] in
-                        topViewController?.updateHUDwithSuccess() {
-                            topViewController?.hideHUD(afterDelay: pwgDelayHUD) {
-                                // Update number of images in footer
-                                self.updateNberOfImagesInFooter()
-                            }
-                        }
-                    }
-                    return
-                }
-                
-                // Show the error
-                DispatchQueue.main.async { [self] in
-                    topViewController?.hideHUD {
-                        // Display error alert after fetching album data
-                        self.deleteCategoryError(error, viewController: topViewController)
-                    }
-                }
-            }
-            return
-        }
-        
-        // Show the error
-        DispatchQueue.main.async { [self] in
-            topViewController?.hideHUD {
-                // Display error alert after trying to delete an album
-                self.deleteCategoryError(error, viewController: topViewController)
-            }
-        }
-    }
-    
-    private func deleteCategoryError(_ error: NSError, viewController topViewController: UIViewController?) {
-        DispatchQueue.main.async {
-            let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-            let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
-            self.navigationController?.hideHUD() {
-                self.navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                                                              errorMessage: error.localizedDescription) {
-                }
-            }
-        }
     }
 }

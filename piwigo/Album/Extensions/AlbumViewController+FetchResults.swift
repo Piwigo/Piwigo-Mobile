@@ -16,6 +16,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
+        updateOperations = []
 //        if #available(iOS 13, *), view.window == nil { return }
     }
     
@@ -66,31 +67,27 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     self?.collectionView?.insertItems(at: [newIndexPath])
                 })
             case .delete:
-                guard let indexPath = indexPath else { return }
-                updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Delete sub-album of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
+                guard let indexPath = indexPath, let album = anObject as? Album
+                else { return }
+                debugPrint("••> Will delete sub-album \(album.name) at \(indexPath) of album #\(self.categoryId)")
+                updateOperations.append( BlockOperation { [weak self] in
+                    debugPrint("••> Delete sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
                     self?.collectionView?.deleteItems(at: [indexPath])
                 })
             case .move:
                 guard let indexPath = indexPath, let newIndexPath = newIndexPath,
                       indexPath != newIndexPath else { return }
-                updateOperations.append( BlockOperation {  [weak self] in
+                updateOperations.append( BlockOperation { [weak self] in
                     debugPrint("••> Move sub-album of album #\(self?.categoryId ?? Int32.min) from \(indexPath) to \(newIndexPath)")
                     self?.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
                 guard let indexPath = indexPath, let album = anObject as? Album
                 else { return }
+                debugPrint("••> Will update sub-album \(album.name) at \(indexPath) of album #\(self.categoryId)")
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Update sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
-                    if let cell = self?.collectionView?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
-                        // Re-configure album cell
-                        cell.config(withAlbumData: album)
-                    }
-                    if let cell = self?.collectionView?.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld {
-                        // Re-configure album cell
-                        cell.albumData = album
-                    }
+                    self?.collectionView?.reloadItems(at: [indexPath])
                 })
             @unknown default:
                 debugPrint("Unknown NSFetchedResultsChangeType of object in AlbumViewController")

@@ -191,6 +191,7 @@ extension AlbumViewController: UICollectionViewDataSource
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
             // Retrieve album data
+            debugPrint("••> cellForItemAt ", indexPath.item, "section 0 of categoryID: \(categoryId)")
             let album = albums.object(at: indexPath)
             if album.isFault {
                 // The album is not fired yet.
@@ -207,7 +208,6 @@ extension AlbumViewController: UICollectionViewDataSource
                 // Configure cell with album data
                 cell.albumData = album
                 cell.pushAlbumDelegate = self
-                cell.deleteAlbumDelegate = self
 
                 // Disable album cells in Image selection mode
                 cell.contentView.alpha = isSelect ? 0.5 : 1.0
