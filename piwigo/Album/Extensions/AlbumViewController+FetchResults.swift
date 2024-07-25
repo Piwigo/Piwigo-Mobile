@@ -164,10 +164,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Check that this update should be managed by this view controller
-        if updateOperations.isEmpty { return }
-        
-        // Update objects
+        // Update objects in a single animated operation
         collectionView?.performBatchUpdates({ [weak self] in
             self?.updateOperations.forEach({ $0.start()})
         }) { [weak self] _ in
