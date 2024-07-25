@@ -15,9 +15,10 @@ import UIKit
 extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Check that this update should be managed by this view controller
+        // Reset operation list
         updateOperations = []
-//        if #available(iOS 13, *), view.window == nil { return }
+        // Ensure that the layout is updated before calling performBatchUpdates(_:completion:)
+        self.collectionView?.layoutIfNeeded()
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
@@ -31,21 +32,21 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 let collectionSectionIndex = sectionIndex + 1
                 updateOperations.append( BlockOperation { [weak self] in
-                    print("••> Insert image section at ", collectionSectionIndex)
+                    debugPrint("••> Insert image section at ", collectionSectionIndex)
                     self?.collectionView?.insertSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .delete:
                 let collectionSectionIndex = sectionIndex + 1
                 updateOperations.append( BlockOperation { [weak self] in
-                    print("••> Delete image section at ", collectionSectionIndex)
+                    debugPrint("••> Delete image section at ", collectionSectionIndex)
                     self?.collectionView?.deleteSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .move:
                 let collectionSectionIndex = sectionIndex + 1
-                print("••> Move image section at ", collectionSectionIndex)
+                debugPrint("••> Move image section at ", collectionSectionIndex)
             case .update:
                 let collectionSectionIndex = sectionIndex + 1
-                print("••> Update image section at ", collectionSectionIndex)
+                debugPrint("••> Update image section at ", collectionSectionIndex)
             @unknown default:
                 fatalError("Unknown NSFetchedResultsChangeType of section in AlbumViewController")
             }
@@ -63,7 +64,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 guard let newIndexPath = newIndexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
-                    debugPrint("••> Insert sub-album of album #\(self?.categoryId ?? Int32.min) at \(newIndexPath)")
+                    debugPrint("••> Insert sub-album at \(newIndexPath) of album #\(self?.categoryId ?? Int32.min)")
                     self?.collectionView?.insertItems(at: [newIndexPath])
                 })
             case .delete:

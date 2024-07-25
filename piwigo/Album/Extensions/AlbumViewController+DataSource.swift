@@ -191,7 +191,7 @@ extension AlbumViewController: UICollectionViewDataSource
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
             // Retrieve album data
-            debugPrint("••> cellForItemAt ", indexPath.item, "section 0 of categoryID: \(categoryId)")
+//            debugPrint("••> cell for item at \(indexPath) of album #\(categoryId)")
             let album = albums.object(at: indexPath)
             if album.isFault {
                 // The album is not fired yet.
