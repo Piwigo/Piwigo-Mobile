@@ -357,10 +357,12 @@ class TagsViewController: UITableViewController {
 extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Initialise update operations
-        updateOperations.removeAll(keepingCapacity: false)
+        // Reset operation list
+        updateOperations = []
+        // Ensure that the layout is updated before calling performBatchUpdates(_:completion:)
+        tagsTableView?.layoutIfNeeded()
         // Begin the update
-        tableView.beginUpdates()
+        tagsTableView?.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -386,7 +388,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             if hasTagsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Update tag item at \(indexPath)")
-                self?.tableView?.reloadRows(at: [indexPath], with: .automatic)
+                self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
@@ -396,14 +398,14 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Move tag item from \(indexPath) to \(newIndexPath)")
-                self?.tableView?.moveRow(at: indexPath, to: newIndexPath)
+                self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
             updateOperations.append( BlockOperation {  [weak self] in
                 print("••> Delete tag item at \(indexPath)")
-                self?.tableView?.deleteRows(at: [indexPath], with: .automatic)
+                self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
         @unknown default:
             fatalError("TagsViewController: unknown NSFetchedResultsChangeType")
@@ -411,20 +413,11 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the album is not presented.
-        if #available(iOS 13, *), view.window == nil { return }
-        
-        // Any update to perform?
-        if updateOperations.isEmpty || view.window == nil { return }
-
-        // Perform all updates
-        tableView?.performBatchUpdates({ () -> Void  in
-            for operation: BlockOperation in self.updateOperations {
-                operation.start()
-            }
-        })
-        
-        // End updates
-        tableView.endUpdates()
+        // Update objects in a single animated operation
+        tagsTableView?.performBatchUpdates({ [weak self]  in
+            self?.updateOperations.forEach({ $0.start()})
+        }) { [weak self] _ in
+            self?.tagsTableView.endUpdates()
+        }
     }
 }
