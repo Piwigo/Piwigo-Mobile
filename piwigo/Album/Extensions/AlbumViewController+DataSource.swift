@@ -128,12 +128,26 @@ extension AlbumViewController: UICollectionViewDataSource
         default /* Images */:
             switch kind {
             case UICollectionView.elementKindSectionHeader:                
-                // Determine place names from first images
+                // Determine place names from first and last images
                 let imageSection = indexPath.section - 1
-                var imagesInSection: [Image] = []
-                for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
-                    let imageIndexPath = IndexPath(item: item, section: imageSection)
-                    imagesInSection.append(images.object(at: imageIndexPath))
+                var imagesInSection = [Image]()
+                let nberOfImageInSection = collectionView.numberOfItems(inSection: indexPath.section)
+                if nberOfImageInSection <= 10 {
+                    // Collect all images
+                    for item in 0..<min(nberOfImageInSection, 10) {
+                        let imageIndexPath = IndexPath(item: item, section: imageSection)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
+                } else {
+                    // Collect first 10 images
+                    for item in 0..<10 {
+                        let imageIndexPath = IndexPath(item: item, section: imageSection)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
+                    for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
+                        let imageIndexPath = IndexPath(item: item, section: imageSection)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
                 }
 
                 // Determine state of Select button
