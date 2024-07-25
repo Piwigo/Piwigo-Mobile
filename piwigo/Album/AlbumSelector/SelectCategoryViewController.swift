@@ -357,8 +357,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Display HUD during fetch
-        navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
+        // Display HUD during fetch after the app launch or if data was fetched more than an hour ago
+        if AppVars.shared.dateOfLatestRecursiveAlbumDataFetch.timeIntervalSinceNow < -3600 {
+            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
+            AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+        }
         
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
