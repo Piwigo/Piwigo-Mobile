@@ -23,6 +23,7 @@ class TagSelectorViewController: UITableViewController {
     @IBOutlet var tagsTableView: UITableView!
     private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
+    private var updateOperations = [BlockOperation]()
 
     
     // MARK: - Core Data Objects
@@ -141,9 +142,9 @@ class TagSelectorViewController: UITableViewController {
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        tagsTableView.separatorColor = .piwigoColorSeparator()
-        tagsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        tagsTableView.reloadData()
+        tagsTableView?.separatorColor = .piwigoColorSeparator()
+        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView?.reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -160,7 +161,7 @@ class TagSelectorViewController: UITableViewController {
         }
 
         // Reload data
-        tagsTableView.reloadData()
+        tagsTableView?.reloadData()
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -258,12 +259,13 @@ class TagSelectorViewController: UITableViewController {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-
-extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
-    
+extension TagSelectorViewController: NSFetchedResultsControllerDelegate
+{    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Initialise update operations
+        updateOperations = []
         // Begin the update
-        tagsTableView.beginUpdates()
+        tagsTableView?.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -271,19 +273,31 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .delete:   // Action performed in priority
             guard let indexPath = indexPath else { return }
-            tagsTableView.deleteRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Delete tag item at \(indexPath)")
+                self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
+            })
             
         case .insert:
             guard let newIndexPath = newIndexPath else { return }
-            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Insert tag item at \(newIndexPath)")
+                self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
+            })
             
         case .move:
             guard let indexPath = indexPath,  let newIndexPath = newIndexPath else { return }
-            tagsTableView.moveRow(at: indexPath, to: newIndexPath)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Move tag item from \(indexPath) to \(newIndexPath)")
+                self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
+            })
             
         case .update:
             guard let indexPath = indexPath else { return }
-            tagsTableView.reloadRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Update tag item at \(indexPath)")
+                self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
+            })
             
         @unknown default:
             fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
@@ -291,6 +305,14 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tagsTableView.endUpdates()
+        // Do not update items if the tag list is not presented.
+        if #available(iOS 13, *), view.window == nil { return }
+        
+        // Perform all updates
+        tagsTableView?.performBatchUpdates { [weak self] in
+            self?.updateOperations.forEach { $0.start() }
+        }
+        
+        tagsTableView?.endUpdates()
     }
 }

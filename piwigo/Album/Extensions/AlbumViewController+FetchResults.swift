@@ -18,7 +18,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         // Reset operation list
         updateOperations = []
         // Ensure that the layout is updated before calling performBatchUpdates(_:completion:)
-        self.collectionView?.layoutIfNeeded()
+        collectionView?.layoutIfNeeded()
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
@@ -68,9 +68,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     self?.collectionView?.insertItems(at: [newIndexPath])
                 })
             case .delete:
-                guard let indexPath = indexPath, let album = anObject as? Album
-                else { return }
-                debugPrint("••> Will delete sub-album \(album.name) at \(indexPath) of album #\(self.categoryId)")
+                guard let indexPath = indexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
                     debugPrint("••> Delete sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
                     self?.collectionView?.deleteItems(at: [indexPath])
@@ -83,9 +81,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     self?.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
-                guard let indexPath = indexPath, let album = anObject as? Album
-                else { return }
-                debugPrint("••> Will update sub-album \(album.name) at \(indexPath) of album #\(self.categoryId)")
+                guard let indexPath = indexPath else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Update sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
                     self?.collectionView?.reloadItems(at: [indexPath])

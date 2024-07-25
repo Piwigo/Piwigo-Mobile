@@ -39,6 +39,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min
+    private var updateOperations = [BlockOperation]()
 
     // MARK: - Core Data Objects
     var user: User!
@@ -1047,16 +1048,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
-    
+extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
+{
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if [recentAlbums, albums].contains(controller) == false ||
-            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+        if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
         }
-        // Ensure that the layout is updated before calling performBatchUpdates(_:completion:)
-        categoriesTableView?.layoutIfNeeded()
+        // Reset operation list
+        updateOperations = []
         // Begin the update
         categoriesTableView?.beginUpdates()
     }
@@ -1064,14 +1064,13 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         // Check that this update should be managed by this view controller
-        if [recentAlbums, albums].contains(controller) == false ||
-            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+        if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
         }
 
         // Initialisation
         var hasAlbumsInSection1 = false
-        if controller == albums, categoriesTableView.numberOfSections ==  2 {
+        if controller == albums, categoriesTableView.numberOfSections == 2 {
             hasAlbumsInSection1 = true
         }
 
@@ -1080,26 +1079,34 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
-            debugPrint("••> Insert category item at \(newIndexPath)")
-            categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Insert category item at \(newIndexPath)")
+                self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
+            })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            debugPrint("••> Update category item at \(indexPath)")
-            categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation {  [weak self] in
+                debugPrint("••> Update category item at \(indexPath)")
+                self?.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
+            })
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            debugPrint("••> Move category item from \(indexPath) to \(newIndexPath)")
-            categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Move category item from \(indexPath) to \(newIndexPath)")
+                self?.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
+            })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            debugPrint("••> Delete category item at \(indexPath)")
-            categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Delete category item at \(indexPath)")
+                self?.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
+            })
         @unknown default:
             debugPrint("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
         }
@@ -1107,10 +1114,15 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if [recentAlbums, albums].contains(controller) == false ||
-            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+        if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
         }
+
+        // Perform all updates
+        categoriesTableView?.performBatchUpdates { [weak self] in
+            self?.updateOperations.forEach { $0.start() }
+        }
+        
         // End updates
         categoriesTableView?.endUpdates()
     }

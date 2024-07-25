@@ -19,7 +19,7 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
 class TagsViewController: UITableViewController {
 
     weak var delegate: TagsViewControllerDelegate?
-    private var updateOperations: [BlockOperation] = [BlockOperation]()
+    private var updateOperations = [BlockOperation]()
 
     // Called before uploading images (Tag class)
     private var selectedTagIds = Set<Int32>()
@@ -354,13 +354,11 @@ class TagsViewController: UITableViewController {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension TagsViewController: NSFetchedResultsControllerDelegate {
-    
+extension TagsViewController: NSFetchedResultsControllerDelegate
+{    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Reset operation list
+        // Initialise update operations
         updateOperations = []
-        // Ensure that the layout is updated before calling performBatchUpdates(_:completion:)
-        tagsTableView?.layoutIfNeeded()
         // Begin the update
         tagsTableView?.beginUpdates()
     }
@@ -380,14 +378,14 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             guard var newIndexPath = newIndexPath else { return }
             if hasTagsInSection1 { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert tag item at \(newIndexPath)")
+                debugPrint("••> Insert tag item at \(newIndexPath)")
                 self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Update tag item at \(indexPath)")
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Update tag item at \(indexPath)")
                 self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
         case .move:
@@ -396,15 +394,15 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move tag item from \(indexPath) to \(newIndexPath)")
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Move tag item from \(indexPath) to \(newIndexPath)")
                 self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete tag item at \(indexPath)")
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Delete tag item at \(indexPath)")
                 self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
         @unknown default:
@@ -413,11 +411,15 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Update objects in a single animated operation
-        tagsTableView?.performBatchUpdates({ [weak self]  in
-            self?.updateOperations.forEach({ $0.start()})
-        }) { [weak self] _ in
-            self?.tagsTableView.endUpdates()
+        // Do not update items if the tag list is not presented.
+        if #available(iOS 13, *), view.window == nil { return }
+        
+        // Perform all updates
+        tagsTableView?.performBatchUpdates { [weak self] in
+            self?.updateOperations.forEach { $0.start() }
         }
+        
+        // End updates
+        tagsTableView?.endUpdates()
     }
 }
