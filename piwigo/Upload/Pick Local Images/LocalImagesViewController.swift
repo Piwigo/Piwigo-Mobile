@@ -535,7 +535,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     func groupMenu() -> UIMenu {
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
-        return UIMenu(title: NSLocalizedString("categoryGroup_group", comment: "Group Images By…"),
+        return UIMenu(title: NSLocalizedString("categoryView_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
                       options: UIMenu.Options.displayInline,
