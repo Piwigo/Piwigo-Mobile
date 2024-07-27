@@ -86,7 +86,6 @@ class AlbumViewController: UIViewController
     
     // MARK: - Search
     var searchController: UISearchController?
-    var pauseSearch = false
     
     
     // MARK: Image Managemennt
@@ -446,22 +445,10 @@ class AlbumViewController: UIViewController
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
-           noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600) {
-            PwgSession.checkSession(ofUser: user) {
-                self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
-            } failure: { error in
-                // Session logout required?
-                if let pwgError = error as? PwgSessionError,
-                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                    .contains(pwgError) {
-                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                    return
-                }
-                
-                // Report error
-                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
-            }
+           noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600)
+        {
+            // Fetch album/image data after checking session
+            self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
         }
         
         // Should we highlight the image of interest?
@@ -714,44 +701,26 @@ class AlbumViewController: UIViewController
         // Remember that the app is uploading this album data
         AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
         
-        // Inform user
-        DispatchQueue.main.async { [self] in
-            // Display "loading" in title view
-            self.setTitleViewFromAlbumData(whileUpdating: true)
-
-            // Display HUD when loading images for the first time
-            // or when we have less than half of the images in cache
-            if withHUD == false { return }
-            
-            // Display HUD while downloading album data
+        // Display "loading" in title view
+        self.setTitleViewFromAlbumData(whileUpdating: true)
+        
+        // Display HUD while downloading album data
+        if withHUD {
             self.navigationController?.showHUD(
                 withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
                 detail: NSLocalizedString("severalImages", comment: "Photos"), minWidth: 200)
         }
         
         // Fetch album data and then image data
-        fetchAlbumsAndImages { [self] in
-            fetchCompleted()
-        }
-    }
-
-    @objc func refresh(_ refreshControl: UIRefreshControl?) {
-        // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
-                
-        // Check that the root album exists
-        // (might have been deleted with a clear of the cache)
-        if categoryId == Int32.zero {
-            albumData = currentAlbumData()
-        }
-        
-        // Re-login and then fetch album and image data
-        PwgSession.checkSession(ofUser: user) {
-            self.startFetchingAlbumAndImages(withHUD: true)
+        PwgSession.checkSession(ofUser: self.user) {
+            self.fetchAlbumsAndImages { [self] in
+                self.fetchCompleted()
+            }
         } failure: { error in
-            // End refreshing anyway
             DispatchQueue.main.async {
+                // End refreshing if needed
                 self.collectionView?.refreshControl?.endRefreshing()
+                
                 // Session logout required?
                 if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -765,6 +734,20 @@ class AlbumViewController: UIViewController
                 self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
             }
         }
+    }
+
+    @objc func refresh(_ refreshControl: UIRefreshControl?) {
+        // Already being fetching album data?
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
+                
+        // Check that the root album exists
+        // (might have been deleted with a clear of the cache)
+        if categoryId == Int32.zero {
+            albumData = currentAlbumData()
+        }
+        
+        // Fetch album/image data after checking session
+        self.startFetchingAlbumAndImages(withHUD: true)
     }
     
     func fetchCompleted() {

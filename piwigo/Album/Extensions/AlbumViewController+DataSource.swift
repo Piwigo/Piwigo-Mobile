@@ -89,7 +89,7 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categoryId == Int32.zero ? 1 : 1 + (images.sections?.count ?? 0)
+        return 1 + (images.sections?.count ?? 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

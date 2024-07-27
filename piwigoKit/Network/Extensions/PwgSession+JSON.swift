@@ -128,7 +128,7 @@ extension PwgSession
             if #available(iOSApplicationExtension 14.0, *) {
                 let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
             #if DEBUG
-                let dataStr = String(decoding: jsonData.prefix(64), as: UTF8.self) + "…"
+                let dataStr = String(decoding: jsonData.prefix(70), as: UTF8.self) + "…"
 //                let dataStr = String(decoding: jsonData, as: UTF8.self)
                 PwgSession.logger.notice("Received \(countsOfByte, privacy: .public) bytes of JSON data: \(dataStr, privacy: .public)")
             #else

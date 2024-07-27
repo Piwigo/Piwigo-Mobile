@@ -32,21 +32,21 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 let collectionSectionIndex = sectionIndex + 1
                 updateOperations.append( BlockOperation { [weak self] in
-                    debugPrint("••> Insert image section at ", collectionSectionIndex)
+                    debugPrint("••> Insert image section #\(collectionSectionIndex)")
                     self?.collectionView?.insertSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .delete:
                 let collectionSectionIndex = sectionIndex + 1
                 updateOperations.append( BlockOperation { [weak self] in
-                    debugPrint("••> Delete image section at ", collectionSectionIndex)
+                    debugPrint("••> Delete image section #\(collectionSectionIndex)")
                     self?.collectionView?.deleteSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .move:
                 let collectionSectionIndex = sectionIndex + 1
-                debugPrint("••> Move image section at ", collectionSectionIndex)
+                debugPrint("••> Move image section #\(collectionSectionIndex)")
             case .update:
                 let collectionSectionIndex = sectionIndex + 1
-                debugPrint("••> Update image section at ", collectionSectionIndex)
+                debugPrint("••> Update image section #\(collectionSectionIndex)")
             @unknown default:
                 fatalError("Unknown NSFetchedResultsChangeType of section in AlbumViewController")
             }
@@ -115,12 +115,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
                     self?.collectionView?.deleteItems(at: [indexPath])
-                    if self?.albumData.nbImages == 0 {
-                        // Disable menu
-                        debugPrint("••> Last removed image ► disable menu")
-                        self?.isSelect = false
-                        self?.initBarsInPreviewMode()
-                    }
                 })
             case .move:
                 guard var indexPath = indexPath, var newIndexPath = newIndexPath,
@@ -168,6 +162,12 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             self?.updateHeaders()
             // Update footer
             self?.updateNberOfImagesInFooter()
+            // Disable menu if no image left
+            if self?.categoryId != 0, self?.albumData.nbImages == 0 {
+                debugPrint("••> No image ► disable menu")
+                self?.isSelect = false
+                self?.initBarsInPreviewMode()
+            }
         }
     }
     
