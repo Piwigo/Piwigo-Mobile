@@ -87,7 +87,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
     
     func update(selected: Bool, state: pwgUploadState? = nil) {
-//        print("••> Update cell with ID: \(self.localIdentifier) to state: \(state?.stateInfo ?? "nil")")
+//        debugPrint("••> Update cell with ID: \(self.localIdentifier) to state: \(state?.stateInfo ?? "nil")")
         // No upload state ► selected/deselected
         guard let state = state else {
             selectedImage?.isHidden = !selected

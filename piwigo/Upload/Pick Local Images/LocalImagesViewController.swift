@@ -75,7 +75,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
-    var sortType: SectionType = .none                // [Months, Weeks, Days, All images in one section]
+    var sortType: SectionType = .none               // Images grouped by Day, Week, Month or None
     var indexOfImageSortedByMonth: [IndexSet] = []  // Indices of images sorted by month
     var indexOfImageSortedByWeek: [IndexSet] = []   // Indices of images sorted week
     var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
@@ -630,7 +630,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     }
     
     @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
-        // Did select new sort option [Months, Weeks, Days, All in one section]
+        // Did select new sort option [Day, Week, Month, None in one section]
         sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .none
                 
         // Change button icon and refresh collection
@@ -645,7 +645,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             self.localImagesCollection.reloadData()
         }
     }
-        
+    
 
     // MARK: - Select Camera Roll Images
     @available(iOS 14, *)
