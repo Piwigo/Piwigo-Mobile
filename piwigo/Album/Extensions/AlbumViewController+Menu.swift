@@ -254,7 +254,9 @@ extension AlbumViewController: ImageHeaderDelegate
 {
     func changeImageGrouping(for group: pwgImageGroup) {
         // User changed segmented control choice
+        images.delegate = nil
         images = data.images(groupedBy: group)
+        images.delegate = self
         updateImageCollection()
     }
     
