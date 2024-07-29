@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.1_text" = "Version 3.2.1\n\n• Adds an option to display albums with or without descriptions\n• Bug fixes";
+"v3.2.1_text" = "Version 3.2.1\nJuly 29, 2024\n\n• Adds an option to display albums with or without descriptions\n• Bug fixes";
 
 "v3.2.0_text" = "Version 3.2\nJuly 14, 2024\n\n• Adopts album photo sorting options\n• Adds on-the-fly photo sorting options\n• Adds rotation of uploaded photos (requires the rotateImage plugin)\n• Bug fixes";
 

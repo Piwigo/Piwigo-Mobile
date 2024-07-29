@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.1_text" = "Versie 3.2.1\n\n• Voegt een optie toe om albums met of zonder beschrijvingen weer te geven\n• Bugfixes";
+"v3.2.1_text" = "Versie 3.2.1\n29 juli 2024\n\n• Voegt een optie toe om albums met of zonder beschrijvingen weer te geven\n• Bugfixes";
 
 "v3.2.0_text" = "Versie 3.2\n14 juli 2024\n\n• Voegt albumfoto sortering opties \n• Voegt op-the-fly foto sortering opties\n• Voegt rotatie van geüploade foto's toe (vereist de rotateImage plugin)\n• Foutjes verbeterd";
 
