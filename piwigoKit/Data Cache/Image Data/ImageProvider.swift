@@ -261,7 +261,8 @@ public class ImageProvider: NSObject {
      Imports a JSON dictionary into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
      */
-    private let batchSize = 256
+    public var userDidCancelSearch = false
+    private let batchSize = 25
     private func importImages(_ imageArray: [ImagesGetInfo],
                               inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
                               sort: pwgImageSort = .dateCreatedDescending,
@@ -282,6 +283,8 @@ public class ImageProvider: NSObject {
         
         // Loop over the batches
         for batchNumber in 0 ..< numBatches {
+            // Stop importing images if user cancelled the search
+            if userDidCancelSearch { break }
             
             // Determine the range for this batch.
             let batchStart = batchNumber * batchSize
@@ -366,6 +369,9 @@ public class ImageProvider: NSObject {
             // Loop over new images
             var rank = startRank
             for imageData in imagesBatch {
+                
+                // Stop importing images if user cancelled the search
+                if userDidCancelSearch { break }
                 
                 // Check that this image belongs at least to the current album
                 var albums = Set(arrayLiteral: album)

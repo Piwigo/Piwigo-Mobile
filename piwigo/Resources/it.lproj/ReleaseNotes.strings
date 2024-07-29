@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.0_text" = "Versione 3.2\n\n• Adotta opzioni di ordinamento foto album\n• Aggiunge opzioni di ordinamento foto al volo\n• Aggiunge la rotazione delle foto caricate (richiede il plugin rotateimage)\n• Correzioni di bug";
+"v3.2.1_text" = "Versione 3.2.1\n\n• Aggiunge un'opzione per visualizzare gli album con o senza descrizioni\n• Correzioni di bug";
+
+"v3.2.0_text" = "Versione 3.2\n14 luglio 2024\n\n• Adotta opzioni di ordinamento foto album\n• Aggiunge opzioni di ordinamento foto al volo\n• Aggiunge la rotazione delle foto caricate (richiede il plugin rotateimage)\n• Correzioni di bug";
 
 "v3.1.4_text" = "Versione 3.1.4\n27 febbraio 2024\n\n• Risolve un arresto anomalo che si verificava su iOS 12";
 

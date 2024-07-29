@@ -32,9 +32,7 @@
 		AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD089CFE2BC2A51600CE4A3E /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */; };
 		AD089CFF2BC2A52200CE4A3E /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */; };
-		AD089D002BC2A5D700CE4A3E /* AlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */; };
-		AD089D022BC2A5D700CE4A3E /* AlbumCollectionViewCell+Rename.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */; };
-		AD089D032BC2A5D700CE4A3E /* AlbumCollectionViewCell+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D812958F38B00EE377A /* AlbumCollectionViewCell+Move.swift */; };
+		AD089D002BC2A5D700CE4A3E /* AlbumCollectionViewCellOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950F279DB4E100397426 /* AlbumCollectionViewCellOld.swift */; };
 		AD089D042BC2A5F800CE4A3E /* AlbumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */; };
 		AD089D052BC2A5FC00CE4A3E /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
 		AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */; };
@@ -241,6 +239,8 @@
 		AD6759B728D77DE5009C69EC /* pwg.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */; };
 		AD6759BB28D8FC41009C69EC /* ImageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D7F28D728A40003D5DB /* ImageError.swift */; };
 		AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */; };
+		AD6A0E782C445C750089A25E /* AlbumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */; };
+		AD6A0E7A2C445C860089A25E /* AlbumCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */; };
 		AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
@@ -288,6 +288,8 @@
 		AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0926E530ED00008162 /* pwg.images.delete.swift */; };
 		AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0F26E532F700008162 /* pwg.getInfos.json */; };
 		AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0726E52F6F00008162 /* pwg.images.delete.json */; };
+		AD816C912C49672B00A0A466 /* AlbumRenaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD816C902C49672B00A0A466 /* AlbumRenaming.swift */; };
+		AD816C932C497DB300A0A466 /* AlbumDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD816C922C497DB300A0A466 /* AlbumDeletion.swift */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD865770284CF4EB00C06EF4 /* community.categories.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD86576F284CF4EB00C06EF4 /* community.categories.getList.json */; };
@@ -399,7 +401,6 @@
 		ADBE0C2F2BE967F000F16A50 /* AlbumViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE0C2E2BE967F000F16A50 /* AlbumViewController+DataSource.swift */; };
 		ADBE0C312BE9681400F16A50 /* AlbumViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE0C302BE9681400F16A50 /* AlbumViewController+Delegate.swift */; };
 		ADBE0C332BE9687100F16A50 /* AlbumViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE0C322BE9687100F16A50 /* AlbumViewController+FlowLayout.swift */; };
-		ADBE0C342BE976AC00F16A50 /* AlbumCollectionViewCell+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */; };
 		ADBE0C362BE979BB00F16A50 /* AlbumViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE0C352BE979BB00F16A50 /* AlbumViewController+FetchResults.swift */; };
 		ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE45262449969C00AE0001 /* PhotosFetch.swift */; };
 		ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE950D279D632800397426 /* TableViewUtilities.swift */; };
@@ -849,6 +850,8 @@
 		AD6759AB28D77033009C69EC /* pwg.categories.getImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.categories.getImages.swift; sourceTree = "<group>"; };
 		AD6759AD28D770BB009C69EC /* pwg.categories.getImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.getImages.json; sourceTree = "<group>"; };
 		AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+AppTools.swift"; sourceTree = "<group>"; };
+		AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
+		AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumCollectionViewCell.xib; sourceTree = "<group>"; };
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
@@ -902,6 +905,8 @@
 		AD807F0726E52F6F00008162 /* pwg.images.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.delete.json; sourceTree = "<group>"; };
 		AD807F0926E530ED00008162 /* pwg.images.delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.delete.swift; sourceTree = "<group>"; };
 		AD807F0F26E532F700008162 /* pwg.getInfos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.getInfos.json; sourceTree = "<group>"; };
+		AD816C902C49672B00A0A466 /* AlbumRenaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumRenaming.swift; sourceTree = "<group>"; };
+		AD816C922C497DB300A0A466 /* AlbumDeletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDeletion.swift; sourceTree = "<group>"; };
 		AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPrivacyViewController.swift; sourceTree = "<group>"; };
 		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
@@ -1050,9 +1055,6 @@
 		ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.calculateOrphans.swift; sourceTree = "<group>"; };
 		ADB2C3D4291D9D4D009542FB /* pwg.categories.calculateOrphans.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.calculateOrphans.json; sourceTree = "<group>"; };
 		ADB433F523FB3CCB00A873A9 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
-		ADB49D812958F38B00EE377A /* AlbumCollectionViewCell+Move.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Move.swift"; sourceTree = "<group>"; };
-		ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Rename.swift"; sourceTree = "<group>"; };
-		ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumCollectionViewCell+Delete.swift"; sourceTree = "<group>"; };
 		ADB49D87295904BC00EE377A /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
 		ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Images.swift"; sourceTree = "<group>"; };
 		ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Albums.swift"; sourceTree = "<group>"; };
@@ -1078,7 +1080,7 @@
 		ADBE452A244A1AF400AE0001 /* LocationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationError.swift; sourceTree = "<group>"; };
 		ADBE452C244A1F0000AE0001 /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
 		ADBE950D279D632800397426 /* TableViewUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewUtilities.swift; sourceTree = "<group>"; };
-		ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlbumCollectionViewCell.swift; path = ../Cells/AlbumCollectionViewCell.swift; sourceTree = "<group>"; };
+		ADBE950F279DB4E100397426 /* AlbumCollectionViewCellOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCollectionViewCellOld.swift; sourceTree = "<group>"; };
 		ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageParamsViewController.swift; sourceTree = "<group>"; };
 		ADBF55702736E1990014E74A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
 		ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0B_to_0C.xcmappingmodel; sourceTree = "<group>"; };
@@ -1416,12 +1418,13 @@
 			isa = PBXGroup;
 			children = (
 				ADBC08CF2446060700BF82E8 /* AlbumHeaderReusableView.swift */,
-				ADBE950F279DB4E100397426 /* AlbumCollectionViewCell.swift */,
-				ADB49D832958F4BF00EE377A /* AlbumCollectionViewCell+Rename.swift */,
-				ADB49D812958F38B00EE377A /* AlbumCollectionViewCell+Move.swift */,
-				ADB49D852958F5D400EE377A /* AlbumCollectionViewCell+Delete.swift */,
+				AD6A0E772C445C750089A25E /* AlbumCollectionViewCell.swift */,
+				AD6A0E792C445C860089A25E /* AlbumCollectionViewCell.xib */,
+				ADBE950F279DB4E100397426 /* AlbumCollectionViewCellOld.swift */,
 				AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */,
 				AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */,
+				AD816C902C49672B00A0A466 /* AlbumRenaming.swift */,
+				AD816C922C497DB300A0A466 /* AlbumDeletion.swift */,
 			);
 			path = AlbumCollection;
 			sourceTree = "<group>";
@@ -2930,6 +2933,7 @@
 				AD18C74227F22B1B002CD05C /* LockOptionsViewController.storyboard in Resources */,
 				AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */,
 				ADF3AE5E2803529C009F5931 /* ClearClipboardViewController.storyboard in Resources */,
+				AD6A0E7A2C445C860089A25E /* AlbumCollectionViewCell.xib in Resources */,
 				ADC592682C0333B0002B6F82 /* ImageHeaderReusableView.xib in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
@@ -3292,6 +3296,7 @@
 				ADACD2992C31BD0900F8790B /* JsonViewController.swift in Sources */,
 				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
+				AD816C912C49672B00A0A466 /* AlbumRenaming.swift in Sources */,
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */,
 				ADD65C5D2BE77ACC005AC3B8 /* ImageAnimatedTransitioning.swift in Sources */,
@@ -3305,7 +3310,6 @@
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
 				ADD77EF22A1D0A6000F8C779 /* ExternalDisplayViewController.swift in Sources */,
 				AD6BA0EB2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift in Sources */,
-				AD089D022BC2A5D700CE4A3E /* AlbumCollectionViewCell+Rename.swift in Sources */,
 				ADDB2A602B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift in Sources */,
 				AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */,
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
@@ -3331,6 +3335,7 @@
 				ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */,
 				ADBE0C362BE979BB00F16A50 /* AlbumViewController+FetchResults.swift in Sources */,
 				AD09E3052A92A13D00D8E134 /* SettingsViewController+Upload.swift in Sources */,
+				AD816C932C497DB300A0A466 /* AlbumDeletion.swift in Sources */,
 				AD7D415A2B44359D0095A070 /* AutoUploadViewController+Albums.swift in Sources */,
 				AD7D41582B4435260095A070 /* AutoUploadViewController+UITextView.swift in Sources */,
 				AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */,
@@ -3357,7 +3362,7 @@
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
 				AD0F7024294629BD008F1394 /* SettingsViewController+Images.swift in Sources */,
 				AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */,
-				AD089D002BC2A5D700CE4A3E /* AlbumCollectionViewCell.swift in Sources */,
+				AD089D002BC2A5D700CE4A3E /* AlbumCollectionViewCellOld.swift in Sources */,
 				ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */,
 				ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */,
 				AD911272281060D9002FB78F /* UIWindow+AppTools.swift in Sources */,
@@ -3408,7 +3413,6 @@
 				AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */,
 				AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */,
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
-				AD089D032BC2A5D700CE4A3E /* AlbumCollectionViewCell+Move.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				ADBE0C2F2BE967F000F16A50 /* AlbumViewController+DataSource.swift in Sources */,
 				AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */,
@@ -3475,6 +3479,7 @@
 				ADC5926C2C036BF0002B6F82 /* ImageOldHeaderReusableView.swift in Sources */,
 				ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
+				AD6A0E782C445C750089A25E /* AlbumCollectionViewCell.swift in Sources */,
 				AD9698262BE6661D00520614 /* AlbumViewController+Search.swift in Sources */,
 				ADDB2A6D2B416F5800FDC1B1 /* EditImageParamsViewController+UITableView.swift in Sources */,
 				ADC69F25285DF50C009BF9AF /* TagSelectorViewController+Search.swift in Sources */,
@@ -3485,7 +3490,6 @@
 				AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */,
 				ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */,
 				ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */,
-				ADBE0C342BE976AC00F16A50 /* AlbumCollectionViewCell+Delete.swift in Sources */,
 				AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */,
 				AD1BFE3E2745A15800858145 /* UIImageView+AppTools.swift in Sources */,
 				ADF3AE5C2803340D009F5931 /* ClearClipboardViewController.swift in Sources */,
@@ -4437,7 +4441,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.2.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -4507,7 +4511,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.2.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

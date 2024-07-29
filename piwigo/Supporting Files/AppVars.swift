@@ -98,4 +98,7 @@ class AppVars: NSObject {
     
     /// - Flag indicating if an external display is connected
     var inSingleDisplayMode: Bool = true
+    
+    /// - Remember the latest recursive album data fetch
+    var dateOfLatestRecursiveAlbumDataFetch = Date.distantPast
 }

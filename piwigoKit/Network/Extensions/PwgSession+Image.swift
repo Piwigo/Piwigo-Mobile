@@ -49,7 +49,7 @@ extension PwgSession
                     return
                 }
             } else {
-//            debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
+//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
                 completion(download.fileURL)
                 return
             }
@@ -106,7 +106,6 @@ extension PwgSession
 
         // Cancel the download request
 //        debugPrint("••> Cancel download: \(imageURL)")
-        activeDownloads.removeValue(forKey: imageURL)
         download.task?.cancel()
     }
 }
@@ -122,17 +121,11 @@ extension PwgSession: URLSessionTaskDelegate {
         }
 
         if let error = error {
-            // Remove task from active downloads if needed
-            if download.resumeData == nil {
-                activeDownloads.removeValue(forKey: imageURL)
-            }
             // Return error with failureHandler
             if let failure = download.failureHandler {
                 failure(error)
             }
         } else {
-            // Remove task from active downloads
-            activeDownloads.removeValue(forKey: imageURL)
             // Return cached image with completionHandler
             if let completion = download.completionHandler,
                let fileURL = download.fileURL {

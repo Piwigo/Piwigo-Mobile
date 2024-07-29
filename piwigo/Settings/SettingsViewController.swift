@@ -60,8 +60,8 @@ class SettingsViewController: UIViewController {
     lazy var defaultSortUnknown: Bool = NetworkVars.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
     
-    // Present image title option on iOS 12.0 - 13.x
-    lazy var showTitleOption: Bool = {
+    // Present image title and album description options on iOS 12.0 - 13.x
+    lazy var showOptions: Bool = {
         if #available(iOS 14, *) {
             return false
         } else {

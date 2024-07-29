@@ -19,7 +19,7 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
 class TagsViewController: UITableViewController {
 
     weak var delegate: TagsViewControllerDelegate?
-    private var updateOperations: [BlockOperation] = [BlockOperation]()
+    private var updateOperations = [BlockOperation]()
 
     // Called before uploading images (Tag class)
     private var selectedTagIds = Set<Int32>()
@@ -354,13 +354,13 @@ class TagsViewController: UITableViewController {
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension TagsViewController: NSFetchedResultsControllerDelegate {
-    
+extension TagsViewController: NSFetchedResultsControllerDelegate
+{    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Initialise update operations
-        updateOperations.removeAll(keepingCapacity: false)
+        updateOperations = []
         // Begin the update
-        tableView.beginUpdates()
+        tagsTableView?.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -378,15 +378,15 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             guard var newIndexPath = newIndexPath else { return }
             if hasTagsInSection1 { newIndexPath.section = 1 }
             updateOperations.append( BlockOperation { [weak self] in
-                print("••> Insert tag item at \(newIndexPath)")
+                debugPrint("••> Insert tag item at \(newIndexPath)")
                 self?.tagsTableView?.insertRows(at: [newIndexPath], with: .automatic)
             })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Update tag item at \(indexPath)")
-                self?.tableView?.reloadRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Update tag item at \(indexPath)")
+                self?.tagsTableView?.reloadRows(at: [indexPath], with: .automatic)
             })
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
@@ -394,16 +394,16 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Move tag item from \(indexPath) to \(newIndexPath)")
-                self?.tableView?.moveRow(at: indexPath, to: newIndexPath)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Move tag item from \(indexPath) to \(newIndexPath)")
+                self?.tagsTableView?.moveRow(at: indexPath, to: newIndexPath)
             })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasTagsInSection1 { indexPath.section = 1 }
-            updateOperations.append( BlockOperation {  [weak self] in
-                print("••> Delete tag item at \(indexPath)")
-                self?.tableView?.deleteRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Delete tag item at \(indexPath)")
+                self?.tagsTableView?.deleteRows(at: [indexPath], with: .automatic)
             })
         @unknown default:
             fatalError("TagsViewController: unknown NSFetchedResultsChangeType")
@@ -411,20 +411,15 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the album is not presented.
+        // Do not update items if the tag list is not presented.
         if #available(iOS 13, *), view.window == nil { return }
         
-        // Any update to perform?
-        if updateOperations.isEmpty || view.window == nil { return }
-
         // Perform all updates
-        tableView?.performBatchUpdates({ () -> Void  in
-            for operation: BlockOperation in self.updateOperations {
-                operation.start()
-            }
-        })
+        tagsTableView?.performBatchUpdates { [weak self] in
+            self?.updateOperations.forEach { $0.start() }
+        }
         
         // End updates
-        tableView.endUpdates()
+        tagsTableView?.endUpdates()
     }
 }

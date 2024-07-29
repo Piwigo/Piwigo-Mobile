@@ -39,6 +39,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     var wantedAction: pwgCategorySelectAction = .none  // Action to perform after category selection
     private var selectedCategoryId = Int32.min
+    private var updateOperations = [BlockOperation]()
 
     // MARK: - Core Data Objects
     var user: User!
@@ -276,8 +277,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
 
         // Register CategoryTableViewCell
-        categoriesTableView.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
-                                     forCellReuseIdentifier: "CategoryTableViewCell")
+        categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
+                                      forCellReuseIdentifier: "CategoryTableViewCell")
 
         // Set title and buttons
         switch wantedAction {
@@ -333,8 +334,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Table view
         setTableViewMainHeader()
-        categoriesTableView.separatorColor = .piwigoColorSeparator()
-        categoriesTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView?.separatorColor = .piwigoColorSeparator()
+        categoriesTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -356,6 +357,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // Display HUD during fetch after the app launch or if data was fetched more than an hour ago
+        if AppVars.shared.dateOfLatestRecursiveAlbumDataFetch.timeIntervalSinceNow < -3600 {
+            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
+            AppVars.shared.dateOfLatestRecursiveAlbumDataFetch = Date()
+        }
+        
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
@@ -363,8 +370,22 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Fetch albums recursively
             albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                       thumbnailSize: thumnailSize) { [self] error in
-                guard let error = error else { return }
-
+                guard let error = error else {
+                    DispatchQueue.main.async { [self] in
+                        navigationController?.hideHUD { }
+                    }
+                    return
+                }
+                didFetchAlbumsWithError(error: error)
+            }
+        } failure: { [self] error in
+            didFetchAlbumsWithError(error: error)
+        }
+    }
+    
+    private func didFetchAlbumsWithError(error: Error) {
+        DispatchQueue.main.async { [self] in
+            navigationController?.hideHUD { [self] in
                 // Session logout required?
                 if let pwgError = error as? PwgSessionError,
                    [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -372,32 +393,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                     return
                 }
-
+                
                 // Report error
                 let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                DispatchQueue.main.async { [self] in
-                    dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
-                }
-            }
-        } failure: { [self] error in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
-
-            // Report error
-            let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-            DispatchQueue.main.async { [self] in
                 dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
             }
         }
-    }
-    
-    private func didFetchAlbumsWithError(error: Error) {
-        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -500,7 +501,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         default:
             fatalError("Action not configured in setTableViewMainHeader().")
         }
-        categoriesTableView.tableHeaderView = headerView
+        categoriesTableView?.tableHeaderView = headerView
     }
 
     private func getContentOfHeader(inSection section: Int) -> (String, String) {
@@ -1050,31 +1051,29 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
 
 // MARK: - NSFetchedResultsControllerDelegate
-extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
-    
+extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
+{
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
-        if [recentAlbums, albums].contains(controller) == false ||
-            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+        if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
         }
+        // Reset operation list
+        updateOperations = []
         // Begin the update
-        categoriesTableView.beginUpdates()
+        categoriesTableView?.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
-        if [recentAlbums, albums].contains(controller) == false ||
-            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+        if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
         }
 
         // Initialisation
         var hasAlbumsInSection1 = false
-        if controller == albums, categoriesTableView.numberOfSections ==  2 {
+        if controller == albums, categoriesTableView.numberOfSections == 2 {
             hasAlbumsInSection1 = true
         }
 
@@ -1083,26 +1082,34 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 { newIndexPath.section = 1 }
-            debugPrint("••> Insert category item at \(newIndexPath)")
-            categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Insert category item at \(newIndexPath)")
+                self?.categoriesTableView?.insertRows(at: [newIndexPath], with: .automatic)
+            })
         case .update:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            debugPrint("••> Update category item at \(indexPath)")
-            categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation {  [weak self] in
+                debugPrint("••> Update category item at \(indexPath)")
+                self?.categoriesTableView?.reloadRows(at: [indexPath], with: .automatic)
+            })
         case .move:
             guard var indexPath = indexPath,  var newIndexPath = newIndexPath else { return }
             if hasAlbumsInSection1 {
                 indexPath.section = 1
                 newIndexPath.section = 1
             }
-            debugPrint("••> Move category item from \(indexPath) to \(newIndexPath)")
-            categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Move category item from \(indexPath) to \(newIndexPath)")
+                self?.categoriesTableView?.moveRow(at: indexPath, to: newIndexPath)
+            })
         case .delete:
             guard var indexPath = indexPath else { return }
             if hasAlbumsInSection1 { indexPath.section = 1 }
-            debugPrint("••> Delete category item at \(indexPath)")
-            categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
+            updateOperations.append( BlockOperation { [weak self] in
+                debugPrint("••> Delete category item at \(indexPath)")
+                self?.categoriesTableView?.deleteRows(at: [indexPath], with: .automatic)
+            })
         @unknown default:
             debugPrint("SelectCategoryViewController: unknown NSFetchedResultsChangeType")
         }
@@ -1110,13 +1117,17 @@ extension SelectCategoryViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
-        if [recentAlbums, albums].contains(controller) == false ||
-            (wantedAction == .setAlbumThumbnail && controller == recentAlbums) {
+        if (wantedAction == .setAlbumThumbnail) && (controller == recentAlbums) {
             return
         }
+
+        // Perform all updates
+        categoriesTableView?.performBatchUpdates { [weak self] in
+            self?.updateOperations.forEach { $0.start() }
+        }
+        
         // End updates
-        categoriesTableView.endUpdates()
+        categoriesTableView?.endUpdates()
     }
 }
 
@@ -1166,6 +1177,6 @@ extension SelectCategoryViewController: CategoryCellDelegate {
         try? albums.performFetch()
 
         // Shows albums and sub-albums
-        categoriesTableView.reloadData()
+        categoriesTableView?.reloadData()
     }
 }

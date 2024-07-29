@@ -147,7 +147,7 @@ extension AlbumViewController
                         }
                     }
                     // Is user editing the search string?
-                    if pauseSearch {
+                    if imageProvider.userDidCancelSearch {
                         // Remove non-fetched images from album
                         removeImageWithIDs(imageIds)
                         // Store parameters

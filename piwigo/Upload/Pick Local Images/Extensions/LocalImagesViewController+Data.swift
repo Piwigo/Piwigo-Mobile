@@ -56,7 +56,7 @@ extension LocalImagesViewController
         // and index 70588 uploads in about the same if there is no upload request already stored.
         // but index 70588 uploads in 69.1 s if there are already 520 stored upload requests
 
-        // Stop sort is already running
+        // Stop sort already running if any
         queue.cancelAllOperations()
         
         // Pause UploadManager while sorting images
@@ -132,7 +132,8 @@ extension LocalImagesViewController
         self.updateActionButton()
         self.updateNavBar()
 
-        // Restart UplaodManager activity
+        // Resume upload operations in background queue
+        // and update badge and upload button of album navigator
         UploadManager.shared.backgroundQueue.async {
             UploadManager.shared.isPaused = false
             UploadManager.shared.findNextImageToUpload()

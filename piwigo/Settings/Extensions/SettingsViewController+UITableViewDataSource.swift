@@ -50,11 +50,12 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 1
         case .albums:
             nberOfRows = 4
+            nberOfRows += showOptions ? 1 : 0
         case .images:
             // Present default image sort option only when Piwigo server version < 14.0
             // Present image title option before iOS 14.0
             nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
-            nberOfRows += showTitleOption ? 1 : 0
+            nberOfRows += showOptions ? 1 : 0
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
@@ -124,7 +125,9 @@ extension SettingsViewController: UITableViewDataSource
         
         // MARK: Albums
         case .albums /* Albums */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!showOptions && (row > 1)) ? 1 : 0
+            switch row {
             case 0 /* Default album */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
@@ -154,7 +157,32 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "defaultAlbumThumbnailFile"
                 tableViewCell = cell
 
-            case 2 /* Number of recent albums */:
+            case 2 /* Display Descriptions — iOS 12-13 only */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
+                // See https://iosref.com/res
+                if view.bounds.size.width > 320 {
+                    cell.configure(with: NSLocalizedString("settings_displayDescriptions>320px", comment: "Display Album Descriptions"))
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_displayDescriptions", comment: "Display Descriptions"))
+                }
+                
+                // Switch status
+                cell.cellSwitch.setOn(AlbumVars.shared.displayAlbumDescriptions, animated: true)
+                cell.cellSwitch.accessibilityIdentifier = "switchAlbumDescriptions"
+                cell.cellSwitchBlock = { [self] switchState in
+                    // Only called when running on iOS 12 - 13
+                    AlbumVars.shared.displayAlbumDescriptions = switchState
+                    if let navController = presentingViewController as? AlbumNavigationController,
+                       let albumVC = navController.viewControllers.first as? AlbumViewController {
+                        albumVC.albumCellSize = albumVC.getAlbumCellSize()
+                        albumVC.collectionView?.reloadData()
+                    }
+                }
+                cell.accessibilityIdentifier = "displayAlbumDescriptions"
+                tableViewCell = cell
+                
+            case 3 /* Number of recent albums */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
@@ -180,7 +208,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell
 
-            case 3 /* Recent period */:
+            case 4 /* Recent period */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value is the index of kRecentPeriods
@@ -214,7 +242,7 @@ extension SettingsViewController: UITableViewDataSource
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showTitleOption && (row > 2)) ? 1 : 0
+            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
@@ -292,7 +320,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
                 
-            case 3 /* Display titles on thumbnails */:
+            case 3 /* Display titles on thumbnails — iOS 12-13 only */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res

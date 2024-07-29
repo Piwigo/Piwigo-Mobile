@@ -39,7 +39,7 @@ extension AlbumViewController
 extension AlbumViewController: UISearchControllerDelegate
 {
     func willPresentSearchController(_ searchController: UISearchController) {
-//        debugPrint("willPresentSearchController…")
+        debugPrint("willPresentSearchController…")
         // Switch to Search album
         categoryId = pwgSmartAlbum.search.rawValue
         
@@ -65,7 +65,7 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func willDismissSearchController(_ searchController: UISearchController) {
-//        debugPrint("willDismissSearchController…")
+        debugPrint("willDismissSearchController…")
         // Deselect photos if needed
         cancelSelect()
 
@@ -80,7 +80,7 @@ extension AlbumViewController: UISearchControllerDelegate
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
-//        debugPrint("didDismissSearchController…")
+        debugPrint("didDismissSearchController…")
         // Update albumData
         albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId)!
         
@@ -95,7 +95,7 @@ extension AlbumViewController: UISearchControllerDelegate
         initBarsInPreviewMode()
     }
     
-    func resetSearchAlbum(withQuery query: String) {
+    private func resetSearchAlbum(withQuery query: String) {
         // Reset search album
         albumData.query = query
         albumData.nbImages = query.isEmpty ? Int64.zero : Int64.min
@@ -105,7 +105,7 @@ extension AlbumViewController: UISearchControllerDelegate
         if let images = albumData.images {
             albumData.removeFromImages(images)
         }
-        try? mainContext.save()
+        mainContext.saveIfNeeded()
     }
 }
 
@@ -113,74 +113,71 @@ extension AlbumViewController: UISearchControllerDelegate
 // MARK: - UISearchBarDelegate Methods
 extension AlbumViewController: UISearchBarDelegate
 {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        debugPrint("searchBar textDidChange…")
+        // Pause image loader and stop importing images
+        imageProvider.userDidCancelSearch = true
+    }
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        debugPrint("searchBarShouldBeginEditing…")
         // Animates Cancel button appearance
         searchBar.setShowsCancelButton(true, animated: true)
-        // Pause image loader and store parameters
-        pauseSearch = true
         return true
     }
     
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        debugPrint("searchBarShouldEndEditing…")
         // Dismiss keyboard
         return true
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        debugPrint("searchBarTextDidEndEditing…")
+        // Will fetch images and accept imports
+        imageProvider.userDidCancelSearch = false
+
         // Get query string
         guard let query = searchBar.text else { return }
         
         // Did the query string change?
         if albumData.query == query {
-            // Continue downloading images
-            // Load next page of images
+            // Restart loading pages of images
             self.fetchImages(withInitialImageIds: self.oldImageIds, query: query,
-                             fromPage: self.onPage + 1, toPage: self.lastPage) {
+                             fromPage: self.onPage, toPage: self.lastPage) {
                 self.fetchCompleted()
             }
             return
         }
         
-        // Cancel active image data session if any
-        ClearCache.cancelTasks {
-            DispatchQueue.main.async {
-                // Reset search
-                self.pauseSearch = false
-                self.resetSearchAlbum(withQuery: query)
-                
-                // The query string has changed
-                self.updateNberOfImagesInFooter()
-                
-                // Determine if the session is active before fetching
-                PwgSession.checkSession(ofUser: self.user) {
-                    self.startFetchingAlbumAndImages(withHUD: true)
-                } failure: { error in
-                    // Session logout required?
-                    if let pwgError = error as? PwgSessionError,
-                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                        .contains(pwgError) {
-                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                        return
-                    }
-                    
-                    // Report error
-                    let title = "Error \(error.code)"
-                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {}
-                }
-            }
-        }
+        // Reset search
+        resetSearchAlbum(withQuery: query)
+        
+        // The query string has changed
+        updateNberOfImagesInFooter()
+        
+        // Fetch album/image data after checking session
+        self.startFetchingAlbumAndImages(withHUD: true)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        debugPrint("searchBarCancelButtonClicked…")
+        // Stop image loader and image import
+        imageProvider.userDidCancelSearch = true
+
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        debugPrint("searchBarSearchButtonClicked…")
+        // Animates Cancel button disappearance
+        searchBar.setShowsCancelButton(false, animated: true)
+
+        // Dismiss seach bar on iOS 12 only
         if #available(iOS 13, *) {
             // NOP
         } else {
-            // Dismiss seach bar on iOS 12 only
             navigationController?.navigationBar.prefersLargeTitles = false
             searchController?.dismiss(animated: true, completion: nil)
         }

@@ -75,7 +75,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
-    var sortType: SectionType = .none                // [Months, Weeks, Days, All images in one section]
+    var sortType: SectionType = .none               // Images grouped by Day, Week, Month or None
     var indexOfImageSortedByMonth: [IndexSet] = []  // Indices of images sorted by month
     var indexOfImageSortedByWeek: [IndexSet] = []   // Indices of images sorted week
     var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
@@ -333,12 +333,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
 
-        // Restart UploadManager activities
-        if UploadManager.shared.isPaused {
+        // Resume upload operations in background queue
+        // and update badge and upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
             UploadManager.shared.isPaused = false
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.findNextImageToUpload()
-            }
+            UploadManager.shared.findNextImageToUpload()
         }
     }
     
@@ -536,7 +535,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     func groupMenu() -> UIMenu {
         // Create a menu for selecting how to group images
         let children = [byDayAction(), byWeekAction(), byMonthAction(), byNoneAction()].compactMap({$0})
-        return UIMenu(title: NSLocalizedString("categoryGroup_group", comment: "Group Images By…"),
+        return UIMenu(title: NSLocalizedString("categoryView_group", comment: "Group Images By…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.group.main"),
                       options: UIMenu.Options.displayInline,
@@ -631,7 +630,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     }
     
     @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
-        // Did select new sort option [Months, Weeks, Days, All in one section]
+        // Did select new sort option [Day, Week, Month, None in one section]
         sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .none
                 
         // Change button icon and refresh collection
@@ -646,7 +645,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
             self.localImagesCollection.reloadData()
         }
     }
-        
+    
 
     // MARK: - Select Camera Roll Images
     @available(iOS 14, *)

@@ -15,14 +15,13 @@ import UIKit
 extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
+        // Reset operation list
+        updateOperations = []
+        // Ensure that the layout is updated before calling performBatchUpdates(_:completion:)
+        collectionView?.layoutIfNeeded()
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        
-        // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
         
         // Collect operation changes
         switch controller {
@@ -33,21 +32,21 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 let collectionSectionIndex = sectionIndex + 1
                 updateOperations.append( BlockOperation { [weak self] in
-                    print("••> Insert image section at ", collectionSectionIndex)
+                    debugPrint("••> Insert image section #\(collectionSectionIndex)")
                     self?.collectionView?.insertSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .delete:
                 let collectionSectionIndex = sectionIndex + 1
                 updateOperations.append( BlockOperation { [weak self] in
-                    print("••> Delete image section at ", collectionSectionIndex)
+                    debugPrint("••> Delete image section #\(collectionSectionIndex)")
                     self?.collectionView?.deleteSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .move:
                 let collectionSectionIndex = sectionIndex + 1
-                print("••> Move image section at ", collectionSectionIndex)
+                debugPrint("••> Move image section #\(collectionSectionIndex)")
             case .update:
                 let collectionSectionIndex = sectionIndex + 1
-                print("••> Update image section at ", collectionSectionIndex)
+                debugPrint("••> Update image section #\(collectionSectionIndex)")
             @unknown default:
                 fatalError("Unknown NSFetchedResultsChangeType of section in AlbumViewController")
             }
@@ -58,9 +57,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
-        
         // Collect operation changes
         switch controller {
         case albums:
@@ -68,31 +64,27 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 guard let newIndexPath = newIndexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
-                    debugPrint("••> Insert sub-album of album #\(self?.categoryId ?? Int32.min) at \(newIndexPath)")
+                    debugPrint("••> Insert sub-album at \(newIndexPath) of album #\(self?.categoryId ?? Int32.min)")
                     self?.collectionView?.insertItems(at: [newIndexPath])
                 })
             case .delete:
                 guard let indexPath = indexPath else { return }
-                updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Delete sub-album of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
+                updateOperations.append( BlockOperation { [weak self] in
+                    debugPrint("••> Delete sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
                     self?.collectionView?.deleteItems(at: [indexPath])
                 })
             case .move:
                 guard let indexPath = indexPath, let newIndexPath = newIndexPath,
                       indexPath != newIndexPath else { return }
-                updateOperations.append( BlockOperation {  [weak self] in
+                updateOperations.append( BlockOperation { [weak self] in
                     debugPrint("••> Move sub-album of album #\(self?.categoryId ?? Int32.min) from \(indexPath) to \(newIndexPath)")
                     self?.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
-                guard let indexPath = indexPath, let album = anObject as? Album
-                else { return }
+                guard let indexPath = indexPath else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Update sub-album at \(indexPath) of album #\(self?.categoryId ?? Int32.min)")
-                    if let cell = self?.collectionView?.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
-                        // Re-configure album cell
-                        cell.albumData = album
-                    }
+                    self?.collectionView?.reloadItems(at: [indexPath])
                 })
             @unknown default:
                 debugPrint("Unknown NSFetchedResultsChangeType of object in AlbumViewController")
@@ -123,12 +115,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
                     self?.collectionView?.deleteItems(at: [indexPath])
-                    if self?.albumData.nbImages == 0 {
-                        // Disable menu
-                        debugPrint("••> Last removed image ► disable menu")
-                        self?.isSelect = false
-                        self?.initBarsInPreviewMode()
-                    }
                 })
             case .move:
                 guard var indexPath = indexPath, var newIndexPath = newIndexPath,
@@ -168,11 +154,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Check that this update should be managed by this view controller
-        if #available(iOS 13, *), view.window == nil { return }
-        if updateOperations.isEmpty { return }
-        
-        // Update objects
+        // Update objects in a single animated operation
         collectionView?.performBatchUpdates({ [weak self] in
             self?.updateOperations.forEach({ $0.start()})
         }) { [weak self] _ in
@@ -180,14 +162,20 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             self?.updateHeaders()
             // Update footer
             self?.updateNberOfImagesInFooter()
+            // Disable menu if no image left
+            if self?.categoryId != 0, self?.albumData.nbImages == 0 {
+                debugPrint("••> No image ► disable menu")
+                self?.isSelect = false
+                self?.initBarsInPreviewMode()
+            }
         }
     }
     
     func updateHeaders() {
-        // Does this section exist?
-        guard images.sectionNameKeyPath != nil,
-              let collectionView = collectionView,
-              let sortKey = images.fetchRequest.sortDescriptors?.first?.key
+        // Are images sorted by date?
+        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+              [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey),
+              let collectionView = collectionView
         else { return }
 
         // Images are grouped by day, week or month: section header visible?

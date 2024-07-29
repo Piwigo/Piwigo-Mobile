@@ -104,8 +104,8 @@ extension UIViewController {
             // Hide and remove the HUD
             if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
                 hud.hide()
-                completion()
             }
+            completion()
         }
     }
 

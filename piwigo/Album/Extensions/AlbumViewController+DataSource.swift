@@ -89,7 +89,7 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categoryId == Int32.zero ? 1 : 1 + (images.sections?.count ?? 0)
+        return 1 + (images.sections?.count ?? 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -128,12 +128,26 @@ extension AlbumViewController: UICollectionViewDataSource
         default /* Images */:
             switch kind {
             case UICollectionView.elementKindSectionHeader:                
-                // Determine place names from first images
+                // Determine place names from first and last images
                 let imageSection = indexPath.section - 1
-                var imagesInSection: [Image] = []
-                for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
-                    let imageIndexPath = IndexPath(item: item, section: imageSection)
-                    imagesInSection.append(images.object(at: imageIndexPath))
+                var imagesInSection = [Image]()
+                let nberOfImageInSection = collectionView.numberOfItems(inSection: indexPath.section)
+                if nberOfImageInSection <= 10 {
+                    // Collect all images
+                    for item in 0..<min(nberOfImageInSection, 10) {
+                        let imageIndexPath = IndexPath(item: item, section: imageSection)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
+                } else {
+                    // Collect first 10 images
+                    for item in 0..<10 {
+                        let imageIndexPath = IndexPath(item: item, section: imageSection)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
+                    for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
+                        let imageIndexPath = IndexPath(item: item, section: imageSection)
+                        imagesInSection.append(images.object(at: imageIndexPath))
+                    }
                 }
 
                 // Determine state of Select button
@@ -190,30 +204,43 @@ extension AlbumViewController: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell
-            else { preconditionFailure("Could not load AlbumCollectionViewCell") }
-            
-            // Configure cell with album data
+            // Retrieve album data
+//            debugPrint("••> cell for item at \(indexPath) of album #\(categoryId)")
             let album = albums.object(at: indexPath)
             if album.isFault {
                 // The album is not fired yet.
                 album.willAccessValue(forKey: nil)
                 album.didAccessValue(forKey: nil)
             }
-            cell.albumData = album
-            cell.pushAlbumDelegate = self
-            cell.deleteAlbumDelegate = self
-            
-            // Disable category cells in Image selection mode
-            if isSelect {
-                cell.contentView.alpha = 0.5
-                cell.isUserInteractionEnabled = false
-            } else {
-                cell.contentView.alpha = 1.0
-                cell.isUserInteractionEnabled = true
+
+            // Create album cell
+            if AlbumVars.shared.displayAlbumDescriptions {
+                // Dequeue reusable cell with album description
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld
+                else { preconditionFailure("Could not load AlbumCollectionViewCellOld") }
+
+                // Configure cell with album data
+                cell.albumData = album
+                cell.pushAlbumDelegate = self
+
+                // Disable album cells in Image selection mode
+                cell.contentView.alpha = isSelect ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !isSelect
+                return cell
             }
-//            debugPrint("••> Adds album cell at \(indexPath.item)")
-            return cell
+            else {
+                // Dequeue reusable cell w/o album description
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell
+                else { preconditionFailure("Could not load AlbumCollectionViewCell") }
+
+                // Configure cell with album data
+                cell.config(withAlbumData: album)
+
+                // Disable album cells in Image selection mode
+                cell.contentView.alpha = isSelect ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !isSelect
+                return cell
+            }
             
         default /* Images */:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as? ImageCollectionViewCell

@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "Fotók";
 
 "categoryView_options" = "Nézet beállításai";
-"categoryGroup_group" = "Képek csoportosítása…";
+"categoryView_group" = "Képek csoportosítása…";
+"categoryView_show" = "Előadás…";
 
 // Album selection
 "categorySelection_title" = "Album";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Legújabb albumok száma";
 "recentPeriod_title" = "Legutóbbi időszak";
 "recentPeriod_days" = "%@ nap";
+"settings_displayDescriptions" = "Album leírások";
+"settings_displayDescriptions>320px" = "Albumleírások megjelenítése";
 
 "thumbnailSizeSquare" = "Négyzet";
 "thumbnailSizeThumbnail" = "Bélyegkép";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Elem Soronként";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Elérhető bélyegképméretek";
-"settings_displayTitles" = "Cím a bélyegképen";
-"settings_displayTitles>320px" = "Cím mutatása a bélyegképen";
+"settings_displayTitles" = "Képcímek";
+"settings_displayTitles>320px" = "Képcímek megjelenítése";
 
 "defaultPreviewFile" = "Előnézet";
 "defaultPreviewFile>320px" = "Előnézet mérete";

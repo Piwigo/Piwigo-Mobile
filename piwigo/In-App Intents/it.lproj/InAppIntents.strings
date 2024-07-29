@@ -1,21 +1,21 @@
 "0qYUsE" = "${error}";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "${photos} foto aggiunte alla coda di caricamento.";
 
-"61lMsg" = "Auto-Upload Photos";
+"61lMsg" = "Caricamento Automatico Foto";
 
-"7zXloB" = "photos";
+"7zXloB" = "foto";
 
-"85qLPb" = "Auto-Upload Photos";
+"85qLPb" = "Caricamento Automatico Foto";
 
 "DYv5Ms" = "${error}";
 
-"OEvuBy" = "Auto-Upload Photos";
+"OEvuBy" = "Caricamento Automatico Foto";
 
-"QlzJjd" = "Appends recent photos to the background upload queue following Auto-Upload settings.";
+"QlzJjd" = "Aggiunge le foto recenti alla coda di caricamento dello sfondo seguendo le impostazioni di caricamento automatico.";
 
-"Vz5KMD" = "Appends recent photos to the background upload queue.";
+"Vz5KMD" = "Allega le foto recenti alla coda di caricamento dello sfondo.";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "${photos} foto aggiunte alla coda di caricamento.";
 
 "pSuJbF" = "Errore";

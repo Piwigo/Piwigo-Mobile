@@ -229,7 +229,7 @@ class ImageUtilities: NSObject {
             return couldNotDownsample(imageAt: imageURL)
         }
         
-        // Alpha channel removed ► Downsample image
+        // Save image in cache
         saveDownsampledImage(downsampledImage, atPath: filePath)
         return downsampledImage
     }
@@ -274,23 +274,21 @@ class ImageUtilities: NSObject {
     }
     
     static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
-        DispatchQueue.global(qos: .background).async {
-            let fm = FileManager.default
-            try? fm.removeItem(atPath: filePath)
-            if #available(iOS 17, *) {
-                if let data = downSampledImage.heicData() as? NSData {
-                    do {
-                        try data.write(toFile: filePath, options: .atomic)
-                    } catch {
-                        debugPrint(error.localizedDescription)
-                    }
-                }
-            } else if let data = downSampledImage.jpegData(compressionQuality: 1.0) as? NSData {
+        let fm = FileManager.default
+        try? fm.removeItem(atPath: filePath)
+        if #available(iOS 17, *) {
+            if let data = downSampledImage.heicData() as? NSData {
                 do {
                     try data.write(toFile: filePath, options: .atomic)
                 } catch {
                     debugPrint(error.localizedDescription)
                 }
+            }
+        } else if let data = downSampledImage.jpegData(compressionQuality: 1.0) as? NSData {
+            do {
+                try data.write(toFile: filePath, options: .atomic)
+            } catch {
+                debugPrint(error.localizedDescription)
             }
         }
     }

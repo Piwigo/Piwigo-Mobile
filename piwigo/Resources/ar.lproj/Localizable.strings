@@ -196,7 +196,8 @@
 "categorySort_imagesOnly" = "الصور فقط";
 
 "categoryView_options" = "View Options";
-"categoryGroup_group" = "Group Images By…";
+"categoryView_group" = "Group Images By…";
+"categoryView_show" = "Show…";
 
 // Album selection
 "categorySelection_title" = "ألبوم";
@@ -664,6 +665,8 @@
 "maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
 "recentPeriod_title" = "Recent Period";
 "recentPeriod_days" = "%@ days";
+"settings_displayDescriptions" = "Album Descriptions";
+"settings_displayDescriptions>320px" = "Display Album Descriptions";
 
 "thumbnailSizeSquare" = "مربع";
 "thumbnailSizeThumbnail" = "الصورة المصغرة";
@@ -690,8 +693,8 @@
 "defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
 "defaultThumbnailSizeHeader" = "Please select a photo thumbnail size";
-"settings_displayTitles" = "العناوين على الصور المصغرة";
-"settings_displayTitles>320px" = "عرض العناوين على الصور المصغرة";
+"settings_displayTitles" = "Image Titles";
+"settings_displayTitles>320px" = "Display Image Titles";
 
 "defaultPreviewFile" = "عرض مسبق";
 "defaultPreviewFile>320px" = "معاينة الملف";
