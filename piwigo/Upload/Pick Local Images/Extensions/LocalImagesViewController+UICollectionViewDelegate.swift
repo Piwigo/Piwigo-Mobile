@@ -37,11 +37,15 @@ extension LocalImagesViewController: UICollectionViewDelegate
     
     
     // MARK: - Items i.e. Images
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Calculate the optimum image size
-        let size = CGFloat(AlbumUtilities.imageSize(forView: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup))
-
+    func getImageCellSize() -> CGSize {
+        let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
+        let size = AlbumUtilities.imageSize(forView: localImagesCollection, imagesPerRowInPortrait: nbImages, collectionType: .popup)
+//        debugPrint("••> getImageCellSize: \(size) x \(size) points")
         return CGSize(width: size, height: size)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return imageCellSize
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

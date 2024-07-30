@@ -63,6 +63,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
     }()
     
 
+    // MARK: - Cached Values
+    lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+    lazy var imageCellSize: CGSize = getImageCellSize()
+    
+
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var imageCollectionId: String = String()
@@ -312,9 +317,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         if localImagesCollection.visibleCells.count > 0,
            let cell = localImagesCollection.visibleCells.first {
             if let indexPath = localImagesCollection.indexPath(for: cell) {
-                // Reload the tableview on orientation change, to match the new width of the table.
+                // Reload collection with appropriate cell sizes
                 coordinator.animate(alongsideTransition: { context in
                     self.updateNavBar()
+                    self.imageCellSize = self.getImageCellSize()
                     self.localImagesCollection.reloadData()
 
                     // Scroll to previous position
