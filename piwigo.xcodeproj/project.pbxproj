@@ -244,8 +244,8 @@
 		AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
-		AD6BA0EB2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift */; };
-		AD6BA0ED2BA5A8B200755257 /* LocalImagesViewController+UICollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+UICollectionViewDataSource.swift */; };
+		AD6BA0EB2BA5A85000755257 /* LocalImagesViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+Delegate.swift */; };
+		AD6BA0ED2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift */; };
 		AD6BA0EF2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */; };
 		AD6BA0F12BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */; };
 		AD6BA0F32BA5BDDC00755257 /* LocalImagesViewController+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6BA0F22BA5BDDC00755257 /* LocalImagesViewController+Data.swift */; };
@@ -365,6 +365,7 @@
 		ADA5FA4429A0D9B0004A8A59 /* SettingsViewController+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4329A0D9B0004A8A59 /* SettingsViewController+Cache.swift */; };
 		ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
+		ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */; };
 		ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -855,8 +856,8 @@
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
-		AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+UICollectionViewDelegate.swift"; sourceTree = "<group>"; };
-		AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+UICollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+UICollectionViewDataSource.swift"; sourceTree = "<group>"; };
+		AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+Delegate.swift"; sourceTree = "<group>"; };
+		AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+DataSource.swift"; sourceTree = "<group>"; };
 		AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+UploadSwitchDelegate.swift"; sourceTree = "<group>"; };
 		AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+PHPhotoLibraryChangeObserver.swift"; sourceTree = "<group>"; };
 		AD6BA0F22BA5BDDC00755257 /* LocalImagesViewController+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+Data.swift"; sourceTree = "<group>"; };
@@ -1017,6 +1018,7 @@
 		ADA6F18E21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = piwigo/Info.plist; sourceTree = SOURCE_ROOT; };
+		ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
 		ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+UITextField.swift"; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
 		ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -1723,8 +1725,9 @@
 			isa = PBXGroup;
 			children = (
 				AD6BA0F22BA5BDDC00755257 /* LocalImagesViewController+Data.swift */,
-				AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift */,
-				AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+UICollectionViewDataSource.swift */,
+				AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift */,
+				ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */,
+				AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+Delegate.swift */,
 				AD6BA0F42BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift */,
 				AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */,
 				AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */,
@@ -3309,7 +3312,7 @@
 				ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
 				ADD77EF22A1D0A6000F8C779 /* ExternalDisplayViewController.swift in Sources */,
-				AD6BA0EB2BA5A85000755257 /* LocalImagesViewController+UICollectionViewDelegate.swift in Sources */,
+				AD6BA0EB2BA5A85000755257 /* LocalImagesViewController+Delegate.swift in Sources */,
 				ADDB2A602B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift in Sources */,
 				AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */,
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
@@ -3381,6 +3384,7 @@
 				AD43733D2B4326ED009BC454 /* SettingsViewController+UITextField.swift in Sources */,
 				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
 				ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */,
+				ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */,
 				AD6BA0F32BA5BDDC00755257 /* LocalImagesViewController+Data.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				AD9D684A27DFE9E600517261 /* HapticUtilities.swift in Sources */,
@@ -3392,7 +3396,7 @@
 				ADD65C592BE777B2005AC3B8 /* AlbumViewController+Add.swift in Sources */,
 				ADDB2A642B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift in Sources */,
 				AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */,
-				AD6BA0ED2BA5A8B200755257 /* LocalImagesViewController+UICollectionViewDataSource.swift in Sources */,
+				AD6BA0ED2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift in Sources */,
 				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
 				AD96982A2BE6844C00520614 /* AlbumNavigationController.swift in Sources */,
 				AD089CFE2BC2A51600CE4A3E /* ImageCollectionViewCell.swift in Sources */,

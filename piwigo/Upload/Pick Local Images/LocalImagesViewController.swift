@@ -21,8 +21,8 @@ enum SectionType: Int {
     case none
 }
 
-class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate {
-    
+class LocalImagesViewController: UIViewController, UIGestureRecognizerDelegate
+{
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
@@ -899,9 +899,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDelegateFlowL
         if [.began, .changed].contains(gestureRecognizerState) {
 
             // Get cell at touch position
-            guard let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
-                return
-            }
+            guard let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell
+            else { return }
 
             // Update the selection if not already done
             if !imagesBeingTouched.contains(indexPath) {

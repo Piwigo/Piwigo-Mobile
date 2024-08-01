@@ -11,7 +11,7 @@ import Foundation
 import piwigoKit
 import UIKit
 
-// MARK: - NSFetchedResultsControllerDelegate
+// MARK: NSFetchedResultsControllerDelegate Methods
 extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

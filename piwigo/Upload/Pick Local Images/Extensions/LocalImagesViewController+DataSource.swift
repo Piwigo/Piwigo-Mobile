@@ -1,5 +1,5 @@
 //
-//  LocalImagesViewController+UICollectionViewDataSource.swift
+//  LocalImagesViewController+DataSource.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/03/2024.
@@ -10,6 +10,7 @@ import Photos
 import UIKit
 import piwigoKit
 
+//MARK: UICollectionViewDataSource Methods
 extension LocalImagesViewController: UICollectionViewDataSource
 {
     // MARK: - Headers & Footers
