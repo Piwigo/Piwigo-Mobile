@@ -23,6 +23,7 @@ extension UIImageView {
             play = UIImage(named: "video")!
         }
         self.image = play.withRenderingMode(.alwaysTemplate)
+        self.tintColor = UIColor.white
         self.translatesAutoresizingMaskIntoConstraints = false
         self.contentMode = .scaleAspectFit
         self.isHidden = true

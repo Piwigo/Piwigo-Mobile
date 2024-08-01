@@ -18,6 +18,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     var md5sum = ""
     
     @IBOutlet weak var cellImage: UIImageView!
+    @IBOutlet weak var playBckg: UIView!
     @IBOutlet weak var playImg: UIImageView!
     @IBOutlet weak var selectedImage: UIImageView!
     @IBOutlet weak var uploadedImage: UIImageView!
@@ -29,11 +30,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     private func configureIcons() {
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
-        waitingActivity.color = UIColor.white
-        uploadingProgress.trackTintColor = UIColor.white
-
-        // Video icon
-        playImg.setMovieIconImage()
+        waitingActivity?.color = UIColor.white
+        uploadingProgress?.trackTintColor = UIColor.white
     }
 
     func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
@@ -65,8 +63,10 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
                 }
                 
                 self.changeCellImageIfNeeded(withImage: image)
-                if imageAsset.mediaType == .video, self.playImg.isHidden {
-                    self.playImg.isHidden = false
+                let isVideo = imageAsset.mediaType == .video
+                if self.playImg?.isHidden == isVideo {
+                    self.playImg?.isHidden = !isVideo
+                    self.playBckg?.isHidden = !isVideo
                 }
             }
         })
@@ -81,8 +81,10 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         
         // Image: retrieve data of right size and crop image
         changeCellImageIfNeeded(withImage: image)
-        if identifier.contains("mov"), self.playImg.isHidden {
-            self.playImg.isHidden = false
+        let isVideo = identifier.contains("mov")
+        if self.playImg?.isHidden == isVideo {
+            self.playImg?.isHidden = !isVideo
+            self.playBckg?.isHidden = !isVideo
         }
     }
     

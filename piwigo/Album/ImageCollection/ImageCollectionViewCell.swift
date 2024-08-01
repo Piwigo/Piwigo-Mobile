@@ -96,7 +96,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
-        playImg?.tintColor = UIColor.white
     }
 
     func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
@@ -110,7 +109,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             isAccessibilityElement = true
         }
 
-        // Play button
+        // Video icon
         if playImg?.isHidden == imageData.isVideo {
             playImg?.isHidden = !(imageData.isVideo)
             playBckg?.isHidden = !(imageData.isVideo)
