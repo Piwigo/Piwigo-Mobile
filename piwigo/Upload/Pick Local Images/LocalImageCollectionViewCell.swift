@@ -34,7 +34,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         uploadingProgress?.trackTintColor = UIColor.white
     }
 
-    func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
+    func configure(with imageAsset: PHAsset, thumbnailSize: CGSize) {
         // Configure icons
         configureIcons()
         
@@ -43,7 +43,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
 
         // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
-        let retinaSquare = CGSize(width: thumbnailSize * CGFloat(retinaScale), height: thumbnailSize * CGFloat(retinaScale))
+        let retinaSquare = CGSize(width: thumbnailSize.width * CGFloat(retinaScale),
+                                  height: thumbnailSize.height * CGFloat(retinaScale))
 
         let cropToSquare = PHImageRequestOptions()
         cropToSquare.resizeMode = .exact

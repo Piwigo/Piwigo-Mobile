@@ -128,10 +128,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
         let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
-        let thumbSize = AlbumUtilities.imageSize(forView: collectionView,
-                                                 imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait,
-                                                 collectionType: .popup)
-        cell.configure(with: imageAsset, thumbnailSize: thumbSize)
+        cell.configure(with: imageAsset, thumbnailSize: imageCellSize)
 
         // Get upload state from cell data
         let uploadState = getUploadStateOfImage(at: index, for: cell)

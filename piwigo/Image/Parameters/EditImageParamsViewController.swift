@@ -25,7 +25,6 @@ class EditImageParamsViewController: UIViewController
     weak var delegate: EditImageParamsDelegate?
     
     @IBOutlet weak var editImageParamsTableView: UITableView!
-    private var hudViewController: UIViewController?
     private let kEditImageParamsViewWidth: CGFloat = 512.0
 
     var shouldUpdateTitle = false

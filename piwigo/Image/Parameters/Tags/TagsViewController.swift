@@ -119,7 +119,6 @@ class TagsViewController: UITableViewController {
 
     var addAction: UIAlertAction?
     private var addBarButton: UIBarButtonItem?
-    private var hudViewController: UIViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()

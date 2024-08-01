@@ -64,20 +64,6 @@ class LocalImagesViewController: UIViewController, UIGestureRecognizerDelegate
     
 
     // MARK: - Cached Values
-    lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-    lazy var imageCellSize: CGSize = getImageCellSize()
-    
-
-    // MARK: - View
-    var categoryId: Int32 = AlbumVars.shared.defaultCategory
-    var imageCollectionId: String = String()
-
-    @IBOutlet weak var localImagesCollection: UICollectionView!
-    @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
-    
-    @IBOutlet weak var sortOptionsView: UIView!
-    @IBOutlet weak var segmentedControl: UISegmentedControl!
-    
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
     var sortType: SectionType = .none               // Images grouped by Day, Week, Month or None
@@ -91,6 +77,19 @@ class LocalImagesViewController: UIViewController, UIGestureRecognizerDelegate
     private var imagesBeingTouched = [IndexPath]()  // Array of indexPaths of touched images
     
     private var uploadsToDelete = [Upload]()
+    lazy var imageCellSize: CGSize = getImageCellSize()
+    
+
+    // MARK: - View
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
+    var imageCollectionId: String = String()
+
+    @IBOutlet weak var localImagesCollection: UICollectionView!
+    @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
+    
+    @IBOutlet weak var sortOptionsView: UIView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    
     
     private var cancelBarButton: UIBarButtonItem!   // For cancelling the selection of images
     var uploadBarButton: UIBarButtonItem!           // for uploading selected images
@@ -115,7 +114,6 @@ class LocalImagesViewController: UIViewController, UIGestureRecognizerDelegate
     private var legendBarItem: UIBarButtonItem!
 
     var reUploadAllowed = false
-    private var hudViewController: UIViewController?
 
 
     // MARK: - View Lifecycle
