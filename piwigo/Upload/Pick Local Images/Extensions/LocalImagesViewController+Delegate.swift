@@ -63,9 +63,10 @@ extension LocalImagesViewController: UICollectionViewDelegate
             let identifier = NSString(string: "\(cell.localIdentifier)")
             let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier})
             
-            // Get image asset
+            // Get image asset and upload state
             let index = self.getImageIndex(for: indexPath)
             let imageAsset = self.fetchedImages[index]
+            let uploadState = self.getUploadStateOfImage(at: index, for: cell)
 
             // Check if this image can be deleted
             let canDelete = (imageAsset.sourceType != .typeCloudShared) &&
@@ -81,6 +82,15 @@ extension LocalImagesViewController: UICollectionViewDelegate
                 }, actionProvider: { suggestedActions in
                     var children = [UIMenuElement]()
                     if upload.isEmpty {
+                        if self.selectedImages[index] != nil {
+                            // Image selected ► Propose to deselect it
+                            children.append(self.deselectAction(forCell: cell, at: indexPath,
+                                                                index: index, inUploadSate: uploadState))
+                        } else if (uploadState == nil) || self.reUploadAllowed {
+                            // Image deselected ► Propose to select it
+                            children.append(self.selectAction(forCell: cell, at: indexPath,
+                                                              index: index, inUploadSate: uploadState))
+                        }
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
