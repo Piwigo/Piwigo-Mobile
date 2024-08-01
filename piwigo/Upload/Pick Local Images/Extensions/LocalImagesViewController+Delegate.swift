@@ -76,9 +76,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             return UIContextMenuConfiguration(identifier: identifier,
                 previewProvider: { [self] in
                     // Create preview view controller
-                    let scale = view.window?.screen.scale ?? 1.0
-                    let maxPixelSize = CGSize(width: view.bounds.width * scale, height: view.bounds.height * scale)
-                    return LocalImagePreviewViewController(imageAsset: imageAsset, pixelSize: maxPixelSize)
+                    return LocalImagePreviewViewController(imageAsset: imageAsset, pixelSize: view.bounds.size)
                 }, actionProvider: { suggestedActions in
                     var children = [UIMenuElement]()
                     if upload.isEmpty {

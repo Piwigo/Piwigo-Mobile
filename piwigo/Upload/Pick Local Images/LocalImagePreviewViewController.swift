@@ -20,6 +20,8 @@ class LocalImagePreviewViewController: UIViewController {
         aspectRatio = Double(imageAsset.pixelHeight) / Double(imageAsset.pixelWidth)
         let options = PHImageRequestOptions()
         options.resizeMode = .fast
+        options.deliveryMode = .opportunistic
+        options.isNetworkAccessAllowed = true
         PHImageManager.default().requestImage(for: imageAsset, targetSize: pixelSize, contentMode: .aspectFit, options: options, resultHandler: { result, info in
             DispatchQueue.main.async {
                 guard let image = result else {
