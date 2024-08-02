@@ -366,6 +366,7 @@
 		ADA5FA4629A11D35004A8A59 /* DataDirectories.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA5FA4529A11D35004A8A59 /* DataDirectories.swift */; };
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
 		ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */; };
+		ADA74B0D2C5D138600162BE0 /* LocalImagesViewController+Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */; };
 		ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -1019,6 +1020,7 @@
 		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = piwigo/Info.plist; sourceTree = SOURCE_ROOT; };
 		ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
+		ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+Select.swift"; sourceTree = "<group>"; };
 		ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+UITextField.swift"; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
 		ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -1728,6 +1730,7 @@
 				AD6BA0EC2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift */,
 				ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */,
 				AD6BA0EA2BA5A85000755257 /* LocalImagesViewController+Delegate.swift */,
+				ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */,
 				AD6BA0F42BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift */,
 				AD6BA0EE2BA5AFA000755257 /* LocalImagesViewController+UploadSwitchDelegate.swift */,
 				AD6BA0F02BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift */,
@@ -3407,6 +3410,7 @@
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				ADA5FA4429A0D9B0004A8A59 /* SettingsViewController+Cache.swift in Sources */,
 				ADB49D8C295B96C400EE377A /* SelectCategoryViewController+Albums.swift in Sources */,
+				ADA74B0D2C5D138600162BE0 /* LocalImagesViewController+Select.swift in Sources */,
 				AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
