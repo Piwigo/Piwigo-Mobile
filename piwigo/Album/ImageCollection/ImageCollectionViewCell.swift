@@ -96,6 +96,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
+        playImg?.tintColor = UIColor.white
     }
 
     func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
