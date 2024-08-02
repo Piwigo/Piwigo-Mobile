@@ -385,24 +385,8 @@ class LocalImagesViewController: UIViewController
                     // Title
                     title = NSLocalizedString("selectImages", comment: "Select Photos")
 
-                    // Present buttons according to the context
-                    if canDeleteUploadedImages() {
-                        trashBarButton.isEnabled = true
-                        navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
-                    } else {
-                        trashBarButton.isEnabled = false
-                        var orientation: UIInterfaceOrientation
-                        if #available(iOS 13.0, *) {
-                            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-                        } else {
-                            orientation = UIApplication.shared.statusBarOrientation
-                        }
-                        if orientation.isLandscape {
-                            navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
-                        } else {
-                            navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
-                        }
-                    }
+                    // Present the button for swaping the sort order
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
                 }
             }
         
@@ -430,8 +414,14 @@ class LocalImagesViewController: UIViewController
                     // Update the number of selected photos in the navigation bar
                     title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
 
-                    // Presents a single action menu
-                    navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
+                    // Present buttons according to the context
+                    if canDeleteUploadedImages() || canDeleteSelectedImages() {
+                        trashBarButton.isEnabled = true
+                        navigationItem.rightBarButtonItems = [uploadBarButton, trashBarButton].compactMap { $0 }
+                    } else {
+                        trashBarButton.isEnabled = false
+                        navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
+                    }
                 }
             }
         }
@@ -441,7 +431,7 @@ class LocalImagesViewController: UIViewController
             // Update the number of selected photos in the navigation bar
             title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
 
-            if canDeleteUploadedImages() || selectedImages.compactMap({$0}).isEmpty == false {
+            if canDeleteUploadedImages() || canDeleteSelectedImages() {
                 trashBarButton.isEnabled = true
                 navigationItem.rightBarButtonItems = [uploadBarButton,
                                                       actionBarButton,
@@ -769,7 +759,7 @@ class LocalImagesViewController: UIViewController
     private func deleteAction() -> UIAction? {
         // Check if there are uploaded photos
         if canDeleteUploadedImages() == false,
-           selectedImages.compactMap({$0}).isEmpty { return nil }
+           canDeleteSelectedImages() == false { return nil }
         
         // Propose option for deleting photos
         let delete = UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
@@ -825,6 +815,19 @@ class LocalImagesViewController: UIViewController
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()
         }
+    }
+    
+    private func canDeleteSelectedImages() -> Bool {
+        var hasImagesToDelete = false
+        let imageIDs = selectedImages.compactMap({ $0?.localIdentifier })
+        PHAsset.fetchAssets(withLocalIdentifiers: imageIDs, options: nil)
+            .enumerateObjects(options: .concurrent) { asset, _ , stop in
+            if asset.canPerform(.delete) {
+                hasImagesToDelete = true
+                stop.pointee = true
+            }
+        }
+        return hasImagesToDelete
     }
     
 
