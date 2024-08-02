@@ -168,19 +168,15 @@ extension UploadManager
     
     
     // MARK: - Clean Photo Library
-    public func deleteAssets(associatedToUploads uploads: [Upload]) -> Void {
-        // Just in case…
-        if uploads.isEmpty {
-            self.isDeleting = Set()
-            return
-        }
-
+    public func deleteAssets(associatedToUploads uploads: [Upload], and assets: [String] = []) -> Void {
         // Remember which uploads are concerned to avoid duplicate deletions
         isDeleting = Set(uploads.map({$0.objectID}))
         
-        // Get assets to delete
-        let uploadedImages = uploads.map({$0.localIdentifier})
-        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImages, options: nil)
+        // Combine unique assets to delete
+        let uploadedImageIDs = uploads.map({$0.localIdentifier})
+        var imageIDs = Set(uploadedImageIDs)
+        imageIDs.formUnion(assets)
+        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: Array(imageIDs), options: nil)
         if assetsToDelete.count == 0 {
             // Assets already deleted
             self.deleteUploadsInRightQueue(uploads)
@@ -200,16 +196,26 @@ extension UploadManager
     }
     
     private func deleteUploadsInRightQueue(_ uploads: [Upload]) {
+        // Empty array?
+        if uploads.isEmpty {
+            self.isDeleting = Set()
+            return
+        }
+        
+        // Delete upload requests in appropriate context
         if let taskContext = uploads.first?.managedObjectContext,
            taskContext == self.uploadProvider.bckgContext {
             DispatchQueue.global(qos: .background).async {
-                self.uploadProvider.delete(uploadRequests: uploads) { _ in }
+                self.uploadProvider.delete(uploadRequests: uploads) { _ in
+                    self.isDeleting = Set()
+                }
             }
         } else {
             DispatchQueue.main.async {
-                self.uploadProvider.delete(uploadRequests: uploads) { _ in }
+                self.uploadProvider.delete(uploadRequests: uploads) { _ in
+                    self.isDeleting = Set()
+                }
             }
         }
-        self.isDeleting = Set()
     }
 }
