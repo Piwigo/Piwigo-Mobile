@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.2_text" = "Versione 3.2.2\n\n• Aggiunge un'opzione per eliminare le selezioni di foto/video memorizzate nel dispositivo\n• Correzioni di bug";
+
 "v3.2.1_text" = "Versione 3.2.1\n29 luglio 2024\n\n• Aggiunge un'opzione per visualizzare gli album con o senza descrizioni\n• Correzioni di bug";
 
 "v3.2.0_text" = "Versione 3.2\n14 luglio 2024\n\n• Adotta opzioni di ordinamento foto album\n• Aggiunge opzioni di ordinamento foto al volo\n• Aggiunge la rotazione delle foto caricate (richiede il plugin rotateimage)\n• Correzioni di bug";

@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.2_text" = "Version 3.2.2\n\n• Tilføjer en mulighed for at slette udvalgte fotos/videoer, der er gemt på enheden\n• Fejlrettelser";
+
 "v3.2.1_text" = "Version 3.2.1\n29 juli 2024\n\n• Tilføjer en mulighed for at vise album med eller uden beskrivelser\n• Fejlrettelser";
 
 "v3.2.0_text" = "Version 3.2\n14 juli 2024\n\n• Vedtager album foto sortering muligheder\n• Tilføjer on-the-fly foto sortering muligheder\n• Tilføjer rotation af uploadede fotos (kræver rotateImage plugin)\n• Fejlrettelser";
