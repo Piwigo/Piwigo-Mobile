@@ -14,26 +14,18 @@ extension LocalImagesViewController: LocalImagesHeaderDelegate
     // MARK: - LocalImagesHeaderReusableView Delegate Methods
     func didSelectImagesOfSection(_ section: Int) {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
-        let firstIndex: Int, lastIndex: Int
-        if UploadVars.localImagesSort == .dateCreatedDescending {
-            firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
-            lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
-        } else {
-            firstIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
-            lastIndex = getImageIndex(for: IndexPath(item: 0, section: section))
-        }
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
-            // Loop over all images in section to select them (70356 images takes 150.6 ms with iPhone 11 Pro)
-            // Here, we exploit the cached local IDs
-            for index in firstIndex...lastIndex {
+            // Loop over all images in section to select them
+            for item in 0..<nberOfImagesInSection {
                 // Images in the upload queue cannot be selected
+                let index = getImageIndex(for: IndexPath(item: item, section: section))
                 if (indexedUploadsInQueue[index] == nil) || (reUploadAllowed) {
                     // Select image
                     selectedImages[index] = UploadProperties(localIdentifier: self.fetchedImages[index].localIdentifier,
                                                              category: self.categoryId)
                     // Update cell if needed
-                    let indexPath = IndexPath(item: index - firstIndex, section: section)
+                    let indexPath = IndexPath(item: item, section: section)
                     if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                         // Select or deselect the cell
                         let uploadState = getUploadStateOfImage(at: index, for: cell)
@@ -43,20 +35,24 @@ extension LocalImagesViewController: LocalImagesHeaderDelegate
             }
             // Change section button state
             selectedSections[section] = .deselect
-        } else {
-            // Deselect images of section (70356 images takes 52.2 ms with iPhone 11 Pro)
-            selectedImages[firstIndex...lastIndex] = .init(repeating: nil, count: lastIndex - firstIndex + 1)
-            
-            // Update cells if needed
-            for index in 0..<nberOfImagesInSection {
-                let indexPath = IndexPath(item: index, section: section)
-                if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
-                    // Select or deselect the cell
-                    let uploadState = getUploadStateOfImage(at: firstIndex + index, for: cell)
-                    cell.update(selected: false, state: uploadState)
+        }
+        else {
+            // Loop over all images in section to deselect them
+            for item in 0..<nberOfImagesInSection {
+                // Images in the upload queue cannot be selected
+                let index = getImageIndex(for: IndexPath(item: item, section: section))
+                if (indexedUploadsInQueue[index] == nil) || (reUploadAllowed) {
+                    // Select image
+                    selectedImages[index] = nil
+                    // Update cell if needed
+                    let indexPath = IndexPath(item: item, section: section)
+                    if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
+                        // Select or deselect the cell
+                        let uploadState = getUploadStateOfImage(at: index, for: cell)
+                        cell.update(selected: false, state: uploadState)
+                    }
                 }
             }
-            
             // Change section button state
             selectedSections[section] = .select
         }

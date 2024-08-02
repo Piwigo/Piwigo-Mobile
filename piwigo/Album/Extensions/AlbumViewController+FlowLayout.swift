@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: - UICollectionViewDelegateFlowLayout
+// MARK: UICollectionViewDelegateFlowLayout Methods
 extension AlbumViewController: UICollectionViewDelegateFlowLayout
 {
     func getAlbumCellSize() -> CGSize {

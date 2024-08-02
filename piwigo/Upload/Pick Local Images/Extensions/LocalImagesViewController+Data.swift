@@ -42,8 +42,9 @@ extension LocalImagesViewController
         // Next 2 lines for testing
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
-        // => Fetched 70331 assets in 205.949068069458 ms with hidden assets
-        // => Fetched 70331 assets in 216.99798107147217 ms with option "includeHiddenAssets = false"
+        // => Fetched 74925 assets in 90 ms w/o hidden assets on iPhone 14 Pro
+        // => Fetched 70331 assets in 206 ms w/ hidden assets on iPhone 11 Pro
+        // => Fetched 70331 assets in 217 ms w/o hidden assets on iPhone 11 Pro
     }
     
     // Sorts images by months, weeks and days in the background,
@@ -53,8 +54,13 @@ extension LocalImagesViewController
         // Operations are organised to reduce time
         // Sort 70588 images by days, weeks and months in 5.2 to 6.7 s with iPhone 11 Pro
         // The above duration is multiplied by 4 when the iPhone is not powered.
-        // and index 70588 uploads in about the same if there is no upload request already stored.
+        // and index 70588 uploads in about the same time if there is no upload request already stored.
         // but index 70588 uploads in 69.1 s if there are already 520 stored upload requests
+        //
+        // NB: Fetching image dates with below line takes +90% of the time:
+        // let dates = fetchedImages.objects(at: IndexSet(0..<fetchedImages.count)).map({$0.creationDate})
+        // NB: Bypassing 5-7 images reduces by a factor ≈3 the number of dates to retrieve
+        // but does not reduce the sort duration unfortunately.
 
         // Stop sort already running if any
         queue.cancelAllOperations()
@@ -168,7 +174,7 @@ extension LocalImagesViewController
         var firstIndexOfSameMonth = 0
         
         // Sort imageAssets
-        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
+        let step = 1_000    // Check if this operation was cancelled every 1000 fetched images
         let iterations = images.count / step
         for i in 0...iterations {
             // Continue with this operation?
@@ -189,39 +195,39 @@ extension LocalImagesViewController
                 if newDayComponents == dayComponents {
                     // Same date -> Next image
                     continue
-                } else {
-                    // Append section to collection by days
-                    indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<index))
+                }
+                
+                // Append section to collection by days
+                indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<index))
 
-                    // Initialise for next day
-                    firstIndexOfSameDay = index
-                    dayComponents = calendar.dateComponents(byDays, from: creationDate)
+                // Initialise for next day
+                firstIndexOfSameDay = index
+                dayComponents = newDayComponents
 
-                    // Get week of year of new image
-                    let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
+                // Get week of year of new image
+                let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
 
-                    // What should we do with this new image?
-                    if newWeekComponents != weekComponents {
-                        // Append section to collection by weeks
-                        indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<index))
+                // What should we do with this new image?
+                if newWeekComponents != weekComponents {
+                    // Append section to collection by weeks
+                    indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<index))
 
-                        // Initialise for next week
-                        firstIndexOfSameWeek = index
-                        weekComponents = newWeekComponents
-                    }
+                    // Initialise for next week
+                    firstIndexOfSameWeek = index
+                    weekComponents = newWeekComponents
+                }
 
-                    // Get month of new image
-                    let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
+                // Get month of new image
+                let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
 
-                    // What should we do with this new image?
-                    if newMonthComponents != monthComponents {
-                        // Append section to collection by months
-                        indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<index))
+                // What should we do with this new image?
+                if newMonthComponents != monthComponents {
+                    // Append section to collection by months
+                    indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<index))
 
-                        // Initialise for next month
-                        firstIndexOfSameMonth = index
-                        monthComponents = newMonthComponents
-                    }
+                    // Initialise for next month
+                    firstIndexOfSameMonth = index
+                    monthComponents = newMonthComponents
                 }
             }
         }
@@ -283,39 +289,39 @@ extension LocalImagesViewController
                 if newDayComponents == dayComponents {
                     // Same date -> Next image
                     continue
-                } else {
-                    // Append section to collection by days
-                    indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<index))
+                }
+                
+                // Append section to collection by days
+                indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<index))
 
-                    // Initialise for next day
-                    firstIndexOfSameDay = index
-                    dayComponents = calendar.dateComponents(byDays, from: creationDate)
+                // Initialise for next day
+                firstIndexOfSameDay = index
+                dayComponents = calendar.dateComponents(byDays, from: creationDate)
 
-                    // Get week of year of new image
-                    let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
+                // Get week of year of new image
+                let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
 
-                    // What should we do with this new image?
-                    if newWeekComponents != weekComponents {
-                        // Append section to collection by weeks
-                        indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<index))
+                // What should we do with this new image?
+                if newWeekComponents != weekComponents {
+                    // Append section to collection by weeks
+                    indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<index))
 
-                        // Initialise for next week
-                        firstIndexOfSameWeek = index
-                        weekComponents = newWeekComponents
-                    }
+                    // Initialise for next week
+                    firstIndexOfSameWeek = index
+                    weekComponents = newWeekComponents
+                }
 
-                    // Get month of new image
-                    let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
+                // Get month of new image
+                let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
 
-                    // What should we do with this new image?
-                    if newMonthComponents != monthComponents {
-                        // Append section to collection by months
-                        indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<index))
+                // What should we do with this new image?
+                if newMonthComponents != monthComponents {
+                    // Append section to collection by months
+                    indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<index))
 
-                        // Initialise for next month
-                        firstIndexOfSameMonth = index
-                        monthComponents = newMonthComponents
-                    }
+                    // Initialise for next month
+                    firstIndexOfSameMonth = index
+                    monthComponents = newMonthComponents
                 }
             }
         }
@@ -399,7 +405,7 @@ extension LocalImagesViewController
 
     private func cachingUploadIndicesIteratingFetchedImages() -> (Void) {
         // For debugging purposes
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         
         // Check if this operation was cancelled every 1000 iterations
         let step = 1_000
@@ -425,13 +431,13 @@ extension LocalImagesViewController
                 }
             }
         }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
     }
 
     private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
         // For debugging purposes
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         
         // Determine fetched images already in upload queue
         let fetchOptions = PHFetchOptions()
@@ -472,8 +478,8 @@ extension LocalImagesViewController
                 }
             }
         }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   cached \(count) images by iterating uploads in queue in \(diff) ms")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   cached \(count) images by iterating uploads in queue in \(diff) ms")
     }
     
     func getUploadStateOfImage(at index: Int,

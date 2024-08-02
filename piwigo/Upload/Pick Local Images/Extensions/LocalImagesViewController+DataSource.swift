@@ -1,5 +1,5 @@
 //
-//  LocalImagesViewController+UICollectionViewDataSource.swift
+//  LocalImagesViewController+DataSource.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/03/2024.
@@ -10,6 +10,7 @@ import Photos
 import UIKit
 import piwigoKit
 
+//MARK: UICollectionViewDataSource Methods
 extension LocalImagesViewController: UICollectionViewDataSource
 {
     // MARK: - Headers & Footers
@@ -22,15 +23,29 @@ extension LocalImagesViewController: UICollectionViewDataSource
                 return view
             }
             
-            // Determine place names from first images
-            var imageAssets: [PHAsset] = []
-            for row in 0..<min(localImagesCollection.numberOfItems(inSection: indexPath.section), 20) {
-                let index = getImageIndex(for: IndexPath(item: row, section: indexPath.section))
-                imageAssets.append(fetchedImages[index])
+            // Determine place names from first and last images
+            var imagesInSection: [PHAsset] = []
+            let nberOfImageInSection = collectionView.numberOfItems(inSection: indexPath.section)
+            if nberOfImageInSection <= 10 {
+                // Collect all images
+                for item in 0..<min(nberOfImageInSection, 10) {
+                    let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
+                    imagesInSection.append(fetchedImages[index])
+                }
+            } else {
+                // Collect first 10 images
+                for item in 0..<10 {
+                    let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
+                    imagesInSection.append(fetchedImages[index])
+                }
+                for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
+                    let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
+                    imagesInSection.append(fetchedImages[index])
+                }
             }
             
             let selectState = updateSelectButton(ofSection: indexPath.section)
-            header.configure(with: imageAssets, section: indexPath.section, selectState: selectState)
+            header.configure(with: imagesInSection, section: indexPath.section, selectState: selectState)
             header.headerDelegate = self
             return header
         }
@@ -113,10 +128,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
         let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
-        let thumbSize = AlbumUtilities.imageSize(forView: collectionView,
-                                                 imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait,
-                                                 collectionType: .popup)
-        cell.configure(with: imageAsset, thumbnailSize: thumbSize)
+        cell.configure(with: imageAsset, thumbnailSize: imageCellSize)
 
         // Get upload state from cell data
         let uploadState = getUploadStateOfImage(at: index, for: cell)

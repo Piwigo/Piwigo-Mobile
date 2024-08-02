@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-// MARK: UICollectionViewDelegate
+// MARK: UICollectionViewDelegate Methods
 extension AlbumViewController: UICollectionViewDelegate
 {
     // MARK: - Present Album or Image
@@ -123,7 +123,6 @@ extension AlbumViewController: UICollectionViewDelegate
                 return self.albumContextMenu(indexPath)
             }
         }
-        
         return nil
     }
     

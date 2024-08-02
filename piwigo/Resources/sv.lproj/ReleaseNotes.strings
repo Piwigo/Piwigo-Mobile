@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.2_text" = "Version 3.2.2\n\n• Lägger till ett alternativ för att radera urval av foton/videor som lagrats i enheten\n• Buggfixar";
+
 "v3.2.1_text" = "Version 3.2.1\n29 juli 2024\n\n• Lägger till ett alternativ för att visa album med eller utan beskrivningar\n• Bug fixar";
 
 "v3.2.0_text" = "Version 3.2\n14 juli 2024\n\n• Antar sorteringsalternativ för albumfoto\n• Lägger till foton i farten sorteringsalternativ\n• Lägger till rotation av uppladdade bilder (kräver rotateImage plugin)\n• Felrättelser";

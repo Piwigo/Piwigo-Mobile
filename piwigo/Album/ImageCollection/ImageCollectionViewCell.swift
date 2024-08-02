@@ -110,7 +110,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             isAccessibilityElement = true
         }
 
-        // Play button
+        // Video icon
         if playImg?.isHidden == imageData.isVideo {
             playImg?.isHidden = !(imageData.isVideo)
             playBckg?.isHidden = !(imageData.isVideo)

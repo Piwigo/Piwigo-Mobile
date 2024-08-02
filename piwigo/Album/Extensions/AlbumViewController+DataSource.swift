@@ -10,8 +10,10 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// MARK: UICollectionViewDataSource Methods
 extension AlbumViewController: UICollectionViewDataSource
 {
+    // MARK: - Headers & Footers
     func attributedComment() -> NSMutableAttributedString {
         let desc = NSMutableAttributedString(attributedString: albumData.comment)
         let wholeRange = NSRange(location: 0, length: desc.string.count)
@@ -88,23 +90,6 @@ extension AlbumViewController: UICollectionViewDataSource
         }
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1 + (images.sections?.count ?? 1)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0 /* Albums */:
-            let objects = albums.fetchedObjects
-            return objects?.count ?? 0
-            
-        default /* Images */:
-            guard let sections = images.sections
-            else { preconditionFailure("No sections in fetchedResultsController")}
-            return sections[section - 1].numberOfObjects
-        }
-    }
-    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         let emptyView = UICollectionReusableView(frame: CGRect.zero)
@@ -127,7 +112,7 @@ extension AlbumViewController: UICollectionViewDataSource
             }
         default /* Images */:
             switch kind {
-            case UICollectionView.elementKindSectionHeader:                
+            case UICollectionView.elementKindSectionHeader:
                 // Determine place names from first and last images
                 let imageSection = indexPath.section - 1
                 var imagesInSection = [Image]()
@@ -199,6 +184,27 @@ extension AlbumViewController: UICollectionViewDataSource
             }
         }
         return emptyView
+    }
+    
+
+    // MARK: - Sections
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1 + (images.sections?.count ?? 1)
+    }
+    
+
+    // MARK: - Items i.e. Albums & Images
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0 /* Albums */:
+            let objects = albums.fetchedObjects
+            return objects?.count ?? 0
+            
+        default /* Images */:
+            guard let sections = images.sections
+            else { preconditionFailure("No sections in fetchedResultsController")}
+            return sections[section - 1].numberOfObjects
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
