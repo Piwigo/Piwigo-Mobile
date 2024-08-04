@@ -32,6 +32,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         backgroundColor = .piwigoColorCellBackground()
         waitingActivity?.color = UIColor.white
         uploadingProgress?.trackTintColor = UIColor.white
+        playImg?.tintColor = UIColor.white
     }
 
     func configure(with imageAsset: PHAsset, thumbnailSize: CGSize) {
