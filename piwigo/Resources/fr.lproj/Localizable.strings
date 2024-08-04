@@ -507,7 +507,7 @@
 "imageUploadHeader" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront transférées.";
 "imageUploadHeaderTitle_images" = "Paramètres des photos";
 "imageUploadHeaderText_images" = "Veuillez définir les paramètres à appliquer à la sélection des photos/vidéos";
-"imageUploadHeaderTitle_upload" = "Réglage des Transferts";
+"imageUploadHeaderTitle_upload" = "Réglage des transferts";
 "imageUploadHeaderText_upload" = "Veuillez définir les paramètres de transfert à appliquer à la sélection des photos/vidéos";
 
 "imageUploadDetails_title" = "Titre :";
