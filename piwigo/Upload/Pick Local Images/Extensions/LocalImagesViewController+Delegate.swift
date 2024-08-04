@@ -230,7 +230,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
 
     @available(iOS 13.0, *)
     private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("imageUploadDetailsButton_title", comment: "Upload"),
+        return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
                         image: UIImage(contentsOfFile: "piwigo")) { action in
             // Check that an upload request does not exist for that image
             if (self.uploads.fetchedObjects ?? [])

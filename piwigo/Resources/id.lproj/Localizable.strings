@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Other Albums";
 "categoryUpload_pasteboard" = "Clipboard";
 
-"categoyUpload_loadSubCategories" = "muat";
-"categoryUpload_images" = "Unggah gambar";
-
 // Default album
 "setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "Tag:";
 "imageUploadDetails_description" = "Deskripsi:";
 
-"imageUploadDetailsView_title" = "Gambar";
-"imageUploadDetailsButton_title" = "Unggah";
-"imageUploadDetailsEdit_title" = "Sunting Gambar untuk Diunggah";
-"imageUploadDetailsUploading_title" = "Gambar yang Akan Diunggah";
-"imageUploadDetailsCell_uploadComplete" = "Lengkap! Selesaikan...";
-
-"imageUploadRemove" = "Removing uploaded photos";
-
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_prepared" = "Ready for upload...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Resume Upload";
 "imageUploadResumeSeveral" = "Resume %@ Uploads";
 
-"imageUploadProgressBar_zero" = "Mengunggah 0/0";
-"imageUploadProgressBar_nonZero" = "Mengunggah %@/%@";
 "imageUploadProgressBar_completed" = "Selesai";
 "imageUploadCompleted_title" = "Pengunggahan Selesai";
 "imageUploadCompleted_message" = "gambar/video telah duinggah ke peladen Piwigo Anda.";

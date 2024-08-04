@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Other Albums";
 "categoryUpload_pasteboard" = "Clipboard";
 
-"categoyUpload_loadSubCategories" = "load";
-"categoryUpload_images" = "Upload Photos";
-
 // Default album
 "setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 
-"imageUploadDetailsView_title" = "Photos";
-"imageUploadDetailsButton_title" = "Upload";
-"imageUploadDetailsEdit_title" = "Edit Photos to Upload";
-"imageUploadDetailsUploading_title" = "Photos that are Being Uploaded";
-"imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
-
-"imageUploadRemove" = "Removing uploaded photos";
-
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_prepared" = "Ready for upload...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Resume Upload";
 "imageUploadResumeSeveral" = "Resume %@ Uploads";
 
-"imageUploadProgressBar_zero" = "Uploading 0/0";
-"imageUploadProgressBar_nonZero" = "Uploading %@/%@";
 "imageUploadProgressBar_completed" = "Completed";
 "imageUploadCompleted_title" = "Upload Completed";
 "imageUploadCompleted_message" = "photo uploaded to your Piwigo server.";

@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Other Albums";
 "categoryUpload_pasteboard" = "Clipboard";
 
-"categoyUpload_loadSubCategories" = "تحميل";
-"categoryUpload_images" = "تحميل الصور";
-
 // Default album
 "setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "العلامات:";
 "imageUploadDetails_description" = "الوصف:";
 
-"imageUploadDetailsView_title" = "الصور";
-"imageUploadDetailsButton_title" = "تحميل";
-"imageUploadDetailsEdit_title" = "تعديل الصور للتحميل";
-"imageUploadDetailsUploading_title" = "الصور التي يتم تحميلها";
-"imageUploadDetailsCell_uploadComplete" = "اكتملت! جار الانتهاء...";
-
-"imageUploadRemove" = "Removing uploaded photos";
-
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_prepared" = "Ready for upload...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Resume Upload";
 "imageUploadResumeSeveral" = "Resume %@ Uploads";
 
-"imageUploadProgressBar_zero" = "جار التحميل 0/0";
-"imageUploadProgressBar_nonZero" = "جار التحميل %@/%@";
 "imageUploadProgressBar_completed" = "اكتملت";
 "imageUploadCompleted_title" = "اكتمل التحميل";
 "imageUploadCompleted_message" = "صورة / فيديو تم تحميلها إلى خادم Piwigo الخاص بك.";

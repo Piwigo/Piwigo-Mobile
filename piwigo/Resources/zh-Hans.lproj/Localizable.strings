@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "其他相册";
 "categoryUpload_pasteboard" = "剪贴板";
 
-"categoyUpload_loadSubCategories" = "加载";
-"categoryUpload_images" = "上传图片";
-
 // Default album
 "setDefaultCategory_select" = "请选择一个相册或子相册作为新的根相册";
 "setDefaultCategory_title" = "默认相册";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "标签：";
 "imageUploadDetails_description" = "描述：";
 
-"imageUploadDetailsView_title" = "照片";
-"imageUploadDetailsButton_title" = "上传";
-"imageUploadDetailsEdit_title" = "编辑要上传的照片";
-"imageUploadDetailsUploading_title" = "正在被上传的照片";
-"imageUploadDetailsCell_uploadComplete" = "即将完成...";
-
-"imageUploadRemove" = "移除已上传的照片";
-
 "imageUploadTableCell_waiting" = "请稍等...";
 "imageUploadTableCell_preparing" = "正在准备...";
 "imageUploadTableCell_prepared" = "已准备好上传...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "继续上传";
 "imageUploadResumeSeveral" = "继续剩余的 %@ 个上传";
 
-"imageUploadProgressBar_zero" = "正在上传 0/0";
-"imageUploadProgressBar_nonZero" = "正在上传 %@/%@";
 "imageUploadProgressBar_completed" = "完成";
 "imageUploadCompleted_title" = "上传完成";
 "imageUploadCompleted_message" = "照片成功上传到你的Piwigo服务器";

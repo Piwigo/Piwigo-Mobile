@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Altri Album";
 "categoryUpload_pasteboard" = "Appunti";
 
-"categoyUpload_loadSubCategories" = "carica";
-"categoryUpload_images" = "Carica immagini";
-
 // Default album
 "setDefaultCategory_select" = "Seleziona un album o un sottoalbum che diventerà il nuovo album root.";
 "setDefaultCategory_title" = "Album predefinito";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Descrizione:";
 
-"imageUploadDetailsView_title" = "Immagini";
-"imageUploadDetailsButton_title" = "Carica";
-"imageUploadDetailsEdit_title" = "Modificare le immagini da caricare";
-"imageUploadDetailsUploading_title" = "Immagini che vengono caricate";
-"imageUploadDetailsCell_uploadComplete" = "Completato! Finendo...";
-
-"imageUploadRemove" = "Rimozione di immagini caricate";
-
 "imageUploadTableCell_waiting" = "Attendere...";
 "imageUploadTableCell_preparing" = "Preparazione...";
 "imageUploadTableCell_prepared" = "Pronto per il caricamento...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Riprendi Caricamento";
 "imageUploadResumeSeveral" = "Riprendi %@ caricamenti";
 
-"imageUploadProgressBar_zero" = "Caricamento in corso 0/0";
-"imageUploadProgressBar_nonZero" = "Caricamento di %@/%@";
 "imageUploadProgressBar_completed" = "Completato";
 "imageUploadCompleted_title" = "Caricamento Completato";
 "imageUploadCompleted_message" = "immagine/video caricati sul server di Piwigo.";

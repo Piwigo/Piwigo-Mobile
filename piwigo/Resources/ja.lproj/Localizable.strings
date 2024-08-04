@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "その他のアルバム";
 "categoryUpload_pasteboard" = "クリップボード";
 
-"categoyUpload_loadSubCategories" = "読み込む";
-"categoryUpload_images" = "写真をアップロードする";
-
 // Default album
 "setDefaultCategory_select" = "新しいアルバムになるアルバムまたはサブアルバムを選択してください。";
 "setDefaultCategory_title" = "既定のアルバム";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "タグ：";
 "imageUploadDetails_description" = "説明：";
 
-"imageUploadDetailsView_title" = "写真";
-"imageUploadDetailsButton_title" = "アップロード";
-"imageUploadDetailsEdit_title" = "アップロードする写真を編集します";
-"imageUploadDetailsUploading_title" = "アップロード中の写真";
-"imageUploadDetailsCell_uploadComplete" = "完了！終了中...";
-
-"imageUploadRemove" = "アップロードした写真を削除する";
-
 "imageUploadTableCell_waiting" = "待機中...";
 "imageUploadTableCell_preparing" = "準備中...";
 "imageUploadTableCell_prepared" = "アップロードの準備ができました...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "失敗したアップロードを再開する";
 "imageUploadResumeSeveral" = "%@ 件の失敗したアップロードを再開する";
 
-"imageUploadProgressBar_zero" = "アップロード中 0/0";
-"imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
 "imageUploadProgressBar_completed" = "完了しました";
 "imageUploadCompleted_title" = "アップロードが完了しました";
 "imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";

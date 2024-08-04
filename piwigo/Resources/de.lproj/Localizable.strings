@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Andere Alben";
 "categoryUpload_pasteboard" = "Zwischenablage";
 
-"categoyUpload_loadSubCategories" = "Laden";
-"categoryUpload_images" = "Lade Fotos hoch";
-
 // Default album
 "setDefaultCategory_select" = "Bitte wählen Sie ein Album oder Unter-Album das Ihr Standard Fotoalbum werden soll.";
 "setDefaultCategory_title" = "Standard-Album";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "Schlagwörter:";
 "imageUploadDetails_description" = "Beschreibung:";
 
-"imageUploadDetailsView_title" = "Fotos";
-"imageUploadDetailsButton_title" = "Hochladen";
-"imageUploadDetailsEdit_title" = "Bearbeite Fotos zum Hochladen";
-"imageUploadDetailsUploading_title" = "Fotos, die hochgeladen werden";
-"imageUploadDetailsCell_uploadComplete" = "Fertig! Abschliessen ...";
-
-"imageUploadRemove" = "Hochgeladene Fotos entfernen";
-
 "imageUploadTableCell_waiting" = "Warten...";
 "imageUploadTableCell_preparing" = "Vorbereiten...";
 "imageUploadTableCell_prepared" = "Bereit zum Upload...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Fehlgeschlagenen Upload fortsetzen";
 "imageUploadResumeSeveral" = "Fehlgeschlagene %@ Uploads fortsetzen";
 
-"imageUploadProgressBar_zero" = "Hochladen 0/0";
-"imageUploadProgressBar_nonZero" = "Hochladen %@/%@";
 "imageUploadProgressBar_completed" = "Abgeschlossen";
 "imageUploadCompleted_title" = "Erfolgreich hochgeladen";
 "imageUploadCompleted_message" = "Fotos/Videos wurden auf Ihren Piwigo-Server hochgeladen.";

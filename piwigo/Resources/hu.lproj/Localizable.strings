@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Egyéb albumok";
 "categoryUpload_pasteboard" = "Vágólap";
 
-"categoyUpload_loadSubCategories" = "betöltés";
-"categoryUpload_images" = "Képek feltöltése";
-
 // Default album
 "setDefaultCategory_select" = "Válaszd ki az új főalbumot!";
 "setDefaultCategory_title" = "Alapértelmezett Album";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "Címkék:";
 "imageUploadDetails_description" = "Leírás:";
 
-"imageUploadDetailsView_title" = "Fotók";
-"imageUploadDetailsButton_title" = "Feltöltés";
-"imageUploadDetailsEdit_title" = "Feltöltendő fotók szerkesztése";
-"imageUploadDetailsUploading_title" = "Fotók feltöltés alatt";
-"imageUploadDetailsCell_uploadComplete" = "Kész! Már csak pár pillanat...";
-
-"imageUploadRemove" = "Feltöltött fotók eltávolítása";
-
 "imageUploadTableCell_waiting" = "Várakozás...";
 "imageUploadTableCell_preparing" = "Előkészítés...";
 "imageUploadTableCell_prepared" = "Feltöltésre kész...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Feltöltés folytatása";
 "imageUploadResumeSeveral" = "%@ feltöltés folytatása";
 
-"imageUploadProgressBar_zero" = "Feltöltés 0/0";
-"imageUploadProgressBar_nonZero" = "Feltöltés %@/%@";
 "imageUploadProgressBar_completed" = "Befejezve";
 "imageUploadCompleted_title" = "A feltöltés befejeződött";
 "imageUploadCompleted_message" = "fotó feltöltve a Piwigo szerveredre.";

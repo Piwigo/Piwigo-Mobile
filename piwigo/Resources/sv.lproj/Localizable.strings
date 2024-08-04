@@ -223,9 +223,6 @@
 "categoryUpload_otherAlbums" = "Andra album";
 "categoryUpload_pasteboard" = "Urklipp";
 
-"categoyUpload_loadSubCategories" = "ladda";
-"categoryUpload_images" = "Ladda upp bilder";
-
 // Default album
 "setDefaultCategory_select" = "Välj ett album eller underalbum som kommer att bli det nya rotalbumet.";
 "setDefaultCategory_title" = "Standardalbum";
@@ -519,14 +516,6 @@
 "imageUploadDetails_tags" = "Taggar:";
 "imageUploadDetails_description" = "Beskrivning:";
 
-"imageUploadDetailsView_title" = "Bilder";
-"imageUploadDetailsButton_title" = "Ladda upp";
-"imageUploadDetailsEdit_title" = "Bearbeta bilder för uppladdning";
-"imageUploadDetailsUploading_title" = "Bilder som laddas upp";
-"imageUploadDetailsCell_uploadComplete" = "Klart! Färdigställer...";
-
-"imageUploadRemove" = "Tar bort uppladdade bilder";
-
 "imageUploadTableCell_waiting" = "Väntar...";
 "imageUploadTableCell_preparing" = "Förbereder...";
 "imageUploadTableCell_prepared" = "Redo för uppladdning...";
@@ -541,8 +530,6 @@
 "imageUploadResumeSingle" = "Återuppta uppladdning";
 "imageUploadResumeSeveral" = "Återuppta %@ uppladdningar";
 
-"imageUploadProgressBar_zero" = "Laddar upp 0/0";
-"imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
 "imageUploadProgressBar_completed" = "Klart";
 "imageUploadCompleted_title" = "Uppladdning Slutförd";
 "imageUploadCompleted_message" = "bilder/videor laddades upp till din Piwigoserver.";
