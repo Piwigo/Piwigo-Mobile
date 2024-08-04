@@ -99,7 +99,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             
         default /* Images */:
             // Number of images shown at the bottom of the collection
-            guard section == images.sections?.count ?? 0
+            guard categoryId != Int32.zero, section == images.sections?.count ?? 0
             else { return CGSize.zero }
         }
         
