@@ -1,5 +1,5 @@
 //
-//  PasteboardImagesViewController+UICollectionViewDataSource.swift
+//  PasteboardImagesViewController+DataSource.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/03/2024.
@@ -13,6 +13,7 @@ import UIKit
 import UniformTypeIdentifiers        // Requires iOS 14
 #endif
 
+// MARK: UICollectionViewDataSource Methods
 extension PasteboardImagesViewController: UICollectionViewDataSource
 {
     // MARK: - Headers & Footers
@@ -69,30 +70,10 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
         // (the content of the pasteboard may not last forever)
         let identifier = pbObjects[indexPath.item].identifier
 
-        // Get thumbnail of image if available
-        var image: UIImage! = imagePlaceholder
-        if [.stored, .ready].contains(pbObjects[indexPath.row].state) {
-            image = pbObjects[indexPath.row].image
-            cell.md5sum = pbObjects[indexPath.row].md5Sum
-        }
-        else {
-            var imageType = ""
-            if #available(iOS 14.0, *) {
-                imageType = UTType.image.identifier
-            } else {
-                // Fallback on earlier version
-                imageType = kUTTypeImage as String
-            }
-            if let data = UIPasteboard.general.data(forPasteboardType: imageType,
-                                                    inItemSet: IndexSet(integer: indexPath.row))?.first {
-                image = UIImage(data: data) ?? imagePlaceholder
-                cell.md5sum = ""
-            }
-        }
-
         // Configure cell
-        let thumbnailSize = AlbumUtilities.imageSize(forView: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: .popup)
-        cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(thumbnailSize))
+        let (image, md5sum) = getImageAndMd5sumOfPbObject(atIndex: indexPath.item)
+        cell.configure(with: image, identifier: identifier)
+        cell.md5sum = md5sum
         
         // Add pan gesture recognition
         let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
@@ -110,6 +91,29 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
         return cell
     }
 
+    func getImageAndMd5sumOfPbObject(atIndex index: Int) -> (UIImage, String) {
+        var image: UIImage! = imagePlaceholder
+        var md5sum = ""
+        if [.stored, .ready].contains(pbObjects[index].state) {
+            image = pbObjects[index].image
+            md5sum = pbObjects[index].md5Sum
+        }
+        else {
+            var imageType = ""
+            if #available(iOS 14.0, *) {
+                imageType = UTType.image.identifier
+            } else {
+                // Fallback on earlier version
+                imageType = kUTTypeImage as String
+            }
+            if let data = UIPasteboard.general.data(forPasteboardType: imageType,
+                                                    inItemSet: IndexSet(integer: index))?.first {
+                image = UIImage(data: data) ?? imagePlaceholder
+            }
+        }
+        return (image, md5sum)
+    }
+    
     @objc func applyUploadProgress(_ notification: Notification) {
         if let visibleCells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell],
            let localIdentifier =  notification.userInfo?["localIdentifier"] as? String, !localIdentifier.isEmpty,

@@ -36,6 +36,11 @@ class LocalImagePreviewViewController: UIViewController {
         })
     }
     
+    init(image: UIImage) {
+        super.init(nibName: nil, bundle: nil)
+        self.imageView.image = image
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

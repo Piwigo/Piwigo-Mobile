@@ -171,7 +171,6 @@ class UploadSwitchViewController: UIViewController {
     
     @objc func cancelUpload() {
         // Return to local images view
-        delegate?.uploadSettingsDidDisappear()
         dismiss(animated: true)
     }
 

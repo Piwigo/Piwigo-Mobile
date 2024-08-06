@@ -1,39 +1,36 @@
 //
-//  LocalImagesViewController+Delegate.swift
+//  PasteboardImagesViewController+Delegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/03/2024.
 //  Copyright © 2024 Piwigo.org. All rights reserved.
 //
 
-import Photos
 import UIKit
 import piwigoKit
-import uploadKit
 
 // MARK: UICollectionViewDelegate Methods
-extension LocalImagesViewController: UICollectionViewDelegate
+extension PasteboardImagesViewController: UICollectionViewDelegate
 {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
             return
         }
-        
-        // Get index and upload state of image
-        let index = getImageIndex(for: indexPath)
-        let uploadState = getUploadStateOfImage(at: index, for: cell)
+
+        // Get upload state of image
+        let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
 
         // Update cell and selection
-        if let _ = selectedImages[index] {
+        if let _ = selectedImages[indexPath.item] {
             // Deselect the cell
-            selectedImages[index] = nil
+            selectedImages[indexPath.item] = nil
             cell.update(selected: false, state: uploadState)
         } else {
             // Can we upload or re-upload this image?
             if (uploadState == nil) || reUploadAllowed {
                 // Select the image
-                selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                         category: categoryId)
+                selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                  category: categoryId)
                 cell.update(selected: true, state: uploadState)
             }
         }
@@ -45,10 +42,9 @@ extension LocalImagesViewController: UICollectionViewDelegate
         cell.reloadInputViews()
 
         // Update state of Select button if needed
-        let selectState = updateSelectButton(ofSection: indexPath.section)
-        let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
-        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? LocalImagesHeaderReusableView {
-            header.selectButton.setTitle(forState: selectState)
+        updateSelectButton()
+        if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
+            header.setButtonTitle(forState: sectionState)
         }
     }
     
@@ -63,38 +59,30 @@ extension LocalImagesViewController: UICollectionViewDelegate
             let identifier = NSString(string: "\(cell.localIdentifier)")
             let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier})
             
-            // Get image asset and upload state
-            let index = self.getImageIndex(for: indexPath)
-            let imageAsset = self.fetchedImages[index]
-            let uploadState = self.getUploadStateOfImage(at: index, for: cell)
-
-            // Check if this image can be deleted
-            let canDelete = (imageAsset.sourceType != .typeCloudShared) &&
-                            (upload.isEmpty || [.finished, .moderated].contains(upload.first?.state))
+            // Get upload state
+            let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
             
             // Return preview and appropriate menu
             return UIContextMenuConfiguration(identifier: identifier,
                 previewProvider: { [self] in
                     // Create preview view controller
-                    return LocalImagePreviewViewController(imageAsset: imageAsset, pixelSize: view.bounds.size)
+                    let (image, _) = self.getImageAndMd5sumOfPbObject(atIndex: indexPath.item)
+                    return LocalImagePreviewViewController(image: image)
                 }, actionProvider: { suggestedActions in
                     var children = [UIMenuElement]()
                     if upload.isEmpty {
-                        if self.selectedImages[index] != nil {
+                        if self.selectedImages[indexPath.item] != nil {
                             // Image selected ► Propose to deselect it
                             children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                                index: index, inUploadSate: uploadState))
+                                                                inUploadSate: uploadState))
                         } else if (uploadState == nil) || self.reUploadAllowed {
                             // Image deselected ► Propose to select it
                             children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                              index: index, inUploadSate: uploadState))
+                                                              inUploadSate: uploadState))
                         }
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
-                    }
-                    if canDelete {
-                        children.append(self.deleteAction(forCell: cell, at: indexPath))
                     }
                     return UIMenu(title: "", children: children)
                 })
@@ -112,47 +100,37 @@ extension LocalImagesViewController: UICollectionViewDelegate
             let identifier = NSString(string: "\(cell.localIdentifier)")
             let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier})
             
-            // Get image asset and upload state
-            let index = self.getImageIndex(for: indexPath)
-            let imageAsset = self.fetchedImages[index]
-            let uploadState = self.getUploadStateOfImage(at: index, for: cell)
-
-            // Check if this image can be deleted
-            let canDelete = (imageAsset.sourceType != .typeCloudShared) &&
-                            (upload.isEmpty || [.finished, .moderated].contains(upload.first?.state))
+            // Get upload state
+            let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
             
             // Return preview and appropriate menu
             return UIContextMenuConfiguration(identifier: identifier,
                 previewProvider: { [self] in
                     // Create preview view controller
-                    let scale = view.window?.screen.scale ?? 1.0
-                    let maxPixelSize = CGSize(width: view.bounds.width * scale, height: view.bounds.height * scale)
-                    return LocalImagePreviewViewController(imageAsset: imageAsset, pixelSize: maxPixelSize)
+                    let (image, _) = self.getImageAndMd5sumOfPbObject(atIndex: indexPath.item)
+                    return LocalImagePreviewViewController(image: image)
                 }, actionProvider: { suggestedActions in
                     var children = [UIMenuElement]()
                     if upload.isEmpty {
-                        if self.selectedImages[index] != nil {
+                        if self.selectedImages[indexPath.item] != nil {
                             // Image selected ► Propose to deselect it
                             children.append(self.deselectAction(forCell: cell, at: indexPath,
-                                                                index: index, inUploadSate: uploadState))
+                                                                inUploadSate: uploadState))
                         } else if (uploadState == nil) || self.reUploadAllowed {
                             // Image deselected ► Propose to select it
                             children.append(self.selectAction(forCell: cell, at: indexPath,
-                                                              index: index, inUploadSate: uploadState))
+                                                              inUploadSate: uploadState))
                         }
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
-                    }
-                    if canDelete {
-                        children.append(self.deleteAction(forCell: cell, at: indexPath))
                     }
                     return UIMenu(title: "", children: children)
                 })
         }
         return nil
     }
-    
+
     @available(iOS 13.0, *)
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
@@ -178,31 +156,31 @@ extension LocalImagesViewController: UICollectionViewDelegate
     
     @available(iOS 13.0, *)
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                              index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
+                              inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
         // Image not selected and selectable ► Propose to select it
         return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select the cell
-            self.selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                          category: self.categoryId)
+            self.selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                   category: self.categoryId)
             cell.update(selected: true, state: uploadState)
             
             // Update number of selected cells
             self.updateNavBar()
             
             // Update state of Select button if needed
-            let selectState = self.updateSelectButton(ofSection: indexPath.section)
+            self.updateSelectButton()
             let indexPath = IndexPath(item: 0, section: indexPath.section)
-            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? LocalImagesHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
+            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? PasteboardImagesHeaderReusableView {
+                header.configure(with: self.sectionState)
             }
         }
     }
     
     @available(iOS 13.0, *)
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
-                                index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
+                                inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
         var image: UIImage?
         if #available(iOS 16, *) {
@@ -213,17 +191,17 @@ extension LocalImagesViewController: UICollectionViewDelegate
         return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect the cell
-            self.selectedImages[index] = nil
+            self.selectedImages[indexPath.item] = nil
             cell.update(selected: false, state: uploadState)
             
             // Update number of selected cells
             self.updateNavBar()
             
             // Update state of Select button if needed
-            let selectState = self.updateSelectButton(ofSection: indexPath.section)
+            self.updateSelectButton()
             let indexPath = IndexPath(item: 0, section: indexPath.section)
-            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? LocalImagesHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
+            if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? PasteboardImagesHeaderReusableView {
+                header.configure(with: self.sectionState)
             }
         }
     }
@@ -246,23 +224,13 @@ extension LocalImagesViewController: UICollectionViewDelegate
             self.cancelBarButton?.isEnabled = false
             self.uploadBarButton?.isEnabled = false
             self.actionBarButton?.isEnabled = false
-            self.trashBarButton?.isEnabled = false
             
             // Show upload parameter views
             let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
             if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
                 uploadSwitchVC.delegate = self
                 uploadSwitchVC.user = self.user
-
-                // Will we propose to delete images after upload?
-                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [cell.localIdentifier], 
-                                                        options: nil).firstObject {
-                    // Only local images can be deleted
-                    if imageAsset.sourceType != .typeCloudShared {
-                        // Will allow user to delete images after upload
-                        uploadSwitchVC.canDeleteImages = true
-                    }
-                }
+                uploadSwitchVC.canDeleteImages = false
                 
                 // Push Edit view embedded in navigation controller
                 let navController = UINavigationController(rootViewController: uploadSwitchVC)
@@ -272,27 +240,6 @@ extension LocalImagesViewController: UICollectionViewDelegate
                 navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
                 navController.popoverPresentationController?.permittedArrowDirections = .up
                 self.navigationController?.present(navController, animated: true)
-            }
-        }
-    }
-
-    @available(iOS 13.0, *)
-    private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
-                        image: UIImage(systemName: "trash"),
-                        attributes: .destructive) { action in
-            // Get image identifier and check if this image has been uploaded
-            if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
-                // Delete uploaded image
-                UploadManager.shared.deleteAssets(associatedToUploads: [upload])
-            } else {
-                // Delete images from Photo Library
-                let index = self.getImageIndex(for: indexPath)
-                let imageAsset = self.fetchedImages[index]
-                PHPhotoLibrary.shared().performChanges {
-                    // Delete images from the library
-                    PHAssetChangeRequest.deleteAssets([imageAsset] as NSFastEnumeration)
-                }
             }
         }
     }

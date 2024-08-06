@@ -1,5 +1,5 @@
 //
-//  PasteboardImagesViewController+HeaderReusableViewDelegate.swift
+//  PasteboardImagesViewController+HeaderDelegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 16/03/2024.
@@ -9,9 +9,9 @@
 import UIKit
 import piwigoKit
 
+// MARK: - PasteboardImagesHeaderDelegate Methods
 extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate
 {
-    // MARK: - PasteboardImagesHeaderReusableView Delegate Methods
    func didSelectImagesOfSection() {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
         if sectionState == .select {

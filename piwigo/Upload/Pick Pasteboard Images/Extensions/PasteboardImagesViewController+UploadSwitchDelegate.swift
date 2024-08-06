@@ -10,14 +10,15 @@ import Foundation
 import piwigoKit
 import uploadKit
 
+// MARK: - UploadSwitchDelegate Methods
 extension PasteboardImagesViewController: UploadSwitchDelegate
 {
-    // MARK: - UploadSwitchDelegate Methods
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
         // Retrieve common image parameters and upload settings
-        for index in 0..<selectedImages.count {
-            guard var updatedRequest = selectedImages[index] else { continue }
-                
+        for index in 0..<uploadRequests.count {
+            // Initialisation
+            var updatedRequest = uploadRequests[index]
+
             // Image parameters
             if let imageTitle = imageParameters["title"] as? String {
                 updatedRequest.imageTitle = imageTitle
@@ -45,8 +46,12 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                     if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
                         updatedRequest.photoMaxSize = photoMaxSize
                     }
-                } else {
-                    updatedRequest.photoMaxSize = 5 // i.e. 4K
+                    if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
+                        updatedRequest.videoMaxSize = videoMaxSize
+                    }
+                } else {    // No downsizing
+                    updatedRequest.photoMaxSize = 0
+                    updatedRequest.videoMaxSize = 0
                 }
             }
             if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
@@ -65,12 +70,17 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                 updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
             }
 
-            selectedImages[index] = updatedRequest
+            uploadRequests[index] = updatedRequest
         }
         
         // Add selected images to upload queue
         UploadManager.shared.backgroundQueue.async {
-            self.uploadProvider.importUploads(from: self.selectedImages.compactMap({$0})) { error in
+            self.uploadProvider.importUploads(from: self.uploadRequests) { error in
+                // Deselect cells and reset upload queue
+                self.cancelSelect()
+                self.uploadRequests = []
+                
+                // Error encountered?
                 guard let error = error else {
                     // Restart UploadManager activities
                     UploadManager.shared.backgroundQueue.async {
@@ -80,7 +90,13 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
                     return
                 }
                 DispatchQueue.main.async {
-                    self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) { }
+                    self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {
+                        // Restart UploadManager activities
+                        UploadManager.shared.backgroundQueue.async {
+                            UploadManager.shared.isPaused = false
+                            UploadManager.shared.findNextImageToUpload()
+                        }
+                    }
                 }
             }
         }

@@ -63,7 +63,7 @@ class LocalImagesViewController: UIViewController
     }()
     
 
-    // MARK: - Cached Values
+    // MARK: - Variables and Cached Values
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
     var sortType: SectionType = .none               // Images grouped by Day, Week, Month or None
@@ -72,10 +72,11 @@ class LocalImagesViewController: UIViewController
     var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
 
     var indexedUploadsInQueue = [(String,pwgUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
-    var selectedImages = [UploadProperties?]()      // Array of images to upload
+    var selectedImages = [UploadProperties?]()      // Array of images selected for upload
     var selectedSections = [SelectButtonState]()    // State of Select buttons
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
-    
+    var uploadRequests = [UploadProperties]()       // Array of images to upload
+
     private var uploadsToDelete = [Upload]()
     lazy var imageCellSize: CGSize = getImageCellSize()
     
@@ -91,9 +92,9 @@ class LocalImagesViewController: UIViewController
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     
-    private var cancelBarButton: UIBarButtonItem!   // For cancelling the selection of images
+    var cancelBarButton: UIBarButtonItem!           // For cancelling the selection of images
     var uploadBarButton: UIBarButtonItem!           // for uploading selected images
-    private var trashBarButton: UIBarButtonItem!    // For deleting uploaded images on iPhone until iOS 13
+    var trashBarButton: UIBarButtonItem!            // For deleting uploaded images on iPhone until iOS 13
                                                     //                              on iPad (all iOS)
     var actionBarButton: UIBarButtonItem!           // iPhone until iOS 13:
                                                     //  - for reversing the sort order
@@ -834,7 +835,8 @@ class LocalImagesViewController: UIViewController
     // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        if selectedImages.compactMap({ $0 }).isEmpty { return }
+        uploadRequests = selectedImages.compactMap({ $0 })
+        if uploadRequests.isEmpty { return }
         
         // Disable buttons
         cancelBarButton?.isEnabled = false
@@ -849,8 +851,8 @@ class LocalImagesViewController: UIViewController
             uploadSwitchVC.user = user
 
             // Will we propose to delete images after upload?
-            if let firstLocalIdentifer = selectedImages.compactMap({ $0 }).first?.localIdentifier {
-                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalIdentifer], options: nil).firstObject {
+            if let firstLocalID = uploadRequests.first?.localIdentifier {
+                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalID], options: nil).firstObject {
                     // Only local images can be deleted
                     if imageAsset.sourceType != .typeCloudShared {
                         // Will allow user to delete images after upload

@@ -74,7 +74,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         })
     }
     
-    func configure(with image: UIImage, identifier: String, thumbnailSize: CGFloat) {
+    func configure(with image: UIImage, identifier: String) {
         // Configure icons
         configureIcons()
         

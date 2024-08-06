@@ -569,10 +569,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         switch albumType {
         case .pasteboard:
             let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
-            guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
-            localImagesVC.categoryId = categoryId
-            localImagesVC.user = user
-            navigationController?.pushViewController(localImagesVC, animated: true)
+            guard let pasteboardImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
+            pasteboardImagesVC.categoryId = categoryId
+            pasteboardImagesVC.user = user
+            navigationController?.pushViewController(pasteboardImagesVC, animated: true)
             return
         case .localAlbums:
             assetCollections = LocalAlbumsProvider.shared.localAlbums
