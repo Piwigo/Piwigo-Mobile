@@ -83,6 +83,9 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
+                        if self.reUploadAllowed {
+                            children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        }
                     }
                     return UIMenu(title: "", children: children)
                 })
@@ -124,6 +127,9 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
+                        if self.reUploadAllowed {
+                            children.append(self.uploaAction(forCell: cell, at: indexPath))
+                        }
                     }
                     return UIMenu(title: "", children: children)
                 })
