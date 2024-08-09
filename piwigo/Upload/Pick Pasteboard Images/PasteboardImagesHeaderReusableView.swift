@@ -31,7 +31,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
-        setButtonTitle(forState: selectState)
+        selectButton.setTitle(forState: selectState)
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
@@ -45,25 +45,5 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
         headerLabel.text = ""
         selectButton.setTitle("", for: .normal)
         selectButton.backgroundColor = .piwigoColorBackground()
-    }
-
-
-    // MARK: Utilities
-    func setButtonTitle(forState state:SelectButtonState) {
-        let title: String, bckgColor: UIColor
-        switch state {
-        case .select:
-            title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
-            bckgColor = .piwigoColorCellBackground()
-        case .deselect:
-            title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
-            bckgColor = .piwigoColorCellBackground()
-        case .none:
-            title = ""
-            bckgColor = .clear
-        }
-        selectButton.backgroundColor = bckgColor
-        selectButton.setTitle(title, for: .normal)
-        selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
     }
 }

@@ -77,7 +77,9 @@ extension PasteboardImagesViewController: UploadSwitchDelegate
         UploadManager.shared.backgroundQueue.async {
             self.uploadProvider.importUploads(from: self.uploadRequests) { error in
                 // Deselect cells and reset upload queue
-                self.cancelSelect()
+                DispatchQueue.main.async {
+                    self.cancelSelect()
+                }
                 self.uploadRequests = []
                 
                 // Error encountered?

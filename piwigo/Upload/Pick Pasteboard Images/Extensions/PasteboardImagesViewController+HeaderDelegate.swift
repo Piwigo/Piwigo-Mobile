@@ -50,7 +50,7 @@ extension PasteboardImagesViewController: PasteboardImagesHeaderDelegate
         let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         headers.forEach { header in
             if let header = header as? PasteboardImagesHeaderReusableView {
-                header.setButtonTitle(forState: sectionState)
+                header.selectButton.setTitle(forState: sectionState)
             }
         }
     }

@@ -31,7 +31,7 @@ extension PasteboardImagesViewController
         let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         headers.forEach { header in
             if let header = header as? PasteboardImagesHeaderReusableView {
-                header.setButtonTitle(forState: .select)
+                header.selectButton.setTitle(forState: .select)
             }
         }
     }
@@ -124,14 +124,6 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
             return
         }
         
-        // Number of selected images
-        let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
-        if nberOfImagesInSection == nberOfSelectedImagesInSection {
-            // All images are selected
-            sectionState = .deselect
-            return
-        }
-
         // Can we calculate the number of images already in the upload queue?
         if pendingOperations.preparationsInProgress.isEmpty == false {
             // Keep Select button disabled
@@ -147,6 +139,7 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
         }
 
         // Update state of Select button only if needed
+        let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
         if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
             // All images are in the upload queue or already downloaded
             sectionState = .none

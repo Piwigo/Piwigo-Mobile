@@ -94,6 +94,8 @@ extension PasteboardImagesViewController {
                 // Refresh the thumbnail of the cell
                 DispatchQueue.main.async {
                     if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
+                        let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
+                        cell.update(selected: self.selectedImages[indexPath.item] != nil, state: uploadState)
                         cell.cellImage.image = pbObject.image
                         self.reloadInputViews()
                     }
@@ -117,11 +119,12 @@ extension PasteboardImagesViewController {
                 self.pbObjects = newSetOfObjects
                 self.indexedUploadsInQueue = newSetOfUploads
                 
-                // Update section header
+                // Update section header and action buttonn
                 DispatchQueue.main.async {
+                    self.updateNavBar()
                     self.updateSelectButton()
                     if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
-                        header.setButtonTitle(forState: .select)
+                        header.selectButton.setTitle(forState: self.sectionState)
                     }
                 }
                 
@@ -217,7 +220,9 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 //        print("••• PasteboardImagesViewController controller:didChangeContent...")
         // Update navigation bar
-        updateNavBar()
+        DispatchQueue.main.async {
+            self.updateNavBar()
+        }
     }
 
     func updateCellAndSectionHeader(for upload: Upload) {
@@ -231,7 +236,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
                 // The section will be refreshed only if the button content needs to be changed
                 self.updateSelectButton()
                 if let header = self.localImagesCollection.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(item: 0, section: 0)) as? PasteboardImagesHeaderReusableView {
-                    header.setButtonTitle(forState: self.sectionState)
+                    header.selectButton.setTitle(forState: self.sectionState)
                 }
             }
         }
