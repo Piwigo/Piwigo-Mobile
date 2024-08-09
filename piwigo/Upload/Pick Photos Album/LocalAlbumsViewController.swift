@@ -183,14 +183,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
             // Check if there are photos/videos in the pasteboard
-            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-               indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
-                hasImagesInPasteboard = true
-            } else {
-                hasImagesInPasteboard = false
-            }
+            let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
+            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? 0
+            hasImagesInPasteboard = testTypes && (nberPhotos > 0)
         }
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
 

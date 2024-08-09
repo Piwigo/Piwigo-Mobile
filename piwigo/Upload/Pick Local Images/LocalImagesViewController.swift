@@ -672,10 +672,10 @@ class LocalImagesViewController: UIViewController
     }
     
 
-    // MARK: - Re-upload & Delete Camera Roll Images
+    // MARK: - Re-Upload Photos
     @available(iOS 14, *)
     private func reUploadAction() -> UIAction? {
-        // Check if there are uploaded photos
+        // Check if there are already uploaded photos
         if !canDeleteUploadedImages() { return nil }
         
         // Propose option for re-uploading photos
@@ -737,28 +737,12 @@ class LocalImagesViewController: UIViewController
         }
         self.updateNavBar()
     }
-    
-    private func canDeleteUploadedImages() -> Bool {
-        // Don't provide access to the Trash button until the preparation work is not done
-        if queue.operationCount > 0 { return false }
         
-        // Check if there are uploaded photos to delete
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-        for index in 0..<indexedUploads.count {
-            if let _ = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
-               indexedUploads[index].2 {
-                return true
-            }
-        }
-        return false
-    }
-    
 
     // MARK: - Delete Camera Roll Images
     @available(iOS 14.0, *)
     private func deleteAction() -> UIAction? {
-        // Check if there are uploaded photos
+        // Check if there are already uploaded photos that can be deleted
         if canDeleteUploadedImages() == false,
            canDeleteSelectedImages() == false { return nil }
         
@@ -816,6 +800,22 @@ class LocalImagesViewController: UIViewController
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()
         }
+    }
+    
+    private func canDeleteUploadedImages() -> Bool {
+        // Don't provide access to the Trash button until the preparation work is not done
+        if queue.operationCount > 0 { return false }
+        
+        // Check if there are uploaded photos to delete
+        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
+        for index in 0..<indexedUploads.count {
+            if let _ = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
+               indexedUploads[index].2 {
+                return true
+            }
+        }
+        return false
     }
     
     private func canDeleteSelectedImages() -> Bool {

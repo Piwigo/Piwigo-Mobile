@@ -116,10 +116,10 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
     func updateSelectButton()
     {
         // Number of images in section
-        let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
+        let nberOfImages = localImagesCollection.numberOfItems(inSection: 0)
 
         // Job done if there is no image presented
-        if nberOfImagesInSection == 0 {
+        if nberOfImages == 0 {
             sectionState = .none
             return
         }
@@ -132,18 +132,17 @@ extension PasteboardImagesViewController: UIGestureRecognizerDelegate
         }
 
         // Number of images already in the upload queue
-        var nberOfImagesOfSectionInUploadQueue = 0
+        var nberOfImagesInUploadQueue = 0
         if reUploadAllowed == false {
-            nberOfImagesOfSectionInUploadQueue = indexedUploadsInQueue[0..<nberOfImagesInSection]
-                                                    .compactMap{ $0 }.count
+            nberOfImagesInUploadQueue = indexedUploadsInQueue.compactMap({ $0 }).count
         }
 
         // Update state of Select button only if needed
-        let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
-        if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
+        let nberOfSelectedImages = selectedImages[0..<nberOfImages].compactMap{ $0 }.count
+        if nberOfImages == nberOfImagesInUploadQueue {
             // All images are in the upload queue or already downloaded
             sectionState = .none
-        } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
+        } else if nberOfImages == nberOfSelectedImages + nberOfImagesInUploadQueue {
             // All images are either selected or in the upload queue
             sectionState = .deselect
         } else {

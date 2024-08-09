@@ -459,7 +459,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     
     private func swapReuploadOption() {
         // Swap "Re-upload" option
-        reUploadAllowed = !(self.reUploadAllowed)
+        reUploadAllowed = !reUploadAllowed
         updateActionButton()
         
         // No further operation if re-uploading is allowed
@@ -498,10 +498,10 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     }
     
     private func canReUploadImages() -> Bool {
-        // Don't provide access to the Trash button until the preparation work is not done
+        // Don't provide access to the re-upload button until the preparation work is not done
         if !pendingOperations.preparationsInProgress.isEmpty { return false }
 
-        // Check if there are uploaded photos to delete
+        // Check if there are already uploaded photos
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
         let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
         for index in 0..<indexedUploads.count {

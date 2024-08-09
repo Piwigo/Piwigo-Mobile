@@ -217,8 +217,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
                         image: UIImage(named: "imageUpload")) { action in
             // Check that an upload request does not exist for that image (should never happen)
-            if (self.uploads.fetchedObjects ?? [])
-                .filter({$0.localIdentifier == cell.localIdentifier}).first != nil {
+            if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {
                 return
             }
             
