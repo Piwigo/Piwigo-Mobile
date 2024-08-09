@@ -341,14 +341,14 @@ extension LocalImagesViewController
             switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByMonth[indexPath.section].first {
-                    return index + indexPath.row
+                    return index + indexPath.item
                 } else {
                     return 0
                 }
             case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByMonth.endIndex - 1
                 if let index = indexOfImageSortedByMonth[lastSection - indexPath.section].last {
-                    return index - indexPath.row
+                    return index - indexPath.item
                 } else {
                     return 0
                 }
@@ -359,14 +359,14 @@ extension LocalImagesViewController
             switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByWeek[indexPath.section].first {
-                    return index + indexPath.row
+                    return index + indexPath.item
                 } else {
                     return 0
                 }
             case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByWeek.endIndex - 1
                 if let index = indexOfImageSortedByWeek[lastSection - indexPath.section].last {
-                    return index - indexPath.row
+                    return index - indexPath.item
                 } else {
                     return 0
                 }
@@ -377,14 +377,14 @@ extension LocalImagesViewController
             switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByDay[indexPath.section].first {
-                    return index + indexPath.row
+                    return index + indexPath.item
                 } else {
                     return 0
                 }
             case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByDay.endIndex - 1
                 if let index = indexOfImageSortedByDay[lastSection - indexPath.section].last {
-                    return index - indexPath.row
+                    return index - indexPath.item
                 } else {
                     return 0
                 }
@@ -394,9 +394,9 @@ extension LocalImagesViewController
         case .none:
             switch UploadVars.localImagesSort {
             case .dateCreatedDescending:
-                return indexPath.row
+                return indexPath.item
             case .dateCreatedAscending:
-                return max(0, fetchedImages.count - 1 - indexPath.row)
+                return max(0, fetchedImages.count - 1 - indexPath.item)
             default:
                 return 0
             }
