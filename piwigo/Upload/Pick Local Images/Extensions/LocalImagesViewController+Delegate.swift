@@ -93,6 +93,9 @@ extension LocalImagesViewController: UICollectionViewDelegate
                     } else {
                         children.append(self.statusAction(upload.first))
                     }
+                    if self.reUploadAllowed {
+                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                    }
                     if canDelete {
                         children.append(self.deleteAction(forCell: cell, at: indexPath))
                     }
@@ -143,6 +146,9 @@ extension LocalImagesViewController: UICollectionViewDelegate
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     } else {
                         children.append(self.statusAction(upload.first))
+                    }
+                    if self.reUploadAllowed {
+                        children.append(self.uploaAction(forCell: cell, at: indexPath))
                     }
                     if canDelete {
                         children.append(self.deleteAction(forCell: cell, at: indexPath))
