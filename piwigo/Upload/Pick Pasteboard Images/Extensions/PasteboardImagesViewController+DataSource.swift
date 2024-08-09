@@ -109,6 +109,7 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
             if let data = UIPasteboard.general.data(forPasteboardType: imageType,
                                                     inItemSet: IndexSet(integer: index))?.first {
                 image = UIImage(data: data) ?? imagePlaceholder
+                md5sum = data.MD5checksum()
             }
         }
         return (image, md5sum)

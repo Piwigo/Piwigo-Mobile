@@ -57,7 +57,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         if let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
             // Get image identifier and corresponding upload request if it exists
             let identifier = NSString(string: "\(cell.localIdentifier)")
-            let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier})
+            let upload = (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum})
             
             // Get upload state
             let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
@@ -98,7 +98,7 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
            let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
             // Get image identifier and corresponding upload request if it exists
             let identifier = NSString(string: "\(cell.localIdentifier)")
-            let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier})
+            let upload = (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum})
             
             // Get upload state
             let uploadState = self.getUploadStateOfImage(at: indexPath.item, for: cell)
