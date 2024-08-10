@@ -269,7 +269,7 @@ class ImageUtilities: NSObject {
         } else {
             // Delete corrupted cached image file
             try? FileManager.default.removeItem(at: imageURL)
-            return UIImage(named: "placeholder")!
+            return UIImage(named: "unknownImage")!
         }
     }
     
