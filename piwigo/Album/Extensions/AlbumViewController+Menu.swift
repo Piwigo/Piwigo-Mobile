@@ -220,11 +220,17 @@ extension AlbumViewController
         if sortOption != .rankAscending {
             let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
                                              style: .default, handler: { [self] action in
+                if let allImages = images.fetchedObjects {
+                    allImages.forEach { image in
+                        debugPrint("Manual Sort: \(image.pwgID) -> \(image.rankManual == Int64.min ? "Unknown" : "Known")")
+                    }
+                }
                 sortOption = .rankAscending
                 images.delegate = nil
                 images = data.images(sortedBy: .rankAscending)
                 images.delegate = self
-                updateImageCollection()
+                let shouldFetch = images.fetchedObjects?.first(where: {$0.rankManual == Int64.min}) != nil
+                updateImageCollection(afterFetchingRanks: shouldFetch)
             })
             alert.addAction(randomAction)
         }
@@ -237,7 +243,8 @@ extension AlbumViewController
                 images.delegate = nil
                 images = data.images(sortedBy: .random)
                 images.delegate = self
-                updateImageCollection()
+                let shouldFetch = images.fetchedObjects?.first(where: {$0.rankRandom == Int64.min}) != nil
+                updateImageCollection(afterFetchingRanks: shouldFetch)
             })
             alert.addAction(randomAction)
         }
@@ -256,10 +263,15 @@ extension AlbumViewController
         }
     }
     
-    func updateImageCollection() {
-        // Re-fetch image collection
-        try? images.performFetch()
-        collectionView?.reloadData()
+    func updateImageCollection(afterFetchingRanks shouldFetch: Bool = false) {
+        if shouldFetch {
+            // Some image ranks are unknown and must be retrieved
+            startFetchingAlbumAndImages(withHUD: true)
+        } else {
+            // Re-fetch image collection
+            try? images.performFetch()
+            collectionView?.reloadData()
+        }
     }
 }
 
@@ -369,9 +381,9 @@ extension AlbumViewController: ImageHeaderDelegate
 extension AlbumViewController
 {
     // MARK: - Menu
-    func updateCollectionAndMenu() {
+    func updateCollectionAndMenu(afterFetchingRanks shouldFetch: Bool = false) {
         // Re-fetch image collection
-        updateImageCollection()
+        updateImageCollection(afterFetchingRanks: shouldFetch)
         
         // Update menu
         var children = [UIMenu?]()
@@ -658,7 +670,8 @@ extension AlbumViewController
             images.delegate = nil
             images = data.images(sortedBy: .rankAscending)
             images.delegate = self
-            updateCollectionAndMenu()
+            let shouldFetch = images.fetchedObjects?.first(where: {$0.rankManual == Int64.min}) != nil
+            updateCollectionAndMenu(afterFetchingRanks: shouldFetch)
         })
         action.accessibilityIdentifier = "ManualSort"
         return action
@@ -684,7 +697,8 @@ extension AlbumViewController
             images.delegate = nil
             images = data.images(sortedBy: .random)
             images.delegate = self
-            updateCollectionAndMenu()
+            let shouldFetch = images.fetchedObjects?.first(where: {$0.rankRandom == Int64.min}) != nil
+            updateCollectionAndMenu(afterFetchingRanks: shouldFetch)
         })
         action.accessibilityIdentifier = "RandomSort"
         return action
