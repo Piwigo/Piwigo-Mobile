@@ -216,6 +216,19 @@ extension AlbumViewController
         let visitsSortAction = UIAlertAction(title: title, style: .default, handler: handler)
         alert.addAction(visitsSortAction)
 
+        // Sorted manually
+        if sortOption != .rankAscending {
+            let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
+                                             style: .default, handler: { [self] action in
+                sortOption = .rankAscending
+                images.delegate = nil
+                images = data.images(sortedBy: .rankAscending)
+                images.delegate = self
+                updateImageCollection()
+            })
+            alert.addAction(randomAction)
+        }
+
         // Presents photos randomly
         if sortOption != .random {
             let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_randomly", comment: "Randomly"),
@@ -382,7 +395,7 @@ extension AlbumViewController
                       children: [defaultSortAction(), titleSortAction(),
                                  createdSortAction(), postedSortAction(),
                                  ratingSortAction(), visitsSortAction(),
-                                 randomSortAction()].compactMap({$0}))
+                                 manualSortAction(), randomSortAction()].compactMap({$0}))
     }
     
     func defaultSortAction() -> UIAction? {
@@ -625,6 +638,32 @@ extension AlbumViewController
         return action
     }
     
+    func manualSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+        
+        let actionId = UIAction.Identifier("org.piwigo.images.sort.manual")
+        let isActive = sortOption == .rankAscending
+        let action = UIAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: actionId, handler: { [self] action in
+            // Should sorting be changed?
+            if isActive { return }
+            
+            // Change image sorting
+            sortOption = .rankAscending
+            images.delegate = nil
+            images = data.images(sortedBy: .rankAscending)
+            images.delegate = self
+            updateCollectionAndMenu()
+        })
+        action.accessibilityIdentifier = "ManualSort"
+        return action
+    }
+
     func randomSortAction() -> UIAction? {
         // Unavailable when presenting some smart albums
         let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
