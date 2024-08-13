@@ -291,8 +291,7 @@ extension AlbumViewController
                                 fromPage onPage: Int, toPage lastPage: Int, perPage: Int) {
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "",
-                                  sort: .dateCreatedAscending,
+        imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
                                   fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
             // Any error?
             if error != nil {
