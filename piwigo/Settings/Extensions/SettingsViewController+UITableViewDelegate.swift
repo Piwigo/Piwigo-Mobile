@@ -430,7 +430,7 @@ extension SettingsViewController: UITableViewDelegate
 
                     // Configure the fields of the interface.
                     composeVC.setToRecipients([
-                    NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
+                        NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
                     ])
 
                     // Collect version and build numbers
