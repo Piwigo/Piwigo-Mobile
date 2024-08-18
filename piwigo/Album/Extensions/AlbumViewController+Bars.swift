@@ -287,6 +287,7 @@ extension AlbumViewController
     }
     
     func updateBarsInSelectMode() {
+        setTitleViewFromAlbumData(whileUpdating: false)
         let hasImagesSelected = !selectedImageIds.isEmpty
         cancelBarButton.isEnabled = true
 
@@ -377,17 +378,38 @@ extension AlbumViewController
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone
-        var lastUpdated = ""
+        var subtitle = ""
         if !(UIDevice.current.userInterfaceIdiom == .phone &&
              UIApplication.shared.statusBarOrientation.isLandscape) {
             if isUpdating {
                 // Inform user that the app is fetching album data
-                lastUpdated = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+            }
+            else if isSelect {
+                let nberPhotos = selectedImageIds.count
+                switch nberPhotos {
+                case 0:
+                    subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                case 1:
+                    subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                case 2...nberPhotos:
+                    var nberPhotosStr = ""
+                    if #available(iOS 16, *) {
+                        nberPhotosStr = nberPhotos.formatted(.number)
+                    } else {
+                        let numberFormatter = NumberFormatter()
+                        numberFormatter.numberStyle = NumberFormatter.Style.decimal
+                        nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberPhotos)) ?? String(nberPhotos)
+                    }
+                    subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                default:
+                    subtitle = ""
+                }
             }
             else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
                 let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
                 if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
-                    lastUpdated = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                    subtitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
                 } else {
                     let calendar = Calendar.current
                     let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
@@ -396,21 +418,21 @@ extension AlbumViewController
                         // Album data updated today
                         let time = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .none, timeStyle: .short)
-                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedAt",
-                                                                       comment: "Updated at…"), time)
+                        subtitle = String(format: NSLocalizedString("categoryUpdatedAt",
+                                                                    comment: "Updated at…"), time)
                     } else {
                         // Album data updated yesterday or before
                         let date = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .short, timeStyle: .none)
-                        lastUpdated = String(format: NSLocalizedString("categoryUpdatedOn",
-                                                                       comment: "Updated on…"), date)
+                        subtitle = String(format: NSLocalizedString("categoryUpdatedOn",
+                                                                    comment: "Updated on…"), date)
                     }
                 }
             }
         }
         
         // Prepare sub-title
-        if lastUpdated.isEmpty == false {
+        if subtitle.isEmpty == false {
             let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
             subTitleLabel.textColor = .piwigoColorWhiteCream()
@@ -421,7 +443,7 @@ extension AlbumViewController
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
-            subTitleLabel.text = lastUpdated
+            subTitleLabel.text = subtitle
             subTitleLabel.sizeToFit()
             
             var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
