@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Share Fail";
 "shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

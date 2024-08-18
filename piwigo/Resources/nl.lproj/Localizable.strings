@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Delen mislukt";
 "shareMetadataError_message" = "Kan metadata niet verwijderen";
+"shareFailError_tooLarge" = "Selectie te groot om te delen";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "共有に失敗しました";
 "shareMetadataError_message" = "プライベートメタデータを取り除くことはできません";
+"shareFailError_tooLarge" = "共有するには大きすぎるセレクション";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

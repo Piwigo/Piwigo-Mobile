@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Dela misslyckades";
 "shareMetadataError_message" = "Kan inte ta bort privata metadata";
+"shareFailError_tooLarge" = "Urvalet är för stort för att dela";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

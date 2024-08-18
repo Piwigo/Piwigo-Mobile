@@ -61,97 +61,133 @@ extension AlbumViewController
 
     func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
         // To exclude some activity types
-        var excludedActivityTypes = [UIActivity.ActivityType]()
+        var hasVideoItem = false
+        var totalSize = Int64.zero
 
         // Create new activity provider items to pass to the activity view controller
-        totalNumberOfImages = selectedImageIds.count
         var itemsToShare: [UIActivityItemProvider] = []
+        
+        // Loop over the selected images
+//        timeCounter = CFAbsoluteTimeGetCurrent()
         for selectedImageId in selectedImageIds {
-            guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
-                else { continue }
-            if selectedImage.isVideo {
-                // Case of a video
-                let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: selectedImage)
+            autoreleasepool {
+                if let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId}) {
+                    if selectedImage.isVideo {
+                        // Case of a video
+                        let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: selectedImage)
+                        
+                        // Use delegation to monitor the progress of the item method
+                        videoItemProvider.delegate = self
+                        
+                        // Add to list of items to share
+                        itemsToShare.append(videoItemProvider)
+                        
+                        // To exclude some activities
+                        hasVideoItem = true
+                        totalSize += selectedImage.fileSize
+                    }
+                    else {
+                        // Case of an image
+                        let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: selectedImage)
+                        
+                        // Use delegation to monitor the progress of the item method
+                        imageItemProvider.delegate = self
+                        
+                        // Add to list of items to share
+                        itemsToShare.append(imageItemProvider)
+                        
+                        // To exclude some activities
+                        totalSize += selectedImage.fileSize
+                    }
+                }
+            }
+        }
+//        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
+//        print("••> completed in \(duration.rounded()) ms")
 
-                // Use delegation to monitor the progress of the item method
-                videoItemProvider.delegate = self
-
-                // Add to list of items to share
-                itemsToShare.append(videoItemProvider)
-
-                // Exclude "assign to contact" activity
-                excludedActivityTypes.append(.assignToContact)
+        // Close HUD if needed
+        DispatchQueue.main.async {
+            self.navigationController?.hideHUD { [self] in
+                // Check that the items size is acceptable for the device
+                let count = itemsToShare.count
+                let deviceMemory = UIDevice.current.modelMemorySize * 1024 * 1024
+                if totalSize * 5 > deviceMemory {  // i.e. 20% of available memory
+                    let title = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+                    let message = NSLocalizedString("shareFailError_tooLarge", comment: "Selection too large to share")
+                    let error = ByteCountFormatter.string(fromByteCount: totalSize, countStyle: .file)
+                    self.navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error ) { }
+                    return
+                }
                 
-            } else {
-                // Case of an image
-                let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: selectedImage)
+                // Create an activity view controller with the activity provider item.
+                // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+                let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
 
-                // Use delegation to monitor the progress of the item method
-                imageItemProvider.delegate = self
-
-                // Add to list of items to share
-                itemsToShare.append(imageItemProvider)
-            }
-        }
-
-        // Create an activity view controller with the activity provider item.
-        // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
-        let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
-
-        // Exclude camera roll activity if needed
-        if !hasCameraRollAccess {
-            // Exclude "camera roll" activity when the Photo Library is not accessible
-            excludedActivityTypes.append(.saveToCameraRoll)
-        }
-        activityViewController.excludedActivityTypes = Array(excludedActivityTypes)
-
-        // Delete image/video files and remove observers after dismissing activity view controller
-        activityViewController.completionWithItemsHandler = { [self] activityType, completed, returnedItems, activityError in
-            //        NSLog(@"Activity Type selected: %@", activityType);
-            if completed {
-                //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
-                // Delete shared files & remove observers
-                NotificationCenter.default.post(name: .pwgDidShare, object: nil)
-
-                // Deselect images
-                cancelSelect()
-
-                // Close HUD with success
-                presentedViewController?.updateHUDwithSuccess() { [self] in
-                    presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        // Close ActivityView
-                        presentedViewController?.dismiss(animated: true)
+                // Exclude some activities if needed
+                var excludedActivityTypes = [UIActivity.ActivityType]()
+                if hasVideoItem || count > 1 {
+                    excludedActivityTypes.append(.assignToContact)
+                    if #available(iOS 16.4, *) {
+                        excludedActivityTypes.append(.addToHomeScreen)
                     }
                 }
-            } else {
-                if activityType == nil {
-                    // User dismissed the view controller without making a selection.
-                    updateBarsInSelectMode()
-                } else {
-                    // Check what to do with selection
-                    if selectedImageIds.isEmpty {
+                if !hasCameraRollAccess {
+                    excludedActivityTypes.append(.saveToCameraRoll)
+                }
+                if totalSize * 10 > deviceMemory {  // i.e. 10% of available memory
+                    excludedActivityTypes.append(.copyToPasteboard)
+                }
+                activityViewController.excludedActivityTypes = Array(excludedActivityTypes)
+                
+                // Delete image/video files and remove observers after dismissing activity view controller
+                activityViewController.completionWithItemsHandler = { [self] activityType, completed, returnedItems, activityError in
+                    //        NSLog(@"Activity Type selected: %@", activityType);
+                    if completed {
+                        //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+                        // Delete shared files & remove observers
+                        NotificationCenter.default.post(name: .pwgDidShare, object: nil)
+
+                        // Deselect images
                         cancelSelect()
+
+                        // Close HUD with success
+                        presentedViewController?.updateHUDwithSuccess() { [self] in
+                            presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                                // Close ActivityView
+                                presentedViewController?.dismiss(animated: true)
+                            }
+                        }
                     } else {
-                        setEnableStateOfButtons(true)
+                        if activityType == nil {
+                            // User dismissed the view controller without making a selection.
+                            updateBarsInSelectMode()
+                        } else {
+                            // Check what to do with selection
+                            if selectedImageIds.isEmpty {
+                                cancelSelect()
+                            } else {
+                                setEnableStateOfButtons(true)
+                            }
+
+                            // Cancel download task
+                            NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
+
+                            // Delete shared file & remove observers
+                            NotificationCenter.default.post(name: .pwgDidShare, object: nil)
+
+                            // Close ActivityView
+                            presentedViewController?.dismiss(animated: true)
+                        }
                     }
-
-                    // Cancel download task
-                    NotificationCenter.default.post(name: .pwgCancelDownload, object: nil)
-
-                    // Delete shared file & remove observers
-                    NotificationCenter.default.post(name: .pwgDidShare, object: nil)
-
-                    // Close ActivityView
-                    presentedViewController?.dismiss(animated: true)
                 }
+
+                // Present share image activity view controller
+                if let parent = self.parent as? AlbumViewController {
+                    activityViewController.popoverPresentationController?.barButtonItem = parent.shareBarButton
+                }
+                self.present(activityViewController, animated: true)
             }
         }
-
-        // Present share image activity view controller
-        if let parent = parent as? AlbumViewController {
-            activityViewController.popoverPresentationController?.barButtonItem = parent.shareBarButton
-        }
-        present(activityViewController, animated: true)
     }
 
     @objc func cancelShareImages() {

@@ -102,7 +102,7 @@ class AlbumViewController: UIViewController
 
 
     // MARK: - Cached Values
-    private var timeCounter = CFAbsoluteTime(0)
+    var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
     lazy var albumCellSize: CGSize = getAlbumCellSize()
     lazy var albumPlaceHolder = UIImage(named: "placeholder")!

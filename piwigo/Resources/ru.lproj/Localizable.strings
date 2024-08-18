@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Поделиться не удалось";
 "shareMetadataError_message" = "Не удается разделить личные метаданные";
+"shareFailError_tooLarge" = "Выбор слишком велик, чтобы делиться им";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

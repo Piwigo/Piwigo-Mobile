@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Sikertelen megosztás";
 "shareMetadataError_message" = "Nem sikerült eltávolítani a privát metaadatokat";
+"shareFailError_tooLarge" = "Túl nagy választék a megosztáshoz";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

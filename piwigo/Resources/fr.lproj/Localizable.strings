@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Échec du partage";
 "shareMetadataError_message" = "Impossible de supprimer les métadonnées privées";
+"shareFailError_tooLarge" = "Sélection trop volumineuse pour être partagée";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

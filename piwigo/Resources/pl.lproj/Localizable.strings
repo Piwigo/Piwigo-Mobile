@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Udostępnienie nie powiodło się";
 "shareMetadataError_message" = "Nie można usunąć prywatnych metadanych";
+"shareFailError_tooLarge" = "Wybór zbyt duży, by go udostępnić";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

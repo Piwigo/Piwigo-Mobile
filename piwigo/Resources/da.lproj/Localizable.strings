@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Deling mislykkedes";
 "shareMetadataError_message" = "Kan ikke fjerne private metadata";
+"shareFailError_tooLarge" = "Udvalget er for stort til at dele";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

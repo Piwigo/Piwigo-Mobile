@@ -329,7 +329,18 @@ extension AlbumViewController
         case .delete        /* Distinguish orphanes and ask for confirmation */:
             askDeleteConfirmation()
         case .share         /* Check Photo Library access rights */:
-            checkPhotoLibraryAccessBeforeShare()
+            // Display or update HUD
+            if navigationController?.isShowingHUD() ?? false {
+                navigationController?.updateHUD(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                                                inMode: .indeterminate)
+            } else if selectedImageIds.count > 200 {
+                navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                                              inMode: .indeterminate)
+            }
+            // Prepare items to share in background queue
+            DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async {
+                self.checkPhotoLibraryAccessBeforeShare()
+            }
         case .copyImages    /* Copy images to Album */:
             copyImagesToAlbum()
         case .moveImages    /* Move images to album */:
@@ -349,8 +360,13 @@ extension AlbumViewController
         // Get image ID if any
         guard let imageId = selectedImageIdsLoop.first else {
             DispatchQueue.main.async {
-                self.navigationController?.hideHUD() { [self] in
-                    doAction(action)
+                if action == .share {
+                    // Update or display HUD
+                    self.doAction(action)
+                } else {
+                    self.navigationController?.hideHUD() { [self] in
+                        doAction(action)
+                    }
                 }
             }
             return

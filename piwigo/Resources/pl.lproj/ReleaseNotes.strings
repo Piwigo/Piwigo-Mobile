@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.2_text" = "Wersja 3.2.2\n\n• Dodano opcję usuwania wybranych zdjęć/filmów zapisanych w urządzeniu.\n• Poprawki błędów";
+"v3.2.2_text" = "Wersja 3.2.2\n\n• Dodano opcję usuwania wybranych zdjęć/filmów zapisanych w urządzeniu\n• Poprawki błędów";
 
 "v3.2.1_text" = "Wersja 3.2.1\n29 lipca 2024\n\n• Dodaje opcję wyświetlania albumów z ich opisami lub bez opisów\n• Poprawki błędów";
 

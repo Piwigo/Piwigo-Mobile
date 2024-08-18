@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "分享失败";
 "shareMetadataError_message" = "无法删除私有元数据";
+"shareFailError_tooLarge" = "选择太多，无法共享";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

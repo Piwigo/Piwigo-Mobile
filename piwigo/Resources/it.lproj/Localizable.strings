@@ -605,6 +605,7 @@
 
 "shareFailError_title" = "Condivisione Fallita";
 "shareMetadataError_message" = "Impossibile eliminare i metadati privati";
+"shareFailError_tooLarge" = "Selezione troppo ampia per essere condivisa";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
