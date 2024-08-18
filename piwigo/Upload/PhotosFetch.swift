@@ -44,9 +44,9 @@ class PhotosFetch: NSObject {
                                 if Thread.isMainThread {
                                     self.showPhotosLibraryAccessRestricted(in: viewController)
                                 } else {
-                                    DispatchQueue.main.async(execute: {
+                                    DispatchQueue.main.async {
                                         self.showPhotosLibraryAccessRestricted(in: viewController)
-                                    })
+                                    }
                                 }
                             }
                             doWithoutAccess()
@@ -63,9 +63,9 @@ class PhotosFetch: NSObject {
                                 if Thread.isMainThread {
                                     self.requestPhotoLibraryAccess(in: viewController)
                                 } else {
-                                    DispatchQueue.main.async(execute: {
+                                    DispatchQueue.main.async {
                                         self.requestPhotoLibraryAccess(in: viewController)
-                                    })
+                                    }
                                 }
                             }
                         }
@@ -74,9 +74,9 @@ class PhotosFetch: NSObject {
                         if Thread.isMainThread {
                             doWithAccess()
                         } else {
-                            DispatchQueue.main.async(execute: {
+                            DispatchQueue.main.async {
                                 doWithAccess()
-                            })
+                            }
                         }
                 }
             }
@@ -92,9 +92,9 @@ class PhotosFetch: NSObject {
                     if Thread.isMainThread {
                         showPhotosLibraryAccessRestricted(in: viewController)
                     } else {
-                        DispatchQueue.main.async(execute: {
+                        DispatchQueue.main.async {
                             self.showPhotosLibraryAccessRestricted(in: viewController)
-                        })
+                        }
                     }
                 }
                 doWithoutAccess()
@@ -111,9 +111,9 @@ class PhotosFetch: NSObject {
                     if Thread.isMainThread {
                         requestPhotoLibraryAccess(in: viewController)
                     } else {
-                        DispatchQueue.main.async(execute: {
+                        DispatchQueue.main.async {
                             self.requestPhotoLibraryAccess(in: viewController)
-                        })
+                        }
                     }
                 }
             }
@@ -122,9 +122,9 @@ class PhotosFetch: NSObject {
             if Thread.isMainThread {
                 doWithAccess()
             } else {
-                DispatchQueue.main.async(execute: {
+                DispatchQueue.main.async {
                     doWithAccess()
-                })
+                }
             }
         @unknown default:
             print("unknown Photo Library authorization status")
@@ -150,9 +150,9 @@ class PhotosFetch: NSObject {
                                 if Thread.isMainThread {
                                     self.showPhotosLibraryAccessRestricted(in: viewController)
                                 } else {
-                                    DispatchQueue.main.async(execute: {
+                                    DispatchQueue.main.async {
                                         self.showPhotosLibraryAccessRestricted(in: viewController)
-                                    })
+                                    }
                                 }
                             }
                             // Exceute next steps
@@ -163,9 +163,9 @@ class PhotosFetch: NSObject {
                                 if Thread.isMainThread {
                                     self.requestPhotoLibraryAccess(in: viewController)
                                 } else {
-                                    DispatchQueue.main.async(execute: {
+                                    DispatchQueue.main.async {
                                         self.requestPhotoLibraryAccess(in: viewController)
-                                    })
+                                    }
                                 }
                             }
                             // Exceute next steps
@@ -175,9 +175,9 @@ class PhotosFetch: NSObject {
                             if Thread.isMainThread {
                                 doWithAccess()
                             } else {
-                                DispatchQueue.main.async(execute: {
+                                DispatchQueue.main.async {
                                     doWithAccess()
-                                })
+                                }
                             }
                     }
                 })
@@ -187,9 +187,9 @@ class PhotosFetch: NSObject {
                     if Thread.isMainThread {
                         showPhotosLibraryAccessRestricted(in: viewController)
                     } else {
-                        DispatchQueue.main.async(execute: {
+                        DispatchQueue.main.async {
                             self.showPhotosLibraryAccessRestricted(in: viewController)
-                        })
+                        }
                     }
                 }
                 // Exceute next steps
@@ -200,9 +200,9 @@ class PhotosFetch: NSObject {
                     if Thread.isMainThread {
                         requestPhotoLibraryAccess(in: viewController)
                     } else {
-                        DispatchQueue.main.async(execute: {
+                        DispatchQueue.main.async {
                             self.requestPhotoLibraryAccess(in: viewController)
-                        })
+                        }
                     }
                 }
                 // Exceute next steps
@@ -212,9 +212,9 @@ class PhotosFetch: NSObject {
                 if Thread.isMainThread {
                     doWithAccess()
                 } else {
-                    DispatchQueue.main.async(execute: {
+                    DispatchQueue.main.async {
                         doWithAccess()
-                    })
+                    }
                 }
         }
     }
