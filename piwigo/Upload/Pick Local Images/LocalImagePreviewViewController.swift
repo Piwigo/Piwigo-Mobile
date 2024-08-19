@@ -12,10 +12,10 @@ import UIKit
 class LocalImagePreviewViewController: UIViewController {
     private var aspectRatio = 1.0
     private let imageView = UIImageView()
-
+    
     init(imageAsset: PHAsset, pixelSize: CGSize) {
         super.init(nibName: nil, bundle: nil)
-
+        
         // Retrieve image
         aspectRatio = Double(imageAsset.pixelHeight) / Double(imageAsset.pixelWidth)
         let options = PHImageRequestOptions()
@@ -47,19 +47,23 @@ class LocalImagePreviewViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-
+        
         NSLayoutConstraint.activate([
             imageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             imageView.rightAnchor.constraint(equalTo: view.rightAnchor),
             imageView.topAnchor.constraint(equalTo: view.topAnchor),
             imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         let width = view.bounds.width
         let height = width * aspectRatio
         preferredContentSize = CGSize(width: width, height: height)
