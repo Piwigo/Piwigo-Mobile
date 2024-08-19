@@ -241,9 +241,10 @@
 "createAlbumError_message" = "Kunde inte skapa nytt album";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Byt namn";
-"categoryCellOption_move" = "Flytta";
-"categoryCellOption_delete" = "Radera";
+"categoryCellOption_addPhotos" = "Lägg till foton";
+"categoryCellOption_rename" = "Byt namn på album";
+"categoryCellOption_move" = "Flytta album";
+"categoryCellOption_delete" = "Radera album";
 
 // Album rename
 "renameCategory_title" = "Byt namn på Album";

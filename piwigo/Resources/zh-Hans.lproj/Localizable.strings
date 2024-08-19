@@ -241,9 +241,10 @@
 "createAlbumError_message" = "无法创建新相册";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "重命名";
-"categoryCellOption_move" = "移动";
-"categoryCellOption_delete" = "删除";
+"categoryCellOption_addPhotos" = "添加照片";
+"categoryCellOption_rename" = "重新命名相册";
+"categoryCellOption_move" = "移动相册";
+"categoryCellOption_delete" = "删除相册";
 
 // Album rename
 "renameCategory_title" = "重命名相册";

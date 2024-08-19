@@ -241,6 +241,7 @@
 "createAlbumError_message" = "Gagal untuk membuat album baru";
 
 // Album options (swipe actions)
+"categoryCellOption_addPhotos" = "Add Photos";
 "categoryCellOption_rename" = "Ganti Nama";
 "categoryCellOption_move" = "Pindah";
 "categoryCellOption_delete" = "Hapus";

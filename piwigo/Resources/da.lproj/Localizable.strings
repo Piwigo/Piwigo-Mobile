@@ -241,9 +241,10 @@
 "createAlbumError_message" = "Kunne ikke oprette nyt album";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Omdøb";
-"categoryCellOption_move" = "Flyt";
-"categoryCellOption_delete" = "Slet";
+"categoryCellOption_addPhotos" = "Tilføj fotos";
+"categoryCellOption_rename" = "Omdøb albummet";
+"categoryCellOption_move" = "Flyt album";
+"categoryCellOption_delete" = "Slet album";
 
 // Album rename
 "renameCategory_title" = "Omdøb Album";

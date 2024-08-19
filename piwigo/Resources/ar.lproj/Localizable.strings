@@ -241,6 +241,7 @@
 "createAlbumError_message" = "فشل إنشاء ألبوم جديد";
 
 // Album options (swipe actions)
+"categoryCellOption_addPhotos" = "Add Photos";
 "categoryCellOption_rename" = "إعادة التسمية";
 "categoryCellOption_move" = "نقل";
 "categoryCellOption_delete" = "حذف";

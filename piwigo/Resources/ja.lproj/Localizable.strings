@@ -241,9 +241,10 @@
 "createAlbumError_message" = "新規アルバムの作成に失敗しました";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "名称の変更";
-"categoryCellOption_move" = "移動";
-"categoryCellOption_delete" = "削除";
+"categoryCellOption_addPhotos" = "写真を追加";
+"categoryCellOption_rename" = "アルバム名の変更";
+"categoryCellOption_move" = "アルバムの移動";
+"categoryCellOption_delete" = "アルバム削除";
 
 // Album rename
 "renameCategory_title" = "アルバムの名称を変更";

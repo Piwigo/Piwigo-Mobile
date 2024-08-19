@@ -241,9 +241,10 @@
 "createAlbumError_message" = "Nem sikerült létrehozni az albumot";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Átnevezés";
-"categoryCellOption_move" = "Mozgatás";
-"categoryCellOption_delete" = "Törlés";
+"categoryCellOption_addPhotos" = "Fényképek hozzáadása";
+"categoryCellOption_rename" = "Album átnevezése";
+"categoryCellOption_move" = "Album áthelyezése";
+"categoryCellOption_delete" = "Album törlése";
 
 // Album rename
 "renameCategory_title" = "Album átnevezése";

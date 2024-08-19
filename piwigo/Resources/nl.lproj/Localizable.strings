@@ -241,9 +241,10 @@
 "createAlbumError_message" = "Het aanmaken van een album is mislukt";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Naam wijzigen";
-"categoryCellOption_move" = "Verplaatsen";
-"categoryCellOption_delete" = "Verwijderen";
+"categoryCellOption_addPhotos" = "Foto's toevoegen";
+"categoryCellOption_rename" = "Album hernoemen";
+"categoryCellOption_move" = "Album verplaatsen";
+"categoryCellOption_delete" = "Album verwijderen";
 
 // Album rename
 "renameCategory_title" = "Albumnaam wijzigen";

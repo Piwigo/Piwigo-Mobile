@@ -15,6 +15,13 @@ extension AlbumViewController
     // MARK: - Upload Actions
     @objc func didTapUploadImagesButton() {
         // Check autorisation to access Photo Library before uploading
+        checkPhotoLibraryAccess()
+
+        // Hide CreateAlbum and UploadImages buttons
+        didCancelTapAddButton()
+    }
+    
+    func checkPhotoLibraryAccess() {
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
                 // Open local albums view controller in new navigation controller
@@ -27,9 +34,6 @@ extension AlbumViewController
                 self.presentLocalAlbums()
             }, onDeniedAccess: { })
         }
-
-        // Hide CreateAlbum and UploadImages buttons
-        didCancelTapAddButton()
     }
     
     private func presentLocalAlbums() {

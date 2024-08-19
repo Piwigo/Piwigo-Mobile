@@ -241,9 +241,10 @@
 "createAlbumError_message" = "Не удалось создать новый альбом";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Переименовать";
-"categoryCellOption_move" = "Переместить";
-"categoryCellOption_delete" = "Удалить";
+"categoryCellOption_addPhotos" = "Добавить фотографии";
+"categoryCellOption_rename" = "Переименовать альбом";
+"categoryCellOption_move" = "Переместить альбом";
+"categoryCellOption_delete" = "Удалить альбом";
 
 // Album rename
 "renameCategory_title" = "Переименовать альбом";

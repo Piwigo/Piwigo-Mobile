@@ -176,15 +176,38 @@ extension AlbumViewController: UICollectionViewDelegate
     // MARK: - Album Context Menu
     @available(iOS 13.0, *)
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
-        let renameAction = self.renameAlbumAction(indexPath)
-        let moveAction = self.moveAlbumAction(indexPath)
-        let deleteAction = self.deleteAlbumAction(indexPath)
-        return UIMenu(title: "", children: [renameAction, moveAction, deleteAction])
+        let addPhotos = self.addPhotosMenu(indexPath)
+        let rename = self.renameAlbumAction(indexPath)
+        let move = self.moveAlbumAction(indexPath)
+        let delete = self.deleteAlbumMenu(indexPath)
+        return UIMenu(title: "", children: [addPhotos, rename, move, delete])
+    }
+    
+    @available(iOS 13.0, *)
+    private func addPhotosMenu(_ indexPath: IndexPath) -> UIMenu {
+        let addPhotos = addPhotosAction(indexPath)
+        let menuId = UIMenu.Identifier("org.piwigo.addPhotos")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [addPhotos])
+    }
+    
+    @available(iOS 13.0, *)
+    private func addPhotosAction(_ indexPath: IndexPath) -> UIAction {
+        return UIAction(title: NSLocalizedString("categoryCellOption_addPhotos", comment: "Add Photos"),
+                        image: UIImage(named: "imageUpload")) { action in
+            // Push album view
+            let albumData = self.albums.object(at: indexPath)
+            let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
+            subAlbumVC.categoryId = albumData.pwgID
+            self.pushAlbumView(subAlbumVC) { _ in }
+            subAlbumVC.checkPhotoLibraryAccess()
+        }
     }
     
     @available(iOS 13.0, *)
     private func renameAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryCellOption_rename", comment: "Rename"),
+        return UIAction(title: NSLocalizedString("categoryCellOption_rename", comment: "Rename Album"),
                         image: UIImage(systemName: "character.cursor.ibeam")) { action in
             guard let topViewController = self.navigationController
             else { return }
@@ -197,7 +220,7 @@ extension AlbumViewController: UICollectionViewDelegate
     
     @available(iOS 13.0, *)
     private func moveAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryCellOption_move", comment: "Move"),
+        return UIAction(title: NSLocalizedString("categoryCellOption_move", comment: "Move Album"),
                         image: UIImage(systemName: "arrowshape.turn.up.left")) { action in
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
             guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
@@ -210,8 +233,15 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     @available(iOS 13.0, *)
+    private func deleteAlbumMenu(_ indexPath: IndexPath) -> UIMenu {
+        let delete = deleteAlbumAction(indexPath)
+        let menuId = UIMenu.Identifier("org.piwigo.deleteAlbum")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
+    }
+    
+    @available(iOS 13.0, *)
     private func deleteAlbumAction(_ indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("categoryCellOption_delete", comment: "Delete"),
+        return UIAction(title: NSLocalizedString("categoryCellOption_delete", comment: "Delete Album"),
                         image: UIImage(systemName: "trash"),
                         attributes: .destructive) { action in
             guard let topViewController = self.navigationController
@@ -222,6 +252,7 @@ extension AlbumViewController: UICollectionViewDelegate
             delete.displayAlert { _ in }
         }
     }
+    
     
     // MARK: - Image Context Menu
     @available(iOS 13.0, *)

@@ -241,9 +241,10 @@
 "createAlbumError_message" = "Erstellen eines neuen Albums fehlgeschlagen";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Umbenennen";
-"categoryCellOption_move" = "Verschieben";
-"categoryCellOption_delete" = "Löschen";
+"categoryCellOption_addPhotos" = "Fotos hinzufügen";
+"categoryCellOption_rename" = "Album umbenennen";
+"categoryCellOption_move" = "Album verschieben";
+"categoryCellOption_delete" = "Album löschen";
 
 // Album rename
 "renameCategory_title" = "Album umbenennen";
