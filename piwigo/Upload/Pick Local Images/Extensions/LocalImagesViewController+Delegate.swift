@@ -97,7 +97,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     }
                     if canDelete {
-                        children.append(self.deleteAction(forCell: cell, at: indexPath))
+                        children.append(self.deleteMenu(forCell: cell, at: indexPath))
                     }
                     return UIMenu(title: "", children: children)
                 })
@@ -151,7 +151,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
                         children.append(self.uploaAction(forCell: cell, at: indexPath))
                     }
                     if canDelete {
-                        children.append(self.deleteAction(forCell: cell, at: indexPath))
+                        children.append(self.deleteMenu(forCell: cell, at: indexPath))
                     }
                     return UIMenu(title: "", children: children)
                 })
@@ -282,6 +282,13 @@ extension LocalImagesViewController: UICollectionViewDelegate
         }
     }
 
+    @available(iOS 13.0, *)
+    private func deleteMenu(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIMenu {
+        let delete = deleteAction(forCell: cell, at: indexPath)
+        let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
+    }
+    
     @available(iOS 13.0, *)
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),

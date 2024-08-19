@@ -181,7 +181,7 @@ class LocalImagesViewController: UIViewController
             var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                               selectPhotosMenu(), reUploadAction()]
             if UIDevice.current.userInterfaceIdiom == .phone {
-                children.append(deleteAction())
+                children.append(deleteMenu())
             }
             let menu = UIMenu(title: "", children: children.compactMap({$0}))
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
@@ -458,7 +458,7 @@ class LocalImagesViewController: UIViewController
             var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                               selectPhotosMenu(), reUploadAction()]
             if UIDevice.current.userInterfaceIdiom == .phone {
-                children.append(deleteAction())
+                children.append(deleteMenu())
             }
             let updatedMenu = actionBarButton?.menu?.replacingChildren(children.compactMap({$0}))
             actionBarButton?.menu = updatedMenu
@@ -741,7 +741,7 @@ class LocalImagesViewController: UIViewController
 
     // MARK: - Delete Camera Roll Images
     @available(iOS 14.0, *)
-    private func deleteAction() -> UIAction? {
+    private func deleteMenu() -> UIMenu? {
         // Check if there are already uploaded photos that can be deleted
         if canDeleteUploadedImages() == false,
            canDeleteSelectedImages() == false { return nil }
@@ -752,8 +752,8 @@ class LocalImagesViewController: UIViewController
             // Delete uploaded photos from the camera roll
             self.deleteUploadedImages()
         })
-        delete.accessibilityIdentifier = "org.piwigo.removeFromCameraRoll"
-        return delete
+        let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
     }
     
     @objc func deleteUploadedImages() {
