@@ -44,10 +44,10 @@ class ImagePreviewViewController: UIViewController
                 PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                            fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
                                            placeHolder: placeHolder) { fractionCompleted in
-                    DispatchQueue.main.async {
-                        // Show download progress
+//                    DispatchQueue.main.async {
+//                        // Show download progress
 //                        self.progressView.progress = fractionCompleted
-                    }
+//                    }
                 } completion: { cachedImageURL in
                     let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
                     DispatchQueue.main.async {
@@ -59,7 +59,6 @@ class ImagePreviewViewController: UIViewController
                 } failure: { _ in }
             }
         }
-        
     }
     
     private func setImageView(with image: UIImage) {
