@@ -66,4 +66,12 @@ extension Resolution {
     public var maxSize: Int {
         return max(self.width, self.height)
     }
+    
+    public var aspectRatio: Double? {
+        if height != 0 {
+            return Double(height) / Double(width)
+        } else {
+            return nil
+        }
+    }
 }
