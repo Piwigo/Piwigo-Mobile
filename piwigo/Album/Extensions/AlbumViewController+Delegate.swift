@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import piwigoKit
 
 // MARK: UICollectionViewDelegate Methods
 extension AlbumViewController: UICollectionViewDelegate
@@ -123,6 +124,21 @@ extension AlbumViewController: UICollectionViewDelegate
                 return self.albumContextMenu(indexPath)
             }
         }
+        else if indexPath.section > 0,
+                let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+                let imageData = cell.imageData {
+            // Return context menu configuration
+            let identifier = NSString(string: "\(imageData.pwgID)")
+            return UIContextMenuConfiguration(identifier: identifier,
+                previewProvider: {
+                    // Create preview view controller
+                    return ImagePreviewViewController(imageData: imageData)
+                },
+                actionProvider: { suggestedActions in
+                    // Present context menu
+                return self.imageContextMenu(forCell: cell, imageData: imageData, at: indexPath)
+            })
+        }
         return nil
     }
     
@@ -139,9 +155,25 @@ extension AlbumViewController: UICollectionViewDelegate
                 return self.albumContextMenu(indexPath)
             })
         }
+        else if indexPaths.count == 1, let indexPath = indexPaths.first, indexPath.section > 0,
+                let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+                let imageData = cell.imageData {
+            // Return context menu configuration
+            return UIContextMenuConfiguration(identifier: nil,
+                previewProvider: {
+                    // Create preview view controller
+                    return ImagePreviewViewController(imageData: imageData)
+                },
+                actionProvider: { suggestedActions in
+                    // Present context menu
+                return self.imageContextMenu(forCell: cell, imageData: imageData, at: indexPath)
+            })
+        }
         return nil
     }
 
+    
+    // MARK: - Album Context Menu
     @available(iOS 13.0, *)
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
         let renameAction = self.renameAlbumAction(indexPath)
@@ -188,6 +220,99 @@ extension AlbumViewController: UICollectionViewDelegate
             let delete = AlbumDeletion(albumData: albumData, user: self.user,
                                        topViewController: topViewController)
             delete.displayAlert { _ in }
+        }
+    }
+    
+    // MARK: - Image Context Menu
+    @available(iOS 13.0, *)
+    private func imageContextMenu(forCell cell: ImageCollectionViewCell, imageData: Image,
+                                  at indexPath: IndexPath) -> UIMenu {
+        var children = [UIMenuElement]()
+        if let imageID = cell.imageData?.pwgID {
+            if self.selectedImageIds.contains(imageID) {
+                // Image not selected ► Propose to select it
+                children.append(deselectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+            } else {
+                // Image selected ► Propose to deselect it
+                children.append(selectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+            }
+        }
+        return UIMenu(title: "", children: children)
+    }
+    
+    @available(iOS 13.0, *)
+    private func selectImageAction(forCell cell: ImageCollectionViewCell, imageID: Int64,
+                                   at indexPath: IndexPath) -> UIAction {
+        // Image not selected ► Propose to select it
+        return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
+                        image: UIImage(systemName: "checkmark.circle")) { _ in
+            // Select image
+            self.selectedImageIds.insert(imageID)
+            cell.isSelection = true
+            if cell.isFavorite {
+                self.selectedFavoriteIds.insert(imageID)
+            }
+            if cell.imageData.isVideo {
+                self.selectedVideosIds.insert(imageID)
+            }
+            
+            // Check if the selection mode is active
+            if self.isSelect {
+                // Update the navigation bar and title view
+                self.updateBarsInSelectMode()
+            } else {
+                // Enable the selection mode
+                self.isSelect = true
+                self.hideButtons()
+                self.initBarsInSelectMode()
+            }
+            
+            // Update state of Select button if needed
+            let selectState = self.updateSelectButton(ofSection: indexPath.section)
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            }
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    private func deselectImageAction(forCell cell: ImageCollectionViewCell, imageID: Int64,
+                                     at indexPath: IndexPath) -> UIAction {
+        // Image selected ► Propose to deselect it
+        var image: UIImage?
+        if #available(iOS 16, *) {
+            image = UIImage(systemName: "checkmark.circle.badge.xmark")
+        } else {
+            image = UIImage(systemName: "checkmark.circle")
+        }
+        return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
+                        image: image) { _ in
+            // Deselect image
+            cell.isSelection = false
+            self.selectedImageIds.remove(imageID)
+            self.selectedFavoriteIds.remove(imageID)
+            self.selectedVideosIds.remove(imageID)
+                
+            // Check if the selection mode should be disabled
+            if self.selectedImageIds.isEmpty {
+                // Disable the selection mode
+                self.cancelSelect()
+            } else {
+                // Update the navigation bar and title view
+                self.updateBarsInSelectMode()
+            }
+            
+            // Update state of Select button if needed
+            let selectState = self.updateSelectButton(ofSection: indexPath.section)
+            let indexPath = IndexPath(item: 0, section: indexPath.section)
+            if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.selectButton.setTitle(forState: selectState)
+            }
         }
     }
 }

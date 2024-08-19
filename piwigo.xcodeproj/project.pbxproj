@@ -160,6 +160,7 @@
 		AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
 		AD30FD3721316DA8009AA30E /* piwigoScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoScreenshots.swift */; };
 		AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */; };
+		AD31A73F2C736A9800B37B19 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */; };
 		AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */; };
 		AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */; };
 		AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */; };
@@ -759,6 +760,7 @@
 		AD30FD3621316DA8009AA30E /* piwigoScreenshots.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = piwigoScreenshots.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginViewController.storyboard; sourceTree = "<group>"; };
+		AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
 		AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReleaseNotesViewController.storyboard; sourceTree = "<group>"; };
 		AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseNotesViewController.swift; sourceTree = "<group>"; };
@@ -1447,6 +1449,7 @@
 				ADBC08CD244604EB00BF82E8 /* ImageFooterReusableView.swift */,
 				AD211A7527A85EDB005D5E4F /* ImageCollectionViewCell.swift */,
 				AD211A7727AB1FA8005D5E4F /* ImageCollectionViewCell.xib */,
+				AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */,
 			);
 			path = ImageCollection;
 			sourceTree = "<group>";
@@ -3497,6 +3500,7 @@
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				AD6A0E782C445C750089A25E /* AlbumCollectionViewCell.swift in Sources */,
 				AD9698262BE6661D00520614 /* AlbumViewController+Search.swift in Sources */,
+				AD31A73F2C736A9800B37B19 /* ImagePreviewViewController.swift in Sources */,
 				ADDB2A6D2B416F5800FDC1B1 /* EditImageParamsViewController+UITableView.swift in Sources */,
 				ADC69F25285DF50C009BF9AF /* TagSelectorViewController+Search.swift in Sources */,
 				ADBE0C2D2BE963CD00F16A50 /* AlbumViewController+Delete.swift in Sources */,
