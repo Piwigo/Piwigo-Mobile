@@ -130,12 +130,12 @@ extension AlbumViewController: UICollectionViewDelegate
             // Return context menu configuration
             let identifier = NSString(string: "\(imageData.pwgID)")
             return UIContextMenuConfiguration(identifier: identifier,
-                previewProvider: {
-                    // Create preview view controller
-                    return ImagePreviewViewController(imageData: imageData)
-                },
-                actionProvider: { suggestedActions in
-                    // Present context menu
+                                              previewProvider: {
+                // Create preview view controller
+                return ImagePreviewViewController(imageData: imageData)
+            },
+                                              actionProvider: { suggestedActions in
+                // Present context menu
                 return self.imageContextMenu(forCell: cell, imageData: imageData, at: indexPath)
             })
         }
@@ -160,18 +160,18 @@ extension AlbumViewController: UICollectionViewDelegate
                 let imageData = cell.imageData {
             // Return context menu configuration
             return UIContextMenuConfiguration(identifier: nil,
-                previewProvider: {
-                    // Create preview view controller
-                    return ImagePreviewViewController(imageData: imageData)
-                },
-                actionProvider: { suggestedActions in
-                    // Present context menu
+                                              previewProvider: {
+                // Create preview view controller
+                return ImagePreviewViewController(imageData: imageData)
+            },
+                                              actionProvider: { suggestedActions in
+                // Present context menu
                 return self.imageContextMenu(forCell: cell, imageData: imageData, at: indexPath)
             })
         }
         return nil
     }
-
+    
     
     // MARK: - Album Context Menu
     @available(iOS 13.0, *)
@@ -236,6 +236,7 @@ extension AlbumViewController: UICollectionViewDelegate
                 // Image selected ► Propose to deselect it
                 children.append(selectImageAction(forCell: cell, imageID: imageID, at: indexPath))
             }
+            children.append(deleteImageMenu(forImageID: imageID))
         }
         return UIMenu(title: "", children: children)
     }
@@ -295,7 +296,7 @@ extension AlbumViewController: UICollectionViewDelegate
             self.selectedImageIds.remove(imageID)
             self.selectedFavoriteIds.remove(imageID)
             self.selectedVideosIds.remove(imageID)
-                
+            
             // Check if the selection mode should be disabled
             if self.selectedImageIds.isEmpty {
                 // Disable the selection mode
@@ -313,6 +314,22 @@ extension AlbumViewController: UICollectionViewDelegate
             } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
             }
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    private func deleteImageMenu(forImageID imageID: Int64) -> UIMenu {
+        let delete = deleteImageAction(forImageID: imageID)
+        let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
+    }
+    
+    @available(iOS 13.0, *)
+    private func deleteImageAction(forImageID imageID: Int64) -> UIAction {
+        // Image selected ► Propose to deselect it
+        return UIAction(title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo"),
+                        image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+            self.askDeleteConfirmation(for: Set([imageID]))
         }
     }
 }

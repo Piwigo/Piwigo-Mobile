@@ -327,7 +327,7 @@ extension AlbumViewController
         case .edit          /* Edit images parameters */:
             editImages()
         case .delete        /* Distinguish orphanes and ask for confirmation */:
-            askDeleteConfirmation()
+            askDeleteConfirmation(for: selectedImageIds)
         case .share         /* Check Photo Library access rights */:
             // Display or update HUD
             if navigationController?.isShowingHUD() ?? false {

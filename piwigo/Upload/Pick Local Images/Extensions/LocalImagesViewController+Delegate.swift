@@ -292,8 +292,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     @available(iOS 13.0, *)
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
-                        image: UIImage(systemName: "trash"),
-                        attributes: .destructive) { action in
+                        image: UIImage(systemName: "trash"), attributes: .destructive) { action in
             // Get image identifier and check if this image has been uploaded
             if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
                 // Delete uploaded image

@@ -19,12 +19,12 @@ extension AlbumViewController
     }
 
     
-    // MARK: - Delete Images
+    // MARK: - Delete or Remove Images
     @objc func deleteSelection() {
         initSelection(beforeAction: .delete)
     }
 
-    func askDeleteConfirmation() {
+    func askDeleteConfirmation(for selectedImageIds: Set<Int64>) {
         // Split orphaned and non-orphaned images
         var toRemove = Set<Image>()
         var toDelete = Set<Image>()
@@ -39,7 +39,7 @@ extension AlbumViewController
         }
         let totalNberToDelete = toDelete.count + toRemove.count
 
-        // We cannot propose to remove images from a smart albums
+        // We cannot propose to remove images from a smart album
         if albumData.pwgID < 0 {
             toDelete.formUnion(toRemove)
             toRemove = []
@@ -52,7 +52,7 @@ extension AlbumViewController
         } else if let imageData = toDelete.first, imageData.isVideo {
             msg = NSLocalizedString("deleteSingleVideo_title", comment: "Are you sure you want to delete this video?")
         } else {
-            msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image?")
+            msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
         }
         let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
 
