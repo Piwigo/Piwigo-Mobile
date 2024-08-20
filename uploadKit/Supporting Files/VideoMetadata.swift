@@ -17,9 +17,9 @@ extension Array where Element == AVMetadataItem {
         var locationID = AVMetadataIdentifier.commonIdentifierLocation
         var locations = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: locationID)
         if let location = locations.first {
-            if let position = location.stringValue {
+//            if let position = location.stringValue {
 //                debugPrint("position => \(position)")
-            }
+//            }
             return true
         }
         
