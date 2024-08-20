@@ -12,7 +12,7 @@ import piwigoKit
 // MARK: - EditImageThumbnailCellDelegate Methods
 extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 {
-    func didDeselectImage(withId imageId: Int64) {
+    func didDeselectImage(withID imageID: Int64) {
         // Hide picker if needed
         let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
         if hasDatePicker {
@@ -25,7 +25,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 
         // Update data source
         let timeInterval = commonDateCreated.timeIntervalSince(oldCreationDate)
-        images.removeAll(where: {$0.pwgID == imageId})
+        images.removeAll(where: {$0.pwgID == imageID})
 
         // Update common creation date if needed
         oldCreationDate = Date(timeIntervalSinceReferenceDate: images[0].dateCreated)
@@ -35,7 +35,7 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         editImageParamsTableView.reloadData()
 
         // Deselect image in album view
-        delegate?.didDeselectImage(withId: imageId)
+        delegate?.didDeselectImage(withID: imageID)
     }
 
     func didRenameFileOfImage(_ imageData: Image) {

@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Sélectionner";
 "categoryImageList_deselectButton" = "Désélectionner";
 "categoryImageList_noDataError" = "Erreur aucune donnée";
+"categoryImageList_share" = "Partager";
+"categoryImageList_favorite" = "Ajouter aux favoris";
+"categoryImageList_unfavorite" = "Retirer des favoris";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Découvrir";

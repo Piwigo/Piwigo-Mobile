@@ -51,7 +51,7 @@ extension ImageViewController
 // MARK: - EditImageParamsDelegate Methods
 extension ImageViewController: EditImageParamsDelegate
 {
-    func didDeselectImage(withId imageId: Int64) {
+    func didDeselectImage(withID imageID: Int64) {
         // Should never be called when the properties of a single image are edited
     }
 

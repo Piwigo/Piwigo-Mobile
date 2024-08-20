@@ -288,7 +288,7 @@ extension AlbumViewController
     
     func updateBarsInSelectMode() {
         setTitleViewFromAlbumData(whileUpdating: false)
-        let hasImagesSelected = !selectedImageIds.isEmpty
+        let hasImagesSelected = !selectedImageIDs.isEmpty
         cancelBarButton.isEnabled = true
 
         // User with admin or upload rights can do everything
@@ -300,11 +300,9 @@ extension AlbumViewController
             shareBarButton.isEnabled = hasImagesSelected
             deleteBarButton.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
-            let selected = selectedImageIds
-            let favorites = selectedFavoriteIds
-            let areFavorites = selected == favorites
+            let areFavorites = selectedImageIDs == selectedFavoriteIDs
             favoriteBarButton?.setFavoriteImage(for: areFavorites)
-            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+            favoriteBarButton?.action = areFavorites ? #selector(unfavoriteSelection) : #selector(favoriteSelection)
 
             if #available(iOS 14, *) {
                 let children = [albumMenu(), imagesMenu()].compactMap({$0})
@@ -319,11 +317,9 @@ extension AlbumViewController
             /// — non-guest users can set favorites in addition
             shareBarButton.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
-            let selected = selectedImageIds
-            let favorites = selectedFavoriteIds
-            let areFavorites = selected == favorites
+            let areFavorites = selectedImageIDs == selectedFavoriteIDs
             favoriteBarButton?.setFavoriteImage(for: areFavorites)
-            favoriteBarButton?.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+            favoriteBarButton?.action = areFavorites ? #selector(unfavoriteSelection) : #selector(favoriteSelection)
         }
     }
     
@@ -386,7 +382,7 @@ extension AlbumViewController
                 subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
             }
             else if isSelect {
-                let nberPhotos = selectedImageIds.count
+                let nberPhotos = selectedImageIDs.count
                 switch nberPhotos {
                 case 0:
                     subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
@@ -418,14 +414,12 @@ extension AlbumViewController
                         // Album data updated today
                         let time = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .none, timeStyle: .short)
-                        subtitle = String(format: NSLocalizedString("categoryUpdatedAt",
-                                                                    comment: "Updated at…"), time)
+                        subtitle = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
                     } else {
                         // Album data updated yesterday or before
                         let date = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .short, timeStyle: .none)
-                        subtitle = String(format: NSLocalizedString("categoryUpdatedOn",
-                                                                    comment: "Updated on…"), date)
+                        subtitle = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
                     }
                 }
             }

@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Selecteer";
 "categoryImageList_deselectButton" = "Deselecteren";
 "categoryImageList_noDataError" = "Fout geen gegevens";
+"categoryImageList_share" = "Deel";
+"categoryImageList_favorite" = "Favoriet";
+"categoryImageList_unfavorite" = "Niet favoriet";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Ontdek";

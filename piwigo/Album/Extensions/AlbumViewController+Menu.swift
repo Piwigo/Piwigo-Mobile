@@ -322,10 +322,10 @@ extension AlbumViewController: ImageHeaderDelegate
                 let image = images.object(at: imageIndexPath)
 
                 // Is this image already selected?
-                if selectedImageIds.contains(image.pwgID) { continue }
+                if selectedImageIDs.contains(image.pwgID) { continue }
                 
                 // Select this image
-                selectedImageIds.insert(image.pwgID)
+                selectedImageIDs.insert(image.pwgID)
                 let indexPath = IndexPath(item: item, section: section)
                 if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     cell.isSelection = true
@@ -342,10 +342,10 @@ extension AlbumViewController: ImageHeaderDelegate
                 let image = images.object(at: imageIndexPath)
 
                 // Is this image already deselected?
-                if selectedImageIds.contains(image.pwgID) == false { continue }
+                if selectedImageIDs.contains(image.pwgID) == false { continue }
                 
                 // Deselect this image
-                selectedImageIds.remove(image.pwgID)
+                selectedImageIDs.remove(image.pwgID)
                 let indexPath = IndexPath(item: item, section: section)
                 if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     cell.isSelection = false

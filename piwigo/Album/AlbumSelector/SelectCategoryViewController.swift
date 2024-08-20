@@ -122,18 +122,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         case .copyImages, .moveImages:
             guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? Set<Int64>,
+                  let imageIDs = array[0] as? Set<Int64>,
                   let albumId = array[1] as? Int32 else {
                 debugPrint("Input parameter expected to be of type [[NSNumber], Int32]")
                 return false
             }
             // IDs of the selected images which will be copied/moved to the selected album
-            inputImageIds = imageIds
+            inputImageIds = imageIDs
             if inputImageIds.isEmpty {
                 debugPrint("List of image IDs should not be empty")
                 return false
             }
-            inputImages = imageProvider.getImages(inContext: mainContext, withIds: imageIds)
+            inputImages = imageProvider.getImages(inContext: mainContext, withIds: imageIDs)
             nberOfImages = Int64(inputImages.count)
             if inputImages.isEmpty {
                 debugPrint("No image in cache with these IDs: \(inputImageIds)")

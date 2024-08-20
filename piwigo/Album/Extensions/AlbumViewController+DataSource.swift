@@ -268,7 +268,7 @@ extension AlbumViewController: UICollectionViewDataSource
             let image = images.object(at: imageIndexPath)
 
             // Is this cell selected?
-            cell.isSelection = selectedImageIds.contains(image.pwgID)
+            cell.isSelection = selectedImageIDs.contains(image.pwgID)
             
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if hasFavorites {

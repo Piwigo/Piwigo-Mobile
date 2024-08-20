@@ -13,7 +13,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int64)
+    func didDeselectImage(withID imageID: Int64)
     func didChangeImageParameters(_ imageData: Image)
     func didFinishEditingParameters()
 }

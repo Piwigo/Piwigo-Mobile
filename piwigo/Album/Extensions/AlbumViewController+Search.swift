@@ -143,7 +143,7 @@ extension AlbumViewController: UISearchBarDelegate
         // Did the query string change?
         if albumData.query == query {
             // Restart loading pages of images
-            self.fetchImages(withInitialImageIds: self.oldImageIds, query: query,
+            self.fetchImages(withInitialImageIds: self.oldImageIDs, query: query,
                              fromPage: self.onPage, toPage: self.lastPage) {
                 self.fetchCompleted()
             }

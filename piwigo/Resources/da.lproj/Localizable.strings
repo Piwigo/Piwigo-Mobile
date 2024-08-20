@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Vælg";
 "categoryImageList_deselectButton" = "Fravælg";
 "categoryImageList_noDataError" = "Fejl ingen Data";
+"categoryImageList_share" = "Del";
+"categoryImageList_favorite" = "Tilføj til favoritter";
+"categoryImageList_unfavorite" = "Fjern fra favorit";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Opdag";

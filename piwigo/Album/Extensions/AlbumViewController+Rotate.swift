@@ -15,7 +15,7 @@ import piwigoKit
 extension AlbumViewController
 {
     func rotateMenu() -> UIMenu? {
-        if selectedVideosIds.isEmpty {
+        if selectedVideosIDs.isEmpty {
             return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
                           image: nil,
                           identifier: UIMenu.Identifier("org.piwigo.images.rotate"),
@@ -30,7 +30,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "rotate.right"),
                               handler: { _ in
             // Rotate images right
-            self.rotateImagesRight()
+            self.rotateSelectionRight()
         })
         action.accessibilityIdentifier = "Rotate Right"
         return action
@@ -42,7 +42,7 @@ extension AlbumViewController
                               image: UIImage(systemName: "rotate.left"),
                               handler: { _ in
             // Rotate images left
-            self.rotateImagesLeft()
+            self.rotateSelectionLeft()
         })
         action.accessibilityIdentifier = "Rotate Left"
         return action
@@ -53,16 +53,17 @@ extension AlbumViewController
 extension AlbumViewController
 {
     // MARK: - Rotate Image
-    @objc func rotateImagesLeft() {
-        initSelection(beforeAction: .rotateImagesLeft)
+    @objc func rotateSelectionLeft() {
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesLeft)
     }
 
-    @objc func rotateImagesRight() {
-        initSelection(beforeAction: .rotateImagesRight)
+    @objc func rotateSelectionRight() {
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesRight)
     }
 
-    func rotateImages(by angle: Double) {
-        guard let imageId = selectedImageIds.first else {
+    func rotateImages(withID someIDs: Set<Int64>, by angle: Double, total: Float) {
+        var remainingIDs = someIDs
+        guard let imageID = remainingIDs.first else {
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
@@ -78,20 +79,21 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
+        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) else {
             // Forget this image
-            selectedImageIds.removeFirst()
-            selectedFavoriteIds.remove(imageId)
-            selectedVideosIds.remove(imageId)
+            remainingIDs.removeFirst()
+            selectedImageIDs.remove(imageID)
+            selectedFavoriteIDs.remove(imageID)
+            selectedVideosIDs.remove(imageID)
 
             // Update HUD
             DispatchQueue.main.async {
-                let progress: Float = 1 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages)
+                let progress: Float = 1 - Float(remainingIDs.count) / total
                 self.navigationController?.updateHUD(withProgress: progress)
             }
             
             // Next image
-            rotateImages(by: angle)
+            rotateImages(withID: remainingIDs, by: angle, total: total)
             return
         }
 
@@ -107,8 +109,9 @@ extension AlbumViewController
                     // Update HUD
                     DispatchQueue.main.async {
                         // Update progress indicator
-                        let progress: Float = 1 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages)
+                        let progress: Float = 1 - Float(remainingIDs.count) / total
                         self.navigationController?.updateHUD(withProgress: progress)
+                        
                         // Rotate cell image
                         for cell in (self.collectionView?.visibleCells ?? []) {
                             if let cell = cell as? ImageCollectionViewCell, cell.imageData.pwgID == imageID,
@@ -120,10 +123,11 @@ extension AlbumViewController
                     }
                     
                     // Next image
-                    selectedImageIds.removeFirst()
-                    selectedFavoriteIds.remove(imageId)
-                    selectedVideosIds.remove(imageId)
-                    rotateImages(by: angle)
+                    remainingIDs.removeFirst()
+                    selectedImageIDs.remove(imageID)
+                    selectedFavoriteIDs.remove(imageID)
+                    selectedVideosIDs.remove(imageID)
+                    rotateImages(withID: remainingIDs, by: angle, total: total)
                     
                 } failure: { [self] error in
                     rotateImagesInDatabaseError(error)

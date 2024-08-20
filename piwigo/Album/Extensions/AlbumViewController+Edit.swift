@@ -29,11 +29,11 @@ extension AlbumViewController
 
     // MARK: Edit Images Parameters
     @objc func editSelection() {
-        initSelection(beforeAction: .edit)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .edit)
     }
 
-    func editImages() {
-        if selectedImageIds.isEmpty {
+    func editImages(withIDs imageIDs: Set<Int64>) {
+        if imageIDs.isEmpty {
             // No image => End (should never happen)
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -49,7 +49,7 @@ extension AlbumViewController
         else { preconditionFailure("Could not load EditImageParamsViewController") }
         editImageVC.user = user
         let albumImages = images.fetchedObjects ?? []
-        editImageVC.images = albumImages.filter({selectedImageIds.contains($0.pwgID)})
+        editImageVC.images = albumImages.filter({imageIDs.contains($0.pwgID)})
         editImageVC.delegate = self
         pushView(editImageVC)
     }
@@ -59,11 +59,11 @@ extension AlbumViewController
 // MARK: - EditImageParamsDelegate Methods
 extension AlbumViewController: EditImageParamsDelegate
 {
-    func didDeselectImage(withId imageId: Int64) {
+    func didDeselectImage(withID imageID: Int64) {
         // Deselect image
-        selectedImageIds.remove(imageId)
-        selectedFavoriteIds.remove(imageId)
-        selectedVideosIds.remove(imageId)
+        selectedImageIDs.remove(imageID)
+        selectedFavoriteIDs.remove(imageID)
+        selectedVideosIDs.remove(imageID)
         collectionView?.reloadData()
     }
 

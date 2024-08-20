@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "選取";
 "categoryImageList_deselectButton" = "取消選取";
 "categoryImageList_noDataError" = "錯誤 無資料";
+"categoryImageList_share" = "分享到";
+"categoryImageList_favorite" = "加入我的最愛";
+"categoryImageList_unfavorite" = "從我的最愛移除";
 
 // Albums "Discover"
 "categoryDiscover_title" = "探索";

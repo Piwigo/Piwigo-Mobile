@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Kiválaszt";
 "categoryImageList_deselectButton" = "Elvet";
 "categoryImageList_noDataError" = "Hiba: nincs adat";
+"categoryImageList_share" = "Megosztás";
+"categoryImageList_favorite" = "Kedvenc";
+"categoryImageList_unfavorite" = "Kedvencek";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Felfedezés";

@@ -46,14 +46,14 @@ extension AlbumViewController
         // Rotate clockwise
         var title = NSLocalizedString("rotateImage_right", comment: "Clockwise")
         let rotateRightAction = UIAlertAction(title: title, style: .default) { [self] _ in
-            self.rotateImagesRight()
+            self.rotateSelectionRight()
         }
         alert.addAction(rotateRightAction)
         
         // Rotate counterclockwise
         title = NSLocalizedString("rotateImage_left", comment: "Counterclockwise")
         let rotateLeftAction = UIAlertAction(title: title, style: .default) { [self] _ in
-            self.rotateImagesLeft()
+            self.rotateSelectionLeft()
         }
         alert.addAction(rotateLeftAction)
         
@@ -201,10 +201,10 @@ extension AlbumViewController
         }
         
         // Clear array of selected images
-        touchedImageIds = []
-        selectedImageIds = Set<Int64>()
-        selectedFavoriteIds = Set<Int64>()
-        selectedVideosIds = Set<Int64>()
+        touchedImageIDs = []
+        selectedImageIDs = Set<Int64>()
+        selectedFavoriteIDs = Set<Int64>()
+        selectedVideosIDs = Set<Int64>()
         for key in selectedSections.keys {
             selectedSections[key] = .select
         }
@@ -239,7 +239,7 @@ extension AlbumViewController
         var nberOfSelectedImagesInSection = 0
         for item in 0..<nberOfImagesInSection {
             let imageIndexPath = IndexPath(item: item, section: section - 1)
-            if selectedImageIds.contains(images.object(at: imageIndexPath).pwgID) {
+            if selectedImageIDs.contains(images.object(at: imageIndexPath).pwgID) {
                 nberOfSelectedImagesInSection += 1
             }
         }
@@ -258,8 +258,8 @@ extension AlbumViewController
 
     
     // MARK: - Prepare Selection
-    func initSelection(beforeAction action: pwgImageAction) {
-        if selectedImageIds.isEmpty { return }
+    func initSelection(ofImagesWithIDs imageIDs: Set<Int64>, beforeAction action: pwgImageAction) {
+        if imageIDs.isEmpty { return }
 
         // Disable buttons
         setEnableStateOfButtons(false)
@@ -273,99 +273,102 @@ extension AlbumViewController
              .moveImages   /* Move images to album */:
             
             // Remove images from which we already have complete data
-            selectedImageIdsLoop = selectedImageIds
-            let selectedImages = (images.fetchedObjects ?? []).filter({selectedImageIds.contains($0.pwgID)})
-            for selectedImageId in selectedImageIds {
-                guard let selectedImage = selectedImages.first(where: {$0.pwgID == selectedImageId})
-                    else { continue }
+            var imageIDsToRetrieve = imageIDs
+            let selectedImages = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
+            for imageID in imageIDs {
+                guard let selectedImage = selectedImages.first(where: {$0.pwgID == imageID})
+                else { continue }
                 if selectedImage.fileSize != Int64.zero {
-                    selectedImageIdsLoop.remove(selectedImageId)
+                    imageIDsToRetrieve.remove(imageID)
                 }
             }
             
             // Should we retrieve data of some images?
-            if selectedImageIdsLoop.isEmpty {
-                doAction(action)
+            if imageIDsToRetrieve.isEmpty {
+                performAction(action, withImageIDs: imageIDs)
             } else {
                 // Display HUD
-                totalNumberOfImages = selectedImageIdsLoop.count
                 navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                              inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
+                              inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
                 
                 // Retrieve image data if needed
                 PwgSession.checkSession(ofUser: user) {  [self] in
-                    retrieveImageData(beforeAction: action)
+                    retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs, beforeAction: action)
                 } failure: { [unowned self] error in
                     retrieveImageDataError(error)
                 }
             }
             
-        case .addToFavorites        /* Add photos to favorites */,
-             .removeFromFavorites   /* Remove photos from favorites */:
+        case .favorite         /* Favorite photos   */,
+             .unfavorite       /* Unfavorite photos */:
             // Display HUD
-            totalNumberOfImages = selectedImageIds.count
-            let title = totalNumberOfImages > 1 ? NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") : NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
-            navigationController?.showHUD(withTitle: title, inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
+            let title = imageIDs.count > 1 ? 
+                NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
+                NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
+            navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
-            doAction(action)
+            performAction(action, withImageIDs: imageIDs)
             
         case .rotateImagesLeft      /* Rotate photos 90° to left */,
              .rotateImagesRight     /* Rotate photos 90° to right */:
             // Display HUD
-            totalNumberOfImages = selectedImageIds.count
-            let title = totalNumberOfImages > 1 ? NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") : NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
-            navigationController?.showHUD(withTitle: title, inMode: totalNumberOfImages > 1 ? .determinate : .indeterminate)
+            let title = imageIDs.count > 1 ?
+                NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
+                NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…")
+            navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
-            doAction(action)
+            performAction(action, withImageIDs: imageIDs)
         }
     }
     
-    private func doAction(_ action: pwgImageAction) {
+    private func performAction(_ action: pwgImageAction, withImageIDs imageIDs: Set<Int64>) {
         switch action {
         case .edit          /* Edit images parameters */:
-            editImages()
+            editImages(withIDs: imageIDs)
         case .delete        /* Distinguish orphanes and ask for confirmation */:
-            askDeleteConfirmation(for: selectedImageIds)
+            askDeleteConfirmation(forImagesWithID: imageIDs)
         case .share         /* Check Photo Library access rights */:
             // Display or update HUD
             if navigationController?.isShowingHUD() ?? false {
                 navigationController?.updateHUD(title: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
                                                 inMode: .indeterminate)
-            } else if selectedImageIds.count > 200 {
+            } else if selectedImageIDs.count > 200 {
                 navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
                                               inMode: .indeterminate)
             }
             // Prepare items to share in background queue
             DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async {
-                self.checkPhotoLibraryAccessBeforeShare()
+                self.checkPhotoLibraryAccessBeforeSharing(imagesWithID: imageIDs)
             }
         case .copyImages    /* Copy images to Album */:
-            copyImagesToAlbum()
+            copyToAlbum(imagesWithID: imageIDs)
         case .moveImages    /* Move images to album */:
-            moveImagesToAlbum()
-        case .addToFavorites:
-            addImageToFavorites()
-        case .removeFromFavorites:
-            removeImageFromFavorites()
+            moveToAlbum(imagesWithID: imageIDs)
+        case .favorite:
+            favorite(imagesWithID: imageIDs, total: Float(imageIDs.count))
+        case .unfavorite:
+            unfavorite(imagesWithID: imageIDs, total: Float(imageIDs.count))
         case .rotateImagesLeft:
-            rotateImages(by: 90.0)
+            rotateImages(withID: imageIDs, by: 90.0, total: Float(imageIDs.count))
         case .rotateImagesRight:
-            rotateImages(by: -90.0)
+            rotateImages(withID: imageIDs, by: -90.0, total: Float(imageIDs.count))
         }
     }
 
-    private func retrieveImageData(beforeAction action:pwgImageAction) {
+    private func retrieveData(ofImagesWithID someIDs: Set<Int64>, among imageIDs: Set<Int64>,
+                              beforeAction action:pwgImageAction) {
         // Get image ID if any
-        guard let imageId = selectedImageIdsLoop.first else {
+        var remainingIDs = someIDs
+        guard let imageID = remainingIDs.first else {
             DispatchQueue.main.async {
                 if action == .share {
                     // Update or display HUD
-                    self.doAction(action)
+                    self.performAction(action, withImageIDs: imageIDs)
                 } else {
                     self.navigationController?.hideHUD() { [self] in
-                        doAction(action)
+                        performAction(action, withImageIDs: imageIDs)
                     }
                 }
             }
@@ -373,18 +376,18 @@ extension AlbumViewController
         }
         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        imageProvider.getInfos(forID: imageId, inCategoryId: self.albumData.pwgID) {  [self] in
+        imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) {  [self] in
             // Image info retrieved
-            selectedImageIdsLoop.remove(imageId)
+            remainingIDs.remove(imageID)
 
             // Update HUD
             DispatchQueue.main.async {
-                let progress: Float = 1 - Float(self.selectedImageIdsLoop.count) / Float(self.totalNumberOfImages)
+                let progress: Float = 1 - Float(remainingIDs.count) / Float(imageIDs.count)
                 self.navigationController?.updateHUD(withProgress: progress)
             }
 
             // Next image
-            retrieveImageData(beforeAction: action)
+            retrieveData(ofImagesWithID: remainingIDs, among: imageIDs, beforeAction: action)
         } failure: { [unowned self] error in
             retrieveImageDataError(error)
         }
@@ -450,29 +453,29 @@ extension AlbumViewController: UIGestureRecognizerDelegate
         {
             // Get cell at touch position
             if let imageCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-               let imageId = imageCell.imageData?.pwgID
+               let imageID = imageCell.imageData?.pwgID
             {
                 // Update the selection if not already done
-                if touchedImageIds.contains(imageId) { return }
+                if touchedImageIDs.contains(imageID) { return }
                 
                 // Store that the user touched this cell during this gesture
-                touchedImageIds.append(imageId)
+                touchedImageIDs.append(imageID)
                 
                 // Update the selection state
-                if !selectedImageIds.contains(imageId) {
-                    selectedImageIds.insert(imageId)
+                if !selectedImageIDs.contains(imageID) {
+                    selectedImageIDs.insert(imageID)
                     imageCell.isSelection = true
                     if imageCell.isFavorite {
-                        selectedFavoriteIds.insert(imageId)
+                        selectedFavoriteIDs.insert(imageID)
                     }
                     if imageCell.imageData.isVideo {
-                        selectedVideosIds.insert(imageId)
+                        selectedVideosIDs.insert(imageID)
                     }
                 } else {
                     imageCell.isSelection = false
-                    selectedImageIds.remove(imageId)
-                    selectedFavoriteIds.remove(imageId)
-                    selectedVideosIds.remove(imageId)
+                    selectedImageIDs.remove(imageID)
+                    selectedFavoriteIDs.remove(imageID)
+                    selectedVideosIDs.remove(imageID)
                 }
                 
                 // Update the navigation bar
@@ -483,7 +486,7 @@ extension AlbumViewController: UIGestureRecognizerDelegate
         // Is this the end of the gesture?
         if gestureRecognizerState == .ended {
             // Clear list of touched images
-            touchedImageIds = []
+            touchedImageIDs = []
             
             // Update state of Select button if needed
             let selectState = updateSelectButton(ofSection: indexPath.section)

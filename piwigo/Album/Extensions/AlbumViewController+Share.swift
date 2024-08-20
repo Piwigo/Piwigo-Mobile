@@ -23,43 +23,35 @@ extension AlbumViewController
 
     // MARK: Share Images
     @objc func shareSelection() {
-        initSelection(beforeAction: .share)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .share)
     }
 
-    func checkPhotoLibraryAccessBeforeShare() {
+    func checkPhotoLibraryAccessBeforeSharing(imagesWithID imageIDs: Set<Int64>) {
         // Check autorisation to access Photo Library (camera roll)
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(
                 for: PHAccessLevel.addOnly, for: self,
                 onAccess: { [self] in
                     // User allowed to save image in camera roll
-                    presentShareImageViewController(withCameraRollAccess: true)
+                    shareImages(withID: imageIDs, withCameraRollAccess: true)
                 },
                 onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        presentShareImageViewController(withCameraRollAccess: false)
-                    }
+                    shareImages(withID: imageIDs, withCameraRollAccess: false)
                 })
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil) { [self] in
                 // User allowed to save image in camera roll
-                presentShareImageViewController(withCameraRollAccess: true)
+                shareImages(withID: imageIDs, withCameraRollAccess: true)
             } onDeniedAccess: { [self] in
                 // User not allowed to save image in camera roll
-                if Thread.isMainThread {
-                    self.presentShareImageViewController(withCameraRollAccess: false)
-                } else {
-                    DispatchQueue.main.async(execute: { [self] in
-                        presentShareImageViewController(withCameraRollAccess: false)
-                    })
-                }
+                shareImages(withID: imageIDs, withCameraRollAccess: false)
             }
         }
     }
 
-    func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
+    func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool) {
         // To exclude some activity types
         var hasVideoItem = false
         var totalSize = Int64.zero
@@ -67,14 +59,14 @@ extension AlbumViewController
         // Create new activity provider items to pass to the activity view controller
         var itemsToShare: [UIActivityItemProvider] = []
         
-        // Loop over the selected images
+        // Loop over images
 //        timeCounter = CFAbsoluteTimeGetCurrent()
-        for selectedImageId in selectedImageIds {
+        for imageID in imageIDs {
             autoreleasepool {
-                if let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId}) {
-                    if selectedImage.isVideo {
+                if let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) {
+                    if image.isVideo {
                         // Case of a video
-                        let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: selectedImage)
+                        let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: image)
                         
                         // Use delegation to monitor the progress of the item method
                         videoItemProvider.delegate = self
@@ -84,11 +76,11 @@ extension AlbumViewController
                         
                         // To exclude some activities
                         hasVideoItem = true
-                        totalSize += selectedImage.fileSize
+                        totalSize += image.fileSize
                     }
                     else {
                         // Case of an image
-                        let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: selectedImage)
+                        let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: image)
                         
                         // Use delegation to monitor the progress of the item method
                         imageItemProvider.delegate = self
@@ -97,7 +89,7 @@ extension AlbumViewController
                         itemsToShare.append(imageItemProvider)
                         
                         // To exclude some activities
-                        totalSize += selectedImage.fileSize
+                        totalSize += image.fileSize
                     }
                 }
             }
@@ -163,7 +155,7 @@ extension AlbumViewController
                             updateBarsInSelectMode()
                         } else {
                             // Check what to do with selection
-                            if selectedImageIds.isEmpty {
+                            if selectedImageIDs.isEmpty {
                                 cancelSelect()
                             } else {
                                 setEnableStateOfButtons(true)
@@ -182,6 +174,7 @@ extension AlbumViewController
                 }
 
                 // Present share image activity view controller
+                activityViewController.view.tag = count
                 if let parent = self.parent as? AlbumViewController {
                     activityViewController.popoverPresentationController?.barButtonItem = parent.shareBarButton
                 }
@@ -203,7 +196,8 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
                                                         withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
-        let detail = String(format: "%d / %d", totalNumberOfImages - selectedImageIds.count + 1, totalNumberOfImages)
+        let total = presentedViewController?.view.tag ?? 1
+        let detail = total > 1 ? String(format: "%d / %d", total - selectedImageIDs.count + 1, total) : nil
         if presentedViewController?.isShowingHUD() ?? false {
             presentedViewController?.updateHUD(title: title, detail: detail)
         } else {
@@ -221,22 +215,22 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
     }
     
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageId imageId: Int64) {
+                                                      withImageID imageID: Int64) {
         // Check activity item provider
         guard let imageActivityItemProvider = imageActivityItemProvider else { return }
         
         // Close HUD
         if imageActivityItemProvider.isCancelled {
             presentedViewController?.hideHUD { }
-        } else if selectedImageIds.contains(imageId) {
+        } else if selectedImageIDs.contains(imageID) {
             // Remove image from selection
-            selectedImageIds.remove(imageId)
-            selectedFavoriteIds.remove(imageId)
-            selectedVideosIds.remove(imageId)
+            selectedImageIDs.remove(imageID)
+            selectedFavoriteIDs.remove(imageID)
+            selectedVideosIDs.remove(imageID)
             updateBarsInSelectMode()
 
             // Close HUD if last image
-            if selectedImageIds.count == 0 {
+            if selectedImageIDs.count == 0 {
                 presentedViewController?.updateHUDwithSuccess { [self] in
                     self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                 }

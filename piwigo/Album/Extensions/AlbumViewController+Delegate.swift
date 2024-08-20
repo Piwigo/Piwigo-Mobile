@@ -35,25 +35,24 @@ extension AlbumViewController: UICollectionViewDelegate
             // Action depends on mode
             if isSelect {
                 // Check image ID
-                guard let imageId = selectedCell.imageData?.pwgID, imageId != 0 else {
-                    return
-                }
+                guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
+                else { return }
                 
                 // Selection mode active => add/remove image from selection
-                if !selectedImageIds.contains(imageId) {
-                    selectedImageIds.insert(imageId)
+                if !selectedImageIDs.contains(imageID) {
+                    selectedImageIDs.insert(imageID)
                     selectedCell.isSelection = true
                     if selectedCell.isFavorite {
-                        selectedFavoriteIds.insert(imageId)
+                        selectedFavoriteIDs.insert(imageID)
                     }
                     if selectedCell.imageData.isVideo {
-                        selectedVideosIds.insert(imageId)
+                        selectedVideosIDs.insert(imageID)
                     }
                 } else {
                     selectedCell.isSelection = false
-                    selectedImageIds.remove(imageId)
-                    selectedFavoriteIds.remove(imageId)
-                    selectedVideosIds.remove(imageId)
+                    selectedImageIDs.remove(imageID)
+                    selectedFavoriteIDs.remove(imageID)
+                    selectedVideosIDs.remove(imageID)
                 }
                 
                 // Update nav buttons
@@ -260,16 +259,63 @@ extension AlbumViewController: UICollectionViewDelegate
                                   at indexPath: IndexPath) -> UIMenu {
         var children = [UIMenuElement]()
         if let imageID = cell.imageData?.pwgID {
-            if self.selectedImageIds.contains(imageID) {
-                // Image not selected ► Propose to select it
-                children.append(deselectImageAction(forCell: cell, imageID: imageID, at: indexPath))
-            } else {
-                // Image selected ► Propose to deselect it
-                children.append(selectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+            // Guest cannot share images
+            if NetworkVars.userStatus != .guest {
+                children.append(shareImageAction(withID: imageID))
             }
-            children.append(deleteImageMenu(forImageID: imageID))
+            
+            // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
+            let isGuest = NetworkVars.userStatus == .guest
+            let versionTooOld = NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
+            if isGuest == false, versionTooOld == false {
+                if cell.isFavorite {
+                    children.append(unfavoriteImageAction(withID: imageID))
+                } else {
+                    children.append(favoriteImageAction(withID: imageID))
+                }
+            }
+            
+            // Only identified users can select images
+            if NetworkVars.userStatus != .guest {
+                if self.selectedImageIDs.contains(imageID) {
+                    // Image not selected ► Propose to select it
+                    children.append(deselectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+                } else {
+                    // Image selected ► Propose to deselect it
+                    children.append(selectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+                }
+            }
+            
+            // User with admin or upload rights can delete images
+            if user.hasUploadRights(forCatID: categoryId) {
+                children.append(deleteImageMenu(forImageID: imageID))
+            }
         }
         return UIMenu(title: "", children: children)
+    }
+    
+    @available(iOS 13.0, *)
+    private func shareImageAction(withID imageID: Int64) -> UIAction {
+        return UIAction(title: NSLocalizedString("categoryImageList_share", comment: "Share"),
+                        image: UIImage(systemName: "square.and.arrow.up")) { _ in
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .share)
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    private func favoriteImageAction(withID imageID: Int64) -> UIAction {
+        return UIAction(title: NSLocalizedString("categoryImageList_favorite", comment: "Favorite"),
+                        image: UIImage(systemName: "heart")) { _ in
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .favorite)
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    private func unfavoriteImageAction(withID imageID: Int64) -> UIAction {
+        return UIAction(title: NSLocalizedString("categoryImageList_unfavorite", comment: "Unfavorite"),
+                        image: UIImage(systemName: "heart.slash")) { _ in
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .unfavorite)
+        }
     }
     
     @available(iOS 13.0, *)
@@ -279,13 +325,13 @@ extension AlbumViewController: UICollectionViewDelegate
         return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { _ in
             // Select image
-            self.selectedImageIds.insert(imageID)
+            self.selectedImageIDs.insert(imageID)
             cell.isSelection = true
             if cell.isFavorite {
-                self.selectedFavoriteIds.insert(imageID)
+                self.selectedFavoriteIDs.insert(imageID)
             }
             if cell.imageData.isVideo {
-                self.selectedVideosIds.insert(imageID)
+                self.selectedVideosIDs.insert(imageID)
             }
             
             // Check if the selection mode is active
@@ -324,12 +370,12 @@ extension AlbumViewController: UICollectionViewDelegate
                         image: image) { _ in
             // Deselect image
             cell.isSelection = false
-            self.selectedImageIds.remove(imageID)
-            self.selectedFavoriteIds.remove(imageID)
-            self.selectedVideosIds.remove(imageID)
+            self.selectedImageIDs.remove(imageID)
+            self.selectedFavoriteIDs.remove(imageID)
+            self.selectedVideosIDs.remove(imageID)
             
             // Check if the selection mode should be disabled
-            if self.selectedImageIds.isEmpty {
+            if self.selectedImageIDs.isEmpty {
                 // Disable the selection mode
                 self.cancelSelect()
             } else {
@@ -360,7 +406,7 @@ extension AlbumViewController: UICollectionViewDelegate
         // Image selected ► Propose to deselect it
         return UIAction(title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-            self.askDeleteConfirmation(for: Set([imageID]))
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .delete)
         }
     }
 }

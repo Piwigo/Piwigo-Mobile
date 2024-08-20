@@ -110,7 +110,9 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 else { return }
                 indexPath.section += 1
                 // Deselect image
-                selectedImageIds.remove(image.pwgID)
+                selectedImageIDs.remove(image.pwgID)
+                selectedFavoriteIDs.remove(image.pwgID)
+                selectedVideosIDs.remove(image.pwgID)
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
