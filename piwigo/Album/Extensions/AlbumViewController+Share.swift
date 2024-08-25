@@ -175,10 +175,14 @@ extension AlbumViewController
 
                 // Present share image activity view controller
                 activityViewController.view.tag = count
-                if let parent = self.parent as? AlbumViewController {
-                    activityViewController.popoverPresentationController?.barButtonItem = parent.shareBarButton
+                if isSelect {
+                    activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
+                } else if let imageID = imageIDs.first,
+                          let visibleCells = collectionView?.visibleCells,
+                          let cell = visibleCells.first(where: { ($0 as? ImageCollectionViewCell)?.imageData.pwgID == imageID}) {
+                    activityViewController.popoverPresentationController?.sourceView = cell.contentView
                 }
-                self.present(activityViewController, animated: true)
+                present(activityViewController, animated: true)
             }
         }
     }
