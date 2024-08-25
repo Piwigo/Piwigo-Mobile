@@ -139,8 +139,16 @@ extension AlbumViewController
                         // Delete shared files & remove observers
                         NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
-                        // Deselect images
-                        cancelSelect()
+                        // Deselect images if needed
+                        if isSelect {
+                            if selectedImageIDs.count == count {
+                                cancelSelect()
+                            } else {
+                                updateBarsInSelectMode()
+                            }
+                        } else {
+                            updateBarsInPreviewMode()
+                        }
 
                         // Close HUD with success
                         presentedViewController?.updateHUDwithSuccess() { [self] in
@@ -152,7 +160,11 @@ extension AlbumViewController
                     } else {
                         if activityType == nil {
                             // User dismissed the view controller without making a selection.
-                            updateBarsInSelectMode()
+                            if isSelect {
+                                updateBarsInSelectMode()
+                            } else {
+                                updateBarsInPreviewMode()
+                            }
                         } else {
                             // Check what to do with selection
                             if selectedImageIDs.isEmpty {
@@ -238,6 +250,10 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
                 presentedViewController?.updateHUDwithSuccess { [self] in
                     self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                 }
+            }
+        } else {
+            presentedViewController?.updateHUDwithSuccess { [self] in
+                self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
             }
         }
     }
