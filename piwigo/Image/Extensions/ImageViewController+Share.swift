@@ -70,7 +70,7 @@ extension ImageViewController
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
+            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -83,7 +83,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
+            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self
@@ -164,7 +164,7 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
         presentedViewController?.updateHUD(withProgress: progress)
     }
 
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageID imageID: Int64) {
+    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageID imageID: Int64, contextually:Bool) {
         // Close HUD
         if imageActivityItemProvider?.isCancelled ?? false {
             presentedViewController?.hideHUD { }

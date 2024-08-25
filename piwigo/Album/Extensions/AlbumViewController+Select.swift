@@ -258,7 +258,8 @@ extension AlbumViewController
 
     
     // MARK: - Prepare Selection
-    func initSelection(ofImagesWithIDs imageIDs: Set<Int64>, beforeAction action: pwgImageAction) {
+    func initSelection(ofImagesWithIDs imageIDs: Set<Int64>,
+                       beforeAction action: pwgImageAction, contextually: Bool) {
         if imageIDs.isEmpty { return }
 
         // Disable buttons
@@ -285,7 +286,7 @@ extension AlbumViewController
             
             // Should we retrieve data of some images?
             if imageIDsToRetrieve.isEmpty {
-                performAction(action, withImageIDs: imageIDs)
+                performAction(action, withImageIDs: imageIDs, contextually: contextually)
             } else {
                 // Display HUD
                 navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
@@ -293,9 +294,10 @@ extension AlbumViewController
                 
                 // Retrieve image data if needed
                 PwgSession.checkSession(ofUser: user) {  [self] in
-                    retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs, beforeAction: action)
+                    retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
+                                 beforeAction: action, contextually: contextually)
                 } failure: { [unowned self] error in
-                    retrieveImageDataError(error)
+                    retrieveImageDataError(error, contextually: contextually)
                 }
             }
             
@@ -308,7 +310,7 @@ extension AlbumViewController
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
-            performAction(action, withImageIDs: imageIDs)
+            performAction(action, withImageIDs: imageIDs, contextually: contextually)
             
         case .rotateImagesLeft      /* Rotate photos 90° to left */,
              .rotateImagesRight     /* Rotate photos 90° to right */:
@@ -319,11 +321,11 @@ extension AlbumViewController
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
             
             // Add or remove image from favorites
-            performAction(action, withImageIDs: imageIDs)
+            performAction(action, withImageIDs: imageIDs, contextually: contextually)
         }
     }
     
-    private func performAction(_ action: pwgImageAction, withImageIDs imageIDs: Set<Int64>) {
+    private func performAction(_ action: pwgImageAction, withImageIDs imageIDs: Set<Int64>, contextually: Bool) {
         switch action {
         case .edit          /* Edit images parameters */:
             editImages(withIDs: imageIDs)
@@ -340,16 +342,16 @@ extension AlbumViewController
             }
             // Prepare items to share in background queue
             DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async {
-                self.checkPhotoLibraryAccessBeforeSharing(imagesWithID: imageIDs)
+                self.checkPhotoLibraryAccessBeforeSharing(imagesWithID: imageIDs, contextually: contextually)
             }
         case .copyImages    /* Copy images to Album */:
             copyToAlbum(imagesWithID: imageIDs)
         case .moveImages    /* Move images to album */:
             moveToAlbum(imagesWithID: imageIDs)
         case .favorite:
-            favorite(imagesWithID: imageIDs, total: Float(imageIDs.count))
+            favorite(imagesWithID: imageIDs, total: Float(imageIDs.count), contextually: contextually)
         case .unfavorite:
-            unfavorite(imagesWithID: imageIDs, total: Float(imageIDs.count))
+            unfavorite(imagesWithID: imageIDs, total: Float(imageIDs.count), contextually: contextually)
         case .rotateImagesLeft:
             rotateImages(withID: imageIDs, by: 90.0, total: Float(imageIDs.count))
         case .rotateImagesRight:
@@ -358,17 +360,17 @@ extension AlbumViewController
     }
 
     private func retrieveData(ofImagesWithID someIDs: Set<Int64>, among imageIDs: Set<Int64>,
-                              beforeAction action:pwgImageAction) {
+                              beforeAction action:pwgImageAction, contextually: Bool) {
         // Get image ID if any
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             DispatchQueue.main.async {
                 if action == .share {
                     // Update or display HUD
-                    self.performAction(action, withImageIDs: imageIDs)
+                    self.performAction(action, withImageIDs: imageIDs, contextually: contextually)
                 } else {
                     self.navigationController?.hideHUD() { [self] in
-                        performAction(action, withImageIDs: imageIDs)
+                        performAction(action, withImageIDs: imageIDs, contextually: contextually)
                     }
                 }
             }
@@ -387,13 +389,14 @@ extension AlbumViewController
             }
 
             // Next image
-            retrieveData(ofImagesWithID: remainingIDs, among: imageIDs, beforeAction: action)
+            retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
+                         beforeAction: action, contextually: contextually)
         } failure: { [unowned self] error in
-            retrieveImageDataError(error)
+            retrieveImageDataError(error, contextually: contextually)
         }
     }
     
-    private func retrieveImageDataError(_ error: NSError) {
+    private func retrieveImageDataError(_ error: NSError, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
@@ -409,7 +412,11 @@ extension AlbumViewController
             dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
                 navigationController?.hideHUD() { [unowned self] in
-                    updateBarsInSelectMode()
+                    if contextually {
+                        setEnableStateOfButtons(true)
+                    } else {
+                        updateBarsInSelectMode()
+                    }
                 }
             }
         }

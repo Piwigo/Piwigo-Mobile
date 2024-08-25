@@ -54,11 +54,11 @@ extension AlbumViewController
 {
     // MARK: - Rotate Image
     @objc func rotateSelectionLeft() {
-        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesLeft)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesLeft, contextually: false)
     }
 
     @objc func rotateSelectionRight() {
-        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesRight)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesRight, contextually: false)
     }
 
     func rotateImages(withID someIDs: Set<Int64>, by angle: Double, total: Float) {

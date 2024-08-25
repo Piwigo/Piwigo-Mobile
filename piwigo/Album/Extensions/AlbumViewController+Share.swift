@@ -23,35 +23,35 @@ extension AlbumViewController
 
     // MARK: Share Images
     @objc func shareSelection() {
-        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .share)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .share, contextually: false)
     }
 
-    func checkPhotoLibraryAccessBeforeSharing(imagesWithID imageIDs: Set<Int64>) {
+    func checkPhotoLibraryAccessBeforeSharing(imagesWithID imageIDs: Set<Int64>, contextually: Bool) {
         // Check autorisation to access Photo Library (camera roll)
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(
                 for: PHAccessLevel.addOnly, for: self,
                 onAccess: { [self] in
                     // User allowed to save image in camera roll
-                    shareImages(withID: imageIDs, withCameraRollAccess: true)
+                    shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
                 },
                 onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
-                    shareImages(withID: imageIDs, withCameraRollAccess: false)
+                    shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
                 })
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil) { [self] in
                 // User allowed to save image in camera roll
-                shareImages(withID: imageIDs, withCameraRollAccess: true)
+                shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
             } onDeniedAccess: { [self] in
                 // User not allowed to save image in camera roll
-                shareImages(withID: imageIDs, withCameraRollAccess: false)
+                shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
             }
         }
     }
 
-    func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool) {
+    func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
         // To exclude some activity types
         var hasVideoItem = false
         var totalSize = Int64.zero
@@ -66,7 +66,7 @@ extension AlbumViewController
                 if let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) {
                     if image.isVideo {
                         // Case of a video
-                        let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: image)
+                        let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: image, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         videoItemProvider.delegate = self
@@ -80,7 +80,7 @@ extension AlbumViewController
                     }
                     else {
                         // Case of an image
-                        let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: image)
+                        let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: image, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         imageItemProvider.delegate = self
@@ -140,14 +140,10 @@ extension AlbumViewController
                         NotificationCenter.default.post(name: .pwgDidShare, object: nil)
 
                         // Deselect images if needed
-                        if isSelect {
-                            if selectedImageIDs.count == count {
-                                cancelSelect()
-                            } else {
-                                updateBarsInSelectMode()
-                            }
+                        if contextually {
+                            setEnableStateOfButtons(true)
                         } else {
-                            updateBarsInPreviewMode()
+                            cancelSelect()
                         }
 
                         // Close HUD with success
@@ -160,17 +156,17 @@ extension AlbumViewController
                     } else {
                         if activityType == nil {
                             // User dismissed the view controller without making a selection.
-                            if isSelect {
-                                updateBarsInSelectMode()
-                            } else {
-                                updateBarsInPreviewMode()
-                            }
+                            setEnableStateOfButtons(true)
                         } else {
                             // Check what to do with selection
-                            if selectedImageIDs.isEmpty {
-                                cancelSelect()
-                            } else {
+                            if contextually {
                                 setEnableStateOfButtons(true)
+                            } else {
+                                if selectedImageIDs.isEmpty {
+                                    cancelSelect()
+                                } else {
+                                    setEnableStateOfButtons(true)
+                                }
                             }
 
                             // Cancel download task
@@ -187,7 +183,7 @@ extension AlbumViewController
 
                 // Present share image activity view controller
                 activityViewController.view.tag = count
-                if isSelect {
+                if isSelect, contextually == false {
                     activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
                 } else if let imageID = imageIDs.first,
                           let visibleCells = collectionView?.visibleCells,
@@ -231,14 +227,14 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
     }
     
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageID imageID: Int64) {
+                                                      withImageID imageID: Int64, contextually: Bool) {
         // Check activity item provider
         guard let imageActivityItemProvider = imageActivityItemProvider else { return }
         
         // Close HUD
         if imageActivityItemProvider.isCancelled {
             presentedViewController?.hideHUD { }
-        } else if selectedImageIDs.contains(imageID) {
+        } else if contextually == false, selectedImageIDs.contains(imageID) {
             // Remove image from selection
             selectedImageIDs.remove(imageID)
             selectedFavoriteIDs.remove(imageID)
@@ -251,7 +247,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
                     self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
                 }
             }
-        } else {
+        } else if contextually {
             presentedViewController?.updateHUDwithSuccess { [self] in
                 self.presentedViewController?.hideHUD(afterDelay: pwgDelayHUD) { }
             }

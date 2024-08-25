@@ -298,7 +298,7 @@ extension AlbumViewController: UICollectionViewDelegate
     private func shareImageAction(withID imageID: Int64) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryImageList_share", comment: "Share"),
                         image: UIImage(systemName: "square.and.arrow.up")) { _ in
-            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .share)
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .share, contextually: true)
         }
     }
     
@@ -306,7 +306,7 @@ extension AlbumViewController: UICollectionViewDelegate
     private func favoriteImageAction(withID imageID: Int64) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryImageList_favorite", comment: "Favorite"),
                         image: UIImage(systemName: "heart")) { _ in
-            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .favorite)
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .favorite, contextually: true)
         }
     }
     
@@ -314,7 +314,7 @@ extension AlbumViewController: UICollectionViewDelegate
     private func unfavoriteImageAction(withID imageID: Int64) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryImageList_unfavorite", comment: "Unfavorite"),
                         image: UIImage(systemName: "heart.slash")) { _ in
-            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .unfavorite)
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .unfavorite, contextually: true)
         }
     }
     
@@ -406,7 +406,7 @@ extension AlbumViewController: UICollectionViewDelegate
         // Image selected ► Propose to deselect it
         return UIAction(title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .delete)
+            self.initSelection(ofImagesWithIDs: Set([imageID]), beforeAction: .delete, contextually: true)
         }
     }
 }

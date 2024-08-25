@@ -29,7 +29,7 @@ extension AlbumViewController
 
     // MARK: Edit Images Parameters
     @objc func editSelection() {
-        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .edit)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .edit, contextually: false)
     }
 
     func editImages(withIDs imageIDs: Set<Int64>) {

@@ -29,7 +29,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Retrieve complete image data before copying images
-            initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages)
+            initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages, contextually: false)
         })
         action.accessibilityIdentifier = "copy"
         return action
@@ -44,7 +44,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Retrieve complete image data before moving images
-            initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages)
+            initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages, contextually: false)
         })
         action.accessibilityIdentifier = "move"
         return action
@@ -69,14 +69,14 @@ extension AlbumViewController
             title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
             style: .default, handler: { [self] action in
                 // Retrieve complete image data before copying images
-                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages)
+                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages, contextually: false)
             })
 
         let moveAction = UIAlertAction(
             title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
             style: .default, handler: { [self] action in
                 // Retrieve complete image data before moving images
-                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages)
+                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages, contextually: false)
             })
 
         // Add actions

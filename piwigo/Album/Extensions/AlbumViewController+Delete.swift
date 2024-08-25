@@ -21,7 +21,7 @@ extension AlbumViewController
     
     // MARK: - Delete or Remove Images
     @objc func deleteSelection() {
-        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .delete)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .delete, contextually: false)
     }
 
     func askDeleteConfirmation(forImagesWithID imageIDs: Set<Int64>) {

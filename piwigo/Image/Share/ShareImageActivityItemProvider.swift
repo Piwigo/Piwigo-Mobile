@@ -22,7 +22,7 @@ protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
                                    preprocessingProgressDidUpdate progress: Float)
     func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageID imageID: Int64)
+                                                      withImageID imageID: Int64, contextually: Bool)
     func showError(withTitle title: String, andMessage message: String?)
 }
 
@@ -38,6 +38,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     private var cachedFileURL: URL?                     // URL of cached image file
     private var imageFileURL: URL                       // URL of shared image file
     private var isCancelledByUser = false               // Flag updated when pressing Cancel
+    private var contextually = false
     
     
     // MARK: - Progress Fraction
@@ -58,9 +59,12 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     
     
     // MARK: - Placeholder Image
-    init(placeholderImage: Image) {
+    init(placeholderImage: Image, contextually: Bool) {
         // Store Piwigo image data for future use
         self.imageData = placeholderImage
+        
+        // Remember if this video is shared from a contextual menu
+        self.contextually = contextually
 
         // We use the thumbnail image stored in cache
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
@@ -335,7 +339,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async(execute: {
-            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageID: self.imageData.pwgID)
+            self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageID: self.imageData.pwgID, contextually: self.contextually)
         })
     }
     

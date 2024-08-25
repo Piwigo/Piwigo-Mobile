@@ -23,7 +23,6 @@ class ImagePreviewViewController: UIViewController
         let scale = view.traitCollection.displayScale
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
-        debugPrint("aspect ratio: \(aspectRatio)")
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         if imageData.isVideo, previewSize == .fullRes {
             previewSize = .xxLarge
