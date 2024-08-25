@@ -79,7 +79,8 @@ extension AlbumViewController
         }
 
         // Get image data
-        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) else {
+        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID})
+        else {
             // Forget this image
             remainingIDs.removeFirst()
             selectedImageIDs.remove(imageID)
@@ -113,7 +114,8 @@ extension AlbumViewController
                         self.navigationController?.updateHUD(withProgress: progress)
                         
                         // Rotate cell image
-                        for cell in (self.collectionView?.visibleCells ?? []) {
+                        let visibleCells = self.collectionView?.visibleCells ?? []
+                        for cell in visibleCells {
                             if let cell = cell as? ImageCollectionViewCell, cell.imageData.pwgID == imageID,
                                let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
                                 cell.config(with: updatedImage, placeHolder: self.imagePlaceHolder,

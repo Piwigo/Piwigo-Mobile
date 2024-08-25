@@ -42,7 +42,7 @@ extension SelectCategoryViewController {
         self.copyImage(imageData, toAlbum: albumData) { [self] in
             // Next image…
             self.inputImages.remove(imageData)
-            self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+            self.updateHUD(withProgress: Float(1) - Float(self.inputImages.count) / Float(self.nberOfImages))
             self.copyImages(toAlbum: albumData)
         }
         onFailure: { [self] error in

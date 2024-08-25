@@ -271,28 +271,29 @@ extension UploadManager {
             // <<==== End of code for debugging
             
             // resultHandler performed on another thread!
+            let error = info?[PHImageErrorKey] as? Error
             if self.isExecutingBackgroundUploadTask {
 //                print("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
-                if info?[PHImageErrorKey] != nil {
-                    completionHandler(nil, options, info?[PHImageErrorKey] as? Error)
+                guard let error = error else {
+                    completionHandler(avasset, options, nil)
                     return
                 }
-                completionHandler(avasset, options, nil)
+                completionHandler(nil, options, error)
             } else {
                 self.backgroundQueue.async {
 //                    print("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
-                    if info?[PHImageErrorKey] != nil {
-                        completionHandler(nil, options, info?[PHImageErrorKey] as? Error)
+                    guard let error = error else {
+                        completionHandler(avasset, options, nil)
                         return
                     }
-                    completionHandler(avasset, options, nil)
+                    completionHandler(nil, options, error)
                 }
             }
         })
     }
-                             
+    
     
     // MARK: - Export Video
     /// - Determine video size and reduce it if requested

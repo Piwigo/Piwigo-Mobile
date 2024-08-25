@@ -382,7 +382,7 @@ extension AlbumViewController
 
             // Update HUD
             DispatchQueue.main.async {
-                let progress: Float = 1 - Float(remainingIDs.count) / Float(imageIDs.count)
+                let progress: Float = Float(1) - Float(remainingIDs.count) / Float(imageIDs.count)
                 self.navigationController?.updateHUD(withProgress: progress)
             }
 

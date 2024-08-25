@@ -16,7 +16,7 @@ extension AlbumViewController: UICollectionViewDataSource
     // MARK: - Headers & Footers
     func attributedComment() -> NSMutableAttributedString {
         let desc = NSMutableAttributedString(attributedString: albumData.comment)
-        let wholeRange = NSRange(location: 0, length: desc.string.count)
+        let wholeRange = NSRange(location: 0, length: albumData.comment.string.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [

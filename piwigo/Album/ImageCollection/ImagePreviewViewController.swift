@@ -21,7 +21,8 @@ class ImagePreviewViewController: UIViewController
         // Retrieve image
         let viewSize = view.bounds.size
         let scale = view.traitCollection.displayScale
-        aspectRatio = imageData.fullRes?.aspectRatio ?? imageData.sizes.medium?.aspectRatio ?? imageData.sizes.thumb?.aspectRatio ?? 1.0
+        let sizes = imageData.sizes
+        aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
         debugPrint("aspect ratio: \(aspectRatio)")
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         if imageData.isVideo, previewSize == .fullRes {

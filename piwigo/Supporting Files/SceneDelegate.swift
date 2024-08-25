@@ -49,8 +49,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Get other existing scenes of the main screen
         let otherScenes = UIApplication.shared.connectedScenes
-            .filter({$0.session.role == .windowApplication})
-            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+            .filter({($0.session.role == .windowApplication) &&
+                     ($0.session.persistentIdentifier != session.persistentIdentifier)})
         
         // Determine the user activity from a new connection or from a session's state restoration.
         guard let userActivity = connectionOptions.userActivities.first ?? session.stateRestorationActivity else {
@@ -81,8 +81,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             
                             // Did user create other scenes during the migration?
                             let otherScenes = UIApplication.shared.connectedScenes
-                                .filter({$0.session.role == .windowApplication})
-                                .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
+                                .filter({($0.session.role == .windowApplication) &&
+                                         ($0.session.persistentIdentifier != session.persistentIdentifier)})
                             otherScenes.forEach { scene in
                                 if let windowScene = (scene as? UIWindowScene) {
                                     // Replace migration with album view controller

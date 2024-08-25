@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23091" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23079"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -169,10 +169,10 @@
                                 <rect key="frame" x="164.66666666666666" y="408" width="64" height="62.666666666666686"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="9nh-RH-T2h"/>
                                     <constraint firstAttribute="width" constant="64" id="LZh-ax-Nsh"/>
-                                    <constraint firstAttribute="height" constant="64" id="mLf-BJ-Ubz"/>
                                 </constraints>
-                                <imageReference key="image" image="airplayvideo" catalog="system" symbolScale="default"/>
+                                <imageReference key="image" image="airplay.video" catalog="system" symbolScale="default"/>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                             </imageView>
                             <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="2Mi-Aw-Dsi">
@@ -328,7 +328,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="airplayvideo" catalog="system" width="128" height="102"/>
+        <image name="airplay.video" catalog="system" width="128" height="102"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

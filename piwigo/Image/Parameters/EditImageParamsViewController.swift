@@ -169,8 +169,8 @@ class EditImageParamsViewController: UIViewController
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
                 let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0,
-                                                                     bottom: navBarHeight, right: 0.0)
+                editImageParamsTableView.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
+                                                                     bottom: navBarHeight, right: CGFloat.zero)
             }
             
             // Reload table view

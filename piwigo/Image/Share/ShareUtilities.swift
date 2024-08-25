@@ -245,13 +245,8 @@ class ShareUtilities {
 
 
 // MARK: - UIActivityType Extensions
-extension UIActivity.ActivityType: Comparable {
-    
-    // Allows to compare and sort activity types
-    public static func < (lhs: UIActivity.ActivityType, rhs: UIActivity.ActivityType) -> Bool {
-        lhs.rawValue < rhs.rawValue
-    }
-
+extension UIActivity.ActivityType
+{    
     // Return the maximum resolution accepted for some activity types
     func imageMaxSize() -> Int {
         // Get the maximum image size according to the activity type (infinity if no limit)
