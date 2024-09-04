@@ -31,7 +31,7 @@ public class PwgSession: NSObject {
         config.networkServiceType = .responsiveData
         
         /// The foreground session should wait for connectivity to become available.
-        //        config.waitsForConnectivity = true
+        config.waitsForConnectivity = true
         
         /// Connections should use the network when the user has specified Low Data Mode
         //        if #available(iOSApplicationExtension 13.0, *) {

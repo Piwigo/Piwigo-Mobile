@@ -8,3 +8,4 @@
 
 "NSPhotoLibraryUsageDescription" = "بحيث أنها سوف تكون قادرة على تحميل الصور إلى الصور وتحميل الصور إلى Piwigo الخاص بك.";
 "NSSiriUsageDescription" = "حتى يتمكن Piwigo من تحميل الصور باستخدام Siri.";
+"NSLocalNetworkUsageDescription" = "يستخدم Piwigo الشبكة المحلية للوصول إلى خادم Piwigo الخاص بك.";

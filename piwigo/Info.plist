@@ -45,6 +45,8 @@
 	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>so that Piwigo will be able to upload images with Siri.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Piwigo uses the local network to access your Piwigo server.</string>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

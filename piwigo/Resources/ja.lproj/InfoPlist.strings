@@ -8,3 +8,4 @@
 
 "NSPhotoLibraryUsageDescription" = "写真を写真アプリにダウンロードしたり、写真をPiwigoにアップロードしたりできますように。";
 "NSSiriUsageDescription" = "piwigoがSiriで画像をアップロードできるようにします。";
+"NSLocalNetworkUsageDescription" = "Piwigoは、ローカルネットワークを使用してPiwigoサーバーにアクセスします。";
