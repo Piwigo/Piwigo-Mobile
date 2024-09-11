@@ -78,6 +78,7 @@ extension PwgSession {
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
+//        debugPrint("••> seconds since last used: \(Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0))")
         if #available(iOSApplicationExtension 14.0, *) {
             logger.notice("Start checking session…")
         }
