@@ -8,3 +8,4 @@
 
 "NSPhotoLibraryUsageDescription" = "para que pueda almacenar fotos en la aplicación Fotos y subir fotos a su Piwigo.";
 "NSSiriUsageDescription" = "para que Piwigo pueda subir imágenes con Siri.";
+"NSLocalNetworkUsageDescription" = "Piwigo utiliza la red local para acceder al servidor Piwigo.";

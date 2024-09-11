@@ -63,7 +63,7 @@ class LocalImagesViewController: UIViewController
     }()
     
 
-    // MARK: - Cached Values
+    // MARK: - Variables and Cached Values
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
     var sortType: SectionType = .none               // Images grouped by Day, Week, Month or None
@@ -72,10 +72,11 @@ class LocalImagesViewController: UIViewController
     var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
 
     var indexedUploadsInQueue = [(String,pwgUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
-    var selectedImages = [UploadProperties?]()      // Array of images to upload
+    var selectedImages = [UploadProperties?]()      // Array of images selected for upload
     var selectedSections = [SelectButtonState]()    // State of Select buttons
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
-    
+    var uploadRequests = [UploadProperties]()       // Array of images to upload
+
     private var uploadsToDelete = [Upload]()
     lazy var imageCellSize: CGSize = getImageCellSize()
     
@@ -91,9 +92,9 @@ class LocalImagesViewController: UIViewController
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     
-    private var cancelBarButton: UIBarButtonItem!   // For cancelling the selection of images
+    var cancelBarButton: UIBarButtonItem!           // For cancelling the selection of images
     var uploadBarButton: UIBarButtonItem!           // for uploading selected images
-    private var trashBarButton: UIBarButtonItem!    // For deleting uploaded images on iPhone until iOS 13
+    var trashBarButton: UIBarButtonItem!            // For deleting uploaded images on iPhone until iOS 13
                                                     //                              on iPad (all iOS)
     var actionBarButton: UIBarButtonItem!           // iPhone until iOS 13:
                                                     //  - for reversing the sort order
@@ -180,7 +181,7 @@ class LocalImagesViewController: UIViewController
             var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                               selectPhotosMenu(), reUploadAction()]
             if UIDevice.current.userInterfaceIdiom == .phone {
-                children.append(deleteAction())
+                children.append(deleteMenu())
             }
             let menu = UIMenu(title: "", children: children.compactMap({$0}))
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
@@ -457,7 +458,7 @@ class LocalImagesViewController: UIViewController
             var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                               selectPhotosMenu(), reUploadAction()]
             if UIDevice.current.userInterfaceIdiom == .phone {
-                children.append(deleteAction())
+                children.append(deleteMenu())
             }
             let updatedMenu = actionBarButton?.menu?.replacingChildren(children.compactMap({$0}))
             actionBarButton?.menu = updatedMenu
@@ -671,10 +672,10 @@ class LocalImagesViewController: UIViewController
     }
     
 
-    // MARK: - Re-upload & Delete Camera Roll Images
+    // MARK: - Re-Upload Photos
     @available(iOS 14, *)
     private func reUploadAction() -> UIAction? {
-        // Check if there are uploaded photos
+        // Check if there are already uploaded photos
         if !canDeleteUploadedImages() { return nil }
         
         // Propose option for re-uploading photos
@@ -736,28 +737,12 @@ class LocalImagesViewController: UIViewController
         }
         self.updateNavBar()
     }
-    
-    private func canDeleteUploadedImages() -> Bool {
-        // Don't provide access to the Trash button until the preparation work is not done
-        if queue.operationCount > 0 { return false }
         
-        // Check if there are uploaded photos to delete
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
-        for index in 0..<indexedUploads.count {
-            if let _ = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
-               indexedUploads[index].2 {
-                return true
-            }
-        }
-        return false
-    }
-    
 
     // MARK: - Delete Camera Roll Images
     @available(iOS 14.0, *)
-    private func deleteAction() -> UIAction? {
-        // Check if there are uploaded photos
+    private func deleteMenu() -> UIMenu? {
+        // Check if there are already uploaded photos that can be deleted
         if canDeleteUploadedImages() == false,
            canDeleteSelectedImages() == false { return nil }
         
@@ -767,8 +752,8 @@ class LocalImagesViewController: UIViewController
             // Delete uploaded photos from the camera roll
             self.deleteUploadedImages()
         })
-        delete.accessibilityIdentifier = "org.piwigo.removeFromCameraRoll"
-        return delete
+        let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
     }
     
     @objc func deleteUploadedImages() {
@@ -817,6 +802,22 @@ class LocalImagesViewController: UIViewController
         }
     }
     
+    private func canDeleteUploadedImages() -> Bool {
+        // Don't provide access to the Trash button until the preparation work is not done
+        if queue.operationCount > 0 { return false }
+        
+        // Check if there are uploaded photos to delete
+        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
+        for index in 0..<indexedUploads.count {
+            if let _ = completed.first(where: {$0.localIdentifier == indexedUploads[index].0}),
+               indexedUploads[index].2 {
+                return true
+            }
+        }
+        return false
+    }
+    
     private func canDeleteSelectedImages() -> Bool {
         var hasImagesToDelete = false
         let imageIDs = selectedImages.compactMap({ $0?.localIdentifier })
@@ -834,7 +835,8 @@ class LocalImagesViewController: UIViewController
     // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        if selectedImages.compactMap({ $0 }).isEmpty { return }
+        uploadRequests = selectedImages.compactMap({ $0 })
+        if uploadRequests.isEmpty { return }
         
         // Disable buttons
         cancelBarButton?.isEnabled = false
@@ -849,8 +851,8 @@ class LocalImagesViewController: UIViewController
             uploadSwitchVC.user = user
 
             // Will we propose to delete images after upload?
-            if let firstLocalIdentifer = selectedImages.compactMap({ $0 }).first?.localIdentifier {
-                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalIdentifer], options: nil).firstObject {
+            if let firstLocalID = uploadRequests.first?.localIdentifier {
+                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalID], options: nil).firstObject {
                     // Only local images can be deleted
                     if imageAsset.sourceType != .typeCloudShared {
                         // Will allow user to delete images after upload

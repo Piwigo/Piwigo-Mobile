@@ -19,27 +19,27 @@ extension AlbumViewController
     }
 
     
-    // MARK: - Delete Images
+    // MARK: - Delete or Remove Images
     @objc func deleteSelection() {
-        initSelection(beforeAction: .delete)
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .delete, contextually: false)
     }
 
-    func askDeleteConfirmation() {
+    func askDeleteConfirmation(forImagesWithID imageIDs: Set<Int64>) {
         // Split orphaned and non-orphaned images
         var toRemove = Set<Image>()
         var toDelete = Set<Image>()
-        for selectedImageId in selectedImageIds {
-            guard let selectedImage = (images.fetchedObjects ?? []).first(where: {$0.pwgID == selectedImageId})
+        for imageID in imageIDs {
+            guard let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID})
                 else { continue }
-            if (selectedImage.albums ?? Set<Album>()).filter({$0.pwgID > 0}).count == 1 {
-                toDelete.insert(selectedImage)
+            if (image.albums ?? Set<Album>()).filter({$0.pwgID > 0}).count == 1 {
+                toDelete.insert(image)
             } else {
-                toRemove.insert(selectedImage)
+                toRemove.insert(image)
             }
         }
         let totalNberToDelete = toDelete.count + toRemove.count
 
-        // We cannot propose to remove images from a smart albums
+        // We cannot propose to remove images from a smart album
         if albumData.pwgID < 0 {
             toDelete.formUnion(toRemove)
             toRemove = []
@@ -52,7 +52,7 @@ extension AlbumViewController
         } else if let imageData = toDelete.first, imageData.isVideo {
             msg = NSLocalizedString("deleteSingleVideo_title", comment: "Are you sure you want to delete this video?")
         } else {
-            msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this image?")
+            msg = NSLocalizedString("deleteSingleImage_message", comment: "Are you sure you want to delete this photo?")
         }
         let alert = UIAlertController(title: nil, message: msg, preferredStyle: .actionSheet)
 
@@ -79,7 +79,7 @@ extension AlbumViewController
 
                 // Display HUD during server update
                 var msgHUD = ""
-                if totalNumberOfImages > 1 {
+                if imageIDs.count > 1 {
                     msgHUD = NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
                 } else if let imageData = toDelete.first, imageData.isVideo {
                     msgHUD = NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…")
@@ -100,8 +100,8 @@ extension AlbumViewController
                 handler: { [self] action in
                     // Display HUD during server update
                     var msgHUD = ""
-                    totalNumberOfImages = toRemove.count + (toDelete.isEmpty ? 0 : 1)
-                    if totalNumberOfImages > 1 {
+                    let totalNberOfImages = toRemove.count + (toDelete.isEmpty ? 0 : 1)
+                    if totalNberOfImages > 1 {
                         msgHUD = toDelete.isEmpty
                         ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
                         : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
@@ -125,7 +125,7 @@ extension AlbumViewController
                     }
 
                     // Start removing images
-                    removeImages(toRemove, andThenDelete: toDelete)
+                    removeImages(toRemove, andThenDelete: toDelete, total: Float(totalNberToDelete))
                 })
             alert.addAction(removeImagesAction)
         }
@@ -142,10 +142,11 @@ extension AlbumViewController
         }
     }
 
-    func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>) {
+    func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, total: Float) {
         var imagesToRemove = toRemove
         guard let imageData = imagesToRemove.first,
-              let albums = imageData.albums else {
+              let albums = imageData.albums
+        else {
             if toDelete.isEmpty {
                 navigationController?.updateHUDwithSuccess() { [self] in
                     // Save changes
@@ -190,21 +191,22 @@ extension AlbumViewController
                 imagesToRemove.removeFirst()
 
                 // Update HUD
-                let ratio = Float(imagesToRemove.count) / Float(totalNumberOfImages)
+                let ratio = Float(imagesToRemove.count) / total
                 navigationController?.updateHUD(withProgress: 1.0 - ratio)
 
                 // Next image
-                removeImages(imagesToRemove, andThenDelete:toDelete)
+                removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
 
             } failure: { [self] error in
-                self.removeImages(imagesToRemove, andThenDelete: toDelete, error: error)
+                self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
             }
         } failure: { [self] error in
-            self.removeImages(imagesToRemove, andThenDelete: toDelete, error: error)
+            self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
         }
     }
     
-    private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, error: NSError) {
+    private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, 
+                              total: Float, error: NSError) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
            [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -234,7 +236,7 @@ extension AlbumViewController
                 // Bypass image
                 imagesToRemove.removeFirst()
                 // Continue removing images
-                removeImages(imagesToRemove, andThenDelete:toDelete)
+                removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
             }
         } else {
             dismissPiwigoError(withTitle: title, message: message,
@@ -260,7 +262,7 @@ extension AlbumViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save moved images \(error), \(error.userInfo)")
+                    print("Could not save deleted images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and deselect images
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in

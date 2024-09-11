@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "選択";
 "categoryImageList_deselectButton" = "選択を解除";
 "categoryImageList_noDataError" = "エラー データがありません";
+"categoryImageList_share" = "シェア";
+"categoryImageList_favorite" = "お気に入りに追加";
+"categoryImageList_unfavorite" = "お気に入りから削除する";
 
 // Albums "Discover"
 "categoryDiscover_title" = "探す";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "その他のアルバム";
 "categoryUpload_pasteboard" = "クリップボード";
 
-"categoyUpload_loadSubCategories" = "読み込む";
-"categoryUpload_images" = "写真をアップロードする";
-
 // Default album
 "setDefaultCategory_select" = "新しいアルバムになるアルバムまたはサブアルバムを選択してください。";
 "setDefaultCategory_title" = "既定のアルバム";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "新規アルバムの作成に失敗しました";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "名称の変更";
-"categoryCellOption_move" = "移動";
-"categoryCellOption_delete" = "削除";
+"categoryCellOption_addPhotos" = "写真を追加";
+"categoryCellOption_rename" = "アルバム名の変更";
+"categoryCellOption_move" = "アルバムの移動";
+"categoryCellOption_delete" = "アルバム削除";
 
 // Album rename
 "renameCategory_title" = "アルバムの名称を変更";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "タグ：";
 "imageUploadDetails_description" = "説明：";
 
-"imageUploadDetailsView_title" = "写真";
-"imageUploadDetailsButton_title" = "アップロード";
-"imageUploadDetailsEdit_title" = "アップロードする写真を編集します";
-"imageUploadDetailsUploading_title" = "アップロード中の写真";
-"imageUploadDetailsCell_uploadComplete" = "完了！終了中...";
-
-"imageUploadRemove" = "アップロードした写真を削除する";
-
 "imageUploadTableCell_waiting" = "待機中...";
 "imageUploadTableCell_preparing" = "準備中...";
 "imageUploadTableCell_prepared" = "アップロードの準備ができました...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "失敗したアップロードを再開する";
 "imageUploadResumeSeveral" = "%@ 件の失敗したアップロードを再開する";
 
-"imageUploadProgressBar_zero" = "アップロード中 0/0";
-"imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
 "imageUploadProgressBar_completed" = "完了しました";
 "imageUploadCompleted_title" = "アップロードが完了しました";
 "imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "共有に失敗しました";
 "shareMetadataError_message" = "プライベートメタデータを取り除くことはできません";
+"shareFailError_tooLarge" = "共有するには大きすぎるセレクション";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

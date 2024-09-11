@@ -16,7 +16,7 @@ extension AlbumViewController: UICollectionViewDataSource
     // MARK: - Headers & Footers
     func attributedComment() -> NSMutableAttributedString {
         let desc = NSMutableAttributedString(attributedString: albumData.comment)
-        let wholeRange = NSRange(location: 0, length: desc.string.count)
+        let wholeRange = NSRange(location: 0, length: albumData.comment.string.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
@@ -117,18 +117,19 @@ extension AlbumViewController: UICollectionViewDataSource
                 let imageSection = indexPath.section - 1
                 var imagesInSection = [Image]()
                 let nberOfImageInSection = collectionView.numberOfItems(inSection: indexPath.section)
-                if nberOfImageInSection <= 10 {
+                if nberOfImageInSection <= 20 {
                     // Collect all images
-                    for item in 0..<min(nberOfImageInSection, 10) {
+                    for item in 0..<min(nberOfImageInSection, 20) {
                         let imageIndexPath = IndexPath(item: item, section: imageSection)
                         imagesInSection.append(images.object(at: imageIndexPath))
                     }
                 } else {
-                    // Collect first 10 images
+                    // Collect first 20 images
                     for item in 0..<10 {
                         let imageIndexPath = IndexPath(item: item, section: imageSection)
                         imagesInSection.append(images.object(at: imageIndexPath))
                     }
+                    // Collect last 10 images
                     for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
                         let imageIndexPath = IndexPath(item: item, section: imageSection)
                         imagesInSection.append(images.object(at: imageIndexPath))
@@ -268,7 +269,7 @@ extension AlbumViewController: UICollectionViewDataSource
             let image = images.object(at: imageIndexPath)
 
             // Is this cell selected?
-            cell.isSelection = selectedImageIds.contains(image.pwgID)
+            cell.isSelection = selectedImageIDs.contains(image.pwgID)
             
             // pwg.users.favorites… methods available from Piwigo version 2.10
             if hasFavorites {

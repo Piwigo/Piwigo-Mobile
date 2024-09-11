@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Välj";
 "categoryImageList_deselectButton" = "Avmarkera";
 "categoryImageList_noDataError" = "Fel inga Data";
+"categoryImageList_share" = "Aktie";
+"categoryImageList_favorite" = "Lägg till i favoriter";
+"categoryImageList_unfavorite" = "Ta bort från favorit";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Upptäck";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Andra album";
 "categoryUpload_pasteboard" = "Urklipp";
 
-"categoyUpload_loadSubCategories" = "ladda";
-"categoryUpload_images" = "Ladda upp bilder";
-
 // Default album
 "setDefaultCategory_select" = "Välj ett album eller underalbum som kommer att bli det nya rotalbumet.";
 "setDefaultCategory_title" = "Standardalbum";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Kunde inte skapa nytt album";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Byt namn";
-"categoryCellOption_move" = "Flytta";
-"categoryCellOption_delete" = "Radera";
+"categoryCellOption_addPhotos" = "Lägg till foton";
+"categoryCellOption_rename" = "Byt namn på album";
+"categoryCellOption_move" = "Flytta album";
+"categoryCellOption_delete" = "Radera album";
 
 // Album rename
 "renameCategory_title" = "Byt namn på Album";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Taggar:";
 "imageUploadDetails_description" = "Beskrivning:";
 
-"imageUploadDetailsView_title" = "Bilder";
-"imageUploadDetailsButton_title" = "Ladda upp";
-"imageUploadDetailsEdit_title" = "Bearbeta bilder för uppladdning";
-"imageUploadDetailsUploading_title" = "Bilder som laddas upp";
-"imageUploadDetailsCell_uploadComplete" = "Klart! Färdigställer...";
-
-"imageUploadRemove" = "Tar bort uppladdade bilder";
-
 "imageUploadTableCell_waiting" = "Väntar...";
 "imageUploadTableCell_preparing" = "Förbereder...";
 "imageUploadTableCell_prepared" = "Redo för uppladdning...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Återuppta uppladdning";
 "imageUploadResumeSeveral" = "Återuppta %@ uppladdningar";
 
-"imageUploadProgressBar_zero" = "Laddar upp 0/0";
-"imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
 "imageUploadProgressBar_completed" = "Klart";
 "imageUploadCompleted_title" = "Uppladdning Slutförd";
 "imageUploadCompleted_message" = "bilder/videor laddades upp till din Piwigoserver.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Dela misslyckades";
 "shareMetadataError_message" = "Kan inte ta bort privata metadata";
+"shareFailError_tooLarge" = "Urvalet är för stort för att dela";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

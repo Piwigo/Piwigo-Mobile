@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Выбрать";
 "categoryImageList_deselectButton" = "Отменить выбор";
 "categoryImageList_noDataError" = "Ошибка: нет данных";
+"categoryImageList_share" = "Поделиться";
+"categoryImageList_favorite" = "Добавить в избранное";
+"categoryImageList_unfavorite" = "Удалить из избранного";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Обзор";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Другие Альбомы";
 "categoryUpload_pasteboard" = "Буфер обмена";
 
-"categoyUpload_loadSubCategories" = "загрузить";
-"categoryUpload_images" = "Загрузить фото";
-
 // Default album
 "setDefaultCategory_select" = "Пожалуйста, выберите альбом или подальбом, который станет Вашим новым корневым альбомом.";
 "setDefaultCategory_title" = "Альбом по умолчанию";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Не удалось создать новый альбом";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Переименовать";
-"categoryCellOption_move" = "Переместить";
-"categoryCellOption_delete" = "Удалить";
+"categoryCellOption_addPhotos" = "Добавить фотографии";
+"categoryCellOption_rename" = "Переименовать альбом";
+"categoryCellOption_move" = "Переместить альбом";
+"categoryCellOption_delete" = "Удалить альбом";
 
 // Album rename
 "renameCategory_title" = "Переименовать альбом";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Тэги:";
 "imageUploadDetails_description" = "Описание:";
 
-"imageUploadDetailsView_title" = "Фото";
-"imageUploadDetailsButton_title" = "Загрузка";
-"imageUploadDetailsEdit_title" = "Редактирование фотографий для загрузки";
-"imageUploadDetailsUploading_title" = "Изображения, которые были загружены";
-"imageUploadDetailsCell_uploadComplete" = "Завершено! Финишируем...";
-
-"imageUploadRemove" = "Перенос загруженных изображений";
-
 "imageUploadTableCell_waiting" = "Ожидание...";
 "imageUploadTableCell_preparing" = "Подготовка...";
 "imageUploadTableCell_prepared" = "Готово к загрузке...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Возобновить Загрузку";
 "imageUploadResumeSeveral" = "Возобновить %@ Загрузок";
 
-"imageUploadProgressBar_zero" = "Загрузка 0/0";
-"imageUploadProgressBar_nonZero" = "Загрузка %@/%@";
 "imageUploadProgressBar_completed" = "Выполнено";
 "imageUploadCompleted_title" = "Загрузка завершена";
 "imageUploadCompleted_message" = "фото загружено на Ваш сервер Piwigo.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Поделиться не удалось";
 "shareMetadataError_message" = "Не удается разделить личные метаданные";
+"shareFailError_tooLarge" = "Выбор слишком велик, чтобы делиться им";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

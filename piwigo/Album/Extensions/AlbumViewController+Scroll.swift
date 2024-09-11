@@ -14,7 +14,7 @@ extension AlbumViewController: UIScrollViewDelegate
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Show/hide navigation bar border
-        var topSpace = navigationController?.navigationBar.bounds.height ?? 0
+        var topSpace: CGFloat = navigationController?.navigationBar.bounds.height ?? 0
         if #available(iOS 13, *) {
             topSpace += view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
         } else {

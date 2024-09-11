@@ -27,7 +27,8 @@ extension EditImageParamsViewController
         let viewIntersection = convertedViewFrame.intersection(convertedKeyboardFrameEnd)
         if viewIntersection.height > 0 {
             // Extend the content view to allow full scrolling
-            editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: viewIntersection.height, right: 0.0)
+            editImageParamsTableView.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
+                                                                 bottom: viewIntersection.height, right: CGFloat.zero)
         }
     }
     

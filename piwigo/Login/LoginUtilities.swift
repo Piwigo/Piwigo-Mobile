@@ -115,7 +115,7 @@ class LoginUtilities: NSObject {
         }
 
         // Calculate number of thumbnails per row for that selection
-        let minNberOfImages = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: (pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb).minPoints)
+        let minNberOfImages: Int = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: (pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb).minPoints)
 
         // Make sure that default number fits inside selected range
         AlbumVars.shared.thumbnailsPerRowInPortrait = max(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);

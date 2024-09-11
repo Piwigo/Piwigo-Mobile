@@ -139,7 +139,7 @@ extension CGImageMetadata {
             let prefix = CGImageMetadataTagCopyPrefix(tag)!
             let name = CGImageMetadataTagCopyName(tag)!
             let path = ((prefix as String) + ":" + (name as String)) as CFString
-            print("=> Tag: \(prefix):\(name)")
+//            debugPrint("=> Tag: \(prefix):\(name)")
 
             // Check presence of dictionary
             if let properties = dictOfKeys[prefix] {

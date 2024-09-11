@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Wybierz";
 "categoryImageList_deselectButton" = "Odznacz";
 "categoryImageList_noDataError" = "Błąd. Brak danych";
+"categoryImageList_share" = "Udostępnij";
+"categoryImageList_favorite" = "Dodaj do ulubionych";
+"categoryImageList_unfavorite" = "Usuń z ulubionych";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Odkrywaj";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Inne albumy";
 "categoryUpload_pasteboard" = "Schowek";
 
-"categoyUpload_loadSubCategories" = "ładowanie";
-"categoryUpload_images" = "Prześlij zdjęcia";
-
 // Default album
 "setDefaultCategory_select" = "Wybierz album lub podalbum, który stanie się nowym albumem głównym.";
 "setDefaultCategory_title" = "Album domyślny";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Nie można utworzyć nowego albumu";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Zmień\nnazwę";
-"categoryCellOption_move" = "Przenieść";
-"categoryCellOption_delete" = "Usuń";
+"categoryCellOption_addPhotos" = "Dodawanie zdjęć";
+"categoryCellOption_rename" = "Zmiana nazwy albumu";
+"categoryCellOption_move" = "Przenoszenie albumu";
+"categoryCellOption_delete" = "Usuwanie albumu";
 
 // Album rename
 "renameCategory_title" = "Zmień nazwę albumu";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Tagi:";
 "imageUploadDetails_description" = "Opis:";
 
-"imageUploadDetailsView_title" = "Zdjęcia";
-"imageUploadDetailsButton_title" = "Wyślij";
-"imageUploadDetailsEdit_title" = "Edycja informacji o przesyłanym zdjęciu";
-"imageUploadDetailsUploading_title" = "Przesyłane zdjęcia";
-"imageUploadDetailsCell_uploadComplete" = "Zakończone! Finalizowanie...";
-
-"imageUploadRemove" = "Usuwanie przesłanych zdjęć";
-
 "imageUploadTableCell_waiting" = "Oczekiwanie...";
 "imageUploadTableCell_preparing" = "Przygotowywanie...";
 "imageUploadTableCell_prepared" = "Gotowy do przesłania...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Wznów nieudane przesyłanie";
 "imageUploadResumeSeveral" = "Wznów nieudane przesyłanie: %@";
 
-"imageUploadProgressBar_zero" = "Przesyłanie 0/0";
-"imageUploadProgressBar_nonZero" = "Przesyłanie %@/%@";
 "imageUploadProgressBar_completed" = "Zakończono";
 "imageUploadCompleted_title" = "Przesyłanie Zakończone";
 "imageUploadCompleted_message" = "zdjęcie/film zostało przesłane do Twojego serwera Piwigo.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Udostępnienie nie powiodło się";
 "shareMetadataError_message" = "Nie można usunąć prywatnych metadanych";
+"shareFailError_tooLarge" = "Wybór zbyt duży, aby go udostępnić";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

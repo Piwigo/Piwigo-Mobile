@@ -29,7 +29,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Retrieve complete image data before copying images
-            initSelection(beforeAction: .copyImages)
+            initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages, contextually: false)
         })
         action.accessibilityIdentifier = "copy"
         return action
@@ -44,7 +44,7 @@ extension AlbumViewController
             // Disable buttons during action
             setEnableStateOfButtons(false)
             // Retrieve complete image data before moving images
-            initSelection(beforeAction: .moveImages)
+            initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages, contextually: false)
         })
         action.accessibilityIdentifier = "move"
         return action
@@ -69,14 +69,14 @@ extension AlbumViewController
             title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
             style: .default, handler: { [self] action in
                 // Retrieve complete image data before copying images
-                initSelection(beforeAction: .copyImages)
+                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages, contextually: false)
             })
 
         let moveAction = UIAlertAction(
             title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
             style: .default, handler: { [self] action in
                 // Retrieve complete image data before moving images
-                initSelection(beforeAction: .moveImages)
+                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages, contextually: false)
             })
 
         // Add actions
@@ -98,10 +98,10 @@ extension AlbumViewController
         }
     }
 
-    func copyImagesToAlbum() {
+    func copyToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        let parameter: [Any] = [selectedImageIds, albumData.pwgID]
+        let parameter: [Any] = [imageIDs, albumData.pwgID]
         copyVC.user = user
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
             copyVC.delegate = self              // To re-enable toolbar
@@ -109,10 +109,10 @@ extension AlbumViewController
         }
     }
 
-    func moveImagesToAlbum() {
+    func moveToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-        let parameter: [Any] = [selectedImageIds, albumData.pwgID]
+        let parameter: [Any] = [imageIDs, albumData.pwgID]
         moveVC.user = user
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
             moveVC.delegate = self              // To re-enable toolbar

@@ -23,44 +23,52 @@ extension AlbumViewController
         }
         
         // Are the selected images favorites?
-        let areFavorites = selectedImageIds == selectedFavoriteIds
+        let areFavorites = selectedImageIDs == selectedFavoriteIDs
         let button = UIBarButtonItem.favoriteImageButton(areFavorites, target: self)
-        button.action = areFavorites ? #selector(removeFromFavorites) : #selector(addToFavorites)
+        button.action = areFavorites ? #selector(unfavoriteSelection) : #selector(favoriteSelection)
         return button
     }
 
 
     // MARK: - Add Images to Favorites
-    @objc func addToFavorites() {
-        initSelection(beforeAction: .addToFavorites)
+    @objc func favoriteSelection() {
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .favorite, contextually: false)
     }
 
-    func addImageToFavorites() {
-        guard let imageId = selectedImageIds.first else {
+    func favorite(imagesWithID someIDs: Set<Int64>, total: Float, contextually: Bool) {
+        var remainingIDs = someIDs
+        guard let imageID = remainingIDs.first else {
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    // Deselect images
-                    cancelSelect()
+                    // Deselect images if needed
+                    if contextually {
+                        setEnableStateOfButtons(true)
+                    } else {
+                        cancelSelect()
+                    }
                 }
             }
             return
         }
 
         // Get image data
-        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
+        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) else {
             // Forget this image
-            selectedImageIds.removeFirst()
-            selectedFavoriteIds.remove(imageId)
-            selectedVideosIds.remove(imageId)
+            remainingIDs.removeFirst()
+            if contextually == false {
+                selectedImageIDs.remove(imageID)
+                selectedFavoriteIDs.remove(imageID)
+                selectedVideosIDs.remove(imageID)
+            }
 
             // Update HUD
-            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
 
             // Next image
-            addImageToFavorites()
+            favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
             return
         }
 
@@ -69,7 +77,7 @@ extension AlbumViewController
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
-                    navigationController?.updateHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
                     
                     // Image added to favorites ► Add it in the background
                     if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -82,20 +90,23 @@ extension AlbumViewController
                     }
                     
                     // Next image
-                    selectedImageIds.removeFirst()
-                    selectedFavoriteIds.remove(imageId)
-                    selectedVideosIds.remove(imageId)
-                    addImageToFavorites()
+                    remainingIDs.remove(imageID)
+                    if contextually == false {
+                        selectedImageIDs.remove(imageID)
+                        selectedFavoriteIDs.remove(imageID)
+                        selectedVideosIDs.remove(imageID)
+                    }
+                    favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             } failure: { [self] error in
-                self.addImageToFavoritesError(error)
+                self.favoriteError(error, contextually: contextually)
             }
         } failure: { [self] error in
-            self.addImageToFavoritesError(error)
+            self.favoriteError(error, contextually: contextually)
         }
     }
     
-    private func addImageToFavoritesError(_ error: NSError) {
+    private func favoriteError(_ error: NSError, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
@@ -111,7 +122,11 @@ extension AlbumViewController
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
-                    updateBarsInSelectMode()
+                    if contextually {
+                        setEnableStateOfButtons(true)
+                    } else {
+                        updateBarsInSelectMode()
+                    }
                 }
             }
         }
@@ -119,36 +134,44 @@ extension AlbumViewController
     
     
     // MARK: - Remove Images from Favorites
-    @objc func removeFromFavorites() {
-        initSelection(beforeAction: .removeFromFavorites)
+    @objc func unfavoriteSelection() {
+        initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .unfavorite, contextually: false)
     }
 
-    func removeImageFromFavorites() {
-        guard let imageId = selectedImageIds.first else {
+    func unfavorite(imagesWithID someIDs: Set<Int64>, total: Float, contextually: Bool) {
+        var remainingIDs = someIDs
+        guard let imageID = remainingIDs.first else {
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    // Deselect images
-                    cancelSelect()
+                    // Deselect images if needed
+                    if contextually {
+                        setEnableStateOfButtons(true)
+                    } else {
+                        cancelSelect()
+                    }
                 }
             }
             return
         }
 
         // Get image data
-        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageId}) else {
-            // Deselect this image
-            selectedImageIds.removeFirst()
-            selectedFavoriteIds.remove(imageId)
-            selectedVideosIds.remove(imageId)
+        guard let imageData = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) else {
+            // Deselect this image if needed
+            remainingIDs.remove(imageID)
+            if contextually == false {
+                selectedImageIDs.remove(imageID)
+                selectedFavoriteIDs.remove(imageID)
+                selectedVideosIDs.remove(imageID)
+            }
 
             // Update HUD
-            navigationController?.updateHUD(withProgress: 1.0 - Float(selectedImageIds.count) / Float(totalNumberOfImages))
+            navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
 
             // Next image
-            removeImageFromFavorites()
+            unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
             return
         }
 
@@ -157,7 +180,7 @@ extension AlbumViewController
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
-                    navigationController?.updateHUD(withProgress: 1.0 - Float(self.selectedImageIds.count) / Float(self.totalNumberOfImages))
+                    navigationController?.updateHUD(withProgress: 1.0 - Float(remainingIDs.count) / total)
                     
                     // Image removed from favorites ► Remove it in the foreground
                     if let favAlbum = self.albumProvider.getAlbum(ofUser: self.user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -170,20 +193,23 @@ extension AlbumViewController
                     }
                     
                     // Next image
-                    selectedImageIds.removeFirst()
-                    selectedFavoriteIds.remove(imageId)
-                    selectedVideosIds.remove(imageId)
-                    removeImageFromFavorites()
+                    remainingIDs.removeFirst()
+                    if contextually == false {
+                        selectedImageIDs.remove(imageID)
+                        selectedFavoriteIDs.remove(imageID)
+                        selectedVideosIDs.remove(imageID)
+                    }
+                    unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             } failure: { [unowned self] error in
-                self.removeFromFavoritesError(error)
+                self.unfavoriteError(error, contextually: contextually)
             }
         } failure: { [unowned self] error in
-            self.removeFromFavoritesError(error)
+            self.unfavoriteError(error, contextually: contextually)
         }
     }
     
-    private func removeFromFavoritesError(_ error: NSError) {
+    private func unfavoriteError(_ error: NSError, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
@@ -199,7 +225,11 @@ extension AlbumViewController
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
                                errorMessage: error.localizedDescription) { [unowned self] in
                 navigationController?.hideHUD() { [unowned self] in
-                    updateBarsInSelectMode()
+                    if contextually {
+                        setEnableStateOfButtons(true)
+                    } else {
+                        updateBarsInSelectMode()
+                    }
                 }
             }
         }

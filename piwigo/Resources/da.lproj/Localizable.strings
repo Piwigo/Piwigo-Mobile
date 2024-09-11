@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Vælg";
 "categoryImageList_deselectButton" = "Fravælg";
 "categoryImageList_noDataError" = "Fejl ingen Data";
+"categoryImageList_share" = "Del";
+"categoryImageList_favorite" = "Tilføj til favoritter";
+"categoryImageList_unfavorite" = "Fjern fra favorit";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Opdag";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Andre Albummer";
 "categoryUpload_pasteboard" = "Udklipsholder";
 
-"categoyUpload_loadSubCategories" = "indlæs";
-"categoryUpload_images" = "Upload billeder";
-
 // Default album
 "setDefaultCategory_select" = "Vælg venligst et album eller underalbum, som vil blive det nye rodalbum.";
 "setDefaultCategory_title" = "Standardalbum";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Kunne ikke oprette nyt album";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Omdøb";
-"categoryCellOption_move" = "Flyt";
-"categoryCellOption_delete" = "Slet";
+"categoryCellOption_addPhotos" = "Tilføj fotos";
+"categoryCellOption_rename" = "Omdøb albummet";
+"categoryCellOption_move" = "Flyt album";
+"categoryCellOption_delete" = "Slet album";
 
 // Album rename
 "renameCategory_title" = "Omdøb Album";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Etiketter:";
 "imageUploadDetails_description" = "Beskrivelse:";
 
-"imageUploadDetailsView_title" = "Billeder";
-"imageUploadDetailsButton_title" = "Upload";
-"imageUploadDetailsEdit_title" = "Vælg Billeder til Upload";
-"imageUploadDetailsUploading_title" = "Billeder der bliver Uploadet";
-"imageUploadDetailsCell_uploadComplete" = "Fuldført! Efterbehandling...";
-
-"imageUploadRemove" = "Fjerner uploadede billeder";
-
 "imageUploadTableCell_waiting" = "Venter...";
 "imageUploadTableCell_preparing" = "Forbereder...";
 "imageUploadTableCell_prepared" = "Klar til upload...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Genoptag Upload";
 "imageUploadResumeSeveral" = "Genoptag %@ Uploads";
 
-"imageUploadProgressBar_zero" = "Uploader 0/0";
-"imageUploadProgressBar_nonZero" = "Uploader %@/%@";
 "imageUploadProgressBar_completed" = "Fuldført";
 "imageUploadCompleted_title" = "Upload Fuldført";
 "imageUploadCompleted_message" = "billede/video uploadet til Piwigo server.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Deling mislykkedes";
 "shareMetadataError_message" = "Kan ikke fjerne private metadata";
+"shareFailError_tooLarge" = "Udvalget er for stort til at dele";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

@@ -13,7 +13,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-class PasteboardImagesViewController: UIViewController, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     
     // MARK: - Core Data Objects
     var user: User!
@@ -55,16 +55,22 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
     }()
     
 
-    // MARK: - View
+    // MARK: - Variables and Cached Values
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
+    var reUploadAllowed = false
 
-    @IBOutlet weak var localImagesCollection: UICollectionView!
-    @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
-    
+    let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
+    var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     let imagePlaceholder = UIImage(named: "placeholder")!
-        
+    lazy var imageCellSize: CGSize = getImageCellSize()
+
+    var selectedImages = [UploadProperties?]()      // Array of images selected for upload
+    var sectionState: SelectButtonState = .none     // To remember the state of the section
+    var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
+    var uploadRequests = [UploadProperties]()       // Array of images to upload
+
     // Collection of images in the pasteboard
-    var pbObjects = [PasteboardObject]()      // Objects in pasteboard
+    var pbObjects = [PasteboardObject]()            // Objects in pasteboard
     lazy var pasteboardTypes : [String] = {
         if #available(iOS 14.0, *) {
             return [UTType.image.identifier, UTType.movie.identifier]
@@ -74,23 +80,17 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
         }
     }()
     
-    // Cached data
-    let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
-    var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     
-    // Selection data
-    var selectedImages = [UploadProperties?]()          // Array of images to upload
-    var sectionState: SelectButtonState = .none         // To remember the state of the section
-    private var imagesBeingTouched = [IndexPath]()      // Array of indexPaths of touched images
-    
+    // MARK: - View
+    @IBOutlet weak var localImagesCollection: UICollectionView!
+    @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
+        
     // Buttons
-    private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
-    private var uploadBarButton: UIBarButtonItem!       // for uploading selected images
-    private var actionBarButton: UIBarButtonItem!       // For allowing to re-upload images
+    var cancelBarButton: UIBarButtonItem!               // For cancelling the selection of images
+    var uploadBarButton: UIBarButtonItem!               // for uploading selected images
+    var actionBarButton: UIBarButtonItem!               // For allowing to re-upload images
     private var legendLabel = UILabel()                 // Legend presented in the toolbar on iPhone/iOS 14+
     private var legendBarItem: UIBarButtonItem!
-
-    var reUploadAllowed = false
 
 
     // MARK: - View Lifecycle
@@ -275,6 +275,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
                     self.updateNavBar()
+                    self.imageCellSize = self.getImageCellSize()
                     self.localImagesCollection.reloadData()
 
                     // Scroll to previous position
@@ -458,7 +459,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
     
     private func swapReuploadOption() {
         // Swap "Re-upload" option
-        reUploadAllowed = !(self.reUploadAllowed)
+        reUploadAllowed = !reUploadAllowed
         updateActionButton()
         
         // No further operation if re-uploading is allowed
@@ -497,10 +498,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
     }
     
     private func canReUploadImages() -> Bool {
-        // Don't provide access to the Trash button until the preparation work is not done
+        // Don't provide access to the re-upload button until the preparation work is not done
         if !pendingOperations.preparationsInProgress.isEmpty { return false }
 
-        // Check if there are uploaded photos to delete
+        // Check if there are already uploaded photos
         let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
         let completed = (uploads.fetchedObjects ?? []).filter({[.finished, .moderated].contains($0.state)})
         for index in 0..<indexedUploads.count {
@@ -512,10 +513,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
     }
 
     
-    // MARK: - Upload Images
+    // MARK: - Show Upload Options
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        if selectedImages.compactMap({ $0 }).count == 0 { return }
+        uploadRequests = selectedImages.compactMap({ $0 })
+        if uploadRequests.isEmpty { return }
         
         // Disable button
         cancelBarButton?.isEnabled = false
@@ -525,6 +527,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
+            uploadSwitchVC.user = user
             uploadSwitchVC.canDeleteImages = false
 
             // Push Edit view embedded in navigation controller
@@ -537,153 +540,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDelegate
             navigationController?.present(navController, animated: true)
         }
     }
-    
-
-    // MARK: - Select Images
-    @objc func cancelSelect() {
-        // Clear list of selected images
-        selectedImages = .init(repeating: nil, count: pbObjects.count)
-
-        // Update navigation bar
-        updateNavBar()
-
-        // Deselect visible cells
-        localImagesCollection.visibleCells.forEach { cell in
-            if let cell = cell as? LocalImageCollectionViewCell {
-                cell.update(selected: false)
-            }
-        }
-        
-        // Update button
-        let headers = localImagesCollection.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
-        headers.forEach { header in
-            if let header = header as? PasteboardImagesHeaderReusableView {
-                header.setButtonTitle(forState: .select)
-            }
-        }
-    }
-
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Will interpret touches only in horizontal direction
-        if (gestureRecognizer is UIPanGestureRecognizer) {
-            let gPR = gestureRecognizer as? UIPanGestureRecognizer
-            let translation = gPR?.translation(in: localImagesCollection)
-            if abs(translation?.x ?? 0.0) > abs(translation?.y ?? 0.0) {
-                return true
-            }
-        }
-        return false
-    }
-
-    @objc func touchedImages(_ gestureRecognizer: UIPanGestureRecognizer?) {
-        // To prevent a crash
-        if gestureRecognizer?.view == nil {
-            return
-        }
-
-        // Point and direction
-        let point = gestureRecognizer?.location(in: localImagesCollection)
-
-        // Get index path at touch position
-        guard let indexPath = localImagesCollection.indexPathForItem(at: point ?? CGPoint.zero) else {
-            return
-        }
-
-        // Select/deselect the cell or scroll the view
-        if (gestureRecognizer?.state == .began) || (gestureRecognizer?.state == .changed) {
-
-            // Get cell at touch position
-            guard let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
-                return
-            }
-
-            // Update the selection if not already done
-            if !imagesBeingTouched.contains(indexPath) {
-
-                // Store that the user touched this cell during this gesture
-                imagesBeingTouched.append(indexPath)
-
-                // Get upload state of image
-                let uploadState = getUploadStateOfImage(at: indexPath.item, for: cell)
-
-                // Update the selection state
-                if let _ = selectedImages[indexPath.item] {
-                    selectedImages[indexPath.item] = nil
-                    cell.update(selected: false, state: uploadState)
-                } else {
-                    // Can we upload or re-upload this image?
-                    if (uploadState == nil) || reUploadAllowed {
-                        // Select the cell
-                        selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
-                                                                          category: categoryId)
-                        cell.update(selected: true, state: uploadState)
-                    }
-                }
-
-                // Update navigation bar
-                updateNavBar()
-
-                // Refresh cell
-                cell.reloadInputViews()
-            }
-        }
-
-        // Is this the end of the gesture?
-        if gestureRecognizer?.state == .ended {
-            // Clear list of touched images
-            imagesBeingTouched = []
-        }
-    }
-
-    func updateSelectButton() {
-        
-        // Number of images in section
-        let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
-
-        // Job done if there is no image presented
-        if nberOfImagesInSection == 0 {
-            sectionState = .none
-            return
-        }
-        
-        // Number of selected images
-        let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
-        if nberOfImagesInSection == nberOfSelectedImagesInSection {
-            // All images are selected
-            sectionState = .deselect
-            return
-        }
-
-        // Can we calculate the number of images already in the upload queue?
-        if pendingOperations.preparationsInProgress.isEmpty == false {
-            // Keep Select button disabled
-            sectionState = .none
-            return
-        }
-
-        // Number of images already in the upload queue
-        var nberOfImagesOfSectionInUploadQueue = 0
-        if reUploadAllowed == false {
-            nberOfImagesOfSectionInUploadQueue = indexedUploadsInQueue[0..<nberOfImagesInSection]
-                                                    .compactMap{ $0 }.count
-        }
-
-        // Update state of Select button only if needed
-        if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
-            // All images are in the upload queue or already downloaded
-            sectionState = .none
-        } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
-            // All images are either selected or in the upload queue
-            sectionState = .deselect
-        } else {
-            // Not all images are either selected or in the upload queue
-            sectionState = .select
-        }
-    }    
 }
 
 
-// MARK: -
+// MARK: - Video Poster
 extension AVURLAsset {
     func extractedImage() -> UIImage! {
         var image: UIImage! = UIImage(named: "placeholder")!

@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Kiválaszt";
 "categoryImageList_deselectButton" = "Elvet";
 "categoryImageList_noDataError" = "Hiba: nincs adat";
+"categoryImageList_share" = "Megosztás";
+"categoryImageList_favorite" = "Kedvenc";
+"categoryImageList_unfavorite" = "Kedvencek";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Felfedezés";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Egyéb albumok";
 "categoryUpload_pasteboard" = "Vágólap";
 
-"categoyUpload_loadSubCategories" = "betöltés";
-"categoryUpload_images" = "Képek feltöltése";
-
 // Default album
 "setDefaultCategory_select" = "Válaszd ki az új főalbumot!";
 "setDefaultCategory_title" = "Alapértelmezett Album";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Nem sikerült létrehozni az albumot";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Átnevezés";
-"categoryCellOption_move" = "Mozgatás";
-"categoryCellOption_delete" = "Törlés";
+"categoryCellOption_addPhotos" = "Fényképek hozzáadása";
+"categoryCellOption_rename" = "Album átnevezése";
+"categoryCellOption_move" = "Album áthelyezése";
+"categoryCellOption_delete" = "Album törlése";
 
 // Album rename
 "renameCategory_title" = "Album átnevezése";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Címkék:";
 "imageUploadDetails_description" = "Leírás:";
 
-"imageUploadDetailsView_title" = "Fotók";
-"imageUploadDetailsButton_title" = "Feltöltés";
-"imageUploadDetailsEdit_title" = "Feltöltendő fotók szerkesztése";
-"imageUploadDetailsUploading_title" = "Fotók feltöltés alatt";
-"imageUploadDetailsCell_uploadComplete" = "Kész! Már csak pár pillanat...";
-
-"imageUploadRemove" = "Feltöltött fotók eltávolítása";
-
 "imageUploadTableCell_waiting" = "Várakozás...";
 "imageUploadTableCell_preparing" = "Előkészítés...";
 "imageUploadTableCell_prepared" = "Feltöltésre kész...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Feltöltés folytatása";
 "imageUploadResumeSeveral" = "%@ feltöltés folytatása";
 
-"imageUploadProgressBar_zero" = "Feltöltés 0/0";
-"imageUploadProgressBar_nonZero" = "Feltöltés %@/%@";
 "imageUploadProgressBar_completed" = "Befejezve";
 "imageUploadCompleted_title" = "A feltöltés befejeződött";
 "imageUploadCompleted_message" = "fotó feltöltve a Piwigo szerveredre.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Sikertelen megosztás";
 "shareMetadataError_message" = "Nem sikerült eltávolítani a privát metaadatokat";
+"shareFailError_tooLarge" = "Túl nagy választék a megosztáshoz";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

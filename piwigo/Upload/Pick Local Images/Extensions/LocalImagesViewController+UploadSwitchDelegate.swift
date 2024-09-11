@@ -11,13 +11,14 @@ import UIKit
 import piwigoKit
 import uploadKit
 
+// MARK: - UploadSwitchDelegate Methods
 extension LocalImagesViewController: UploadSwitchDelegate
 {
-    // MARK: - UploadSwitchDelegate Methods
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
         // Retrieve common image parameters and upload settings
-        for index in 0..<selectedImages.count {
-            guard var updatedRequest = selectedImages[index] else { continue }
+        for index in 0..<uploadRequests.count {
+            // Initialisation
+            var updatedRequest = uploadRequests[index]
             
             // Image parameters
             if let imageTitle = imageParameters["title"] as? String {
@@ -70,18 +71,22 @@ extension LocalImagesViewController: UploadSwitchDelegate
                 updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
             }
 
-            selectedImages[index] = updatedRequest
+            uploadRequests[index] = updatedRequest
         }
         
         // Disable sleep mode if needed
-        if selectedImages.count > 0 {
-            UIApplication.shared.isIdleTimerDisabled = true
-        }
+        UIApplication.shared.isIdleTimerDisabled = (uploadRequests.isEmpty == false)
         
         // Add selected images to upload queue
-        let uploads = selectedImages.compactMap({$0})
         UploadManager.shared.backgroundQueue.async {
-            self.uploadProvider.importUploads(from: uploads) { error in
+            self.uploadProvider.importUploads(from: self.uploadRequests) { error in
+                // Deselect cells and reset upload queue
+                DispatchQueue.main.async {
+                    self.cancelSelect()
+                }
+                self.uploadRequests = []
+                
+                // Error encountered?
                 guard let error = error else {
                     // Restart UploadManager activities
                     UploadManager.shared.backgroundQueue.async {
@@ -106,6 +111,9 @@ extension LocalImagesViewController: UploadSwitchDelegate
     @objc func uploadSettingsDidDisappear() {
         // Update the navigation bar
         updateNavBar()
+        
+        // Display help views only when uploads are launched
+        if (self.uploads.fetchedObjects ?? []).isEmpty { return }
         
         // Display help views less than once a day
         let dateOfLastHelpView = AppVars.shared.dateOfLastHelpView

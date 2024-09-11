@@ -13,8 +13,8 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageThumbnailDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int64)
-    func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String)
+    func didDeselectImage(withID imageID: Int64)
+    func didRenameFileOfImage(withId imageID: Int64, andFilename fileName: String)
 }
 
 class EditImageThumbCollectionViewCell: UICollectionViewCell
@@ -34,7 +34,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     @IBOutlet private weak var removeButtonView: UIView!
     @IBOutlet private weak var removeImageButton: UIButton!
 
-    private var imageId = Int64.zero
+    private var imageID = Int64.zero
     private var renameFileNameAction: UIAlertAction?
     private var oldFileName: String?
 
@@ -81,7 +81,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         else { return }
         
         // Store image ID
-        imageId = imageData.pwgID
+        imageID = imageData.pwgID
 
         // Image file name
         if imageData.fileName.isEmpty == false {
@@ -206,7 +206,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         topViewController?.showHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"))
 
         // Prepare parameters for renaming the image/video filename
-        let paramsDict: [String : Any] = ["image_id" : imageId,
+        let paramsDict: [String : Any] = ["image_id" : imageID,
                                           "file" : fileName,
                                           "single_value_mode" : "replace"]
         // Launch request
@@ -242,7 +242,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                 imageFile.text = fileName
 
                                 // Update parent image view
-                                delegate?.didRenameFileOfImage(withId: imageId, andFilename: fileName)
+                                delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
                             })
                         }
                     }
@@ -283,7 +283,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     // MARK: - Remove Image from Selection
     @IBAction func removeImage() {
         // Notify this deselection to parent view
-        delegate?.didDeselectImage(withId: imageId)
+        delegate?.didDeselectImage(withID: imageID)
     }
 }
 

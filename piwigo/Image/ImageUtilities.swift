@@ -250,11 +250,21 @@ class ImageUtilities: NSObject {
     static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
         // The default display scale for a trait collection is 0.0 (indicating unspecified).
         // We therefore adopt a scale of 1.0 when the display scale is unspecified.
-        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * max(scale, 1.0)
+        let options = [kCGImagePropertyPixelWidth: true,
+                      kCGImagePropertyPixelHeight: true] as CFDictionary
+        var maxPixelSize = Float(max(pointSize.width, pointSize.height) * max(scale, 1.0))
+        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, options) as? [CFString : CFNumber] {
+            if let maxPixelWidth = imageMetadata[kCGImagePropertyPixelWidth] as NSNumber? {
+                maxPixelSize = min(maxPixelSize, maxPixelWidth.floatValue)
+            }
+            if let maxPixelHeight = imageMetadata[kCGImagePropertyPixelHeight] as NSNumber? {
+                maxPixelSize = min(maxPixelSize, maxPixelHeight.floatValue)
+            }
+        }
         let downsampleOptions = [kCGImageSourceCreateThumbnailFromImageAlways: true,
                                          kCGImageSourceShouldCacheImmediately: true,
                                    kCGImageSourceCreateThumbnailWithTransform: true,
-                                          kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels] as [CFString : Any] as CFDictionary
+                                          kCGImageSourceThumbnailMaxPixelSize: maxPixelSize] as [CFString : Any] as CFDictionary
         
         if let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions as CFDictionary) {
             return UIImage(cgImage: downsampledImage)
@@ -269,7 +279,7 @@ class ImageUtilities: NSObject {
         } else {
             // Delete corrupted cached image file
             try? FileManager.default.removeItem(at: imageURL)
-            return UIImage(named: "placeholder")!
+            return UIImage(named: "unknownImage")!
         }
     }
     

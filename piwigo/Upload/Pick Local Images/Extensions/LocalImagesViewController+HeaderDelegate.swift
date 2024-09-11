@@ -9,9 +9,9 @@
 import UIKit
 import piwigoKit
 
+// MARK: - LocalImagesHeaderDelegate Methods
 extension LocalImagesViewController: LocalImagesHeaderDelegate
 {
-    // MARK: - LocalImagesHeaderReusableView Delegate Methods
     func didSelectImagesOfSection(_ section: Int) {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
 //        let start = CFAbsoluteTimeGetCurrent()

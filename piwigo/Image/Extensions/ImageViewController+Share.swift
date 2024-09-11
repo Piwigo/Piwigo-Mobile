@@ -70,7 +70,7 @@ extension ImageViewController
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData)
+            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -83,7 +83,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData)
+            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self
@@ -154,7 +154,9 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
 {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?, withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
-        presentedViewController?.showHUD(withTitle: title, buttonTitle: NSLocalizedString("alertCancelButton", comment: "Cancel"), buttonTarget: self, buttonSelector: #selector(cancelShareImage), inMode: .determinate)
+        let cancelButton = NSLocalizedString("alertCancelButton", comment: "Cancel")
+        presentedViewController?.showHUD(withTitle: title, buttonTitle: cancelButton, buttonTarget: self, 
+                                         buttonSelector: #selector(cancelShareImage), inMode: .determinate)
     }
 
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?, preprocessingProgressDidUpdate progress: Float) {
@@ -162,7 +164,7 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
         presentedViewController?.updateHUD(withProgress: progress)
     }
 
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageId imageId: Int64) {
+    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?, withImageID imageID: Int64, contextually:Bool) {
         // Close HUD
         if imageActivityItemProvider?.isCancelled ?? false {
             presentedViewController?.hideHUD { }

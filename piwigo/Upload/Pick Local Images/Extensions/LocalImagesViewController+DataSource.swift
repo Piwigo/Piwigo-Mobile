@@ -10,7 +10,7 @@ import Photos
 import UIKit
 import piwigoKit
 
-//MARK: UICollectionViewDataSource Methods
+// MARK: UICollectionViewDataSource Methods
 extension LocalImagesViewController: UICollectionViewDataSource
 {
     // MARK: - Headers & Footers

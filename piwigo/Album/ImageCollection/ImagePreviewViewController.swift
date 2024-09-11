@@ -1,0 +1,96 @@
+//
+//  ImagePreviewViewController.swift
+//  piwigo
+//
+//  Created by Eddy Lelièvre-Berna on 19/08/2024.
+//  Copyright © 2024 Piwigo.org. All rights reserved.
+//
+
+import Foundation
+import UIKit
+import piwigoKit
+
+class ImagePreviewViewController: UIViewController
+{
+    private var aspectRatio = 1.0
+    private let imageView = UIImageView()
+    
+    init(imageData: Image) {
+        super.init(nibName: nil, bundle: nil)
+        
+        // Retrieve image
+        let viewSize = view.bounds.size
+        let scale = view.traitCollection.displayScale
+        let sizes = imageData.sizes
+        aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
+        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        if imageData.isVideo, previewSize == .fullRes {
+            previewSize = .xxLarge
+        }
+        
+        // Check if we already have the high-resolution image in cache
+        if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
+            // Show high-resolution image in cache
+            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize, scale: scale)
+            setImageView(with: cachedImage)
+        } else {
+            // Display thumbnail image which should be in cache
+            let placeHolder = UIImage(named: "unknownImage")!
+            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            self.setImageView(with: imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            
+            // Download high-resolution image
+            if let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) {
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                           placeHolder: placeHolder) { fractionCompleted in
+//                    DispatchQueue.main.async {
+//                        // Show download progress
+//                        self.progressView.progress = fractionCompleted
+//                    }
+                } completion: { cachedImageURL in
+                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
+                    DispatchQueue.main.async {
+                        // Hide progress view
+//                        self.progressView.isHidden = true
+                        // Replace thumbnail with high-resolution image
+                        self.setImageView(with: cachedImage)
+                    }
+                } failure: { _ in }
+            }
+        }
+    }
+    
+    private func setImageView(with image: UIImage) {
+        imageView.image = image
+        imageView.frame.size = image.size
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(imageView)
+
+        NSLayoutConstraint.activate([
+            imageView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            imageView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            imageView.topAnchor.constraint(equalTo: view.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let width = view.bounds.width
+        let height = width * aspectRatio
+        preferredContentSize = CGSize(width: width, height: height)
+    }
+}

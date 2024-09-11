@@ -72,7 +72,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             let canDelete = (imageAsset.sourceType != .typeCloudShared) &&
                             (upload.isEmpty || [.finished, .moderated].contains(upload.first?.state))
             
-            // Return nil or a
+            // Return preview and appropriate menu
             return UIContextMenuConfiguration(identifier: identifier,
                 previewProvider: { [self] in
                     // Create preview view controller
@@ -93,8 +93,11 @@ extension LocalImagesViewController: UICollectionViewDelegate
                     } else {
                         children.append(self.statusAction(upload.first))
                     }
+                    if self.reUploadAllowed {
+                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                    }
                     if canDelete {
-                        children.append(self.deleteAction(forCell: cell, at: indexPath))
+                        children.append(self.deleteMenu(forCell: cell, at: indexPath))
                     }
                     return UIMenu(title: "", children: children)
                 })
@@ -144,8 +147,11 @@ extension LocalImagesViewController: UICollectionViewDelegate
                     } else {
                         children.append(self.statusAction(upload.first))
                     }
+                    if self.reUploadAllowed {
+                        children.append(self.uploaAction(forCell: cell, at: indexPath))
+                    }
                     if canDelete {
-                        children.append(self.deleteAction(forCell: cell, at: indexPath))
+                        children.append(self.deleteMenu(forCell: cell, at: indexPath))
                     }
                     return UIMenu(title: "", children: children)
                 })
@@ -230,48 +236,63 @@ extension LocalImagesViewController: UICollectionViewDelegate
 
     @available(iOS 13.0, *)
     private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
-        return UIAction(title: NSLocalizedString("imageUploadDetailsButton_title", comment: "Upload"),
-                        image: UIImage(contentsOfFile: "piwigo")) { action in
-            // Check that an upload request does not exist for that image
+        return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
+                        image: UIImage(named: "imageUpload")) { action in
+            // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? [])
                 .filter({$0.localIdentifier == cell.localIdentifier}).first != nil {
                 return
             }
             
-            // Create an upload request for that image and update the corresponding cell
+            // Create an upload request for that image and add it to the upload queue
             let upload = UploadProperties(localIdentifier: cell.localIdentifier, category: self.categoryId)
-            cell.update(selected: true, state: .waiting)
+            self.uploadRequests.append(upload)
+
+            // Disable buttons
+            self.cancelBarButton?.isEnabled = false
+            self.uploadBarButton?.isEnabled = false
+            self.actionBarButton?.isEnabled = false
+            self.trashBarButton?.isEnabled = false
             
-            // Append the upload to the queue
-            UploadManager.shared.backgroundQueue.async {
-                self.uploadProvider.importUploads(from: [upload]) { error in
-                    guard let error = error else {
-                        // Restart UploadManager activities
-                        UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.isPaused = false
-                            UploadManager.shared.findNextImageToUpload()
-                        }
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {
-                            // Restart UploadManager activities
-                            UploadManager.shared.backgroundQueue.async {
-                                UploadManager.shared.isPaused = false
-                                UploadManager.shared.findNextImageToUpload()
-                            }
-                        }
+            // Show upload parameter views
+            let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
+            if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
+                uploadSwitchVC.delegate = self
+                uploadSwitchVC.user = self.user
+
+                // Will we propose to delete images after upload?
+                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [cell.localIdentifier], 
+                                                        options: nil).firstObject {
+                    // Only local images can be deleted
+                    if imageAsset.sourceType != .typeCloudShared {
+                        // Will allow user to delete images after upload
+                        uploadSwitchVC.canDeleteImages = true
                     }
                 }
+                
+                // Push Edit view embedded in navigation controller
+                let navController = UINavigationController(rootViewController: uploadSwitchVC)
+                navController.modalPresentationStyle = .popover
+                navController.modalTransitionStyle = .coverVertical
+                navController.popoverPresentationController?.sourceView = self.localImagesCollection
+                navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
+                navController.popoverPresentationController?.permittedArrowDirections = .up
+                self.navigationController?.present(navController, animated: true)
             }
         }
     }
 
     @available(iOS 13.0, *)
+    private func deleteMenu(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIMenu {
+        let delete = deleteAction(forCell: cell, at: indexPath)
+        let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
+        return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
+    }
+    
+    @available(iOS 13.0, *)
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
-                        image: UIImage(systemName: "trash"),
-                        attributes: .destructive) { action in
+                        image: UIImage(systemName: "trash"), attributes: .destructive) { action in
             // Get image identifier and check if this image has been uploaded
             if let upload = (self.uploads.fetchedObjects ?? []).filter({$0.localIdentifier == cell.localIdentifier}).first {
                 // Delete uploaded image

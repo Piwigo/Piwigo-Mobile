@@ -183,14 +183,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
             // Check if there are photos/videos in the pasteboard
-            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes),
-               indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
-                hasImagesInPasteboard = true
-            } else {
-                hasImagesInPasteboard = false
-            }
+            let testTypes = UIPasteboard.general.contains(pasteboardTypes: pasteboardTypes) ? true : false
+            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? 0
+            hasImagesInPasteboard = testTypes && (nberPhotos > 0)
         }
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -569,10 +566,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         switch albumType {
         case .pasteboard:
             let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
-            guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
-            localImagesVC.categoryId = categoryId
-            localImagesVC.user = user
-            navigationController?.pushViewController(localImagesVC, animated: true)
+            guard let pasteboardImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
+            pasteboardImagesVC.categoryId = categoryId
+            pasteboardImagesVC.user = user
+            navigationController?.pushViewController(pasteboardImagesVC, animated: true)
             return
         case .localAlbums:
             assetCollections = LocalAlbumsProvider.shared.localAlbums

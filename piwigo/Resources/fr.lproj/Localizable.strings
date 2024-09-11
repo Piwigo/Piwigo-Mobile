@@ -11,7 +11,7 @@
 // Tab bar
 
 "tabBar_albums" = "Albums";
-"tabBar_upload" = "Envoyer";
+"tabBar_upload" = "Transférer";
 "tabBar_preferences" = "Réglages";
 
 // Alert buttons
@@ -33,7 +33,7 @@
 
 // Upload rights
 "uploadRights_title" = "Droits requis";
-"uploadRights_message" = "Vous devez avoir le droit de télécharger pour pouvoir envoyer des photos ou des vidéos.";
+"uploadRights_message" = "Vous devez avoir les droits appropriés pour pouvoir transférer des photos ou des vidéos.";
 
 // Errors
 "internetErrorGeneral_title" = "Erreur de connexion";
@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Sélectionner";
 "categoryImageList_deselectButton" = "Désélectionner";
 "categoryImageList_noDataError" = "Erreur aucune donnée";
+"categoryImageList_share" = "Partager";
+"categoryImageList_favorite" = "Ajouter aux favoris";
+"categoryImageList_unfavorite" = "Retirer des favoris";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Découvrir";
@@ -212,19 +215,16 @@
 "categoryUpload_noSubAlbum" = "Il n'y a pas de sous-album qui puisse recevoir des photos";
 "categoryUpload_chooseAlbum" = "Sélectionnez le sous-album recevant les photos";
 "categoryUpload_LocalAlbums" = "Albums locaux";
-"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les photos à envoyer";
+"categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les photos à transférer";
 "categoryUpload_sharedAlbums" = "Albums partagés";
 "categoryUpload_iCloudAlbums" = "Albums iCloud";
-"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les photos à envoyer";
+"categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les photos à transférer";
 "categoryUpload_syncedEvents" = "Événements iPhoto";
 "categoryUpload_syncedAlbums" = "Albums iPhoto";
 "categoryUpload_syncedFaces" = "Visages iPhoto";
 "categoryUpload_mediaTypes" = "Types de média";
 "categoryUpload_otherAlbums" = "Autres albums";
 "categoryUpload_pasteboard" = "Presse-papier";
-
-"categoyUpload_loadSubCategories" = "télécharge";
-"categoryUpload_images" = "Télécharger des photos";
 
 // Default album
 "setDefaultCategory_select" = "Veuillez sélectionner un album ou un sous-album qui deviendra le nouvel album racine.";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Impossible de créer un nouvel album";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Renomer";
-"categoryCellOption_move" = "Déplacer";
-"categoryCellOption_delete" = "Effacer";
+"categoryCellOption_addPhotos" = "Ajouter des Photos";
+"categoryCellOption_rename" = "Renommer l'album";
+"categoryCellOption_move" = "Déplacer l'album";
+"categoryCellOption_delete" = "Supprimer l'album";
 
 // Album rename
 "renameCategory_title" = "Renommer l'album";
@@ -507,11 +508,11 @@
 "copySeveralImagesError_message" = "Impossible de copier certaines photos";
 
 // Images upload
-"imageUploadHeader" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront téléchargées.";
+"imageUploadHeader" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront transférées.";
 "imageUploadHeaderTitle_images" = "Paramètres des photos";
 "imageUploadHeaderText_images" = "Veuillez définir les paramètres à appliquer à la sélection des photos/vidéos";
-"imageUploadHeaderTitle_upload" = "Réglage des téléchargements";
-"imageUploadHeaderText_upload" = "Veuillez définir les paramètres de téléchargement à appliquer à la sélection des photos/vidéos";
+"imageUploadHeaderTitle_upload" = "Réglage des transferts";
+"imageUploadHeaderText_upload" = "Veuillez définir les paramètres de transfert à appliquer à la sélection des photos/vidéos";
 
 "imageUploadDetails_title" = "Titre :";
 "imageUploadDetails_author" = "Auteur :";
@@ -519,19 +520,11 @@
 "imageUploadDetails_tags" = "Tags :";
 "imageUploadDetails_description" = "Description :";
 
-"imageUploadDetailsView_title" = "Photos";
-"imageUploadDetailsButton_title" = "Envoyer";
-"imageUploadDetailsEdit_title" = "Éditer les photos à télécharger";
-"imageUploadDetailsUploading_title" = "Images en cours d'envoi";
-"imageUploadDetailsCell_uploadComplete" = "Envoyée ! Vérification...";
-
-"imageUploadRemove" = "Suppression des photos téléchargées";
-
 "imageUploadTableCell_waiting" = "En attente...";
 "imageUploadTableCell_preparing" = "En cours de préparation...";
-"imageUploadTableCell_prepared" = "Prêt à télécharger...";
-"imageUploadTableCell_uploading" = "Téléchargement...";
-"imageUploadTableCell_uploaded" = "Téléchargée";
+"imageUploadTableCell_prepared" = "Prêt pour le transfert…";
+"imageUploadTableCell_uploading" = "Transfert...";
+"imageUploadTableCell_uploaded" = "Transférée";
 "imageUploadTableCell_finishing" = "Finalisation...";
 
 "imageUploadClearFailedSingle" = "Effacer transfert échoué";
@@ -541,16 +534,14 @@
 "imageUploadResumeSingle" = "Relancer le transfert";
 "imageUploadResumeSeveral" = "Relancer %@ transferts";
 
-"imageUploadProgressBar_zero" = "Téléchargement 0/0";
-"imageUploadProgressBar_nonZero" = "Téléchargement %@/%@";
 "imageUploadProgressBar_completed" = "Terminé";
-"imageUploadCompleted_title" = "Téléchargement Terminé";
-"imageUploadCompleted_message" = "photo envoyée à votre serveur Piwigo.";
-"imageUploadCompleted_message>1" = "photos envoyées à votre serveur Piwigo.";
+"imageUploadCompleted_title" = "Transfert terminé";
+"imageUploadCompleted_message" = "photo transférée à votre serveur Piwigo.";
+"imageUploadCompleted_message>1" = "photos transférées à votre serveur Piwigo.";
 
 // Image upload — Errors
-"uploadError_title" = "Echec du téléchargement";
-"uploadError_message" = "Echec du téléchargement de votre photo. Erreur : %@";
+"uploadError_title" = "Echec du Transfert";
+"uploadError_message" = "Echec du transfert de votre photo. Erreur : %@";
 "uploadCancelled_title" = "Transfert annulé";
 "uploadNoInternetNetwork" = "Pas de connexion Internet";
 "uploadNoWiFiNetwork" = "Pas de connexion Wi-Fi";
@@ -559,19 +550,19 @@
 "uploadSection_resumable" = "Transferts réamorçables";
 "uploadSection_queue" = "File d'attente des transferts";
 
-"imageUploadError_title" = "Echec du téléchargement";
+"imageUploadError_title" = "Echec du transfert";
 "imageUploadError_format" = "Format de fichier non accepté par le serveur Piwigo.";
 "imageUploadError_source" = "impossible de créer le source de la photo";
 "imageUploadError_destination" = "impossible de créer la destination de la photo";
 "imageUploadError_iCloud" = "Echec de la récupération de la photo. Erreur : %@";
 
-"audioUploadError_title" = "Echec du téléchargement";
+"audioUploadError_title" = "Echec du Transfert";
 "audioUploadError_format" = "Désolé, les fichiers audio ne sont pas encore supportés par Piwigo Mobile.";
 
-"videoUploadError_title" = "Echec du téléchargement";
-"videoUploadError_format" = "Désolé, les fichiers de vidéo ayant comme extension .%@ ne sont pas acceptés par le serveur Piwigo.";
+"videoUploadError_title" = "Echec du Transfert";
+"videoUploadError_format" = "Désolé, les fichiers vidéo ayant comme extension .%@ ne sont pas acceptés par le serveur Piwigo.";
 "videoUploadError_iCloud" = "Echec de la récupération de la vidéo. Erreur : %@";
-"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour être téléchargée vers votre Piwigo. Erreur : %@";
+"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour être transférée à votre Piwigo. Erreur : %@";
 "videoUploadError_unknown" = "Désolé, le transfert vers votre Piwigo de la vidéo a échoué pour une erreur inconnue lors de la conversion MP4. Erreur : %@";
 "videoUploadCancelled_message" = "Le transfert de la vidéo vers votre Piwigo a été annulé.";
 
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Échec du partage";
 "shareMetadataError_message" = "Impossible de supprimer les métadonnées privées";
+"shareFailError_tooLarge" = "Sélection trop volumineuse pour être partagée";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
@@ -634,9 +626,9 @@
 "localAlbums_photosNotAuthorized_msg" = "Impossible d’ouvrir la photothèque locale. Allez dans l’application Réglages et activez l’accès pour Piwigo.";
 
 // Local images — Explain
-"localImages_reUploadTitle" = "Re-télécharger";
+"localImages_reUploadTitle" = "Re-transférer";
 "localImages_deleteTitle" = "Retirer de la pellicule";
-"localImages_deleteMessage" = "Voulez-vous supprimer les photos ou vidéos téléchargées de la pellicule ? Les photos ou vidéos supprimées resteront disponibles dans la corbeille de l'app Photos pendant 30 jours.";
+"localImages_deleteMessage" = "Voulez-vous supprimer de la pellicule les photos ou vidéos transférées? Les photos ou vidéos supprimées resteront disponibles dans la corbeille de l'app Photos pendant 30 jours.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -723,57 +715,57 @@
 "imageSizexFullRes" = "Haute résolution";
 
 // Settings — Upload
-"settingsHeader_upload" = "Téléchargements";
+"settingsHeader_upload" = "Transferts";
 "settings_defaultAuthor" = "Auteur";
 "settings_defaultAuthor>320px" = "Nom d'auteur";
 "settings_defaultAuthorPlaceholder" = "Nom de l'auteur";
 "settings_defaultPrivacy" = "Qui voit ?";
 "settings_defaultPrivacy>414px" = "Veuillez sélectionner qui pourra visualiser les photos";
 "settings_stripGPSdata" = "Suppr. métadonnées privées";
-"settings_stripGPSdata>375px" = "Supprimer les métadonnées privées avant envoi";
-"settings_photoResize" = "Réduire avant téléchargement";
+"settings_stripGPSdata>375px" = "Supprimer les métadonnées privées avant transfert";
+"settings_photoResize" = "Réduire avant transfert";
 "settings_photoSize" = "Taille";
 "settings_placeholderSize" = "Entrez une taille de photo de 5 à 100";
-"settings_photoCompress" = "Compresser avant Envoi";
-"settings_photoCompress>375px" = "Compresser la photo avant envoi";
+"settings_photoCompress" = "Compresser avant transfert";
+"settings_photoCompress>375px" = "Compresser la photo avant transfert";
 "settings_photoQuality" = "Qualité";
 "settings_placeholderQuality" = "Entrez une qualité de photo entre 50 et 98";
-"settings_prefixFilename>414px" = "Préfixer le nom du fichier photo avant téléchargement";
-"settings_prefixFilename>375px" = "Préfixer nom du fichier avant téléch.";
+"settings_prefixFilename>414px" = "Préfixer le nom du fichier photo avant transfert";
+"settings_prefixFilename>375px" = "Préfixer nom du fichier avant transfert";
 "settings_prefixFilename" = "Préfixer nom du fichier";
 "settings_defaultPrefix" = "Préfixe";
 "settings_defaultPrefix>320px" = "Préfixe du fichier";
 "settings_defaultPrefixPlaceholder" = "Préfixe";
-"settings_deleteImage>375px" = "Effacer la photo après envoi";
+"settings_deleteImage>375px" = "Effacer la photo après transfert";
 "settings_wifiOnly" = "Wi-Fi uniquement";
-"settings_deleteImage" = "Effacer après envoi";
+"settings_deleteImage" = "Effacer après transfert";
 
 // Settings — Auto-Upload
-"settings_autoUpload" = "Télécharger automatiquement";
-"settings_autoUpload>414px" = "Télécharger automatiquement des photos";
+"settings_autoUpload" = "Transferts auto";
+"settings_autoUpload>414px" = "Transferts auto. des photos";
 "settings_autoUploadEnabled" = "Activé";
-"settings_autoUploadEnabledInfo" = "Les photos seront automatiquement téléchargées sur votre Piwigo.";
-"settings_autoUploadEnabledInfoAll" = "Les photos et les vidéos seront automatiquement téléchargées sur votre Piwigo.";
+"settings_autoUploadEnabledInfo" = "Les photos seront automatiquement téléversées sur votre Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Les photos et les vidéos seront automatiquement téléversées sur votre Piwigo.";
 "settings_autoUploadDisabled" = "Désactivé";
-"settings_autoUploadDisabledInfo" = "Les photos ne seront pas automatiquement téléchargées sur votre Piwigo.";
+"settings_autoUploadDisabledInfo" = "Les photos ne seront pas automatiquement téléversées sur votre Piwigo.";
 "settings_autoUploadSource" = "Source";
 "settings_autoUploadSourceInvalid" = "Album source invalide";
-"settings_autoUploadSourceInfo" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront automatiquement téléchargées.";
+"settings_autoUploadSourceInfo" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront automatiquement transférées.";
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Album de destination invalide";
-"settings_autoUploadDestinationInfo" = "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement téléchargées.";
-"AutoUploadError_Disabled" = "Le téléchargement automatique est désactivé dans les paramètres de l'application.";
+"settings_autoUploadDestinationInfo" = "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement transférées.";
+"AutoUploadError_Disabled" = "Les transferts automatiques sont désactivés dans les paramètres de l'application.";
 "AutoUploadError_Failed" = "Plusieurs transferts ont échoué et la file d'attente est en pause. Veuillez vérifier dans l'application s'il vous plaît.";
 
 // Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Taille maximale des photos";
-"UploadPhotoSize_header" = "Veuillez sélectionner la taille maximale des photos qui seront téléchargées.";
+"UploadPhotoSize_header" = "Veuillez sélectionner la taille maximale des photos qui seront transférées.";
 "UploadPhotoSize_resolution" = "Résolution maximale des caméras intégrées :";
 "UploadVideoSize_title" = "Taille maximale des vidéos";
-"UploadVideoSize_header" = "Veuillez sélectionner la taille maximale des vidéos qui seront téléchargées.";
+"UploadVideoSize_header" = "Veuillez sélectionner la taille maximale des vidéos qui seront transférées.";
 "UploadVideoSize_resolution" = "Performances maximales des caméras intégrées :";
 "UploadPhotoSize_original" = "Sans réduction";
-"UploadRequests_cache" = "Téléchargements";
+"UploadRequests_cache" = "Transferts";
 
 // Settings — Privacy
 "settingsHeader_privacy" = "Confidentialité";
@@ -848,19 +840,19 @@
 // Settings — Help
 "help01_header" = "Sélection multiple";
 "help01_text" = "Faites glisser votre doigt de gauche à droite (ou de droite à gauche) puis vers le bas, etc.";
-"help02_header" = "Téléchargement en arrière-plan";
-"help02_text" = "Sélectionnez les photos/vidéos, définissez les paramètres et appuyez sur Envoyer.";
-"help02_text2" = "Branchez l'appareil à son chargeur et laissez iOS lancer les téléchargements quand cela est approprié.";
+"help02_header" = "Transferts en arrière-plan";
+"help02_text" = "Sélectionnez les photos/vidéos, définissez les paramètres et appuyez sur Transférer.";
+"help02_text2" = "Branchez l'appareil à son chargeur et laissez iOS lancer les transferts quand cela est approprié.";
 "help02_text3" = "(nécessite l'extension uploadAsync ou Piwigo 11)";
 "help03_header" = "Administrateurs";
 "help03_text" = "Créer, supprimer, déplacer et renommer des albums.";
-"help04_text" = "Les photos téléchargées retirées de la pellicule restent disponibles dans la corbeille de l'app iOS Photos pendant 30 jours.";
-"help05_header" = "Téléchargement des photos";
-"help05_text" = "Une fois les demandes de téléchargement soumises, vous pouvez parcourir les albums, soumettre d'autres demandes ou quitter l'app.";
-"help05_text2" = "Appuyez sur le bouton gris présenté dans l'album racine pour gérer les téléchargements.";
-"help06_header" = "Gestion des téléchargements";
-"help06_text" = "Surveillez, annulez et relancez les demandes de téléchargement globalement ou individuellement.";
-"help07_header" = "Téléchargement auto";
+"help04_text" = "Les photos transférées retirées de la pellicule restent disponibles dans la corbeille de l'app iOS Photos pendant 30 jours.";
+"help05_header" = "Transferts des photos";
+"help05_text" = "Une fois les demandes de transfert soumises, vous pouvez parcourir les albums, soumettre d'autres demandes ou quitter l'app.";
+"help05_text2" = "Appuyez sur le bouton gris présenté dans l'album racine pour gérer les transferts.";
+"help06_header" = "Gestion des Transferts";
+"help06_text" = "Surveillez, annulez et relancez les demandes de transfert globalement ou individuellement.";
+"help07_header" = "Transferts Automatiques";
 "help07_text" = "Sélectionnez les albums source et destination dans Piwigo, créez des automatisations dans Raccourcis.";
 "help08_header" = "Albums parents";
 "help08_text" = "Appuyez longuement sur le bouton retour pour afficher la liste des albums parents.";

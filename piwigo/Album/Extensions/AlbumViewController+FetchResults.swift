@@ -110,7 +110,9 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 else { return }
                 indexPath.section += 1
                 // Deselect image
-                selectedImageIds.remove(image.pwgID)
+                selectedImageIDs.remove(image.pwgID)
+                selectedFavoriteIDs.remove(image.pwgID)
+                selectedVideosIDs.remove(image.pwgID)
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
                     debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
@@ -185,12 +187,28 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             if indexPath.section == 0 { return }
 
             // Determine place names from first images
-            var imagesInSection: [Image] = []
-            for item in 0..<min(collectionView.numberOfItems(inSection: indexPath.section), 20) {
-                let imageIndexPath = IndexPath(item: item, section: indexPath.section - 1)
-                imagesInSection.append(images.object(at: imageIndexPath))
+            let imageSection = indexPath.section - 1
+            var imagesInSection = [Image]()
+            let nberOfImageInSection = collectionView.numberOfItems(inSection: indexPath.section)
+            if nberOfImageInSection <= 20 {
+                // Collect all images
+                for item in 0..<min(nberOfImageInSection, 20) {
+                    let imageIndexPath = IndexPath(item: item, section: imageSection)
+                    imagesInSection.append(images.object(at: imageIndexPath))
+                }
+            } else {
+                // Collect first 10 images
+                for item in 0..<10 {
+                    let imageIndexPath = IndexPath(item: item, section: imageSection)
+                    imagesInSection.append(images.object(at: imageIndexPath))
+                }
+                // Collect last 10 images
+                for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
+                    let imageIndexPath = IndexPath(item: item, section: imageSection)
+                    imagesInSection.append(images.object(at: imageIndexPath))
+                }
             }
-
+            
             // Retrieve the appropriate section header
             let selectState = updateSelectButton(ofSection: indexPath.section)
             if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {

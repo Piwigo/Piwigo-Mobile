@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Selecteer";
 "categoryImageList_deselectButton" = "Deselecteren";
 "categoryImageList_noDataError" = "Fout geen gegevens";
+"categoryImageList_share" = "Deel";
+"categoryImageList_favorite" = "Favoriet";
+"categoryImageList_unfavorite" = "Niet favoriet";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Ontdek";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Andere albums";
 "categoryUpload_pasteboard" = "Klembord";
 
-"categoyUpload_loadSubCategories" = "laden";
-"categoryUpload_images" = "Foto's uploaden";
-
 // Default album
 "setDefaultCategory_select" = "Selecteer een album of sub-album dat het nieuwe root album zal worden.";
 "setDefaultCategory_title" = "Standaard album";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Het aanmaken van een album is mislukt";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Naam wijzigen";
-"categoryCellOption_move" = "Verplaatsen";
-"categoryCellOption_delete" = "Verwijderen";
+"categoryCellOption_addPhotos" = "Foto's toevoegen";
+"categoryCellOption_rename" = "Album hernoemen";
+"categoryCellOption_move" = "Album verplaatsen";
+"categoryCellOption_delete" = "Album verwijderen";
 
 // Album rename
 "renameCategory_title" = "Albumnaam wijzigen";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Labels:";
 "imageUploadDetails_description" = "Omschrijving:";
 
-"imageUploadDetailsView_title" = "Foto's";
-"imageUploadDetailsButton_title" = "Upload";
-"imageUploadDetailsEdit_title" = "Bewerk foto's vóór uploaden";
-"imageUploadDetailsUploading_title" = "Foto's die worden ge-upload";
-"imageUploadDetailsCell_uploadComplete" = "Klaar! Afronden...";
-
-"imageUploadRemove" = "Geüploade foto's verwijderen";
-
 "imageUploadTableCell_waiting" = "Wachten...";
 "imageUploadTableCell_preparing" = "Voorbereiden...";
 "imageUploadTableCell_prepared" = "Klaar voor upload...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Upload hervatten";
 "imageUploadResumeSeveral" = "Hervat %@ Uploads";
 
-"imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
-"imageUploadProgressBar_nonZero" = "Bezig met uploaden %@/%@";
 "imageUploadProgressBar_completed" = "Klaar";
 "imageUploadCompleted_title" = "Uploaden klaar";
 "imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Delen mislukt";
 "shareMetadataError_message" = "Kan metadata niet verwijderen";
+"shareFailError_tooLarge" = "Selectie te groot om te delen";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

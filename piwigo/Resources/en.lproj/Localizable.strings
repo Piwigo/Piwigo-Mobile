@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Select";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Error No Data";
+"categoryImageList_share" = "Share";
+"categoryImageList_favorite" = "Favorite";
+"categoryImageList_unfavorite" = "Unfavorite";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Discover";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Other Albums";
 "categoryUpload_pasteboard" = "Clipboard";
 
-"categoyUpload_loadSubCategories" = "load";
-"categoryUpload_images" = "Upload Photos";
-
 // Default album
 "setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "Failed to create a new album";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Rename";
-"categoryCellOption_move" = "Move";
-"categoryCellOption_delete" = "Delete";
+"categoryCellOption_addPhotos" = "Add Photos";
+"categoryCellOption_rename" = "Rename Album";
+"categoryCellOption_move" = "Move Album";
+"categoryCellOption_delete" = "Delete Album";
 
 // Album rename
 "renameCategory_title" = "Rename Album";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Description:";
 
-"imageUploadDetailsView_title" = "Photos";
-"imageUploadDetailsButton_title" = "Upload";
-"imageUploadDetailsEdit_title" = "Edit Photos to Upload";
-"imageUploadDetailsUploading_title" = "Photos that are Being Uploaded";
-"imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
-
-"imageUploadRemove" = "Removing uploaded photos";
-
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_prepared" = "Ready for upload...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Resume Upload";
 "imageUploadResumeSeveral" = "Resume %@ Uploads";
 
-"imageUploadProgressBar_zero" = "Uploading 0/0";
-"imageUploadProgressBar_nonZero" = "Uploading %@/%@";
 "imageUploadProgressBar_completed" = "Completed";
 "imageUploadCompleted_title" = "Upload Completed";
 "imageUploadCompleted_message" = "photo uploaded to your Piwigo server.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Share Fail";
 "shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Seleccionar";
 "categoryImageList_deselectButton" = "Deseleccionar";
 "categoryImageList_noDataError" = "Error Sin datos";
+"categoryImageList_share" = "Compartir";
+"categoryImageList_favorite" = "Favorito";
+"categoryImageList_unfavorite" = "No favorito";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Descubre";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Otros álbumes";
 "categoryUpload_pasteboard" = "Portapapeles";
 
-"categoyUpload_loadSubCategories" = "cargar";
-"categoryUpload_images" = "Subir fotos";
-
 // Default album
 "setDefaultCategory_select" = "Seleccione un álbum o sub-álbum que se convertirá en el nuevo álbum raíz.";
 "setDefaultCategory_title" = "Álbum por defecto";
@@ -244,9 +244,10 @@
 "createAlbumError_message" = "No se ha podido crear un álbum nuevo";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Cambiar el nombre";
-"categoryCellOption_move" = "Mover";
-"categoryCellOption_delete" = "Eliminar";
+"categoryCellOption_addPhotos" = "Añadir fotos";
+"categoryCellOption_rename" = "Renombrar álbum";
+"categoryCellOption_move" = "Mover álbum";
+"categoryCellOption_delete" = "Eliminar álbum";
 
 // Album rename
 "renameCategory_title" = "Renombrar álbum";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Tags:";
 "imageUploadDetails_description" = "Descripción:";
 
-"imageUploadDetailsView_title" = "Fotos";
-"imageUploadDetailsButton_title" = "Subir";
-"imageUploadDetailsEdit_title" = "Editar fotos a subir";
-"imageUploadDetailsUploading_title" = "Fotos que se están subiendo";
-"imageUploadDetailsCell_uploadComplete" = "¡Completado! Terminando...";
-
-"imageUploadRemove" = "Eliminando fotos subidas";
-
 "imageUploadTableCell_waiting" = "Esperando...";
 "imageUploadTableCell_preparing" = "Preparando...";
 "imageUploadTableCell_prepared" = "Listo para subir...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Reanudar la subida fallida";
 "imageUploadResumeSeveral" = "Reanudar %@ subidas fallidas";
 
-"imageUploadProgressBar_zero" = "Subiendo 0/0";
-"imageUploadProgressBar_nonZero" = "Subiendo %@/%@";
 "imageUploadProgressBar_completed" = "Terminado";
 "imageUploadCompleted_title" = "Transferencia completada";
 "imageUploadCompleted_message" = "foto subida a su servidor Piwigo.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Error de compartición";
 "shareMetadataError_message" = "No se pueden eliminar los metadatos privados";
+"shareFailError_tooLarge" = "Selección demasiado grande para compartir";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

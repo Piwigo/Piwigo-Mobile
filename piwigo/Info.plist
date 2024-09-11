@@ -25,7 +25,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>585</string>
+	<string>591</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>
@@ -41,6 +41,8 @@
 	</dict>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Use Face ID instead of a passcode to access your albums.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Piwigo uses the local network to access your Piwigo server.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
 	<key>NSSiriUsageDescription</key>

@@ -15,11 +15,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
 {
     func getAlbumCellSize() -> CGSize {
         if AlbumVars.shared.displayAlbumDescriptions {
-            let albumWidth = AlbumUtilities.albumWidth(forView: collectionView, maxWidth: 384.0)
+            let albumWidth = AlbumUtilities.albumWidth(forView: collectionView, maxWidth: CGFloat(384))
 //            debugPrint("••> getAlbumCellSize: \(albumWidth) x 156.5 points")
             return CGSize(width: albumWidth, height: 156.5)
         } else {
-            let albumWidth = AlbumUtilities.albumWidth(forView: collectionView, maxWidth: 200.0)
+            let albumWidth = AlbumUtilities.albumWidth(forView: collectionView, maxWidth: CGFloat(200))
             let albumHeight = albumWidth * 2 / 3 + 50
 //            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
             return CGSize(width: albumWidth, height: albumHeight)
@@ -99,7 +99,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             
         default /* Images */:
             // Number of images shown at the bottom of the collection
-            guard section == images.sections?.count ?? 0
+            guard categoryId != Int32.zero, section == images.sections?.count ?? 0
             else { return CGSize.zero }
         }
         
@@ -123,8 +123,8 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             if AlbumVars.shared.displayAlbumDescriptions {
                 return UIEdgeInsets.zero
             } else {
-                return UIEdgeInsets(top: 0, left: AlbumUtilities.kAlbumMarginsSpacing,
-                                    bottom: 0, right: AlbumUtilities.kAlbumMarginsSpacing)
+                return UIEdgeInsets(top: CGFloat.zero, left: AlbumUtilities.kAlbumMarginsSpacing,
+                                    bottom: CGFloat.zero, right: AlbumUtilities.kAlbumMarginsSpacing)
             }
         default /* Images */:
             return UIEdgeInsets.zero

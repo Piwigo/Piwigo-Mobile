@@ -31,7 +31,8 @@ extension LoginViewController
         // Update vertical inset and offset if needed
         if missingHeight > CGFloat.zero {
             // Update vertical inset and offset
-            let insets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: missingHeight, right: 0.0)
+            let insets = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
+                                      bottom: missingHeight, right: CGFloat.zero)
             scrollView.contentInset = insets
             let point = CGPointMake(0, oldVertOffset + missingHeight)
             scrollView.setContentOffset(point, animated: true)

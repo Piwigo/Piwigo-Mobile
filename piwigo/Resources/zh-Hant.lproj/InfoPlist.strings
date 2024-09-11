@@ -8,3 +8,4 @@
 
 "NSPhotoLibraryUsageDescription" = "允許Piwigo儲存照片至您的手機及上傳照片。";
 "NSSiriUsageDescription" = "允許Piwigo使用Siri上傳照片。";
+"NSLocalNetworkUsageDescription" = "Piwigo 使用本機網路存取您的 Piwigo 伺服器。";

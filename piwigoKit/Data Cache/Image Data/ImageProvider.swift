@@ -208,7 +208,8 @@ public class ImageProvider: NSObject {
      */
     public func didUploadImage(_ imageData: ImagesGetInfo, asVideo: Bool, inAlbumId albumId: Int32) {
         // Import the image data into Core Data.
-        try? self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true)
+        // The provided sort option will not change the rankManual/rankRandom values of Int64.min
+        try? self.importImages([imageData], inAlbum: albumId, withAlbumUpdate: true, sort: .albumDefault)
     }
 
     /**
@@ -239,8 +240,9 @@ public class ImageProvider: NSObject {
                     return
                 }
                 
-                // Import the imageJSON into Core Data.
-                try self.importImages([imageJSON.data], inAlbum: albumId)
+                // Import the imageJSON into Core Data
+                // The provided sort option will not change the rankManual/rankRandom values.
+                try self.importImages([imageJSON.data], inAlbum: albumId, sort: .albumDefault)
                 
                 completion()
             }
@@ -265,12 +267,11 @@ public class ImageProvider: NSObject {
     private let batchSize = 25
     private func importImages(_ imageArray: [ImagesGetInfo],
                               inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                              sort: pwgImageSort = .dateCreatedDescending,
-                              fromRank rank: Int64 = Int64.min) throws {
+                              sort: pwgImageSort, fromRank rank: Int64 = Int64.min) throws {
         // We shall perform at least one import in case where
         // the user did delete all images
         guard imageArray.isEmpty == false else {
-            _ = importOneBatch([ImagesGetInfo](), inAlbum: albumId)
+            _ = importOneBatch([ImagesGetInfo](), inAlbum: albumId, sort: sort)
             return
         }
         
@@ -315,8 +316,7 @@ public class ImageProvider: NSObject {
      */
     private func importOneBatch(_ imagesBatch: [ImagesGetInfo],
                                 inAlbum albumId: Int32, withAlbumUpdate: Bool = false,
-                                sort: pwgImageSort = .dateCreatedDescending,
-                                fromRank startRank: Int64 = Int64.min) -> Bool {
+                                sort: pwgImageSort, fromRank startRank: Int64 = Int64.min) -> Bool {
         // Initialisation
         var success = false
         

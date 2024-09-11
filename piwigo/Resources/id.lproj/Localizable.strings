@@ -155,6 +155,9 @@
 "categoryImageList_selectButton" = "Pilih";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Galat Tidak Ada Data";
+"categoryImageList_share" = "Share";
+"categoryImageList_favorite" = "Favorite";
+"categoryImageList_unfavorite" = "Unfavorite";
 
 // Albums "Discover"
 "categoryDiscover_title" = "Discover";
@@ -223,9 +226,6 @@
 "categoryUpload_otherAlbums" = "Other Albums";
 "categoryUpload_pasteboard" = "Clipboard";
 
-"categoyUpload_loadSubCategories" = "muat";
-"categoryUpload_images" = "Unggah gambar";
-
 // Default album
 "setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
@@ -244,6 +244,7 @@
 "createAlbumError_message" = "Gagal untuk membuat album baru";
 
 // Album options (swipe actions)
+"categoryCellOption_addPhotos" = "Add Photos";
 "categoryCellOption_rename" = "Ganti Nama";
 "categoryCellOption_move" = "Pindah";
 "categoryCellOption_delete" = "Hapus";
@@ -519,14 +520,6 @@
 "imageUploadDetails_tags" = "Tag:";
 "imageUploadDetails_description" = "Deskripsi:";
 
-"imageUploadDetailsView_title" = "Gambar";
-"imageUploadDetailsButton_title" = "Unggah";
-"imageUploadDetailsEdit_title" = "Sunting Gambar untuk Diunggah";
-"imageUploadDetailsUploading_title" = "Gambar yang Akan Diunggah";
-"imageUploadDetailsCell_uploadComplete" = "Lengkap! Selesaikan...";
-
-"imageUploadRemove" = "Removing uploaded photos";
-
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_prepared" = "Ready for upload...";
@@ -541,8 +534,6 @@
 "imageUploadResumeSingle" = "Resume Upload";
 "imageUploadResumeSeveral" = "Resume %@ Uploads";
 
-"imageUploadProgressBar_zero" = "Mengunggah 0/0";
-"imageUploadProgressBar_nonZero" = "Mengunggah %@/%@";
 "imageUploadProgressBar_completed" = "Selesai";
 "imageUploadCompleted_title" = "Pengunggahan Selesai";
 "imageUploadCompleted_message" = "gambar/video telah duinggah ke peladen Piwigo Anda.";
@@ -618,6 +609,7 @@
 
 "shareFailError_title" = "Share Fail";
 "shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

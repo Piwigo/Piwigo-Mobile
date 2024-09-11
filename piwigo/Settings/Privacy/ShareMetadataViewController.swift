@@ -219,8 +219,10 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(activity)
 
             // Sort list of activities
-            activitiesSharingMetadata = activitiesSharing.sorted()
-            activitiesNotSharingMetadata = activitiesNotSharing.sorted()
+            activitiesSharingMetadata = activitiesSharing.map({$0.rawValue}).sorted()
+                .map({UIActivity.ActivityType(rawValue: $0)})
+            activitiesNotSharingMetadata = activitiesNotSharing.map({$0.rawValue}).sorted()
+                .map({UIActivity.ActivityType(rawValue: $0)})
 
             // Determine new indexPath of tapped activity
             let index = activitiesNotSharingMetadata.firstIndex(of: activity)
@@ -247,8 +249,10 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesSharing.append(activity)
 
             // Sort list of activities
-            activitiesSharingMetadata = activitiesSharing.sorted()
-            activitiesNotSharingMetadata = activitiesNotSharing.sorted()
+            activitiesSharingMetadata = activitiesSharing.map({$0.rawValue}).sorted()
+                .map({UIActivity.ActivityType(rawValue: $0)})
+            activitiesNotSharingMetadata = activitiesNotSharing.map({$0.rawValue}).sorted()
+                .map({UIActivity.ActivityType(rawValue: $0)})
 
             // Determine new indexPath of tapped activity
             let index = activitiesSharingMetadata.firstIndex(of: activity)
@@ -362,8 +366,10 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(pwgActivityTypeOther)
         }
         
-        activitiesSharingMetadata = activitiesSharing.sorted()
-        activitiesNotSharingMetadata = activitiesNotSharing.sorted()
+        activitiesSharingMetadata = activitiesSharing.map({$0.rawValue}).sorted()
+            .map({UIActivity.ActivityType(rawValue: $0)})
+        activitiesNotSharingMetadata = activitiesNotSharing.map({$0.rawValue}).sorted()
+            .map({UIActivity.ActivityType(rawValue: $0)})
     }
     
     private func switchActivity(_ activity: UIActivity.ActivityType, toState newState: Bool) {

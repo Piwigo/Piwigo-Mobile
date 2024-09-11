@@ -12,7 +12,7 @@ import UIKit
 import piwigoKit
 
 @objc protocol EditImageThumbnailCellDelegate: NSObjectProtocol {
-    func didDeselectImage(withId imageId: Int64)
+    func didDeselectImage(withID imageID: Int64)
     func didRenameFileOfImage(_ imageData: Image)
 }
 
@@ -97,19 +97,19 @@ extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 // MARK: - EditImageThumbnailDelegate Methods
 extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
 {
-    @objc func didDeselectImage(withId imageId: Int64) {
+    @objc func didDeselectImage(withID imageID: Int64) {
         // Update data source
-        let newImages = images?.filter({ $0.pwgID != imageId })
+        let newImages = images?.filter({ $0.pwgID != imageID })
         images = newImages
         editImageThumbCollectionView.reloadData()
 
         // Deselect image in parent view
-        delegate?.didDeselectImage(withId: imageId)
+        delegate?.didDeselectImage(withID: imageID)
     }
 
-    @objc func didRenameFileOfImage(withId imageId: Int64, andFilename fileName: String) {
+    @objc func didRenameFileOfImage(withId imageID: Int64, andFilename fileName: String) {
         // Retrieve image data from cache
-        guard let imageToUpdate = images?.first(where: {$0.pwgID == imageId}) else { return }
+        guard let imageToUpdate = images?.first(where: {$0.pwgID == imageID}) else { return }
         
         // Update image in cache
         imageToUpdate.fileName = fileName

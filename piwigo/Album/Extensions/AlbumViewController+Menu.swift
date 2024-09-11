@@ -216,6 +216,25 @@ extension AlbumViewController
         let visitsSortAction = UIAlertAction(title: title, style: .default, handler: handler)
         alert.addAction(visitsSortAction)
 
+        // Sorted manually
+        if sortOption != .rankAscending {
+            let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
+                                             style: .default, handler: { [self] action in
+                if let allImages = images.fetchedObjects {
+                    allImages.forEach { image in
+                        debugPrint("Manual Sort: \(image.pwgID) -> \(image.rankManual == Int64.min ? "Unknown" : "Known")")
+                    }
+                }
+                sortOption = .rankAscending
+                images.delegate = nil
+                images = data.images(sortedBy: .rankAscending)
+                images.delegate = self
+                let shouldFetch = images.fetchedObjects?.first(where: {$0.rankManual == Int64.min}) != nil
+                updateImageCollection(afterFetchingRanks: shouldFetch)
+            })
+            alert.addAction(randomAction)
+        }
+
         // Presents photos randomly
         if sortOption != .random {
             let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_randomly", comment: "Randomly"),
@@ -224,7 +243,8 @@ extension AlbumViewController
                 images.delegate = nil
                 images = data.images(sortedBy: .random)
                 images.delegate = self
-                updateImageCollection()
+                let shouldFetch = images.fetchedObjects?.first(where: {$0.rankRandom == Int64.min}) != nil
+                updateImageCollection(afterFetchingRanks: shouldFetch)
             })
             alert.addAction(randomAction)
         }
@@ -243,10 +263,15 @@ extension AlbumViewController
         }
     }
     
-    func updateImageCollection() {
-        // Re-fetch image collection
-        try? images.performFetch()
-        collectionView?.reloadData()
+    func updateImageCollection(afterFetchingRanks shouldFetch: Bool = false) {
+        if shouldFetch {
+            // Some image ranks are unknown and must be retrieved
+            startFetchingAlbumAndImages(withHUD: true)
+        } else {
+            // Re-fetch image collection
+            try? images.performFetch()
+            collectionView?.reloadData()
+        }
     }
 }
 
@@ -297,10 +322,10 @@ extension AlbumViewController: ImageHeaderDelegate
                 let image = images.object(at: imageIndexPath)
 
                 // Is this image already selected?
-                if selectedImageIds.contains(image.pwgID) { continue }
+                if selectedImageIDs.contains(image.pwgID) { continue }
                 
                 // Select this image
-                selectedImageIds.insert(image.pwgID)
+                selectedImageIDs.insert(image.pwgID)
                 let indexPath = IndexPath(item: item, section: section)
                 if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     cell.isSelection = true
@@ -317,10 +342,10 @@ extension AlbumViewController: ImageHeaderDelegate
                 let image = images.object(at: imageIndexPath)
 
                 // Is this image already deselected?
-                if selectedImageIds.contains(image.pwgID) == false { continue }
+                if selectedImageIDs.contains(image.pwgID) == false { continue }
                 
                 // Deselect this image
-                selectedImageIds.remove(image.pwgID)
+                selectedImageIDs.remove(image.pwgID)
                 let indexPath = IndexPath(item: item, section: section)
                 if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     cell.isSelection = false
@@ -356,9 +381,9 @@ extension AlbumViewController: ImageHeaderDelegate
 extension AlbumViewController
 {
     // MARK: - Menu
-    func updateCollectionAndMenu() {
+    func updateCollectionAndMenu(afterFetchingRanks shouldFetch: Bool = false) {
         // Re-fetch image collection
-        updateImageCollection()
+        updateImageCollection(afterFetchingRanks: shouldFetch)
         
         // Update menu
         var children = [UIMenu?]()
@@ -382,7 +407,7 @@ extension AlbumViewController
                       children: [defaultSortAction(), titleSortAction(),
                                  createdSortAction(), postedSortAction(),
                                  ratingSortAction(), visitsSortAction(),
-                                 randomSortAction()].compactMap({$0}))
+                                 manualSortAction(), randomSortAction()].compactMap({$0}))
     }
     
     func defaultSortAction() -> UIAction? {
@@ -625,6 +650,33 @@ extension AlbumViewController
         return action
     }
     
+    func manualSortAction() -> UIAction? {
+        // Unavailable when presenting some smart albums
+        let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
+        if unwantedAlbums.contains(categoryId) {
+            return nil
+        }
+        
+        let actionId = UIAction.Identifier("org.piwigo.images.sort.manual")
+        let isActive = sortOption == .rankAscending
+        let action = UIAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
+                              image: isActive ? UIImage(systemName: "checkmark") : nil,
+                              identifier: actionId, handler: { [self] action in
+            // Should sorting be changed?
+            if isActive { return }
+            
+            // Change image sorting
+            sortOption = .rankAscending
+            images.delegate = nil
+            images = data.images(sortedBy: .rankAscending)
+            images.delegate = self
+            let shouldFetch = images.fetchedObjects?.first(where: {$0.rankManual == Int64.min}) != nil
+            updateCollectionAndMenu(afterFetchingRanks: shouldFetch)
+        })
+        action.accessibilityIdentifier = "ManualSort"
+        return action
+    }
+
     func randomSortAction() -> UIAction? {
         // Unavailable when presenting some smart albums
         let unwantedAlbums = [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue]
@@ -645,7 +697,8 @@ extension AlbumViewController
             images.delegate = nil
             images = data.images(sortedBy: .random)
             images.delegate = self
-            updateCollectionAndMenu()
+            let shouldFetch = images.fetchedObjects?.first(where: {$0.rankRandom == Int64.min}) != nil
+            updateCollectionAndMenu(afterFetchingRanks: shouldFetch)
         })
         action.accessibilityIdentifier = "RandomSort"
         return action

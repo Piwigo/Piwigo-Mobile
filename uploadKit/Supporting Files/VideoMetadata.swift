@@ -16,10 +16,10 @@ extension Array where Element == AVMetadataItem {
         // Common Metadata Identifiers
         var locationID = AVMetadataIdentifier.commonIdentifierLocation
         var locations = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: locationID)
-        if let location = locations.first {
-            if let position = location.stringValue {
-                print("position => \(position)")
-            }
+        if let _ = locations.first {
+//            if let position = location.stringValue {
+//                debugPrint("position => \(position)")
+//            }
             return true
         }
         

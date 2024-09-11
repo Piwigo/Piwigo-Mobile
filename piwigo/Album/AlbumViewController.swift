@@ -15,7 +15,7 @@ import uploadKit
 enum pwgImageAction {
     case edit, delete, share
     case copyImages, moveImages
-    case addToFavorites, removeFromFavorites
+    case favorite, unfavorite
     case rotateImagesLeft, rotateImagesRight
 }
 
@@ -92,17 +92,15 @@ class AlbumViewController: UIViewController
     var imageOfInterest = IndexPath(item: 0, section: 0)
     var indexOfImageToRestore = Int.min
     var isSelect = false
-    var touchedImageIds = [Int64]()
-    var selectedImageIds = Set<Int64>()
-    var selectedImageIdsLoop = Set<Int64>()
-    var selectedFavoriteIds = Set<Int64>()
-    var selectedVideosIds = Set<Int64>()
-    var totalNumberOfImages = 0
+    var touchedImageIDs = [Int64]()
+    var selectedImageIDs = Set<Int64>()
+    var selectedFavoriteIDs = Set<Int64>()
+    var selectedVideosIDs = Set<Int64>()
     var selectedSections = [Int : SelectButtonState]()    // State of Select buttons
 
 
     // MARK: - Cached Values
-    private var timeCounter = CFAbsoluteTime(0)
+    var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
     lazy var albumCellSize: CGSize = getAlbumCellSize()
     lazy var albumPlaceHolder = UIImage(named: "placeholder")!
@@ -129,7 +127,7 @@ class AlbumViewController: UIViewController
     
     // MARK: - Fetch
     // Number of images to download per page
-    var oldImageIds = Set<Int64>()
+    var oldImageIDs = Set<Int64>()
     var onPage = 0, lastPage = 0
     lazy var perPage: Int = {
         return max(AlbumUtilities.numberOfImagesToDownloadPerPage(), 100)
