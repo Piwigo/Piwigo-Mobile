@@ -258,7 +258,7 @@ class ImageUtilities: NSObject {
                 maxPixelSize = min(maxPixelSize, maxPixelWidth.floatValue)
             }
             if let maxPixelHeight = imageMetadata[kCGImagePropertyPixelHeight] as NSNumber? {
-                maxPixelSize = min(maxPixelSize, maxPixelHeight.floatValue)
+                maxPixelSize = max(maxPixelSize, maxPixelHeight.floatValue)
             }
         }
         let downsampleOptions = [kCGImageSourceCreateThumbnailFromImageAlways: true,
