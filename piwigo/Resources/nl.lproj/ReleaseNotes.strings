@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.2_text" = "Versie 3.2.2\n\n• Optie toegevoegd voor het verwijderen van selecties van foto's/video's die op het apparaat zijn opgeslagen\n• Bug fixes";
+"v3.2.3_text" = "Versie 3.2.3\n\n• Foutjes verbeterd";
+
+"v3.2.2_text" = "Versie 3.2.2\n12 september 2024\n\n• Optie toegevoegd voor het verwijderen van selecties van foto's/video's die op het apparaat zijn opgeslagen\n• Bug fixes";
 
 "v3.2.1_text" = "Versie 3.2.1\n29 juli 2024\n\n• Voegt een optie toe om albums met of zonder beschrijvingen weer te geven\n• Bugfixes";
 

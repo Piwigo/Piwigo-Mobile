@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.2_text" = "3.2.2-es verzió\n\n• Lehetőséget ad a készülékben tárolt fényképek/videók kiválasztásának törlésére\n• Hibajavítások";
+"v3.2.3_text" = "3.2.3-es verzió\n\n• Hibajavítások";
+
+"v3.2.2_text" = "3.2.2-es verzió\n2024 Szeptember 12\n\n• Lehetőséget ad a készülékben tárolt fényképek/videók kiválasztásának törlésére\n• Hibajavítások";
 
 "v3.2.1_text" = "3.2.1-es verzió\n2024 Július 29\n\n• Lehetőséget ad az albumok megjelenítésére leírással vagy anélkül\n• Hibajavítások";
 
