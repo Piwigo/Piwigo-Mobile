@@ -75,6 +75,10 @@ class AppVars: NSObject {
     /// - Remember for which version the What's New in Piwigo view was presented
     @UserDefault("didShowWhatsNewAppVersion", defaultValue: "2.12.7")
     var didShowWhatsNewAppVersion: String
+    
+    /// - Remember when the first '-opt' cached image was produced with version 3.2.3
+    @UserDefault("dateOfFirstOptImageV323", defaultValue: Date.distantFuture.timeIntervalSinceReferenceDate)
+    var dateOfFirstOptImageV323: TimeInterval
 
     
     // MARK: - Vars in UserDefaults / App Group

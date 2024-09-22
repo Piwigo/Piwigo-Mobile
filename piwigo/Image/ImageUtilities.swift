@@ -211,11 +211,32 @@ class ImageUtilities: NSObject {
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices
+
+    // Bug introduced on 6 September 2024 (commit 18e427379a8132575a72ef053fe7d26090e09525)
+    static let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
+    static let dateOfFirstOptImageV323 = {
+        if AppVars.shared.dateOfFirstOptImageV323 == Date.distantFuture.timeIntervalSinceReferenceDate {
+            AppVars.shared.dateOfFirstOptImageV323 = Date().timeIntervalSinceReferenceDate
+        }
+        return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
+    }()
+
     static func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
         // Optimised image available?
         let filePath = imageURL.path + CacheVars.shared.optImage
         if let optImage = UIImage(contentsOfFile: filePath) {
-            return optImage
+            // Images created since commit 18e4273 can be too small (v3.2.2) — fixed in v3.2.3.
+            let fileURL: URL?
+            if #available(iOS 16.0, *) {
+                fileURL = URL(filePath: filePath, directoryHint: .notDirectory)
+            } else {
+                // Fallback on earlier versions
+                fileURL = URL(fileURLWithPath: filePath)
+            }
+            if let fileCreationDate = fileURL?.creationDate,
+               (fileCreationDate < dateCommit18e4273 || fileCreationDate > dateOfFirstOptImageV323) {
+                return optImage
+            }
         }
         
         // Check that the image can be properly downsampled by checking its pixel format.

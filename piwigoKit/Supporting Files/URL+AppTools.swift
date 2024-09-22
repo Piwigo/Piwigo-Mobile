@@ -46,7 +46,7 @@ extension URL {
     }
     
     // Returns the creation date of the file
-    var creationDate: Date? {
+    public var creationDate: Date? {
         return attributes?[.creationDate] as? Date
     }
     
