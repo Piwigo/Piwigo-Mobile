@@ -43,6 +43,26 @@ public class ImageProvider: NSObject {
     
     
     // MARK: - Get Images
+    public func getObjectCount() -> Int64 {
+
+        // Create a fetch request for the Image entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
+        fetchRequest.resultType = .countResultType
+        
+        // Select images of the current server
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+
+        // Fetch number of objects
+        do {
+            let countResult = try bckgContext.fetch(fetchRequest)
+            return countResult.first!.int64Value
+        }
+        catch let error as NSError {
+            print("••> Image count not fetched \(error), \(error.userInfo)")
+        }
+        return Int64.zero
+    }
+
     func frcOfImage(inContext taskContext: NSManagedObjectContext,
                     withIds imageIds: Set<Int64>) -> NSFetchedResultsController<Image> {
         let fetchRequest = Image.fetchRequest()
@@ -465,9 +485,7 @@ public class ImageProvider: NSObject {
     
     
     // MARK: - Clear Images
-    /**
-     Purge cache from orphaned images
-     */
+    // Purge cache from orphaned images
     public func purgeOrphans() {
         
         // Retrieve images in persistent store
@@ -487,35 +505,8 @@ public class ImageProvider: NSObject {
         // Execute batch delete request
         try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
-    
-    
-    // MARK: - Clear Image Data
-    /**
-        Return number of images stored in cache
-     */
-    public func getObjectCount() -> Int64 {
-
-        // Create a fetch request for the Image entity
-        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Image")
-        fetchRequest.resultType = .countResultType
         
-        // Select images of the current server
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
-
-        // Fetch number of objects
-        do {
-            let countResult = try bckgContext.fetch(fetchRequest)
-            return countResult.first!.int64Value
-        }
-        catch let error as NSError {
-            print("••> Image count not fetched \(error), \(error.userInfo)")
-        }
-        return Int64.zero
-    }
-
-    /**
-     Clear cached Core Data image entry
-     */
+    // Clear cached Core Data image entry
     public func clearAll() {
         
         // Retrieve images in persistent store
