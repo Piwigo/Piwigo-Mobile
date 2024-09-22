@@ -78,7 +78,7 @@ extension PwgSession {
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
-//        debugPrint("••> seconds since last used: \(Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0))")
+//        debugPrint("••> Session checked \(Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)) seconds ago.")
         if #available(iOSApplicationExtension 14.0, *) {
             logger.notice("Start checking session…")
         }
@@ -111,9 +111,6 @@ extension PwgSession {
                         // Perform login
                         let username = NetworkVars.username
                         let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            logger.notice("Create session for \(username, privacy: .private(mask: .hash))")
-                        }
                         PwgSession.shared.sessionLogin(withUsername: username, password: password) {
                             // Session now opened
                             getPiwigoConfig {
