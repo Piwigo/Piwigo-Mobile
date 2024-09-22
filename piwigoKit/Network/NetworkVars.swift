@@ -39,8 +39,11 @@ public class NetworkVars: NSObject {
     
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
-    /// - None
-    
+    /// - Request server update once a month max
+    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
+    public static var dateOfLastUpdateRequest: TimeInterval
+
+
     
     // MARK: - Vars in UserDefaults / App Group
     // Network variables stored in UserDefaults / App Group
@@ -111,10 +114,6 @@ public class NetworkVars: NSObject {
     /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
     @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCalcOrphans: Bool
-
-    /// - Request server update once a month max
-    @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
-    public static var dateOfLastUpdateRequest: TimeInterval
 
     
     // MARK: - Vars in Memory
