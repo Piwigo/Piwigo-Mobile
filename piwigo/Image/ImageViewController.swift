@@ -508,7 +508,7 @@ class ImageViewController: UIViewController {
             let dateFormatter = DateUtilities.dateFormatter()
             if UIDevice.current.userInterfaceIdiom == .pad {
                 dateFormatter.dateStyle = .long
-                dateFormatter.timeStyle = .long
+                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
                 subTitleLabel.text = dateFormatter.string(from: dateCreated)
             } else {
                 dateFormatter.dateStyle = .medium
