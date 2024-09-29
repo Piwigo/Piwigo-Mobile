@@ -274,12 +274,14 @@ class ImageUtilities: NSObject {
         let options = [kCGImagePropertyPixelWidth: true,
                       kCGImagePropertyPixelHeight: true] as CFDictionary
         var maxPixelSize = Float(max(pointSize.width, pointSize.height) * max(scale, 1.0))
-        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, options) as? [CFString : CFNumber] {
-            if let maxPixelWidth = imageMetadata[kCGImagePropertyPixelWidth] as NSNumber? {
-                maxPixelSize = min(maxPixelSize, maxPixelWidth.floatValue)
-            }
-            if let maxPixelHeight = imageMetadata[kCGImagePropertyPixelHeight] as NSNumber? {
-                maxPixelSize = max(maxPixelSize, maxPixelHeight.floatValue)
+        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, options) as? [CFString : CFNumber],
+           let width = imageMetadata[kCGImagePropertyPixelWidth] as? Float,
+           let height = imageMetadata[kCGImagePropertyPixelHeight] as? Float,
+           width > 1, height > 1 {
+            if width > height {
+                maxPixelSize *= width / height
+            } else {
+                maxPixelSize *= height / width
             }
         }
         let downsampleOptions = [kCGImageSourceCreateThumbnailFromImageAlways: true,
