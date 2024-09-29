@@ -41,10 +41,10 @@ class ImageHeaderReusableView: UICollectionReusableView
         switch sortKey {
         case #keyPath(Image.dateCreated):
             let dateIntervals = images.map {$0.dateCreated}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
         case #keyPath(Image.datePosted):
             let dateIntervals = images.map {$0.datePosted}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
         default:
             break
         }

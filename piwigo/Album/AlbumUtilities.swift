@@ -627,7 +627,7 @@ class AlbumUtilities: NSObject {
     }
     
     // MARK: - Album/Images Collections | Image Section
-    static func getDateLabels(for timeIntervals: [TimeInterval]) -> (String, String) {
+    static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool) -> (String, String) {
         // Creation date of images (or of availability)
         let refDate = DateUtilities.unknownDateInterval     // i.e. unknown date
         var dateLabelText = " "                             // Displayed when there is no date available
@@ -659,16 +659,20 @@ class AlbumUtilities: NSObject {
             dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
             
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-            let dayFormatter = DateUtilities.dateFormatter()
-            switch UIScreen.main.bounds.size.width {
-            case 0..<400:
-                dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
-            case 400...600:
-                dayFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm")
-            default:
-                dayFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm:ss")
+            let optFormatter = DateUtilities.dateFormatter()
+            if arePwgDates {
+                switch UIScreen.main.bounds.size.width {
+                case 0..<400:
+                    optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                case 400...600:
+                    optFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm")
+                default:
+                    optFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm:ss")
+                }
+            } else {
+                optFormatter.setLocalizedDateFormatFromTemplate("eeee")
             }
-            optionalDateLabelText = dayFormatter.string(from: startDate)
+            optionalDateLabelText = optFormatter.string(from: startDate)
             
             // Get creation date of last image and check that it is after "1900-01-08 00:00:00"
             if greatest > DateUtilities.weekAfterInterval, greatest != lowest {
@@ -682,9 +686,11 @@ class AlbumUtilities: NSObject {
                     // Images were taken the same day
                     // => Keep dateLabel as already set
                     // => Add ending time to optional string
-                    let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
-                    dayFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
-                    optionalDateLabelText += " - " + dayFormatter.string(from: endDate)
+                    if arePwgDates {
+                        let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
+                        optFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
+                        optionalDateLabelText += " - " + optFormatter.string(from: endDate)
+                    }
                     return (dateLabelText, optionalDateLabelText)
                 }
                 
@@ -692,7 +698,7 @@ class AlbumUtilities: NSObject {
                 let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
                 let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
                 if firstImageMonth == lastImageMonth {
-                    // Images taken during the sme month => Display days of month
+                    // Images taken during the same month => Display days of month
                     let dateFormatter = DateIntervalFormatter()
                     dateFormatter.timeStyle = .none
                     switch UIScreen.main.bounds.size.width {
@@ -705,17 +711,26 @@ class AlbumUtilities: NSObject {
                     
                     // Define optional string with day/time values
                     // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                    let dayFormatter = DateFormatter()
-                    dayFormatter.locale = .current
-                    switch UIScreen.main.bounds.size.width {
-                    case 0..<400:
-                        dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
-                    case 400..<600:
-                        dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
-                    default:
-                        dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                    let optFormatter = DateUtilities.dateFormatter()
+                    optFormatter.locale = .current
+                    if arePwgDates {
+                        switch UIScreen.main.bounds.size.width {
+                        case 0..<400:
+                            optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                        case 400..<600:
+                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                        default:
+                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                        }
+                    } else {
+                        switch UIScreen.main.bounds.size.width {
+                        case 0..<400:
+                            optFormatter.setLocalizedDateFormatFromTemplate("eee d")
+                        default:
+                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d")
+                        }
                     }
-                    optionalDateLabelText = dayFormatter.string(from: startDate) + " — " + dayFormatter.string(from: endDate)
+                    optionalDateLabelText = optFormatter.string(from: startDate) + " — " + optFormatter.string(from: endDate)
                     return (dateLabelText, optionalDateLabelText)
                 }
                 
@@ -734,16 +749,25 @@ class AlbumUtilities: NSObject {
                 
                 // Define optional string with day/time values
                 // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                let dayFormatter = DateUtilities.dateFormatter()
-                switch UIScreen.main.bounds.size.width {
-                case 0..<400:
-                    dayFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
-                case 400..<600:
-                    dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
-                default:
-                    dayFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                let optFormatter = DateUtilities.dateFormatter()
+                if arePwgDates {
+                    switch UIScreen.main.bounds.size.width {
+                    case 0..<400:
+                        optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                    case 400..<600:
+                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                    default:
+                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                    }
+                } else {
+                    switch UIScreen.main.bounds.size.width {
+                    case 0..<400:
+                        optFormatter.setLocalizedDateFormatFromTemplate("eee d")
+                    default:
+                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d")
+                    }
                 }
-                optionalDateLabelText = dayFormatter.string(from: startDate) + " — " + dayFormatter.string(from: endDate)
+                optionalDateLabelText = optFormatter.string(from: startDate) + " — " + optFormatter.string(from: endDate)
             }
         }
         return (dateLabelText, optionalDateLabelText)

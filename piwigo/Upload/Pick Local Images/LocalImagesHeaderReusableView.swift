@@ -42,7 +42,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         // Get date labels from images in section
         let oldest = DateUtilities.unknownDateInterval   // i.e. unknown date
         let dateIntervals = images.map { $0.creationDate?.timeIntervalSinceReferenceDate ?? oldest}
-        let dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+        let dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: false)
         self.mainLabel.text = dates.0
 
         // Set labels from dates and place name
