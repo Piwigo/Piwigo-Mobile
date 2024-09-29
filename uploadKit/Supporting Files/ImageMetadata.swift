@@ -10,12 +10,11 @@ import Foundation
 import ImageIO
 import UIKit
 
+// MARK: Private Metadata Properties
 class ImageMetadata {
-        
-    // MARK: - Private metadata properties
     // Exif private metadata properties
     /// See https://www.exiftool.org/TagNames/EXIF.html
-    let exifPrivateProperties: [CFString] = {
+    fileprivate static let exifPrivateProperties: [CFString] = {
         let properties = [kCGImagePropertyExifUserComment,          // User's comment
                           kCGImagePropertyExifSubjectLocation,      // Image’s primary subject
                           kCGImagePropertyExifMakerNote             // Information specified by the camera manufacturer
@@ -25,7 +24,7 @@ class ImageMetadata {
 
     // ExifEx private metadata properties
     /// See https://www.exiftool.org/TagNames/EXIF.html
-    let exifExPrivateProperties: [CFString] = {
+    fileprivate static let exifExPrivateProperties: [CFString] = {
         let properties = [kCGImagePropertyExifCameraOwnerName,      // Owner's name
                           kCGImagePropertyExifBodySerialNumber,     // Serial numbers
                           kCGImagePropertyExifLensSerialNumber      // Lens serial number
@@ -35,7 +34,7 @@ class ImageMetadata {
 
     // ExifAux private metadata properties
     /// See https://www.exiftool.org/TagNames/EXIF.html
-    let exifAuxPrivateProperties: [CFString] = {
+    fileprivate static let exifAuxPrivateProperties: [CFString] = {
         let properties = [kCGImagePropertyExifAuxSerialNumber,      // Serial number
                           kCGImagePropertyExifAuxLensSerialNumber,  // Lens serial number
                           kCGImagePropertyExifAuxOwnerName          // Owner's name
@@ -43,10 +42,21 @@ class ImageMetadata {
         return properties
     }()
         
+    // Exif creation date (YY:MM:DD HH:MM:SS format)
+    /// https://en.wikipedia.org/wiki/Exif
+    /// https://web.archive.org/web/20190624045241if_/http://www.cipa.jp:80/std/documents/e/DC-008-Translation-2019-E.pdf
+    fileprivate static var exifDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+
     // IPTC private metadata properties
     /// See https://www.exiftool.org/TagNames/IPTC.html
     /// See https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata
-    let iptcPrivateProperties: [CFString] = {
+    fileprivate static let iptcPrivateProperties: [CFString] = {
         let properties = [kCGImagePropertyIPTCContentLocationCode,  // Content location code
                           kCGImagePropertyIPTCContentLocationName,  // Content location name
                           kCGImagePropertyIPTCByline,               // Name of the person who created the image
@@ -67,47 +77,92 @@ class ImageMetadata {
         return properties
     }()
         
+    // IPTC creation date and time
+    /// https://en.wikipedia.org/wiki/IPTC_Information_Interchange_Model
+    /// https://iptc.org/standards/photo-metadata/iptc-standard/
+    fileprivate static var iptcDateFormatter1: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyyMMdd"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+
+    fileprivate static var iptcDateFormatter2: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyyMM"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+
+    fileprivate static var iptcDateFormatter3: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+
+    fileprivate static var iptcTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyyMMdd'T'HHmmss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+    
+    fileprivate static func iptcTimeSinceReferenceDate(timeStr: String?) -> TimeInterval? {
+        guard let timeStr = timeStr else { return nil }
+        
+        let dateStr = "20010101T" + timeStr.prefix(6)                   // Remove time zone if any
+        if let iptcTime = iptcTimeFormatter.date(from: dateStr) {
+            return iptcTime.timeIntervalSinceReferenceDate
+        }
+        return nil
+    }
+
     // PNG private metadata properties
     /// See https://www.exiftool.org/TagNames/PNG.html
-    let pngPrivateProperties: [CFString] = {
-        let properties = [kCGImagePropertyPNGAuthor                 // String that identifies the author
+    fileprivate static let pngPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyPNGAuthor                     // String that identifies the author
         ]
         return properties
     }()
         
     // TIFF private metadata properties
-    let tiffPrivateProperties: [CFString] = {
-        let properties = [kCGImagePropertyTIFFArtist                // Artist who created the image
+    fileprivate static let tiffPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyTIFFArtist                    // Artist who created the image
         ]
         return properties
     }()
         
     // DNG private metadata properties
-    let dngPrivateProperties: [CFString] = {
-        let properties = [kCGImagePropertyDNGCameraSerialNumber     // Camera serial number
+    fileprivate static let dngPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyDNGCameraSerialNumber         // Camera serial number
         ]
         return properties
     }()
         
     // CIFF private metadata properties
-    let ciffPrivateProperties: [CFString] = {
-        let properties = [kCGImagePropertyCIFFOwnerName,            // Camera’s owner
-                          kCGImagePropertyCIFFRecordID,             // Number of images taken since the camera shipped
-                          kCGImagePropertyCIFFCameraSerialNumber    // Camera serial number
+    fileprivate static let ciffPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyCIFFOwnerName,                // Camera’s owner
+                          kCGImagePropertyCIFFRecordID,                 // Number of images taken since the camera shipped
+                          kCGImagePropertyCIFFCameraSerialNumber        // Camera serial number
         ]
         return properties
     }()
         
     // Canon private metadata properties
-    let canonPrivateProperties: [CFString] = {
-        let properties = [kCGImagePropertyMakerCanonOwnerName,      // Camera’s owner
-                          kCGImagePropertyMakerCanonCameraSerialNumber // Camera serial number
+    fileprivate static let canonPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyMakerCanonOwnerName,          // Camera’s owner
+                          kCGImagePropertyMakerCanonCameraSerialNumber  // Camera serial number
         ]
         return properties
     }()
         
     // Nikon private metadata properties
-    let nikonPrivateProperties: [CFString] = {
+    fileprivate static let nikonPrivateProperties: [CFString] = {
         let properties = [kCGImagePropertyMakerNikonCameraSerialNumber  // Camera’s owner
         ]
         return properties
@@ -115,6 +170,65 @@ class ImageMetadata {
 
 }
 
+
+// MARK: - Get Creation Date
+extension Dictionary where Key == CFString, Value == Any {
+    // Creation date from EXIF or IPTC metadata
+    func creationDate() -> Date? {
+        if let date = self.exifCreationDate() {
+            return date
+        }
+        if let date = self.iptcCreationDate() {
+            return date
+        }
+        return nil
+    }
+    
+    // EXIF creation date
+    fileprivate func exifCreationDate() -> Date? {
+        // Any EXIF metadata?
+        if let exifDict = self[kCGImagePropertyExifDictionary] as? [CFString:Any] {
+            // Time the image was created (YY:MM:DD HH:MM:SS format)
+            if let exifDate = exifDict[kCGImagePropertyExifDateTimeOriginal] as? String {
+                return ImageMetadata.exifDateFormatter.date(from: exifDate)
+            }
+
+            // Time the image was digitalized (YY:MM:DD HH:MM:SS format)
+            if let exifDate = exifDict[kCGImagePropertyExifDateTimeDigitized] as? String {
+               return ImageMetadata.exifDateFormatter.date(from: exifDate)
+            }
+        }
+        return nil
+    }
+    
+    // IPTC creation date
+    fileprivate func iptcCreationDate() -> Date? {
+        if let iptcDict = self[kCGImagePropertyIPTCDictionary] as? [CFString:Any],
+           let dateStr = iptcDict[kCGImagePropertyIPTCDateCreated] as? String {
+            // Are the year, month and day all known?
+            if let iptcDate = ImageMetadata.iptcDateFormatter1.date(from: dateStr) {
+                if let timeStr = iptcDict[kCGImagePropertyIPTCTimeCreated] as? String,
+                   let iptcTimeOffset = ImageMetadata.iptcTimeSinceReferenceDate(timeStr: timeStr) {
+                    let iptcTimeInterval = iptcDate.timeIntervalSinceReferenceDate
+                    return Date(timeIntervalSinceReferenceDate: iptcTimeInterval + iptcTimeOffset)
+                }
+                return iptcDate
+            }
+            // Are the year and month known?
+            if let iptcDate = ImageMetadata.iptcDateFormatter2.date(from: dateStr) {
+                return iptcDate
+            }
+            // Is the year known?
+            if let iptcDate = ImageMetadata.iptcDateFormatter3.date(from: dateStr) {
+                return iptcDate
+            }
+        }
+        return nil
+    }
+}
+
+
+// MARK: - Strip Private Metadata
 extension CGImageMetadata {
     // Remove CGImage private metadata
     // The GPS metadata will be removed using the kCGImageMetadataShouldExcludeGPS option
@@ -125,13 +239,13 @@ extension CGImageMetadata {
 
         // Get prefixes and keys of privata metadata
         var dictOfKeys = [CFString : [CFString]]()
-        dictOfKeys[kCGImageMetadataPrefixExif] = ImageMetadata().exifPrivateProperties
-        dictOfKeys[kCGImageMetadataPrefixExifEX] = ImageMetadata().exifExPrivateProperties
-        dictOfKeys[kCGImageMetadataPrefixExifAux] = ImageMetadata().exifAuxPrivateProperties
-        dictOfKeys[kCGImageMetadataPrefixIPTCCore] = ImageMetadata().iptcPrivateProperties
-        dictOfKeys[kCGImageMetadataPrefixTIFF] = ImageMetadata().tiffPrivateProperties
-        dictOfKeys[kCGImageMetadataPrefixIPTCExtension] = ImageMetadata().iptcPrivateProperties
-        dictOfKeys[kCGImageMetadataPrefixXMPBasic] = ImageMetadata().pngPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixExif] = ImageMetadata.exifPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixExifEX] = ImageMetadata.exifExPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixExifAux] = ImageMetadata.exifAuxPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixIPTCCore] = ImageMetadata.iptcPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixTIFF] = ImageMetadata.tiffPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixIPTCExtension] = ImageMetadata.iptcPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixXMPBasic] = ImageMetadata.pngPrivateProperties
 
         // Loop over all tags
         CGImageMetadataEnumerateTagsUsingBlock(self, nil, nil) { _, tag in
@@ -151,23 +265,23 @@ extension CGImageMetadata {
             }
             
             // Check remaining names
-            if ImageMetadata().pngPrivateProperties.contains(name) {
+            if ImageMetadata.pngPrivateProperties.contains(name) {
                 CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
-            if ImageMetadata().dngPrivateProperties.contains(name) {
+            if ImageMetadata.dngPrivateProperties.contains(name) {
                 CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
-            if ImageMetadata().ciffPrivateProperties.contains(name) {
+            if ImageMetadata.ciffPrivateProperties.contains(name) {
                 CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
-            if ImageMetadata().canonPrivateProperties.contains(name) {
+            if ImageMetadata.canonPrivateProperties.contains(name) {
                 CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
-            if ImageMetadata().nikonPrivateProperties.contains(name) {
+            if ImageMetadata.nikonPrivateProperties.contains(name) {
                 CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
@@ -178,7 +292,7 @@ extension CGImageMetadata {
 }
 
 extension Dictionary where Key == CFString, Value == Any {
-    // Remove CGImage properties w/o GPS and other private data
+    // Remove GPS and other private metadata
     public func stripPrivateProperties() -> [CFString:Any] {
         var properties = self as [CFString:Any]
         
@@ -190,18 +304,18 @@ extension Dictionary where Key == CFString, Value == Any {
         
         // Get other dictionaries with keys of privata data
         var dictOfKeys = [CFString : [CFString]]()
-        var exifPrivateProperties = ImageMetadata().exifPrivateProperties
-        exifPrivateProperties.append(contentsOf: ImageMetadata().exifExPrivateProperties)
+        var exifPrivateProperties = ImageMetadata.exifPrivateProperties
+        exifPrivateProperties.append(contentsOf: ImageMetadata.exifExPrivateProperties)
         dictOfKeys[kCGImagePropertyExifDictionary] = exifPrivateProperties
-        dictOfKeys[kCGImagePropertyExifAuxDictionary] = ImageMetadata().exifAuxPrivateProperties
-        dictOfKeys[kCGImagePropertyIPTCDictionary] = ImageMetadata().iptcPrivateProperties
-        dictOfKeys[kCGImagePropertyPNGDictionary] = ImageMetadata().pngPrivateProperties
-        dictOfKeys[kCGImagePropertyTIFFDictionary] = ImageMetadata().tiffPrivateProperties
-        dictOfKeys[kCGImagePropertyDNGDictionary] = ImageMetadata().dngPrivateProperties
-        dictOfKeys[kCGImagePropertyCIFFDictionary] = ImageMetadata().ciffPrivateProperties
-        dictOfKeys[kCGImagePropertyMakerCanonDictionary] = ImageMetadata().canonPrivateProperties
-        dictOfKeys[kCGImagePropertyMakerNikonDictionary] = ImageMetadata().nikonPrivateProperties
-
+        dictOfKeys[kCGImagePropertyExifAuxDictionary] = ImageMetadata.exifAuxPrivateProperties
+        dictOfKeys[kCGImagePropertyIPTCDictionary] = ImageMetadata.iptcPrivateProperties
+        dictOfKeys[kCGImagePropertyPNGDictionary] = ImageMetadata.pngPrivateProperties
+        dictOfKeys[kCGImagePropertyTIFFDictionary] = ImageMetadata.tiffPrivateProperties
+        dictOfKeys[kCGImagePropertyDNGDictionary] = ImageMetadata.dngPrivateProperties
+        dictOfKeys[kCGImagePropertyCIFFDictionary] = ImageMetadata.ciffPrivateProperties
+        dictOfKeys[kCGImagePropertyMakerCanonDictionary] = ImageMetadata.canonPrivateProperties
+        dictOfKeys[kCGImagePropertyMakerNikonDictionary] = ImageMetadata.nikonPrivateProperties
+        
         // Loop over the dictionaries
         for dict in dictOfKeys {
             // Check presence of dictionary
@@ -220,7 +334,11 @@ extension Dictionary where Key == CFString, Value == Any {
         }
         return properties
     }
+}
     
+
+// MARK: - Fix Metadata
+extension Dictionary where Key == CFString, Value == Any {
     // Fix image properties from resized/converted image
     mutating func fixContents(from image:CGImage) {
         var metadata = self

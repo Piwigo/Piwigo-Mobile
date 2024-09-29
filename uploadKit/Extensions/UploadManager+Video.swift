@@ -21,6 +21,14 @@ extension UploadManager {
             // Retrieve video data
             let originalVideo = AVAsset(url: originalFileURL)
 
+            // Get creation date from metadata if possible
+            let metadata = originalVideo.metadata
+            if let dateFromMetadata = metadata.creationDate() {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
@@ -45,6 +53,14 @@ extension UploadManager {
 
         // Retrieve video data
         let originalVideo = AVAsset(url: originalFileURL)
+
+        // Get creation date from metadata if possible
+        let metadata = originalVideo.metadata
+        if let dateFromMetadata = metadata.creationDate() {
+            upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+        } else {
+            upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+        }
 
         // Check that the video can be exported
         checkVideoExportability(of: originalVideo, for: upload)
@@ -71,6 +87,21 @@ extension UploadManager {
                 return
             }
             
+            // Get original fileURL
+            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                self.didPrepareVideo(for: upload, error)
+                return
+            }
+
+            // Get creation date from metadata if possible
+            let metadata = originalVideo.metadata
+            if let dateFromMetadata = metadata.creationDate() {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
@@ -81,13 +112,6 @@ extension UploadManager {
                 return
             }
             
-            // Get original fileURL
-            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
-                return
-            }
-
             // Get MIME type
             let fileExt = originalFileURL.pathExtension.lowercased()
             if #available(iOS 14, *) {
@@ -158,6 +182,21 @@ extension UploadManager {
                 return
             }
             
+            // Get original fileURL
+            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                self.didPrepareVideo(for: upload, error)
+                return
+            }
+
+            // Get creation date from metadata if possible
+            let metadata = originalVideo.metadata
+            if let dateFromMetadata = metadata.creationDate() {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Check that the video can be exported
             self.checkVideoExportability(of: originalVideo, for: upload)
         }
@@ -234,7 +273,7 @@ extension UploadManager {
                                                 resultHandler: { [unowned self] avasset, audioMix, info in
             // ====>> For debugging…
 //            if let metadata = avasset?.metadata {
-//                print("=> Metadata: \(metadata)")
+//                print("=> Metadata: \(metadata)\r=> Creation date: \(metadata.creationDate() ?? DateUtilities.unknownDate)")
 //            }
 //            if let creationDate = avasset?.creationDate {
 //                print("=> Creation date: \(creationDate)")
@@ -255,10 +294,10 @@ extension UploadManager {
 //                    let desc = (track.formatDescriptions[i]) as! CMFormatDescription
 //                    // Get String representation of media type (vide, soun, sbtl, etc.)
 //                    var type: String? = nil
-//                    type = self.FourCCString(CMFormatDescriptionGetMediaType(desc))
+//                    type = CMFormatDescriptionGetMediaType(desc).toString()
 //                    // Get String representation media subtype (avc1, aac, tx3g, etc.)
 //                    var subType: String? = nil
-//                    subType = self.FourCCString(CMFormatDescriptionGetMediaSubType(desc))
+//                    subType = CMFormatDescriptionGetMediaSubType(desc).toString()
 //                    // Format string as type/subType
 //                    format.append(contentsOf: "\(type ?? "")/\(subType ?? "")")
 //                    // Comma separate if more than one format description

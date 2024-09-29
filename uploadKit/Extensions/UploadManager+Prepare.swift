@@ -221,7 +221,7 @@ extension UploadManager
             return
         }
 
-        // Retrieve creation date
+        // Retrieve creation date from PHAsset (local time, or UTC time if time zone provided)
         if let creationDate = originalAsset.creationDate {
             upload.creationDate = creationDate.timeIntervalSinceReferenceDate
         } else {
