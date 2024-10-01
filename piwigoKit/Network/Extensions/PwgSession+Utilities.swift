@@ -78,11 +78,17 @@ extension PwgSession {
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
-//        debugPrint("••> Session checked \(Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)) seconds ago.")
+        // Check if the session is still active every 60 seconds or more
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
+        if secondsSinceLastCheck < 60 {
+            completion()
+            return
+        }
+        
+        // Determine if the session is still active
         if #available(iOSApplicationExtension 14.0, *) {
             logger.notice("Start checking session…")
         }
-        // Determine if the session is active and for how long before fetching
         let oldToken = NetworkVars.pwgToken
         PwgSession.shared.sessionGetStatus { username in
             if #available(iOSApplicationExtension 14.0, *) {
