@@ -353,7 +353,7 @@ class PlayerViewControllerCoordinator: NSObject {
                    let fm = FileManager.default
                    let dirURL = self.video.cacheURL.deletingLastPathComponent()
                    if fm.fileExists(atPath: dirURL.path) == false {
-                       print("••> Create directory \(dirURL.path)")
+                       debugPrint("••> Create directory \(dirURL.path)")
                        try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                                    attributes: nil)
                    }
@@ -678,7 +678,7 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else {
             // Other type: username password, client trust...
-            print("Other type: username password, client trust...")
+            debugPrint("Other type: username password, client trust...")
         }
         return true
     }

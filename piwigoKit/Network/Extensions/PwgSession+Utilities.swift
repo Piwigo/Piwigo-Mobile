@@ -141,6 +141,7 @@ extension PwgSession {
                     failure(error)
                 }
             } else {
+                user?.setLastUsedToNow()
                 completion()
             }
         } failure: { error in
@@ -330,9 +331,9 @@ extension PwgSession {
         let encodedImageURL = "\(loginPath)\(prefix)\(cleanPath)"
         #if DEBUG
         if encodedImageURL != originalURL {
-            print("=> originalURL:\(String(describing: originalURL))")
-            print("    encodedURL:\(encodedImageURL)")
-            print("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
+            debugPrint("=> originalURL:\(String(describing: originalURL))")
+            debugPrint("    encodedURL:\(encodedImageURL)")
+            debugPrint("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
         }
         #endif
         return NSURL(string: encodedImageURL)

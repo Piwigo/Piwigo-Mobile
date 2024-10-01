@@ -115,7 +115,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 selectedVideosIDs.remove(image.pwgID)
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
-                    debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
+//                    debugPrint("••> Delete image of album #\(self?.categoryId ?? Int32.min) at \(indexPath)")
                     self?.collectionView?.deleteItems(at: [indexPath])
                 })
             case .move:

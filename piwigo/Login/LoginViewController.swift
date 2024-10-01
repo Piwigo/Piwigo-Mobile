@@ -197,7 +197,7 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = true
         NetworkVars.userStatus = pwgUserStatus.guest
         NetworkVars.usesCommunityPluginV29 = false
-        print(
+        debugPrint(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Check server address and cancel login if address not provided
@@ -345,7 +345,7 @@ class LoginViewController: UIViewController {
     }
 
     func performLogin() {
-        print(
+        debugPrint(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Perform login if username exists
@@ -396,7 +396,7 @@ class LoginViewController: UIViewController {
 
     // Determine true user rights when Community extension installed
     func getCommunityStatus() {
-        print(
+        debugPrint(
             "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         // Community plugin installed?
         if NetworkVars.usesCommunityPluginV29 {
@@ -427,7 +427,7 @@ class LoginViewController: UIViewController {
 
     // Check Piwigo version, get token, available sizes, etc.
     func getSessionStatus() {
-        print(
+        debugPrint(
             "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
@@ -597,7 +597,7 @@ class LoginViewController: UIViewController {
         guard let serverURL = URL(string: serverString) else { return false }
 
         // Is the port provided ?
-//        print("sheme:\(serverURL.scheme), user:\(serverURL.user), pwd:\(serverURL.password), host:\(serverURL.host), port:\(serverURL.port), path:\(serverURL.path)")
+//        debugPrint("sheme:\(serverURL.scheme), user:\(serverURL.user), pwd:\(serverURL.password), host:\(serverURL.host), port:\(serverURL.port), path:\(serverURL.path)")
         if serverURL.port != nil {
             // Port provided => Adopt user choice but check protocol
             // Save username, server address and protocol to disk

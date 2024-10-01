@@ -70,7 +70,7 @@ public class UserProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                print("••> getUserAccount() unresolved error: \(error)")
+                debugPrint("••> getUserAccount() unresolved error: \(error)")
                 return
             }
             
@@ -89,7 +89,7 @@ public class UserProvider: NSObject {
                 guard let server = serverProvider.getServer(inContext: taskContext, atPath: path),
                       let user = NSEntityDescription.insertNewObject(forEntityName: "User",
                                                                      into: taskContext) as? User else {
-                    print(UserError.creationError.localizedDescription)
+                    debugPrint(UserError.creationError.localizedDescription)
                     return
                 }
                 
@@ -99,7 +99,7 @@ public class UserProvider: NSObject {
                     currentUser = user
                 }
                 catch {
-                    print(error.localizedDescription)
+                    debugPrint(error.localizedDescription)
                     taskContext.delete(user)
                 }
             }

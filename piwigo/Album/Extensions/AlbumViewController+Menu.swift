@@ -356,7 +356,7 @@ extension AlbumViewController: ImageHeaderDelegate
             selectedSections[section] = .select
         }
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
+//        debugPrint("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
         
         // Update navigation bar and toolbar
         updateBarsInSelectMode()

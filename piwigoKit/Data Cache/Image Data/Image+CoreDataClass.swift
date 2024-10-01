@@ -326,9 +326,9 @@ public class Image: NSManagedObject {
             do {
                 try fm.removeItem(at: dirURL.appendingPathComponent(ID))
                 try fm.removeItem(at: dirURL.appendingPathComponent(IDopt))
-                print("••> \(size.name) image: \(self.pwgID) removed from cache.")
+                debugPrint("••> \(size.name) image: \(self.pwgID) removed from cache.")
             } catch {
-                print("••> \(size.name) image: \(error.localizedDescription)")
+                debugPrint("••> \(size.name) image: \(error.localizedDescription)")
             }
         }
     }

@@ -111,7 +111,7 @@ extension ImageViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save copied images \(error), \(error.userInfo)")
+                        debugPrint("Could not save copied images \(error), \(error.userInfo)")
                     }
                 }
 
@@ -191,7 +191,7 @@ extension ImageViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save albums after image deletion \(error), \(error.userInfo)")
+                    debugPrint("Could not save albums after image deletion \(error), \(error.userInfo)")
                 }
 
                 // If this image was uploaded with the iOS app,

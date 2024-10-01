@@ -271,8 +271,8 @@ class SettingsViewController: UIViewController {
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
-//        print("=> langCode: ", String(describing: langCode))
-//        print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, AppVars.shared.pwgOneMonth))
+//        debugPrint("=> langCode: ", String(describing: langCode))
+//        debugPrint(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, AppVars.shared.pwgOneMonth))
         let now: Double = Date().timeIntervalSinceReferenceDate
         let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
         if (now > dueDate) && (["ar","id","ko","pt-BR","sv","uk"].contains(langCode)) {

@@ -68,7 +68,7 @@ public struct CategoriesAddJSON: Decodable {
                 errorMessage = "Unexpected error encountered while calling server method with provided parameters."
             }
         } catch let error {
-            print(error.localizedDescription)
+            debugPrint(error.localizedDescription)
         }
     }
 }

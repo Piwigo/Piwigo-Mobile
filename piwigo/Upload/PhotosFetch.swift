@@ -127,7 +127,7 @@ class PhotosFetch: NSObject {
                 }
             }
         @unknown default:
-            print("unknown Photo Library authorization status")
+            debugPrint("unknown Photo Library authorization status")
         }
     }
 

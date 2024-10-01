@@ -138,7 +138,7 @@ class AlbumRenaming: NSObject
                     do {
                         try mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save context, \(error.userInfo)")
+                        debugPrint("Could not save context, \(error.userInfo)")
                     }
                     
                     // Hide HUD

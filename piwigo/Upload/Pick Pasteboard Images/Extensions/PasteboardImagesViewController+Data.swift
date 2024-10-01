@@ -64,7 +64,7 @@ extension PasteboardImagesViewController {
         case .new:
             startPreparation(of: pbObject, at: indexPath)
         default:
-            print("Do nothing")
+            debugPrint("Do nothing")
         }
     }
 
@@ -166,7 +166,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
 
         switch type {
         case .insert:
-            print("••> PasteboardImagesViewController: insert pending upload request…")
+            debugPrint("••> PasteboardImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -181,7 +181,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .delete:
-            print("••> PasteboardImagesViewController: delete pending upload request…")
+            debugPrint("••> PasteboardImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -201,7 +201,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> PasteboardImagesViewController: Unexpected move!")
         case .update:
-            print("••• PasteboardImagesViewController controller:update...")
+            debugPrint("••• PasteboardImagesViewController controller:update...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -218,7 +218,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        print("••• PasteboardImagesViewController controller:didChangeContent...")
+//        debugPrint("••• PasteboardImagesViewController controller:didChangeContent...")
         // Update navigation bar
         DispatchQueue.main.async {
             self.updateNavBar()

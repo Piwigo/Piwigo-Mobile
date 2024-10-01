@@ -161,7 +161,7 @@ public class LocationProvider: NSObject {
                     }
 
                     // Log placemarks[0]
-//                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""), inlandWater:\(inlandWater), ocean:\(ocean)\n")
+//                    debugPrint("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""), inlandWater:\(inlandWater), ocean:\(ocean)\n")
 
                     DispatchQueue.global(qos: .background).async {
                         // Create a private queue context.
@@ -187,7 +187,7 @@ public class LocationProvider: NSObject {
                     }
                 } else {
                     // Did not return place names
-                    print(String(format: "Geocoder: no place mark returned!\n=> %@", error?.localizedDescription ?? ""))
+                    debugPrint(String(format: "Geocoder: no place mark returned!\n=> %@", error?.localizedDescription ?? ""))
                 }
                 semaphore.signal()
             })
@@ -196,7 +196,7 @@ public class LocationProvider: NSObject {
         })
 
         queue.addOperation(operation)
-//        print("===> fetchPlaceName operations:", queue.operationCount)
+//        debugPrint("===> fetchPlaceName operations:", queue.operationCount)
     }
 
 
@@ -215,7 +215,7 @@ public class LocationProvider: NSObject {
             // Create a Location managed object on the private queue context.
             guard let newLocation = NSEntityDescription.insertNewObject(forEntityName: "Location", into: taskContext) as? Location
             else {
-                print(LocationError.creationError.localizedDescription)
+                debugPrint(LocationError.creationError.localizedDescription)
                 return
             }
             
@@ -225,11 +225,11 @@ public class LocationProvider: NSObject {
             }
             catch LocationError.missingData {
                 // Delete invalid Location from the private queue context.
-                print(LocationError.missingData.localizedDescription)
+                debugPrint(LocationError.missingData.localizedDescription)
                 taskContext.delete(newLocation)
             }
             catch {
-                print(error.localizedDescription)
+                debugPrint(error.localizedDescription)
             }
             
             // Save all insertions and deletions from the context to the store.
@@ -238,7 +238,7 @@ public class LocationProvider: NSObject {
                     try taskContext.save()
                 }
                 catch {
-                    print("Error: \(error.localizedDescription)\nCould not save Core Data context.")
+                    debugPrint("Error: \(error.localizedDescription)\nCould not save Core Data context.")
                     return
                 }
                 // Reset the taskContext to free the cache and lower the memory footprint.
@@ -267,7 +267,7 @@ public class LocationProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error as NSError {
-            print("••> Album count not fetched \(error), \(error.userInfo)")
+            debugPrint("••> Album count not fetched \(error), \(error.userInfo)")
         }
         return Int64.zero
     }

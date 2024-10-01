@@ -229,8 +229,8 @@ class AlbumViewController: UIViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("--------------------------------------------------")
-        print("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
+        debugPrint("--------------------------------------------------")
+        debugPrint("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
 
         // Initialise data source
         do {
@@ -239,7 +239,7 @@ class AlbumViewController: UIViewController
             }
             try images.performFetch()
         } catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
         
         // Place search bar in navigation bar of root album
@@ -381,7 +381,7 @@ class AlbumViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("••> viewWillAppear in AlbumViewController: Album #\(categoryId)")
+        debugPrint("••> viewWillAppear in AlbumViewController: Album #\(categoryId)")
         
         // For testing…
 //        timeCounter = CFAbsoluteTimeGetCurrent()
@@ -415,14 +415,14 @@ class AlbumViewController: UIViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("••> viewDidAppear in AlbumViewController: Album #\(categoryId)")
+        debugPrint("••> viewDidAppear in AlbumViewController: Album #\(categoryId)")
         
         // Speed and memory measurements with iPad Pro 11" in debug mode
         /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
         /// hasFavorites  cached —> a very little quicker but less memory impacting (-195 MB transcient allocations for 3020 photos)
         /// placeHolder & size cached —> 0 photo: 526 ms, 24 photos: 585 ms, 3020 photos: 14 586 ms i.e. -6% (memory crash after repeating tests)
 //        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
-//        print("••> completed in \(duration.rounded()) ms")
+//        debugPrint("••> completed in \(duration.rounded()) ms")
 
         // The user may have cleared the cached data
         // Display an empty root album in that case
@@ -635,7 +635,7 @@ class AlbumViewController: UIViewController
                 .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
-                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
+                debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
                 $0.cancel()
             })
         }

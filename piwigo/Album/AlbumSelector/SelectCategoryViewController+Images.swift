@@ -25,7 +25,7 @@ extension SelectCategoryViewController {
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save copied images \(error), \(error.userInfo)")
+                    debugPrint("Could not save copied images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and dismiss album selector
                 self.hideHUD(afterDelay: pwgDelayHUD) {
@@ -108,7 +108,7 @@ extension SelectCategoryViewController {
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save moved images \(error), \(error.userInfo)")
+                    debugPrint("Could not save moved images \(error), \(error.userInfo)")
                 }
 
                 // Hide HUD and dismiss album selector

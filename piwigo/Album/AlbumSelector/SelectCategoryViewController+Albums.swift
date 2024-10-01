@@ -81,7 +81,7 @@ extension SelectCategoryViewController {
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not fetch \(error), \(error.userInfo)")
+                        debugPrint("Could not fetch \(error), \(error.userInfo)")
                     }
 
                     // Close HUD

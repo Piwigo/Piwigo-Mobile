@@ -407,7 +407,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         switch albumType {
         case .pasteboard:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
                 return LocalAlbumsNoDatesTableViewCell()
             }
             let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
@@ -448,7 +448,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Display [+] button at the bottom of section presenting a limited number of albums
         guard let aCollection = assetCollection else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsMoreTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LocalAlbumsMoreTableViewCell!")
                 return LocalAlbumsMoreTableViewCell()
             }
             cell.configure()
@@ -462,7 +462,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         if let startDate = aCollection.startDate, let endDate = aCollection.endDate {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LocalAlbumsTableViewCell!")
                 return LocalAlbumsTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
@@ -476,7 +476,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
                 return LocalAlbumsNoDatesTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos)

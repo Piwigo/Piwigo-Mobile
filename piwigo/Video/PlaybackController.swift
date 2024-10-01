@@ -25,7 +25,7 @@ class PlaybackController {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
         } catch {
-            print(error)
+            debugPrint(error)
         }
     }
     

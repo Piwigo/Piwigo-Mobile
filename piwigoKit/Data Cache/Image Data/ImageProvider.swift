@@ -58,7 +58,7 @@ public class ImageProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error as NSError {
-            print("••> Image count not fetched \(error), \(error.userInfo)")
+            debugPrint("••> Image count not fetched \(error), \(error.userInfo)")
         }
         return Int64.zero
     }
@@ -117,7 +117,7 @@ public class ImageProvider: NSObject {
     public func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
                             sort: pwgImageSort, fromPage page:Int, perPage: Int,
                             completion: @escaping (Set<Int64>, Int64, Error?) -> Void) {
-        print("••> Fetch images of album \(albumId) at page \(page)…")
+        debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
         // Prepare parameters for collecting image data
         var method = pwgCategoriesGetImages
         var paramsDict: [String : Any] = [
@@ -342,7 +342,7 @@ public class ImageProvider: NSObject {
         
         // Get current user object (will create server and user objects if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            print("ImageProvider.importOneBatch() unresolved error: Could not get user object!")
+            debugPrint("ImageProvider.importOneBatch() unresolved error: Could not get user object!")
             return false
         }
         if user.isFault {
@@ -353,7 +353,7 @@ public class ImageProvider: NSObject {
         
         // Get album of selected ID (should exist at this stage)
         guard let album = user.albums?.first(where: {$0.pwgID == albumId}) else {
-            print("ImageProvider.importOneBatch() unresolved error: Could not get album object!")
+            debugPrint("ImageProvider.importOneBatch() unresolved error: Could not get album object!")
             return false
         }
         if album.isFault {
@@ -422,24 +422,24 @@ public class ImageProvider: NSObject {
                     }
                     catch ImageError.missingData {
                         // Could not perform the update
-                        print(ImageError.missingData.localizedDescription)
+                        debugPrint(ImageError.missingData.localizedDescription)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
                 else {
                     // Create a Sizes managed object on the private queue context.
                     guard let sizes = NSEntityDescription.insertNewObject(forEntityName: "Sizes",
                                                                           into: bckgContext) as? Sizes else {
-                        print(ImageError.creationError.localizedDescription)
+                        debugPrint(ImageError.creationError.localizedDescription)
                         return
                     }
 
                     // Create an Image managed object on the private queue context.
                     guard let image = NSEntityDescription.insertNewObject(forEntityName: "Image",
                                                                           into: bckgContext) as? Image else {
-                        print(ImageError.creationError.localizedDescription)
+                        debugPrint(ImageError.creationError.localizedDescription)
                         return
                     }
                     
@@ -460,11 +460,11 @@ public class ImageProvider: NSObject {
                     }
                     catch ImageError.missingData {
                         // Delete invalid Image from the private queue context.
-                        print(ImageError.missingData.localizedDescription)
+                        debugPrint(ImageError.missingData.localizedDescription)
                         bckgContext.delete(image)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
             }

@@ -48,7 +48,7 @@ public struct ImagesUploadAsyncJSON: Decodable {
             guard let _ = data, let _ = data.id else {
                 // The server returned the list of uploaded chunks
                 chunks = try rootContainer.decode(ImagesUploadAsync.self, forKey: .result)
-//                print("    > \(chunks.message ?? "Done - No message!")")
+//                debugPrint("    > \(chunks.message ?? "Done - No message!")")
                 return
             }
         }

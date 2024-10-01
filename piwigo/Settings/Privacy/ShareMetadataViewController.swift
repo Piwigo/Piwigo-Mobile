@@ -169,7 +169,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShareMetadataCell", for: indexPath) as? ShareMetadataCell else {
-            print("Error: tableView.dequeueReusableCell does not return a ShareMetadataCell!")
+            debugPrint("Error: tableView.dequeueReusableCell does not return a ShareMetadataCell!")
             return ShareMetadataCell()
         }
 
@@ -412,7 +412,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         case pwgActivityTypeOther:
             ImageVars.shared.shareMetadataTypeOther = newState
             default:
-                print("Error: Unknown activity \(String(describing: activity))")
+                debugPrint("Error: Unknown activity \(String(describing: activity))")
         }
 
         // Clean up /tmp directory where shared files are temporarily stored
@@ -479,7 +479,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             name = width > 375 ? NSLocalizedString("shareActivityCode_Other>375px", comment: "Share images with other apps")
                                : NSLocalizedString("shareActivityCode_Other", comment: "Share with other apps")
             default:
-                print("Error: Unknown activity \(String(describing: activity))")
+                debugPrint("Error: Unknown activity \(String(describing: activity))")
         }
 
         return name

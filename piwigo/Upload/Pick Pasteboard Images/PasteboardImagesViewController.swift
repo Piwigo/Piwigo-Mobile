@@ -103,7 +103,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         do {
             try uploads.performFetch()
         } catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
 
         // Retrieve pasteboard object indexes and types, then create identifiers

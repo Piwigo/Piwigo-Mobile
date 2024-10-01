@@ -30,8 +30,8 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
     
     // MARK: - Handle Intent
     func handle(intent: AutoUploadIntent, completion: @escaping (AutoUploadIntentResponse) -> Void) {
-        print("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("••> In-app intent starting...")
+        debugPrint("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
+        debugPrint("••> In-app intent starting...")
 
         // Is auto-uploading enabled?
         if !UploadVars.isAutoUploadActive {

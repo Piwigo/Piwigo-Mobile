@@ -153,7 +153,7 @@ extension AlbumViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
+                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and deselect images
                     navigationController?.hideHUD() { [self] in
@@ -227,7 +227,7 @@ extension AlbumViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
+                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
                     updateBarsInSelectMode()
@@ -246,7 +246,7 @@ extension AlbumViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
+                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
                     updateBarsInSelectMode()
@@ -262,7 +262,7 @@ extension AlbumViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save deleted images \(error), \(error.userInfo)")
+                    debugPrint("Could not save deleted images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and deselect images
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -297,7 +297,7 @@ extension AlbumViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save albums after image deletion \(error), \(error.userInfo)")
+                        debugPrint("Could not save albums after image deletion \(error), \(error.userInfo)")
                     }
 
                     // Delete upload requests of images deleted from the Piwigo server
@@ -338,7 +338,7 @@ extension AlbumViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save moved images \(error), \(error.userInfo)")
+                    debugPrint("Could not save moved images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and update buttons
                 navigationController?.hideHUD() { [self] in

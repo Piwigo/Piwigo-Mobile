@@ -299,7 +299,7 @@ extension Dictionary where Key == CFString, Value == Any {
         // Remove GPS dictionary
         if let GPSdata = properties[kCGImagePropertyGPSDictionary] as? [CFString:Any] {
             properties.removeValue(forKey: kCGImagePropertyGPSDictionary)
-            print("=> removed GPS metadata = \(GPSdata)")
+            debugPrint("=> removed GPS metadata = \(GPSdata)")
         }
         
         // Get other dictionaries with keys of privata data
@@ -325,7 +325,7 @@ extension Dictionary where Key == CFString, Value == Any {
                     // Remove private metadata if any
                     if let value = dictData[key] {
                         dictData.removeValue(forKey: key)
-                        print("=> removed private metadata [\(key) : \(value)]")
+                        debugPrint("=> removed private metadata [\(key) : \(value)]")
                     }
                 }
                 // Update properties

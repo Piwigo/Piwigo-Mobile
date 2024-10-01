@@ -70,7 +70,7 @@ extension UploadManager {
         // Determine MD5 checksum of image file to upload
         let error: NSError?
         (upload.md5Sum, error) = fileURL.MD5checksum()
-        print("\(dbg()) MD5: \(String(describing: upload.md5Sum))")
+        debugPrint("\(dbg()) MD5: \(String(describing: upload.md5Sum))")
         if error != nil {
             // Could not determine the MD5 checksum
             failure(error)
@@ -126,9 +126,9 @@ extension UploadManager {
             
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-//            print("\(dbg()) Remaining files in cache: \(leftFiles)")
+//            debugPrint("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
-            print("\(dbg()) could not clear the Uploads folder: \(error)")
+            debugPrint("\(dbg()) could not clear the Uploads folder: \(error)")
         }
 
         // Job done

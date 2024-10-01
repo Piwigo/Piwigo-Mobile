@@ -201,7 +201,7 @@ public class UploadSessions: NSObject {
                 .filter({ $0.taskIdentifier != exceptedTaskID})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
-                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
+                debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
                 $0.cancel()
             })
         }
@@ -225,7 +225,7 @@ public class UploadSessions: NSObject {
 //                .filter({ alreadyUploadedChunks.contains($0.originalRequest?.value(forHTTPHeaderField: UploadVars.HTTPchunk) ?? "")})
 //            // Cancel queued tasks which are useless
 //            tasksToCancel.forEach({
-//                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
+//                debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
 //                $0.cancel()
 //            })
 //        }
@@ -237,20 +237,20 @@ public class UploadSessions: NSObject {
 extension UploadSessions: URLSessionDelegate {
 
 //    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
-//        print("••> The upload session is waiting for connectivity (offline mode)")
+//        debugPrint("••> The upload session is waiting for connectivity (offline mode)")
 //    }
         
 //    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
-//        print("••> The upload session will begin delayed request (back to online)")
+//        debugPrint("••> The upload session will begin delayed request (back to online)")
 //    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        print("••> The upload session has been invalidated")
+        debugPrint("••> The upload session has been invalidated")
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server.")
+        debugPrint("    > Session-level authentication request from the remote server.")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
@@ -299,7 +299,7 @@ extension UploadSessions: URLSessionDelegate {
     }
     
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        print("••> Background session \(session.configuration.identifier ?? "") finished events.")
+        debugPrint("••> Background session \(session.configuration.identifier ?? "") finished events.")
         
         // Execute completion handler, i.e. inform iOS that we collect data returned by Piwigo server
         DispatchQueue.main.async {
@@ -315,7 +315,7 @@ extension UploadSessions: URLSessionDelegate {
 extension UploadSessions: URLSessionTaskDelegate {
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("••> Task-level authentication request from the remote server")
+        debugPrint("••> Task-level authentication request from the remote server")
 
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
@@ -343,7 +343,7 @@ extension UploadSessions: URLSessionTaskDelegate {
         // Get upload info from the task
         // The size of the uploaded image is set in the Content-Length field.
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID) else {
-                print("••> Could not extract HTTP header fields !!!!!!")
+                debugPrint("••> Could not extract HTTP header fields !!!!!!")
                 return
         }
         
@@ -351,8 +351,8 @@ extension UploadSessions: URLSessionTaskDelegate {
         guard let index = uploadCounters.firstIndex(where: { $0.uid == identifier}) else { return }
         uploadCounters[index].bytesSent += bytesSent
         #if DEBUG
-        print("••> task \(task.taskIdentifier) did send \(totalBytesSent) bytes (\(totalBytesExpectedToSend) bytes expected)")
-        print("••> counter: \(uploadCounters[index].bytesSent) bytes sent, \(uploadCounters[index].totalBytes) bytes expected —> \(uploadCounters[index].progress * 100)%")
+        debugPrint("••> task \(task.taskIdentifier) did send \(totalBytesSent) bytes (\(totalBytesExpectedToSend) bytes expected)")
+        debugPrint("••> counter: \(uploadCounters[index].bytesSent) bytes sent, \(uploadCounters[index].totalBytes) bytes expected —> \(uploadCounters[index].progress * 100)%")
         #endif
         let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
                                           "progressFraction" : uploadCounters[index].progress]
@@ -368,28 +368,28 @@ extension UploadSessions: URLSessionTaskDelegate {
         guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
             let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
             let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) else {
-                print("••> Could not extract HTTP header fields !!!!!!")
+                debugPrint("••> Could not extract HTTP header fields !!!!!!")
                 return
         }
 
         #if DEBUG
         // Task did complete without error?
         if let error = error {
-            print("••> Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
+            debugPrint("••> Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
         } else {
-            print("••> Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+            debugPrint("••> Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         }
         #endif
         
         // The below code updates the stored cookie with the pwg_id returned by the server.
         // This allows to check that the upload session was well closed by the server.
         // For example by requesting image properties or an image deletion.
-//        print("\(task.response.debugDescription)")
+//        debugPrint("\(task.response.debugDescription)")
 //        if let requestURL = task.originalRequest?.url,
 //           let cookies = HTTPCookieStorage.shared.cookies(for: requestURL), cookies.count > 0,
 //           var properties = cookies[0].properties {
 //            let oldPwgID = cookies[0].value
-//            print("oldPwgID => \(oldPwgID)")
+//            debugPrint("oldPwgID => \(oldPwgID)")
 //
 //            if let response = task.response as? HTTPURLResponse,
 //               let setCookie = response.allHeaderFields["Set-Cookie"] as? String {
@@ -398,7 +398,7 @@ extension UploadSessions: URLSessionTaskDelegate {
 //                    let newPwgID = strPart2[1].components(separatedBy: " ")[0].drop(while: {$0 == ";"})
 //                    properties.updateValue(newPwgID, forKey: .value)
 //                    if let cookie = HTTPCookie(properties: properties) {
-//                        print("newPwgID => \(newPwgID)")
+//                        debugPrint("newPwgID => \(newPwgID)")
 //                        HTTPCookieStorage.shared.setCookie(cookie)
 //                    }
 //                }
@@ -420,7 +420,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                 }
             }
         default:
-            print("!!! unexpected session identifier !!!")
+            debugPrint("!!! unexpected session identifier !!!")
         }
     }
 }
@@ -435,15 +435,15 @@ extension UploadSessions: URLSessionDataDelegate {
             let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
             let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) else {
                 #if DEBUG
-                print("••> Could not extract HTTP header fields !!!!!!")
+                debugPrint("••> Could not extract HTTP header fields !!!!!!")
                 #endif
                 return
         }
         
         #if DEBUG
-        print("••> Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        debugPrint("••> Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         let dataStr = String(decoding: data, as: UTF8.self)
-        print("••> JSON: \(dataStr)")
+        debugPrint("••> JSON: \(dataStr)")
         #endif
         
         switch dataTask.taskDescription {

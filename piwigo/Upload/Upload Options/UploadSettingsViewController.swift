@@ -115,7 +115,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         switch row {
         case 0 /* Strip private Metadata? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             // See https://iosref.com/res
@@ -134,7 +134,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 1 /* Resize Before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
@@ -158,7 +158,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 2 /* Upload Photo Max Size */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
             }
             cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
@@ -169,7 +169,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
         case 3 /* Upload Max Video Size */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
             }
             cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
@@ -180,7 +180,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 4 /* Compress before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             // See https://iosref.com/res
@@ -209,7 +209,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 5 /* Image Quality slider */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                 return SliderTableViewCell()
             }
             // Slider value
@@ -227,7 +227,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 6 /* Prefix Filename Before Upload switch */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             // See https://iosref.com/res
@@ -260,7 +260,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 7 /* Filename prefix? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                 return TextFieldTableViewCell()
             }
             // See https://iosref.com/res
@@ -282,7 +282,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             
         case 8 /* Delete image after upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             // See https://iosref.com/res

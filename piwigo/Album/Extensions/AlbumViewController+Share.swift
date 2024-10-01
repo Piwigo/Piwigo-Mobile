@@ -95,7 +95,7 @@ extension AlbumViewController
             }
         }
 //        let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
-//        print("••> completed in \(duration.rounded()) ms")
+//        debugPrint("••> completed in \(duration.rounded()) ms")
 
         // Close HUD if needed
         DispatchQueue.main.async {

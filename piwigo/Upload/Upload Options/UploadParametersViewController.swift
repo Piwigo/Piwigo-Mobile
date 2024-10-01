@@ -134,7 +134,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         switch EditImageDetailsOrder(rawValue: row) {
         case .imageName:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as? EditImageTextFieldTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
             cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title:")),
@@ -147,7 +147,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         case .author:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "author", for: indexPath) as? EditImageTextFieldTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
                 return EditImageTextFieldTableViewCell()
             }
             cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_author", comment: "Author:")),
@@ -160,7 +160,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         case .privacy:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "privacy", for: indexPath) as? EditImagePrivacyTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
                 return EditImagePrivacyTableViewCell()
             }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
@@ -170,7 +170,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         case .tags:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
                 return EditImageTagsTableViewCell()
             }
             cell.config(withList: commonTags,
@@ -180,7 +180,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         case .comment:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                 return EditImageTextViewTableViewCell()
             }
             cell.config(withText: NSAttributedString(string: commonComment),

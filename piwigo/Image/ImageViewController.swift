@@ -241,7 +241,7 @@ class ImageViewController: UIViewController {
     }
     
     deinit {
-        print("••> ImageViewController is being deinitialized.")
+//        debugPrint("••> ImageViewController is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
@@ -723,7 +723,7 @@ class ImageViewController: UIViewController {
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
     func setEnableStateOfButtons(_ state: Bool) {
-        print("••> \(state ? "Enable" : "Disable") buttons")
+//        debugPrint("••> \(state ? "Enable" : "Disable") buttons")
         actionBarButton?.isEnabled = state
         shareBarButton.isEnabled = state
         moveBarButton.isEnabled = state
@@ -883,7 +883,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         }
         
         // Set title and buttons
-        print("••> Did finish animating page view controller for image at index \(indexPath)")
+//        debugPrint("••> Did finish animating page view controller for image at index \(indexPath)")
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
@@ -910,7 +910,7 @@ extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
     func imageDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> ImageDetailViewController? {
-        print("••> Create page view controller for image #\(imageData.pwgID) at index \(indexPath)")
+//        debugPrint("••> Create page view controller for image #\(imageData.pwgID) at index \(indexPath)")
         guard let imageDVC = storyboard?.instantiateViewController(withIdentifier: "ImageDetailViewController") as? ImageDetailViewController
         else { return nil }
 
@@ -922,7 +922,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     
     // Create view controller for presenting the video at the provided index
     func videoDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> VideoDetailViewController? {
-        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
+//        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
         guard let videoDVC = storyboard?.instantiateViewController(withIdentifier: "VideoDetailViewController") as? VideoDetailViewController
         else { return nil }
 

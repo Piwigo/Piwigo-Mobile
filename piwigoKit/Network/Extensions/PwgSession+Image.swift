@@ -43,7 +43,7 @@ extension PwgSession
             if imageSize == .fullRes {
                 let cachedFileSize = download.fileURL.fileSize
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
-//                print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
+//                debugPrint("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
                 if diff < 0.1 {     // i.e. 10%
                     completion(download.fileURL)
                     return

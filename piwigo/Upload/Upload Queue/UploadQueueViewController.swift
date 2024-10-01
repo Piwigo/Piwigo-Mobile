@@ -86,7 +86,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             try uploads.performFetch()
         }
         catch {
-            print("••> Could not fetch uploads: \(error)")
+            debugPrint("••> Could not fetch uploads: \(error)")
         }
     }
 
@@ -294,7 +294,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     private func configDataSource() -> DataSource {
         let dataSource = DataSource(tableView: queueTableView) { [self] (tableView, indexPath, objectID) -> UITableViewCell? in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
                 return UploadImageTableViewCell()
             }
             guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload else {
@@ -349,7 +349,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "UploadImageHeaderView") as? UploadImageHeaderView else {
-            print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
+            debugPrint("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
             return UploadImageHeaderView()
         }
         let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
@@ -415,7 +415,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
            let progressFraction = notification.userInfo?["progressFraction"] as? Float,
            let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
            let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
-            print("••> progressFraction = \(progressFraction) in applyUploadProgress()")
+            debugPrint("••> progressFraction = \(progressFraction) in applyUploadProgress()")
             cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }

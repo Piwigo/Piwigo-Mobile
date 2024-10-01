@@ -269,7 +269,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             try recentAlbums.performFetch()
             try albums.performFetch()
         } catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
 
         // Button for returning to albums/images collections
@@ -582,7 +582,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
+            debugPrint("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
             return CategoryTableViewCell()
         }
 
@@ -736,7 +736,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
-            print("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
+            debugPrint("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
             if albumData.pwgID == inputAlbum.pwgID {
                 return false
             }
@@ -1041,7 +1041,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             do {
                 try self.mainContext.save()
             } catch let error as NSError {
-                print("Could not fetch \(error), \(error.userInfo)")
+                debugPrint("Could not fetch \(error), \(error.userInfo)")
             }
             // Dismiss the view
             self.dismiss(animated: true, completion: {})

@@ -140,7 +140,7 @@ class LocalImagesViewController: UIViewController
         do {
             try uploads.performFetch()
         } catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
                                                                                         
         // Sort images in background

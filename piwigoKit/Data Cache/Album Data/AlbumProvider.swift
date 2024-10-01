@@ -79,7 +79,7 @@ public class AlbumProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                print("••> getAlbum() unresolved error: \(error)")
+                debugPrint("••> getAlbum() unresolved error: \(error)")
                 return
             }
             
@@ -91,7 +91,7 @@ public class AlbumProvider: NSObject {
                 // Get current User object (will create Server object if needed)
                 guard let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                       into: taskContext) as? Album else {
-                    print(AlbumError.creationError.localizedDescription)
+                    debugPrint(AlbumError.creationError.localizedDescription)
                     return
                 }
                 
@@ -102,7 +102,7 @@ public class AlbumProvider: NSObject {
                     currentAlbum = album
                 }
                 catch {
-                    print(error.localizedDescription)
+                    debugPrint(error.localizedDescription)
                     taskContext.delete(album)
                 }
                 
@@ -131,7 +131,7 @@ public class AlbumProvider: NSObject {
                             thumbnailSize: pwgImageSize, completion: @escaping (Error?) -> Void) {
         // Smart album requested?
         if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
-        print("••> Fetch albums in parent with ID: \(parentId)")
+        debugPrint("••> Fetch albums in parent with ID: \(parentId)")
         
         // Prepare parameters for collecting recursively album data
         let paramsDict: [String : Any] = [
@@ -189,7 +189,7 @@ public class AlbumProvider: NSObject {
     
     private func fetchCommunityAlbums(inParentWithId parentId: Int32, recursively: Bool = false,
                                       albums: [CategoryData], completion: @escaping (Error?) -> Void) {
-        print("••> Fetch Community albums in parent with ID: \(parentId)")
+        debugPrint("••> Fetch Community albums in parent with ID: \(parentId)")
         // Prepare parameters
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
                                           "recursive" : recursively]
@@ -208,7 +208,7 @@ public class AlbumProvider: NSObject {
                 if albumsJSON.errorCode != 0 {
                     let error = PwgSession.shared.localizedError(for: albumsJSON.errorCode,
                                                                  errorMessage: albumsJSON.errorMessage)
-                    print("••> fetchCommunityAlbums error: \(error as NSError)")
+                    debugPrint("••> fetchCommunityAlbums error: \(error as NSError)")
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
@@ -316,7 +316,7 @@ public class AlbumProvider: NSObject {
 
         // Get current user object (will create server and user objects if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
-            print("AlbumProvider.importOneBatch() unresolved error: Could not get user object!")
+            debugPrint("AlbumProvider.importOneBatch() unresolved error: Could not get user object!")
             return (success, albumToDeleteIDs)
         }
         if user.isFault {
@@ -397,17 +397,17 @@ public class AlbumProvider: NSObject {
                     }
                     catch AlbumError.missingData {
                         // Could not perform the update
-                        print(AlbumError.missingData.localizedDescription)
+                        debugPrint(AlbumError.missingData.localizedDescription)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
                 else {
                     // Create an Album managed object on the private queue context.
                     guard let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                           into: bckgContext) as? Album else {
-                        print(AlbumError.creationError.localizedDescription)
+                        debugPrint(AlbumError.creationError.localizedDescription)
                         return
                     }
                     
@@ -422,11 +422,11 @@ public class AlbumProvider: NSObject {
                     }
                     catch AlbumError.missingData {
                         // Delete invalid Album from the private queue context.
-                        print(AlbumError.missingData.localizedDescription)
+                        debugPrint(AlbumError.missingData.localizedDescription)
                         bckgContext.delete(album)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
             }
@@ -443,7 +443,7 @@ public class AlbumProvider: NSObject {
                     // Delete albums not returned by the fetch
                     let albumsToDelete = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID)})
                     albumsToDelete.forEach { album in
-                        print("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
+                        debugPrint("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
                         bckgContext.delete(album)
                     }
 
@@ -510,7 +510,7 @@ public class AlbumProvider: NSObject {
                   let parent = getAlbum(ofUser: user, withId: parentID),
                   let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                   into: bckgContext) as? Album else {
-                print(AlbumError.creationError.localizedDescription)
+                debugPrint(AlbumError.creationError.localizedDescription)
                 return
             }
             
@@ -541,11 +541,11 @@ public class AlbumProvider: NSObject {
             }
             catch AlbumError.missingData {
                 // Delete invalid Album from the private queue context.
-                print(AlbumError.missingData.localizedDescription)
+                debugPrint(AlbumError.missingData.localizedDescription)
                 bckgContext.delete(album)
             }
             catch {
-                print(error.localizedDescription)
+                debugPrint(error.localizedDescription)
             }
             
             // Save all insertions from the context to the store.
@@ -620,7 +620,7 @@ public class AlbumProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error as NSError {
-            print("••> Album count not fetched \(error), \(error.userInfo)")
+            debugPrint("••> Album count not fetched \(error), \(error.userInfo)")
         }
         return Int64.zero
     }

@@ -77,7 +77,7 @@ extension UIImage {
             // Crop image
             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
 //            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
-//            print("   processed attention based saliency in \(round(diff*10.0)/10.0) ms")
+//            debugPrint("   processed attention based saliency in \(round(diff*10.0)/10.0) ms")
             return UIImage(cgImage:croppedImage)
         }
 
@@ -91,7 +91,7 @@ extension UIImage {
             // Crop image
             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
 //            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
-//            print("   processed objectness based saliency in \(round(diff*10.0)/10.0) ms")
+//            debugPrint("   processed objectness based saliency in \(round(diff*10.0)/10.0) ms")
             return UIImage(cgImage:croppedImage)
         }
         return nil

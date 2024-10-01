@@ -14,7 +14,7 @@ extension UploadManager
 {
     // MARK: - Prepare Image/Video
     func prepare(_ upload: Upload) -> Void {
-        print("\(dbg()) prepare \(upload.objectID.uriRepresentation())")
+        debugPrint("\(dbg()) prepare \(upload.objectID.uriRepresentation())")
 
         // Update upload status
         isPreparing = true
@@ -141,7 +141,7 @@ extension UploadManager
             if NetworkVars.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                print("\(dbg()) converting photo \(upload.fileName)…")
+                debugPrint("\(dbg()) converting photo \(upload.fileName)…")
                 
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
@@ -177,7 +177,7 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
-                print("\(dbg()) preparing video \(upload.fileName)…")
+                debugPrint("\(dbg()) preparing video \(upload.fileName)…")
 
                 // Launch preparation job
                 prepareVideo(atURL: fileURL, for: upload)
@@ -188,7 +188,7 @@ extension UploadManager
             if NetworkVars.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                print("\(dbg()) converting video \(upload.fileName)…")
+                debugPrint("\(dbg()) converting video \(upload.fileName)…")
 
                 // Launch conversion job
                 convertVideo(atURL: fileURL, for: upload)
@@ -318,7 +318,7 @@ extension UploadManager
             if NetworkVars.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                print("\(dbg()) converting photo \(upload.fileName)…")
+                debugPrint("\(dbg()) converting photo \(upload.fileName)…")
                 
                 // Launch preparation job
                 self.convertImage(atURL: uploadFileURL, for: upload)
@@ -337,7 +337,7 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
-                print("\(dbg()) preparing video \(upload.fileName)…")
+                debugPrint("\(dbg()) preparing video \(upload.fileName)…")
                 
                 // Launch preparation job
                 self.prepareVideo(ofAsset: originalAsset, for: upload)
@@ -347,7 +347,7 @@ extension UploadManager
             if NetworkVars.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                print("\(dbg()) converting video \(upload.fileName)…")
+                debugPrint("\(dbg()) converting video \(upload.fileName)…")
                 
                 // Launch conversion job
                 self.convertVideo(ofAsset: originalAsset, for: upload)

@@ -12,11 +12,11 @@ import Foundation
 extension PwgSession: URLSessionDelegate {
 
 //    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
-//        print("    > The upload session is waiting for connectivity (offline mode)")
+//        debugPrint("    > The upload session is waiting for connectivity (offline mode)")
 //    }
         
 //    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
-//        print("    > The upload session will begin delayed request (back to online)")
+//        debugPrint("    > The upload session will begin delayed request (back to online)")
 //    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {

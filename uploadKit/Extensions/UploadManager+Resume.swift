@@ -33,7 +33,7 @@ extension UploadManager
             try completed.performFetch()
         }
         catch {
-            print("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error)")
         }
 
         // Get active upload tasks
@@ -46,15 +46,15 @@ extension UploadManager
                     guard let objectURIstr = task.originalRequest?
                         .value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
-                        print("\(self.dbg()) task \(task.taskIdentifier) | no object URI!")
+                        debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
                     guard let uploadID = self.uploadProvider.bckgContext.persistentStoreCoordinator?
                         .managedObjectID(forURIRepresentation: objectURI) else {
-                        print("\(self.dbg()) task \(task.taskIdentifier) | no objectID!")
+                        debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
-                    print("\(self.dbg()) is uploading \(uploadID)")
+                    debugPrint("\(self.dbg()) is uploading \(uploadID)")
                     self.isUploading.insert(uploadID)
                     
                 default:
@@ -62,8 +62,8 @@ extension UploadManager
                 }
             }
             
-            print("\(self.dbg()) \((self.uploads.fetchedObjects ?? []).count) pending upload requests in cache")
-            print("\(self.dbg()) \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
+            debugPrint("\(self.dbg()) \((self.uploads.fetchedObjects ?? []).count) pending upload requests in cache")
+            debugPrint("\(self.dbg()) \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
             // Resume operations
             self.resumeOperations()
         }
@@ -84,7 +84,7 @@ extension UploadManager
                 UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                print("\(dbg()) \(assetsToDelete.count) upload requests should be deleted")
+                debugPrint("\(dbg()) \(assetsToDelete.count) upload requests should be deleted")
                 deleteAssets(associatedToUploads: assetsToDelete)
             }
         }

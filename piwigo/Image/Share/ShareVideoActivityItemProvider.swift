@@ -201,9 +201,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // For debugging
 //        let commonMetadata = asset.commonMetadata
-//        print("===>> Common Metadata: \(commonMetadata)")
+//        debugPrint("===>> Common Metadata: \(commonMetadata)")
 //        let allMetadata = asset.metadata
-//        print("===>> All Metadata: \(allMetadata)")
+//        debugPrint("===>> All Metadata: \(allMetadata)")
 
         if !asset.metadata.containsPrivateMetadata() {
             // Notify the delegate on the main thread to show how it makes progress.
