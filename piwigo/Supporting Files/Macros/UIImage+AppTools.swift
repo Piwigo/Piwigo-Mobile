@@ -19,12 +19,12 @@ extension UIImage {
         return nil
         #else
         // Check that it is possible to perform a saliency request
-        // by checking if it is possible to create a context from the image.
+        // by checking if it is possible to create a CGImaage from the image.
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let imageData = self.jpegData(compressionQuality: 1.0),
               let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
               let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
-              imageRef.hasCGContextSupportedPixelFormat,
+              ImageUtilities.supportsPixelFormat(ofCGImage: imageRef),
               let cgImage = self.cgImage
         else {
             return nil

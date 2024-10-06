@@ -220,8 +220,31 @@ class ImageUtilities: NSObject {
         }
         return Date(timeIntervalSinceReferenceDate: AppVars.shared.dateOfFirstOptImageV323)
     }()
+    
+    static func optimumSize(ofImage image: UIImage, forPointSize pointSize: CGSize) -> CGSize? {
+        // Check sizes
+        if image.size.width < 1 || image.size.height < 1 { return nil }
+        if pointSize.width < 1 || pointSize.height < 1 { return nil }
+        
+        // Return reduced size or nil if no downsampling should be performed
+        return reducedSize(from: image.size, to: pointSize)
+    }
+        
+    static func reducedSize(from originalSize: CGSize, to pointSize: CGSize) -> CGSize? {
+        // Wanted size too small?
+        if pointSize.width < 1 || pointSize.height < 1 { return nil }
+        
+        // Image smaller than pointSize?
+        let scaleWidth = originalSize.width / pointSize.width
+        let scaleHeight = originalSize.height / pointSize.height
+        let scale = min(scaleWidth, scaleHeight)
+        if scale <= 1.0 { return nil }
+        
+        // Image size larger than pointSize
+        return CGSizeMake(originalSize.width / scale, originalSize.height / scale)
+    }
 
-    static func downsample(imageAt imageURL: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage {
+    static func downsample(imageAt imageURL: URL, to pointSize: CGSize) -> UIImage {
         // Optimised image available?
         let filePath = imageURL.path + CacheVars.shared.optImage
         if let optImage = UIImage(contentsOfFile: filePath) {
@@ -239,74 +262,94 @@ class ImageUtilities: NSObject {
             }
         }
         
-        // Check that the image can be properly downsampled by checking its pixel format.
-        let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard pointSize.equalTo(CGSize.zero) == false,
-              let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions),
-              let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
-              imageRef.hasCGContextSupportedPixelFormat,
-              let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale)
+        // Downsample and save the returned thumbnail if necessary
+        if #available(iOS 15, *) {
+            // Retrieve image
+            guard let image = UIImage(contentsOfFile: imageURL.path)
+            else {
+                // Delete corrupted cached image file if any
+                try? FileManager.default.removeItem(at: imageURL)
+                return UIImage(named: "unknownImage")!
+            }
+            // Downsample image if needed
+            guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+                  let downsampledImage = image.preparingThumbnail(of: optSize)
+            else {
+                return image
+            }
+            // Save the downsampled image in cache
+            saveDownsampledImage(downsampledImage, atPath: filePath)
+            return downsampledImage
+        }
         else {
-            return couldNotDownsample(imageAt: imageURL)
+            // Retrieve the image source
+            let options = [kCGImageSourceShouldCache: false] as CFDictionary
+            guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, options),
+                  let downsampledImage = downsampledImage(from: imageSource, to: pointSize)
+            else {
+                // Can we use the downloaded file?
+                if let image = UIImage(contentsOfFile: imageURL.path) {
+                    return image
+                } else {
+                    // Delete corrupted cached image file
+                    try? FileManager.default.removeItem(at: imageURL)
+                    return UIImage(named: "unknownImage")!
+                }
+            }
+            saveDownsampledImage(downsampledImage, atPath: filePath)
+            return downsampledImage
         }
-        
-        // Save image in cache
-        saveDownsampledImage(downsampledImage, atPath: filePath)
-        return downsampledImage
     }
     
-    static func downsample(image: UIImage, to pointSize: CGSize, scale: CGFloat) -> UIImage {
-        let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard pointSize.equalTo(CGSize.zero) == false,
-              let imageData = image.jpegData(compressionQuality: 1.0),
-              let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
-              let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
-              imageRef.hasCGContextSupportedPixelFormat,
-              let downsampledImage = downsampledImage(from: imageSource, to: pointSize, scale: scale) else {
-            return image
-        }
-        return downsampledImage
-    }
-    
-    static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
-        // The default display scale for a trait collection is 0.0 (indicating unspecified).
-        // We therefore adopt a scale of 1.0 when the display scale is unspecified.
-        let options = [kCGImagePropertyPixelWidth: true,
-                      kCGImagePropertyPixelHeight: true] as CFDictionary
-        var maxPixelSize = Float(max(pointSize.width, pointSize.height) * max(scale, 1.0))
-        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, options) as? [CFString : CFNumber],
-           let width = imageMetadata[kCGImagePropertyPixelWidth] as? Float,
-           let height = imageMetadata[kCGImagePropertyPixelHeight] as? Float,
-           width > 1, height > 1 {
-            if width > height {
-                maxPixelSize *= width / height
-            } else {
-                maxPixelSize *= height / width
+    static func downsample(image: UIImage, to pointSize: CGSize) -> UIImage {
+        // Downsample image if needed
+        if #available(iOS 15, *) {
+            if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+               let downsampledImage = image.preparingThumbnail(of: optSize) {
+                return downsampledImage
+            }
+        } else {
+            // Fallback on earlier versions
+            let options = [kCGImageSourceShouldCache: false] as CFDictionary
+            if let imageData = image.jpegData(compressionQuality: 1.0),
+               let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
+               let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
+                return downsampledImage
             }
         }
-        let downsampleOptions = [kCGImageSourceCreateThumbnailFromImageAlways: true,
-                                         kCGImageSourceShouldCacheImmediately: true,
-                                   kCGImageSourceCreateThumbnailWithTransform: true,
-                                          kCGImageSourceThumbnailMaxPixelSize: maxPixelSize] as [CFString : Any] as CFDictionary
+        return image
+    }
+    
+    static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize) -> UIImage? {
+        // Check that it is possible to downsample the image
+        // by checking if it is possible to create a CGImaage from the image.
+        let index = CGImageSourceGetPrimaryImageIndex(imageSource)
+        let options = [kCGImageSourceShouldCache: false,
+                       kCGImagePropertyPixelWidth: true,
+                       kCGImagePropertyPixelHeight: true] as CFDictionary
+        if let imageRef = CGImageSourceCreateImageAtIndex(imageSource, index, options),
+           supportsPixelFormat(ofCGImage: imageRef) == false {
+            return nil
+        }
         
-        if let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions as CFDictionary) {
-            return UIImage(cgImage: downsampledImage)
+        // Downsample image if needed
+        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, index, options) as? [CFString : CFNumber],
+           let width = imageMetadata[kCGImagePropertyPixelWidth] as? CGFloat,
+           let height = imageMetadata[kCGImagePropertyPixelHeight] as? CGFloat,
+           let size = reducedSize(from: CGSizeMake(width, height), to: pointSize) {
+            let maxPixelSize = max(size.width, size.height)
+            let downsampleOptions = [kCGImageSourceShouldAllowFloat              : true,
+                                     kCGImageSourceShouldCacheImmediately        : true,
+                                     kCGImageSourceCreateThumbnailWithTransform  : true,
+                                     kCGImageSourceCreateThumbnailFromImageAlways: true,
+                                     kCGImageSourceThumbnailMaxPixelSize         : maxPixelSize] as [CFString : Any]
+            let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, index, downsampleOptions as CFDictionary)
+            return downsampledImage == nil ? nil : UIImage(cgImage: downsampledImage!)
         }
         return nil
     }
     
-    static func couldNotDownsample(imageAt imageURL: URL) -> UIImage {
-        // Can we use the downloaded file?
-        if let image = UIImage(contentsOfFile: imageURL.path) {
-            return image
-        } else {
-            // Delete corrupted cached image file
-            try? FileManager.default.removeItem(at: imageURL)
-            return UIImage(named: "unknownImage")!
-        }
-    }
-    
-    static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
+    private static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
         let fm = FileManager.default
         try? fm.removeItem(atPath: filePath)
         if #available(iOS 17, *) {
@@ -323,6 +366,65 @@ class ImageUtilities: NSObject {
             } catch {
                 debugPrint(error.localizedDescription)
             }
+        }
+    }
+    
+    // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html#//apple_ref/doc/uid/TP30001066-CH203-BCIBHHBB
+    @available(iOS, introduced: 12.0, deprecated: 15.0, message: "")
+    public static func supportsPixelFormat(ofCGImage image: CGImage) -> Bool {
+        guard let colorSpace = image.colorSpace else {
+          return false
+        }
+        #if os(iOS) || os(watchOS) || os(tvOS)
+        let iOS = true
+        #else
+        let iOS = false
+        #endif
+
+        #if os(OSX)
+        let macOS = true
+        #else
+        let macOS = false
+        #endif
+        
+        switch (colorSpace.model, image.bitsPerPixel, image.bitsPerComponent,
+                image.alphaInfo, image.bitmapInfo.contains(.floatComponents)) {
+        case (.unknown, 8, 8, .alphaOnly, _):
+            return macOS || iOS
+        case (.monochrome, 8, 8, .none, _):
+            return macOS || iOS
+        case (.monochrome, 8, 8, .alphaOnly, _):
+            return macOS || iOS
+        case (.monochrome, 16, 16, .none, _):
+            return macOS
+        case (.monochrome, 32, 32, .none, true):
+            return macOS
+        case (.rgb, 16, 5, .noneSkipFirst, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .noneSkipFirst, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .noneSkipLast, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .premultipliedFirst, _):
+            return macOS || iOS
+        case (.rgb, 32, 8, .premultipliedLast, _):
+            return macOS || iOS
+        case (.rgb, 64, 16, .premultipliedLast, _):
+            return macOS
+        case (.rgb, 64, 16, .noneSkipLast, _):
+            return macOS
+        case (.rgb, 128, 32, .noneSkipLast, true):
+            return macOS
+        case (.rgb, 128, 32, .premultipliedLast, true):
+            return macOS
+        case (.cmyk, 32, 8, .none, _):
+            return macOS
+        case (.cmyk, 64, 16, .none, _):
+            return macOS
+        case (.cmyk, 128, 32, .none, true):
+            return macOS
+        default:
+            return false
         }
     }
     
@@ -482,66 +584,5 @@ class ImageUtilities: NSObject {
             pwgURL = imageURL
         }
         return pwgURL as URL?
-    }
-}
-
-
-// MARK: - Supported Pixel Formats
-/// https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html#//apple_ref/doc/uid/TP30001066-CH203-BCIBHHBB
-extension CGImage {
-    public var hasCGContextSupportedPixelFormat: Bool {
-        guard let colorSpace = self.colorSpace else {
-          return false
-        }
-        #if os(iOS) || os(watchOS) || os(tvOS)
-        let iOS = true
-        #else
-        let iOS = false
-        #endif
-
-        #if os(OSX)
-        let macOS = true
-        #else
-        let macOS = false
-        #endif
-        
-        switch (colorSpace.model, bitsPerPixel, bitsPerComponent, alphaInfo, bitmapInfo.contains(.floatComponents)) {
-        case (.unknown, 8, 8, .alphaOnly, _):
-            return macOS || iOS
-        case (.monochrome, 8, 8, .none, _):
-            return macOS || iOS
-        case (.monochrome, 8, 8, .alphaOnly, _):
-            return macOS || iOS
-        case (.monochrome, 16, 16, .none, _):
-            return macOS
-        case (.monochrome, 32, 32, .none, true):
-            return macOS
-        case (.rgb, 16, 5, .noneSkipFirst, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .noneSkipFirst, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .noneSkipLast, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .premultipliedFirst, _):
-            return macOS || iOS
-        case (.rgb, 32, 8, .premultipliedLast, _):
-            return macOS || iOS
-        case (.rgb, 64, 16, .premultipliedLast, _):
-            return macOS
-        case (.rgb, 64, 16, .noneSkipLast, _):
-            return macOS
-        case (.rgb, 128, 32, .noneSkipLast, true):
-            return macOS
-        case (.rgb, 128, 32, .premultipliedLast, true):
-            return macOS
-        case (.cmyk, 32, 8, .none, _):
-            return macOS
-        case (.cmyk, 64, 16, .none, _):
-            return macOS
-        case (.cmyk, 128, 32, .none, true):
-            return macOS
-        default:
-            return false
-        }
     }
 }
