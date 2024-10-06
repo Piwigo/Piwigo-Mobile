@@ -19,8 +19,8 @@ class ImagePreviewViewController: UIViewController
         super.init(nibName: nil, bundle: nil)
         
         // Retrieve image
-        let viewSize = view.bounds.size
-        let scale = view.traitCollection.displayScale
+        let scale = max(view.traitCollection.displayScale, 1.0)
+        let viewSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
@@ -31,7 +31,7 @@ class ImagePreviewViewController: UIViewController
         // Check if we already have the high-resolution image in cache
         if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
             // Show high-resolution image in cache
-            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize, scale: scale)
+            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize)
             setImageView(with: cachedImage)
         } else {
             // Display thumbnail image which should be in cache
@@ -48,9 +48,9 @@ class ImagePreviewViewController: UIViewController
 //                        // Show download progress
 //                        self.progressView.progress = fractionCompleted
 //                    }
-                } completion: { cachedImageURL in
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
-                    DispatchQueue.main.async {
+                } completion: { [unowned self] cachedImageURL in
+                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize)
+                    DispatchQueue.main.async { [self] in
                         // Hide progress view
 //                        self.progressView.isHidden = true
                         // Replace thumbnail with high-resolution image

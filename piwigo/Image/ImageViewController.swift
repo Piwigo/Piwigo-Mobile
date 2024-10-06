@@ -200,7 +200,7 @@ class ImageViewController: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { [self] context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Update image detail view
             updateNavBar()
             setTitleViewFromImageData()
@@ -344,9 +344,9 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            PwgSession.checkSession(ofUser: user) { [self] in
+            PwgSession.checkSession(ofUser: user) { [unowned self] in
                 let imageID = imageData.pwgID
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
+                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
                     DispatchQueue.main.async { [self] in
                         // Look for the corresponding view controller
                         guard let vcs = self.pageViewController?.viewControllers else { return }
@@ -381,13 +381,13 @@ class ImageViewController: UIViewController {
                             }
                         }
                     }
-                } failure: { error in
+                } failure: { [self] error in
                     // Display error only when image data is incomplete
                     if isIncomplete {
                         self.retrieveImageDataError(error)
                     }
                 }
-            } failure: { [self] error in
+            } failure: { [unowned self] error in
                 // Don't display an error if there is no Internet connection
                 if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
                     return
@@ -419,11 +419,11 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        PwgSession.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
-                } failure: { error in
+                } failure: { [self] error in
                     // Session logout required?
                     if let pwgError = error as? PwgSessionError,
                        [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -435,7 +435,7 @@ class ImageViewController: UIViewController {
                     // Statistics not updated ► No error reported
                 }
             }
-        } failure: { error in
+        } failure: { [unowned self] error in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]

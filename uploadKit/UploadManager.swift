@@ -103,7 +103,7 @@ public class UploadManager: NSObject {
         // Update value
         nberOfUploadsToComplete = (uploads.fetchedObjects ?? []).count
         // Update badge and default album view button
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async { [self] in
             // Update app badge and button of root album (or default album)
             let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
             NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)

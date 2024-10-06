@@ -265,7 +265,7 @@ class AppLockViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
 
         // Update the constraints on orientation change
-        coordinator.animate(alongsideTransition: { _ in
+        coordinator.animate(alongsideTransition: { [self] _ in
             self.configConstraints()
         })
     }

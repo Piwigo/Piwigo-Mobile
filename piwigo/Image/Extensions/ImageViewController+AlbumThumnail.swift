@@ -17,7 +17,7 @@ extension ImageViewController
         let action = UIAction(title: NSLocalizedString("imageOptions_setAlbumImage",
                                                        comment:"Set as Album Thumbnail"),
                               image: UIImage(systemName: "rectangle.and.paperclip"),
-                              handler: { [unowned self] _ in
+                              handler: { [self] _ in
             // Present album selector for setting album thumbnail
             self.setAsAlbumImage()
         })

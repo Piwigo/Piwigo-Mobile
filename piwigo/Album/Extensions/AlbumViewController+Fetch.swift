@@ -134,7 +134,7 @@ extension AlbumViewController
                 if onPage < newLastPage, query == albumData.query {
                     // Pursue fetch without HUD
                     DispatchQueue.main.async { [self] in
-                        navigationController?.hideHUD {
+                        navigationController?.hideHUD { [self] in
                             // Set navigation bar buttons
                             if self.isSelect {
                                 self.updateBarsInSelectMode()
@@ -190,7 +190,7 @@ extension AlbumViewController
     
     private func removeImageWithIDs(_ imageIDs: Set<Int64>) {
         // Done fetching images ► Remove non-fetched images from album
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             // Remember when images were fetched
             self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
             
@@ -217,7 +217,7 @@ extension AlbumViewController
 
     // MARK: - Error Management
     private func showError(_ error: Error?) {
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async { [self] in
             guard let error = error as? NSError else {
                 navigationController?.showHUD(
                     withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
@@ -242,7 +242,7 @@ extension AlbumViewController
             else if let err = error as? PwgSessionError, 
                     err == PwgSessionError.missingParameter {
                 // Hide HUD
-                navigationController?.hideHUD() {
+                navigationController?.hideHUD() { [self] in
                     // End refreshing if needed
                     self.collectionView?.refreshControl?.endRefreshing()
                 }
@@ -335,7 +335,7 @@ extension AlbumViewController
             
             // Save changes
             bckgContext.saveIfNeeded()
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.mainContext.saveIfNeeded()
             }
         }

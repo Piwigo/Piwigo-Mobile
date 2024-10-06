@@ -147,12 +147,12 @@ extension UploadManager {
             self.didFinishTransfer(for: upload, error: nil)
             return
         }
-        PwgSession.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             self.processImages(withIds: "\(upload.imageId)",
-                               inCategory: upload.category) { [unowned self] _ in
+                               inCategory: upload.category) { [self] _ in
                 self.didFinishTransfer(for: upload, error: nil)
             }
-        } failure: { _ in
+        } failure: { [unowned self] _ in
             // Cannot empty the lounge
             // ► The lounge will be emptied later by the app or the server
             // ► Continue upload tasks

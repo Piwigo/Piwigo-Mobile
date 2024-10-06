@@ -28,7 +28,7 @@ extension AlbumViewController
         // Rotate image right
         let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
-                              handler: { _ in
+                              handler: { [self] _ in
             // Rotate images right
             self.rotateSelectionRight()
         })
@@ -40,7 +40,7 @@ extension AlbumViewController
         // Rotate image left
         let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
-                              handler: { _ in
+                              handler: { [self] _ in
             // Rotate images left
             self.rotateSelectionLeft()
         })
@@ -67,7 +67,7 @@ extension AlbumViewController
             // Save changes
 //            bckgContext.saveIfNeeded()
             // Close HUD with success
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.navigationController?.updateHUDwithSuccess() { [self] in
                     navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Deselect images
@@ -88,7 +88,7 @@ extension AlbumViewController
             selectedVideosIDs.remove(imageID)
 
             // Update HUD
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 let progress: Float = 1 - Float(remainingIDs.count) / total
                 self.navigationController?.updateHUD(withProgress: progress)
             }
@@ -99,7 +99,7 @@ extension AlbumViewController
         }
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
                 // Retrieve updated image data i.e. width, height, URLs
                 /// We retrieve URLs of thumbnails which are not in cache anymore:
@@ -108,7 +108,7 @@ extension AlbumViewController
                 let imageID = imageData.pwgID
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
                     // Update HUD
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [self] in
                         // Update progress indicator
                         let progress: Float = 1 - Float(remainingIDs.count) / total
                         self.navigationController?.updateHUD(withProgress: progress)
@@ -137,7 +137,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 rotateImagesInDatabaseError(error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             rotateImagesInDatabaseError(error)
         }
     }
@@ -156,7 +156,7 @@ extension AlbumViewController
             let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
             let message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [unowned self] in
+                                    errorMessage: error.localizedDescription) { [self] in
                 // Hide HUD
                 navigationController?.hideHUD { [self] in
                     // Re-enable buttons

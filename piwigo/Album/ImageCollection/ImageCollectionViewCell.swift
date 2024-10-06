@@ -142,19 +142,19 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Retrieve image from cache or download it
         let placeHolder = UIImage(named: "unknownImage")!
-        let cellSize = self.bounds.size
-        let scale = self.traitCollection.displayScale
+        let scale = max(traitCollection.displayScale, 1.0)
+        let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
         let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size)
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL,
                                    fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                   placeHolder: placeHolder) { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
+                                   placeHolder: placeHolder) { [unowned self] cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize)
+            DispatchQueue.main.async { [self] in
                 self.configImage(cachedImage)
             }
-        } failure: { _ in
+        } failure: { [unowned self] _ in
             // No image available
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.configImage(placeHolder)
                 self.noDataLabel?.isHidden = false
                 self.applyColorPalette()

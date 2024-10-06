@@ -47,9 +47,9 @@ class Help04ViewController: UIViewController {
             fatalError("!!! Could not find help04 image !!!")
         }
         imageView.layoutIfNeeded() // Ensure imageView is in its final size.
-        let size = imageView.bounds.size
-        let scale = imageView.traitCollection.displayScale
-        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: size, scale: scale)
+        let scale = max(imageView.traitCollection.displayScale, 1.0)
+        let imageSize = CGSizeMake(imageView.bounds.size.width * scale, imageView.bounds.size.height * scale)
+        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID

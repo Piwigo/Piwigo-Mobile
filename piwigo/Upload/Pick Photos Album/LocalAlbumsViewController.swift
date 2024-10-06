@@ -214,7 +214,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
            let cell = localAlbumsTableView.visibleCells.first {
             if let indexPath = localAlbumsTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
-                coordinator.animate(alongsideTransition: { context in
+                coordinator.animate(alongsideTransition: { [self] _ in
                     self.setTableViewMainHeader()
                     self.localAlbumsTableView.reloadData()
 

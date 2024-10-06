@@ -273,7 +273,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
            let cell = localImagesCollection.visibleCells.first {
             if let indexPath = localImagesCollection.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
-                coordinator.animate(alongsideTransition: { context in
+                coordinator.animate(alongsideTransition: { [self] _ in
                     self.updateNavBar()
                     self.imageCellSize = self.getImageCellSize()
                     self.localImagesCollection.reloadData()

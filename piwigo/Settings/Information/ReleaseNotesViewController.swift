@@ -98,7 +98,7 @@ class ReleaseNotesViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Update Piwigo authors label
-        coordinator.animate(alongsideTransition: { (context) in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Piwigo authors
             self.authorsLabel.text = SettingsUtilities.getAuthors(forView: self.view)
         }, completion: nil)

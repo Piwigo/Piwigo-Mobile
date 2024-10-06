@@ -114,7 +114,7 @@ extension UploadManager
         toDelete.append(contentsOf: (uploads.fetchedObjects ?? []).filter({$0.requestState == 13}))
         
         // Delete upload requests
-        uploadProvider.delete(uploadRequests: toDelete) { [unowned self] _ in
+        uploadProvider.delete(uploadRequests: toDelete) { [self] _ in
             // Restart activities
             self.findNextImageToUpload()
             

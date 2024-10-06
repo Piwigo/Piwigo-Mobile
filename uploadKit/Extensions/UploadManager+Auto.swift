@@ -137,7 +137,7 @@ extension UploadManager {
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
         let toDelete = (uploads.fetchedObjects ?? []).filter({$0.markedForAutoUpload == true})
-        uploadProvider.delete(uploadRequests: toDelete) { [unowned self] error in
+        uploadProvider.delete(uploadRequests: toDelete) { [self] error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 

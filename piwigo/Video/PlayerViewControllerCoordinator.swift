@@ -362,7 +362,7 @@ class PlayerViewControllerCoordinator: NSObject {
                    try? fm.removeItem(at: self.video.cacheURL)
 
                    // Store video file in cache for reuse
-                   exportSession.exportAsynchronously {
+                   exportSession.exportAsynchronously { [self] in
                        switch exportSession.status {
                        case .waiting:
                            debugPrint("••> Video waiting to export more data… ;-)")
@@ -597,7 +597,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
     {
         status.insert([.fullScreenActive, .beingPresented])
         
-        coordinator.animate(alongsideTransition: nil) { context in
+        coordinator.animate(alongsideTransition: nil) { [self] context in
             self.status.remove(.beingPresented)
             // You need to check context.isCancelled to determine whether the transition succeeds.
             if context.isCancelled {
@@ -624,7 +624,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
 
         status.insert([.beingDismissed])
         
-        coordinator.animate(alongsideTransition: nil) { context in
+        coordinator.animate(alongsideTransition: nil) { [self] context in
             self.status.remove(.beingDismissed)
             if !context.isCancelled {
                 self.status.remove(.fullScreenActive)

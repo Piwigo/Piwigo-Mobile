@@ -197,7 +197,7 @@ class AlbumDeletion: NSObject
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([Int32.zero]))
         
         // Delete the category
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
@@ -214,12 +214,12 @@ class AlbumDeletion: NSObject
                 // Update parent albums data
                 self.fetchAlbumData(ofParentsWithIDs: parentIds)
                 
-            } failure: { error in
+            } failure: { [self] error in
                 let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
                 let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
                 self.deleteAlbumError(error, title: title, message: message)
             }
-        } failure: { error in
+        } failure: { [unowned self] error in
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
             let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
             self.deleteAlbumError(error, title: title, message: message)
@@ -243,7 +243,7 @@ class AlbumDeletion: NSObject
                 // Any error?
                 if let error = error as? NSError {
                     DispatchQueue.main.async { [self] in
-                        self.topViewController.hideHUD {
+                        self.topViewController.hideHUD { [self] in
                             // Display error alert after fetching album data
                             let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
                             let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
@@ -257,14 +257,14 @@ class AlbumDeletion: NSObject
         
         // Work completed ► Hide HUDs
         DispatchQueue.main.async { [self] in
-            self.topViewController.updateHUDwithSuccess() {
+            self.topViewController.updateHUDwithSuccess() { [self] in
                 self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
             }
         }
     }
     
     private func deleteAlbumError(_ error: NSError, title: String, message: String) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]

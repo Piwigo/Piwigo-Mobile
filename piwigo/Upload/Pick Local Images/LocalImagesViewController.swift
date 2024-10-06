@@ -320,7 +320,7 @@ class LocalImagesViewController: UIViewController
            let cell = localImagesCollection.visibleCells.first {
             if let indexPath = localImagesCollection.indexPath(for: cell) {
                 // Reload collection with appropriate cell sizes
-                coordinator.animate(alongsideTransition: { context in
+                coordinator.animate(alongsideTransition: { [self] _ in
                     self.updateNavBar()
                     self.imageCellSize = self.getImageCellSize()
                     self.localImagesCollection.reloadData()

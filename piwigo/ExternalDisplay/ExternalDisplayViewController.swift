@@ -92,8 +92,8 @@ class ExternalDisplayViewController: UIViewController {
         }
         
         // Check if we already have the high-resolution image in cache
-        let screenSize = view.bounds.size
-        let scale = view.traitCollection.displayScale
+        let scale = max(view.traitCollection.displayScale, 1.0)
+        let screenSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         let wantedImage = imageData.cachedThumbnail(ofSize: optimumSize)
         if wantedImage == nil {
             // Present the preview image file if available
@@ -120,24 +120,24 @@ class ExternalDisplayViewController: UIViewController {
             // Image of right size for that display
             PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
                                        fromServer: serverID, fileSize: imageData.fileSize,
-                                       placeHolder: placeHolder) { fractionCompleted in
-                DispatchQueue.main.async {
+                                       placeHolder: placeHolder) { [unowned self] fractionCompleted in
+                DispatchQueue.main.async { [self] in
                     self.progressView.progress = fractionCompleted
                 }
-            } completion: { cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize, scale: scale)
+            } completion: { [unowned self] cachedImageURL in
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize)
                 DispatchQueue.main.async {
                     self.progressView.progress = 1.0
                     self.presentFinalImage(cachedImage)
                 }
-            } failure: { _ in
+            } failure: { [unowned self] _ in
                 DispatchQueue.main.async {
                     self.progressView.progress = 1.0
                     self.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
                 }
             }
         } else {
-            let cachedImage = ImageUtilities.downsample(image: wantedImage!, to: screenSize, scale: scale)
+            let cachedImage = ImageUtilities.downsample(image: wantedImage!, to: screenSize)
             self.progressView.progress = 1.0
             self.presentFinalImage(cachedImage)
         }
@@ -147,13 +147,13 @@ class ExternalDisplayViewController: UIViewController {
         // Set image
         UIView.transition(with: imageView, duration: 0.5,
                           options: .transitionCrossDissolve,
-                          animations: {
+                          animations: { [self] in
             self.imageView.image = image
 //            self.imageView.frame = CGRect(origin: .zero, size: image.size)
 //            self.imageView.layoutIfNeeded()
 //            view.layoutIfNeeded()
             },
-        completion: { [unowned self] _ in
+        completion: { [self] _ in
             self.progressView.isHidden = false
             self.videoContainerView.isHidden = true
         })
@@ -163,12 +163,12 @@ class ExternalDisplayViewController: UIViewController {
         // Display final image
         UIView.transition(with: imageView, duration: 0.5,
                           options: .transitionCrossDissolve,
-                          animations: {
+                          animations: { [self] in
             self.imageView.image = image
 //            self.imageView.frame = CGRect(origin: .zero, size: image.size)
 //            self.imageView.layoutIfNeeded()
 //            view.layoutIfNeeded()
-        }, completion: { [unowned self] _ in
+        }, completion: { [self] _ in
             self.progressView.isHidden = true
             self.videoContainerView.isHidden = true
         })
@@ -184,7 +184,7 @@ class ExternalDisplayViewController: UIViewController {
         // Hide image and show video
         UIView.transition(with: videoContainerView, duration: 0.5,
                           options: .transitionCrossDissolve,
-                          animations: {
+                          animations: { [self] in
             self.imageView.image = nil
             self.videoContainerView.isHidden = false
         })

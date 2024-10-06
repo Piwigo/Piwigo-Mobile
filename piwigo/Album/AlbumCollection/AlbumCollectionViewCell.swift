@@ -62,17 +62,17 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Retrieve image from cache or download it
         self.albumThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
         let placeHolder = UIImage(named: "placeholder")!
-        let cellSize = self.albumThumbnail.bounds.size
-        let scale = self.albumThumbnail.traitCollection.displayScale
+        let scale = max(albumThumbnail.traitCollection.displayScale, 1.0)
+        let cellSize = CGSizeMake(albumThumbnail.bounds.size.width * scale, albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
                                    atURL: albumData?.thumbnailUrl as? URL,
                                    fromServer: albumData?.user?.server?.uuid,
-                                   placeHolder: placeHolder) { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
+                                   placeHolder: placeHolder) { [unowned self] cachedImageURL in
+            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize)
             self.configImage(cachedImage)
-        } failure: { _ in
-            DispatchQueue.main.async {
+        } failure: { [unowned self] _ in
+            DispatchQueue.main.async { [self] in
                 self.albumThumbnail.image = placeHolder
             }
         }
@@ -126,7 +126,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
     private func configImage(_ image: UIImage) {
         // Process image in the background
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
             // Process saliency
             var finalImage:UIImage = image
             if #available(iOS 13.0, *) {
@@ -136,7 +136,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             }
 
             // Set image
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 self.albumThumbnail.image = finalImage
             }
         }

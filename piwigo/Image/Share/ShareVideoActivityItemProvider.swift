@@ -101,10 +101,10 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
         
         // Notify the delegate on the main thread that the processing is beginning.
-        DispatchQueue.main.async(execute: {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("downloadingVideo", comment: "Downloading Video")
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: title)
-        })
+        }
 
         // Get the server ID and optimum available image size
         guard let serverID = imageData.server?.uuid,
@@ -125,13 +125,13 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let sema = DispatchSemaphore(value: 0)
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
                                    fromServer: serverID, fileSize: imageData.fileSize,
-                                   placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+                                   placeHolder: placeholderItem as! UIImage) { [unowned self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self.progressFraction = Float((0.75 * fractionCompleted))
-        } completion: { fileURL in
+        } completion: { [unowned self] fileURL in
             self.cachedFileURL = fileURL
             sema.signal()
-        } failure: { error in
+        } failure: { [unowned self] error in
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), error.localizedDescription)
@@ -320,7 +320,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         session.shouldOptimizeForNetworkUse = true
         session.outputURL = imageFileURL
         session.metadataItemFilter = .forSharing()
-        session.exportAsynchronously {
+        session.exportAsynchronously { [self] in
             // Handle export results
             switch session.status {
             case .exporting, .waiting:

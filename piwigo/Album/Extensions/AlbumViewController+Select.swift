@@ -296,7 +296,7 @@ extension AlbumViewController
                 PwgSession.checkSession(ofUser: user) {  [self] in
                     retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
                                  beforeAction: action, contextually: contextually)
-                } failure: { [unowned self] error in
+                } failure: { [self] error in
                     retrieveImageDataError(error, contextually: contextually)
                 }
             }
@@ -341,7 +341,7 @@ extension AlbumViewController
                                               inMode: .indeterminate)
             }
             // Prepare items to share in background queue
-            DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async {
+            DispatchQueue(label: "org.piwigo.share", qos: .userInitiated).async { [self] in
                 self.checkPhotoLibraryAccessBeforeSharing(imagesWithID: imageIDs, contextually: contextually)
             }
         case .copyImages    /* Copy images to Album */:
@@ -364,7 +364,7 @@ extension AlbumViewController
         // Get image ID if any
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 if action == .share {
                     // Update or display HUD
                     self.performAction(action, withImageIDs: imageIDs, contextually: contextually)
@@ -378,12 +378,12 @@ extension AlbumViewController
         }
         
         // Image data are not complete when retrieved using pwg.categories.getImages
-        imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) {  [self] in
+        imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
             // Image info retrieved
             remainingIDs.remove(imageID)
 
             // Update HUD
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 let progress: Float = Float(1) - Float(remainingIDs.count) / Float(imageIDs.count)
                 self.navigationController?.updateHUD(withProgress: progress)
             }
@@ -391,7 +391,7 @@ extension AlbumViewController
             // Next image
             retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
                          beforeAction: action, contextually: contextually)
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             retrieveImageDataError(error, contextually: contextually)
         }
     }
@@ -410,8 +410,8 @@ extension AlbumViewController
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
             dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hideHUD() { [unowned self] in
+                               errorMessage: error.localizedDescription) { [self] in
+                navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)
                     } else {

@@ -19,7 +19,7 @@ extension ImageViewController
         let action = UIAction(title: NSLocalizedString("imageOptions_properties",
                                                        comment: "Modify Information"),
                               image: UIImage(systemName: "pencil"),
-                              handler: { _ in
+                              handler: { [self] _ in
             // Edit image informations
             self.editImage()
         })

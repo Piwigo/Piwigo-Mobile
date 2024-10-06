@@ -122,7 +122,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
            let cell = queueTableView.visibleCells.first {
             if let indexPath = queueTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
-                coordinator.animate(alongsideTransition: { context in
+                coordinator.animate(alongsideTransition: { [self] _ in
                     self.queueTableView.reloadData()
 
                     // Scroll to previous position

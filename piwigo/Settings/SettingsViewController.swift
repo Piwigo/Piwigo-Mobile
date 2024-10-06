@@ -310,7 +310,7 @@ class SettingsViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         //Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             
             // On iPad, the Settings section is presented in a centered popover view
             if UIDevice.current.userInterfaceIdiom == .pad {

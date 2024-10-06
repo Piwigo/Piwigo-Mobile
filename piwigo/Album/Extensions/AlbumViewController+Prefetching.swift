@@ -15,7 +15,8 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
 {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
 //        debugPrint("••> prefetchingItemsAt \(indexPaths.debugDescription)")
-        let scale = self.traitCollection.displayScale
+        let scale = max(traitCollection.displayScale, 1.0)
+        let cellSize = CGSizeMake(albumCellSize.width * scale, albumCellSize.height * scale)
         for indexPath in indexPaths {
             switch indexPath.section {
             case 0 /* Albums (see XIB file) */:
@@ -28,7 +29,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                                            atURL: album.thumbnailUrl as? URL,
                                            fromServer: album.user?.server?.uuid,
                                            placeHolder: albumPlaceHolder) { cachedImageURL in
-                    let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: self.albumCellSize, scale: scale)
+                    let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize)
                 } failure: { _ in }
             default /* Images */:
                 // Retrieve image data
@@ -44,7 +45,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                                            atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
                                            fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
                                            placeHolder: imagePlaceHolder) { cachedImageURL in
-                    let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: self.imageCellSize, scale: scale)
+                    let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize)
                 } failure: { _ in }
             }
         }

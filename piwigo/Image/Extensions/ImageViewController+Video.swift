@@ -105,7 +105,7 @@ extension ImageViewController: PlayerViewControllerCoordinatorDelegate
     func playerViewControllerCoordinator(_ coordinator: PlayerViewControllerCoordinator,
                                          restoreUIForPIPStop completion: @escaping (Bool) -> Void) {
         if coordinator.playerViewControllerIfLoaded?.parent == nil {
-            playbackController.dismissActivePlayerViewController(animated: false) {
+            playbackController.dismissActivePlayerViewController(animated: false) { [self] in
                 if let navigationController = self.navigationController {
                     coordinator.restoreFullScreen(from: navigationController) {
                         completion(true)

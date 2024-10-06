@@ -91,8 +91,8 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
-        //Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { context in
+        // Reload the tableview on orientation change, to match the new width of the table.
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Reload table view
             self.shareMetadataTableView.reloadData()
         })

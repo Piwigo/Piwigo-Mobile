@@ -569,7 +569,7 @@ class AlbumViewController: UIViewController
         navigationController?.hideHUD { }
         
         // Update the navigation bar on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { [self] context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Reload collection with appropriate cell sizes
             albumCellSize = getAlbumCellSize()
             imageCellSize = getImageCellSize()
@@ -629,7 +629,7 @@ class AlbumViewController: UIViewController
         
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
-        PwgSession.shared.dataSession.getAllTasks { tasks in
+        PwgSession.shared.dataSession.getAllTasks { [unowned self] tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
                 .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
@@ -710,12 +710,12 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        PwgSession.checkSession(ofUser: self.user) {
+        PwgSession.checkSession(ofUser: self.user) { [self] in
             self.fetchAlbumsAndImages { [self] in
                 self.fetchCompleted()
             }
-        } failure: { error in
-            DispatchQueue.main.async {
+        } failure: { [self] error in
+            DispatchQueue.main.async { [self] in
                 // End refreshing if needed
                 self.collectionView?.refreshControl?.endRefreshing()
                 

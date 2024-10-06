@@ -25,7 +25,7 @@ extension ImageViewController
         // Rotate image right
         let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
                               image: UIImage(systemName: "rotate.right"),
-                              handler: { _ in
+                              handler: { [self] _ in
             // Edit image informations
             self.rotateImage(by: -90.0)
         })
@@ -37,7 +37,7 @@ extension ImageViewController
         // Rotate image left
         let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
                               image: UIImage(systemName: "rotate.left"),
-                              handler: { _ in
+                              handler: { [self] _ in
             // Edit image informations
             self.rotateImage(by: 90.0)
         })
@@ -60,14 +60,14 @@ extension ImageViewController
         showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
                 // Retrieve updated image data i.e. width, height, URLs
                 /// We retrieve URLs of thumbnails which are not in cache anymore:
                 /// - available: https://piwigo…/_data/i/upload/2024/02/17/20240217192937-d5cf80b5-xx.jpg
                 /// - unavailable: https://piwigo…/i.php?/upload/2024/02/17/20240217192937-d5cf80b5-xx.jpg
                 let imageID = imageData.pwgID
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
+                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
                     // Download image in cache and present it
                     DispatchQueue.main.async { [self] in
                         if let imageDVC = pageViewController?.viewControllers?.first as? ImageDetailViewController,
@@ -82,7 +82,7 @@ extension ImageViewController
                             }
                             imageDVC.imageData = updatedImage
                             // Rotate image view
-                            imageDVC.rotateImageView(by: angle) {
+                            imageDVC.rotateImageView(by: angle) { [self] in
                                 // Hide HUD
                                 self.updateHUDwithSuccess { [self] in
                                     self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -99,7 +99,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.rotateImageInDatabaseError(error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             self.rotateImageInDatabaseError(error)
         }
     }
@@ -127,7 +127,7 @@ extension ImageViewController
 
             // Report error
             self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [unowned self] in
+                                    errorMessage: error.localizedDescription) { [self] in
                 // Hide HUD
                 hideHUD { [self] in
                     // Re-enable buttons

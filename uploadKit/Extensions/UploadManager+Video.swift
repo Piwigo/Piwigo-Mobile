@@ -168,7 +168,7 @@ extension UploadManager {
 
         // Retrieve video data
         let options = getVideoRequestOptions()
-        retrieveVideo(from: imageAsset, with: options) { [unowned self] (avasset, options, error) in
+        retrieveVideo(from: imageAsset, with: options) { [self] (avasset, options, error) in
             // Error?
             if let error = error {
                 self.didPrepareVideo(for: upload, error)
@@ -270,7 +270,7 @@ extension UploadManager {
         // Available export session presets?
         PHImageManager.default().requestAVAsset(forVideo: imageAsset,
                                                 options: options,
-                                                resultHandler: { [unowned self] avasset, audioMix, info in
+                                                resultHandler: { [self] avasset, audioMix, info in
             // ====>> For debugging…
 //            if let metadata = avasset?.metadata {
 //                debugPrint("=> Metadata: \(metadata)\r=> Creation date: \(metadata.creationDate() ?? DateUtilities.unknownDate)")
@@ -446,7 +446,7 @@ extension UploadManager {
             exportSession.outputURL = getUploadFileURL(from: upload, deleted: true)
 
             // Export temporary video for upload
-            exportSession.exportAsynchronously { [unowned self] in
+            exportSession.exportAsynchronously { [self] in
                 guard exportSession.status == .completed,
                       let outputURL = exportSession.outputURL else {
                     // Deletes temporary video file if any

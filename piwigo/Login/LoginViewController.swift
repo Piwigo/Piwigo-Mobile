@@ -473,7 +473,7 @@ class LoginViewController: UIViewController {
     func launchApp() {
         isAlreadyTryingToLogin = false
         // Hide HUD and present root album
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async { [self] in
             // Update user account in persistent cache
             // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
             let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)

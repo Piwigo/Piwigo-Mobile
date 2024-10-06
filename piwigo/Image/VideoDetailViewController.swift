@@ -131,7 +131,7 @@ class VideoDetailViewController: UIViewController
         super.viewWillTransition(to: size, with: coordinator)
 
         // Animate change of view size and reposition video
-        coordinator.animate(alongsideTransition: { [self] context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
                 descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
