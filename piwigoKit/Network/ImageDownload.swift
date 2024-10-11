@@ -45,6 +45,7 @@ class ImageDownload {
     }
     
     deinit {
+//        debugPrint("••> release ImageDownload of image \(self.fileURL.lastPathComponent)")
         self.task?.cancel()
     }
 }
