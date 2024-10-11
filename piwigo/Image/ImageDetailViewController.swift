@@ -173,6 +173,32 @@ class ImageDetailViewController: UIViewController
 //            applyImagePositionInScrollView()
         })
     }
+    
+    override func didReceiveMemoryWarning() {
+        // Replace high-res image by thumbnail image in cache until the next lower version is loaded
+        let placeHolder = UIImage(named: "unknownImage")!
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+        
+        // Look for the first available image of lower resolution
+        if previewSize == .fullRes {
+            if NetworkVars.hasXXLargeSizeImages {
+                previewSize = .xxLarge
+            } else if NetworkVars.hasXLargeSizeImages {
+                previewSize = .xLarge
+            } else if NetworkVars.hasLargeSizeImages {
+                previewSize = .large
+            } else {
+                previewSize = .medium
+            }
+        }
+        
+        // Store tfor future use
+        ImageVars.shared.defaultImagePreviewSize = previewSize.rawValue
+        
+        // Replace high-resolution image
+        loadAndDisplayHighResImage()
+    }
 
     deinit {
         // Unregister all observers
