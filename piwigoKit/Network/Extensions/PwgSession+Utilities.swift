@@ -80,14 +80,19 @@ extension PwgSession {
                       failure: @escaping (NSError) -> Void) {
         // Check if the session is still active every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
-        if secondsSinceLastCheck < 60 {
+        if secondsSinceLastCheck < 60,
+            PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi() {
             completion()
             return
         }
         
         // Determine if the session is still active
         if #available(iOSApplicationExtension 14.0, *) {
-            logger.notice("Start checking session…")
+            if NetworkVars.isConnectedToWiFi() {
+                logger.notice("Start checking session… (WiFi)")
+            } else {
+                logger.notice("Start checking session… (Cellular)")
+            }
         }
         let oldToken = NetworkVars.pwgToken
         PwgSession.shared.sessionGetStatus { username in
@@ -109,6 +114,7 @@ extension PwgSession {
                             // Update date of accesss to the server by guest
                             user?.setLastUsedToNow()
                             user?.status = NetworkVars.userStatus.rawValue
+                            PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                             completion()
                         } failure: { error in
                             failure(error)
@@ -123,6 +129,7 @@ extension PwgSession {
                                 // Update date of accesss to the server by user
                                 user?.setLastUsedToNow()
                                 user?.status = NetworkVars.userStatus.rawValue
+                                PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                                 completion()
                             } failure: { error in
                                 failure(error)
