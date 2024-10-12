@@ -19,9 +19,15 @@ extension UIImage {
         return nil
         #else
         // Check that it is possible to perform a saliency request
-        // by checking if it is possible to create a CGImaage from the image.
+        // by checking the pixel format of the image.
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let imageData = self.jpegData(compressionQuality: 1.0),
+        var imageData: Data?
+        if #available(iOS 17, *) {
+            imageData = self.heicData()
+        } else {
+            imageData = self.pngData()
+        }
+        guard let imageData = imageData,
               let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
               let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
               ImageUtilities.supportsPixelFormat(ofCGImage: imageRef),
