@@ -43,21 +43,17 @@ class ImagePreviewViewController: UIViewController
             if let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) {
                 PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                            fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                           placeHolder: placeHolder) { fractionCompleted in
-//                    DispatchQueue.main.async {
-//                        // Show download progress
-//                        self.progressView.progress = fractionCompleted
-//                    }
-                } completion: { [unowned self] cachedImageURL in
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize)
-                    DispatchQueue.main.async { [self] in
-                        // Hide progress view
-//                        self.progressView.isHidden = true
-                        // Replace thumbnail with high-resolution image
-                        self.setImageView(with: cachedImage)
-                    }
+                                           placeHolder: placeHolder) { [weak self] cachedImageURL in
+                    self?.downsampleImage(atURL: cachedImageURL, to: viewSize)
                 } failure: { _ in }
             }
+        }
+    }
+    
+    private func downsampleImage(atURL fileURL: URL, to viewSize: CGSize) {
+        DispatchQueue.main.async { [self] in
+            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: viewSize)
+            self.setImageView(with: cachedImage)
         }
     }
     

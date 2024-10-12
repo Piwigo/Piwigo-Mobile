@@ -94,52 +94,49 @@ class ExternalDisplayViewController: UIViewController {
         // Check if we already have the high-resolution image in cache
         let scale = max(view.traitCollection.displayScale, 1.0)
         let screenSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
-        let wantedImage = imageData.cachedThumbnail(ofSize: optimumSize)
-        if wantedImage == nil {
-            // Present the preview image file if available
-            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-            if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
-                // Is this file of sufficient resolution?
-                if previewSize >= optimumSize {
-                    // Display preview image
-                    presentFinalImage(previewImage)
-                    return
-                } else {
-                    // Present preview image and download file of greater resolution
-                    presentTemporaryImage(previewImage)
-                }
+        if let wantedImage = imageData.cachedThumbnail(ofSize: optimumSize) {
+            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: screenSize)
+            self.presentFinalImage(cachedImage)
+            return
+        }
+        
+        // Download image
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+        if let previewImage = imageData.cachedThumbnail(ofSize: previewSize) {
+            // Is this file of sufficient resolution?
+            if previewSize >= optimumSize {
+                // Display preview image
+                presentFinalImage(previewImage)
+                return
             } else {
-                // Thumbnail image should be available in cache
-                presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
-            }
-
-            // Store image URL for being able to pause the download
-            self.imageURL = imageURL
-
-            // Image of right size for that display
-            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
-                                       fromServer: serverID, fileSize: imageData.fileSize,
-                                       placeHolder: placeHolder) { [unowned self] fractionCompleted in
-                DispatchQueue.main.async { [self] in
-                    self.progressView.progress = fractionCompleted
-                }
-            } completion: { [unowned self] cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: screenSize)
-                DispatchQueue.main.async {
-                    self.progressView.progress = 1.0
-                    self.presentFinalImage(cachedImage)
-                }
-            } failure: { [unowned self] _ in
-                DispatchQueue.main.async {
-                    self.progressView.progress = 1.0
-                    self.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
-                }
+                // Present preview image and download file of greater resolution
+                presentTemporaryImage(previewImage)
             }
         } else {
-            let cachedImage = ImageUtilities.downsample(image: wantedImage!, to: screenSize)
-            self.progressView.progress = 1.0
-            self.presentFinalImage(cachedImage)
+            // Thumbnail image should be available in cache
+            presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+        }
+
+        // Store image URL for being able to pause the download
+        self.imageURL = imageURL
+
+        // Image of right size for that display
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
+                                   fromServer: serverID, fileSize: imageData.fileSize,
+                                   placeHolder: placeHolder) { [weak self] fractionCompleted in
+            self?.updateProgressView(with: fractionCompleted)
+        } completion: { [weak self] cachedImageURL in
+            self?.downsampleImage(atURL: cachedImageURL, to: screenSize)
+        } failure: { [weak self] _ in
+            self?.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+        }
+    }
+    
+    private func updateProgressView(with fractionCompleted: Float) {
+        DispatchQueue.main.async { [self] in
+            // Show download progress
+            self.progressView.progress = fractionCompleted
         }
     }
     
@@ -159,19 +156,29 @@ class ExternalDisplayViewController: UIViewController {
         })
     }
 
+    private func downsampleImage(atURL fileURL: URL, to screenSize: CGSize) {
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: screenSize)
+        self.presentFinalImage(cachedImage)
+    }
+    
     private func presentFinalImage(_ image: UIImage) {
-        // Display final image
-        UIView.transition(with: imageView, duration: 0.5,
-                          options: .transitionCrossDissolve,
-                          animations: { [self] in
-            self.imageView.image = image
-//            self.imageView.frame = CGRect(origin: .zero, size: image.size)
-//            self.imageView.layoutIfNeeded()
-//            view.layoutIfNeeded()
-        }, completion: { [self] _ in
-            self.progressView.isHidden = true
-            self.videoContainerView.isHidden = true
-        })
+        DispatchQueue.main.async { [self] in
+            // Download completed
+            self.progressView.progress = 1.0
+            
+            // Display final image
+            UIView.transition(with: imageView, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: { [self] in
+                self.imageView.image = image
+//                self.imageView.frame = CGRect(origin: .zero, size: image.size)
+//                self.imageView.layoutIfNeeded()
+//                view.layoutIfNeeded()
+            }, completion: { [self] _ in
+                self.progressView.isHidden = true
+                self.videoContainerView.isHidden = true
+            })
+        }
     }
     
     private func presentVideo(_ video: Video) {

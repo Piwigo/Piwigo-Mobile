@@ -138,9 +138,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let sema = DispatchSemaphore(value: 0)
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
                                    fromServer: serverID, fileSize: imageData.fileSize,
-                                   placeHolder: placeholderItem as! UIImage) { [unowned self] fractionCompleted in
+                                   placeHolder: placeholderItem as! UIImage) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
-            self.progressFraction = Float((0.75 * fractionCompleted))
+            self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
         } completion: { [unowned self] fileURL in
             self.cachedFileURL = fileURL
             sema.signal()
@@ -336,6 +336,13 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         return imageFileURL
     }
 
+    private func updateProgressView(with fractionCompleted: Float) {
+        DispatchQueue.main.async { [self] in
+            // Show download progress
+            self.progressFraction = fractionCompleted
+        }
+    }
+    
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
         DispatchQueue.main.async { [self] in

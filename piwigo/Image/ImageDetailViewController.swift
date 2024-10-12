@@ -213,7 +213,7 @@ class ImageDetailViewController: UIViewController
     }
     
     private func downsampleImage(atURL fileURL: URL) {
-        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: imageSize)
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize)
         DispatchQueue.main.async { [self] in
             // Hide progress view
             self.progressView.isHidden = true
@@ -253,34 +253,35 @@ class ImageDetailViewController: UIViewController
         if let imageURL = self.imageURL {
             PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                        fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                       placeHolder: placeHolder) { [unowned self] fractionCompleted in
-                DispatchQueue.main.async {
-                    // Show download progress
-                    self.progressView.progress = fractionCompleted
-                }
-            } completion: { [unowned self] cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageSize)
-                DispatchQueue.main.async { [self] in
-                    // Hide progress view
-                    self.progressView.isHidden = true
-                    
-                    // Rotate image keeping it displayed in fullscreen
-                    let aspectRatio = cachedImage.size.height / cachedImage.size.width
-                    UIView.animate(withDuration: 0.5) { [self] in
-                        let scale = scrollView.minimumZoomScale * aspectRatio
-                        let angleRad = -angle * .pi / 180.0
-                        imageView.transform = CGAffineTransform(rotationAngle: angleRad).scaledBy(x: scale, y: scale)
-                    }
-                    completion: { [self] _ in
-                        // Reset image view with rotated image
-                        didRotateImage = true
-                        self.setImageView(with: cachedImage)
-
-                        // Hide HUD
-                        completion()
-                    }
-                }
+                                       placeHolder: placeHolder) { [weak self] fractionCompleted in
+                self?.updateProgressView(with: fractionCompleted)
+            } completion: { [weak self] cachedImageURL in
+                self?.downsampleImage(atURL: cachedImageURL, rotateBy: angle, completion: completion)
             } failure: { _ in }
+        }
+    }
+    
+    private func downsampleImage(atURL fileURL: URL, rotateBy angle: Double, completion: @escaping () -> Void) {
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize)
+        DispatchQueue.main.async { [self] in
+            // Hide progress view
+            self.progressView.isHidden = true
+            
+            // Rotate image keeping it displayed in fullscreen
+            let aspectRatio = cachedImage.size.height / cachedImage.size.width
+            UIView.animate(withDuration: 0.5) { [self] in
+                let scale = scrollView.minimumZoomScale * aspectRatio
+                let angleRad = -angle * .pi / 180.0
+                self.imageView.transform = CGAffineTransform(rotationAngle: angleRad).scaledBy(x: scale, y: scale)
+            }
+            completion: { [self] _ in
+                // Reset image view with rotated image
+                self.didRotateImage = true
+                self.setImageView(with: cachedImage)
+
+                // Hide HUD
+                completion()
+            }
         }
     }
     

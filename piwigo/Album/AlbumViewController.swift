@@ -663,6 +663,7 @@ class AlbumViewController: UIViewController
 
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+        debugPrint("••> AlbumViewController released memory")
     }
     
     

@@ -120,18 +120,27 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize,
                                    atURL: ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize),
-                                   fromServer: imageData.server?.uuid, placeHolder: placeHolder) { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize)
-            DispatchQueue.main.async {
-                self.imageThumbnail.image = cachedImage
-            }
-        } failure: { _ in
-            DispatchQueue.main.async {
-                self.imageThumbnail.image = placeHolder
-            }
+                                   fromServer: imageData.server?.uuid, placeHolder: placeHolder) { [weak self] cachedImageURL in
+            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+        } failure: { [weak self] _ in
+            self?.setThumbnailWithImage(placeHolder)
         }
     }
+    
+    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
+        // Downsample image
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
 
+        // Set image thumbnail
+        setThumbnailWithImage(cachedImage)
+    }
+    
+    private func setThumbnailWithImage(_ image: UIImage) {
+        DispatchQueue.main.async {
+            self.imageThumbnail.image = image
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
 
