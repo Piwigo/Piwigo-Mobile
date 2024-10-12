@@ -129,7 +129,15 @@ extension UIDevice {
             return "iPhone 15 Pro"
         case "iPhone16,2":
             return "iPhone 15 Pro Max"
-            
+        case "iPhone17,3":
+            return "iPhone 16"
+        case "iPhone17,4":
+            return "iPhone 16 Plus"
+        case "iPhone17,1":
+            return "iPhone 16 Pro"
+        case "iPhone17,2":
+            return "iPhone 16 Pro Max"
+
         // MARK: iPad
         case "iPad1,1":
             return "iPad"
@@ -325,20 +333,21 @@ extension UIDevice {
         case "iPhone3,1", "iPhone3,2", "iPhone3,3":
             return "5 Mpx"
         case "iPhone4,1",
-            "iPhone5,1", "iPhone5,2", "iPhone5,3", "iPhone5,4",
-            "iPhone6,1", "iPhone6,2", "iPhone7,1", "iPhone7,2":
+             "iPhone5,1", "iPhone5,2", "iPhone5,3", "iPhone5,4",
+             "iPhone6,1", "iPhone6,2", "iPhone7,1", "iPhone7,2":
             return "8 Mpx"
         case "iPhone8,1", "iPhone8,2", "iPhone8,4",
-            "iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4",
-            "iPhone10,1", "iPhone10,2", "iPhone10,3", "iPhone10,4", "iPhone10,5", "iPhone10,6",
-            "iPhone11,2", "iPhone11,6", "iPhone11,8",
-            "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
-            "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
-            "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6",
-            "iPhone14,7", "iPhone14,8":
+             "iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4",
+             "iPhone10,1", "iPhone10,2", "iPhone10,3", "iPhone10,4", "iPhone10,5", "iPhone10,6",
+             "iPhone11,2", "iPhone11,6", "iPhone11,8",
+             "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
+             "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6",
+             "iPhone14,7", "iPhone14,8":
             return "12 Mpx"
         case "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5",
-            "iPhone16,1", "iPhone16,2":
+            "iPhone16,1", "iPhone16,2",
+            "iPhone17,1", "iPhone17,2", "iPhone17,3", "iPhone17,4":
             return "48 Mpx"
             
         // MARK: iPad
@@ -347,24 +356,24 @@ extension UIDevice {
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
             return "0.92 Mpx"
         case "iPad2,5", "iPad2,6", "iPad2,7",
-            "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
-            "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
+             "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
+             "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
             return "5 Mpx"
         case "iPad5,1", "iPad5,2", "iPad5,3", "iPad5,4",
-            "iPad6,7", "iPad6,8", "iPad6,11", "iPad6,12",
-            "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
-            "iPad11,1", "iPad11,2", "iPad11,3", "iPad11,4", "iPad11,6", "iPad11,7":
+             "iPad6,7", "iPad6,8", "iPad6,11", "iPad6,12",
+             "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
+             "iPad11,1", "iPad11,2", "iPad11,3", "iPad11,4", "iPad11,6", "iPad11,7":
             return "8 Mpx"
         case "iPad6,3", "iPad6,4",
-            "iPad7,1", "iPad7,2", "iPad7,3", "iPad7,4",
-            "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4", "iPad8,5", "iPad8,6",
-            "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
-            "iPad12,1", "iPad12,2",
-            "iPad13,1", "iPad13,2", "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7", "iPad13,8",
-            "iPad13,9", "iPad13,10", "iPad13,11", "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
-            "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6",
-            "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11",
-            "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
+             "iPad7,1", "iPad7,2", "iPad7,3", "iPad7,4",
+             "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4", "iPad8,5", "iPad8,6",
+             "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
+             "iPad12,1", "iPad12,2",
+             "iPad13,1", "iPad13,2", "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7", "iPad13,8",
+             "iPad13,9", "iPad13,10", "iPad13,11", "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
+             "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6",
+             "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11",
+             "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
             return "12 Mpx"
             
         // MARK: iPod
@@ -395,21 +404,24 @@ extension UIDevice {
         case "iPhone3,1", "iPhone3,2", "iPhone3,3":
             return "HD, 30 fps"
         case "iPhone4,1",
-            "iPhone5,1", "iPhone5,2", "iPhone5,3", "iPhone5,4",
-            "iPhone6,1", "iPhone6,2",
-            "iPhone7,1", "iPhone7,2":
+             "iPhone5,1", "iPhone5,2", "iPhone5,3", "iPhone5,4",
+             "iPhone6,1", "iPhone6,2",
+             "iPhone7,1", "iPhone7,2":
             return "Full HD, 30 fps"
         case "iPhone8,1", "iPhone8,2", "iPhone8,4",
-            "iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4":
+             "iPhone9,1", "iPhone9,2", "iPhone9,3", "iPhone9,4":
             return "4K, 30 fps"
         case "iPhone10,1", "iPhone10,2", "iPhone10,3", "iPhone10,4", "iPhone10,5", "iPhone10,6",
-            "iPhone11,2", "iPhone11,6", "iPhone11,8",
-            "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
-            "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
-            "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6", "iPhone14,7", "iPhone14,8",
-            "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5",
-            "iPhone16,1", "iPhone16,2":
+             "iPhone11,2", "iPhone11,6", "iPhone11,8",
+             "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
+             "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5", "iPhone14,6", "iPhone14,7", "iPhone14,8",
+             "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5",
+             "iPhone16,1", "iPhone16,2",
+             "iPhone17,3", "iPhone17,4":
             return "4K, 60 fps"
+        case "iPhone17,1", "iPhone17,2":
+            return "4K, 120 fps"
             
         // MARK: iPad
         case "iPad1,1":
@@ -417,26 +429,26 @@ extension UIDevice {
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
             return "VGA, 30 fps"
         case "iPad2,5", "iPad2,6", "iPad2,7",
-            "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
-            "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8",
-            "iPad6,3", "iPad6,4":
+             "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
+             "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8",
+             "iPad6,3", "iPad6,4":
             return "HD, 30 fps"
         case "iPad5,1", "iPad5,2", "iPad5,3", "iPad5,4",
-            "iPad6,7", "iPad6,8", "iPad6,11", "iPad6,12",
-            "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
-            "iPad11,1", "iPad11,2", "iPad11,3", "iPad11,4", "iPad11,6", "iPad11,7":
+             "iPad6,7", "iPad6,8", "iPad6,11", "iPad6,12",
+             "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
+             "iPad11,1", "iPad11,2", "iPad11,3", "iPad11,4", "iPad11,6", "iPad11,7":
             return "Full HD, 30 fps"
         case "iPad7,1", "iPad7,2", "iPad7,3", "iPad7,4",
-            "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4", "iPad8,5",
-            "iPad8,6", "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
-            "iPad12,1", "iPad12,2", "iPad13,1", "iPad13,2":
+             "iPad8,1", "iPad8,2", "iPad8,3", "iPad8,4", "iPad8,5",
+             "iPad8,6", "iPad8,7", "iPad8,8", "iPad8,9", "iPad8,10", "iPad8,11", "iPad8,12",
+             "iPad12,1", "iPad12,2", "iPad13,1", "iPad13,2":
             return "4K, 30 fps"
         case "iPad13,4", "iPad13,5", "iPad13,6", "iPad13,7",
-            "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11",
-            "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
-            "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6",
-            "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11",
-            "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
+             "iPad13,8", "iPad13,9", "iPad13,10", "iPad13,11",
+             "iPad13,16", "iPad13,17", "iPad13,18", "iPad13,19",
+             "iPad14,1", "iPad14,2", "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6",
+             "iPad14,8", "iPad14,9", "iPad14,10", "iPad14,11",
+             "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
             return "4K, 60 fps"
             
         // MARK: iPod
@@ -489,7 +501,8 @@ extension UIDevice {
              "iPhone14,2", "iPhone14,3", "iPhone14,7", "iPhone14,8",
              "iPhone15,2", "iPhone15,3", "iPhone15,4", "iPhone15,5":
             return 6144
-        case "iPhone16,1", "iPhone16,2":
+        case "iPhone16,1", "iPhone16,2",
+             "iPhone17,1", "iPhone17,2", "iPhone17,3", "iPhone17,4":
             return 8192
 
         // MARK: iPad
@@ -498,7 +511,7 @@ extension UIDevice {
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4", "iPad2,5", "iPad2,6", "iPad2,7":
             return 512
         case "iPad3,1", "iPad3,2", "iPad3,3", "iPad3,4", "iPad3,5", "iPad3,6",
-            "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
+             "iPad4,1", "iPad4,2", "iPad4,4", "iPad4,5", "iPad4,7", "iPad4,8":
             return 1024
         case "iPad5,1", "iPad5,2", "iPad5,3", "iPad5,4",
              "iPad6,3", "iPad6,4", "iPad6,11", "iPad6,12",
@@ -522,8 +535,8 @@ extension UIDevice {
         case "iPad13,4", "iPad13,6", "iPad13,8", "iPad13,10",
              "iPad13,16", "iPad13,17",
              "iPad14,3", "iPad14,4", "iPad14,5", "iPad14,6",
-            "iPad14,8","iPad14,9", "iPad14,10", "iPad14,11",
-            "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
+             "iPad14,8","iPad14,9", "iPad14,10", "iPad14,11",
+             "iPad16,3", "iPad16,4", "iPad16,5", "iPad16,6":
             return 8192
         case "iPad13,5", "iPad13,7", "iPad13,9", "iPad13,11":
             return 16384
