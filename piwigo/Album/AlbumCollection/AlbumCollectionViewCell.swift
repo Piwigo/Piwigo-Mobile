@@ -82,15 +82,11 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
             
             // Process saliency if needed
-            var finalImage:UIImage = cachedImage
             if #available(iOS 13.0, *) {
-                if let croppedImage = cachedImage.processSaliency() {
-                    finalImage = croppedImage
-                }
+                self.setThumbnailWithImage(cachedImage.processSaliency() ?? cachedImage)
+            } else {
+                self.setThumbnailWithImage(cachedImage)
             }
-            
-            // Set image
-            self.setThumbnailWithImage(finalImage)
         }
     }
     
