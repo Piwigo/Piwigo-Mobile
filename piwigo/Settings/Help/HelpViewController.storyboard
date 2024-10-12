@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,11 +14,11 @@
             <objects>
                 <viewController storyboardIdentifier="HelpViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="KZo-Xn-8N3" customClass="HelpViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zne-FB-LOi">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="v2A-0U-1lw">
-                                <rect key="frame" x="156.33333333333334" y="866" width="115.66666666666666" height="26"/>
+                                <rect key="frame" x="178.66666666666666" y="872" width="73" height="26"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="pageIndicatorTintColor" systemColor="systemGray5Color"/>
                                 <color key="currentPageIndicatorTintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -27,9 +27,11 @@
                                 </connections>
                             </pageControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2E7-Uu-mEb">
-                                <rect key="frame" x="378" y="55" width="30" height="33"/>
+                                <rect key="frame" x="380" y="67" width="30" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="Ok">
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="OK">
                                     <color key="titleColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
@@ -37,7 +39,7 @@
                                 </connections>
                             </button>
                             <containerView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wzx-O6-YNR">
-                                <rect key="frame" x="20" y="88" width="388" height="778"/>
+                                <rect key="frame" x="20" y="100" width="390" height="772"/>
                                 <connections>
                                     <segue destination="hMF-co-LFw" kind="embed" id="eI5-1L-cR8"/>
                                 </connections>
@@ -78,11 +80,11 @@
             <objects>
                 <viewController storyboardIdentifier="help03" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9K6-Cd-KL7" customClass="Help03ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="Ixk-9c-yZM">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ge9-Dp-NFm" userLabel="HELP #3">
-                                <rect key="frame" x="30" y="0.0" width="368" height="20.333333333333332"/>
+                                <rect key="frame" x="30" y="0.0" width="370" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend">
                                         <attributes>
@@ -94,7 +96,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="G33-FO-oKS">
-                                <rect key="frame" x="0.0" y="36.333333333333314" width="428" height="832.66666666666674"/>
+                                <rect key="frame" x="0.0" y="36.333333333333314" width="430" height="885.66666666666674"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XzR-Yg-uoo"/>
@@ -124,11 +126,11 @@
             <objects>
                 <viewController storyboardIdentifier="help01" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nez-1y-fpM" customClass="Help01ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" id="ei3-GT-7fz">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bzQ-eN-DYj" userLabel="HELP #1">
-                                <rect key="frame" x="30" y="0.0" width="368" height="20.333333333333332"/>
+                                <rect key="frame" x="30" y="0.0" width="370" height="20.333333333333332"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend">
@@ -141,7 +143,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="gTP-ir-xHk">
-                                <rect key="frame" x="0.0" y="36.333333333333314" width="428" height="832.66666666666674"/>
+                                <rect key="frame" x="0.0" y="36.333333333333314" width="430" height="885.66666666666674"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wdC-Os-H44"/>
@@ -171,11 +173,11 @@
             <objects>
                 <viewController storyboardIdentifier="help02" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nGz-BW-XsJ" customClass="Help02ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="DhE-Mp-Wpi">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-ae-d6K">
-                                <rect key="frame" x="20" y="0.0" width="388" height="20.333333333333332"/>
+                                <rect key="frame" x="20" y="0.0" width="390" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend top">
                                         <attributes>
@@ -187,19 +189,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="td4-F8-5Eo">
-                                <rect key="frame" x="0.0" y="36.333333333333343" width="428" height="453.33333333333326"/>
+                                <rect key="frame" x="0.0" y="36.333333333333343" width="430" height="455.33333333333326"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="td4-F8-5Eo" secondAttribute="height" multiplier="13700:14506" id="kAr-A0-aPV"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-97-rdx">
-                                <rect key="frame" x="0.0" y="718" width="428" height="151"/>
+                                <rect key="frame" x="0.0" y="770.33333333333337" width="430" height="151.66666666666663"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ohK-97-rdx" secondAttribute="height" multiplier="13700:4835" id="FGp-Mb-oV0"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2RD-k5-pvP">
-                                <rect key="frame" x="20" y="497.66666666666669" width="388" height="212.33333333333331"/>
+                                <rect key="frame" x="20" y="499.66666666666663" width="390" height="262.66666666666663"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -240,11 +242,11 @@
             <objects>
                 <viewController storyboardIdentifier="help04" useStoryboardIdentifierAsRestorationIdentifier="YES" id="VGV-yb-lKK" customClass="Help04ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="j2I-3A-AD5">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zhb-FF-P3o" userLabel="HELP #3">
-                                <rect key="frame" x="30" y="0.0" width="368" height="20.333333333333332"/>
+                                <rect key="frame" x="30" y="0.0" width="370" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend">
                                         <attributes>
@@ -256,7 +258,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="cz8-At-lX0">
-                                <rect key="frame" x="0.0" y="36.333333333333314" width="428" height="832.66666666666674"/>
+                                <rect key="frame" x="0.0" y="36.333333333333314" width="430" height="885.66666666666674"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="7Ot-jA-MMS"/>
@@ -286,11 +288,11 @@
             <objects>
                 <viewController storyboardIdentifier="help05" useStoryboardIdentifierAsRestorationIdentifier="YES" id="2Hv-Mu-PEH" customClass="Help05ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="DUM-Ph-jeJ">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ubK-e5-1Rt">
-                                <rect key="frame" x="20" y="0.0" width="388" height="20.333333333333332"/>
+                                <rect key="frame" x="20" y="0.0" width="390" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend top">
                                         <attributes>
@@ -302,19 +304,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Qc7-uf-mw7">
-                                <rect key="frame" x="0.0" y="36.333333333333343" width="428" height="453.33333333333326"/>
+                                <rect key="frame" x="0.0" y="36.333333333333343" width="430" height="455.33333333333326"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Qc7-uf-mw7" secondAttribute="height" multiplier="13700:14506" id="zPg-KV-Sqa"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="l3h-Mi-qdc">
-                                <rect key="frame" x="0.0" y="718" width="428" height="151"/>
+                                <rect key="frame" x="0.0" y="770.33333333333337" width="430" height="151.66666666666663"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="l3h-Mi-qdc" secondAttribute="height" multiplier="13700:4835" id="dPo-ba-w5M"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MCO-fs-FAJ">
-                                <rect key="frame" x="20" y="497.66666666666669" width="388" height="212.33333333333331"/>
+                                <rect key="frame" x="20" y="499.66666666666663" width="390" height="262.66666666666663"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -355,11 +357,11 @@
             <objects>
                 <viewController storyboardIdentifier="help06" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ca1-cO-DVb" customClass="Help06ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="EeM-2S-WB6">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xqr-EG-5O7" userLabel="HELP #3">
-                                <rect key="frame" x="30" y="0.0" width="368" height="20.333333333333332"/>
+                                <rect key="frame" x="30" y="0.0" width="370" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend">
                                         <attributes>
@@ -371,7 +373,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Dm6-5K-Ngx">
-                                <rect key="frame" x="0.0" y="36.333333333333314" width="428" height="832.66666666666674"/>
+                                <rect key="frame" x="0.0" y="36.333333333333314" width="430" height="885.66666666666674"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="nFz-al-chT"/>
@@ -401,11 +403,11 @@
             <objects>
                 <viewController storyboardIdentifier="help07" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6MD-My-xuu" customClass="Help07ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="wJC-et-fbk">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vFC-Z8-0aM">
-                                <rect key="frame" x="20" y="0.0" width="388" height="20.333333333333332"/>
+                                <rect key="frame" x="20" y="0.0" width="390" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend top">
                                         <attributes>
@@ -417,19 +419,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="N2H-8c-Oxe" userLabel="help07-top">
-                                <rect key="frame" x="0.0" y="36.333333333333343" width="428" height="453.33333333333326"/>
+                                <rect key="frame" x="0.0" y="36.333333333333343" width="430" height="455.33333333333326"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="N2H-8c-Oxe" secondAttribute="height" multiplier="13700:14506" id="f9x-Po-387"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="6DD-ef-j2B">
-                                <rect key="frame" x="0.0" y="718" width="428" height="151"/>
+                                <rect key="frame" x="0.0" y="770.33333333333337" width="430" height="151.66666666666663"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="6DD-ef-j2B" secondAttribute="height" multiplier="13700:4835" id="yQi-at-VQe"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ruf-jb-KlD">
-                                <rect key="frame" x="20" y="497.66666666666669" width="388" height="212.33333333333331"/>
+                                <rect key="frame" x="20" y="499.66666666666663" width="390" height="262.66666666666663"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -470,11 +472,11 @@
             <objects>
                 <viewController storyboardIdentifier="help08" useStoryboardIdentifierAsRestorationIdentifier="YES" id="g6w-Yv-fKa" customClass="Help08ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="c4u-XD-7JN">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="869"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="922"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUD-ax-eft">
-                                <rect key="frame" x="20" y="0.0" width="388" height="20.333333333333332"/>
+                                <rect key="frame" x="20" y="0.0" width="390" height="20.333333333333332"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend top">
                                         <attributes>
@@ -486,19 +488,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Ryg-bf-lTP">
-                                <rect key="frame" x="6.6666666666666572" y="36.333333333333343" width="414.66666666666674" height="393.33333333333326"/>
+                                <rect key="frame" x="0.0" y="36.333333333333343" width="430" height="407.66666666666663"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Ryg-bf-lTP" secondAttribute="height" multiplier="1020:967" id="WoH-cl-Iiw"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="2ih-HK-Pek">
-                                <rect key="frame" x="6.6666666666666572" y="466" width="414.66666666666674" height="393"/>
+                                <rect key="frame" x="0.0" y="504.33333333333326" width="430" height="407.66666666666674"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="2ih-HK-Pek" secondAttribute="height" multiplier="1020:967" id="4SF-CF-UVf"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilb-9b-REI">
-                                <rect key="frame" x="20" y="437.66666666666669" width="388" height="20.333333333333314"/>
+                                <rect key="frame" x="20" y="452" width="390" height="44.333333333333314"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -540,7 +542,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
