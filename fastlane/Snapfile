@@ -48,14 +48,14 @@ devices([
 # "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
 # "iPhone 14",								# 5.8-inch
 # "iPhone 13 Pro",							# Wiki
-# "iPhone 14 Pro",							# 6.1-inch
+# "iPhone 14 Pro",							# 6.3-inch
 # "iPhone 14 Plus",							# 6.5-inch
-# "iPhone 15 Pro Max",						# 6.7-inch
+# "iPhone 15 Pro Max",						# 6.9-inch
 # "iPad Pro (9.7-inch)",					# 9.7-inch  iOS 16.4
 # "iPad Pro (10.5-inch)",					# 10.5-inch
-# "iPad Pro (11-inch) (4th generation)",	# 11-inch
 # "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
- "iPad Pro (12.9-inch) (6th generation)"	# 12.9-inch
+"iPad Pro (11-inch) (4th generation)",	# 11-inch
+"iPad Pro (12.9-inch) (6th generation)"	# 13-inch
 ])
 
 # ["pt", "pt_BR"] # Portuguese with Brazilian locale
@@ -83,16 +83,19 @@ test_without_building(true)
 output_directory("fastlane/screenshots")
 concurrent_simulators(true)
 skip_open_summary(true)
-number_of_retries(1)
+number_of_retries(0)
 
-# Command below fails with iOS +16.1, 17.x:
-#override_status_bar(true)
+# Command below fails with iOS +16.1, 17.x, 18.x:
+# override_status_bar(true)
 # So use SimulatorStatusMagic to configure iOS 16+ simulators
 # See https://github.com/shinydevelopment/SimulatorStatusMagic
 # iOS 16+: Install the SimulatorStatusMagic app in the simulator
 #          and apply the configuration
 # iOS 17+: Compile library with Xcode
-#          Launch the iOS 17+ simulator to configure (piwigo scheme)
+#          Launch the iOS 17+ simulator (piwigo scheme), stop app
+#          Execute: ../SimulatorStatusMagic/build_and_inject.sh booted
+# iOS 18+: Compile library with Xcode
+#          Launch the iOS 18+ simulator (piwigo scheme), stop app
 #          Execute: ../SimulatorStatusMagic/build_and_inject.sh booted
 
 # clear_previous_screenshots(true)

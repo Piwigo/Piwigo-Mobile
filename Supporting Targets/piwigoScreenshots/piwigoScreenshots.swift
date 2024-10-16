@@ -43,32 +43,81 @@ class piwigoScreenshots: XCTestCase {
         let deviceType = UIDevice().modelName
         sleep(3);
         
-        // Screenshot #1: swipe left and reveal album actions
-        var index = 1
-        if deviceType.hasPrefix("iPad") {
-            index = 7
+        // Settings
+        let withAlbumDescriptions = false
+        
+        // Screenshot #1:
+        if withAlbumDescriptions {
+            // Swipe left to reveal album actions when displaying albums with description
+            var index = 1
+            if deviceType.hasPrefix("iPad") {
+                index = 7
+            }
+            let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: index)
+            let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
+            sleep(4);
+            tableQuery.swipeLeft()
         }
-        let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: index)
-        let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
-        sleep(4);
-        tableQuery.swipeLeft()
         snapshot("Image01")
         
         // Screenshot #2: collection of images
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(2);
         if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 2).swipeUp()
-            sleep(2);
+            if withAlbumDescriptions {
+                app.collectionViews.children(matching: .cell).element(boundBy: 2).swipeUp()
+                sleep(2);
+            } else {
+                switch deviceType {
+                case "iPhone SE (1st generation)":                          // 4-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                case "iPhone SE (3rd generation)":                          // 4.7-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                case "iPhone 8 Plus":                                       // 5.5-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                case "iPhone 14":                                           // 5.8-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                case "iPhone 14 Pro":                                       // 6.1-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                case "iPhone 14 Plus":                                      // 6.5-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                case "iPhone 15 Pro Max":                                   // 6.7-inch
+                    for _ in 1...2 {
+                        app.collectionViews.firstMatch.swipeUp(velocity: 200)
+                        sleep(1)
+                    }
+                default:
+                    break
+                }
+            }
         }
         snapshot("Image02")
-        
+
+        /*
         // Screenshot #3: image previewed
         // https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
         app.collectionViews.cells["Clos de Vougeot"].tap()
         sleep(3)
         switch deviceType {
-        case "iPhone SE":                                           // 4-inch
+        case "iPhone SE (1st generation)":                          // 4-inch
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             sleep(1)
             app.images.element(boundBy: 0).tap()
@@ -127,7 +176,7 @@ class piwigoScreenshots: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
         switch deviceType {
-        case "iPhone SE":                                           // 4-inch
+        case "iPhone SE (1st generation)":                          // 4-inch
             for _ in 1...6 {
                 app.collectionViews.firstMatch.swipeUp(velocity: 200)
                 sleep(1)
@@ -196,7 +245,7 @@ class piwigoScreenshots: XCTestCase {
         app.buttons["Select"].tap()
         sleep(1)
         switch deviceType {
-        case "iPhone SE":                                           // 4-inch
+        case "iPhone SE (1st generation)":                          // 4-inch
             app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
@@ -278,7 +327,7 @@ class piwigoScreenshots: XCTestCase {
         app.navigationBars["editParams"].buttons["Cancel"].tap()
         sleep(1)                        // Leave time for animation
         switch deviceType {
-        case "iPhone SE":                                           // 4-inch
+        case "iPhone SE (1st generation)":                          // 4-inch
             for _ in 1...6 {
                 app.collectionViews.firstMatch.swipeDown(velocity: 200)
                 sleep(1)
@@ -329,7 +378,7 @@ class piwigoScreenshots: XCTestCase {
         app.collectionViews.cells["Hotel de Coimbra"].tap()
         sleep(2)
         switch deviceType {
-        case "iPhone SE",                                           // 4-inch
+        case "iPhone SE (1st generation)":                          // 4-inch
              "iPhone SE (3rd generation)",                          // 4.7-inch
              "iPhone 8 Plus",                                       // 5.5-inch
              "iPhone 14",                                           // 5.8-inch
@@ -363,7 +412,7 @@ class piwigoScreenshots: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
         switch deviceType {
-        case "iPhone SE",                                           // 4-inch
+        case "iPhone SE (1st generation)":                          // 4-inch
              "iPhone SE (3rd generation)",                          // 4.7-inch
              "iPhone 8 Plus",                                       // 5.5-inch
              "iPhone 14",                                           // 5.8-inch
@@ -458,5 +507,6 @@ class piwigoScreenshots: XCTestCase {
         app.tables["settings"].firstMatch.swipeUp(velocity: 200)
         sleep(2)                        // Leave time for animation
         snapshot("Image10")
+        */
     }
 }

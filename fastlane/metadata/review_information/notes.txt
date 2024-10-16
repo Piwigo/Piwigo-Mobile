@@ -1,6 +1,6 @@
-This version adopts the album sorting options of the web UI, introduces an option for sorting photos on-the-fly and a command for rotating photos already uploaded to the Piwigo server. The MBProgressHUD library has also been removed and the app now uses no third party library.
+This version brings a command for deleting a selection of photos/videos stored in the device and expands or adds contextual menus for selecting, sharing, deleting or uploading photos. It also fixes the bugs listed in the TestFlight section.
 
-Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/Dev/
+Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/15.x/
 And here are servers you can try without credentials: https://raia.com, https://www.neilfitzgeraldphoto.co.nz/gallery, http://www.dongshawhwei.com/photos.
 
 The privacy policy is provided in the app in Chinese (Simplified), Danish, Dutch,  English, French, German, Hungarian, Indonesian, Italian, Japanese, Polish, Russian, Spanish and Swedish.
