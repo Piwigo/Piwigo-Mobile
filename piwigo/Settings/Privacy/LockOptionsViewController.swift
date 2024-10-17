@@ -134,7 +134,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             let title = NSLocalizedString("settings_appLock", comment: "App Lock")
@@ -158,7 +158,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
 
         case 1:     // Change Password
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
                 return ButtonTableViewCell()
             }
             if AppVars.shared.appLockKey.isEmpty {
@@ -171,7 +171,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
 
         case 2:     // TouchID / FaceID / OpticID On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             var title = ""

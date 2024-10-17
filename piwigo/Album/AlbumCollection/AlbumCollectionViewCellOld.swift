@@ -114,7 +114,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
             else { preconditionFailure("Could not load AlbumViewController") }
             subAlbumVC.categoryId = albumData.pwgID
-            pushAlbumDelegate?.pushAlbumView(subAlbumVC, completion: {_ in })
+            pushAlbumDelegate?.pushAlbumView(subAlbumVC, completion: { _ in })
         }
     }
     
@@ -127,9 +127,9 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         else { return nil }
 
         // Determine number of orphans if album deleted
-        DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
             self.nbOrphans = Int64.min
-            AlbumUtilities.calcOrphans(albumData.pwgID) { nbOrphans in
+            AlbumUtilities.calcOrphans(albumData.pwgID) { [self] nbOrphans in
                 self.nbOrphans = nbOrphans
             } failure: { _ in }
         }

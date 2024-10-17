@@ -26,7 +26,7 @@ class LocalImagePreviewViewController: UIViewController {
             DispatchQueue.main.async {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
-                        print("••> Error : \(error.localizedDescription)")
+                        debugPrint("••> Error : \(error.localizedDescription)")
                     }
                     self.imageView.image = UIImage(named: "placeholder")!
                     return

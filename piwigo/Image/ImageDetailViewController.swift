@@ -38,51 +38,19 @@ class ImageDetailViewController: UIViewController
         return view.bounds.size
     }()
     
+    // Cached variables
+    private lazy var scale = CGFloat.zero
+    private lazy var imageSize = CGSize.zero
+    private lazy var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
+    
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Get high-resolution image size
-        let viewSize = view.bounds.size
-        let scale = view.traitCollection.displayScale * pwgImageSize.maxZoomScale // to limit photo size in memory
-        var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        if imageData.isVideo, previewSize == .fullRes {
-            previewSize = .xxLarge
-        }
-        
-        // Check if we already have the high-resolution image in cache
-        if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
-            // Show high-resolution image in cache
-            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize, scale: scale)
-            setImageView(with: cachedImage)
-        } else {
-            // Display thumbnail image which should be in cache
-            let placeHolder = UIImage(named: "unknownImage")!
-            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
-            
-            // Download high-resolution image
-            imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
-            if let imageURL = self.imageURL {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                           placeHolder: placeHolder) { fractionCompleted in
-                    DispatchQueue.main.async {
-                        // Show download progress
-                        self.progressView.progress = fractionCompleted
-                    }
-                } completion: { cachedImageURL in
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
-                    DispatchQueue.main.async {
-                        // Hide progress view
-                        self.progressView.isHidden = true
-                        // Replace thumbnail with high-resolution image
-                        self.setImageView(with: cachedImage)
-                    }
-                } failure: { _ in }
-            }
-        }
+        // Initialise scale, size, and display image of default preview size
+        scale = max(view.traitCollection.displayScale, 1.0) * pwgImageSize.maxZoomScale
+        imageSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -96,6 +64,9 @@ class ImageDetailViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Load andd display image (resume download if needed)
+        loadAndDisplayHighResImage()
 
         // Configure the description view before layouting subviews
         descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
@@ -152,7 +123,7 @@ class ImageDetailViewController: UIViewController
         super.viewWillTransition(to: size, with: coordinator)
 
         // Animate change of view size and reposition image
-        coordinator.animate(alongsideTransition: { [self] context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
                 descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
@@ -170,14 +141,87 @@ class ImageDetailViewController: UIViewController
 //            applyImagePositionInScrollView()
         })
     }
+    
+    override func didReceiveMemoryWarning() {
+        // Replace high-res image by thumbnail image in cache until the next lower version is loaded
+        let placeHolder = UIImage(named: "unknownImage")!
+        let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+        
+        // Look for the first available image of lower resolution
+        if previewSize == .fullRes {
+            if NetworkVars.hasXXLargeSizeImages {
+                previewSize = .xxLarge
+            } else if NetworkVars.hasXLargeSizeImages {
+                previewSize = .xLarge
+            } else if NetworkVars.hasLargeSizeImages {
+                previewSize = .large
+            } else {
+                previewSize = .medium
+            }
+        }
+        
+        // Store for future use
+        ImageVars.shared.defaultImagePreviewSize = previewSize.rawValue
+        
+        // Replace high-resolution image
+        loadAndDisplayHighResImage()
+    }
 
     deinit {
         // Unregister all observers
+        debugPrint("••> ImageDetailViewController released memory")
+        imageData = nil
+        imageView.image = nil
         NotificationCenter.default.removeObserver(self)
     }
     
     
     // MARK: - Image Management
+    private func loadAndDisplayHighResImage() {
+        // Check if we already have the high-resolution image in cache
+        if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
+            // Show high-resolution image in cache
+            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: imageSize)
+            setImageView(with: cachedImage)
+        } else {
+            // Display thumbnail image which should be in cache
+            let placeHolder = UIImage(named: "unknownImage")!
+            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            
+            // Download high-resolution image
+            imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
+            if let imageURL = self.imageURL {
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
+                                           placeHolder: placeHolder) { [weak self] fractionCompleted in
+                    self?.updateProgressView(with: fractionCompleted)
+                } completion: { [weak self] cachedImageURL in
+                    self?.downsampleImage(atURL: cachedImageURL)
+                } failure: { _ in }
+            }
+        }
+    }
+    
+    private func updateProgressView(with fractionCompleted: Float) {
+//        debugPrint("••> Loading image \(imageData.pwgID): \(fractionCompleted)%")
+        DispatchQueue.main.async { [self] in
+            // Show download progress
+            self.progressView.progress = fractionCompleted
+        }
+    }
+    
+    private func downsampleImage(atURL fileURL: URL) {
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize)
+        DispatchQueue.main.async { [self] in
+            // Hide progress view
+            self.progressView.isHidden = true
+            // Replace thumbnail with high-resolution image
+            self.setImageView(with: cachedImage)
+        }
+    }
+
     private func setImageView(with image: UIImage) {
         // Any change?
         if imageView.image?.size == image.size {
@@ -204,42 +248,40 @@ class ImageDetailViewController: UIViewController
     
     func rotateImageView(by angle: Double, completion: @escaping () -> Void) {
         // Download high-resolution image
-        let viewSize = view.bounds.size
-        let scale = view.traitCollection.displayScale * pwgImageSize.maxZoomScale // to limit photo size in memory
-        let previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
         let placeHolder = imageView.image ?? UIImage(named: "unknownImage")!
         imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
         if let imageURL = self.imageURL {
             PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                        fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                       placeHolder: placeHolder) { fractionCompleted in
-                DispatchQueue.main.async {
-                    // Show download progress
-                    self.progressView.progress = fractionCompleted
-                }
-            } completion: { cachedImageURL in
-                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
-                DispatchQueue.main.async { [self] in
-                    // Hide progress view
-                    self.progressView.isHidden = true
-                    
-                    // Rotate image keeping it displayed in fullscreen
-                    let aspectRatio = cachedImage.size.height / cachedImage.size.width
-                    UIView.animate(withDuration: 0.5) { [self] in
-                        let scale = scrollView.minimumZoomScale * aspectRatio
-                        let angleRad = -angle * .pi / 180.0
-                        imageView.transform = CGAffineTransform(rotationAngle: angleRad).scaledBy(x: scale, y: scale)
-                    }
-                    completion: { [self] _ in
-                        // Reset image view with rotated image
-                        didRotateImage = true
-                        self.setImageView(with: cachedImage)
-
-                        // Hide HUD
-                        completion()
-                    }
-                }
+                                       placeHolder: placeHolder) { [weak self] fractionCompleted in
+                self?.updateProgressView(with: fractionCompleted)
+            } completion: { [weak self] cachedImageURL in
+                self?.downsampleImage(atURL: cachedImageURL, rotateBy: angle, completion: completion)
             } failure: { _ in }
+        }
+    }
+    
+    private func downsampleImage(atURL fileURL: URL, rotateBy angle: Double, completion: @escaping () -> Void) {
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize)
+        DispatchQueue.main.async { [self] in
+            // Hide progress view
+            self.progressView.isHidden = true
+            
+            // Rotate image keeping it displayed in fullscreen
+            let aspectRatio = cachedImage.size.height / cachedImage.size.width
+            UIView.animate(withDuration: 0.5) { [self] in
+                let scale = scrollView.minimumZoomScale * aspectRatio
+                let angleRad = -angle * .pi / 180.0
+                self.imageView.transform = CGAffineTransform(rotationAngle: angleRad).scaledBy(x: scale, y: scale)
+            }
+            completion: { [self] _ in
+                // Reset image view with rotated image
+                self.didRotateImage = true
+                self.setImageView(with: cachedImage)
+
+                // Hide HUD
+                completion()
+            }
         }
     }
     

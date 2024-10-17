@@ -35,8 +35,8 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {
-            ImageUtilities.addToFavorites(imageData) {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
+            ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Add image to favorites album
@@ -51,10 +51,10 @@ extension ImageViewController
                         favoriteBarButton?.isEnabled = true
                     }
                 }
-            } failure: { error in
+            } failure: { [self] error in
                 self.addToFavoritesError(error)
             }
-        } failure: { error in
+        } failure: { [unowned self] error in
             self.addToFavoritesError(error)
         }
     }
@@ -85,8 +85,8 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {
-            ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
+            ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
@@ -107,16 +107,16 @@ extension ImageViewController
                         }
                     }
                 }
-            } failure: { error in
+            } failure: { [self] error in
                 self.removeFromFavoritesError(error)
             }
-        } failure: { error in
+        } failure: { [unowned self] error in
             self.removeFromFavoritesError(error)
         }
     }
     
     private func removeFromFavoritesError(_ error: NSError) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -129,7 +129,7 @@ extension ImageViewController
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
             self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) {
+                                    errorMessage: error.localizedDescription) { [self] in
                 self.favoriteBarButton?.isEnabled = true
             }
         }

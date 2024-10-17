@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         // Register notifications for displaying number of uploads to perform in app badge
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
-//                if granted { print("request succeeded!") }
+//                if granted { debugPrint("request succeeded!") }
         }
 
         // Color palette depends on system settings
@@ -213,19 +213,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Did fail to register notifications.")
+        debugPrint("Did fail to register notifications.")
     }
     
 
     // MARK: - Transitioning to the Foreground
     func applicationWillEnterForeground(_ application: UIApplication) {
-        print("••> App will enter foreground.")
+        debugPrint("••> App will enter foreground.")
         // Called when the app is about to enter the foreground.
         // This call is then followed by a call to applicationDidBecomeActive().
     }
         
     func applicationDidBecomeActive(_ application: UIApplication) {
-        print("••> App did become active.")
+        debugPrint("••> App did become active.")
         // The app has become active.
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
@@ -266,7 +266,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Transitioning to the Background
     func applicationWillResignActive(_ application: UIApplication) {
-        print("••> App will resign active.")
+        debugPrint("••> App will resign active.")
         // Called when the app is about to become inactive. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 
@@ -302,7 +302,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        print("••> App did enter background.")
+        debugPrint("••> App did enter background.")
         // Called when the app is now in the background.
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
@@ -315,7 +315,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
         
     func applicationWillTerminate(_ application: UIApplication) {
-        print("••> App will terminate.")
+        debugPrint("••> App will terminate.")
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
@@ -343,12 +343,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Background Uploading
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
-        print("    > Handle events for background session with ID: \(identifier)");
+        debugPrint("    > Handle events for background session with ID: \(identifier)");
         
         // Upload session of the app?
         if identifier.compare(UploadSessions.shared.uploadBckgSessionIdentifier) == .orderedSame {
             UploadSessions.shared.uploadSessionCompletionHandler = completionHandler
-            print("    > Rejoining session with CompletionHandler.")
+            debugPrint("••> Rejoining session with CompletionHandler.")
         }
     }
     
@@ -393,9 +393,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Submit upload request
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("    > Background upload task request submitted with success.")
+            debugPrint("••> Background upload task request submitted with success.")
         } catch {
-            print("    > Failed to submit background upload request: \(error)")
+            debugPrint("••> Failed to submit background upload request: \(error)")
         }
     }
 
@@ -403,7 +403,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func handleNextUpload(task: BGProcessingTask) {
         // Schedule the next upload if needed
         if UploadManager.shared.nberOfUploadsToComplete > 0 {
-            print("    > Schedule next uploads.")
+            debugPrint("    > Schedule next uploads.")
             scheduleNextUpload()
         }
 
@@ -442,7 +442,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Provide an expiration handler for the background task
         // that cancels the operation
         task.expirationHandler = {
-            print("    > Task expired: Upload operation cancelled.")
+            debugPrint("    > Task expired: Upload operation cancelled.")
             // Cancel operations
             uploadQueue.cancelAllOperations()
         }
@@ -451,7 +451,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // when the operation completes
         let lastOperation = uploadOperations.last!
         lastOperation.completionBlock = {
-            print("    > Task completed with success.")
+            debugPrint("••> Task completed with success.")
             task.setTaskCompleted(success: true)
             // Save cached data in the main thread
             DispatchQueue.main.async {
@@ -460,7 +460,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Start the operation
-        print("    > Start upload operations in background task...");
+        debugPrint("••> Start upload operations in background task...");
         uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
     }
 
@@ -518,7 +518,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
             catch {
-                print("Could not clean up the temporary directory")
+                debugPrint("Could not clean up the temporary directory")
             }
         }
     }
@@ -871,7 +871,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func initColorPalette() {
         // Color palette depends on system settings
         AppVars.shared.isSystemDarkModeActive = (UIScreen.main.traitCollection.userInterfaceStyle == .dark)
-        print("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
+        debugPrint("••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), App mode: \(AppVars.shared.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.shared.switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
         // Apply color palette
         screenBrightnessChanged()
@@ -982,7 +982,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Notify palette change to views
         NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-//        print("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
+//        debugPrint("••> App changed to \(AppVars.shared.isDarkPaletteActive ? "dark" : "light") mode");
     }
 }
 
@@ -1008,7 +1008,7 @@ extension AppDelegate: AppLockDelegate {
 
             // Login?
             if service.count > 0 || (username.count > 0 && password.count > 0) {
-                print("••> Call launchLogin() from AppDelegate.")
+                debugPrint("••> Call launchLogin() from AppDelegate.")
                 loginVC.launchLogin()
             }
             return

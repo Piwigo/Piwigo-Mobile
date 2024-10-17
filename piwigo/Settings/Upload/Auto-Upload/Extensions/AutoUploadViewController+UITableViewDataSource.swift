@@ -38,7 +38,7 @@ extension AutoUploadViewController: UITableViewDataSource
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
@@ -65,7 +65,7 @@ extension AutoUploadViewController: UITableViewDataSource
             
         case 1:     // Source & destination albums
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
             }
             
@@ -110,7 +110,7 @@ extension AutoUploadViewController: UITableViewDataSource
             switch indexPath.row {
             case 0 /* Tags */ :
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
+                    debugPrint("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
                     return EditImageTagsTableViewCell()
                 }
                 // Retrieve tags and switch to old cache data format
@@ -120,7 +120,7 @@ extension AutoUploadViewController: UITableViewDataSource
 
             case 1 /* Comments */ :
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
+                    debugPrint("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                     return EditImageTextViewTableViewCell()
                 }
                 cell.config(withText: NSAttributedString(string: UploadVars.autoUploadComments),

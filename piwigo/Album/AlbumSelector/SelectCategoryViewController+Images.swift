@@ -20,16 +20,16 @@ extension SelectCategoryViewController {
         // Check image data
         guard let imageData = inputImages.first else {
             // Close HUD
-            updateHUDwithSuccess() {
+            updateHUDwithSuccess() { [self] in
                 // Save changes
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save copied images \(error), \(error.userInfo)")
+                    debugPrint("Could not save copied images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and dismiss album selector
-                self.hideHUD(afterDelay: pwgDelayHUD) {
-                    self.dismiss(animated: true) {
+                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                    self.dismiss(animated: true) { [self] in
                         // Update image data in current view (ImageDetailImage view)
                         self.imageCopiedDelegate?.didCopyImage()
                     }
@@ -47,7 +47,7 @@ extension SelectCategoryViewController {
         }
         onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
-            self.hideHUD {
+            self.hideHUD { [self] in
                 self.showError(error)
             }
         }
@@ -68,9 +68,9 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     // Add image to album
                     albumData.addToImages(imageData)
                     
@@ -103,17 +103,17 @@ extension SelectCategoryViewController {
         // Jobe done?
         guard let imageData = inputImages.first else {
             // Close HUD
-            updateHUDwithSuccess() {
+            updateHUDwithSuccess() { [self] in
                 // Save changes
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save moved images \(error), \(error.userInfo)")
+                    debugPrint("Could not save moved images \(error), \(error.userInfo)")
                 }
 
                 // Hide HUD and dismiss album selector
-                self.hideHUD(afterDelay: pwgDelayHUD) {
-                    self.dismiss(animated: true) {
+                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                    self.dismiss(animated: true) { [self] in
                         // Remove image from ImageViewController
                         self.imageRemovedDelegate?.didRemoveImage()
                     }
@@ -131,7 +131,7 @@ extension SelectCategoryViewController {
         }
         onFailure: { [self] error in
             // Close HUD, inform user and save in Core Data store
-            self.hideHUD {
+            self.hideHUD { [self] in
                 self.showError(error)
             }
         }
@@ -155,9 +155,9 @@ extension SelectCategoryViewController {
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     // Add image to target album
                     albumData.addToImages(imageData)
                     

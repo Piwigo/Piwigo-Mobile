@@ -62,7 +62,7 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Create cell
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LocalImageCollectionViewCell", for: indexPath) as? LocalImageCollectionViewCell else {
-            print("Error: collectionView.dequeueReusableCell does not return a LocalImageCollectionViewCell!")
+            debugPrint("Error: collectionView.dequeueReusableCell does not return a LocalImageCollectionViewCell!")
             return LocalImageCollectionViewCell()
         }
         

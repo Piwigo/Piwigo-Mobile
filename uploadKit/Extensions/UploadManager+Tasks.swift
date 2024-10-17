@@ -34,16 +34,16 @@ extension UploadManager
             try completed.performFetch()
         }
         catch {
-            print("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error)")
         }
 
         // Update counter and app badge
         self.updateNberOfUploadsToComplete()
 
         // Check current queue
-        print("\(dbg()) findNextImageToUpload() in", queueName())
-        print("\(dbg()) \((self.uploads.fetchedObjects ?? []).count) pending and \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
-        print("\(dbg()) preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
+        debugPrint("\(dbg()) findNextImageToUpload() in", queueName())
+        debugPrint("\(dbg()) \((self.uploads.fetchedObjects ?? []).count) pending and \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
+        debugPrint("\(dbg()) preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
                 
         // Pause upload manager if:
         /// - app not in the foreground anymore
@@ -241,7 +241,7 @@ extension UploadManager
             try uploads.performFetch()
         }
         catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
         
         // Update counter and app badge
@@ -277,7 +277,7 @@ extension UploadManager
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads.map({$0.objectID}))
-            print("\(dbg()) collected \(uploadRequestsToTransfer.count) failed uploads")
+            debugPrint("\(dbg()) collected \(uploadRequestsToTransfer.count) failed uploads")
         }
         
         // Second, find upload requests ready for transfer
@@ -288,7 +288,7 @@ extension UploadManager
             let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(prepared[..<min(maxNberOfUploadsPerBckgTask,prepared.count)]))
-            print("\(dbg()) collected \(min(maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
+            debugPrint("\(dbg()) collected \(min(maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
         }
         
         // Finally, get list of upload requests to prepare
@@ -296,7 +296,7 @@ extension UploadManager
         if diff <= 0 { return }
         let requestsToPrepare = (uploads.fetchedObjects ?? [])
             .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly})
-        print("\(dbg()) collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
+        debugPrint("\(dbg()) collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         let toPrepare = requestsToPrepare.map({$0.objectID})
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
@@ -311,16 +311,16 @@ extension UploadManager
                     // Retrieve upload request properties
                     guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
                     guard let objectURI = URL(string: objectURIstr) else {
-                        print("\(dbg()) task \(task.taskIdentifier) | no object URI!")
+                        debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
                     guard let uploadID = uploadProvider.bckgContext
                         .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                        print("\(dbg()) task \(task.taskIdentifier) | no objectID!")
+                        debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
                     // Remembers that this upload request is being dealt with
-                    print("\(dbg()) is uploading: \(uploadID)")
+                    debugPrint("\(dbg()) is uploading: \(uploadID)")
                     // Remembers that this upload request is being dealt with
                     self.isUploading.insert(uploadID)
                     
@@ -342,16 +342,16 @@ extension UploadManager
                         // Retrieve upload request properties
                         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
                         guard let objectURI = URL(string: objectURIstr) else {
-                            print("\(dbg()) task \(task.taskIdentifier) | no object URI!")
+                            debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                             continue
                         }
                         guard let uploadID = uploadProvider.bckgContext
                             .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                            print("\(dbg()) task \(task.taskIdentifier) | no objectID!")
+                            debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                             continue
                         }
                         // Remembers that this upload request is being dealt with
-                        print("\(dbg()) is uploading: \(uploadID)")
+                        debugPrint("\(dbg()) is uploading: \(uploadID)")
                         // Remembers that this upload request is being dealt with
                         self.isUploading.insert(uploadID)
                         

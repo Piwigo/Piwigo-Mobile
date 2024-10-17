@@ -200,7 +200,7 @@ class ImageViewController: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { [self] context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Update image detail view
             updateNavBar()
             setTitleViewFromImageData()
@@ -241,7 +241,7 @@ class ImageViewController: UIViewController {
     }
     
     deinit {
-        print("••> ImageViewController is being deinitialized.")
+//        debugPrint("••> ImageViewController is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
@@ -344,9 +344,9 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            PwgSession.checkSession(ofUser: user) { [self] in
+            PwgSession.checkSession(ofUser: user) { [unowned self] in
                 let imageID = imageData.pwgID
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) {
+                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
                     DispatchQueue.main.async { [self] in
                         // Look for the corresponding view controller
                         guard let vcs = self.pageViewController?.viewControllers else { return }
@@ -381,13 +381,13 @@ class ImageViewController: UIViewController {
                             }
                         }
                     }
-                } failure: { error in
+                } failure: { [self] error in
                     // Display error only when image data is incomplete
                     if isIncomplete {
                         self.retrieveImageDataError(error)
                     }
                 }
-            } failure: { [self] error in
+            } failure: { [unowned self] error in
                 // Don't display an error if there is no Internet connection
                 if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
                     return
@@ -419,11 +419,11 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        PwgSession.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
-                } failure: { error in
+                } failure: { [self] error in
                     // Session logout required?
                     if let pwgError = error as? PwgSessionError,
                        [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -435,7 +435,7 @@ class ImageViewController: UIViewController {
                     // Statistics not updated ► No error reported
                 }
             }
-        } failure: { error in
+        } failure: { [unowned self] error in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -508,7 +508,7 @@ class ImageViewController: UIViewController {
             let dateFormatter = DateUtilities.dateFormatter()
             if UIDevice.current.userInterfaceIdiom == .pad {
                 dateFormatter.dateStyle = .long
-                dateFormatter.timeStyle = .long
+                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
                 subTitleLabel.text = dateFormatter.string(from: dateCreated)
             } else {
                 dateFormatter.dateStyle = .medium
@@ -723,7 +723,7 @@ class ImageViewController: UIViewController {
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
     func setEnableStateOfButtons(_ state: Bool) {
-        print("••> \(state ? "Enable" : "Disable") buttons")
+//        debugPrint("••> \(state ? "Enable" : "Disable") buttons")
         actionBarButton?.isEnabled = state
         shareBarButton.isEnabled = state
         moveBarButton.isEnabled = state
@@ -883,7 +883,7 @@ extension ImageViewController: UIPageViewControllerDelegate
         }
         
         // Set title and buttons
-        print("••> Did finish animating page view controller for image at index \(indexPath)")
+//        debugPrint("••> Did finish animating page view controller for image at index \(indexPath)")
         setTitleViewFromImageData()
         updateNavBar()
         setEnableStateOfButtons(imageData.fileSize != Int64.zero)
@@ -910,7 +910,7 @@ extension ImageViewController: UIPageViewControllerDataSource
 {
     // Create view controller for presenting the image at the provided index
     func imageDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> ImageDetailViewController? {
-        print("••> Create page view controller for image #\(imageData.pwgID) at index \(indexPath)")
+//        debugPrint("••> Create page view controller for image #\(imageData.pwgID) at index \(indexPath)")
         guard let imageDVC = storyboard?.instantiateViewController(withIdentifier: "ImageDetailViewController") as? ImageDetailViewController
         else { return nil }
 
@@ -922,7 +922,7 @@ extension ImageViewController: UIPageViewControllerDataSource
     
     // Create view controller for presenting the video at the provided index
     func videoDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> VideoDetailViewController? {
-        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
+//        debugPrint("••> Create page view controller for video #\(imageData.pwgID) at index \(indexPath)")
         guard let videoDVC = storyboard?.instantiateViewController(withIdentifier: "VideoDetailViewController") as? VideoDetailViewController
         else { return nil }
 

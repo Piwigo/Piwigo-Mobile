@@ -113,7 +113,7 @@ class TroubleshootingViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         // Update Piwigo authors label
-        coordinator.animate(alongsideTransition: { (context) in
+        coordinator.animate(alongsideTransition: { [self] _ in
             // Piwigo authors
             self.authorsLabel?.text = SettingsUtilities.getAuthors(forView: self.view)
         }, completion: nil)
@@ -143,7 +143,7 @@ class TroubleshootingViewController: UIViewController {
                 let predicate = NSPredicate(format: "subsystem IN %@", ["org.piwigo", "org.piwigoKit", "org.uploadKit"])
                 let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
                 let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
-                print("••> completed in \(duration.rounded()) ms")
+                debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
                 // Core Data
                 var someLogs = entries.filter({$0.category == "TagToTagMigrationPolicy_09_to_0C"})

@@ -93,14 +93,14 @@ class TagSelectorViewController: UITableViewController {
         
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        PwgSession.checkSession(ofUser: user) {
-            self.tagProvider.fetchTags(asAdmin: false) { error in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
+            self.tagProvider.fetchTags(asAdmin: false) { [self] error in
                 DispatchQueue.main.async { [self] in
                     guard let error = error else { return }
                     didFetchTagsWithError(error)
                 }
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             didFetchTagsWithError(error)
         }
         
@@ -194,7 +194,7 @@ class TagSelectorViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagSelectorCell", for: indexPath) as? TagSelectorCell else {
-            print("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!")
+            debugPrint("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!")
             return TagSelectorCell()
         }
         cell.configure(with: tags.object(at: indexPath))

@@ -24,6 +24,9 @@ extension UploadManager {
         if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
            !upload.compressImageOnUpload, !upload.stripGPSdataOnUpload
         {
+            // Get creation date from metadata if possible
+            upload.creationDate = getCreationDateOfImage(atURL: originalFileURL)
+            
             // Get MD5 checksum and MIME type, update counter
             finalizeImageFile(atURL: originalFileURL, with: upload) {
                 self.didPrepareImage(for: upload, nil)
@@ -98,17 +101,58 @@ extension UploadManager {
     }
 
     
-    // MARK: - Utilities    
-    /// - Strip private metadata w/o recompression
+    // MARK: - Utilities
+    // Extract creation date from metadata
+    /// -> update upload.creationDate
+    fileprivate func getCreationDateOfImage(atURL originalFileURL: URL) -> TimeInterval {
+        autoreleasepool {
+            // Initialise date with file creation date
+            let creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            
+            // Create image source
+            let options = [kCGImageSourceShouldCache : false] as CFDictionary
+            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
+                // Could not prepare image source
+                return creationDate
+            }
+
+            // Get number of images in source
+            let nberOfImages = CGImageSourceGetCount(sourceRef)
+            if nberOfImages == 0 {
+                // Could not prepare image source
+                return creationDate
+            }
+            
+            // Get creation date from metadata if possible
+            if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
+                return dateFromMetadata.timeIntervalSinceReferenceDate
+            }
+            return creationDate
+        }
+    }
+    
+    fileprivate func getCreationDateOfImageSource(_ sourceRef: CGImageSource, options: CFDictionary,
+                                              nberOfImages: Int) -> Date? {
+        // Loop over images contained in source file and adopt first available date/time of creation
+        for imageIndex in 0..<nberOfImages {
+            if let properties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any],
+               let date = properties.creationDate() {
+                return date
+            }
+        }
+        return nil
+    }
+    
+    // Strip private metadata w/o recompression
     /// -> Return file URL w/ or w/o error
     private func stripMetadataOfImage(atURL originalFileURL:URL, with upload: Upload,
                                       completion: @escaping (URL) -> Void,
                                       failure: @escaping (Error?) -> Void) {
         autoreleasepool {
             // Create image source
-            let imageSourceOptions = [kCGImageSourceShouldCache      : false,
-                                      kCGImageSourceShouldAllowFloat : true] as CFDictionary
-            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, imageSourceOptions) else {
+            let options = [kCGImageSourceShouldCache      : false,
+                           kCGImageSourceShouldAllowFloat : true] as CFDictionary
+            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 failure(error)
@@ -122,6 +166,13 @@ extension UploadManager {
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 failure(error)
                 return
+            }
+            
+            // Get creation date from metadata if possible
+            if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
             }
 
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
@@ -158,7 +209,7 @@ extension UploadManager {
         }
     }
     
-    // Modify images at URL (w/o changing its format)
+    // Modify image at URL (w/o changing its format)
     /// - Resize images
     /// - Compress images if demanded in properties
     /// - Strip private metadata if demanded in properties
@@ -168,9 +219,9 @@ extension UploadManager {
                              failure: @escaping (Error?) -> Void) {
         autoreleasepool {
             // Create image source
-            let imageSourceOptions = [kCGImageSourceShouldCacheImmediately : false,
-                                      kCGImageSourceShouldAllowFloat       : true] as CFDictionary
-            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, imageSourceOptions) else {
+            let options = [kCGImageSourceShouldCacheImmediately : false,
+                           kCGImageSourceShouldAllowFloat       : true] as CFDictionary
+            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 failure(error)
@@ -185,7 +236,14 @@ extension UploadManager {
                 failure(error)
                 return
             }
-            
+                        
+            // Get creation date from metadata if possible
+            if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Get URL of final image data file to be stored into Piwigo/Uploads directory
             let fileURL = getUploadFileURL(from: upload, deleted: true)
 
@@ -200,22 +258,22 @@ extension UploadManager {
 
             // Apply properties of the source to the destination
             /// - must be done before adding images
-            if let containerProperties = CGImageSourceCopyProperties(sourceRef, imageSourceOptions) as? [CFString : Any] {
+            if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
                 // Should we remove private metadata?
-                var options: [CFString : Any] = [:]
+                var properties: [CFString : Any] = [:]
                 if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
-                    options = containerProperties.stripPrivateProperties()
+                    properties = containerProperties.stripPrivateProperties()
                 } else {
-                    // Removes private metadata attributed to this image
-                    options = containerProperties
+                    // Keeps private metadata attributed to this image
+                    properties = containerProperties
                 }
                 
                 // Fix properties
-                options.fixProperties(from: containerProperties)
+                properties.fixProperties(from: containerProperties)
                 
                 // Copy metadata w/o private infos
-                CGImageDestinationSetProperties(destinationRef, options as CFDictionary)
+                CGImageDestinationSetProperties(destinationRef, properties as CFDictionary)
             }
 
             // Loop over images contained in source file
@@ -250,8 +308,7 @@ extension UploadManager {
                 
                 // Set metadata from the source image
                 var imageOptions: [CFString : Any] = [:]
-                if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex,
-                                                                            imageSourceOptions) as? [CFString : Any] {
+                if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
                     // Should we remove private metadata?
                     if upload.stripGPSdataOnUpload {
                         // Removes private metadata attributed to this image
@@ -297,13 +354,29 @@ extension UploadManager {
                               failure: @escaping (Error?) -> Void) {
         autoreleasepool {
             // Create image source
-            let imageSourceOptions = [kCGImageSourceShouldCacheImmediately : false,
-                                      kCGImageSourceShouldAllowFloat       : true] as CFDictionary
-            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, imageSourceOptions) else {
+            let options = [kCGImageSourceShouldCacheImmediately : false,
+                           kCGImageSourceShouldAllowFloat       : true] as CFDictionary
+            guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
                 let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 failure(error)
                 return
+            }
+            
+            // Get number of images in source
+            let nberOfImages = CGImageSourceGetCount(sourceRef)
+            if nberOfImages == 0 {
+                // Could not prepare image source
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                failure(error)
+                return
+            }
+                        
+            // Get creation date from metadata if possible
+            if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
             }
             
             // Get index of the primary image
@@ -363,7 +436,7 @@ extension UploadManager {
             
             // Apply container properties of the source to the destination
             /// - must be done before adding images
-            if let containerProperties = CGImageSourceCopyProperties(sourceRef, imageSourceOptions) as? [CFString : Any] {
+            if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
                 // Should we remove private metadata?
                 var options: [CFString : Any] = [:]
                 if upload.stripGPSdataOnUpload {
@@ -383,8 +456,7 @@ extension UploadManager {
 
             // Set metadata from the source image
             var imageOptions: Dictionary<CFString,Any> = [:]
-            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex,
-                                                                        imageSourceOptions) as? [CFString : Any] {
+            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
                 // Should we remove private metadata?
                 if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image

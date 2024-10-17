@@ -16,7 +16,7 @@ extension SettingsViewController
     // MARK: - Image Sizes
     func getThumbnailSizes() -> Set<pwgImageSize> {
         // Album and photo thumbnails
-        // Select images whose size is lower than the default preview size
+        // Select images whose size is lower than or equal to the default thumbnail sizes
         let allSizes = pwgImageSize.allCases
         let thumbSize = max(AlbumVars.shared.defaultThumbnailSize, AlbumVars.shared.defaultAlbumThumbnailSize)
         return Set(allSizes.filter({$0.rawValue <= thumbSize}))
@@ -24,7 +24,7 @@ extension SettingsViewController
     
     func getPhotoSizes() -> Set<pwgImageSize> {
         // Album and photo thumbnails
-        // Select images whose size is lower than the default preview size
+        // Select images whose size is greater than the default thumbnail sizes
         let allSizes = pwgImageSize.allCases
         let thumbSize = max(AlbumVars.shared.defaultThumbnailSize, AlbumVars.shared.defaultAlbumThumbnailSize)
         return Set(allSizes.filter({$0.rawValue > thumbSize}))

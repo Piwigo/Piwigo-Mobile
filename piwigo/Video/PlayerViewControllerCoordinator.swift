@@ -353,7 +353,7 @@ class PlayerViewControllerCoordinator: NSObject {
                    let fm = FileManager.default
                    let dirURL = self.video.cacheURL.deletingLastPathComponent()
                    if fm.fileExists(atPath: dirURL.path) == false {
-                       print("••> Create directory \(dirURL.path)")
+                       debugPrint("••> Create directory \(dirURL.path)")
                        try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
                                                    attributes: nil)
                    }
@@ -362,7 +362,7 @@ class PlayerViewControllerCoordinator: NSObject {
                    try? fm.removeItem(at: self.video.cacheURL)
 
                    // Store video file in cache for reuse
-                   exportSession.exportAsynchronously {
+                   exportSession.exportAsynchronously { [self] in
                        switch exportSession.status {
                        case .waiting:
                            debugPrint("••> Video waiting to export more data… ;-)")
@@ -597,7 +597,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
     {
         status.insert([.fullScreenActive, .beingPresented])
         
-        coordinator.animate(alongsideTransition: nil) { context in
+        coordinator.animate(alongsideTransition: nil) { [self] context in
             self.status.remove(.beingPresented)
             // You need to check context.isCancelled to determine whether the transition succeeds.
             if context.isCancelled {
@@ -624,7 +624,7 @@ extension PlayerViewControllerCoordinator: AVPlayerViewControllerDelegate {
 
         status.insert([.beingDismissed])
         
-        coordinator.animate(alongsideTransition: nil) { context in
+        coordinator.animate(alongsideTransition: nil) { [self] context in
             self.status.remove(.beingDismissed)
             if !context.isCancelled {
                 self.status.remove(.fullScreenActive)
@@ -678,7 +678,7 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else {
             // Other type: username password, client trust...
-            print("Other type: username password, client trust...")
+            debugPrint("Other type: username password, client trust...")
         }
         return true
     }

@@ -107,7 +107,7 @@ public class DataMigrator: NSObject {
                 try fm.createDirectory(at: applicationIncompatibleStoresDirectory,
                                        withIntermediateDirectories: true, attributes: nil)
             } catch let error {
-                print("Unable to create a directory for corrupted data stores: \(error.localizedDescription)")
+                debugPrint("Unable to create a directory for corrupted data stores: \(error.localizedDescription)")
             }
         }
         
@@ -127,7 +127,7 @@ public class DataMigrator: NSObject {
             do {
                 try fm.moveItem(at: storeURL, to: corruptURL)
             } catch let error {
-                print("Unable to move a corrupted data store: \(error.localizedDescription)")
+                debugPrint("Unable to move a corrupted data store: \(error.localizedDescription)")
             }
         }
 
@@ -142,7 +142,7 @@ public class DataMigrator: NSObject {
             do {
                 try fm.moveItem(at: shmURL, to: corruptURL)
             } catch let error {
-                print("Unable to move a corrupted data store: \(error.localizedDescription)")
+                debugPrint("Unable to move a corrupted data store: \(error.localizedDescription)")
             }
         }
 
@@ -157,7 +157,7 @@ public class DataMigrator: NSObject {
             do {
                 try fm.moveItem(at: walURL, to: corruptURL)
             } catch let error {
-                print("Unable to move a corrupted data store: \(error.localizedDescription)")
+                debugPrint("Unable to move a corrupted data store: \(error.localizedDescription)")
             }
         }
     }
@@ -184,7 +184,7 @@ public class DataMigrator: NSObject {
             try fm.removeItem(at: oldURL)
         }
         catch let error {
-            print("Unable to move content of Uploads directory: \(error.localizedDescription)")
+            debugPrint("Unable to move content of Uploads directory: \(error.localizedDescription)")
         }
     }
 
@@ -307,17 +307,17 @@ private extension DataMigrationVersion {
 
             // For debugging
 //            let modelEntities = model.entityVersionHashesByName.mapValues({ $0 })
-//            print("\($0.rawValue)")
-//            print("••> Tag (model)     : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
-//            print("••> Location (model): \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
-//            print("••> Upload (model)  : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
+//            debugPrint("\($0.rawValue)")
+//            debugPrint("••> Tag (model)     : \(Array(arrayLiteral: modelEntities["Tag"]?.base64EncodedString()))")
+//            debugPrint("••> Location (model): \(Array(arrayLiteral: modelEntities["Location"]?.base64EncodedString()))")
+//            debugPrint("••> Upload (model)  : \(Array(arrayLiteral: modelEntities["Upload"]?.base64EncodedString()))")
 
 //            let metadataEntities = metadata[NSStoreModelVersionHashesKey] as! [String : Data]
 //            let metaEntities = metadataEntities.mapValues({ $0 })
-//            print("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
-//            print("••> Location (meta) : \(Array(arrayLiteral: metaEntities["Location"]?.base64EncodedString()))")
-//            print("••> Upload (meta)   : \(Array(arrayLiteral: metaEntities["Upload"]?.base64EncodedString()))")
-//            print("……")
+//            debugPrint("••> Tag (meta)      : \(Array(arrayLiteral: metaEntities["Tag"]?.base64EncodedString()))")
+//            debugPrint("••> Location (meta) : \(Array(arrayLiteral: metaEntities["Location"]?.base64EncodedString()))")
+//            debugPrint("••> Upload (meta)   : \(Array(arrayLiteral: metaEntities["Upload"]?.base64EncodedString()))")
+//            debugPrint("……")
 
             return model.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
@@ -326,35 +326,35 @@ private extension DataMigrationVersion {
         if compatibleVersion == nil {
             if let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
                 if appVersion.compare("2.5", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 2.5")
+        //            debugPrint("••> \(appVersion) is smaller than 2.5")
                     return .version01
                 }
                 else if appVersion.compare("2.5.2", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 2.5.2")
+        //            debugPrint("••> \(appVersion) is smaller than 2.5.2")
                     return .version03
                 }
                 else if appVersion.compare("2.6", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 2.6")
+        //            debugPrint("••> \(appVersion) is smaller than 2.6")
                     return .version04
                 }
                 else if appVersion.compare("2.6.2", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 2.6.2")
+        //            debugPrint("••> \(appVersion) is smaller than 2.6.2")
                     return .version06
                 }
                 else if appVersion.compare("2.7", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 2.7")
+        //            debugPrint("••> \(appVersion) is smaller than 2.7")
                     return .version07
                 }
                 else if appVersion.compare("2.12", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 2.12")
+        //            debugPrint("••> \(appVersion) is smaller than 2.12")
                     return .version08
                 }
                 else if appVersion.compare("3.00", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 3.00")
+        //            debugPrint("••> \(appVersion) is smaller than 3.00")
                     return .version09
                 }
                 else if appVersion.compare("3.20", options: .numeric) == .orderedAscending {
-        //            print("••> \(appVersion) is smaller than 3.2")
+        //            debugPrint("••> \(appVersion) is smaller than 3.2")
                     return .version0C
                 }
                 return .version0F

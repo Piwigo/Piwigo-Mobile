@@ -271,8 +271,8 @@ class SettingsViewController: UIViewController {
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
-//        print("=> langCode: ", String(describing: langCode))
-//        print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, AppVars.shared.pwgOneMonth))
+//        debugPrint("=> langCode: ", String(describing: langCode))
+//        debugPrint(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, AppVars.shared.pwgOneMonth))
         let now: Double = Date().timeIntervalSinceReferenceDate
         let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
         if (now > dueDate) && (["ar","id","ko","pt-BR","sv","uk"].contains(langCode)) {
@@ -310,7 +310,7 @@ class SettingsViewController: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         //Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             
             // On iPad, the Settings section is presented in a centered popover view
             if UIDevice.current.userInterfaceIdiom == .pad {

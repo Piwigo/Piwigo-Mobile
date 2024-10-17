@@ -59,7 +59,7 @@ class ParseXMLData: NSObject, XMLParserDelegate {
     // MARK: XML Parser Delegate
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
 
-        print("\n Start elementName: ",elementName)
+        debugPrint("\n Start elementName: ",elementName)
 
         if !self.elementArr.contains(elementName){
             self.elementArr.append(elementName)
@@ -77,7 +77,7 @@ class ParseXMLData: NSObject, XMLParserDelegate {
 
         var attributeCount = attributeDict.count
         for (k,v) in attributeDict{
-            print("key: ",k,"value: ",v)
+            debugPrint("key: ",k,"value: ",v)
             attributeCount = attributeCount - 1
             let comma = attributeCount > 0 ? "," : ""
             self.str = "\(self.str)\"\(k)\":\"\(v)\"\(comma)"
@@ -93,7 +93,7 @@ class ParseXMLData: NSObject, XMLParserDelegate {
 
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
 
-        //print("\n End elementName \n",elementName)
+        //debugPrint("\n End elementName \n",elementName)
         if self.str.last == "#"{ // Detect pattern #
             self.str.removeLast()
         } else{

@@ -66,7 +66,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         do {
             try uploads.performFetch()
         } catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
 
         // Buttons
@@ -120,7 +120,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
            let cell = queueTableView.visibleCells.first {
             if let indexPath = queueTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
-                coordinator.animate(alongsideTransition: { context in
+                coordinator.animate(alongsideTransition: { [self] _ in
                     self.queueTableView.reloadData()
 
                     // Scroll to previous position
@@ -322,7 +322,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "UploadImageHeaderView") as? UploadImageHeaderView else {
-            print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
+            debugPrint("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
             return UploadImageHeaderView()
         }
         if let sectionInfo = uploads.sections?[section] {
@@ -353,7 +353,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
+            debugPrint("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
             return UploadImageTableViewCell()
         }
         cell.configure(with: uploads.object(at: indexPath),
@@ -430,14 +430,14 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        print("    > sectionInfo:", sectionInfo)
+        debugPrint("    > sectionInfo:", sectionInfo)
 
         switch type {
         case .insert:
-            print("insert section… at", sectionIndex)
+            debugPrint("insert section… at", sectionIndex)
             queueTableView.insertSections(IndexSet(integer: sectionIndex), with: .automatic)
         case .delete:
-            print("delete section… at", sectionIndex)
+            debugPrint("delete section… at", sectionIndex)
             queueTableView.deleteSections(IndexSet(integer: sectionIndex), with: .automatic)
         case .move, .update:
             fallthrough
@@ -451,21 +451,21 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             guard let newIndexPath = newIndexPath else { return }
-            print("insert… at", newIndexPath)
+            debugPrint("insert… at", newIndexPath)
             queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .delete:
             guard let oldIndexPath = indexPath else { return }
-            print("delete… at", oldIndexPath)
+            debugPrint("delete… at", oldIndexPath)
             queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
         case .move:
             guard let oldIndexPath = indexPath else { return }
             guard let newIndexPath = newIndexPath else { return }
-            print("move… from", oldIndexPath, "to", newIndexPath)
+            debugPrint("move… from", oldIndexPath, "to", newIndexPath)
             queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
             queueTableView.insertRows(at: [newIndexPath], with: .fade)
         case .update:
             guard let oldIndexPath = indexPath else { return }
-            print("update… at", oldIndexPath)
+            debugPrint("update… at", oldIndexPath)
             if newIndexPath == nil {        // Regular update
                 queueTableView.reloadRows(at: [oldIndexPath], with: .automatic)
             } else {                        // Moving update when using iOS 10

@@ -20,7 +20,7 @@ extension SelectCategoryViewController {
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Move album
-        PwgSession.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             AlbumUtilities.move(self.inputAlbum.pwgID,
                                 intoAlbumWithId: parentData.pwgID) { [self] in
                 // Remember that the app is fetching all album data
@@ -37,8 +37,8 @@ extension SelectCategoryViewController {
                     // Check error
                     guard let error = error else {
                         // No error ► Hide HUD
-                        self.updateHUDwithSuccess() {
-                            self.hideHUD(afterDelay: pwgDelayHUD) {
+                        self.updateHUDwithSuccess() { [self] in
+                            self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                                 self.dismiss(animated: true)
                             }
                         }
@@ -47,18 +47,18 @@ extension SelectCategoryViewController {
                     
                     // Show the error
                     DispatchQueue.main.async { [self] in
-                        self.hideHUD {
+                        self.hideHUD { [self] in
                             self.showError(error)
                         }
                     }
                 }
-            } failure: { [unowned self] error in
-                self.hideHUD {
+            } failure: { [self] error in
+                self.hideHUD { [self] in
                     self.showError(error)
                 }
             }
         } failure: { [unowned self] error in
-            self.hideHUD {
+            self.hideHUD { [self] in
                 self.showError(error)
             }
         }
@@ -73,25 +73,24 @@ extension SelectCategoryViewController {
         showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
-        PwgSession.checkSession(ofUser: user) {  [self] in
-            AlbumUtilities.setRepresentative(albumData, with: imageData)
-            {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
+            AlbumUtilities.setRepresentative(albumData, with: imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not fetch \(error), \(error.userInfo)")
+                        debugPrint("Could not fetch \(error), \(error.userInfo)")
                     }
 
                     // Close HUD
-                    self.updateHUDwithSuccess() {
-                        self.hideHUD(afterDelay: pwgDelayHUD) {
+                    self.updateHUDwithSuccess() { [self] in
+                        self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                             self.dismiss(animated: true)
                         }
                     }
                 }
-            } failure: { [unowned self] error in
+            } failure: { [self] error in
                 self.hideHUD {
                     self.showError(error)
                 }

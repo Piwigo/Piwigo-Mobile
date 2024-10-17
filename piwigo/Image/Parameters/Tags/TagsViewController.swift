@@ -265,7 +265,7 @@ class TagsViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagTableViewCell", for: indexPath) as? TagTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a TagTableViewCell!")
+            debugPrint("Error: tableView.dequeueReusableCell does not return a TagTableViewCell!")
             return TagTableViewCell()
         }
         switch indexPath.section {

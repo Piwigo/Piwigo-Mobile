@@ -17,7 +17,7 @@ extension UploadManager {
     
     // MARK: - Transfer Image if Necessary
     public func launchTransfer(of upload: Upload) -> Void {
-        print("\(dbg()) launch transfer of \(upload.objectID.uriRepresentation())")
+        debugPrint("\(dbg()) launch transfer of \(upload.objectID.uriRepresentation())")
 
         // Update list of transfers
         if isUploading.contains(upload.objectID) { return }
@@ -291,7 +291,7 @@ extension UploadManager {
         let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         var chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
-        print("\(dbg()) #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
+        debugPrint("\(dbg()) #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
         let url = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUpload)")
@@ -338,7 +338,7 @@ extension UploadManager {
         task.countOfBytesClientExpectsToReceive = 600
         
         // Resume task
-        print("\(dbg()) \(upload.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
+        debugPrint("\(dbg()) \(upload.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         task.resume()
 
         // Release memory
@@ -353,7 +353,7 @@ extension UploadManager {
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
               let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum) else {
-            print("\(dbg()) Could not extract HTTP header fields !!!!!!")
+            debugPrint("\(dbg()) Could not extract HTTP header fields !!!!!!")
             return
         }
 
@@ -363,12 +363,12 @@ extension UploadManager {
             
             // Retrieve upload request properties
             guard let objectURI = URL(string: objectURIstr) else {
-                print("\(dbg()) \(md5sum) | no object URI!")
+                debugPrint("\(dbg()) \(md5sum) | no object URI!")
                 return
             }
             guard let uploadID = uploadProvider.bckgContext
                 .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                print("\(dbg()) \(md5sum) | no objectID!")
+                debugPrint("\(dbg()) \(md5sum) | no objectID!")
                 return
             }
             do {
@@ -408,7 +408,7 @@ extension UploadManager {
                 return
             }
             catch {
-                print("\(dbg()) \(md5sum) | missing Core Data object!")
+                debugPrint("\(dbg()) \(md5sum) | missing Core Data object!")
                 // In foreground, consider next image
                 self.backgroundQueue.async {
                     self.findNextImageToUpload()
@@ -421,7 +421,7 @@ extension UploadManager {
         if chunk + 1 < chunks { return }
 
         // Delete uploaded files from Piwigo/Uploads directory
-        print("\(dbg()) \(md5sum) | delete left files")
+        debugPrint("\(dbg()) \(md5sum) | delete left files")
         let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
         deleteFilesInUploadsDirectory(withPrefix: imageFile)
     }
@@ -437,12 +437,12 @@ extension UploadManager {
         
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr) else {
-            print("\(dbg()) \(md5sum) | no object URI!")
+            debugPrint("\(dbg()) \(md5sum) | no object URI!")
             return
         }
         guard let uploadID = uploadProvider.bckgContext
             .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-            print("\(dbg()) \(md5sum) | no objectID!")
+            debugPrint("\(dbg()) \(md5sum) | no objectID!")
             return
         }
         do {
@@ -457,7 +457,7 @@ extension UploadManager {
             if data.isEmpty {
                 // Update upload request status
                 #if DEBUG
-                print("\(dbg()) Empty JSON object!")
+                debugPrint("\(dbg()) Empty JSON object!")
                 #endif
                 upload.setState(.uploadingError, error: PwgSessionError.emptyJSONobject, save: false)
                 self.backgroundQueue.async {
@@ -472,7 +472,7 @@ extension UploadManager {
                 // Update upload request status
                 #if DEBUG
                 let dataStr = String(decoding: data, as: UTF8.self)
-                print("\(dbg()) Invalid JSON object: \(dataStr)")
+                debugPrint("\(dbg()) Invalid JSON object: \(dataStr)")
                 #endif
                 upload.setState(.uploadingError, error: PwgSessionError.invalidJSONobject, save: false)
                 self.backgroundQueue.async {
@@ -549,7 +549,7 @@ extension UploadManager {
         }
         catch {
             // In foreground, consider next image
-            print("\(dbg()) \(md5sum) | missing Core Data object!")
+            debugPrint("\(dbg()) \(md5sum) | missing Core Data object!")
             // In foreground, consider next image
             self.backgroundQueue.async {
                 self.findNextImageToUpload()
@@ -667,7 +667,7 @@ extension UploadManager {
                 }
                 catch let error as NSError {
                     // Disk full? —> to be managed…
-                    print(error)
+                    debugPrint(error)
                     return
                 }
                 
@@ -695,11 +695,11 @@ extension UploadManager {
                 // Adds bytes expected to be sent to counter
                 if isExecutingBackgroundUploadTask {
                     countOfBytesToUpload += httpBody.count
-                    print("\(dbg()) countOfBytesToUpload: \(countOfBytesToUpload)")
+                    debugPrint("\(dbg()) countOfBytesToUpload: \(countOfBytesToUpload)")
                 }
                 
                 // Resume task
-                print("\(dbg()) \(upload.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
+                debugPrint("\(dbg()) \(upload.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
                 task.resume()
             }
         }
@@ -716,7 +716,7 @@ extension UploadManager {
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum),
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk),
               let chunk = Int(chunkStr) else {
-            print("\(dbg()) Could not extract HTTP header fields !!!!!!")
+            debugPrint("\(dbg()) Could not extract HTTP header fields !!!!!!")
             return
         }
 
@@ -731,16 +731,16 @@ extension UploadManager {
             
             // Retrieve upload request properties
             guard let objectURI = URL(string: objectURIstr) else {
-                print("\(dbg()) \(md5sum) | no object URI!")
+                debugPrint("\(dbg()) \(md5sum) | no object URI!")
                 return
             }
             guard let uploadID = uploadProvider.bckgContext
                 .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                print("\(dbg()) \(md5sum) | no objectID!")
+                debugPrint("\(dbg()) \(md5sum) | no objectID!")
                 return
             }
             guard let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) else {
-                print("\(dbg()) \(md5sum) | missing Core Data object!")
+                debugPrint("\(dbg()) \(md5sum) | missing Core Data object!")
                 // Investigate next upload request?
                 if self.isExecutingBackgroundUploadTask {
                     // In background task — stop here
@@ -786,7 +786,7 @@ extension UploadManager {
         }
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
-        print("\(dbg()) \(md5sum) | delete chunk \(chunk+1)")
+        debugPrint("\(dbg()) \(md5sum) | delete chunk \(chunk+1)")
         let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
         let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
         deleteFilesInUploadsDirectory(withPrefix: chunkFileName)
@@ -802,16 +802,16 @@ extension UploadManager {
         
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr) else {
-            print("\(dbg()) \(md5sum) | no object URI!")
+            debugPrint("\(dbg()) \(md5sum) | no object URI!")
             return
         }
         guard let uploadID = uploadProvider.bckgContext
             .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-            print("\(dbg()) \(md5sum) | no objectID!")
+            debugPrint("\(dbg()) \(md5sum) | no objectID!")
             return
         }
         guard let upload = (uploads.fetchedObjects ?? []).first(where: {$0.objectID == uploadID}) else {
-            print("\(dbg()) \(md5sum) | missing Core Data object!")
+            debugPrint("\(dbg()) \(md5sum) | missing Core Data object!")
             // Investigate next upload request?
             if self.isExecutingBackgroundUploadTask {
                 // In background task — stop here
@@ -828,7 +828,7 @@ extension UploadManager {
         if data.isEmpty {
             // Update upload request status
             #if DEBUG
-            print("\(dbg()) Empty JSON object!")
+            debugPrint("\(dbg()) Empty JSON object!")
             #endif
             upload.setState(.uploadingError, error: PwgSessionError.emptyJSONobject, save: false)
             self.backgroundQueue.async {
@@ -843,7 +843,7 @@ extension UploadManager {
             // Update upload request status
             #if DEBUG
             let dataStr = String(decoding: data, as: UTF8.self)
-            print("\(dbg()) Invalid JSON object: \(dataStr)")
+            debugPrint("\(dbg()) Invalid JSON object: \(dataStr)")
             #endif
             upload.setState(.uploadingError, error: PwgSessionError.invalidJSONobject, save: false)
             self.backgroundQueue.async {
@@ -860,7 +860,7 @@ extension UploadManager {
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
-                print("\(dbg()) \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
+                debugPrint("\(dbg()) \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
                 let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
                                                              errorMessage: uploadJSON.errorMessage)
                 if (400...499).contains(uploadJSON.errorCode) {
@@ -879,7 +879,7 @@ extension UploadManager {
             if let chunks = uploadJSON.chunks, let message = chunks.message {
                 // Upload not completed
                 let chunkList = message.dropFirst(18).components(separatedBy: ",")
-                print("\(dbg()) \(md5sum) | \(chunkList.count) chunks downloaded")
+                debugPrint("\(dbg()) \(md5sum) | \(chunkList.count) chunks downloaded")
                 // Cancel tasks of chunks already uploaded
 //                UploadSessions.shared.cancelTasksOfUpload(witID: objectURIstr,
 //                                                          alreadyUploadedChunks: chunkList,
@@ -949,7 +949,7 @@ extension UploadManager {
             return
         } catch {
             // JSON object cannot be digested, image still ready for upload
-            print("\(dbg()) \(md5sum) | wrong JSON object!")
+            debugPrint("\(dbg()) \(md5sum) | wrong JSON object!")
             upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
             self.backgroundQueue.async {
                 self.uploadProvider.bckgContext.saveIfNeeded()
@@ -962,11 +962,11 @@ extension UploadManager {
     
     // MARK: - Transfer Failed/Completed
     private func didEndTransfer(for upload: Upload, taskID: Int = Int.max) {
-        print("\(dbg()) didEndTransfer in", queueName())
+        debugPrint("\(dbg()) didEndTransfer in", queueName())
         
         // Error?
         if upload.requestError.isEmpty == false {
-            print("\(dbg()) task \(taskID) returned \(upload.requestError)")
+            debugPrint("\(dbg()) task \(taskID) returned \(upload.requestError)")
             // Cancel related tasks
             if taskID != Int.max {
                 let objectURIstr = upload.objectID.uriRepresentation().absoluteString
@@ -981,7 +981,7 @@ extension UploadManager {
         }
 
         // Update state of upload request
-        print("\(dbg()) transferred \(upload.objectID.uriRepresentation())")
+        debugPrint("\(dbg()) transferred \(upload.objectID.uriRepresentation())")
 
         // Consider next image?
         self.didEndTransfer(for: upload)
@@ -1008,7 +1008,7 @@ extension UploadManager {
         /// We don't use the UUID to be able to test uploads with a simulator.
         let suffix = identifier.replacingOccurrences(of: "/", with: "").map { $0.lowercased() }.joined()
         let boundary = String(repeating: "-", count: 68 - suffix.count) + suffix
-//        print("\(dbg()) \(boundary)")
+//        debugPrint("\(dbg()) \(boundary)")
         return boundary
     }
 

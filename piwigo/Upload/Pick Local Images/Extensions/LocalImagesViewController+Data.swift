@@ -41,7 +41,7 @@ extension LocalImagesViewController
 
         // Next 2 lines for testing
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
+//        debugPrint("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
         // => Fetched 74925 assets in 90 ms w/o hidden assets on iPhone 14 Pro
         // => Fetched 70331 assets in 206 ms w/ hidden assets on iPhone 11 Pro
         // => Fetched 70331 assets in 217 ms w/o hidden assets on iPhone 11 Pro
@@ -146,10 +146,10 @@ extension LocalImagesViewController
         }
         
 //        uploadsInQueue.forEach({
-//            print("••> uploadsInQueue: \($0?.0 ?? "")")
+//            debugPrint("••> uploadsInQueue: \($0?.0 ?? "")")
 //        })
 //        indexedUploadsInQueue.forEach({
-//            print("••> indexedUploadsInQueue: \($0?.0 ?? "")")
+//            debugPrint("••> indexedUploadsInQueue: \($0?.0 ?? "")")
 //        })
     }
 
@@ -179,7 +179,7 @@ extension LocalImagesViewController
         for i in 0...iterations {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
-                print("Stop first operation in iteration \(i) ;-)")
+                debugPrint("Stop first operation in iteration \(i) ;-)")
                 indexOfImageSortedByDay = [IndexSet]()
                 indexOfImageSortedByWeek = [IndexSet]()
                 indexOfImageSortedByMonth = [IndexSet]()
@@ -237,7 +237,7 @@ extension LocalImagesViewController
         indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<images.count))
         indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<images.count))
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
+//        debugPrint("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
     }
     
     private func sortByMonthWeekDayAndUpdateSelection(images: PHFetchResult<PHAsset>) -> (Void)  {
@@ -267,7 +267,7 @@ extension LocalImagesViewController
         for i in 0...iterations {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
-                print("Stop first operation in iteration \(i) ;-)")
+                debugPrint("Stop first operation in iteration \(i) ;-)")
                 indexOfImageSortedByDay = [IndexSet]()
                 indexOfImageSortedByWeek = [IndexSet]()
                 indexOfImageSortedByMonth = [IndexSet]()
@@ -331,7 +331,7 @@ extension LocalImagesViewController
         indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<images.count))
         indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<images.count))
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   sorted \(fetchedImages.count) images by days, weeks and months and updated selection in \(diff) ms")
+//        debugPrint("   sorted \(fetchedImages.count) images by days, weeks and months and updated selection in \(diff) ms")
     }
     
     // Return image index from indexPath
@@ -414,7 +414,7 @@ extension LocalImagesViewController
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
                 indexedUploadsInQueue = []
-                print("Stop second operation in iteration \(i) ;-)")
+                debugPrint("Stop second operation in iteration \(i) ;-)")
                 return
             }
             
@@ -432,7 +432,7 @@ extension LocalImagesViewController
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
+        debugPrint("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
     }
 
     private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
@@ -453,7 +453,7 @@ extension LocalImagesViewController
                 // Continue with this operation?
                 if queue.operations.first!.isCancelled {
                     indexedUploadsInQueue = []
-                    print("Stop second operation in iteration \(i) ;-)")
+                    debugPrint("Stop second operation in iteration \(i) ;-)")
                     return
                 }
 
@@ -479,7 +479,7 @@ extension LocalImagesViewController
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   cached \(count) images by iterating uploads in queue in \(diff) ms")
+        debugPrint("   cached \(count) images by iterating uploads in queue in \(diff) ms")
     }
     
     func getUploadStateOfImage(at index: Int,
@@ -511,7 +511,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
 
         switch type {
         case .insert:
-            print("••> LocalImagesViewController: insert pending upload request…")
+            debugPrint("••> LocalImagesViewController: insert pending upload request…")
             // Add upload request to cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -542,7 +542,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
             // Update corresponding cell
             updateCellAndSectionHeader(for: upload)
         case .delete:
-            print("••> LocalImagesViewController: delete pending upload request…")
+            debugPrint("••> LocalImagesViewController: delete pending upload request…")
             // Delete upload request from cache and update cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -560,7 +560,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> LocalImagesViewController: Unexpected move!")
         case .update:
-            print("••• LocalImagesViewController controller:update...")
+            debugPrint("••• LocalImagesViewController controller:update...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 
@@ -576,7 +576,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("••• LocalImagesViewController controller:didChangeContent...")
+        debugPrint("••• LocalImagesViewController controller:didChangeContent...")
         // Update navigation bar
         updateActionButton()
         updateNavBar()

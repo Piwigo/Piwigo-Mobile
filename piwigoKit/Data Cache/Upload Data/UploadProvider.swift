@@ -136,15 +136,15 @@ public class UploadProvider: NSObject {
                     }
                     catch UploadError.missingData {
                         // Could not perform the update
-                        print(UploadError.missingData.localizedDescription)
+                        debugPrint(UploadError.missingData.localizedDescription)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 } else {
                     // Create an Upload managed object on the private queue context.
                     guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: bckgContext) as? Upload else {
-                        print(UploadError.creationError.localizedDescription)
+                        debugPrint(UploadError.creationError.localizedDescription)
                         return
                     }
                     
@@ -156,11 +156,11 @@ public class UploadProvider: NSObject {
                     }
                     catch UploadError.missingData {
                         // Delete invalid Upload from the private queue context.
-                        print(UploadError.missingData.localizedDescription)
+                        debugPrint(UploadError.missingData.localizedDescription)
                         bckgContext.delete(upload)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
             }
@@ -200,7 +200,7 @@ public class UploadProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error as NSError {
-            print("••> Upload count not fetched \(error), \(error.userInfo)")
+            debugPrint("••> Upload count not fetched \(error), \(error.userInfo)")
         }
         return Int64.zero
     }

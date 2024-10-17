@@ -102,14 +102,14 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         case 0 /* Ligh and Dark options */:
             if UIDevice.current.userInterfaceIdiom == .phone {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
+                    debugPrint("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
                     return LabelTableViewCell()
                 }
                 cell.configure()
                 tableViewCell = cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
+                    debugPrint("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
                     return LabelTableViewCell()
                 }
                 cell.configure()
@@ -118,7 +118,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
 
         case 1 /* Automatic mode? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
@@ -151,7 +151,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
             
         case 2 /* Switch at ambient brightness? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                 return SliderTableViewCell()
             }
             let value = Float(AppVars.shared.switchPaletteThreshold)

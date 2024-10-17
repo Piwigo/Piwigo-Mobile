@@ -325,7 +325,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
 //        var rightPaneWidth = sepDay / 2 + 5 * separatorWidth + 3 * time + 2 * sepTime
 //        rightPaneWidth += is24hFormat ? 0.0 : separatorWidth + ampm + separatorWidth + rightMargin
 //        let remainingSpace = pickerView.bounds.size.width - leftPaneWidth - rightPaneWidth
-//        print("=> left:\(leftPaneWidth), right:\(rightPaneWidth), width:\(pickerView.bounds.size.width) (remaining:\(remainingSpace))")
+//        debugPrint("=> left:\(leftPaneWidth), right:\(rightPaneWidth), width:\(pickerView.bounds.size.width) (remaining:\(remainingSpace))")
         // iPhone SE, iOS 11 => left:136, right:179, width:318 (remaining:3)
         // iPhone Xs, iOS 12 => left:131, right:174, width:373 (remaining:68)
 

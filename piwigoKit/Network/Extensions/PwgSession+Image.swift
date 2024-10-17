@@ -43,7 +43,7 @@ extension PwgSession
             if imageSize == .fullRes {
                 let cachedFileSize = download.fileURL.fileSize
                 let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
-//                print("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
+//                debugPrint("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
                 if diff < 0.1 {     // i.e. 10%
                     completion(download.fileURL)
                     return
@@ -56,7 +56,8 @@ extension PwgSession
         }
 
         // Download this image in the background thread
-        guard let download = self.activeDownloads[imageURL] else {
+        guard let download = self.activeDownloads[imageURL]
+        else {
 //            debugPrint("••> Launch download of image: \(imageURL)")
             download.task = self.dataSession.downloadTask(with: request)
             download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
@@ -87,9 +88,8 @@ extension PwgSession
     
     public func pauseDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = activeDownloads[imageURL] else {
-            return
-        }
+        guard let download = activeDownloads[imageURL]
+        else { return }
         
         // Cancel the download request
         download.task?.cancel(byProducingResumeData: { imageData in
@@ -100,9 +100,8 @@ extension PwgSession
     
     public func cancelDownload(atURL imageURL: URL) {
         // Retrieve download instance
-        guard let download = activeDownloads[imageURL] else {
-            return
-        }
+        guard let download = activeDownloads[imageURL]
+        else { return }
 
         // Cancel the download request
 //        debugPrint("••> Cancel download: \(imageURL)")
@@ -116,9 +115,8 @@ extension PwgSession: URLSessionTaskDelegate {
         // Retrieve the original URL of this task
 //        debugPrint("••> Did complete task #\(task.taskIdentifier) with error: \(error?.localizedDescription ?? "none")")
         guard let imageURL = task.originalRequest?.url ?? task.currentRequest?.url,
-              let download = activeDownloads[imageURL] else {
-            return
-        }
+              let download = activeDownloads[imageURL]
+        else { return }
 
         if let error = error {
             // Return error with failureHandler
@@ -146,14 +144,18 @@ extension PwgSession: URLSessionDownloadDelegate {
 //        debugPrint("••> Progress task #\(downloadTask.taskIdentifier): \(totalBytesWritten) total bytes downloaded from \(String(describing: downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url))")
 //        activeDownloads.forEach { (key, _) in debugPrint("   Key: \(key)") }
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
-              let download = activeDownloads[imageURL] else {
-            return
-        }
+              let download = activeDownloads[imageURL]
+        else { return }
 
         // Update progress bar if any
         if let progressHandler = download.progressHandler {
-            download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
-//            debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(download.progress)")
+            if totalBytesExpectedToWrite > 0 {
+                download.progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+//                debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(download.progress)")
+            } else {
+                download.progress = 1.0 - Float(bytesWritten) / Float(totalBytesWritten)
+//                debugPrint("••> Progress task #\(downloadTask.taskIdentifier) -> written: \(bytesWritten), totalWritten: \(totalBytesWritten), expected: \(totalBytesExpectedToWrite), progress: \(download.progress)")
+            }
             progressHandler(download.progress)
         }
     }
@@ -164,9 +166,8 @@ extension PwgSession: URLSessionDownloadDelegate {
 //        debugPrint("••> Task #\(downloadTask.taskIdentifier) did finish downloading to \(location)")
         guard let imageURL = downloadTask.originalRequest?.url ?? downloadTask.currentRequest?.url,
               let download = activeDownloads[imageURL],
-              let fileURL = download.fileURL else {
-            return
-        }
+              let fileURL = download.fileURL
+        else { return }
 
         // Create parent directories if needed
         do {

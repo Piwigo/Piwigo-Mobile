@@ -42,10 +42,10 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         switch sortKey {
         case #keyPath(Image.dateCreated):
             let dateIntervals = images.map {$0.dateCreated}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
         case #keyPath(Image.datePosted):
             let dateIntervals = images.map {$0.datePosted}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
         default:
             break
         }
@@ -57,7 +57,7 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         } else {
             // Determine location from images in section
             let location = AlbumUtilities.getLocation(of: images)
-            LocationProvider.shared.getPlaceName(for: location) { [unowned self] placeName, streetName in
+            LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
                     self.detailLabel.text = dates.1
                 } else if streetName.isEmpty {

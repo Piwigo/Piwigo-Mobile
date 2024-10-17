@@ -65,7 +65,7 @@ extension EditImageThumbTableViewCell: UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EditImageThumbCollectionViewCell", for: indexPath) as? EditImageThumbCollectionViewCell else {
-            print("Error: collectionView.dequeueReusableCell does not return a EditImageThumbCollectionViewCell!")
+            debugPrint("Error: collectionView.dequeueReusableCell does not return a EditImageThumbCollectionViewCell!")
             return EditImageThumbCollectionViewCell()
         }
         cell.config(withImage: images?[indexPath.row], removeOption: ((images?.count ?? 0) > 1))

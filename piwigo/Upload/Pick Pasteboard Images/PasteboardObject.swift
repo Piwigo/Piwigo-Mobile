@@ -207,11 +207,11 @@ class ObjectPreparation : Operation {
         }
         catch let error as NSError {
             // Disk full?
-            print("could not save image file: \(error)")
+            debugPrint("could not save image file: \(error)")
             pbObject.state = .failed
         }
         
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   did try to write clipboard object at index \(index) on disk in \(diff) ms")
+//        debugPrint("   did try to write clipboard object at index \(index) on disk in \(diff) ms")
     }
 }

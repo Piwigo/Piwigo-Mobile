@@ -142,7 +142,7 @@ public class TagProvider: NSObject {
             
             // Get current server object
             guard let server = serverProvider.getServer(inContext: bckgContext) else {
-                print(TagError.creationError.localizedDescription)
+                debugPrint(TagError.creationError.localizedDescription)
                 return
             }
             
@@ -163,7 +163,7 @@ public class TagProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                print(TagError.creationError.localizedDescription)
+                debugPrint(TagError.creationError.localizedDescription)
                 return
             }
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
@@ -192,17 +192,17 @@ public class TagProvider: NSObject {
                     }
                     catch TagError.missingData {
                         // Could not perform the update
-                        print(TagError.missingData.localizedDescription)
+                        debugPrint(TagError.missingData.localizedDescription)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
                 else {
                     // Create a Tag managed object on the private queue context.
                     guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag",
                                                                         into: bckgContext) as? Tag else {
-                        print(TagError.creationError.localizedDescription)
+                        debugPrint(TagError.creationError.localizedDescription)
                         return
                     }
                     
@@ -212,11 +212,11 @@ public class TagProvider: NSObject {
                     }
                     catch TagError.missingData {
                         // Delete invalid Tag from the private queue context.
-                        print(TagError.missingData.localizedDescription)
+                        debugPrint(TagError.missingData.localizedDescription)
                         bckgContext.delete(tag)
                     }
                     catch {
-                        print(error.localizedDescription)
+                        debugPrint(error.localizedDescription)
                     }
                 }
             }
@@ -227,7 +227,7 @@ public class TagProvider: NSObject {
                 // Delete tags
                 let tagToDelete = cachedTags.filter({tagToDeleteIDs.contains($0.tagId)})
                 tagToDelete.forEach { tag in
-                    print("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
+                    debugPrint("••> delete tag with ID:\(tag.tagId) and name:\(tag.tagName)")
                     bckgContext.delete(tag)
                 }
             }
@@ -359,7 +359,7 @@ public class TagProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error as NSError {
-            print("••> Tag count not fetched \(error), \(error.userInfo)")
+            debugPrint("••> Tag count not fetched \(error), \(error.userInfo)")
         }
         return Int64.zero
     }

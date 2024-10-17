@@ -96,6 +96,6 @@ extension UIFont {
 // Code for determining font name, e.g. LacunaRegular, OpenSans
 
 //for familyName in UIFont.familyNames {
-//    print("Family \(familyName)")
-//    print("Names = \(UIFont.fontNames(forFamilyName: familyName))")
+//    debugPrint("Family \(familyName)")
+//    debugPrint("Names = \(UIFont.fontNames(forFamilyName: familyName))")
 //}

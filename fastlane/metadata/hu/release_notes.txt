@@ -1,4 +1,1 @@
-• Elfogadta az album fotók rendezési lehetőségeit
-• Függőleges fotóválogatási lehetőségek hozzáadása
-• Hozzáadja a feltöltött fényképek forgatását
-• Hibajavítások
+Hibajavítások

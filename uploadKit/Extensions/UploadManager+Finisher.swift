@@ -14,7 +14,7 @@ extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
     func finishTransfer(of upload: Upload) {
-        print("\(dbg()) finish transfers of \(upload.objectID.uriRepresentation())")
+        debugPrint("\(dbg()) finish transfers of \(upload.objectID.uriRepresentation())")
 
         // Update upload status
         isFinishing = true
@@ -51,7 +51,7 @@ extension UploadManager {
                     launchTransfer(of: upload)
                 }
             } else {
-                print("\(dbg()) didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
+                debugPrint("\(dbg()) didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
             }
         } else if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
@@ -63,7 +63,7 @@ extension UploadManager {
     /// — Called after having uploaded with pwg.images.upload
     /// — pwg.images.upload does not allow to set the image title
     func setImageParameters(for upload: Upload) {
-        print("\(dbg()) setImageParameters() in", queueName())
+        debugPrint("\(dbg()) setImageParameters() in", queueName())
         
         // Prepare creation date
         let creationDate = DateUtilities.string(from: upload.creationDate)
@@ -90,7 +90,7 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            print("\(self.dbg()) setImageParameters() in", queueName())
+            debugPrint("\(self.dbg()) setImageParameters() in", queueName())
             // Decode the JSON object
             do {
                 // Decode the JSON into codable type ImagesSetInfoJSON.
@@ -138,7 +138,7 @@ extension UploadManager {
      If not, they will be visible after some delay (12 minutes).
      */
     func emptyLounge(for upload: Upload) {
-        print("\(dbg()) emptyLounge() in", queueName())
+        debugPrint("\(dbg()) emptyLounge() in", queueName())
         // Empty lounge without reporting potential error
         guard let user = upload.user else {
             // Should never happen
@@ -147,12 +147,12 @@ extension UploadManager {
             self.didFinishTransfer(for: upload, error: nil)
             return
         }
-        PwgSession.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             self.processImages(withIds: "\(upload.imageId)",
-                               inCategory: upload.category) { [unowned self] _ in
+                               inCategory: upload.category) { [self] _ in
                 self.didFinishTransfer(for: upload, error: nil)
             }
-        } failure: { _ in
+        } failure: { [unowned self] _ in
             // Cannot empty the lounge
             // ► The lounge will be emptied later by the app or the server
             // ► Continue upload tasks
@@ -171,7 +171,7 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 2500) { jsonData in
-            print("\(self.dbg()) moderateImages() in", queueName())
+            debugPrint("\(self.dbg()) moderateImages() in", queueName())
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()
@@ -232,7 +232,7 @@ extension UploadManager {
                         inCategory categoryId: Int32,
                         completionHandler: @escaping (Bool, [Int64]) -> Void) -> (Void) {
         // Launch request
-        print("\(dbg()) moderateImages() in", queueName())
+        debugPrint("\(dbg()) moderateImages() in", queueName())
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.pwgToken,
@@ -240,7 +240,7 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            print("\(self.dbg()) moderateImages() in", queueName())
+            debugPrint("\(self.dbg()) moderateImages() in", queueName())
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let decoder = JSONDecoder()
@@ -249,7 +249,7 @@ extension UploadManager {
                 // Piwigo error?
                 if uploadJSON.errorCode != 0 {
                     // Will retry later
-                    print("••> moderateImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                    debugPrint("••> moderateImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
                     completionHandler(false, [])
                     return
                 }

@@ -122,7 +122,7 @@ class AlbumRenaming: NSObject
         topViewController.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
-        PwgSession.checkSession(ofUser: user) {
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             AlbumUtilities.setInfos(self.albumData.pwgID, withName: albumName, description: albumComment) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Hide swipe buttons
@@ -138,7 +138,7 @@ class AlbumRenaming: NSObject
                     do {
                         try mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save context, \(error.userInfo)")
+                        debugPrint("Could not save context, \(error.userInfo)")
                     }
                     
                     // Hide HUD
@@ -146,16 +146,16 @@ class AlbumRenaming: NSObject
                         self.topViewController.hideHUD(afterDelay: pwgDelayHUD) { }
                     }
                 }
-            } failure: { error in
+            } failure: { [self] error in
                 self.renameCategoryError(error, completion: completion)
             }
-        } failure: { error in
+        } failure: { [unowned self] error in
             self.renameCategoryError(error, completion: completion)
         }
     }
     
     private func renameCategoryError(_ error: NSError, completion: @escaping (Bool) -> Void) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
@@ -167,7 +167,7 @@ class AlbumRenaming: NSObject
             // Report error
             let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
             let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
-            self.topViewController.hideHUD() {
+            self.topViewController.hideHUD() { [self] in
                 self.topViewController.dismissPiwigoError(withTitle: title, message: message,
                                                           errorMessage: error.localizedDescription) {
                     completion(true)

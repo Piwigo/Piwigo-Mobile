@@ -28,45 +28,45 @@ class HapticUtilities {
             let audioSession = AVAudioSession.sharedInstance()
             engine = try CHHapticEngine(audioSession: audioSession)
         } catch let error {
-            print("Engine Creation Error: \(error)")
+            debugPrint("Engine Creation Error: \(error)")
         }
         
         guard let engine = engine else {
-            print("Failed to create engine!")
+            debugPrint("Failed to create engine!")
             return nil
         }
 
         // The stopped handler alerts you of engine stoppage due to external causes.
         engine.stoppedHandler = { reason in
-            print("The engine stopped for reason: \(reason.rawValue)")
+            debugPrint("The engine stopped for reason: \(reason.rawValue)")
             switch reason {
             case .audioSessionInterrupt:
-                print("Audio session interrupt")
+                debugPrint("Audio session interrupt")
             case .applicationSuspended:
-                print("Application suspended")
+                debugPrint("Application suspended")
             case .idleTimeout:
-                print("Idle timeout")
+                debugPrint("Idle timeout")
             case .systemError:
-                print("System error")
+                debugPrint("System error")
             case .notifyWhenFinished:
-                print("Playback finished")
+                debugPrint("Playback finished")
             case .gameControllerDisconnect:
-                print("Controller disconnected.")
+                debugPrint("Controller disconnected.")
             case .engineDestroyed:
-                print("Engine destroyed.")
+                debugPrint("Engine destroyed.")
             @unknown default:
-                print("Unknown error")
+                debugPrint("Unknown error")
             }
         }
  
         // The reset handler provides an opportunity for your app to restart the engine in case of failure.
         engine.resetHandler = {
             // Try restarting the engine.
-            print("The engine reset --> Restarting now!")
+            debugPrint("The engine reset --> Restarting now!")
             do {
                 try HapticUtilities.shared.engine?.start()
             } catch {
-                print("Failed to restart the engine: \(error)")
+                debugPrint("Failed to restart the engine: \(error)")
             }
         }
         return engine
@@ -91,7 +91,7 @@ class HapticUtilities {
             try engine?.playPattern(from: URL(fileURLWithPath: path))
             
         } catch { // Engine startup errors
-            print("An error occured playing \(filename): \(error).")
+            debugPrint("An error occured playing \(filename): \(error).")
         }
     }
 }

@@ -53,7 +53,7 @@ public class ServerProvider: NSObject {
                 // Create a Server object on the current queue context.
                 guard let server = NSEntityDescription.insertNewObject(forEntityName: "Server",
                                                                        into: taskContext) as? Server else {
-                    print(ServerError.creationError.localizedDescription)
+                    debugPrint(ServerError.creationError.localizedDescription)
                     return
                 }
                 
@@ -64,11 +64,11 @@ public class ServerProvider: NSObject {
                 }
                 catch ServerError.wrongURL {
                     // Delete invalid Tag from the private queue context.
-                    print(ServerError.wrongURL.localizedDescription)
+                    debugPrint(ServerError.wrongURL.localizedDescription)
                     taskContext.delete(server)
                 }
                 catch {
-                    print(error.localizedDescription)
+                    debugPrint(error.localizedDescription)
                     taskContext.delete(server)
                 }
             }

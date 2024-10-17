@@ -1,4 +1,1 @@
-• Można dopasować opcje sortowania zdjęć w albumie
-• Dodaje opcje sortowania zdjęć w locie
-• Dodaje możliwość obracania przesyłanych zdjęć
-• Poprawki błędów
+Poprawki błędów

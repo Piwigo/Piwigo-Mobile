@@ -111,10 +111,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
         
         // Notify the delegate on the main thread that the processing is beginning.
-        DispatchQueue.main.async(execute: {
+        DispatchQueue.main.async { [self] in
             let title = NSLocalizedString("downloadingImage", comment: "Downloading Photo")
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: title)
-        })
+        }
 
         // Get the maximum accepted image size (infinity for largest)
         let maxSize = activityType?.imageMaxSize() ?? Int.max
@@ -138,13 +138,13 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let sema = DispatchSemaphore(value: 0)
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
                                    fromServer: serverID, fileSize: imageData.fileSize,
-                                   placeHolder: placeholderItem as! UIImage) { fractionCompleted in
+                                   placeHolder: placeholderItem as! UIImage) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
-            self.progressFraction = Float((0.75 * fractionCompleted))
-        } completion: { fileURL in
+            self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
+        } completion: { [unowned self] fileURL in
             self.cachedFileURL = fileURL
             sema.signal()
-        } failure: { error in
+        } failure: { [unowned self] error in
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
             self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
@@ -336,11 +336,18 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         return imageFileURL
     }
 
+    private func updateProgressView(with fractionCompleted: Float) {
+        DispatchQueue.main.async { [self] in
+            // Show download progress
+            self.progressFraction = fractionCompleted
+        }
+    }
+    
     private func preprocessingDidEnd() {
         // Notify the delegate on the main thread that the processing is cancelled.
-        DispatchQueue.main.async(execute: {
+        DispatchQueue.main.async { [self] in
             self.delegate?.imageActivityItemProviderPreprocessingDidEnd(self, withImageID: self.imageData.pwgID, contextually: self.contextually)
-        })
+        }
     }
     
     @objc func cancelDownloadImageTask() {

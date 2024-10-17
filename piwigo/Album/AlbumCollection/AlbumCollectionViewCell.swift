@@ -62,22 +62,40 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Retrieve image from cache or download it
         self.albumThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
         let placeHolder = UIImage(named: "placeholder")!
-        let cellSize = self.albumThumbnail.bounds.size
-        let scale = self.albumThumbnail.traitCollection.displayScale
+        let scale = max(self.albumThumbnail.traitCollection.displayScale, 1.0)
+        let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
                                    atURL: albumData?.thumbnailUrl as? URL,
                                    fromServer: albumData?.user?.server?.uuid,
-                                   placeHolder: placeHolder) { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            self.configImage(cachedImage)
-        } failure: { _ in
-            DispatchQueue.main.async {
-                self.albumThumbnail.image = placeHolder
+                                   placeHolder: placeHolder) { [weak self] cachedImageURL in
+            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+        } failure: { [weak self] _ in
+            self?.setThumbnailWithImage(placeHolder)
+        }
+    }
+    
+    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
+        // Process image in the background
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            // Downsample image in cache
+            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
+            
+            // Process saliency if needed
+            if #available(iOS 13.0, *) {
+                self.setThumbnailWithImage(cachedImage.processSaliency() ?? cachedImage)
+            } else {
+                self.setThumbnailWithImage(cachedImage)
             }
         }
     }
     
+    private func setThumbnailWithImage(_ image: UIImage) {
+        DispatchQueue.main.async { [self] in
+            self.albumThumbnail.image = image
+        }
+    }
+
     func applyColorPalette() {
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()
@@ -122,24 +140,6 @@ class AlbumCollectionViewCell: UICollectionViewCell {
                 : String.localizedStringWithFormat(singleSubAlbum, nberAlbums ?? "")
         }
         return text
-    }
-
-    private func configImage(_ image: UIImage) {
-        // Process image in the background
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Process saliency
-            var finalImage:UIImage = image
-            if #available(iOS 13.0, *) {
-                if let croppedImage = image.processSaliency() {
-                    finalImage = croppedImage
-                }
-            }
-
-            // Set image
-            DispatchQueue.main.async {
-                self.albumThumbnail.image = finalImage
-            }
-        }
     }
 
     override func prepareForReuse() {

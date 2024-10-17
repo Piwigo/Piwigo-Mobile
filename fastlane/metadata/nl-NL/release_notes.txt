@@ -1,4 +1,1 @@
-• Voegt albumfoto sortering opties
-• Voegt op-the-fly foto sortering opties
-• Voegt rotatie van geüploade foto's toe (vereist de rotateImage plugin)
-• Foutjes verbeterd
+Foutjes verbeterd

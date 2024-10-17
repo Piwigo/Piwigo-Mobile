@@ -77,9 +77,9 @@ extension ImageViewController
         // Remove selected category ID from image category list
         guard let imageData = imageData,
               var catIDs = imageData.albums?.compactMap({$0.pwgID}).filter({$0 > 0}) else {
-            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
+            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) { [self] in
                 // Hide HUD
-                self.hideHUD { [unowned self] in
+                self.hideHUD { [self] in
                     // Re-enable buttons
                     self.setEnableStateOfButtons(true)
                 }
@@ -96,7 +96,7 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
@@ -111,13 +111,13 @@ extension ImageViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save copied images \(error), \(error.userInfo)")
+                        debugPrint("Could not save copied images \(error), \(error.userInfo)")
                     }
                 }
 
                 // Hide HUD
-                self.updateHUDwithSuccess { [unowned self] in
-                    self.hideHUD(afterDelay: pwgDelayHUD) { [unowned self] in
+                self.updateHUDwithSuccess { [self] in
+                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Display preceding/next image or return to album view
                         self.didRemoveImage()
                     }
@@ -125,7 +125,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.removeImageFromAlbumError(error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             self.removeImageFromAlbumError(error)
         }
     }
@@ -144,9 +144,9 @@ extension ImageViewController
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
             self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [unowned self] in
+                                    errorMessage: error.localizedDescription) { [self] in
                 // Hide HUD
-                hideHUD { [unowned self] in
+                hideHUD { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }
@@ -157,7 +157,7 @@ extension ImageViewController
     func deleteImageFromDatabase() {
         // Remove selected category ID from image category list
         guard let imageData = imageData else {
-            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) {
+            dismissPiwigoError(withTitle: NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")) { [self] in
                 // Hide HUD
                 self.hideHUD { [self] in
                     // Re-enable buttons
@@ -171,7 +171,7 @@ extension ImageViewController
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
                 // Save image ID for marking Upload request in the background
                 let imageID = imageData.pwgID
@@ -191,7 +191,7 @@ extension ImageViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save albums after image deletion \(error), \(error.userInfo)")
+                    debugPrint("Could not save albums after image deletion \(error), \(error.userInfo)")
                 }
 
                 // If this image was uploaded with the iOS app,
@@ -210,7 +210,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.deleteImageFromDatabaseError(error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             self.deleteImageFromDatabaseError(error)
         }
     }
@@ -229,7 +229,7 @@ extension ImageViewController
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
             self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [unowned self] in
+                                    errorMessage: error.localizedDescription) { [self] in
                 // Hide HUD
                 hideHUD { [self] in
                     // Re-enable buttons
@@ -316,7 +316,7 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
 
         // This changes the View Controller
         // and calls the presentationIndexForPageViewController datasource method
-        pageViewController?.setViewControllers([newImageVC], direction: direction, animated: true) { [unowned self] finished in
+        pageViewController?.setViewControllers([newImageVC], direction: direction, animated: true) { [self] finished in
             // Update image data
             self.imageData = imageData
             // Set title view

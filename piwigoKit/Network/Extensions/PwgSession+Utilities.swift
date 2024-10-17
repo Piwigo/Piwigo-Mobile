@@ -78,11 +78,22 @@ extension PwgSession {
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
-//        debugPrint("••> seconds since last used: \(Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0))")
-        if #available(iOSApplicationExtension 14.0, *) {
-            logger.notice("Start checking session…")
+        // Check if the session is still active every 60 seconds or more
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
+        if secondsSinceLastCheck < 60,
+            PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi() {
+            completion()
+            return
         }
-        // Determine if the session is active and for how long before fetching
+        
+        // Determine if the session is still active
+        if #available(iOSApplicationExtension 14.0, *) {
+            if NetworkVars.isConnectedToWiFi() {
+                logger.notice("Start checking session… (WiFi)")
+            } else {
+                logger.notice("Start checking session… (Cellular)")
+            }
+        }
         let oldToken = NetworkVars.pwgToken
         PwgSession.shared.sessionGetStatus { username in
             if #available(iOSApplicationExtension 14.0, *) {
@@ -103,6 +114,7 @@ extension PwgSession {
                             // Update date of accesss to the server by guest
                             user?.setLastUsedToNow()
                             user?.status = NetworkVars.userStatus.rawValue
+                            PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                             completion()
                         } failure: { error in
                             failure(error)
@@ -111,15 +123,13 @@ extension PwgSession {
                         // Perform login
                         let username = NetworkVars.username
                         let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            logger.notice("Create session for \(username, privacy: .private(mask: .hash))")
-                        }
                         PwgSession.shared.sessionLogin(withUsername: username, password: password) {
                             // Session now opened
                             getPiwigoConfig {
                                 // Update date of accesss to the server by user
                                 user?.setLastUsedToNow()
                                 user?.status = NetworkVars.userStatus.rawValue
+                                PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                                 completion()
                             } failure: { error in
                                 failure(error)
@@ -138,6 +148,7 @@ extension PwgSession {
                     failure(error)
                 }
             } else {
+                user?.setLastUsedToNow()
                 completion()
             }
         } failure: { error in
@@ -327,9 +338,9 @@ extension PwgSession {
         let encodedImageURL = "\(loginPath)\(prefix)\(cleanPath)"
         #if DEBUG
         if encodedImageURL != originalURL {
-            print("=> originalURL:\(String(describing: originalURL))")
-            print("    encodedURL:\(encodedImageURL)")
-            print("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
+            debugPrint("=> originalURL:\(String(describing: originalURL))")
+            debugPrint("    encodedURL:\(encodedImageURL)")
+            debugPrint("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
         }
         #endif
         return NSURL(string: encodedImageURL)

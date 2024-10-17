@@ -269,7 +269,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             try recentAlbums.performFetch()
             try albums.performFetch()
         } catch {
-            print("Error: \(error)")
+            debugPrint("Error: \(error)")
         }
 
         // Button for returning to albums/images collections
@@ -366,7 +366,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             // Fetch albums recursively
             albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                       thumbnailSize: thumnailSize) { [self] error in
@@ -378,7 +378,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 }
                 didFetchAlbumsWithError(error: error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             didFetchAlbumsWithError(error: error)
         }
     }
@@ -405,7 +405,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewWillTransition(to: size, with: coordinator)
 
         // Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { context in
+        coordinator.animate(alongsideTransition: { [self] _ in
 
             // On iPad, the Settings section is presented in a centered popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
@@ -582,7 +582,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
+            debugPrint("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
             return CategoryTableViewCell()
         }
 
@@ -736,7 +736,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         switch wantedAction {
         case .setDefaultAlbum:
             // The current default category is not selectable
-            print("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
+            debugPrint("••> albums: \(albumData.pwgID) and \(inputAlbum.pwgID)")
             if albumData.pwgID == inputAlbum.pwgID {
                 return false
             }
@@ -835,7 +835,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), albumData.name)
             }
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { _ in
+                                forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Set new Default Album
                 self.delegate?.didSelectCategory(withId: albumData.pwgID)
                 // Return to Settings
@@ -863,7 +863,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let title = NSLocalizedString("moveCategory", comment: "Move Album")
             let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { _ in
+                                forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Move album to selected category
                 self.moveCategory(intoCategory: albumData)
             })
@@ -873,7 +873,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
             let message = String(format: NSLocalizedString("categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { _ in
+                                forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Add category to list of recent albums
                 self.setRepresentative(for: albumData)
             })
@@ -897,7 +897,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let imageTitle = inputImages.first?.title.string ?? ""
             let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { _ in
+                                forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
                 // Copy single image to selected album
@@ -915,7 +915,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let imageTitle = inputImages.first?.title.string ?? ""
             let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { _ in
+                                forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
                 // Move single image to selected album
@@ -932,12 +932,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let message = String(format: NSLocalizedString("copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { _ in
+                                forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
                              inMode: .determinate)
                 // Copy several images to selected album
-                DispatchQueue.global(qos: .userInitiated).async {
+                DispatchQueue.global(qos: .userInitiated).async { [self] in
                     self.copyImages(toAlbum: albumData)
                 }
             })
@@ -952,12 +952,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
             let message = String(format: NSLocalizedString("moveSeveralImages_message", comment:"Are you sure you want to move the photos to the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath) { _ in
+                                forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
                              inMode: .determinate)
                 // Move several images to selected album
-                DispatchQueue.global(qos: .userInitiated).async {
+                DispatchQueue.global(qos: .userInitiated).async { [self] in
                     self.moveImages(toAlbum: albumData)
                 }
             }
@@ -1034,14 +1034,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Report error
-        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error?.localizedDescription ?? "") {
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error?.localizedDescription ?? "") { [self] in
             // Forget the choice
             self.selectedCategoryId = Int32.min
             // Save changes if any
             do {
                 try self.mainContext.save()
             } catch let error as NSError {
-                print("Could not fetch \(error), \(error.userInfo)")
+                debugPrint("Could not fetch \(error), \(error.userInfo)")
             }
             // Dismiss the view
             self.dismiss(animated: true, completion: {})

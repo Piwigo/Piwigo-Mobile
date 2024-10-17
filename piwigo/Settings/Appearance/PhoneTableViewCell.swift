@@ -24,18 +24,18 @@ class PhoneTableViewCell: UITableViewCell {
             fatalError("!!! Could not find lightPhone image !!!")
         }
         lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
-        var size = lightImage.bounds.size
-        var scale = lightImage.traitCollection.displayScale
-        lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
+        var scale = max(lightImage.traitCollection.displayScale, 1.0)
+        var cellSize = CGSizeMake(lightImage.bounds.size.width * scale, lightImage.bounds.size.height * scale)
+        lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: cellSize), for: .normal)
 
         // iPhone - dark mode
         guard let darkUrl = Bundle.main.url(forResource: "darkPhone", withExtension: "png") else {
             fatalError("!!! Could not find darkPhone image !!!")
         }
         darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
-        size = darkImage.bounds.size
         scale = darkImage.traitCollection.displayScale
-        darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
+        cellSize = CGSizeMake(darkImage.bounds.size.width * scale, darkImage.bounds.size.height * scale)
+        darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: cellSize), for: .normal)
 
         // Labels
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)

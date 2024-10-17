@@ -1,4 +1,1 @@
-• Antar sorteringsalternativ för albumfoto
-• Lägger till foton i farten sorteringsalternativ
-• Lägger till rotation av uppladdade bilder (kräver rotateImage plugin)
-• Felrättelser
+Buggfixar

@@ -88,7 +88,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     @objc func tappedLoadView() {
         // Rotate icon
         let sign = buttonState == .showSubAlbum ? +1.0 : -1.0
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [unowned self] in
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [self] in
             // Rotate the chevron
             self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
             if self.buttonState == .hideSubAlbum {

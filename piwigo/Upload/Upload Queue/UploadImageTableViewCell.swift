@@ -106,7 +106,7 @@ class UploadImageTableViewCell: UITableViewCell {
             }
             catch let error as NSError {
                 // Could not find the file to upload!
-                print(error.localizedDescription)
+                debugPrint(error.localizedDescription)
                 image = imagePlaceholder
             }
         }
@@ -202,7 +202,7 @@ class UploadImageTableViewCell: UITableViewCell {
             DispatchQueue.main.async(execute: {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
-                        print("••> Error : \(error.localizedDescription)")
+                        debugPrint("••> Error : \(error.localizedDescription)")
                     }
                     self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
                     return

@@ -19,8 +19,8 @@ class ImagePreviewViewController: UIViewController
         super.init(nibName: nil, bundle: nil)
         
         // Retrieve image
-        let viewSize = view.bounds.size
-        let scale = view.traitCollection.displayScale
+        let scale = max(view.traitCollection.displayScale, 1.0)
+        let viewSize = CGSizeMake(view.bounds.size.width * scale, view.bounds.size.height * scale)
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
@@ -31,7 +31,7 @@ class ImagePreviewViewController: UIViewController
         // Check if we already have the high-resolution image in cache
         if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
             // Show high-resolution image in cache
-            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize, scale: scale)
+            let cachedImage = ImageUtilities.downsample(image: wantedImage, to: viewSize)
             setImageView(with: cachedImage)
         } else {
             // Display thumbnail image which should be in cache
@@ -43,21 +43,17 @@ class ImagePreviewViewController: UIViewController
             if let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) {
                 PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
                                            fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                           placeHolder: placeHolder) { fractionCompleted in
-//                    DispatchQueue.main.async {
-//                        // Show download progress
-//                        self.progressView.progress = fractionCompleted
-//                    }
-                } completion: { cachedImageURL in
-                    let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, scale: scale)
-                    DispatchQueue.main.async {
-                        // Hide progress view
-//                        self.progressView.isHidden = true
-                        // Replace thumbnail with high-resolution image
-                        self.setImageView(with: cachedImage)
-                    }
+                                           placeHolder: placeHolder) { [weak self] cachedImageURL in
+                    self?.downsampleImage(atURL: cachedImageURL, to: viewSize)
                 } failure: { _ in }
             }
+        }
+    }
+    
+    private func downsampleImage(atURL fileURL: URL, to viewSize: CGSize) {
+        DispatchQueue.main.async { [self] in
+            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: viewSize)
+            self.setImageView(with: cachedImage)
         }
     }
     

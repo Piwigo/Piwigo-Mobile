@@ -42,7 +42,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         // Get date labels from images in section
         let oldest = DateUtilities.unknownDateInterval   // i.e. unknown date
         let dateIntervals = images.map { $0.creationDate?.timeIntervalSinceReferenceDate ?? oldest}
-        let dates = AlbumUtilities.getDateLabels(for: dateIntervals)
+        let dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: false)
         self.mainLabel.text = dates.0
 
         // Set labels from dates and place name
@@ -51,7 +51,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         } else {
             // Determine location from images in section
             let location = getLocation(of: images)
-            LocationProvider.shared.getPlaceName(for: location) { [unowned self] placeName, streetName in
+            LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
                     self.detailLabel.text = dates.1
                 } else if streetName.isEmpty {

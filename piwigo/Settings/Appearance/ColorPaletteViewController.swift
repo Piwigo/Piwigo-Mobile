@@ -121,14 +121,14 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         case 0:
             if UIDevice.current.userInterfaceIdiom == .phone {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
+                    debugPrint("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
                     return LabelTableViewCell()
                 }
                 cell.configure()
                 tableViewCell = cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
+                    debugPrint("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
                     return LabelTableViewCell()
                 }
                 cell.configure()
@@ -137,7 +137,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
             
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))

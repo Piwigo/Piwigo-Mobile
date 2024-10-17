@@ -46,7 +46,7 @@ extension URL {
     }
     
     // Returns the creation date of the file
-    var creationDate: Date? {
+    public var creationDate: Date? {
         return attributes?[.creationDate] as? Date
     }
     
@@ -57,7 +57,7 @@ extension URL {
             return size(of: contents)
 
         } catch let error {
-            print(error.localizedDescription)
+            debugPrint(error.localizedDescription)
             return UInt64.zero
         }
     }
@@ -69,7 +69,7 @@ extension URL {
             return size(of: onlyPhotos)
 
         } catch let error {
-            print(error.localizedDescription)
+            debugPrint(error.localizedDescription)
             return UInt64.zero
         }
     }
@@ -82,7 +82,7 @@ extension URL {
             return size(of: onlyVideos)
             
         } catch let error {
-            print(error.localizedDescription)
+            debugPrint(error.localizedDescription)
             return UInt64.zero
         }
     }

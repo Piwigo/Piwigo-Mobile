@@ -161,7 +161,7 @@ class EditImageParamsViewController: UIViewController
         super.viewWillTransition(to: size, with: coordinator)
         
         // Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { [self] context in
+        coordinator.animate(alongsideTransition: { [self] _ in
             
             // On iPad, the form is presented in a popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
@@ -281,9 +281,9 @@ class EditImageParamsViewController: UIViewController
         
         // Update all images
         let index = 0
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             updateImageProperties(fromIndex: index)
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             // Display error
             self.hideHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
@@ -299,7 +299,7 @@ class EditImageParamsViewController: UIViewController
                 // Save changes
                 try? mainContext.save()
                 // Close HUD
-                self.hideHUD(afterDelay: pwgDelayHUD) { [unowned self] in
+                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Return to image preview or album view
                     self.dismiss(animated: true)
                 }
@@ -401,7 +401,7 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update image title?

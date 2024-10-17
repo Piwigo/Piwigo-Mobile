@@ -73,7 +73,7 @@ extension AlbumViewController
         }
 
         // Add image to favorites
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
@@ -101,7 +101,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.favoriteError(error, contextually: contextually)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             self.favoriteError(error, contextually: contextually)
         }
     }
@@ -176,7 +176,7 @@ extension AlbumViewController
         }
 
         // Remove image to favorites
-        PwgSession.checkSession(ofUser: user) { [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
@@ -201,7 +201,7 @@ extension AlbumViewController
                     }
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
-            } failure: { [unowned self] error in
+            } failure: { [self] error in
                 self.unfavoriteError(error, contextually: contextually)
             }
         } failure: { [unowned self] error in
@@ -223,8 +223,8 @@ extension AlbumViewController
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
             navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hideHUD() { [unowned self] in
+                               errorMessage: error.localizedDescription) { [self] in
+                navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)
                     } else {

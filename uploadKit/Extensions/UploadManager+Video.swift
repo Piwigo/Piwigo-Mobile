@@ -21,6 +21,14 @@ extension UploadManager {
             // Retrieve video data
             let originalVideo = AVAsset(url: originalFileURL)
 
+            // Get creation date from metadata if possible
+            let metadata = originalVideo.metadata
+            if let dateFromMetadata = metadata.creationDate() {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
@@ -45,6 +53,14 @@ extension UploadManager {
 
         // Retrieve video data
         let originalVideo = AVAsset(url: originalFileURL)
+
+        // Get creation date from metadata if possible
+        let metadata = originalVideo.metadata
+        if let dateFromMetadata = metadata.creationDate() {
+            upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+        } else {
+            upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+        }
 
         // Check that the video can be exported
         checkVideoExportability(of: originalVideo, for: upload)
@@ -71,6 +87,21 @@ extension UploadManager {
                 return
             }
             
+            // Get original fileURL
+            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                self.didPrepareVideo(for: upload, error)
+                return
+            }
+
+            // Get creation date from metadata if possible
+            let metadata = originalVideo.metadata
+            if let dateFromMetadata = metadata.creationDate() {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
@@ -81,13 +112,6 @@ extension UploadManager {
                 return
             }
             
-            // Get original fileURL
-            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
-                return
-            }
-
             // Get MIME type
             let fileExt = originalFileURL.pathExtension.lowercased()
             if #available(iOS 14, *) {
@@ -117,7 +141,7 @@ extension UploadManager {
             // Determine MD5 checksum
             let error: NSError?
             (upload.md5Sum, error) = originalFileURL.MD5checksum()
-            print("\(self.dbg()) MD5: \(String(describing: upload.md5Sum))")
+            debugPrint("\(self.dbg()) MD5: \(String(describing: upload.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: upload, error)
@@ -144,7 +168,7 @@ extension UploadManager {
 
         // Retrieve video data
         let options = getVideoRequestOptions()
-        retrieveVideo(from: imageAsset, with: options) { [unowned self] (avasset, options, error) in
+        retrieveVideo(from: imageAsset, with: options) { [self] (avasset, options, error) in
             // Error?
             if let error = error {
                 self.didPrepareVideo(for: upload, error)
@@ -158,6 +182,21 @@ extension UploadManager {
                 return
             }
             
+            // Get original fileURL
+            guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                self.didPrepareVideo(for: upload, error)
+                return
+            }
+
+            // Get creation date from metadata if possible
+            let metadata = originalVideo.metadata
+            if let dateFromMetadata = metadata.creationDate() {
+                upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
+            } else {
+                upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
+            }
+
             // Check that the video can be exported
             self.checkVideoExportability(of: originalVideo, for: upload)
         }
@@ -196,12 +235,12 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                        completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("\(dbg()) enters retrieveVideoAssetFrom in", queueName())
+        debugPrint("\(dbg()) enters retrieveVideoAssetFrom in", queueName())
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
         #if DEBUG_UPLOAD
-            print(String(format: "downloading Video — progress %lf", progress))
+            debugPrint(String(format: "downloading Video — progress %lf", progress))
         #endif
             // The handler needs to update the user interface => Dispatch to main thread
 //            DispatchQueue.main.async(execute: {
@@ -221,7 +260,7 @@ extension UploadManager {
 //                } else {
 //                    // Updates progress bar(s)
 //                    if self.delegate.responds(to: #selector(imageProgress(_:onCurrent:forTotal:onChunk:forChunks:iCloudProgress:))) {
-//                        print(String(format: "retrieveFullSizeAssetDataFromVideo: %.2f", progress))
+//                        debugPrint(String(format: "retrieveFullSizeAssetDataFromVideo: %.2f", progress))
 //                        self.delegate.imageProgress(image, onCurrent: self.current, forTotal: self.total, onChunk: self.currentChunk, forChunks: self.totalChunks, iCloudProgress: progress)
 //                    }
 //                }
@@ -231,34 +270,34 @@ extension UploadManager {
         // Available export session presets?
         PHImageManager.default().requestAVAsset(forVideo: imageAsset,
                                                 options: options,
-                                                resultHandler: { [unowned self] avasset, audioMix, info in
+                                                resultHandler: { [self] avasset, audioMix, info in
             // ====>> For debugging…
 //            if let metadata = avasset?.metadata {
-//                print("=> Metadata: \(metadata)")
+//                debugPrint("=> Metadata: \(metadata)\r=> Creation date: \(metadata.creationDate() ?? DateUtilities.unknownDate)")
 //            }
 //            if let creationDate = avasset?.creationDate {
-//                print("=> Creation date: \(creationDate)")
+//                debugPrint("=> Creation date: \(creationDate)")
 //            }
-//            print("=> Exportable: \(avasset?.isExportable ?? false ? "Yes" : "No")")
+//            debugPrint("=> Exportable: \(avasset?.isExportable ?? false ? "Yes" : "No")")
 //            if let avasset = avasset {
-//                print("=> Compatibility: \(AVAssetExportSession.exportPresets(compatibleWith: avasset))")
+//                debugPrint("=> Compatibility: \(AVAssetExportSession.exportPresets(compatibleWith: avasset))")
 //            }
 //            if let tracks = avasset?.tracks {
-//                print("=> Tracks: \(tracks)")
+//                debugPrint("=> Tracks: \(tracks)")
 //            }
 //            for track in avasset?.tracks ?? [] {
 //                if track.mediaType == .video {
-//                    print(String(format: "=>       : %.f x %.f", track.naturalSize.width, track.naturalSize.height))
+//                    debugPrint(String(format: "=>       : %.f x %.f", track.naturalSize.width, track.naturalSize.height))
 //                }
 //                var format = ""
 //                for i in 0..<track.formatDescriptions.count {
 //                    let desc = (track.formatDescriptions[i]) as! CMFormatDescription
 //                    // Get String representation of media type (vide, soun, sbtl, etc.)
 //                    var type: String? = nil
-//                    type = self.FourCCString(CMFormatDescriptionGetMediaType(desc))
+//                    type = CMFormatDescriptionGetMediaType(desc).toString()
 //                    // Get String representation media subtype (avc1, aac, tx3g, etc.)
 //                    var subType: String? = nil
-//                    subType = self.FourCCString(CMFormatDescriptionGetMediaSubType(desc))
+//                    subType = CMFormatDescriptionGetMediaSubType(desc).toString()
 //                    // Format string as type/subType
 //                    format.append(contentsOf: "\(type ?? "")/\(subType ?? "")")
 //                    // Comma separate if more than one format description
@@ -266,14 +305,14 @@ extension UploadManager {
 //                        format.append(contentsOf: ",")
 //                    }
 //                }
-//                print("=>       : \(format)")
+//                debugPrint("=>       : \(format)")
 //            }
             // <<==== End of code for debugging
             
             // resultHandler performed on another thread!
             let error = info?[PHImageErrorKey] as? Error
             if self.isExecutingBackgroundUploadTask {
-//                print("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
+//                debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
                 guard let error = error else {
                     completionHandler(avasset, options, nil)
@@ -282,7 +321,7 @@ extension UploadManager {
                 completionHandler(nil, options, error)
             } else {
                 self.backgroundQueue.async {
-//                    print("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
+//                    debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     guard let error = error else {
                         completionHandler(avasset, options, nil)
@@ -375,10 +414,10 @@ extension UploadManager {
             }
 
     //        let commonMetadata = videoAsset.commonMetadata
-    //        print("===>> Common Metadata: \(commonMetadata)")
+    //        debugPrint("===>> Common Metadata: \(commonMetadata)")
     //
     //        let allMetadata = videoAsset.metadata
-    //        print("===>> All Metadata: \(allMetadata)")
+    //        debugPrint("===>> All Metadata: \(allMetadata)")
     //
     //        let makeItem =  AVMutableMetadataItem()
     //        makeItem.identifier = AVMetadataIdentifier.iTunesMetadataArtist
@@ -395,7 +434,7 @@ extension UploadManager {
     //        var newMetadata = commonMetadata
     //        newMetadata.append(makeItem)
     //        newMetadata.append(anotherItem)
-    //        print("===>> new Metadata: \(newMetadata)")
+    //        debugPrint("===>> new Metadata: \(newMetadata)")
     //        exportSession.metadata = newMetadata
 
             // Prepare MIME type
@@ -407,7 +446,7 @@ extension UploadManager {
             exportSession.outputURL = getUploadFileURL(from: upload, deleted: true)
 
             // Export temporary video for upload
-            exportSession.exportAsynchronously { [unowned self] in
+            exportSession.exportAsynchronously { [self] in
                 guard exportSession.status == .completed,
                       let outputURL = exportSession.outputURL else {
                     // Deletes temporary video file if any

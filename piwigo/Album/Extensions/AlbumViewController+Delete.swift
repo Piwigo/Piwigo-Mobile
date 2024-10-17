@@ -153,7 +153,7 @@ extension AlbumViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
+                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and deselect images
                     navigationController?.hideHUD() { [self] in
@@ -179,7 +179,7 @@ extension AlbumViewController
         ]
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) {  [self] in
+        PwgSession.checkSession(ofUser: user) { [unowned self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Remove image from source album
                 imageData.removeFromAlbums(albumData)
@@ -200,7 +200,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
         }
     }
@@ -221,18 +221,18 @@ extension AlbumViewController
         let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
         if imagesToRemove.count > 1 {
             cancelDismissPiwigoError(withTitle: title, message: message,
-                                     errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hideHUD() { [unowned self] in
+                                     errorMessage: error.localizedDescription) { [self] in
+                navigationController?.hideHUD() { [self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
+                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
                     updateBarsInSelectMode()
                 }
-            } dismiss: { [unowned self] in
+            } dismiss: { [self] in
                 // Bypass image
                 imagesToRemove.removeFirst()
                 // Continue removing images
@@ -240,13 +240,13 @@ extension AlbumViewController
             }
         } else {
             dismissPiwigoError(withTitle: title, message: message,
-                                     errorMessage: error.localizedDescription) { [unowned self] in
-                navigationController?.hideHUD() { [unowned self] in
+                                     errorMessage: error.localizedDescription) { [self] in
+                navigationController?.hideHUD() { [self] in
                     // Save changes
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save moved images \(error), \(error.userInfo)")
+                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
                     }
                     // Hide HUD and update buttons
                     updateBarsInSelectMode()
@@ -262,7 +262,7 @@ extension AlbumViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save deleted images \(error), \(error.userInfo)")
+                    debugPrint("Could not save deleted images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and deselect images
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -274,8 +274,8 @@ extension AlbumViewController
 
         // Let's delete all images at once
         PwgSession.checkSession(ofUser: user) { [unowned self] in
-            ImageUtilities.delete(toDelete) { [unowned self] in
-                DispatchQueue.main.async { [unowned self] in
+            ImageUtilities.delete(toDelete) { [self] in
+                DispatchQueue.main.async { [self] in
                     // Save image IDs for marking Upload requests in the background
                     let imageIDs = Array(toDelete).map({$0.pwgID})
 
@@ -297,7 +297,7 @@ extension AlbumViewController
                     do {
                         try self.mainContext.save()
                     } catch let error as NSError {
-                        print("Could not save albums after image deletion \(error), \(error.userInfo)")
+                        debugPrint("Could not save albums after image deletion \(error), \(error.userInfo)")
                     }
 
                     // Delete upload requests of images deleted from the Piwigo server
@@ -315,7 +315,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.deleteImagesError(error)
             }
-        } failure: { [self] error in
+        } failure: { [unowned self] error in
             self.deleteImagesError(error)
         }
     }
@@ -338,7 +338,7 @@ extension AlbumViewController
                 do {
                     try self.mainContext.save()
                 } catch let error as NSError {
-                    print("Could not save moved images \(error), \(error.userInfo)")
+                    debugPrint("Could not save moved images \(error), \(error.userInfo)")
                 }
                 // Hide HUD and update buttons
                 navigationController?.hideHUD() { [self] in

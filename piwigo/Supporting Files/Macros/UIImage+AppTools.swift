@@ -19,12 +19,18 @@ extension UIImage {
         return nil
         #else
         // Check that it is possible to perform a saliency request
-        // by checking if it is possible to create a context from the image.
+        // by checking the pixel format of the image.
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let imageData = self.jpegData(compressionQuality: 1.0),
+        var imageData: Data?
+        if #available(iOS 17, *) {
+            imageData = self.heicData()
+        } else {
+            imageData = self.pngData()
+        }
+        guard let imageData = imageData,
               let imageSource = CGImageSourceCreateWithData(imageData as CFData, imageSourceOptions),
               let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, imageSourceOptions),
-              imageRef.hasCGContextSupportedPixelFormat,
+              ImageUtilities.supportsPixelFormat(ofCGImage: imageRef),
               let cgImage = self.cgImage
         else {
             return nil
@@ -77,7 +83,7 @@ extension UIImage {
             // Crop image
             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
 //            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
-//            print("   processed attention based saliency in \(round(diff*10.0)/10.0) ms")
+//            debugPrint("   processed attention based saliency in \(round(diff*10.0)/10.0) ms")
             return UIImage(cgImage:croppedImage)
         }
 
@@ -91,7 +97,7 @@ extension UIImage {
             // Crop image
             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
 //            let diff:Double = (CFAbsoluteTimeGetCurrent() - start)*1000.0
-//            print("   processed objectness based saliency in \(round(diff*10.0)/10.0) ms")
+//            debugPrint("   processed objectness based saliency in \(round(diff*10.0)/10.0) ms")
             return UIImage(cgImage:croppedImage)
         }
         return nil

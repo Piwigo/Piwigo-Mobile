@@ -26,8 +26,8 @@ class AlbumNavigationController: UINavigationController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("============================================")
-        print("••> viewDidLoad in AlbumNavigationController")
+        debugPrint("============================================")
+        debugPrint("••> viewDidLoad in AlbumNavigationController")
 
         // Navigation bar
         navigationBar.accessibilityIdentifier = "AlbumImagesNav"
@@ -84,7 +84,7 @@ class AlbumNavigationController: UINavigationController
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("••> viewWillAppear in AlbumNavigationController")
+        debugPrint("••> viewWillAppear in AlbumNavigationController")
         
         // Set colors, fonts, etc.
         applyColorPalette()

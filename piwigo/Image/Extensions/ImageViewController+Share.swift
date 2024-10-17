@@ -25,11 +25,11 @@ extension ImageViewController
         // Check autorisation to access Photo Library (camera roll)
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
-                onAccess: { [unowned self] in
+                onAccess: { [self] in
                     // User allowed to save image in camera roll
                     presentShareImageViewController(withCameraRollAccess: true)
                 },
-                onDeniedAccess: { [unowned self] in
+                onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
                     if Thread.isMainThread {
                         presentShareImageViewController(withCameraRollAccess: false)
@@ -42,18 +42,18 @@ extension ImageViewController
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil,
-                onAuthorizedAccess: { [unowned self] in
+                onAuthorizedAccess: { [self] in
                     // User allowed to save image in camera roll
                     presentShareImageViewController(withCameraRollAccess: true)
                 },
-                onDeniedAccess: { [unowned self] in
+                onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
                     if Thread.isMainThread {
                         presentShareImageViewController(withCameraRollAccess: false)
                     } else {
-                        DispatchQueue.main.async(execute: { [self] in
+                        DispatchQueue.main.async { [self] in
                             presentShareImageViewController(withCameraRollAccess: false)
-                        })
+                        }
                     }
                 })
         }
@@ -170,15 +170,14 @@ extension ImageViewController: ShareImageActivityItemProviderDelegate
             presentedViewController?.hideHUD { }
         } else {
             presentedViewController?.updateHUDwithSuccess(completion: { [self] in
-                presentedViewController?.hideHUD(completion: {
-                })
+                presentedViewController?.hideHUD(completion: { })
             })
         }
     }
 
     func showError(withTitle title: String, andMessage message: String?) {
         // Display error alert after trying to share image
-        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") { [unowned self] in
+        presentedViewController?.dismissPiwigoError(withTitle: title, message: message ?? "") { [self] in
             // Closes ActivityView
             presentedViewController?.dismiss(animated: true)
         }

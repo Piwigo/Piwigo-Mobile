@@ -60,18 +60,18 @@ class Help08ViewController: UIViewController {
             fatalError("!!! Could not find help08-top image !!!")
         }
         imageViewTop.layoutIfNeeded() // Ensure imageView is in its final size.
-        let topImageSize = imageViewTop.bounds.size
-        let topImageScale = imageViewTop.traitCollection.displayScale
-        imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: topImageSize, scale: topImageScale)
+        var scale = max(imageViewTop.traitCollection.displayScale, 1.0)
+        var imageSize = CGSizeMake(imageViewTop.bounds.size.width * scale, imageViewTop.bounds.size.height * scale)
+        imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize)
         
         // Set bottom image view
         guard let botImageUrl = Bundle.main.url(forResource: "help08-bot", withExtension: "png") else {
             fatalError("!!! Could not find help08-bot image !!!")
         }
         imageViewBot.layoutIfNeeded() // Ensure imageView is in its final size.
-        let botImageSize = imageViewBot.bounds.size
-        let botImageScale = imageViewBot.traitCollection.displayScale
-        imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: botImageSize, scale: botImageScale)
+        scale = max(imageViewBot.traitCollection.displayScale, 1.0)
+        imageSize = CGSizeMake(imageViewBot.bounds.size.width * scale, imageViewBot.bounds.size.height * scale)
+        imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: imageSize)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID

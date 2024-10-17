@@ -115,23 +115,32 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
         let placeHolder = UIImage(named: "placeholder")!
+        let scale = max(imageThumbnail.traitCollection.displayScale, 1.0)
+        let cellSize = CGSizeMake(imageThumbnail.bounds.size.width * scale, imageThumbnail.bounds.size.height * scale)
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        let cellSize = self.imageThumbnail.bounds.size
-        let scale = self.imageThumbnail.traitCollection.displayScale
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize,
                                    atURL: ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize),
-                                   fromServer: imageData.server?.uuid, placeHolder: placeHolder) { cachedImageURL in
-            let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, scale: scale)
-            DispatchQueue.main.async {
-                self.imageThumbnail.image = cachedImage
-            }
-        } failure: { _ in
-            DispatchQueue.main.async {
-                self.imageThumbnail.image = placeHolder
-            }
+                                   fromServer: imageData.server?.uuid, placeHolder: placeHolder) { [weak self] cachedImageURL in
+            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+        } failure: { [weak self] _ in
+            self?.setThumbnailWithImage(placeHolder)
         }
     }
+    
+    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
+        // Downsample image
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
 
+        // Set image thumbnail
+        setThumbnailWithImage(cachedImage)
+    }
+    
+    private func setThumbnailWithImage(_ image: UIImage) {
+        DispatchQueue.main.async {
+            self.imageThumbnail.image = image
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
 
@@ -156,7 +165,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             message: "\(NSLocalizedString("renameImage_message", comment: "Enter a new file name for this image")) \"\(imageFile.text ?? "")\":",
             preferredStyle: .alert)
 
-        alert.addTextField(configurationHandler: { [unowned self] textField in
+        alert.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = NSLocalizedString("renameImage_title", comment: "Original File")
             textField.text = imageFile.text
             textField.clearButtonMode = .always
@@ -176,7 +185,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         renameFileNameAction = UIAlertAction(
             title: NSLocalizedString("renameCategory_button", comment: "Rename"),
             style: .default,
-            handler: { [unowned self] action in
+            handler: { [self] action in
                 // Rename album if possible
                 if let fileName = alert.textFields?.first?.text, fileName.count > 0 {
                     renameImageFile(withName: fileName,
@@ -235,9 +244,9 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 // Successful?
                 if uploadJSON.success {
                     // Filename successfully changed
-                    topViewController?.updateHUDwithSuccess { [unowned self] in
+                    topViewController?.updateHUDwithSuccess { [self] in
                         topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                            DispatchQueue.main.async(execute: { [unowned self] in
+                            DispatchQueue.main.async(execute: { [self] in
                                 // Adopt new original filename
                                 imageFile.text = fileName
 
