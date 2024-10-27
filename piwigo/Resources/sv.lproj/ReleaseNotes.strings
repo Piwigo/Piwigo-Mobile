@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.2.3_text" = "Version 3.2.3\n\n• Buggfixar";
+"v3.2.3_text" = "Version 3.2.3\n17 oktober 2024\n\n• Buggfixar";
 
 "v3.2.2_text" = "Version 3.2.2\n12 september 2024\n\n• Lägger till ett alternativ för att radera urval av foton/videor som lagrats i enheten\n• Buggfixar";
 
