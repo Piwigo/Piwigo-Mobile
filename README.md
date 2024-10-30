@@ -5,10 +5,6 @@
 ![Language](https://img.shields.io/github/languages/top/Piwigo/Piwigo-Mobile.svg)
 [![ClosedIssues](https://img.shields.io/github/issues-closed-raw/Piwigo/Piwigo-Mobile.svg?color=success)](https://github.com/Piwigo/Piwigo-Mobile/issues?utf8=✓&q=is%3Aissue+is%3Aclosed)
 [![OpenedIssues](https://img.shields.io/github/issues-raw/Piwigo/Piwigo-Mobile.svg?style=flat)](https://github.com/Piwigo/Piwigo-Mobile/issues)
-
-[![Git](https://img.shields.io/badge/GitHub-Piwigo-blue.svg?style=flat)](https://github.com/Piwigo)
-[![Twitter](https://img.shields.io/badge/twitter-@piwigo-blue.svg?style=flat)](http://twitter.com/piwigo)
-[![Website](https://img.shields.io/badge/website-piwigo.org-orange.svg?style=flat)](http://piwigo.org)
 [![eMail](https://img.shields.io/badge/email-ios@piwigo.org-orange.svg?style=flat)](mailto:ios@piwigo.org?SUBJECT=About%20Piwigo%20Mobile%20for%20iOS)
 
 Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **free and opensource** web photo gallery, built by an active community of users and developers. [Piwigo](https://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
