@@ -11,13 +11,9 @@
 [![Website](https://img.shields.io/badge/website-piwigo.org-orange.svg?style=flat)](http://piwigo.org)
 [![eMail](https://img.shields.io/badge/email-ios@piwigo.org-orange.svg?style=flat)](mailto:ios@piwigo.org?SUBJECT=About%20Piwigo%20Mobile%20for%20iOS)
 
-Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
+Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **free and opensource** web photo gallery, built by an active community of users and developers. [Piwigo](https://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
 
 [![Available on the App Store](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/Download_on_the_App_Store_Badge.svg)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
-
-[Piwigo](https://piwigo.org) is a **free and opensource** web photo gallery, built by an active community of users and developers.
-
-[Piwigo](https://piwigo.org) empowers you to create your own photo gallery on the web and includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.
 
 [![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad_Pro_12_9-in_iPhone_12_Pro.webp)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad_Pro_12_9-in_iPhone_12_Pro_small.webp)
 ## Description
