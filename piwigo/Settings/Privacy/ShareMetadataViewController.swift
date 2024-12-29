@@ -168,10 +168,8 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShareMetadataCell", for: indexPath) as? ShareMetadataCell else {
-            debugPrint("Error: tableView.dequeueReusableCell does not return a ShareMetadataCell!")
-            return ShareMetadataCell()
-        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShareMetadataCell", for: indexPath) as? ShareMetadataCell
+        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a ShareMetadataCell!") }
 
         let width = view.bounds.size.width
         switch indexPath.section {

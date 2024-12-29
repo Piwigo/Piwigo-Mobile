@@ -581,11 +581,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell else {
-            debugPrint("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
-            return CategoryTableViewCell()
-        }
-
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell
+        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!") }
         var depth = 0
         let albumData: Album
         let hasRecentAlbums = (recentAlbums.fetchedObjects ?? []).isEmpty == false

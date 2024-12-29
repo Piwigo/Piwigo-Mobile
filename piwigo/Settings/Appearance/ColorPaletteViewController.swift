@@ -120,26 +120,20 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         switch indexPath.row {
         case 0:
             if UIDevice.current.userInterfaceIdiom == .phone {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell else {
-                    debugPrint("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell
+                else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!") }
                 cell.configure()
                 tableViewCell = cell
             } else {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell else {
-                    debugPrint("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
-                    return LabelTableViewCell()
-                }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell
+                else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")}
                 cell.configure()
                 tableViewCell = cell
             }
             
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
             cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
