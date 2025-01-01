@@ -71,7 +71,7 @@ class UploadImageTableViewCell: UITableViewCell {
             prepareThumbnailFromAsset(for: upload, availableWidth: availableWidth)
         }
     }
-        
+    
     override func prepareForReuse() {
         super.prepareForReuse()
     }
@@ -144,18 +144,14 @@ class UploadImageTableViewCell: UITableViewCell {
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             text = errorDescription(for: upload)
-        } else if image == imagePlaceholder {
-            text = ""
-        } else {
+        } else if image != imagePlaceholder {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
             text = getImageInfo(from: image ?? imagePlaceholder,
                                 for: availableWidth - 2*Int(indentationWidth),
                                 maxSize: maxSize)
         }
-        if imageInfoLabel.text != text {
-            imageInfoLabel.text = text
-        }
+        imageInfoLabel.text = text
     }
 
     /// Case of an image from the Photo Library
@@ -182,9 +178,7 @@ class UploadImageTableViewCell: UITableViewCell {
             text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
                                 maxSize: maxSize)
         }
-        if imageInfoLabel.text != text {
-            imageInfoLabel.text = text
-        }
+        imageInfoLabel.text = text
 
         // Cell image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
@@ -276,10 +270,10 @@ class UploadImageTableViewCell: UITableViewCell {
     
 
     // MARK: - Utilities
-    private func errorDescription(for upload:Upload) -> String {
+    func errorDescription(for upload: Upload) -> String {
         // Display error message
         let error: String?
-        if upload.requestError.count > 0 {
+        if upload.requestError.isEmpty == false {
             error = upload.requestError
         } else {
             switch upload.state {
