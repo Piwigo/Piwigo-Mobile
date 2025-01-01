@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.4_text" = "Versi 3.2.4\n\n• Perbaikan bug minor dan perbaikan antarmuka";
+
 "v3.2.3_text" = "Versi 3.2.3\n17 Oktober 2024\n\n• Perbaikan bug";
 
 "v3.2.2_text" = "Version 3.2.2\nSeptember 12, 2024\n\n• Adds an option to delete selections of photos/videos stored in the device\n• Bug fixes";
