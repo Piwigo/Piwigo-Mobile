@@ -135,6 +135,12 @@
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
 		AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */; };
 		AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */; };
+		AD2BEF5A2D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF592D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift */; };
+		AD2BEF5C2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5B2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift */; };
+		AD2BEF5E2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5D2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift */; };
+		AD2BEF602D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */; };
+		AD2BEF622D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */; };
+		AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */; };
 		AD2C62312A488F4D00671582 /* UploadVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2C62302A488F4D00671582 /* UploadVars.swift */; };
 		AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -747,6 +753,12 @@
 		AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAlbumThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySortViewController.swift; sourceTree = "<group>"; };
 		AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CategorySortViewController.storyboard; sourceTree = "<group>"; };
+		AD2BEF592D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Delegate.swift"; sourceTree = "<group>"; };
+		AD2BEF5B2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+DataSource.swift"; sourceTree = "<group>"; };
+		AD2BEF5D2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+FetchResults.swift"; sourceTree = "<group>"; };
+		AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+DataSource.swift"; sourceTree = "<group>"; };
+		AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+FetchResults.swift"; sourceTree = "<group>"; };
+		AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+Delegate.swift"; sourceTree = "<group>"; };
 		AD2C62302A488F4D00671582 /* UploadVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVars.swift; sourceTree = "<group>"; };
 		AD2C623A2A4896A600671582 /* uploadKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = uploadKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2C623C2A4896A600671582 /* uploadKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uploadKit.h; sourceTree = "<group>"; };
@@ -2054,6 +2066,9 @@
 			isa = PBXGroup;
 			children = (
 				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
+				AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */,
+				AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */,
+				AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */,
 				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
 				AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */,
 				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
@@ -2365,6 +2380,9 @@
 			isa = PBXGroup;
 			children = (
 				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
+				AD2BEF5B2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift */,
+				AD2BEF5D2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift */,
+				AD2BEF592D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift */,
 				ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */,
 				ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */,
 				ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */,
@@ -3305,6 +3323,7 @@
 				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
 				AD816C912C49672B00A0A466 /* AlbumRenaming.swift in Sources */,
+				AD2BEF5A2D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift in Sources */,
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */,
 				ADD65C5D2BE77ACC005AC3B8 /* ImageAnimatedTransitioning.swift in Sources */,
@@ -3423,6 +3442,7 @@
 				AD7DE0902A8587E600C1424E /* Notification.Name+AppTools.swift in Sources */,
 				AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */,
 				AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */,
+				AD2BEF5E2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift in Sources */,
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				ADBE0C2F2BE967F000F16A50 /* AlbumViewController+DataSource.swift in Sources */,
@@ -3432,6 +3452,7 @@
 				ADD65C562BE775F9005AC3B8 /* AlbumViewController+Bars.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
 				AD089D042BC2A5F800CE4A3E /* AlbumTableViewCell.swift in Sources */,
+				AD2BEF602D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,
 				AD6BA0FA2BA5C1D600755257 /* PasteboardImagesViewController+DataSource.swift in Sources */,
 				ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */,
@@ -3446,6 +3467,7 @@
 				AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */,
 				ADEA26A8285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift in Sources */,
 				AD400B232C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift in Sources */,
+				AD2BEF5C2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift in Sources */,
 				ADD65C5B2BE777E8005AC3B8 /* AlbumViewController+Upload.swift in Sources */,
 				ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */,
 				ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */,
@@ -3462,10 +3484,12 @@
 				AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */,
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
+				AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
 				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
 				ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */,
 				ADACD2972C31906E00F8790B /* SettingsUtilities.swift in Sources */,
+				AD2BEF622D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift in Sources */,
 				ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */,
 				AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */,
 				ADDB2A6A2B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift in Sources */,
