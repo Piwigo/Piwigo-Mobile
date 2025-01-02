@@ -17,8 +17,7 @@ extension UploadQueueViewController: UITableViewDelegate
     // MARK: - UITableView - Headers
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if #available(iOS 13.0, *) {
-            let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot()
-                                            .sectionIdentifiers[section]) ?? SectionKeys.Section4
+            let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
             return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
                                                             width: tableView.frame.size.width)
         } else {

@@ -22,12 +22,12 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
         guard controller == uploads else { return }
         
         // Data source configured?
-        guard let dataSource = queueTableView.dataSource as? UITableViewDiffableDataSource<String, NSManagedObjectID>
+        guard let dataSource = queueTableView.dataSource as? DataSource
         else { preconditionFailure("The data source has not implemented snapshot support while it should") }
         
         // Loop over all items
-        var snapshot = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
-        let currentSnapshot = dataSource.snapshot() as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+        var snapshot = snapshot as Snaphot
+        let currentSnapshot = dataSource.snapshot() as Snaphot
         var reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers
         snapshot.itemIdentifiers.forEach({ itemIdentifier in
             // Will this item keep the same indexPath?
@@ -59,8 +59,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
             } else {
                 snapshot.reloadItems(Array(reloadIdentifiers))
             }
-            dataSource.apply(snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>,
-                             animatingDifferences: shouldAnimate)
+            dataSource.apply(snapshot as Snaphot, animatingDifferences: shouldAnimate)
         }
         
         // Update the navigation bar
