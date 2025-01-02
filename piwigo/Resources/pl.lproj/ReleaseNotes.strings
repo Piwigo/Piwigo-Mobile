@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.2.4_text" = "Wersja 3.2.4\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
 "v3.2.3_text" = "Wersja 3.2.3\n17 października 2024\n\n• Poprawki błędów";
 
 "v3.2.2_text" = "Wersja 3.2.2\n12 września 2024\n\n• Dodano opcję usuwania wybranych zdjęć/filmów zapisanych w urządzeniu\n• Poprawki błędów";

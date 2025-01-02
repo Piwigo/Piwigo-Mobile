@@ -9,7 +9,8 @@
 import Foundation
 import piwigoKit
 
-extension SelectCategoryViewController {
+extension SelectCategoryViewController
+{
     // MARK: - Move Category Methods
     func moveCategory(intoCategory parentData: Album) {
         // Display HUD during the update

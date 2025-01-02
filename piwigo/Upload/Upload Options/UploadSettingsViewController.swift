@@ -114,10 +114,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         row += (!prefixFileNameBeforeUpload && (row > 6)) ? 1 : 0
         switch row {
         case 0 /* Strip private Metadata? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             // See https://iosref.com/res
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhones 14 Pro Max screen width
@@ -133,10 +131,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 1 /* Resize Before Upload? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
             cell.cellSwitch.setOn(resizeImageOnUpload, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -157,10 +153,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 2 /* Upload Photo Max Size */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                return LabelTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!") }
             cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
                            detail: pwgPhotoMaxSizes(rawValue: photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -168,10 +162,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
 
         case 3 /* Upload Max Video Size */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
-                return LabelTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!") }
             cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
                            detail: pwgVideoMaxSizes(rawValue: videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -179,10 +171,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 4 /* Compress before Upload? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             // See https://iosref.com/res
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhones 14 Pro Max screen width
@@ -208,10 +198,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 5 /* Image Quality slider */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                return SliderTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!") }
             // Slider value
             let value = Float(photoQuality)
 
@@ -226,10 +214,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 6 /* Prefix Filename Before Upload switch */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             // See https://iosref.com/res
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhones 14 Pro Max screen width
@@ -259,10 +245,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 7 /* Filename prefix? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
-                return TextFieldTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!") }
             // See https://iosref.com/res
             var title: String
             let input: String = defaultPrefix
@@ -281,10 +265,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             tableViewCell = cell
             
         case 8 /* Delete image after upload? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             // See https://iosref.com/res
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhones 14 Pro Max screen width

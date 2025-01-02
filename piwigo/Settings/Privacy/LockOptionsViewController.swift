@@ -133,10 +133,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
 
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             let title = NSLocalizedString("settings_appLock", comment: "App Lock")
 
             cell.configure(with: title)
@@ -157,10 +155,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             tableViewCell = cell
 
         case 1:     // Change Password
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
-                return ButtonTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!") }
             if AppVars.shared.appLockKey.isEmpty {
                 cell.configure(with: NSLocalizedString("settings_appLockEnter", comment: "Enter Passcode"))
             } else {
@@ -170,10 +166,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             tableViewCell = cell
 
         case 2:     // TouchID / FaceID / OpticID On/Off
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                debugPrint("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                return SwitchTableViewCell()
-            }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
             var title = ""
             switch context.biometryType {
             case .touchID:

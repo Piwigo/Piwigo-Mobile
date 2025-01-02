@@ -9,8 +9,8 @@
 import Foundation
 import piwigoKit
 
-extension SelectCategoryViewController {
-
+extension SelectCategoryViewController
+{
     // MARK: - Copy Images Methods
     func copyImages(toAlbum albumData: Album) {
         // Add category to list of recent albums

@@ -193,10 +193,8 @@ class TagSelectorViewController: UITableViewController {
     // Return cell configured with tag
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagSelectorCell", for: indexPath) as? TagSelectorCell else {
-            debugPrint("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!")
-            return TagSelectorCell()
-        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagSelectorCell", for: indexPath) as? TagSelectorCell
+        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!") }
         cell.configure(with: tags.object(at: indexPath))
         return cell
     }

@@ -51,24 +51,12 @@ extension AlbumViewController
 
     @objc func didTapUploadQueueButton() {
         // Open upload queue controller in new navigation controller
-        var navController: UINavigationController? = nil
-        if #available(iOS 13.0, *) {
-            let uploadQueueSB = UIStoryboard(name: "UploadQueueViewController", bundle: nil)
-            guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewController") as? UploadQueueViewController
-            else { preconditionFailure("Could not load UploadQueueViewController") }
-            navController = UINavigationController(rootViewController: uploadQueueVC)
-        }
-        else {
-            // Fallback on earlier versions
-            let uploadQueueSB = UIStoryboard(name: "UploadQueueViewControllerOld", bundle: nil)
-            guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewControllerOld") as? UploadQueueViewControllerOld
-            else { preconditionFailure("Cloud not load UploadQueueViewControllerOld") }
-            navController = UINavigationController(rootViewController: uploadQueueVC)
-        }
-        navController?.modalTransitionStyle = .coverVertical
-        navController?.modalPresentationStyle = .formSheet
-        if let navController = navController {
-            present(navController, animated: true)
-        }
+        let uploadQueueSB = UIStoryboard(name: "UploadQueueViewController", bundle: nil)
+        guard let uploadQueueVC = uploadQueueSB.instantiateViewController(withIdentifier: "UploadQueueViewController") as? UploadQueueViewController
+        else { preconditionFailure("Could not load UploadQueueViewController") }
+        let navController = UINavigationController(rootViewController: uploadQueueVC)
+        navController.modalTransitionStyle = .coverVertical
+        navController.modalPresentationStyle = .formSheet
+        present(navController, animated: true)
     }
 }

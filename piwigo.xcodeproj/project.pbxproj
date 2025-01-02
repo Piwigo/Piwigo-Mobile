@@ -135,6 +135,12 @@
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
 		AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */; };
 		AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */; };
+		AD2BEF5A2D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF592D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift */; };
+		AD2BEF5C2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5B2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift */; };
+		AD2BEF5E2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5D2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift */; };
+		AD2BEF602D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */; };
+		AD2BEF622D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */; };
+		AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */; };
 		AD2C62312A488F4D00671582 /* UploadVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2C62302A488F4D00671582 /* UploadVars.swift */; };
 		AD2C62402A4896A600671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2C62412A4896A600671582 /* uploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -216,7 +222,6 @@
 		AD5A31672847F9BD00948FEE /* pwg.categories.move.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A31662847F87000948FEE /* pwg.categories.move.swift */; };
 		AD5A316B2847FDC900948FEE /* pwg.categories.setRepresentative.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */; };
 		AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */; };
-		AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */; };
 		AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */; };
 		AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64E724C601EE00660BE3 /* pwg.tags.add.json */; };
 		AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */; };
@@ -415,7 +420,6 @@
 		ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
-		ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC1FD9F29E3202500D8ADDC /* PieProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */; };
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
@@ -749,6 +753,12 @@
 		AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultAlbumThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySortViewController.swift; sourceTree = "<group>"; };
 		AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CategorySortViewController.storyboard; sourceTree = "<group>"; };
+		AD2BEF592D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+Delegate.swift"; sourceTree = "<group>"; };
+		AD2BEF5B2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+DataSource.swift"; sourceTree = "<group>"; };
+		AD2BEF5D2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SelectCategoryViewController+FetchResults.swift"; sourceTree = "<group>"; };
+		AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+DataSource.swift"; sourceTree = "<group>"; };
+		AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+FetchResults.swift"; sourceTree = "<group>"; };
+		AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadQueueViewController+Delegate.swift"; sourceTree = "<group>"; };
 		AD2C62302A488F4D00671582 /* UploadVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVars.swift; sourceTree = "<group>"; };
 		AD2C623A2A4896A600671582 /* uploadKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = uploadKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2C623C2A4896A600671582 /* uploadKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uploadKit.h; sourceTree = "<group>"; };
@@ -840,7 +850,6 @@
 		AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.categories.setRepresentative.json; sourceTree = "<group>"; };
 		AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataCell.swift; sourceTree = "<group>"; };
 		AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadQueueViewController.swift; sourceTree = "<group>"; };
-		AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UploadQueueViewControllerOld.storyboard; sourceTree = "<group>"; };
 		AD5F64E724C601EE00660BE3 /* pwg.tags.add.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.tags.add.json; sourceTree = "<group>"; };
 		AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.tags.add.swift; sourceTree = "<group>"; };
 		AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.tags.getList.swift; sourceTree = "<group>"; };
@@ -1096,7 +1105,6 @@
 		ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0B_to_0C.xcmappingmodel; sourceTree = "<group>"; };
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
 		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
-		ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueViewControllerOld.swift; sourceTree = "<group>"; };
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -2058,11 +2066,12 @@
 			isa = PBXGroup;
 			children = (
 				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
+				AD2BEF5F2D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift */,
+				AD2BEF612D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift */,
+				AD2BEF632D25EA23001FA165 /* UploadQueueViewController+Delegate.swift */,
+				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
 				AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */,
 				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
-				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
-				ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */,
-				AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */,
 			);
 			path = "Upload Queue";
 			sourceTree = "<group>";
@@ -2371,6 +2380,9 @@
 			isa = PBXGroup;
 			children = (
 				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
+				AD2BEF5B2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift */,
+				AD2BEF5D2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift */,
+				AD2BEF592D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift */,
 				ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */,
 				ADB49D8B295B96C400EE377A /* SelectCategoryViewController+Albums.swift */,
 				ADB49D89295B90C700EE377A /* SelectCategoryViewController+Images.swift */,
@@ -2753,7 +2765,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
 					AD084E452659A27100159FE1 = {
@@ -2940,7 +2952,6 @@
 				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
 				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
-				AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */,
 				AD3B2C5E2A250F300001B8B0 /* LaunchScreenExternal.storyboard in Resources */,
 				ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */,
 				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
@@ -3312,6 +3323,7 @@
 				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
 				AD816C912C49672B00A0A466 /* AlbumRenaming.swift in Sources */,
+				AD2BEF5A2D25E2ED001FA165 /* SelectCategoryViewController+Delegate.swift in Sources */,
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */,
 				ADD65C5D2BE77ACC005AC3B8 /* ImageAnimatedTransitioning.swift in Sources */,
@@ -3430,6 +3442,7 @@
 				AD7DE0902A8587E600C1424E /* Notification.Name+AppTools.swift in Sources */,
 				AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */,
 				AD41530F27C6D35D00DE01CB /* LoginViewController.swift in Sources */,
+				AD2BEF5E2D25E915001FA165 /* SelectCategoryViewController+FetchResults.swift in Sources */,
 				ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				ADBE0C2F2BE967F000F16A50 /* AlbumViewController+DataSource.swift in Sources */,
@@ -3439,6 +3452,7 @@
 				ADD65C562BE775F9005AC3B8 /* AlbumViewController+Bars.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
 				AD089D042BC2A5F800CE4A3E /* AlbumTableViewCell.swift in Sources */,
+				AD2BEF602D25E9B9001FA165 /* UploadQueueViewController+DataSource.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,
 				AD6BA0FA2BA5C1D600755257 /* PasteboardImagesViewController+DataSource.swift in Sources */,
 				ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */,
@@ -3453,6 +3467,7 @@
 				AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */,
 				ADEA26A8285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift in Sources */,
 				AD400B232C6137A200DC9A61 /* PasteboardImagesViewController+Select.swift in Sources */,
+				AD2BEF5C2D25E31D001FA165 /* SelectCategoryViewController+DataSource.swift in Sources */,
 				ADD65C5B2BE777E8005AC3B8 /* AlbumViewController+Upload.swift in Sources */,
 				ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */,
 				ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */,
@@ -3469,15 +3484,16 @@
 				AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */,
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
+				AD2BEF642D25EA23001FA165 /* UploadQueueViewController+Delegate.swift in Sources */,
 				AD3DB4152773958A00017542 /* ImageDescriptionView.swift in Sources */,
 				ADEA26A2285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift in Sources */,
 				ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */,
 				ADACD2972C31906E00F8790B /* SettingsUtilities.swift in Sources */,
+				AD2BEF622D25EA15001FA165 /* UploadQueueViewController+FetchResults.swift in Sources */,
 				ADA5FA3C299FD85D004A8A59 /* ClearCache.swift in Sources */,
 				AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */,
 				ADDB2A6A2B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift in Sources */,
 				AD91127C28146B6C002FB78F /* SceneConfigurations.swift in Sources */,
-				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
 				ADD65C582BE776B7005AC3B8 /* AlbumViewController+Buttons.swift in Sources */,
 				ADACD28F2C317CC200F8790B /* TroubleshootingViewController.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
@@ -3768,7 +3784,6 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
@@ -3779,7 +3794,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3821,7 +3836,6 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
@@ -3832,7 +3846,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3906,7 +3920,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -3948,7 +3961,6 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 371;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
@@ -3960,7 +3972,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = uploadKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3977,7 +3989,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -4002,9 +4013,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 371;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
@@ -4016,7 +4025,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = uploadKit/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4032,7 +4041,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -4092,7 +4100,6 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4132,9 +4139,10 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = ZEC3W885H6;
+				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4171,13 +4179,13 @@
 				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/piwigoIntentsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
+				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4252,7 +4260,6 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -4293,6 +4300,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -4315,7 +4323,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
-				ENABLE_BITCODE = NO;
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4367,6 +4374,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -4384,12 +4392,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
-				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 551;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
-				ENABLE_BITCODE = NO;
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4430,10 +4436,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 591;
+				CURRENT_PROJECT_VERSION = 595;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
@@ -4443,14 +4450,14 @@
 				INFOPLIST_FILE = piwigo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Piwigo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.3;
+				MARKETING_VERSION = 3.2.4;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -4499,11 +4506,11 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 591;
+				CURRENT_PROJECT_VERSION = 595;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4512,14 +4519,14 @@
 				INFOPLIST_FILE = piwigo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Piwigo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Piwigo.org. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Piwigo.org. All rights reserved.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.3;
+				MARKETING_VERSION = 3.2.4;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
