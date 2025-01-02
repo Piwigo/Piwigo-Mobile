@@ -41,7 +41,7 @@ class SelectCategoryViewController: UIViewController {
     var selectedCategoryId = Int32.min
     var updateOperations = [BlockOperation]()
 
-    // MARK: - Core Data Objects
+    // MARK: - MARK: - Core Data Object Contexts
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
         guard let context: NSManagedObjectContext = user?.managedObjectContext else {
@@ -60,6 +60,101 @@ class SelectCategoryViewController: UIViewController {
     lazy var imageProvider: ImageProvider = {
         let provider : ImageProvider = ImageProvider.shared
         return provider
+    }()
+
+    
+    // MARK: - Core Data Source
+    @available(iOS 13.0, *)
+    typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
+    /// Stored properties cannot be marked potentially unavailable with '@available'.
+    // "private var diffableDataSource: DataSource!" replaced by below lines
+//    private var _diffableDataSource: NSObject? = nil
+//    @available(iOS 13.0, *)
+//    var diffableDataSource: DataSource {
+//        if _diffableDataSource == nil {
+//            _diffableDataSource = configDataSource()
+//        }
+//        return _diffableDataSource as! DataSource
+//    }
+
+    lazy var userUploadRights: [Int32] = {
+        // Case of Community user?
+        if NetworkVars.userStatus != .normal { return [] }
+        let userUploadRights = user.uploadRights
+        return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
+    }()
+    
+    lazy var predicates: [NSPredicate] = {
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        return andPredicates
+    }()
+
+    lazy var fetchRecentAlbumsRequest: NSFetchRequest = {
+        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        var andPredicates = predicates
+        var recentCatIds = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)}))
+        // Root album proposed for some actions, input album not proposed
+        if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
+            recentCatIds.remove(Int32.zero)
+        }
+        // Removes current album
+        recentCatIds.remove(self.inputAlbum.pwgID)
+        // Removes parent album
+        recentCatIds.remove(self.inputAlbum.parentId)
+        andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchLimit = 5
+        return fetchRequest
+    }()
+
+    lazy var recentAlbums: NSFetchedResultsController<Album> = {
+        let albums = NSFetchedResultsController(fetchRequest: fetchRecentAlbumsRequest,
+                                                managedObjectContext: self.mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        albums.delegate = self
+        return albums
+    }()
+
+    lazy var fetchAlbumsRequest: NSFetchRequest = {
+        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        
+        // Don't show smart albums
+        var andPredicates = predicates
+        andPredicates.append(NSPredicate(format: "pwgID > 0"))
+
+        // Show sub-albums of deployed albums
+        var parentIDs = albumsShowingSubAlbums
+        parentIDs.insert(Int32.zero)
+        andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
+        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
+        // The root album is proposed for some actions
+        if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
+            var andPredicates = predicates
+            andPredicates.append(NSPredicate(format: "pwgID == 0"))
+            let rootPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicates, albumPredicates])
+        } else {
+            fetchRequest.predicate = albumPredicates
+        }
+        fetchRequest.fetchBatchSize = 20
+        return fetchRequest
+    }()
+
+    lazy var albums: NSFetchedResultsController<Album> = {
+        let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
+                                                managedObjectContext: mainContext,
+                                                sectionNameKeyPath: nil, cacheName: nil)
+        albums.delegate = self
+        return albums
     }()
 
     
@@ -167,91 +262,11 @@ class SelectCategoryViewController: UIViewController {
         return true
     }
 
+    
+    // MARK: - View
     @IBOutlet var categoriesTableView: UITableView!
     private var cancelBarButton: UIBarButtonItem?
     var albumsShowingSubAlbums = Set<Int32>()
-
-    
-    // MARK: - Core Data Source
-    lazy var userUploadRights: [Int32] = {
-        // Case of Community user?
-        if NetworkVars.userStatus != .normal { return [] }
-        let userUploadRights = user.uploadRights
-        return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
-    }()
-    
-    lazy var predicates: [NSPredicate] = {
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-        return andPredicates
-    }()
-
-    lazy var fetchRecentAlbumsRequest: NSFetchRequest = {
-        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
-        let fetchRequest = Album.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
-                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
-        var andPredicates = predicates
-        var recentCatIds = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)}))
-        // Root album proposed for some actions, input album not proposed
-        if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
-            recentCatIds.remove(Int32.zero)
-        }
-        // Removes current album
-        recentCatIds.remove(self.inputAlbum.pwgID)
-        // Removes parent album
-        recentCatIds.remove(self.inputAlbum.parentId)
-        andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchLimit = 5
-        return fetchRequest
-    }()
-
-    lazy var recentAlbums: NSFetchedResultsController<Album> = {
-        let albums = NSFetchedResultsController(fetchRequest: fetchRecentAlbumsRequest,
-                                                managedObjectContext: self.mainContext,
-                                                sectionNameKeyPath: nil, cacheName: nil)
-        albums.delegate = self
-        return albums
-    }()
-
-    lazy var fetchAlbumsRequest: NSFetchRequest = {
-        // Sort albums by globalRank i.e. the order in which they are presented in the web UI
-        let fetchRequest = Album.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
-                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
-        
-        // Don't show smart albums
-        var andPredicates = predicates
-        andPredicates.append(NSPredicate(format: "pwgID > 0"))
-
-        // Show sub-albums of deployed albums
-        var parentIDs = albumsShowingSubAlbums
-        parentIDs.insert(Int32.zero)
-        andPredicates.append(NSPredicate(format: "parentId IN %@", parentIDs))
-        let albumPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
-        // The root album is proposed for some actions
-        if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) {
-            var andPredicates = predicates
-            andPredicates.append(NSPredicate(format: "pwgID == 0"))
-            let rootPredicates = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [rootPredicates, albumPredicates])
-        } else {
-            fetchRequest.predicate = albumPredicates
-        }
-        fetchRequest.fetchBatchSize = 20
-        return fetchRequest
-    }()
-
-    lazy var albums: NSFetchedResultsController<Album> = {
-        let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
-                                                managedObjectContext: mainContext,
-                                                sectionNameKeyPath: nil, cacheName: nil)
-        albums.delegate = self
-        return albums
-    }()
 
     
     // MARK: - View Lifecycle
