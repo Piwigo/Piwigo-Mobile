@@ -77,7 +77,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     
     private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
         // Process image in the background
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
+        DispatchQueue.global(qos: .default).async { [self] in
             // Downsample image in cache
             let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
             
