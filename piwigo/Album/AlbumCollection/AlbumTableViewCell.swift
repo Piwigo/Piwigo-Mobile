@@ -99,7 +99,7 @@ class AlbumTableViewCell: UITableViewCell {
     }
     
     private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
-        // Process image in the background
+        // Process image in the background (.userInitiated leads to concurrency issues)
         DispatchQueue.global(qos: .default).async { [self] in
             // Downsample image in cache
             let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
