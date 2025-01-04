@@ -97,7 +97,7 @@ class SelectCategoryViewController: UIViewController {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         var andPredicates = predicates
-        var recentCatIds = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)}))
+        var recentCatIds: Set<Int32> = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)}))
         // Root album proposed for some actions, input album not proposed
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
             recentCatIds.remove(Int32.zero)
@@ -106,9 +106,11 @@ class SelectCategoryViewController: UIViewController {
         recentCatIds.remove(self.inputAlbum.pwgID)
         // Removes parent album
         recentCatIds.remove(self.inputAlbum.parentId)
-        andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds))
+        // Limit the number of recent albums
+        let nberExtraCats: Int = max(0, recentCatIds.count - AlbumVars.shared.maxNberRecentCategories)
+        andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds.dropLast(nberExtraCats)))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchLimit = 5
+        fetchRequest.fetchLimit = 10
         return fetchRequest
     }()
 

@@ -803,38 +803,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
-        // Get new album Id as string
-        let categoryIdStr = String(categoryId)
-        
-        // Create new array of recent albums
-        var newList = [String]()
-        
-        // Add albumId to top of list
-        newList.append(categoryIdStr)
+        // Create new set of recent albums with new album ID
+        var newList: Set<String> = Set([String(categoryId)])
 
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
+        // Get current set of recent albums
+        let oldList: Set<String> = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0}))
 
         // Add recent albums while avoiding duplicates
-        if (recentAlbumsStr.count != 0) {
-            // List of recent album IDs
-            let oldList = recentAlbumsStr.components(separatedBy: ",")
-            
-            // Append album IDs of old list
-            for catId in oldList {
-                if newList.contains(catId) { continue }
-                newList.append(catId)
-            }
-        }
+        newList.formUnion(oldList)
 
         // We will present 3 - 10 albums (5 by default), but because some recent albums
         // may not be suggested or other may be deleted, we store more than 10, say 20.
-        let count = newList.count
-        if count > 20 {
-            AlbumVars.shared.recentCategories = newList.dropLast(count - 20).joined(separator: ",")
-        } else {
-            AlbumVars.shared.recentCategories = newList.joined(separator: ",")
-        }
+        let nberExtraCats: Int = max(0, newList.count - 20)
+        AlbumVars.shared.recentCategories = newList.dropLast(nberExtraCats).joined(separator: ",")
 //        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
