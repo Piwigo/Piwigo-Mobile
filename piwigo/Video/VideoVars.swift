@@ -17,15 +17,15 @@ class VideoVars: NSObject {
     // Remove deprecated stored objects if needed
     override init() {
         // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "isPlayerMuted") {
-//            UserDefaults.dataSuite.removeObject(forKey: "isPlayerMuted")
+        if let _ = UserDefaults.standard.object(forKey: "defaultPlayerRate") {
+            UserDefaults.standard.removeObject(forKey: "defaultPlayerRate")
+        }
+//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+//            UserDefaults.dataSuite.removeObject(forKey: "test")
 //        }
     }
     
     // MARK: - Vars in UserDefaults / Standard
-    /// - Remembers auto-play option for device display
-    @UserDefault("defaultPlayerRate", defaultValue: 1.0)
-    var defaultPlayerRate: Float
     /// - Remembers last selected video player mute option
     @UserDefault("isMuted", defaultValue: false)
     var isMuted: Bool

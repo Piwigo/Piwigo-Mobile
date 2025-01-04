@@ -226,7 +226,7 @@ class PlayerViewControllerCoordinator: NSObject {
                         parent.videoSize = playerViewController.videoBounds.size
                         parent.configVideoViews()
                         parent.videoControls.config(currentTime: currentTime, duration: video.duration)
-                        playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
+                        playerViewController.player?.rate = 1
                     } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
                         parent.config(currentTime: currentTime, duration: video.duration)
                         playerViewController.player?.rate = 1
@@ -254,7 +254,7 @@ class PlayerViewControllerCoordinator: NSObject {
                             parent.videoSize = playerViewController.videoBounds.size
                             parent.configVideoViews()
                             parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
-                            playerViewController.player?.rate = VideoVars.shared.defaultPlayerRate
+                            playerViewController.player?.rate = 1
                         } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
                             parent.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                             playerViewController.player?.rate = 1
@@ -540,11 +540,6 @@ class PlayerViewControllerCoordinator: NSObject {
     
     // Removes the playerViewController from its container, and updates the status accordingly.
     func removeFromParentIfNeeded() {
-        // Remember user's choice
-        if playerViewControllerIfLoaded?.parent is VideoDetailViewController {
-            VideoVars.shared.defaultPlayerRate = playerViewControllerIfLoaded?.player?.rate ?? 1
-        }
-
         pauseAndStoreTime()
         removeFromParent()
         if status.contains(.embeddedInline) {
