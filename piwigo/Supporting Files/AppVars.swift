@@ -25,12 +25,15 @@ class AppVars: NSObject {
     // Remove deprecated stored objects if needed
     override init() {
         // Deprecated data?
-        if let _ = UserDefaults.dataSuite.object(forKey: "memoryCache") {
-            UserDefaults.dataSuite.removeObject(forKey: "memoryCache")
+        if let _ = UserDefaults.standard.object(forKey: "memoryCache") {
+            UserDefaults.standard.removeObject(forKey: "memoryCache")
         }
-        if let _ = UserDefaults.dataSuite.object(forKey: "diskCache") {
-            UserDefaults.dataSuite.removeObject(forKey: "diskCache")
+        if let _ = UserDefaults.standard.object(forKey: "diskCache") {
+            UserDefaults.standard.removeObject(forKey: "diskCache")
         }
+//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+//            UserDefaults.dataSuite.removeObject(forKey: "test")
+//        }
     }
 
     // MARK: - Vars in UserDefaults / Standard

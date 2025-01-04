@@ -18,13 +18,18 @@ class AlbumVars: NSObject {
     // Remove deprecated stored objects if needed
     override init() {
         // Deprecated data?
-        if let _ = UserDefaults.dataSuite.object(forKey: "recentPeriod") {
-            UserDefaults.dataSuite.removeObject(forKey: "recentPeriod")
+        if let _ = UserDefaults.standard.object(forKey: "recentPeriod") {
+            UserDefaults.standard.removeObject(forKey: "recentPeriod")
         }
-        if let defaultSort = UserDefaults.dataSuite.object(forKey: "defaultSort") {
-            UserDefaults.dataSuite.removeObject(forKey: "defaultSort")
-            UserDefaults.dataSuite.set(defaultSort, forKey: "defaultSortRaw")
+        if let defaultSort = UserDefaults.standard.object(forKey: "defaultSort") {
+            UserDefaults.standard.removeObject(forKey: "defaultSort")
+            if UserDefaults.standard.object(forKey: "defaultSortRaw") == nil {
+                UserDefaults.standard.set(defaultSort, forKey: "defaultSortRaw")
+            }
         }
+//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+//            UserDefaults.dataSuite.removeObject(forKey: "test")
+//        }
     }
 
     // MARK: - Vars in UserDefaults / Standard

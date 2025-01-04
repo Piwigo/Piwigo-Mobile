@@ -32,6 +32,9 @@ public class NetworkVars: NSObject {
     // Remove deprecated stored objects if needed
     //    override init() {
     //        // Deprecated data?
+    //        if let _ = UserDefaults.standard.object(forKey: "test") {
+    //            UserDefaults.standard.removeObject(forKey: "test")
+    //        }
     //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
     //            UserDefaults.dataSuite.removeObject(forKey: "test")
     //        }

@@ -872,11 +872,7 @@ extension ImageViewController: UIPageViewControllerDelegate
             imageData = videoDVC.imageData
             
             // Set video player buttons
-            if VideoVars.shared.defaultPlayerRate == 1 {
-                playBarButton = UIBarButtonItem.pauseImageButton(self, action: #selector(pauseVideo))
-            } else {
-                playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
-            }
+            playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
             muteBarButton = UIBarButtonItem.muteAudioButton(VideoVars.shared.isMuted, target: self, action: #selector(muteUnmuteAudio))
         } else {
             return
