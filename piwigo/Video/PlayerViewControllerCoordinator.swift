@@ -287,7 +287,7 @@ class PlayerViewControllerCoordinator: NSObject {
 
         // Observe system notifications for storing videos in cache
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishPlaying(_:)),
-                                               name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+                                               name: AVPlayerItem.didPlayToEndTimeNotification, object: nil)
     }
     
     // Create AVPlayerController only if necessary
@@ -332,65 +332,72 @@ class PlayerViewControllerCoordinator: NSObject {
     }
     
     @objc func didFinishPlaying(_ notification: Notification?) {
-        if notification?.name == .AVPlayerItemDidPlayToEndTime,
-           let playerItem = notification?.object as? AVPlayerItem,
-           let urlAsset = playerItem.asset as? AVURLAsset, urlAsset.url == video.pwgURL,
+        guard notification?.name == AVPlayerItem.didPlayToEndTimeNotification,
+              let playerItem = notification?.object as? AVPlayerItem
+        else  { return }
+
+        // User did watch video until the end -> replay it
+        DispatchQueue.main.async { [self] in
+            self.playOrReplay()
+        }
+
+        // Store the video in cache if possible
+        if let urlAsset = playerItem.asset as? AVURLAsset, urlAsset.url == video.pwgURL,
            let videoAsset = playerItem.asset.copy() as? AVAsset, videoAsset.isExportable {
-               // User did watch video until the end
-               DispatchQueue.global(qos: .background).async {
-                   // Get export session
-//                   let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
-                   guard let exportSession = AVAssetExportSession(asset: videoAsset,
-                                                presetName: AVAssetExportPresetHighestQuality) else { return }
-                   // Set parameters
-                   exportSession.outputFileType = .mov
-                   exportSession.shouldOptimizeForNetworkUse = true
-                   exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
-                   exportSession.metadata = videoAsset.metadata
-                   exportSession.outputURL = self.video.cacheURL
-
-                   // Create intermediate directories if needed
-                   let fm = FileManager.default
-                   let dirURL = self.video.cacheURL.deletingLastPathComponent()
-                   if fm.fileExists(atPath: dirURL.path) == false {
-                       debugPrint("••> Create directory \(dirURL.path)")
-                       try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
-                                                   attributes: nil)
-                   }
-                   
-                   // Delete existing file if it exists (incomplete previous attempt?)
-                   try? fm.removeItem(at: self.video.cacheURL)
-
-                   // Store video file in cache for reuse
-                   exportSession.exportAsynchronously { [self] in
-                       switch exportSession.status {
-                       case .waiting:
-                           debugPrint("••> Video waiting to export more data… ;-)")
-                       case .exporting:
-                           debugPrint("••> Video export is in progress… ;-)")
-                       case .completed:
-                           debugPrint("••> Video stored in cache ;-)")
-                           // Replace player item
-                           DispatchQueue.main.async {
-                               if let playerViewController = self.playerViewControllerIfLoaded {
-                                   let asset = AVURLAsset(url: self.video.cacheURL, options: nil)
-                                   let playerItem = AVPlayerItem(asset: asset)
-                                   if let resumeTime = playerViewController.player?.currentTime() {
-                                       playerItem.seek(to: resumeTime) {_ in
-                                           playerViewController.player?.replaceCurrentItem(with: playerItem)
-                                       }
-                                   } else {
-                                       playerViewController.player?.replaceCurrentItem(with: playerItem)
-                                   }
-                               }
-                           }
-                       case .unknown, .failed, .cancelled:
-                           debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error)) — \(exportSession.outputURL?.absoluteString ?? "—?—")")
-                       @unknown default:
-                           debugPrint("••> Video not stored in cache: Unknown error")
-                       }
-                   }
-               }
+            DispatchQueue.global(qos: .background).async {
+                // Get export session
+//               let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
+                guard let exportSession = AVAssetExportSession(asset: videoAsset,
+                                             presetName: AVAssetExportPresetHighestQuality) else { return }
+                // Set parameters
+                exportSession.outputFileType = .mov
+                exportSession.shouldOptimizeForNetworkUse = true
+                exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
+                exportSession.metadata = videoAsset.metadata
+                exportSession.outputURL = self.video.cacheURL
+ 
+                // Create intermediate directories if needed
+                let fm = FileManager.default
+                let dirURL = self.video.cacheURL.deletingLastPathComponent()
+                if fm.fileExists(atPath: dirURL.path) == false {
+                    debugPrint("••> Create directory \(dirURL.path)")
+                    try? fm.createDirectory(at: dirURL, withIntermediateDirectories: true,
+                                                attributes: nil)
+                }
+                
+                // Delete existing file if it exists (incomplete previous attempt?)
+                try? fm.removeItem(at: self.video.cacheURL)
+ 
+                // Store video file in cache for reuse
+                exportSession.exportAsynchronously { [self] in
+                    switch exportSession.status {
+                    case .waiting:
+                        debugPrint("••> Video waiting to export more data… ;-)")
+                    case .exporting:
+                        debugPrint("••> Video export is in progress… ;-)")
+                    case .completed:
+                        debugPrint("••> Video stored in cache ;-)")
+                        // Replace player item
+                        DispatchQueue.main.async {
+                            if let playerViewController = self.playerViewControllerIfLoaded {
+                                let asset = AVURLAsset(url: self.video.cacheURL, options: nil)
+                                let playerItem = AVPlayerItem(asset: asset)
+                                if let resumeTime = playerViewController.player?.currentTime() {
+                                    playerItem.seek(to: resumeTime) {_ in
+                                        playerViewController.player?.replaceCurrentItem(with: playerItem)
+                                    }
+                                } else {
+                                    playerViewController.player?.replaceCurrentItem(with: playerItem)
+                                }
+                            }
+                        }
+                    case .unknown, .failed, .cancelled:
+                        debugPrint("••> Video not stored in cache: \(String(describing: exportSession.error)) — \(exportSession.outputURL?.absoluteString ?? "—?—")")
+                    @unknown default:
+                        debugPrint("••> Video not stored in cache: Unknown error")
+                    }
+                }
+           }
         }
     }
     
