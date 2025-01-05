@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="OpenSansRegular.TTF">
-            <string>OpenSans</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Local Images View Controller-->
         <scene sceneID="CBH-Ib-JJ4">
@@ -62,11 +57,11 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
-                                                    <rect key="frame" x="351" y="13.5" width="55" height="27"/>
+                                                    <rect key="frame" x="349" y="13.5" width="57" height="27"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="27" id="bdo-M7-fBu"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <state key="normal" title="Select All">
                                                         <color key="titleColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     </state>
@@ -82,7 +77,7 @@
                                                 <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="E5G-dL-Ipw"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="H2a-jo-2YV"/>
                                                 <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" id="cdc-8q-Liq"/>
-                                                <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="16.5" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
+                                                <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
                                                 <constraint firstAttribute="trailing" secondItem="Lfe-Kd-abT" secondAttribute="trailing" constant="8" id="n8v-KW-Fd2"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IuZ-Ot-NeB" secondAttribute="trailing" constant="10" id="pAn-ka-Tj4"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NIO-n9-bqf" secondAttribute="trailing" constant="10" id="wpv-JQ-p9X"/>
