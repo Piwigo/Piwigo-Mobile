@@ -30,7 +30,7 @@ public class UploadManager: NSObject {
     /// - image formats which can be converted with iOS
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
-    let acceptedImageExtensions: [String] = {
+    lazy var acceptedImageExtensions: [String] = {
         if #available(iOS 14.0, *) {
             let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
             var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
@@ -46,13 +46,21 @@ public class UploadManager: NSObject {
             return ["heic","heif","png","gif","jpg","jpeg","webp","tif","tiff","bmp","raw","ico","icns"]
         }
     }()
-    let acceptedMovieExtensions: [String] = {
+    lazy var acceptedMovieExtensions: [String] = {
         if #available(iOS 14.0, *) {
             let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
             return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
         } else {
             return ["mov","mpg","mpeg","mpeg2","mp4","avi"]
         }
+    }()
+
+    // For producing filename suffixes
+    lazy var chunkFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        numberFormatter.minimumIntegerDigits = 5
+        return numberFormatter
     }()
 
     // Constants used to manage foreground tasks
@@ -74,7 +82,12 @@ public class UploadManager: NSObject {
     - isFinishing is set to true when the photo/video parameters are going to be set,
       and false when this job has completed or failed.
     */
-    public var isPaused = false                             // Flag used to pause/resume uploads
+    public var isPaused = false                             // Flag used to pause uploads when
+                                                            // - sorting local device images
+                                                            // - adding upload requests
+                                                            // - modifying auto-upload settings
+                                                            // - cancelling upload tasks
+                                                            // - the app is about to become inactive
     var isPreparing = false                                 // Prepare one image at once
     var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
     var isFinishing = false                                 // Finish transfer one image at once
