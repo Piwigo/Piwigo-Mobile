@@ -460,13 +460,5 @@ extension SceneDelegate: AppLockDelegate {
            let child = rootVC.children.first, child is LoginViewController {
             return
         }
-
-        // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            if UploadManager.shared.isPaused {
-                UploadManager.shared.resumeAll()
-            }
-        }
     }
 }
