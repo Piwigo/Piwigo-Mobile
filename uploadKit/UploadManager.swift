@@ -69,7 +69,7 @@ public class UploadManager: NSObject {
     public let maxNberOfFailedUploads = 5       // Stop transfers after 5 failures
 
     // Constants used to manage background tasks
-    public let maxCountOfBytesToUpload = 50 * 1024 * 1024   // Up to 50 MB transferred in a series
+    public let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
     public let maxNberOfUploadsPerBckgTask = 100            // i.e. 100 requests to be considered
     public let maxNberOfAutoUploadsPerCheck = 500           // i.e. do not add more than 500 requests at a time
 
