@@ -108,4 +108,7 @@ class AppVars: NSObject {
     
     /// - Remember the latest recursive album data fetch
     var dateOfLatestRecursiveAlbumDataFetch = Date.distantPast
+    
+    /// - To prevent background tasks from running when the app is active
+    var applicationIsActive: Bool = false
 }

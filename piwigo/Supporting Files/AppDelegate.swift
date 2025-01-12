@@ -407,6 +407,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             scheduleNextUpload()
         }
 
+        // iOS may launch the task when the app is active (since iOS 18)
+        if AppVars.shared.applicationIsActive {
+            debugPrint("••> Background upload task halted because the app is active.")
+            task.setTaskCompleted(success: true)
+            return
+        }
+
         // Create the operation queue
         let uploadQueue = OperationQueue()
         uploadQueue.maxConcurrentOperationCount = 1
