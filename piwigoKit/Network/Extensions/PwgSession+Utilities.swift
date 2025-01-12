@@ -97,7 +97,11 @@ extension PwgSession {
         let oldToken = NetworkVars.pwgToken
         PwgSession.shared.sessionGetStatus { username in
             if #available(iOSApplicationExtension 14.0, *) {
-                logger.notice("Session Status: \(NetworkVars.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+                #if DEBUG
+                logger.notice("Session: \(NetworkVars.username, privacy: .public)/\(username, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.pwgToken, privacy: .public)")
+                #else
+                logger.notice("Session: \(NetworkVars.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+                #endif
             }
             if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server
