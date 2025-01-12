@@ -60,7 +60,7 @@ extension Resolution {
     }
     
     public var pixels: String {
-        return String(format: "%ldx%ld pixels", self.width, self.height)
+        return String(format: "%ldx%ld", self.width, self.height)
     }
     
     public var maxSize: Int {
