@@ -194,7 +194,7 @@ class AlbumDeletion: NSObject
                              completion: @escaping (Bool) -> Void) {
         // Prepare set of parent IDs before deleting album (including root album)
         let parentIds = Set(albumData.upperIds.components(separatedBy: ",")
-            .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([Int32.zero]))
+            .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Delete the category
         PwgSession.checkSession(ofUser: user) { [unowned self] in
