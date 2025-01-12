@@ -16,7 +16,7 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
 //    @available(iOSApplicationExtension 14.0, *)
-//    static let logger = Logger(subsystem: "org.piwigoKit", category: "Migration_0B_to_0C")
+//    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: "ImageToSizesMigrationPolicy_0B_to_0C")
 
     /**
      ImageToSizes custom migration performed following these steps:
