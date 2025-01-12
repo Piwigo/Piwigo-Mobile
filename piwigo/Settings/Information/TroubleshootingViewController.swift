@@ -29,6 +29,7 @@ class TroubleshootingViewController: UIViewController {
     private lazy var JSONextensionCount: Int = JSONextension.count
     private var JSONfiles = [URL]()
     private var pwgLogs = [[OSLogEntryLog]]()
+    private let pwgSubSystems = ["org.piwigo", "org.piwigo.piwigoKit", "org.piwigo.uploadKit"]
     
     
     // MARK: - View Lifecycle
@@ -140,20 +141,25 @@ class TroubleshootingViewController: UIViewController {
                 let timeCounter = CFAbsoluteTimeGetCurrent()
                 let logStore = try OSLogStore(scope: .currentProcessIdentifier)
                 let oneHourAgo = logStore.position(date: Date().addingTimeInterval(-3600))
-                let predicate = NSPredicate(format: "subsystem IN %@", ["org.piwigo", "org.piwigoKit", "org.uploadKit"])
+                let predicate = NSPredicate(format: "subsystem IN %@", self.pwgSubSystems)
                 let allEntries = try logStore.getEntries(at: oneHourAgo, matching: predicate)
-                let duration = (CFAbsoluteTimeGetCurrent() - timeCounter)*1000
+                let duration = (CFAbsoluteTimeGetCurrent() - timeCounter) * CFAbsoluteTime(1000)
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
-                // Core Data
+                // piwigoKit — Core Data
                 var someLogs = entries.filter({$0.category == "TagToTagMigrationPolicy_09_to_0C"})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 someLogs = entries.filter({$0.category == "UploadToUploadMigrationPolicy_09_to_0C"})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
+                someLogs = entries.filter({$0.category == "ImageToSizesMigrationPolicy_0B_to_0C"})
+                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
                 someLogs = entries.filter({$0.category == "Image"})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                // Networking
+                // piwigoKit — Networking
                 someLogs = entries.filter({$0.category == "PwgSession"})
+                if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
+                // uploadKit — UploadSessions
+                someLogs = entries.filter({$0.category == "UploadSessions"})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             } catch {
                 debugPrint("••> Could not retrieve logs.")
