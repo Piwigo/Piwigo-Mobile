@@ -146,8 +146,9 @@ extension LogsViewController: UIActivityItemSource
             var content = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
             content += " " + (appVersionString ?? "") + " (" + (appBuildString ?? "") + ")\n"
             content += deviceModel + " — " + deviceOS + " " + deviceOSversion + "\n"
-            content += (dateTime.text ?? "?") + "\n"
             content += "\n"
+            content += (category.text ?? "?") + " — " + (dateTime.text ?? "?") + "\n"
+            content += "—\n"
             content += messages?.text ?? ""
             return content
         }
