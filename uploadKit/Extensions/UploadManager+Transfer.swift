@@ -171,7 +171,6 @@ extension UploadManager {
     
     func transfertImage(for upload: Upload) {
         // Initialise or reset counter of progress bar in case we repeat the transfer
-        let counter = UploadCounter(identifier: upload.localIdentifier)
         UploadSessions.shared.initCounter(withID: upload.localIdentifier)
 
         // Choose recent method when called by:
