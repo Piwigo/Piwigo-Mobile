@@ -228,8 +228,9 @@ class UploadQueueViewController: UIViewController {
     }
     
     @objc func setTableViewMainHeader() {
-        if queueTableView?.window == nil { return }
         DispatchQueue.main.async { [self] in
+            // Anything to do?
+            if queueTableView?.window == nil { return }
             // No upload request in the queue?
             if UploadManager.shared.nberOfUploadsToComplete == 0 {
                 queueTableView.tableHeaderView = nil
