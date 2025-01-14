@@ -615,39 +615,14 @@ extension UploadManager {
         // Prepare boundary
         let boundary = createBoundary(from: upload.md5Sum)
 
-        // HTTP request body
+        // Current chunk
         let chunk = 0
         let chunkStr = String(format: "%ld", chunk)
-        var httpBody = Data()
-        httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "filename", value: upload.fileName, using: boundary).data(using: .utf8)!)
-        let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
-        httpBody.append(convertFormField(named: "name", value: imageTitle, using: boundary).data(using: .utf8)!)
-        let author = PwgSession.utf8mb3String(from: upload.author)
-        httpBody.append(convertFormField(named: "author", value: author, using: boundary).data(using: .utf8)!)
-        let comment = PwgSession.utf8mb3String(from: upload.comment)
-        httpBody.append(convertFormField(named: "comment", value: comment, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
-        let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        httpBody.append(convertFormField(named: "tag_ids", value: tagIDs, using: boundary).data(using: .utf8)!)
-
-        // Chunk of data
-        let chunkOfData = imageData.subdata(in: chunk*chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-        let md5Checksum = chunkOfData.MD5checksum()
-        httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
-        httpBody.append(self.convertFileData(fieldName: "file",
-                                             fileName: upload.fileName,
-                                             mimeType: upload.mimeType,
-                                             fileData: chunkOfData,
-                                             using: boundary))
-
-        httpBody.append("--\(boundary)--".data(using: .utf8)!)
+        
+        // Get HTTP request body
+        let httpBody = getHttpBodyForChunk(chunk, ofSize: chunkSize, chunks: chunksStr,
+                                           ofData: imageData, withDate: creationDate, boundary: boundary,
+                                           for: username, password: password, upload: upload)
 
         // File name of chunk data stored into Piwigo/Uploads directory
         // This file will be deleted after a successful upload of the chunk
@@ -665,15 +640,8 @@ extension UploadManager {
         }
         
         // Prepare URL Request Object
-        var request = URLRequest(url: uploadUrl)
-        request.httpMethod = "POST"
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
-        request.setValue(upload.fileName, forHTTPHeaderField: "filename")
-        request.setValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
-        request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
-        request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
-        request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
+        let request = getHttpRequestForChunk(chunkStr, ofChunks: chunksStr, with: boundary,
+                                             for: uploadUrl, upload: upload)
 
         // As soon as tasks are created, the timeout counter starts
         let task = bckgSession.uploadTask(with: request, fromFile: chunkURL)
@@ -736,10 +704,7 @@ extension UploadManager {
         guard let uploadUrl = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
 
-        // Prepare creation date as Piwigo string
-        let creationDate = DateUtilities.string(from: upload.creationDate)
-
-        // Prepare credentials
+        // Get credentials
         let username = NetworkVars.username
         guard let serverPath = upload.user?.server?.path else {
             upload.setState(.preparingFail, error: UploadError.missingData, save: true)
@@ -748,10 +713,11 @@ extension UploadManager {
         }
         let password = KeychainUtilities.password(forService: serverPath, account: username)
         
-        // Prepare boundary and chunk size
+        // Prepare boundary, chunk size, creation date as Piwigo string
         let boundary = createBoundary(from: upload.md5Sum)
         let chunkSize = UploadVars.uploadChunkSize * 1024
         let chunksStr = String(format: "%ld", chunks)
+        let creationDate = DateUtilities.string(from: upload.creationDate)
 
         // Loop over all chunks
         for chunk in chunkSet {
@@ -759,37 +725,10 @@ extension UploadManager {
                 // Current chunk
                 let chunkStr = String(format: "%ld", chunk)
                 
-                // HTTP request body
-                var httpBody = Data()
-                httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "filename", value: upload.fileName, using: boundary).data(using: .utf8)!)
-                let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
-                httpBody.append(convertFormField(named: "name", value: imageTitle, using: boundary).data(using: .utf8)!)
-                let author = PwgSession.utf8mb3String(from: upload.author)
-                httpBody.append(convertFormField(named: "author", value: author, using: boundary).data(using: .utf8)!)
-                let comment = PwgSession.utf8mb3String(from: upload.comment)
-                httpBody.append(convertFormField(named: "comment", value: comment, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
-                httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
-                let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-                httpBody.append(convertFormField(named: "tag_ids", value: tagIDs, using: boundary).data(using: .utf8)!)
-
-                // Chunk of data
-                let chunkOfData = imageData.subdata(in: chunk*chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-                let md5Checksum = chunkOfData.MD5checksum()
-                httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
-                httpBody.append(self.convertFileData(fieldName: "file",
-                                                     fileName: upload.fileName,
-                                                     mimeType: upload.mimeType,
-                                                     fileData: chunkOfData,
-                                                     using: boundary))
-
-                httpBody.append("--\(boundary)--".data(using: .utf8)!)
+                // Get HTTP request body
+                let httpBody = getHttpBodyForChunk(chunk, ofSize: chunkSize, chunks: chunksStr,
+                                                   ofData: imageData, withDate: creationDate, boundary: boundary,
+                                                   for: username, password: password, upload: upload)
 
                 // File name of chunk data stored into Piwigo/Uploads directory
                 // This file will be deleted after a successful upload of the chunk
@@ -807,15 +746,8 @@ extension UploadManager {
                 }
                 
                 // Prepare URL Request Object
-                var request = URLRequest(url: uploadUrl)
-                request.httpMethod = "POST"
-                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-                request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
-                request.setValue(upload.fileName, forHTTPHeaderField: "filename")
-                request.setValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
-                request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
-                request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
-                request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
+                let request = getHttpRequestForChunk(chunkStr, ofChunks: chunksStr, with: boundary,
+                                                     for: uploadUrl, upload: upload)
 
                 // As soon as tasks are created, the timeout counter starts
                 let task = bckgSession.uploadTask(with: request, fromFile: fileURL)
@@ -847,6 +779,62 @@ extension UploadManager {
 
         // Release memory
         imageData.removeAll()
+    }
+    
+    private func getHttpBodyForChunk(_ chunk: Int, ofSize chunkSize: Int, chunks chunksStr: String, ofData imageData: Data,
+                                     withDate creationDate: String, boundary: String,
+                                     for username: String, password: String, upload: Upload) -> Data {
+        // Current chunk
+        let chunkStr = String(format: "%ld", chunk)
+        
+        // Prepare HTTP request body
+        var httpBody = Data()
+        httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "filename", value: upload.fileName, using: boundary).data(using: .utf8)!)
+        let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
+        httpBody.append(convertFormField(named: "name", value: imageTitle, using: boundary).data(using: .utf8)!)
+        let author = PwgSession.utf8mb3String(from: upload.author)
+        httpBody.append(convertFormField(named: "author", value: author, using: boundary).data(using: .utf8)!)
+        let comment = PwgSession.utf8mb3String(from: upload.comment)
+        httpBody.append(convertFormField(named: "comment", value: comment, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
+        let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
+        httpBody.append(convertFormField(named: "tag_ids", value: tagIDs, using: boundary).data(using: .utf8)!)
+
+        // Chunk of data
+        let chunkOfData = imageData.subdata(in: chunk*chunkSize..<min((chunk+1)*chunkSize, imageData.count))
+        let md5Checksum = chunkOfData.MD5checksum()
+        httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
+        httpBody.append(self.convertFileData(fieldName: "file",
+                                             fileName: upload.fileName,
+                                             mimeType: upload.mimeType,
+                                             fileData: chunkOfData,
+                                             using: boundary))
+
+        httpBody.append("--\(boundary)--".data(using: .utf8)!)
+        
+        return httpBody
+    }
+    
+    private func getHttpRequestForChunk(_ chunkStr: String, ofChunks chunksStr: String, with boundary: String,
+                                        for uploadUrl: URL, upload: Upload) -> URLRequest {
+        // Prepare URL Request Object
+        var request = URLRequest(url: uploadUrl)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
+        request.setValue(upload.fileName, forHTTPHeaderField: "filename")
+        request.setValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
+        request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
+        request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
+        request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
+        return request
     }
 
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: Error?) {
