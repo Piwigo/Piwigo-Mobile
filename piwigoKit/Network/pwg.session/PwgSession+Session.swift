@@ -210,7 +210,7 @@ public extension PwgSession {
     func sessionLogout(completion: @escaping () -> Void,
                               failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Close session…")
+            PwgSession.logger.notice("Close session.")
         }
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
