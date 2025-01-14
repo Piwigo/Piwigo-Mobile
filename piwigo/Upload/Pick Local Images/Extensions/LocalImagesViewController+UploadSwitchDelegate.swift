@@ -17,61 +17,63 @@ extension LocalImagesViewController: UploadSwitchDelegate
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
         // Retrieve common image parameters and upload settings
         for index in 0..<uploadRequests.count {
-            // Initialisation
-            var updatedRequest = uploadRequests[index]
-            
-            // Image parameters
-            if let imageTitle = imageParameters["title"] as? String {
-                updatedRequest.imageTitle = imageTitle
-            }
-            if let author = imageParameters["author"] as? String {
-                updatedRequest.author = author
-            }
-            if let privacy = imageParameters["privacy"] as? pwgPrivacy {
-                updatedRequest.privacyLevel = privacy
-            }
-            if let tagIds = imageParameters["tagIds"] as? String {
-                updatedRequest.tagIds = tagIds
-            }
-            if let comment = imageParameters["comment"] as? String {
-                updatedRequest.comment = comment
-            }
-            
-            // Upload settings
-            if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
-                updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
-            }
-            if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
-                updatedRequest.resizeImageOnUpload = resizeImageOnUpload
-                if resizeImageOnUpload {
-                    if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
-                        updatedRequest.photoMaxSize = photoMaxSize
-                    }
-                    if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
-                        updatedRequest.videoMaxSize = videoMaxSize
-                    }
-                } else {    // No downsizing
-                    updatedRequest.photoMaxSize = 0
-                    updatedRequest.videoMaxSize = 0
+            autoreleasepool {
+                // Initialisation
+                var updatedRequest = uploadRequests[index]
+                
+                // Image parameters
+                if let imageTitle = imageParameters["title"] as? String {
+                    updatedRequest.imageTitle = imageTitle
                 }
+                if let author = imageParameters["author"] as? String {
+                    updatedRequest.author = author
+                }
+                if let privacy = imageParameters["privacy"] as? pwgPrivacy {
+                    updatedRequest.privacyLevel = privacy
+                }
+                if let tagIds = imageParameters["tagIds"] as? String {
+                    updatedRequest.tagIds = tagIds
+                }
+                if let comment = imageParameters["comment"] as? String {
+                    updatedRequest.comment = comment
+                }
+                
+                // Upload settings
+                if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
+                    updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
+                }
+                if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
+                    updatedRequest.resizeImageOnUpload = resizeImageOnUpload
+                    if resizeImageOnUpload {
+                        if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
+                            updatedRequest.photoMaxSize = photoMaxSize
+                        }
+                        if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
+                            updatedRequest.videoMaxSize = videoMaxSize
+                        }
+                    } else {    // No downsizing
+                        updatedRequest.photoMaxSize = 0
+                        updatedRequest.videoMaxSize = 0
+                    }
+                }
+                if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
+                    updatedRequest.compressImageOnUpload = compressImageOnUpload
+                }
+                if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
+                    updatedRequest.photoQuality = photoQuality
+                }
+                if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
+                    updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
+                }
+                if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
+                    updatedRequest.defaultPrefix = defaultPrefix
+                }
+                if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
+                    updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
+                }
+                
+                uploadRequests[index] = updatedRequest
             }
-            if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
-                updatedRequest.compressImageOnUpload = compressImageOnUpload
-            }
-            if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
-                updatedRequest.photoQuality = photoQuality
-            }
-            if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
-                updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
-            }
-            if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
-                updatedRequest.defaultPrefix = defaultPrefix
-            }
-            if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
-                updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
-            }
-
-            uploadRequests[index] = updatedRequest
         }
         
         // Disable sleep mode if needed

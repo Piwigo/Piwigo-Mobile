@@ -29,18 +29,24 @@ extension LocalImagesViewController: UICollectionViewDataSource
             if nberOfImageInSection <= 10 {
                 // Collect all images
                 for item in 0..<min(nberOfImageInSection, 10) {
-                    let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
-                    imagesInSection.append(fetchedImages[index])
+                    autoreleasepool {
+                        let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
+                        imagesInSection.append(fetchedImages[index])
+                    }
                 }
             } else {
                 // Collect first 10 images
                 for item in 0..<10 {
-                    let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
-                    imagesInSection.append(fetchedImages[index])
+                    autoreleasepool {
+                        let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
+                        imagesInSection.append(fetchedImages[index])
+                    }
                 }
                 for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
-                    let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
-                    imagesInSection.append(fetchedImages[index])
+                    autoreleasepool {
+                        let index = getImageIndex(for: IndexPath(item: item, section: indexPath.section))
+                        imagesInSection.append(fetchedImages[index])
+                    }
                 }
             }
             

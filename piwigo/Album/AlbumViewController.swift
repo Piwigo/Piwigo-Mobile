@@ -657,7 +657,9 @@ class AlbumViewController: UIViewController
     deinit {
         // Cancel all block operations
         for operation in updateOperations {
-            operation.cancel()
+            autoreleasepool {
+                operation.cancel()
+            }
         }
         updateOperations.removeAll(keepingCapacity: false)
 

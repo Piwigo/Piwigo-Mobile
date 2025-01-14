@@ -636,16 +636,20 @@ class AlbumUtilities: NSObject {
         // Determine lowest time interval after "1900-01-01 00:00:00 UTC"
         var lowest = TimeInterval.greatestFiniteMagnitude
         for ti in timeIntervals {
-            if ti > refDate, ti < lowest {
-                lowest = ti
+            autoreleasepool {
+                if ti > refDate, ti < lowest {
+                    lowest = ti
+                }
             }
         }
         
         // Determine greatest time interval after "1900-01-01 00:00:00 UTC"
         var greatest = refDate
         for ti in timeIntervals {
-            if ti > refDate, ti > greatest {
-                greatest = ti
+            autoreleasepool {
+                if ti > refDate, ti > greatest {
+                    greatest = ti
+                }
             }
         }
         
