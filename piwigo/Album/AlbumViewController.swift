@@ -439,14 +439,14 @@ class AlbumViewController: UIViewController
         // Check conditions before loading album and image data
         let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
         let nbImages = (images.fetchedObjects ?? []).count
-        let noSmartAlbumData = (self.categoryId < 0) && (nbImages == 0)
+        let isSmartAlbum = self.categoryId < 0
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty,
-           noSmartAlbumData || missingImages || lastLoad > TimeInterval(3600)
+           isSmartAlbum || missingImages || lastLoad > TimeInterval(3600)
         {
             // Fetch album/image data after checking session
-            self.startFetchingAlbumAndImages(withHUD: noSmartAlbumData || missingImages)
+            self.startFetchingAlbumAndImages(withHUD: isSmartAlbum || missingImages)
         }
         
         // Should we highlight the image of interest?
