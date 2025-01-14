@@ -81,7 +81,7 @@ extension PwgSession {
         // Check if the session is still active every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
         if secondsSinceLastCheck < 60,
-            PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi() {
+           PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi() {
             completion()
             return
         }
