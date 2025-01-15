@@ -19,29 +19,44 @@ extension UploadManager {
     // MARK: - Image preparation
     /// Case of an image format accepted by the server
     func prepareImage(atURL originalFileURL: URL, for upload: Upload) -> Void {
-        
-        // Upload the file as is if the user did not request any modification of the photo
-        if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
-           !upload.compressImageOnUpload, !upload.stripGPSdataOnUpload
-        {
-            // Get creation date from metadata if possible
-            upload.creationDate = getCreationDateOfImage(atURL: originalFileURL)
-            
-            // Get MD5 checksum and MIME type, update counter
-            finalizeImageFile(atURL: originalFileURL, with: upload) {
-                self.didPrepareImage(for: upload, nil)
-            } failure: { error in
-                self.didPrepareImage(for: upload, error)
+        autoreleasepool {
+            // Upload the file as is if the user did not request any modification of the photo
+            if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
+               !upload.compressImageOnUpload, !upload.stripGPSdataOnUpload
+            {
+                // Get creation date from metadata if possible
+                upload.creationDate = getCreationDateOfImage(atURL: originalFileURL)
+                
+                // Get MD5 checksum and MIME type, update counter
+                finalizeImageFile(atURL: originalFileURL, with: upload) {
+                    self.didPrepareImage(for: upload, nil)
+                } failure: { error in
+                    self.didPrepareImage(for: upload, error)
+                }
+                return
             }
-            return
-        }
-        
-        // The user only requested a removal of private metadata
-        // We do it w/o recompression of the image.
-        if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
-           !upload.compressImageOnUpload
-        {
-            stripMetadataOfImage(atURL: originalFileURL, with: upload) { fileURL in
+            
+            // The user only requested a removal of private metadata
+            // We do it w/o recompression of the image.
+            if (!upload.resizeImageOnUpload || upload.photoMaxSize == 0),
+               !upload.compressImageOnUpload
+            {
+                stripMetadataOfImage(atURL: originalFileURL, with: upload) { fileURL in
+                    // Get MD5 checksum and MIME type, update counter
+                    self.finalizeImageFile(atURL: fileURL, with: upload) {
+                        // Update upload request
+                        self.didPrepareImage(for: upload, nil)
+                    } failure: { error in
+                        self.didPrepareImage(for: upload, error)
+                    }
+                } failure: { error in
+                    self.didPrepareImage(for: upload, error)
+                }
+                return
+            }
+            
+            // The user requested a resize and/or compression
+            modifyImage(atURL: originalFileURL, with: upload) { fileURL in
                 // Get MD5 checksum and MIME type, update counter
                 self.finalizeImageFile(atURL: fileURL, with: upload) {
                     // Update upload request
@@ -52,36 +67,24 @@ extension UploadManager {
             } failure: { error in
                 self.didPrepareImage(for: upload, error)
             }
-            return
-        }
-        
-        // The user requested a resize and/or compression
-        modifyImage(atURL: originalFileURL, with: upload) { fileURL in
-            // Get MD5 checksum and MIME type, update counter
-            self.finalizeImageFile(atURL: fileURL, with: upload) {
-                // Update upload request
-                self.didPrepareImage(for: upload, nil)
-            } failure: { error in
-                self.didPrepareImage(for: upload, error)
-            }
-        } failure: { error in
-            self.didPrepareImage(for: upload, error)
         }
     }
     
     /// Case of an image format not accepted by the server
     func convertImage(atURL originalFileURL: URL, for upload: Upload) -> Void {
-        // Convert image to JPEG format
-        convertImage(atURL: originalFileURL, with: upload) { fileURL in
-            // Get MD5 checksum and MIME type, update counter
-            self.finalizeImageFile(atURL: fileURL, with: upload) {
-                // Update upload request
-                self.didPrepareImage(for: upload, nil)
+        autoreleasepool {
+            // Convert image to JPEG format
+            convertImage(atURL: originalFileURL, with: upload) { fileURL in
+                // Get MD5 checksum and MIME type, update counter
+                self.finalizeImageFile(atURL: fileURL, with: upload) {
+                    // Update upload request
+                    self.didPrepareImage(for: upload, nil)
+                } failure: { error in
+                    self.didPrepareImage(for: upload, error)
+                }
             } failure: { error in
                 self.didPrepareImage(for: upload, error)
             }
-        } failure: { error in
-            self.didPrepareImage(for: upload, error)
         }
     }
     
@@ -133,14 +136,16 @@ extension UploadManager {
     
     fileprivate func getCreationDateOfImageSource(_ sourceRef: CGImageSource, options: CFDictionary,
                                               nberOfImages: Int) -> Date? {
-        // Loop over images contained in source file and adopt first available date/time of creation
-        for imageIndex in 0..<nberOfImages {
-            if let properties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any],
-               let date = properties.creationDate() {
-                return date
+        autoreleasepool {
+            // Loop over images contained in source file and adopt first available date/time of creation
+            for imageIndex in 0..<nberOfImages {
+                if let properties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any],
+                   let date = properties.creationDate() {
+                    return date
+                }
             }
+            return nil
         }
-        return nil
     }
     
     // Strip private metadata w/o recompression
