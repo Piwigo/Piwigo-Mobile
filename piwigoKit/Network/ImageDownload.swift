@@ -65,9 +65,11 @@ extension Image
     }
     
     public func cachedThumbnail(ofSize size: pwgImageSize) -> UIImage? {
-        guard let fileURL = self.cacheURL(ofSize: size),
-              let image = UIImage(contentsOfFile: fileURL.path)
-        else { return nil }
-        return image
+        autoreleasepool {
+            guard let fileURL = self.cacheURL(ofSize: size),
+                  let image = UIImage(contentsOfFile: fileURL.path)
+            else { return nil }
+            return image
+        }
     }
 }
