@@ -87,14 +87,16 @@ class VideoControlsView: UIVisualEffectView {
     }
     
     func setCurrentTime(_ value: Double) {
-        // Set slider value
-        if let duration = videoDuration, duration != 0 {
-            // Start label shows current time
-            startLabel.text = getTimeLabel(value, forDuration: duration)
+        autoreleasepool {
             // Set slider value
-            timeSlider.value = Float(value / duration)
-        } else {
-            timeSlider.value = 0.5
+            if let duration = videoDuration, duration != 0 {
+                // Start label shows current time
+                startLabel.text = getTimeLabel(value, forDuration: duration)
+                // Set slider value
+                timeSlider.value = Float(value / duration)
+            } else {
+                timeSlider.value = 0.5
+            }
         }
     }
     
@@ -126,4 +128,8 @@ class VideoControlsView: UIVisualEffectView {
         let seconds = timeLeft.rounded(.toNearestOrEven)
         return String(format: "%02.0f:%02.0f:%02.0f", hours, minutes, seconds)
     }
+    
+//    deinit {
+//        debugPrint("••> VideoControlsView deinit")
+//    }
 }
