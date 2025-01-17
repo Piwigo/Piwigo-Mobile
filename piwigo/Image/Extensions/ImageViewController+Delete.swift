@@ -96,7 +96,7 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
@@ -125,7 +125,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.removeImageFromAlbumError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.removeImageFromAlbumError(error)
         }
     }
@@ -171,7 +171,7 @@ extension ImageViewController
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
                 // Save image ID for marking Upload request in the background
                 let imageID = imageData.pwgID
@@ -210,7 +210,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.deleteImageFromDatabaseError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.deleteImageFromDatabaseError(error)
         }
     }

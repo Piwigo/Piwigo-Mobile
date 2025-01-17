@@ -99,7 +99,7 @@ extension AlbumViewController
         }
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
                 // Retrieve updated image data i.e. width, height, URLs
                 /// We retrieve URLs of thumbnails which are not in cache anymore:
@@ -137,7 +137,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 rotateImagesInDatabaseError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             rotateImagesInDatabaseError(error)
         }
     }

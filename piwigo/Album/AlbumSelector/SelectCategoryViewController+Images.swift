@@ -68,7 +68,7 @@ extension SelectCategoryViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Add image to album
@@ -155,7 +155,7 @@ extension SelectCategoryViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Add image to target album

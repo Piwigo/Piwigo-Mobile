@@ -73,7 +73,7 @@ extension AlbumViewController
         }
 
         // Add image to favorites
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
@@ -101,7 +101,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.favoriteError(error, contextually: contextually)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.favoriteError(error, contextually: contextually)
         }
     }
@@ -176,7 +176,7 @@ extension AlbumViewController
         }
 
         // Remove image to favorites
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update HUD
@@ -204,7 +204,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.unfavoriteError(error, contextually: contextually)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.unfavoriteError(error, contextually: contextually)
         }
     }

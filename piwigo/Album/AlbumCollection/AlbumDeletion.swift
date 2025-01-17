@@ -197,7 +197,7 @@ class AlbumDeletion: NSObject
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Delete the category
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
@@ -219,7 +219,7 @@ class AlbumDeletion: NSObject
                 let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
                 self.deleteAlbumError(error, title: title, message: message)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
             let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
             self.deleteAlbumError(error, title: title, message: message)

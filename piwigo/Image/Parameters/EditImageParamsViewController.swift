@@ -281,9 +281,9 @@ class EditImageParamsViewController: UIViewController
         
         // Update all images
         let index = 0
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             updateImageProperties(fromIndex: index)
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             // Display error
             self.hideHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
@@ -401,7 +401,7 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update image title?
