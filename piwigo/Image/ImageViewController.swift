@@ -418,7 +418,7 @@ class ImageViewController: UIViewController {
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             if NetworkVars.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
@@ -434,7 +434,7 @@ class ImageViewController: UIViewController {
                     // Statistics not updated ► No error reported
                 }
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
                [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
