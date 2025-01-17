@@ -344,7 +344,7 @@ class ImageViewController: UIViewController {
     private func retrieveImageData(_ imageData: Image, isIncomplete: Bool) {
         // Retrieve image/video infos
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            PwgSession.checkSession(ofUser: user) { [unowned self] in
+            PwgSession.checkSession(ofUser: user) { [self] in
                 let imageID = imageData.pwgID
                 self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
                     DispatchQueue.main.async { [self] in
@@ -352,10 +352,10 @@ class ImageViewController: UIViewController {
                         guard let vcs = self.pageViewController?.viewControllers else { return }
                         for vc in vcs {
                             if let pvc = vc as? ImageDetailViewController, pvc.imageData.pwgID == imageID,
-                               let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
+                               let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }) {
                                 // Update image data
                                 if updatedImage.isFault {
-                                    // The album is not fired yet.
+                                    // The image is not fired yet.
                                     updatedImage.willAccessValue(forKey: nil)
                                     updatedImage.didAccessValue(forKey: nil)
                                 }
@@ -364,16 +364,15 @@ class ImageViewController: UIViewController {
                                 self.updateNavBar()
                                 self.setEnableStateOfButtons(true)
                                 break
-                            } else if let pvc = vc as? VideoDetailViewController,
-                                      pvc.imageData.pwgID == imageID {
+                            } else if let pvc = vc as? VideoDetailViewController, pvc.imageData.pwgID == imageID,
+                                      let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
                                 // Update image data
-                                let indexPath = pvc.indexPath
-                                pvc.imageData = self.images.object(at: indexPath)
-                                if pvc.imageData.isFault {
-                                    // The album is not fired yet.
-                                    pvc.imageData.willAccessValue(forKey: nil)
-                                    pvc.imageData.didAccessValue(forKey: nil)
+                                if updatedImage.isFault {
+                                    // The image is not fired yet.
+                                    updatedImage.willAccessValue(forKey: nil)
+                                    updatedImage.didAccessValue(forKey: nil)
                                 }
+                                pvc.imageData = updatedImage
                                 // Update navigation bar and enable buttons
                                 self.updateNavBar()
                                 self.setEnableStateOfButtons(true)
