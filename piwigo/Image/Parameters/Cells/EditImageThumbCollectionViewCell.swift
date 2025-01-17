@@ -93,7 +93,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         removeButtonView.isHidden = !hasRemove
 
         // Image size in pixels, file size, date and time
-        self.imageSize?.text = imageData.fullRes?.pixels ?? "— pixels"
+        self.imageSize?.text = imageData.fullRes?.pixels ?? "?x?"
         self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
         imageDate.text = ""
         let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)

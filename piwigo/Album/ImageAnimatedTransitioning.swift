@@ -71,33 +71,34 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
 
     // Transition logic and animation
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        
-        // Retrieve window and image or video detail view
-        guard let window = albumViewController.view.window ?? imageNavViewController.view.window,
-              let imageViewController = imageNavViewController.children.last as? ImageViewController,
-              let detailVC = imageViewController.pageViewController?.viewControllers?.first
-        else {
+        autoreleasepool {
+            // Retrieve window and image or video detail view
+            guard let window = albumViewController.view.window ?? imageNavViewController.view.window,
+                  let imageViewController = imageNavViewController.children.last as? ImageViewController,
+                  let detailVC = imageViewController.pageViewController?.viewControllers?.first
+            else {
+                transitionContext.completeTransition(false)
+                return
+            }
+            
+            // Retrieve snapshot
+            if let imageDVC = detailVC as? ImageDetailViewController,
+               let imageViewSnapshot = imageDVC.imageView.snapshotView(afterScreenUpdates: true) {
+                presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
+                                     detailViewController: imageDVC, imageViewSnapshot: imageViewSnapshot,
+                                     window: window)
+                return
+            }
+            else if let videoDVC = detailVC as? VideoDetailViewController,
+                    let imageViewSnapshot = videoDVC.placeHolderView.snapshotView(afterScreenUpdates: true) {
+                presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
+                                     detailViewController: videoDVC, imageViewSnapshot: imageViewSnapshot,
+                                     window: window)
+                return
+            }
+            
             transitionContext.completeTransition(false)
-            return
         }
-        
-        // Retrieve snapshot
-        if let imageDVC = detailVC as? ImageDetailViewController,
-           let imageViewSnapshot = imageDVC.imageView.snapshotView(afterScreenUpdates: true) {
-            presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
-                                 detailViewController: imageDVC, imageViewSnapshot: imageViewSnapshot,
-                                 window: window)
-            return
-        }
-        else if let videoDVC = detailVC as? VideoDetailViewController,
-                let imageViewSnapshot = videoDVC.placeHolderView.snapshotView(afterScreenUpdates: true) {
-            presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
-                                 detailViewController: videoDVC, imageViewSnapshot: imageViewSnapshot,
-                                 window: window)
-            return
-        }
-        
-        transitionContext.completeTransition(false)
     }
     
     private func presentOrDismissView(using transitionContext: UIViewControllerContextTransitioning,

@@ -163,6 +163,11 @@ class VideoDetailViewController: UIViewController
     }
     
     deinit {
+        // Release memory
+        if let video = video {
+            playbackController.delete(video: video)
+        }
+        
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }

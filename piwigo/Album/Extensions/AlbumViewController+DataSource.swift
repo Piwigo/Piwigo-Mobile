@@ -120,19 +120,25 @@ extension AlbumViewController: UICollectionViewDataSource
                 if nberOfImageInSection <= 20 {
                     // Collect all images
                     for item in 0..<min(nberOfImageInSection, 20) {
-                        let imageIndexPath = IndexPath(item: item, section: imageSection)
-                        imagesInSection.append(images.object(at: imageIndexPath))
+                        autoreleasepool {
+                            let imageIndexPath = IndexPath(item: item, section: imageSection)
+                            imagesInSection.append(images.object(at: imageIndexPath))
+                        }
                     }
                 } else {
                     // Collect first 20 images
                     for item in 0..<10 {
-                        let imageIndexPath = IndexPath(item: item, section: imageSection)
-                        imagesInSection.append(images.object(at: imageIndexPath))
+                        autoreleasepool {
+                            let imageIndexPath = IndexPath(item: item, section: imageSection)
+                            imagesInSection.append(images.object(at: imageIndexPath))
+                        }
                     }
                     // Collect last 10 images
                     for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
-                        let imageIndexPath = IndexPath(item: item, section: imageSection)
-                        imagesInSection.append(images.object(at: imageIndexPath))
+                        autoreleasepool {
+                            let imageIndexPath = IndexPath(item: item, section: imageSection)
+                            imagesInSection.append(images.object(at: imageIndexPath))
+                        }
                     }
                 }
 

@@ -170,7 +170,6 @@ class ImageDetailViewController: UIViewController
 
     deinit {
         // Unregister all observers
-        debugPrint("••> ImageDetailViewController released memory")
         imageData = nil
         imageView.image = nil
         NotificationCenter.default.removeObserver(self)

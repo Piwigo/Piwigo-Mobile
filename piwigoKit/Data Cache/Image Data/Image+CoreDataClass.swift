@@ -26,7 +26,7 @@ public class Image: NSManagedObject {
     // Logs Image updates
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigoKit", category: String(describing: Image.self))
+    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: Image.self))
 
     /**
      Updates an Image instance with the values from a ImagesGetInfo struct.

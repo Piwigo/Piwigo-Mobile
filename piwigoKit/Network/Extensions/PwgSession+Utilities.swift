@@ -81,7 +81,8 @@ extension PwgSession {
         // Check if the session is still active every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
         if secondsSinceLastCheck < 60,
-            PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi() {
+           PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi(),
+           NetworkVars.applicationShouldRelogin == false {
             completion()
             return
         }
@@ -97,7 +98,11 @@ extension PwgSession {
         let oldToken = NetworkVars.pwgToken
         PwgSession.shared.sessionGetStatus { username in
             if #available(iOSApplicationExtension 14.0, *) {
-                logger.notice("Session Status: \(NetworkVars.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+                #if DEBUG
+                logger.notice("Session: \(NetworkVars.username, privacy: .public)/\(username, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.pwgToken, privacy: .public)")
+                #else
+                logger.notice("Session: \(NetworkVars.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+                #endif
             }
             if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server
@@ -114,6 +119,7 @@ extension PwgSession {
                             // Update date of accesss to the server by guest
                             user?.setLastUsedToNow()
                             user?.status = NetworkVars.userStatus.rawValue
+                            NetworkVars.applicationShouldRelogin = false
                             PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                             completion()
                         } failure: { error in
@@ -129,6 +135,7 @@ extension PwgSession {
                                 // Update date of accesss to the server by user
                                 user?.setLastUsedToNow()
                                 user?.status = NetworkVars.userStatus.rawValue
+                                NetworkVars.applicationShouldRelogin = false
                                 PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                                 completion()
                             } failure: { error in

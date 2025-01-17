@@ -50,7 +50,7 @@ extension SceneDelegate {
         // Look for the instance of AlbumViewController
         guard
             let navController = window?.rootViewController as? UINavigationController,
-            let _ = navController.viewControllers.first as? AlbumViewController,
+            let albumVC = navController.viewControllers.first as? AlbumViewController,
             let userInfo = stateRestorationActivity.userInfo
         else {
             return
@@ -58,8 +58,13 @@ extension SceneDelegate {
 
         // Should we restore sub-albums?
         let catIDs = (userInfo["catIDs"] as? Set<Int32>) ?? Set<Int32>()
-        guard catIDs.isEmpty == false else { return }
-
+        guard catIDs.isEmpty == false
+        else {
+            // Root album displayed ► Fetch album data in the background
+            albumVC.startFetchingAlbumAndImages(withHUD: false)
+            return
+        }
+        
         // Restore sub-albums
         let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
         var subAlbumVC: AlbumViewController!
@@ -74,7 +79,11 @@ extension SceneDelegate {
         guard let subAlbumVC = subAlbumVC,
               let imagePath = userInfo["imagePath"] as? [Int]?,
               let item = imagePath?.first, let section = imagePath?.last
-        else { return }
+        else {
+            // Sub-album displayed ► Fetch sub-album data in the background
+            subAlbumVC.startFetchingAlbumAndImages(withHUD: false)
+            return
+        }
         
         // Perform a fetch because the sub-album is not loaded yet
         try? subAlbumVC.images.performFetch()
@@ -111,5 +120,8 @@ extension SceneDelegate {
                 subAlbumVC.navBarSnapshot = subAlbumVC.navigationController?.navigationBar.snapshotView(afterScreenUpdates: true)
             }
         }
+        
+        // Image of sub-album displayed ► Fetch sub-album data in the background
+        subAlbumVC.startFetchingAlbumAndImages(withHUD: false)
     }
 }

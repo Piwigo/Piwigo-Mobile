@@ -107,7 +107,6 @@ extension UploadQueueViewController: UITableViewDelegate
            let progressFraction = notification.userInfo?["progressFraction"] as? Float,
            let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell],
            let cell = visibleCells.first(where: {$0.localIdentifier == localIdentifier}) {
-            debugPrint("••> progressFraction = \(progressFraction) in applyUploadProgress()")
             cell.uploadingProgress?.setProgress(progressFraction, animated: true)
         }
     }

@@ -13,6 +13,9 @@ public class UploadVars: NSObject {
     // Remove deprecated stored objects if needed
     override init() {
         // Deprecated data?
+//        if let _ = UserDefaults.standard.object(forKey: "test") {
+//            UserDefaults.standard.removeObject(forKey: "test")
+//        }
         if let _ = UserDefaults.dataSuite.object(forKey: "photoResize") {
             UserDefaults.dataSuite.removeObject(forKey: "photoResize")
         }

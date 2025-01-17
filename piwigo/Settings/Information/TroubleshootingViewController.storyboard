@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -43,16 +43,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sge-GQ-FVM">
-                                                    <rect key="frame" x="20" y="6.0000000000000009" width="25" height="14.333333333333334"/>
+                                                    <rect key="frame" x="20" y="4" width="33" height="20.333333333333332"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6ag-Jt-otC">
-                                                    <rect key="frame" x="19.999999999999996" y="22.333333333333336" width="43.666666666666664" height="14.333333333333334"/>
+                                                    <rect key="frame" x="19.999999999999996" y="24.333333333333332" width="46.666666666666664" height="15.666666666666666"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -126,7 +126,7 @@
                             <constraint firstItem="N7X-fd-Gid" firstAttribute="leading" secondItem="Okv-jy-FOn" secondAttribute="leading" constant="16" id="7EZ-Ew-UHp"/>
                             <constraint firstItem="Okv-jy-FOn" firstAttribute="trailing" secondItem="N7X-fd-Gid" secondAttribute="trailing" constant="16" id="EcM-0t-93r"/>
                             <constraint firstItem="P2S-ex-HQj" firstAttribute="leading" secondItem="Okv-jy-FOn" secondAttribute="leading" id="KZA-Kd-vhv"/>
-                            <constraint firstItem="P2S-ex-HQj" firstAttribute="baseline" secondItem="OOC-Mj-xJP" secondAttribute="firstBaseline" constant="20.333333333333332" symbolType="layoutAnchor" id="R9F-xD-eAB"/>
+                            <constraint firstItem="P2S-ex-HQj" firstAttribute="baseline" secondItem="OOC-Mj-xJP" secondAttribute="firstBaseline" constant="16.666666666666668" symbolType="layoutAnchor" id="R9F-xD-eAB"/>
                             <constraint firstItem="OOC-Mj-xJP" firstAttribute="top" secondItem="Okv-jy-FOn" secondAttribute="top" constant="8" id="Sqq-tP-qQ0"/>
                             <constraint firstItem="Okv-jy-FOn" firstAttribute="bottom" secondItem="N7X-fd-Gid" secondAttribute="bottom" id="ax1-1T-aQc"/>
                             <constraint firstItem="Okv-jy-FOn" firstAttribute="trailing" secondItem="OOC-Mj-xJP" secondAttribute="trailing" id="fpS-JL-o7v"/>

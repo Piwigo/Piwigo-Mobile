@@ -302,22 +302,24 @@ class ImageUtilities: NSObject {
     }
     
     static func downsample(image: UIImage, to pointSize: CGSize) -> UIImage {
-        // Downsample image if needed
-        if #available(iOS 15, *) {
-            if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
-               let downsampledImage = image.preparingThumbnail(of: optSize) {
-                return downsampledImage
+        autoreleasepool {
+            // Downsample image if needed
+            if #available(iOS 15, *) {
+                if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+                   let downsampledImage = image.preparingThumbnail(of: optSize) {
+                    return downsampledImage
+                }
+            } else {
+                // Fallback on earlier versions
+                let options = [kCGImageSourceShouldCache: false] as CFDictionary
+                if let imageData = image.jpegData(compressionQuality: 1.0),
+                   let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
+                   let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
+                    return downsampledImage
+                }
             }
-        } else {
-            // Fallback on earlier versions
-            let options = [kCGImageSourceShouldCache: false] as CFDictionary
-            if let imageData = image.jpegData(compressionQuality: 1.0),
-               let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
-               let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
-                return downsampledImage
-            }
+            return image
         }
-        return image
     }
     
     static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize) -> UIImage? {
@@ -350,21 +352,23 @@ class ImageUtilities: NSObject {
     }
     
     private static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
-        let fm = FileManager.default
-        try? fm.removeItem(atPath: filePath)
-        if #available(iOS 17, *) {
-            if let data = downSampledImage.heicData() as? NSData {
+        autoreleasepool {
+            let fm = FileManager.default
+            try? fm.removeItem(atPath: filePath)
+            if #available(iOS 17, *) {
+                if let data = downSampledImage.heicData() as? NSData {
+                    do {
+                        try data.write(toFile: filePath, options: .atomic)
+                    } catch {
+                        debugPrint(error.localizedDescription)
+                    }
+                }
+            } else if let data = downSampledImage.jpegData(compressionQuality: 1.0) as? NSData {
                 do {
                     try data.write(toFile: filePath, options: .atomic)
                 } catch {
                     debugPrint(error.localizedDescription)
                 }
-            }
-        } else if let data = downSampledImage.jpegData(compressionQuality: 1.0) as? NSData {
-            do {
-                try data.write(toFile: filePath, options: .atomic)
-            } catch {
-                debugPrint(error.localizedDescription)
             }
         }
     }

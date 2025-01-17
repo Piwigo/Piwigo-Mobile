@@ -91,4 +91,13 @@ class PlaybackController {
             completion()
         }
     }
+    
+    func delete(video: Video) {
+        if playbackItems[video.pwgID] != nil {
+            // Delete coordinator
+            coordinator(for: video).delete()
+            // Delete video item
+            playbackItems[video.pwgID] = nil
+        }
+    }
 }

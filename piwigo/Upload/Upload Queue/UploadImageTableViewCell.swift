@@ -294,17 +294,19 @@ class UploadImageTableViewCell: UITableViewCell {
                            pixelWidth: Float, pixelHeight: Float, creationDate: Date?) -> String {
         // Check date
         guard let creationDate = creationDate else {
-            return String(format: "%.0fx%.0f pixels", pixelWidth, pixelHeight)
+            return String(format: "%.0fx%.0f", pixelWidth, pixelHeight)
         }
         
         // Info depends on table width
-        if availableWidth > 430 {
-            // i.e. larger than iPhone 14 Pro Max screen width
-            return String(format: "%.0fx%.0f pixels - %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+        if availableWidth > 480 {
+            // i.e. iPhone SE in landscape mode or iPad
+            return String(format: "%.0fx%.0f | %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+        } else if availableWidth > 430 {
+            return String(format: "%.0fx%.0f | %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
         } else if availableWidth > 375 {
-            return String(format: "%.0fx%.0f pixels — %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
+            return String(format: "%.0fx%.0f | %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .medium, timeStyle: .short))
         } else {
-            return String(format: "%.0fx%.0f pixels — %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+            return String(format: "%.0fx%.0f | %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
         }
     }
     
@@ -319,17 +321,19 @@ class UploadImageTableViewCell: UITableViewCell {
 
         // Check date
         guard let creationDate = creationDate else {
-            return String(format: "%.0fx%.0f pixels, %@", pixelWidth, pixelHeight, formattedDuration)
+            return String(format: "%.0fx%.0f | %@", pixelWidth, pixelHeight, formattedDuration)
         }
 
         // Info depends on table width
-        if availableWidth > 430 {
-            // i.e. larger than iPhone 14 Pro Max screen width
-            return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+        if availableWidth > 480 {
+            // i.e. iPhone SE in landscape mode or iPad
+            return String(format: "%.0fx%.0f | %@ | %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+        } else if availableWidth > 430 {
+            return String(format: "%.0fx%.0f | %@ | %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
         } else if availableWidth > 375 {
-            return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
+            return String(format: "%.0fx%.0f | %@ | %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .medium, timeStyle: .short))
         } else {
-            return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+            return String(format: "%.0fx%.0f | %@ | %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
         }
     }
     

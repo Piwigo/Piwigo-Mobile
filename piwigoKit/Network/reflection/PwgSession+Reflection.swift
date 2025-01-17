@@ -14,7 +14,7 @@ public extension PwgSession {
     func getMethods(completion: @escaping () -> Void,
                     failure: @escaping (NSError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Retrieve methods…")
+            PwgSession.logger.notice("Retrieve methods.")
         }
         // Launch request
         postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
@@ -44,7 +44,9 @@ public extension PwgSession {
                 NetworkVars.usesCalcOrphans = methodsJSON.data.contains("pwg.categories.calculateOrphans")
                 
                 if #available(iOSApplicationExtension 14.0, *) {
-                    PwgSession.logger.notice("Has Community: \(NetworkVars.usesCommunityPluginV29, privacy: .public), uploadAsync: \(NetworkVars.usesUploadAsync, privacy: .public), calcOrphans: \(NetworkVars.usesCalcOrphans, privacy: .public)")
+                    PwgSession.logger.notice("Has Community plugin: \(NetworkVars.usesCommunityPluginV29, privacy: .public)")
+                    PwgSession.logger.notice("Has uploadAsync method: \(NetworkVars.usesUploadAsync, privacy: .public)")
+                    PwgSession.logger.notice("Has calculateOrphans method: \(NetworkVars.usesCalcOrphans, privacy: .public)")
                 }
                 completion()
             }

@@ -267,6 +267,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will enter foreground.")
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
+        
+        // Flag used to prevent background tasks from running when the app is active
+        AppVars.shared.applicationIsActive = true
+        
+        // Flag used to force relogin at start
+        NetworkVars.applicationShouldRelogin = true
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -384,6 +390,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
+
+        // Flag used to prevent background tasks from running when the app is active
+        AppVars.shared.applicationIsActive = false
     }
 
 
@@ -454,13 +463,12 @@ extension SceneDelegate: AppLockDelegate {
            let child = rootVC.children.first, child is LoginViewController {
             return
         }
-
+        
         // Resume upload operations in background queue
-        // and update badge, upload button of album navigator
+        // and update badge and upload button of album navigator
         UploadManager.shared.backgroundQueue.async {
-            if UploadManager.shared.isPaused {
-                UploadManager.shared.resumeAll()
-            }
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.findNextImageToUpload()
         }
     }
 }

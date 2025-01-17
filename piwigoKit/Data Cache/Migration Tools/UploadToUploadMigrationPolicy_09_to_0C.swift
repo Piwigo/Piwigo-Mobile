@@ -16,7 +16,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigoKit", category: String(describing: UploadToUploadMigrationPolicy_09_to_0C.self))
+    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: UploadToUploadMigrationPolicy_09_to_0C.self))
 
     /**
      UploadToUpload custom migration following these steps:

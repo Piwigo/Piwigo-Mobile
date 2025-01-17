@@ -87,12 +87,15 @@ extension PwgSession
                     guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self,
                                                          method: method) else {
                         // Invalid JSON data
-                        #if DEBUG
                         if #available(iOSApplicationExtension 14.0, *) {
+                            #if DEBUG
                             let dataStr = String(decoding: jsonData, as: UTF8.self)
                             PwgSession.logger.notice("Received invalid JSON data: \(dataStr, privacy: .public)")
+                            #else
+                            let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
+                            PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
+                            #endif
                         }
-                        #endif
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
                             failure(PwgSessionError.invalidJSONobject as NSError)
@@ -126,13 +129,13 @@ extension PwgSession
             
             // Log returned data
             if #available(iOSApplicationExtension 14.0, *) {
-                let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
+                let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
             #if DEBUG
                 let dataStr = String(decoding: jsonData.prefix(70), as: UTF8.self) + "…"
 //                let dataStr = String(decoding: jsonData, as: UTF8.self)
-                PwgSession.logger.notice("Received \(countsOfByte, privacy: .public) bytes of JSON data: \(dataStr, privacy: .public)")
+                PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
             #else
-                PwgSession.logger.notice("Received \(countsOfByte, privacy: .public) bytes of JSON data")
+                PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of data.")
             #endif
             }
 
