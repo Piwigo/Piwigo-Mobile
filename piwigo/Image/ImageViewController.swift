@@ -387,7 +387,7 @@ class ImageViewController: UIViewController {
                         self.retrieveImageDataError(error)
                     }
                 }
-            } failure: { [unowned self] error in
+            } failure: { [self] error in
                 // Don't display an error if there is no Internet connection
                 if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
                     return
