@@ -81,7 +81,8 @@ extension PwgSession {
         // Check if the session is still active every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
         if secondsSinceLastCheck < 60,
-           PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi() {
+           PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi(),
+           NetworkVars.applicationShouldRelogin == false {
             completion()
             return
         }
@@ -118,6 +119,7 @@ extension PwgSession {
                             // Update date of accesss to the server by guest
                             user?.setLastUsedToNow()
                             user?.status = NetworkVars.userStatus.rawValue
+                            NetworkVars.applicationShouldRelogin = false
                             PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                             completion()
                         } failure: { error in
@@ -133,6 +135,7 @@ extension PwgSession {
                                 // Update date of accesss to the server by user
                                 user?.setLastUsedToNow()
                                 user?.status = NetworkVars.userStatus.rawValue
+                                NetworkVars.applicationShouldRelogin = false
                                 PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
                                 completion()
                             } failure: { error in

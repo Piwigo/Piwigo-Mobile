@@ -270,6 +270,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Flag used to prevent background tasks from running when the app is active
         AppVars.shared.applicationIsActive = true
+        
+        // Flag used to force relogin at start
+        NetworkVars.applicationShouldRelogin = true
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {

@@ -164,4 +164,7 @@ public class NetworkVars: NSObject {
     
     /// — True if the app should log visits and downloads (since Piwigo 14)
     public static var saveVisits = false
+    
+    /// - To force the app to login at launch
+    public static var applicationShouldRelogin: Bool = true
 }

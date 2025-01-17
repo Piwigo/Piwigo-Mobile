@@ -222,6 +222,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         debugPrint("••> App will enter foreground.")
         // Called when the app is about to enter the foreground.
         // This call is then followed by a call to applicationDidBecomeActive().
+        
+        // Flag used to force relogin at start
+        NetworkVars.applicationShouldRelogin = true
     }
         
     func applicationDidBecomeActive(_ application: UIApplication) {
