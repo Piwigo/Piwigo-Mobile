@@ -238,19 +238,27 @@ extension PwgSession {
     
     // MARK: - Clean URLs of Images
     public static
-    func encodedImageURL(_ originalURL:String?) -> NSURL? {
-        // Return nil if originalURL is nil and a placeholder will be used
+    func encodedImageURL(_ originalURL: String?) -> NSURL? {
+        // Return nil if originalURL is nil
         guard let okURL = originalURL else { return nil }
         
-        // TEMPORARY PATCH for case where $conf['original_url_protection'] = 'images';
+        // TEMPORARY PATCH for case where $conf['original_url_protection'] = 'images' or 'all';
         /// See https://github.com/Piwigo/Piwigo-Mobile/issues/503
+        /// Seems not to be an issue with all servers or sinnce iOS 17 or 18.
         let patchedURL = okURL.replacingOccurrences(of: "&amp;part=", with: "&part=")
+                              .replacingOccurrences(of: "&amp;pwg_token=", with: "&pwg_token=")
+                              .replacingOccurrences(of: "&amp;download", with: "&download")
+                              .replacingOccurrences(of: "&amp;filter_image_id=", with: "&filter_image_id=")
+                              .replacingOccurrences(of: "&amp;sync_metadata=1", with: "&sync_metadata=1")
         var serverURL: NSURL? = NSURL(string: patchedURL)
         
         // Servers may return incorrect URLs
         // See https://tools.ietf.org/html/rfc3986#section-2
         if serverURL == nil {
             // URL not RFC compliant!
+            if #available(iOSApplicationExtension 14.0, *) {
+                PwgSession.logger.notice("Received invalid URL: \(originalURL ?? "", privacy: .public)")
+            }
             var leftURL = patchedURL
 
             // Remove protocol header
@@ -259,7 +267,7 @@ extension PwgSession {
             
             // Retrieve authority
             guard let endAuthority = leftURL.firstIndex(of: "/") else {
-                // No path, incomplete URL —> return image.jpg but should never happen
+                // No path, incomplete URL —> return nil
                 return nil
             }
             let authority = String(leftURL.prefix(upTo: endAuthority))
@@ -277,7 +285,7 @@ extension PwgSession {
                 // URL contains a query
                 let query = (String(leftURL.prefix(upTo: endQuery)) + "?").replacingOccurrences(of: "??", with: "?")
                 guard let newQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-                    // Could not apply percent encoding —> return image.jpg but should never happen
+                    // Could not apply percent encoding —> return nil
                     return nil
                 }
                 leftURL.removeFirst(query.count)
@@ -344,10 +352,9 @@ extension PwgSession {
         // Compile final URL using the one provided at login
         let encodedImageURL = "\(loginPath)\(prefix)\(cleanPath)"
         #if DEBUG
-        if encodedImageURL != originalURL {
-            debugPrint("=> originalURL:\(String(describing: originalURL))")
-            debugPrint("    encodedURL:\(encodedImageURL)")
-            debugPrint("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
+        if #available(iOSApplicationExtension 14.0, *),
+           encodedImageURL != originalURL {
+            PwgSession.logger.notice("Invalid URL \"\(originalURL ?? "", privacy: .public)\" replaced by \(encodedImageURL.debugDescription, privacy: .public) where path=\"\(serverURL?.path ?? "", privacy: .public)\", parameterString=\"\(serverURL?.parameterString ?? "", privacy: .public)\", query=\"\(serverURL?.query ?? "", privacy: .public)\", fragment=\"\(serverURL?.fragment ?? "", privacy: .public)\"")
         }
         #endif
         return NSURL(string: encodedImageURL)
