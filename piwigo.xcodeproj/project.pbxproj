@@ -476,7 +476,7 @@
 		ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */; };
 		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
 		ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36BB28CCC12800E5AE4B /* ResolutionValueTransformer.swift */; };
-		ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36BD28CCC31C00E5AE4B /* ImageResolution.swift */; };
+		ADDC36BE28CCC31C00E5AE4B /* Resolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36BD28CCC31C00E5AE4B /* Resolution.swift */; };
 		ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36C328CCE8CD00E5AE4B /* Image+CoreDataClass.swift */; };
 		ADDC36C628CCE8CE00E5AE4B /* Image+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36C428CCE8CE00E5AE4B /* Image+CoreDataProperties.swift */; };
 		ADDC36C928CCE91700E5AE4B /* Album+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36C728CCE91700E5AE4B /* Album+CoreDataClass.swift */; };
@@ -1179,7 +1179,7 @@
 		ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageShiftPickerTableViewCell.xib; sourceTree = "<group>"; };
 		ADDC36BB28CCC12800E5AE4B /* ResolutionValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionValueTransformer.swift; sourceTree = "<group>"; };
-		ADDC36BD28CCC31C00E5AE4B /* ImageResolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResolution.swift; sourceTree = "<group>"; };
+		ADDC36BD28CCC31C00E5AE4B /* Resolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resolution.swift; sourceTree = "<group>"; };
 		ADDC36C328CCE8CD00E5AE4B /* Image+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADDC36C428CCE8CE00E5AE4B /* Image+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ADDC36C728CCE91700E5AE4B /* Album+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Album+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -2241,8 +2241,8 @@
 			children = (
 				ADDC36C328CCE8CD00E5AE4B /* Image+CoreDataClass.swift */,
 				ADDC36C428CCE8CE00E5AE4B /* Image+CoreDataProperties.swift */,
+				ADDC36BD28CCC31C00E5AE4B /* Resolution.swift */,
 				AD018D8328D73AE60003D5DB /* ImagePrivacy.swift */,
-				ADDC36BD28CCC31C00E5AE4B /* ImageResolution.swift */,
 				AD33B51328EE182A00CC5A03 /* ImageSize.swift */,
 				ADDC36D128CFC71800E5AE4B /* ImageProvider.swift */,
 				AD018D7F28D728A40003D5DB /* ImageError.swift */,
@@ -3152,7 +3152,7 @@
 				ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */,
 				ADDC36C628CCE8CE00E5AE4B /* Image+CoreDataProperties.swift in Sources */,
 				AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */,
-				ADDC36BE28CCC31C00E5AE4B /* ImageResolution.swift in Sources */,
+				ADDC36BE28CCC31C00E5AE4B /* Resolution.swift in Sources */,
 				AD33B51428EE182A00CC5A03 /* ImageSize.swift in Sources */,
 				ADDC36D228CFC71800E5AE4B /* ImageProvider.swift in Sources */,
 				AD018D8028D728A40003D5DB /* ImageError.swift in Sources */,
@@ -4354,7 +4354,6 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -4419,7 +4418,6 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -4441,7 +4439,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Eddy Lelievre-Berna (QWTTGCZPSN)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 595;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -4463,25 +4460,6 @@
 				);
 				MARKETING_VERSION = 3.2.5;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-all_load",
-					"-ObjC",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"Foundation\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"QuartzCore\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-					"-framework",
-					"\"UIKit\"",
-				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4511,7 +4489,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 595;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZU5THW8T5W;
 				ENABLE_DEBUG_DYLIB = NO;
@@ -4532,25 +4509,6 @@
 				);
 				MARKETING_VERSION = 3.2.5;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-all_load",
-					"-ObjC",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"Foundation\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"QuartzCore\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-					"-framework",
-					"\"UIKit\"",
-				);
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";

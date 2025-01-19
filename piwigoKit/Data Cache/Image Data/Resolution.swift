@@ -1,5 +1,5 @@
 //
-//  ImageResolution.swift
+//  Resolution.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 10/09/2022.
@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(Resolution)
 public class Resolution: NSObject, NSSecureCoding {
     
     public static var supportsSecureCoding = true

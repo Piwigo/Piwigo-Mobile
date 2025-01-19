@@ -16,6 +16,7 @@ import UIKit
     - Instances share images belonging to a server.
     - Smart albums are defined with pwgSmartAlbum and have Piwigo IDs <= 0.
  */
+@objc(Album)
 public class Album: NSManagedObject {
     /**
      Updates an Album instance with the values from a CategoryData struct.

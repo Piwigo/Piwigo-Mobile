@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(RelativeURLValueTransformer)
 public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     public override class func allowsReverseTransformation() -> Bool {
@@ -24,7 +25,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
     
     public override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
-            fatalError("Wrong data type: value must be a Data object; received \(type(of: value))")
+            preconditionFailure("Wrong data type: value must be a Data object; received \(type(of: value))")
         }
         guard let relativeURL = super.transformedValue(data) as? NSURL else {
             return nil
@@ -41,7 +42,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
     
     public override func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let absoluteURL = value as? NSURL else {
-            fatalError("Wrong data type: value must be a NSURL object; received \(type(of: value))")
+            preconditionFailure("Wrong data type: value must be a NSURL object; received \(type(of: value))")
         }
         
         // Store relative URL as Data to save space and because the scheme and host might changed in future
