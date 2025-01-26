@@ -13,8 +13,11 @@ import UIKit
 extension PasteboardImagesViewController: UICollectionViewDelegateFlowLayout
 {
     func getImageCellSize() -> CGSize {
+        // Get safe area width
+        let safeAreaSize = AlbumUtilities.getSafeAreaSize(ofNavigationViewController: navigationController?.topViewController)
+        
         let nbImages = AlbumVars.shared.thumbnailsPerRowInPortrait  // from Settings
-        let size = AlbumUtilities.imageSize(forView: localImagesCollection, imagesPerRowInPortrait: nbImages, collectionType: .popup)
+        let size = AlbumUtilities.imageSize(forSafeAreaSize: safeAreaSize, imagesPerRowInPortrait: nbImages, collectionType: .popup)
 //        debugPrint("••> getImageCellSize: \(size) x \(size) points")
         return CGSize(width: size, height: size)
     }

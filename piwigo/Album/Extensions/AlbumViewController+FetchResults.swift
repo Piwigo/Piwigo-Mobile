@@ -14,6 +14,148 @@ import UIKit
 // MARK: NSFetchedResultsControllerDelegate Methods
 extension AlbumViewController: NSFetchedResultsControllerDelegate
 {
+    @available(iOS 13.0, *)
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        // Data source configured?
+        guard let dataSource = collectionView.dataSource as? DataSource
+        else { preconditionFailure("The data source has not implemented snapshot support while it should.") }
+        
+        // Album or Image controller?
+        let snapshot = snapshot as Snaphot
+        var currentSnapshot = dataSource.snapshot() as Snaphot
+        var updatedItems = Set<NSManagedObjectID>()
+        if controller == albums {
+            // Remove existing album section if any
+            if let firstSection = currentSnapshot.sectionIdentifiers.first,
+               firstSection == pwgAlbumGroup.none.sectionKey {
+                // Remember old items
+                updatedItems = Set(currentSnapshot.itemIdentifiers(inSection: firstSection))
+                // Delete album section
+                currentSnapshot.deleteSections([pwgAlbumGroup.none.sectionKey])
+            }
+            
+            // Add new non-empty sub-album section ID
+            if snapshot.itemIdentifiers.count > 0 {
+                // Add album section in front position
+                if let firstSection = currentSnapshot.sectionIdentifiers.first {
+                    currentSnapshot.insertSections(snapshot.sectionIdentifiers, beforeSection: firstSection)
+                } else {
+                    currentSnapshot.appendSections(snapshot.sectionIdentifiers)
+                }
+                // Add sub-album IDs
+                currentSnapshot.appendItems(snapshot.itemIdentifiers, toSection: pwgAlbumGroup.none.sectionKey)
+            }
+            
+            // Update non-inserted, moved or deleted cells
+            updatedItems.formIntersection(snapshot.itemIdentifiers)
+            updatedItems.forEach { objectID in
+                if let indexPath = diffableDataSource.indexPath(for: objectID),
+                   let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+                   let album = try? self.mainContext.existingObject(with: objectID) as? Album {
+                    cell.update(withAlbumData: album)
+                }
+            }
+        }
+        else if controller == images {
+            // Remove existing image sections if any
+            let sectionsToRemove = currentSnapshot.sectionIdentifiers.filter({ $0 != pwgAlbumGroup.none.sectionKey })
+            sectionsToRemove.forEach { sectionID in
+                // Remember old items
+                updatedItems.formUnion(Set(currentSnapshot.itemIdentifiers(inSection: sectionID)))
+            }
+            currentSnapshot.deleteSections(sectionsToRemove)
+            
+            // Append new non-empty image sections
+            currentSnapshot.appendSections(snapshot.sectionIdentifiers)
+            for sectionID in snapshot.sectionIdentifiers {
+                currentSnapshot.appendItems(snapshot.itemIdentifiers(inSection: sectionID), toSection: sectionID)
+            }
+
+            // Update non-inserted, moved or deleted cells
+            updatedItems.formIntersection(snapshot.itemIdentifiers)
+            updatedItems.forEach { objectID in
+                if let indexPath = diffableDataSource.indexPath(for: objectID),
+                   let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
+                   let image = try? self.mainContext.existingObject(with: objectID) as? Image {
+                    // Update image title
+                    cell.update(withImageData: image, sortOption: self.sortOption)
+
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if hasFavorites {
+                        cell.isFavorite = (image.albums ?? Set<Album>())
+                            .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                    }
+                }
+            }
+        }
+        
+        // Animate only a non-empty UI
+        let shouldAnimate = collectionView.numberOfSections != 0
+        dataSource.apply(currentSnapshot as Snaphot, animatingDifferences: shouldAnimate)
+        
+        // Update headers if needed
+        self.updateHeaders()
+
+        // Update footer
+        self.updateNberOfImagesInFooter()
+
+        // Disable menu if there are no more images
+        if self.categoryId != 0, self.albumData.nbImages == 0 {
+            debugPrint("••> No image ► disable menu")
+            self.isSelect = false
+            self.initBarsInPreviewMode()
+        }
+
+        // Loop over all items
+//        var snapshot = snapshot as Snaphot
+//        let currentSnapshot = dataSource.snapshot() as Snaphot
+//        var reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers
+//        snapshot.itemIdentifiers.forEach({ itemIdentifier in
+//            // Will this item keep the same indexPath?
+//            guard let currentRow = currentSnapshot.indexOfItem(itemIdentifier),
+//                  let row = snapshot.indexOfItem(itemIdentifier),
+//                  row == currentRow,
+//                  let currentSectionIdentifier = currentSnapshot.sectionIdentifier(containingItem: itemIdentifier),
+//                  let currentSection = currentSnapshot.indexOfSection(currentSectionIdentifier),
+//                  let sectionIdentifier = snapshot.sectionIdentifier(containingItem: itemIdentifier),
+//                  let section = snapshot.indexOfSection(sectionIdentifier),
+//                  section == currentSection
+//            else { return }
+//            reloadIdentifiers.removeAll(where: {$0 == itemIdentifier})
+            // Update upload state
+//            let indexPath = IndexPath(row: row, section: section)
+//            if let album = try? controller.managedObjectContext.existingObject(with: itemIdentifier) as? Album {
+//                if AlbumVars.shared.displayAlbumDescriptions {
+//                    // Cell with album description
+//                    if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld {
+//                    }
+//                }
+//                else {
+//                    // Cell w/o album description
+//                    if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell {
+//                    }
+//                }
+//            }
+//            else if let image = try? controller.managedObjectContext.existingObject(with: itemIdentifier) as? Image {
+//            }
+//        })
+
+        // Any item to reload/reconfigure?
+//        if reloadIdentifiers.isEmpty == false {
+//            // Animate only a non-empty UI
+//            let shouldAnimate = collectionView.numberOfSections != 0
+//            if #available(iOS 15.0, *) {
+//                snapshot.reconfigureItems(Array(reloadIdentifiers))
+//            } else {
+//                snapshot.reloadItems(Array(reloadIdentifiers))
+//            }
+//            dataSource.apply(snapshot as Snaphot, animatingDifferences: shouldAnimate)
+//        }
+    }
+
+    
+    // Exclusively for iOS 12.x
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Reset operation list
         updateOperations = []
@@ -21,6 +163,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         collectionView?.layoutIfNeeded()
     }
     
+    // Exclusively for iOS 12.x
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange sectionInfo: any NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
         // Collect operation changes
@@ -54,6 +197,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         }
     }
     
+    // Exclusively for iOS 12.x
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         // Collect operation changes
@@ -144,7 +288,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     debugPrint("••> Update image at \(indexPath) of album #\(self.categoryId)")
                     if let cell = self.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                         // Re-configure image cell
-                        cell.config(with: image, placeHolder: self.imagePlaceHolder, size: self.imageSize, sortOption: self.sortOption)
+                        cell.update(withImageData: image, sortOption: self.sortOption)
                         // pwg.users.favorites… methods available from Piwigo version 2.10
                         if hasFavorites {
                             cell.isFavorite = (image.albums ?? Set<Album>())
@@ -160,6 +304,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         }
     }
     
+    // Exclusively for iOS 12.x
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Update objects in a single animated operation
         collectionView?.performBatchUpdates({ [weak self] in
@@ -176,61 +321,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 debugPrint("••> No image ► disable menu")
                 self.isSelect = false
                 self.initBarsInPreviewMode()
-            }
-        }
-    }
-    
-    func updateHeaders() {
-        // Are images sorted by date?
-        guard let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
-              [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey),
-              let collectionView = collectionView
-        else { return }
-
-        // Images are grouped by day, week or month: section header visible?
-        let indexPaths = collectionView.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader)
-        indexPaths.forEach { indexPath in
-            // Album section?
-            if indexPath.section == 0 { return }
-
-            // Determine place names from first images
-            let imageSection = indexPath.section - 1
-            var imagesInSection = [Image]()
-            let nberOfImageInSection = collectionView.numberOfItems(inSection: indexPath.section)
-            if nberOfImageInSection <= 20 {
-                // Collect all images
-                for item in 0..<min(nberOfImageInSection, 20) {
-                    autoreleasepool {
-                        let imageIndexPath = IndexPath(item: item, section: imageSection)
-                        imagesInSection.append(images.object(at: imageIndexPath))
-                    }
-                }
-            } else {
-                // Collect first 10 images
-                for item in 0..<10 {
-                    autoreleasepool {
-                        let imageIndexPath = IndexPath(item: item, section: imageSection)
-                        imagesInSection.append(images.object(at: imageIndexPath))
-                    }
-                }
-                // Collect last 10 images
-                for item in (nberOfImageInSection - 10)..<nberOfImageInSection {
-                    autoreleasepool {
-                        let imageIndexPath = IndexPath(item: item, section: imageSection)
-                        imagesInSection.append(images.object(at: imageIndexPath))
-                    }
-                }
-            }
-            
-            // Retrieve the appropriate section header
-            let selectState = updateSelectButton(ofSection: indexPath.section)
-            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.config(with: imagesInSection, sortKey: sortKey,
-                              section: indexPath.section, selectState: selectState)
-            }
-            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
-                              section: indexPath.section, selectState: selectState)
             }
         }
     }

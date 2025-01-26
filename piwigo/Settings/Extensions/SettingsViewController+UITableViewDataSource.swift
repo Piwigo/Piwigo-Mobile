@@ -175,7 +175,6 @@ extension SettingsViewController: UITableViewDataSource
                     AlbumVars.shared.displayAlbumDescriptions = switchState
                     if let navController = presentingViewController as? AlbumNavigationController,
                        let albumVC = navController.viewControllers.first as? AlbumViewController {
-                        albumVC.albumCellSize = albumVC.getAlbumCellSize()
                         albumVC.collectionView?.reloadData()
                     }
                 }

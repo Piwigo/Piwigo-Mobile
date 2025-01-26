@@ -18,6 +18,21 @@ extension AlbumViewController
         // from main context before calling background tasks
         /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
         /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
+//        var oldImageIDs = Set<Int64>()
+//        if #available(iOS 13.0, *) {
+//            let snapshot = self.diffableDataSource.snapshot() as Snaphot
+//            oldImageIDs = Set(snapshot.itemIdentifiers
+//                .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
+//                .compactMap({ $0.pwgID }) )
+//            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+//                oldImageIDs.subtract(Set(snapshot.itemIdentifiers(inSection: pwgAlbumGroup.none.sectionKey)
+//                    .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
+//                    .compactMap({ $0.pwgID })) )
+//            }
+//        } else {
+//            // Fallback on earlier versions
+//            oldImageIDs = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
+//        }
         let oldImageIDs = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
         let query = albumData.query
 

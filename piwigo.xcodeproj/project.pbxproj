@@ -2228,8 +2228,8 @@
 				ADDC36C828CCE91700E5AE4B /* Album+CoreDataProperties.swift */,
 				AD44870B29056D50001288E4 /* AlbumSmart.swift */,
 				AD76646A298867FC00CFD66F /* AlbumDeletion.swift */,
-				AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */,
 				AD24011E2BF0DD400039B416 /* AlbumImageGroup.swift */,
+				AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */,
 				ADDC36CB28CCEA9C00E5AE4B /* AlbumProvider.swift */,
 				ADDC36CD28CDE54200E5AE4B /* AlbumError.swift */,
 			);

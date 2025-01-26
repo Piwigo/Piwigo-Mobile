@@ -423,6 +423,16 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Album/Images Collections | Common Methods
+    static func getSafeAreaSize(ofNavigationViewController viewController: UIViewController?) -> CGSize {
+        var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
+        let safeAreaHeight: CGFloat = UIScreen.main.bounds.size.height
+        if let root = viewController {
+            safeAreaWidth = root.view.frame.size.width
+            safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
+        }
+        return CGSize(width: safeAreaWidth, height: safeAreaHeight)
+    }
+    
     static func sizeOfPage(forView view: UIView? = nil) -> CGSize {
         if let viewBounds = view?.bounds.inset(by: view?.safeAreaInsets ?? UIEdgeInsets.zero) {
             return viewBounds.size
@@ -461,12 +471,9 @@ class AlbumUtilities: NSObject {
         return .xxLarge
     }
     
-    static func albumWidth(forView view: UIView?, maxWidth: CGFloat) -> CGFloat {
-        // Sizes of view and screen
-        let screenSize = sizeOfPage()
-        let pageSize = sizeOfPage(forView: view)
-        
-        // Margins
+    static func albumWidth(forSafeAreaSize size: CGSize, maxCellWidth: CGFloat) -> CGFloat
+    {
+        // Collection view margins and spacings
         var margins: CGFloat, spacing: CGFloat
         if AlbumVars.shared.displayAlbumDescriptions {
             margins = 0.0
@@ -477,20 +484,19 @@ class AlbumUtilities: NSObject {
         }
 
         // Number of albums per row in portrait
-        let minWidth = min(screenSize.width, screenSize.height)
-        let numerator = minWidth + spacing - margins
-        let denominator = maxWidth + spacing
-        let nbAlbumsPerRowInPortrait = max(1, Int(round(numerator / denominator)))
+        let widthInPortrait = min(size.width, size.height)
+        let numerator = widthInPortrait + spacing - margins
+        let denominator = maxCellWidth + spacing
+        let nbAlbumsPerRowInPortrait = max(1.0, (numerator / denominator).rounded())
         
         // Width of album cells determined for the portrait mode
-        let portraitSpacing = (CGFloat(nbAlbumsPerRowInPortrait) - 1.0) * spacing + margins
-        let albumWidthInPortrait = floor((minWidth + spacing - portraitSpacing) / CGFloat(nbAlbumsPerRowInPortrait))
+        let albumWidthInPortrait = (widthInPortrait - (nbAlbumsPerRowInPortrait - 1.0) * spacing + margins) / nbAlbumsPerRowInPortrait
         
         // Number of albums per row we should display right now
-        let albumsPerRow = round((pageSize.width + spacing - margins) / (albumWidthInPortrait + spacing))
+        let albumsPerRow = ((size.width + spacing - margins) / (albumWidthInPortrait + spacing)).rounded()
         
         // Width of albums for that number
-        return floor((pageSize.width - (albumsPerRow - 1.0) * spacing - margins) / albumsPerRow)
+        return ((size.width - (albumsPerRow - 1.0) * spacing - margins) / albumsPerRow).rounded(.down)
     }
     
     
@@ -549,40 +555,31 @@ class AlbumUtilities: NSObject {
         return max(minNberOfImagesPerRow, nberOfImagePerRow)
     }
     
-    static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int) -> CGFloat {
-        return imageSize(forView: view, imagesPerRowInPortrait: imagesPerRowInPortrait,
+    static func imageSize(forSafeAreaSize size: CGSize, imagesPerRowInPortrait: Int) -> CGFloat {
+        return imageSize(forSafeAreaSize: size, imagesPerRowInPortrait: imagesPerRowInPortrait,
                          collectionType: .full)
     }
     
-    static func imageSize(forView view: UIView?, imagesPerRowInPortrait: Int,
+    static func imageSize(forSafeAreaSize size: CGSize, imagesPerRowInPortrait: Int,
                           collectionType type: pwgImageCollectionType) -> CGFloat {
+        // Collection view margins and spacings
+        let margins = 0.0
+        let spacing = imageCellHorizontalSpacing(forCollectionType: type)
+        
         // CGFloat version of imagesPerRowInPortrait
         let nberOfImagesInPortrait = CGFloat(imagesPerRowInPortrait)
-        
-        // Sizes of view and screen
-        let screenSize = sizeOfPage()
-        let pageSize = sizeOfPage(forView: view)
-        
-        // Image horizontal cell spacing
-        let imageCellHorizontalSpacing = imageCellHorizontalSpacing(forCollectionType: type)
-        
-        // Size of images determined for the portrait mode in full screen
-        let minWidth = min(screenSize.width, screenSize.height)
-        let imagesSizeInPortrait = floor((minWidth - (nberOfImagesInPortrait - 1.0) * imageCellHorizontalSpacing) / nberOfImagesInPortrait)
-        
-        // Images per row in whichever mode we are displaying them
-        let numerator = screenSize.width + imageCellHorizontalSpacing
-        let denominator = imageCellHorizontalSpacing + imagesSizeInPortrait
-        let nberOfImages = Int(round(numerator / denominator))
-        var imagesPerRow = Double(max(minNberOfImagesPerRow, nberOfImages))
-        
-        // Images per row for the current size class
-        imagesPerRow *= pageSize.width / screenSize.width
-        imagesPerRow = max(1.0, round(imagesPerRow))
-        
-        // Size of squared images for that number
-        let usedWidth = pageSize.width - (imagesPerRow - 1.0) * imageCellHorizontalSpacing
-        return CGFloat(floor(usedWidth / imagesPerRow))
+
+        // Size of images in portrait mode
+        let widthInPortrait = min(size.width, size.height)
+        let imagesSizeInPortrait = (widthInPortrait - (nberOfImagesInPortrait - 1.0) * spacing - margins) / nberOfImagesInPortrait
+
+        // Number of images per row we should display right now
+        let numerator = size.width + spacing - margins
+        let denominator = imagesSizeInPortrait + spacing
+        let imagesPerRow = max(CGFloat(minNberOfImagesPerRow), (numerator / denominator).rounded())
+                
+        // Width of squared images for that number
+        return ((size.width - (imagesPerRow - 1) * spacing - margins) / imagesPerRow).rounded(.down)
     }
     
     static func numberOfImagesToDownloadPerPage() -> Int {

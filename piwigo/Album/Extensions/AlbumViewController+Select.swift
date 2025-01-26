@@ -160,7 +160,7 @@ extension AlbumViewController
         }
 
         // Scroll to position of images if needed
-        if numberOfImageCells == 0, (images.fetchedObjects ?? []).count != 0 {
+        if numberOfImageCells == 0, nberOfImages() != 0 {
             let indexPathOfFirstImage = IndexPath(item: 0, section: 1)
             collectionView?.scrollToItem(at: indexPathOfFirstImage, at: .top, animated: true)
         }
@@ -225,11 +225,32 @@ extension AlbumViewController
     }
     
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
+        // No selector for guests
+        if NetworkVars.userStatus == .guest { return .none}
+
         // Album section?
-        if section == 0 || NetworkVars.userStatus == .guest { return .none}
+        if #available(iOS 13.0, *) {
+            // Album or image?
+            if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+               index == section {
+                return .none
+            }
+        } else {
+            if section == 0 {
+                return .none
+            }
+        }
         
         // Number of images in section
-        let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+        var nberOfImagesInSection = Int.zero
+        if #available(iOS 13.0, *) {
+            let snapshot = diffableDataSource.snapshot() as Snaphot
+            let sectionID = snapshot.sectionIdentifiers[section]
+            nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
+        } else {
+            // Fallback on earlier versions
+            nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+        }
         if nberOfImagesInSection == 0 {
             selectedSections[section] = SelectButtonState.none
             return .none
@@ -237,10 +258,22 @@ extension AlbumViewController
 
         // Number of selected images
         var nberOfSelectedImagesInSection = 0
-        for item in 0..<nberOfImagesInSection {
-            let imageIndexPath = IndexPath(item: item, section: section - 1)
-            if selectedImageIDs.contains(images.object(at: imageIndexPath).pwgID) {
-                nberOfSelectedImagesInSection += 1
+        if #available(iOS 13.0, *) {
+            let snapshot = diffableDataSource.snapshot() as Snaphot
+            let sectionID = snapshot.sectionIdentifiers[section]
+            snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
+                if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                   selectedImageIDs.contains(image.pwgID) {
+                    nberOfSelectedImagesInSection += 1
+                }
+            }
+        } else {
+            // Fallback on earlier versions
+            for item in 0..<nberOfImagesInSection {
+                let imageIndexPath = IndexPath(item: item, section: section - 1)
+                if selectedImageIDs.contains(images.object(at: imageIndexPath).pwgID) {
+                    nberOfSelectedImagesInSection += 1
+                }
             }
         }
         
@@ -515,7 +548,13 @@ extension AlbumViewController: ImageDetailDelegate
 {
     func didSelectImage(atIndexPath indexPath: IndexPath) {
         // Correspondinng collection view index path
-        let collIndexPath = IndexPath(item: indexPath.item, section: indexPath.section + 1)
+        var collIndexPath = IndexPath()
+        if #available(iOS 13.0, *) {
+            collIndexPath = indexPath
+        } else {
+            // Fallback on earlier versions
+            collIndexPath = IndexPath(item: indexPath.item, section: indexPath.section + 1)
+        }
         
         // Scroll view to center image
         if collectionView?.numberOfSections ?? 0 > collIndexPath.section,

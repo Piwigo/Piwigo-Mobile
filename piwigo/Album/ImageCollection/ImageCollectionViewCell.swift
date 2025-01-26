@@ -99,7 +99,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         playImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
+    func config(withImageData imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
         // Do we have any info on that image ?
         if imageData.pwgID == Int64.zero { return }
 
@@ -126,14 +126,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             self.accessibilityIdentifier = "Hotel de Coimbra"
         }
 #endif
-        if AlbumVars.shared.displayImageTitles {
-            nameLabel?.attributedText = getImageTitle(forSortOption: sortOption)
-            bottomLayer?.isHidden = false
-            nameLabel?.isHidden = false
-        } else {
-            bottomLayer?.isHidden = true
-            nameLabel?.isHidden = true
-        }
+        update(withImageData: imageData, sortOption: sortOption)
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -151,6 +144,18 @@ class ImageCollectionViewCell: UICollectionViewCell {
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
             self?.configImage(placeHolder, withHiddenLabel: false)
+        }
+    }
+    
+    func update(withImageData imageData: Image, sortOption: pwgImageSort) {
+        // Title
+        if AlbumVars.shared.displayImageTitles {
+            nameLabel?.attributedText = getImageTitle(forSortOption: sortOption)
+            bottomLayer?.isHidden = false
+            nameLabel?.isHidden = false
+        } else {
+            bottomLayer?.isHidden = true
+            nameLabel?.isHidden = true
         }
     }
     

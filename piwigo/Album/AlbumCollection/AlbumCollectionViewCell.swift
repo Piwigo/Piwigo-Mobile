@@ -24,12 +24,6 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         recentImage.tintColor = UIColor.white
         applyColorPalette()
         
-        // Album name (Piwigo orange colour)
-        albumName.text = albumData?.name ?? "—?—"
-        
-        // Number of images and sub-albums
-        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
-        
         // Added "0 day" option in version 3.1.2 for allowing user to disable "recent" icon
         if CacheVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
            let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
@@ -37,18 +31,9 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             CacheVars.shared.recentPeriodIndex += 1
             CacheVars.shared.recentPeriodIndexCorrectedInVersion321 = true
         }
-        
-        // If requested, display recent icon when images have been uploaded recently
-        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
-        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
-        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
-        indexOfPeriod = max(0, indexOfPeriod)
-        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
-        let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
-        if self.recentBckg.isHidden == isRecent {
-            self.recentBckg.isHidden = !isRecent
-            self.recentImage.isHidden = !isRecent
-        }
+                
+        // Album name and infos
+        update(withAlbumData: albumData)
         
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
@@ -72,6 +57,26 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
             self?.setThumbnailWithImage(placeHolder)
+        }
+    }
+    
+    func update(withAlbumData albumData: Album?) {
+        // Album name (Piwigo orange colour)
+        albumName.text = albumData?.name ?? "—?—"
+        
+        // Number of images and sub-albums
+        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
+
+        // If requested, display recent icon when images have been uploaded recently
+        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
+        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
+        indexOfPeriod = max(0, indexOfPeriod)
+        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
+        let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
+        if self.recentBckg.isHidden == isRecent {
+            self.recentBckg.isHidden = !isRecent
+            self.recentImage.isHidden = !isRecent
         }
     }
     

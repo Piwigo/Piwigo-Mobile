@@ -97,17 +97,15 @@ class AlbumViewController: UIViewController
     var selectedFavoriteIDs = Set<Int64>()
     var selectedVideosIDs = Set<Int64>()
     var selectedSections = [Int : SelectButtonState]()    // State of Select buttons
-
-
+    
+    
     // MARK: - Cached Values
     var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-    lazy var albumCellSize: CGSize = getAlbumCellSize()
     lazy var albumPlaceHolder = UIImage(named: "placeholder")!
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-    lazy var imageCellSize: CGSize = getImageCellSize()
     lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
-
+    
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -115,7 +113,7 @@ class AlbumViewController: UIViewController
            NetworkVars.userStatus != .guest { return true }
         return false
     }()
-
+    
     // MARK: - Image Animated Transitioning
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
     var animatedCell: ImageCollectionViewCell?
@@ -158,6 +156,21 @@ class AlbumViewController: UIViewController
     
     
     // MARK: - Core Data Source
+    @available(iOS 13.0, *)
+    typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
+    @available(iOS 13.0, *)
+    typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    /// Stored properties cannot be marked potentially unavailable with '@available'.
+    // "var diffableDataSource: DataSource!" replaced by below lines
+    var _diffableDataSource: NSObject? = nil
+    @available(iOS 13.0, *)
+    var diffableDataSource: DataSource {
+        if _diffableDataSource == nil {
+            _diffableDataSource = configDataSource()
+        }
+        return _diffableDataSource as! DataSource
+    }
+    
     lazy var user: User = {
         guard let user = userProvider.getUserAccount(inContext: mainContext) else {
             // Unknown user instance! ► Back to login view
@@ -225,14 +238,21 @@ class AlbumViewController: UIViewController
         return images
     }()
     
-
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
-
-        // Initialise data source
+        
+        // Initialise dataSource
+        if #available(iOS 13.0, *) {
+            _diffableDataSource = configDataSource()
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        // Fetch data (setting up the initial snapshot on iOS 13+)
         do {
             if categoryId >= Int32.zero {
                 try albums.performFetch()
@@ -265,7 +285,7 @@ class AlbumViewController: UIViewController
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
         collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
         collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
-
+        
         // Sticky section headers
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.sectionHeadersPinToVisibleBounds = true
@@ -284,7 +304,7 @@ class AlbumViewController: UIViewController
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
-
+        
         // Navigation bar title
         let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)
         setTitleViewFromAlbumData(whileUpdating: isFetching)
@@ -368,7 +388,7 @@ class AlbumViewController: UIViewController
                 footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
             }
         }
-
+        
         // Refresh controller
         collectionView?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
         collectionView?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
@@ -438,7 +458,7 @@ class AlbumViewController: UIViewController
         
         // Check conditions before loading album and image data
         let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
-        let nbImages = (images.fetchedObjects ?? []).count
+        let nbImages = nberOfImages()
         let isSmartAlbum = self.categoryId < 0
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
@@ -510,8 +530,7 @@ class AlbumViewController: UIViewController
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if (albums.fetchedObjects ?? []).count > 2,
-           user.hasAdminRights,
+        if nberOfAlbums() > 2, user.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
@@ -571,8 +590,6 @@ class AlbumViewController: UIViewController
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] _ in
             // Reload collection with appropriate cell sizes
-            albumCellSize = getAlbumCellSize()
-            imageCellSize = getImageCellSize()
             collectionView?.reloadData()
 
             // Update buttons
@@ -585,16 +602,6 @@ class AlbumViewController: UIViewController
                 uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
                 createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
                 uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
-            }
-            
-            // Update parent collection layouts
-            (navigationController?.viewControllers ?? []).forEach { viewController in
-                // Look for AlbumImagesViewControllers
-                if let albumController = viewController as? AlbumViewController, albumController != self {
-                    // Is this the view controller of the default album?
-                    albumController.albumCellSize = albumCellSize
-                    albumController.imageCellSize = imageCellSize
-                }
             }
         })
     }
@@ -741,7 +748,10 @@ class AlbumViewController: UIViewController
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
+            debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId)")
+            return
+        }
                 
         // Check that the root album exists
         // (might have been deleted with a clear of the cache)
@@ -801,6 +811,35 @@ class AlbumViewController: UIViewController
 
 
     // MARK: - Utilities
+    func nberOfAlbums() -> Int {
+        var nberOfAlbums = Int.zero
+        if #available(iOS 13.0, *) {
+            let snapshot = diffableDataSource.snapshot() as Snaphot
+            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+                nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
+            }
+        } else {
+            // Fallback on earlier versions
+            nberOfAlbums = (albums.fetchedObjects ?? []).count
+        }
+        return nberOfAlbums
+    }
+    
+    func nberOfImages() -> Int {
+        var nberOfImages = Int.zero
+        if #available(iOS 13.0, *) {
+            let snapshot = diffableDataSource.snapshot() as Snaphot
+            nberOfImages = diffableDataSource.snapshot().numberOfItems
+            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+                nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
+            }
+        } else {
+            // Fallback on earlier versions
+            nberOfImages = (images.fetchedObjects ?? []).count
+        }
+        return nberOfImages
+    }
+    
     @objc func setTableViewMainHeader() {
         // Update table header only if being displayed
 //        if albumImageTableView?.window == nil { return }

@@ -118,7 +118,7 @@ extension AlbumViewController
                         for cell in visibleCells {
                             if let cell = cell as? ImageCollectionViewCell, cell.imageData.pwgID == imageID,
                                let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
-                                cell.config(with: updatedImage, placeHolder: self.imagePlaceHolder,
+                                cell.config(withImageData: updatedImage, placeHolder: self.imagePlaceHolder,
                                             size: self.imageSize, sortOption: self.sortOption)
                             }
                         }

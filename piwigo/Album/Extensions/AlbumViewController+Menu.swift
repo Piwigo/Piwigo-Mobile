@@ -316,19 +316,39 @@ extension AlbumViewController: ImageHeaderDelegate
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
             // Loop over all images in section to select them
-            for item in 0..<nberOfImagesInSection {
-                // Retrieve image data
-                let imageIndexPath = IndexPath(item: item, section: section - 1)
-                let image = images.object(at: imageIndexPath)
+            if #available(iOS 13.0, *) {
+                let snapshot = self.diffableDataSource.snapshot()
+                let sectionID = snapshot.sectionIdentifiers[section]
+                let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
+                sectionItems.forEach { objectID in
+                    // Retrieve image data
+                    guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                          selectedImageIDs.contains(image.pwgID) == false
+                    else { return }
+                    
+                    // Select this image
+                    selectedImageIDs.insert(image.pwgID)
+                    if let indexPath = diffableDataSource.indexPath(for: objectID),
+                       let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        cell.isSelection = true
+                    }
+                }
+            } else {
+                // Fallback on earlier versions
+                for item in 0..<nberOfImagesInSection {
+                    // Retrieve image data
+                    let imageIndexPath = IndexPath(item: item, section: section - 1)
+                    let image = images.object(at: imageIndexPath)
 
-                // Is this image already selected?
-                if selectedImageIDs.contains(image.pwgID) { continue }
-                
-                // Select this image
-                selectedImageIDs.insert(image.pwgID)
-                let indexPath = IndexPath(item: item, section: section)
-                if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    cell.isSelection = true
+                    // Is this image already selected?
+                    if selectedImageIDs.contains(image.pwgID) { continue }
+                    
+                    // Select this image
+                    selectedImageIDs.insert(image.pwgID)
+                    let indexPath = IndexPath(item: item, section: section)
+                    if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        cell.isSelection = true
+                    }
                 }
             }
             // Change section button state
@@ -336,19 +356,39 @@ extension AlbumViewController: ImageHeaderDelegate
         } 
         else {
             // Loop over all images in section to deselect them
-            for item in 0..<nberOfImagesInSection {
-                // Retrieve image data
-                let imageIndexPath = IndexPath(item: item, section: section - 1)
-                let image = images.object(at: imageIndexPath)
-
-                // Is this image already deselected?
-                if selectedImageIDs.contains(image.pwgID) == false { continue }
-                
-                // Deselect this image
-                selectedImageIDs.remove(image.pwgID)
-                let indexPath = IndexPath(item: item, section: section)
-                if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    cell.isSelection = false
+            if #available(iOS 13.0, *) {
+                let snapshot = self.diffableDataSource.snapshot()
+                let sectionID = snapshot.sectionIdentifiers[section]
+                let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
+                sectionItems.forEach { objectID in
+                    // Retrieve image data
+                    guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                          selectedImageIDs.contains(image.pwgID)
+                    else { return }
+                    
+                    // Deselect this image
+                    selectedImageIDs.remove(image.pwgID)
+                    if let indexPath = diffableDataSource.indexPath(for: objectID),
+                       let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        cell.isSelection = false
+                    }
+                }
+            } else {
+                // Fallback on earlier versions
+                for item in 0..<nberOfImagesInSection {
+                    // Retrieve image data
+                    let imageIndexPath = IndexPath(item: item, section: section - 1)
+                    let image = images.object(at: imageIndexPath)
+                    
+                    // Is this image already deselected?
+                    if selectedImageIDs.contains(image.pwgID) == false { continue }
+                    
+                    // Deselect this image
+                    selectedImageIDs.remove(image.pwgID)
+                    let indexPath = IndexPath(item: item, section: section)
+                    if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        cell.isSelection = false
+                    }
                 }
             }
             
@@ -824,10 +864,8 @@ extension AlbumViewController
                               handler: { [self] action in
             // Show or hide album descriptions
             AlbumVars.shared.displayAlbumDescriptions = !isActive
-            let cellSize = getAlbumCellSize()
             (navigationController?.viewControllers ?? []).forEach({ viewController in
                 if let albumVC = viewController as? AlbumViewController {
-                    albumVC.albumCellSize = cellSize
                     albumVC.collectionView?.reloadData()
                 }
             })
