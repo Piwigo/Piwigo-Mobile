@@ -48,10 +48,9 @@ extension SceneDelegate {
     
     func scene(_ scene: UIScene, restoreInteractionStateWith stateRestorationActivity: NSUserActivity) {
         // Look for the instance of AlbumViewController
-        guard
-            let navController = window?.rootViewController as? UINavigationController,
-            let albumVC = navController.viewControllers.first as? AlbumViewController,
-            let userInfo = stateRestorationActivity.userInfo
+        guard let navController = window?.rootViewController as? UINavigationController,
+              let albumVC = navController.viewControllers.first as? AlbumViewController,
+              let userInfo = stateRestorationActivity.userInfo
         else {
             return
         }

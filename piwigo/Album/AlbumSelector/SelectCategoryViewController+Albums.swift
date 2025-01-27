@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension SelectCategoryViewController
@@ -84,6 +85,22 @@ extension SelectCategoryViewController
                         debugPrint("Could not fetch \(error), \(error.userInfo)")
                     }
 
+                    // Update album thumbail when using a diffable data source
+                    // The fetch controller of only changes the name and content description)
+                    if #available(iOS 13.0, *),
+                       let navController = view.window?.rootViewController as? UINavigationController {
+                        navController.viewControllers.forEach { viewController in
+                            // Is this the parent album of this album?
+                            if let albumVC = viewController as? AlbumViewController,
+                               albumVC.categoryId == albumData.parentId,
+                               let indexPath = albumVC.diffableDataSource.indexPath(for: albumData.objectID),
+                               let cell = albumVC.collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                                // Update album cell
+                                cell.config(withAlbumData: albumData)
+                            }
+                        }
+                    }
+                    
                     // Close HUD
                     self.updateHUDwithSuccess() { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
