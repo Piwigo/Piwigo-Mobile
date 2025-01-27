@@ -151,7 +151,13 @@ extension AlbumViewController: UICollectionViewDelegate
         imageDetailView.categoryId = albumData.pwgID
         imageDetailView.images = images
         if #available(iOS 13.0, *) {
-            imageDetailView.indexPath = indexPath
+            if let firstSectionID = diffableDataSource.snapshot().sectionIdentifiers.first,
+               firstSectionID == pwgAlbumGroup.none.sectionKey {
+                let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+                imageDetailView.indexPath = imageIndexPath
+            } else {
+                imageDetailView.indexPath = indexPath
+            }
         } else {
             // Fallback on earlier versions
             let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
