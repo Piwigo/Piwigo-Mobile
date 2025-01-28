@@ -102,9 +102,7 @@ class AlbumViewController: UIViewController
     // MARK: - Cached Values
     var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-    lazy var albumPlaceHolder = UIImage(named: "placeholder")!
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-    lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
     
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {

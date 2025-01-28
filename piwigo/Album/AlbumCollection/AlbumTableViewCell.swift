@@ -84,17 +84,15 @@ class AlbumTableViewCell: UITableViewCell {
         
         // Retrieve image from cache or download it
         self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
-        let placeHolder = UIImage(named: "placeholder")!
         let scale = max(self.backgroundImage.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.backgroundImage.bounds.size.width * scale, self.backgroundImage.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
+        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
                                    atURL: albumData?.thumbnailUrl as? URL,
-                                   fromServer: albumData?.user?.server?.uuid,
-                                   placeHolder: placeHolder) { [weak self] cachedImageURL in
+                                   fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
-            self?.setBackgroundWithImage(placeHolder)
+            self?.setBackgroundWithImage(pwgImageType.album.placeHolder)
         }
     }
     

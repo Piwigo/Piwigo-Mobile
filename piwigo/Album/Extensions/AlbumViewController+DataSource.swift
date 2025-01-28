@@ -75,7 +75,7 @@ extension AlbumViewController
                 
                 // The image being retrieved in a background task,
                 // config() must be called after setting all other parameters
-                cell.config(withImageData: image, placeHolder: self.imagePlaceHolder, size: self.imageSize, sortOption: self.sortOption)
+                cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
 //                debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
                 return cell
             } else {
@@ -544,7 +544,7 @@ extension AlbumViewController: UICollectionViewDataSource
             
             // The image being retrieved in a background task,
             // config() must be called after setting all other parameters
-            cell.config(withImageData: image, placeHolder: imagePlaceHolder, size: imageSize, sortOption: sortOption)
+            cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
 //            debugPrint("••> Adds image cell at \(indexPath.item): \(cell.bounds.size)")
             return cell
         }

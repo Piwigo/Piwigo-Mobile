@@ -144,9 +144,8 @@ class ImageDetailViewController: UIViewController
     
     override func didReceiveMemoryWarning() {
         // Replace high-res image by thumbnail image in cache until the next lower version is loaded
-        let placeHolder = UIImage(named: "unknownImage")!
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+        self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
         
         // Look for the first available image of lower resolution
         if previewSize == .fullRes {
@@ -185,16 +184,14 @@ class ImageDetailViewController: UIViewController
             setImageView(with: cachedImage)
         } else {
             // Display thumbnail image which should be in cache
-            let placeHolder = UIImage(named: "unknownImage")!
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            self.setImageView(with: self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
             
             // Download high-resolution image
             imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
             if let imageURL = self.imageURL {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                           placeHolder: placeHolder) { [weak self] fractionCompleted in
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
                     self?.updateProgressView(with: fractionCompleted)
                 } completion: { [weak self] cachedImageURL in
                     self?.downsampleImage(atURL: cachedImageURL)
@@ -247,12 +244,10 @@ class ImageDetailViewController: UIViewController
     
     func rotateImageView(by angle: Double, completion: @escaping () -> Void) {
         // Download high-resolution image
-        let placeHolder = imageView.image ?? UIImage(named: "unknownImage")!
         imageURL = ImageUtilities.getURL(self.imageData, ofMinSize: previewSize)
         if let imageURL = self.imageURL {
-            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                       placeHolder: placeHolder) { [weak self] fractionCompleted in
+            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
                 self?.updateProgressView(with: fractionCompleted)
             } completion: { [weak self] cachedImageURL in
                 self?.downsampleImage(atURL: cachedImageURL, rotateBy: angle, completion: completion)

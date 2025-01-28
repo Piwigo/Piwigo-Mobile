@@ -12,10 +12,9 @@ import UIKit
 // MARK: - Download Image
 extension PwgSession
 {
-    public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, atURL imageURL: URL?,
-                         fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
-                         placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
-                         completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+    public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, type: pwgImageType,
+                         atURL imageURL: URL?, fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
+                         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         // Check arguments
         guard let imageID = imageID, imageID != 0,
               let imageURL = imageURL, imageURL.isFileURL == false,
@@ -33,8 +32,8 @@ extension PwgSession
         request.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
 
         // Create Download instance
-        let download = ImageDownload(imageID: imageID, ofSize: imageSize, atURL: imageURL,
-                                     fromServer: serverID, fileSize: fileSize, placeHolder: placeHolder,
+        let download = ImageDownload(imageID: imageID, ofSize: imageSize, type: type,
+                                     atURL: imageURL, fromServer: serverID, fileSize: fileSize,
                                      progress: progress, completion: completion, failure: failure)
 
         // Do we already have this image or video in cache?

@@ -99,7 +99,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         playImg?.tintColor = UIColor.white
     }
 
-    func config(withImageData imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
+    func config(withImageData imageData: Image, size: pwgImageSize, sortOption: pwgImageSort) {
         // Do we have any info on that image ?
         if imageData.pwgID == Int64.zero { return }
 
@@ -126,7 +126,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
             self.accessibilityIdentifier = "Hotel de Coimbra"
         }
 #endif
-        update(withImageData: imageData, sortOption: sortOption)
+        if AlbumVars.shared.displayImageTitles {
+            nameLabel?.attributedText = title
+            bottomLayer?.isHidden = false
+            nameLabel?.isHidden = false
+        } else {
+            bottomLayer?.isHidden = true
+            nameLabel?.isHidden = true
+        }
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -134,31 +141,17 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Retrieve image from cache or download it
-        let placeHolder = UIImage(named: "unknownImage")!
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
         let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL,
-                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                   placeHolder: placeHolder) { [weak self] cachedImageURL in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
+                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
-            self?.configImage(placeHolder, withHiddenLabel: false)
+            self?.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
         }
     }
-    
-    func update(withImageData imageData: Image, sortOption: pwgImageSort) {
-        // Title
-        if AlbumVars.shared.displayImageTitles {
-            nameLabel?.attributedText = getImageTitle(forSortOption: sortOption)
-            bottomLayer?.isHidden = false
-            nameLabel?.isHidden = false
-        } else {
-            bottomLayer?.isHidden = true
-            nameLabel?.isHidden = true
-        }
-    }
-    
+        
     private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
         var title = NSAttributedString()
         switch sortOption {

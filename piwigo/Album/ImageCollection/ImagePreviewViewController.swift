@@ -35,15 +35,13 @@ class ImagePreviewViewController: UIViewController
             setImageView(with: cachedImage)
         } else {
             // Display thumbnail image which should be in cache
-            let placeHolder = UIImage(named: "unknownImage")!
             let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            self.setImageView(with: imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            self.setImageView(with: imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
             
             // Download high-resolution image
             if let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) {
-                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, atURL: imageURL,
-                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                           placeHolder: placeHolder) { [weak self] cachedImageURL in
+                PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
+                                           fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
                     self?.downsampleImage(atURL: cachedImageURL, to: viewSize)
                 } failure: { _ in }
             }

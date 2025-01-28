@@ -26,18 +26,16 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                 if let objectID = self.diffableDataSource.itemIdentifier(for: indexPath) {
                     if let album = try? self.mainContext.existingObject(with: objectID) as? Album {
                         // Download image if needed
-                        PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize,
+                        PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                    atURL: album.thumbnailUrl as? URL,
-                                                   fromServer: album.user?.server?.uuid,
-                                                   placeHolder: albumPlaceHolder) { cachedImageURL in
+                                                   fromServer: album.user?.server?.uuid) { cachedImageURL in
                             let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize)
                         } failure: { _ in }
                     } else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                         // Download image if needed
-                        PwgSession.shared.getImage(withID: image.pwgID, ofSize: imageSize,
+                        PwgSession.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
                                                    atURL: ImageUtilities.getURL(image, ofMinSize: imageSize),
-                                                   fromServer: image.server?.uuid, fileSize: image.fileSize,
-                                                   placeHolder: imagePlaceHolder) { cachedImageURL in
+                                                   fromServer: image.server?.uuid, fileSize: image.fileSize) { cachedImageURL in
                             let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize)
                         } failure: { _ in }
                     }
@@ -51,10 +49,9 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     let album = albums.object(at: indexPath)
                     
                     // Download image if needed
-                    PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize,
+                    PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                atURL: album.thumbnailUrl as? URL,
-                                               fromServer: album.user?.server?.uuid,
-                                               placeHolder: albumPlaceHolder) { cachedImageURL in
+                                               fromServer: album.user?.server?.uuid) { cachedImageURL in
                         let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize)
                     } failure: { _ in }
                 default /* Images */:
@@ -67,10 +64,9 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     let imageData = images.object(at: imageIndexPath)
 
                     // Download image if needed
-                    PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize,
+                    PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .image,
                                                atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
-                                               fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                               placeHolder: imagePlaceHolder) { cachedImageURL in
+                                               fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { cachedImageURL in
                         let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize)
                     } failure: { _ in }
                 }

@@ -8,6 +8,7 @@
 
 import MobileCoreServices
 import UIKit
+import piwigoKit
 
 #if canImport(UniformTypeIdentifiers)
 import UniformTypeIdentifiers        // Requires iOS 14
@@ -92,7 +93,7 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
     }
 
     func getImageAndMd5sumOfPbObject(atIndex index: Int) -> (UIImage, String) {
-        var image: UIImage! = imagePlaceholder
+        var image: UIImage = pwgImageType.image.placeHolder
         var md5sum = ""
         if [.stored, .ready].contains(pbObjects[index].state) {
             image = pbObjects[index].image
@@ -108,7 +109,7 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
             }
             if let data = UIPasteboard.general.data(forPasteboardType: imageType,
                                                     inItemSet: IndexSet(integer: index))?.first {
-                image = UIImage(data: data) ?? imagePlaceholder
+                image = UIImage(data: data) ?? pwgImageType.image.placeHolder
                 md5sum = data.MD5checksum()
             }
         }

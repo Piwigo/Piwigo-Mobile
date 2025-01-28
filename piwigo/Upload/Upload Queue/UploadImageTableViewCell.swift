@@ -17,7 +17,6 @@ class UploadImageTableViewCell: UITableViewCell {
     // MARK: - Variables
     var localIdentifier = ""
     var objectID: NSManagedObjectID? = nil
-    private let imagePlaceholder = UIImage(named: "placeholder")!
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
 
@@ -99,7 +98,7 @@ class UploadImageTableViewCell: UITableViewCell {
                 try fullResImageData = NSData (contentsOf: fileURL) as Data
 
                 // Retrieve UIImage from imageData
-                image = UIImage(data: fullResImageData) ?? imagePlaceholder
+                image = UIImage(data: fullResImageData) ?? pwgImageType.image.placeHolder
 
                 // Fix orientation if needed
                 image = image.fixOrientation()
@@ -107,7 +106,7 @@ class UploadImageTableViewCell: UITableViewCell {
             catch let error as NSError {
                 // Could not find the file to upload!
                 debugPrint(error.localizedDescription)
-                image = imagePlaceholder
+                image = pwgImageType.image.placeHolder
             }
         }
         else if fileURL.lastPathComponent.contains("mov") {
@@ -118,7 +117,7 @@ class UploadImageTableViewCell: UITableViewCell {
             do {
                 image = UIImage(cgImage: try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil))
             } catch {
-                image = imagePlaceholder
+                image = pwgImageType.image.placeHolder
             }
             
             // Add movie icon
@@ -126,7 +125,7 @@ class UploadImageTableViewCell: UITableViewCell {
         }
         else {
             // Unknown type
-            image = imagePlaceholder
+            image = pwgImageType.image.placeHolder
         }
 
         // Scale/crop image
@@ -144,10 +143,10 @@ class UploadImageTableViewCell: UITableViewCell {
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             text = errorDescription(for: upload)
-        } else if image != imagePlaceholder {
+        } else if image != pwgImageType.image.placeHolder {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
-            text = getImageInfo(from: image ?? imagePlaceholder,
+            text = getImageInfo(from: image ?? pwgImageType.image.placeHolder,
                                 for: availableWidth - 2*Int(indentationWidth),
                                 maxSize: maxSize)
         }
@@ -158,7 +157,7 @@ class UploadImageTableViewCell: UITableViewCell {
     private func prepareThumbnailFromAsset(for upload:Upload, availableWidth:Int) {
         // Get corresponding image asset
         guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
-            cellImage.image = imagePlaceholder
+            cellImage.image = pwgImageType.image.placeHolder
             imageInfoLabel.text = errorDescription(for: upload)
             uploadingProgress?.setProgress(0.0, animated: false)
             playBckg.isHidden = true
@@ -198,7 +197,7 @@ class UploadImageTableViewCell: UITableViewCell {
                     if let error = info?[PHImageErrorKey] as? Error {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
-                    self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
+                    self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)
                     return
                 }
 

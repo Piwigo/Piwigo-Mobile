@@ -32,8 +32,6 @@ class VideoDetailViewController: UIViewController
     @IBOutlet weak var videoControls: VideoControlsView!
     @IBOutlet weak var videoAirplay: UIImageView!
     
-    private let placeHolder = UIImage(named: "unknownImage")!
-
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
     private var startingZoomScale = CGFloat(1)
@@ -45,7 +43,7 @@ class VideoDetailViewController: UIViewController
         
         // Thumbnail image should be available in cache
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-        placeHolderView.image = imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder
+        placeHolderView.image = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
         setPlaceHolderViewFrame()
 
         // Initialise videoContainerView size with placeHolder size

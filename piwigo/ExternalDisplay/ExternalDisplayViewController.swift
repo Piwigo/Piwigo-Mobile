@@ -82,7 +82,6 @@ class ExternalDisplayViewController: UIViewController {
         }
         
         // Determine the optimum image size for that display
-        let placeHolder = UIImage(named: "unknownImage")!
         let displaySize = AlbumUtilities.sizeOfPage(forView: view)
         let maxPixels = Int(max(displaySize.width, displaySize.height))
         guard let serverID = imageData.server?.uuid,
@@ -115,21 +114,20 @@ class ExternalDisplayViewController: UIViewController {
             }
         } else {
             // Thumbnail image should be available in cache
-            presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            presentTemporaryImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
         }
 
         // Store image URL for being able to pause the download
         self.imageURL = imageURL
 
         // Image of right size for that display
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, atURL: imageURL,
-                                   fromServer: serverID, fileSize: imageData.fileSize,
-                                   placeHolder: placeHolder) { [weak self] fractionCompleted in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: optimumSize, type: .image, atURL: imageURL,
+                                   fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             self?.updateProgressView(with: fractionCompleted)
         } completion: { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: screenSize)
         } failure: { [weak self] _ in
-            self?.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? placeHolder)
+            self?.presentFinalImage(imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
         }
     }
     

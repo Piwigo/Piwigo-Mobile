@@ -53,7 +53,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 if let indexPath = diffableDataSource.indexPath(for: objectID),
                    let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
                    let album = try? self.mainContext.existingObject(with: objectID) as? Album {
-                    cell.update(withAlbumData: album)
+                    cell.config(withAlbumData: album)
                 }
             }
         }
@@ -79,7 +79,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                    let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
                    let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                     // Update image title
-                    cell.update(withImageData: image, sortOption: self.sortOption)
+                    cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
 
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if hasFavorites {
@@ -288,7 +288,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     debugPrint("••> Update image at \(indexPath) of album #\(self.categoryId)")
                     if let cell = self.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                         // Re-configure image cell
-                        cell.update(withImageData: image, sortOption: self.sortOption)
+                        cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
                         // pwg.users.favorites… methods available from Piwigo version 2.10
                         if hasFavorites {
                             cell.isFavorite = (image.albums ?? Set<Album>())

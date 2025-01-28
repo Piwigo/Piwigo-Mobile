@@ -24,6 +24,12 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         recentImage.tintColor = UIColor.white
         applyColorPalette()
         
+        // Album name (Piwigo orange colour)
+        albumName.text = albumData?.name ?? "—?—"
+        
+        // Number of images and sub-albums
+        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
+
         // Added "0 day" option in version 3.1.2 for allowing user to disable "recent" icon
         if CacheVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
            let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
@@ -32,9 +38,18 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             CacheVars.shared.recentPeriodIndexCorrectedInVersion321 = true
         }
                 
-        // Album name and infos
-        update(withAlbumData: albumData)
-        
+        // If requested, display recent icon when images have been uploaded recently
+        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
+        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
+        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
+        indexOfPeriod = max(0, indexOfPeriod)
+        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
+        let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
+        if self.recentBckg.isHidden == isRecent {
+            self.recentBckg.isHidden = !isRecent
+            self.recentImage.isHidden = !isRecent
+        }
+
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
            let images = albumData?.images, let firstImage = images.first {
@@ -46,37 +61,15 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         
         // Retrieve image from cache or download it
         self.albumThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
-        let placeHolder = UIImage(named: "placeholder")!
         let scale = max(self.albumThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
+        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
                                    atURL: albumData?.thumbnailUrl as? URL,
-                                   fromServer: albumData?.user?.server?.uuid,
-                                   placeHolder: placeHolder) { [weak self] cachedImageURL in
+                                   fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in
-            self?.setThumbnailWithImage(placeHolder)
-        }
-    }
-    
-    func update(withAlbumData albumData: Album?) {
-        // Album name (Piwigo orange colour)
-        albumName.text = albumData?.name ?? "—?—"
-        
-        // Number of images and sub-albums
-        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
-
-        // If requested, display recent icon when images have been uploaded recently
-        let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
-        var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
-        indexOfPeriod = min(indexOfPeriod, CacheVars.shared.recentPeriodList.count - 1)
-        indexOfPeriod = max(0, indexOfPeriod)
-        let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
-        let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
-        if self.recentBckg.isHidden == isRecent {
-            self.recentBckg.isHidden = !isRecent
-            self.recentImage.isHidden = !isRecent
+            self?.setThumbnailWithImage(pwgImageType.album.placeHolder)
         }
     }
     

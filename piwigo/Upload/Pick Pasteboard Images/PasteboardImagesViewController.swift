@@ -61,7 +61,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
     let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
     var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
-    let imagePlaceholder = UIImage(named: "placeholder")!
     lazy var imageCellSize: CGSize = getImageCellSize()
 
     var selectedImages = [UploadProperties?]()      // Array of images selected for upload
@@ -546,7 +545,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 // MARK: - Video Poster
 extension AVURLAsset {
     func extractedImage() -> UIImage! {
-        var image: UIImage! = UIImage(named: "placeholder")!
+        var image: UIImage = pwgImageType.image.placeHolder
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
         do {

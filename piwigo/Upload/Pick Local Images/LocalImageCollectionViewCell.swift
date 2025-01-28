@@ -60,7 +60,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
                     if let error = info?[PHImageErrorKey] as? Error {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
-                    self.changeCellImageIfNeeded(withImage: UIImage(named: "placeholder")!)
+                    self.changeCellImageIfNeeded(withImage: pwgImageType.image.placeHolder)
                     return
                 }
                 
