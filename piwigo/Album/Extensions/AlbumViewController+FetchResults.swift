@@ -47,13 +47,16 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 currentSnapshot.appendItems(snapshot.itemIdentifiers, toSection: pwgAlbumGroup.none.sectionKey)
             }
             
-            // Update non-inserted, moved or deleted cells
+            // Update non-inserted, moved or deleted visible cells
             updatedItems.formIntersection(snapshot.itemIdentifiers)
-            updatedItems.forEach { objectID in
-                if let indexPath = diffableDataSource.indexPath(for: objectID),
-                   let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+            collectionView.indexPathsForVisibleItems.forEach { indexPath in
+                if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
                    let album = try? self.mainContext.existingObject(with: objectID) as? Album {
-                    cell.config(withAlbumData: album)
+                    if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld {
+                        cell.albumData = album
+                    } else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                        cell.config(withAlbumData: album)
+                    }
                 }
             }
         }
@@ -72,12 +75,12 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 currentSnapshot.appendItems(snapshot.itemIdentifiers(inSection: sectionID), toSection: sectionID)
             }
 
-            // Update non-inserted, moved or deleted cells
+            // Update non-inserted, moved or deleted visible cells
             updatedItems.formIntersection(snapshot.itemIdentifiers)
-            updatedItems.forEach { objectID in
-                if let indexPath = diffableDataSource.indexPath(for: objectID),
-                   let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-                   let image = try? self.mainContext.existingObject(with: objectID) as? Image {
+            collectionView.indexPathsForVisibleItems.forEach { indexPath in
+                if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
+                   let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                   let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     // Update image title
                     cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
 
