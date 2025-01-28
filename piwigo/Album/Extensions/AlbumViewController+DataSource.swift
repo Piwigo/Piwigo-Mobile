@@ -126,7 +126,7 @@ extension AlbumViewController
                     }
                     else {  // for iOS 13.x
                         // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
-                        if indexPath.section == 1 {
+                        if indexPath.section == (self.diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey) == nil ? 0 : 1) {
                             // Display segmented controller
                             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView,
                                   let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
@@ -354,7 +354,7 @@ extension AlbumViewController: UICollectionViewDataSource
                 if #available(iOS 13.0, *) {
                     let snapShot = self.diffableDataSource.snapshot()
                     if let sectionID = snapShot.sectionIdentifiers.last,
-                       let section = snapShot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+                       let section = snapShot.indexOfSection(sectionID) {
                         indexPath = IndexPath(item: 0, section: section)
                     }
                 } else {
