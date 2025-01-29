@@ -164,16 +164,19 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize
     {
         if #available(iOS 13.0, *) {
+            let nberOfSections = diffableDataSource.numberOfSections(in: collectionView)
             // Album or image?
             if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
-               index == section {       /* Album collection */
-                // Number of images shown in footer of root album
-                if categoryId != Int32.zero {
+               index == section {
+                // Album collection
+                // Show number of images shown in footer of root album and albums not containing photos
+                if categoryId != Int32.zero, nberOfSections > 1 {
                     return CGSize.zero
                 }
-            } else {                    /* Image collection */
-                // Number of images shown at the bottom of the collection
-                guard categoryId != Int32.zero, section == images.sections?.count ?? 0
+            } else {
+                // Image collection
+                // Number of images shown in footer of last section of images
+                guard categoryId != Int32.zero, section == nberOfSections - 1
                 else { return CGSize.zero }
             }
         } else {
