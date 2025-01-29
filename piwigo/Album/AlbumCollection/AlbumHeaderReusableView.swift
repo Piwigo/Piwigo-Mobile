@@ -10,7 +10,7 @@
 
 import UIKit
 
-class AlbumHeaderReusableView: UICollectionReusableView{
+class AlbumHeaderReusableView: UICollectionReusableView {
     var commentLabel: UILabel?
 
     override init(frame: CGRect) {
@@ -24,7 +24,7 @@ class AlbumHeaderReusableView: UICollectionReusableView{
         commentLabel?.adjustsFontSizeToFitWidth = false
         commentLabel?.lineBreakMode = .byWordWrapping
         commentLabel?.textAlignment = .center
-        commentLabel?.font = .systemFont(ofSize: 13, weight: .light)
+        commentLabel?.font = .systemFont(ofSize: 13)
         commentLabel?.attributedText = NSAttributedString()
         if let commentLabel = commentLabel {
             addSubview(commentLabel)

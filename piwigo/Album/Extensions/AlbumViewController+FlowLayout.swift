@@ -23,7 +23,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     
     // MARK: - Headers
-    private func getAlbumDescriptionHeight() -> CGSize {
+    func getAlbumDescriptionHeight() -> CGSize {
         guard !albumData.comment.string.isEmpty
         else { return CGSize.zero }
         
@@ -34,7 +34,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                                                         height: CGFloat.greatestFiniteMagnitude),
                                            options: .usesLineFragmentOrigin, context: context)
         return CGSize(width: collectionView.frame.size.width - 30.0,
-                      height: ceil(headerRect.size.height + 8.0))
+                      height: ceil(headerRect.size.height + 12.0))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
@@ -54,16 +54,21 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 }
                 
                 // Images are sorted by date ► Presents menu or segmented controller
+                let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
                 if #available(iOS 14, *) {
                     // Grouping options accessible from menu ► Display date and location (see XIB)
-                    return CGSize(width: collectionView.frame.size.width, height: 49)
-                }
-                else {
-                    // First section shows a segmented controller for selecting grouping option on iOS 12 - 13.x (see XIB)
-                    if section == (diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey) == nil ? 0 : 1) {
-                        return CGSize(width: collectionView.frame.size.width, height: 88)
+                    if section == 0, hasAlbumSection == false {
+                        return CGSize(width: collectionView.frame.size.width, height: 49 + 4 + self.getAlbumDescriptionHeight().height)
                     } else {
-                        return CGSize(width: collectionView.frame.size.width, height: 49)
+                        return CGSize(width: collectionView.frame.size.width, height: 49 + 4)
+                    }
+                }
+                else {  // for iOS 13.x
+                    // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
+                    if section == 0, hasAlbumSection == false {
+                        return CGSize(width: collectionView.frame.size.width, height: 88 + 4 + self.getAlbumDescriptionHeight().height)
+                    } else {
+                        return CGSize(width: collectionView.frame.size.width, height: 49 + 4)
                     }
                 }
             }
@@ -72,17 +77,8 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             switch section {
             case 0 /* Section 0 — Album collection */:
                 // Header height?
-                guard !albumData.comment.string.isEmpty else {
-                    return CGSize.zero
-                }
-                let desc = attributedComment()
-                let context = NSStringDrawingContext()
-                context.minimumScaleFactor = 1.0
-                let headerRect = desc.boundingRect(with: CGSize(width: collectionView.frame.size.width - 30.0,
-                                                                height: CGFloat.greatestFiniteMagnitude),
-                                                   options: .usesLineFragmentOrigin, context: context)
-                return CGSize(width: collectionView.frame.size.width - 30.0,
-                              height: ceil(headerRect.size.height + 8.0))
+                return getAlbumDescriptionHeight()
+                
             default: /* Images */
                 // Are images sorted by date?
                 if let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
@@ -91,17 +87,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 }
                 
                 // Images are sorted by date ► Presents menu or segmented controller
-                if #available(iOS 14, *) {
-                    // Grouping options accessible from menu ► Display date and location (see XIB)
-                    return CGSize(width: collectionView.frame.size.width, height: 49)
-                }
-                else {
-                    // First section shows a segmented controller for selecting grouping option on iOS 12 - 13.x (see XIB)
-                    if section == 1 {
-                        return CGSize(width: collectionView.frame.size.width, height: 88)
-                    } else {
-                        return CGSize(width: collectionView.frame.size.width, height: 49)
-                    }
+                // First section shows a segmented controller for selecting grouping option on iOS 12 - 13.x (see XIB)
+                if section == 1 {
+                    return CGSize(width: collectionView.frame.size.width, height: 88 + 4)
+                } else {
+                    return CGSize(width: collectionView.frame.size.width, height: 49 + 4)
                 }
             }
         }

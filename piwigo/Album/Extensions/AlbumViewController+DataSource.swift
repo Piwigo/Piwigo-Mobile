@@ -114,26 +114,33 @@ extension AlbumViewController
                     let selectState = self.updateSelectButton(ofSection: indexPath.section)
 
                     // Images are grouped by day, week or month
+                    let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
                     if #available(iOS 14, *) {
                         // Grouping options accessible from menu ► Only display date and location
                         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
                               let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
                         else { preconditionFailure("Could not load ImageHeaderReusableView") }
                         
-                        header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
+                        if indexPath.section == 0, hasAlbumSection == false {
+                            header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
+                                          album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                        } else {
+                            header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
+                        }
                         header.imageHeaderDelegate = self
                         return header
                     }
                     else {  // for iOS 13.x
                         // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
-                        if indexPath.section == (self.diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey) == nil ? 0 : 1) {
+                        if indexPath.section == 0, hasAlbumSection == false {
                             // Display segmented controller
                             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView,
                                   let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
                             else { preconditionFailure("Could not load ImageOldHeaderReusableView")}
                             
                             header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
-                                          section: indexPath.section, selectState: selectState)
+                                          section: indexPath.section, selectState: selectState,
+                                          album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
                             header.imageHeaderDelegate = self
                             return header
                         } else {
@@ -142,8 +149,7 @@ extension AlbumViewController
                                   let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
                             else { preconditionFailure("Could not load ImageHeaderReusableView") }
                             
-                            header.config(with: imagesInSection, sortKey: sortKey,
-                                          section: indexPath.section, selectState: selectState)
+                            header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
                             header.imageHeaderDelegate = self
                             return header
                         }
@@ -198,13 +204,30 @@ extension AlbumViewController: UICollectionViewDataSource
             
             // Retrieve the appropriate section header
             let selectState = updateSelectButton(ofSection: indexPath.section)
-            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.config(with: imagesInSection, sortKey: sortKey,
-                              section: indexPath.section, selectState: selectState)
-            }
-            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
-                              section: indexPath.section, selectState: selectState)
+            if #available(iOS 13.0, *) {
+                let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
+                if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                    if indexPath.section == 0, hasAlbumSection == false {
+                        header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
+                                      album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                    } else {
+                        header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
+                    }
+                }
+                else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                    header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
+                                  section: indexPath.section, selectState: selectState,
+                                  album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                }
+            } else {
+                // Fallback on earlier versions
+                if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                    header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
+                }
+                else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                    header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
+                                  section: indexPath.section, selectState: selectState)
+                }
             }
         }
     }
