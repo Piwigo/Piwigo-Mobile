@@ -14,7 +14,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="3" translatesAutoresizingMaskIntoConstraints="NO" id="N6X-aU-0Ty">
-                    <rect key="frame" x="58.666666666666657" y="28" width="202.99999999999997" height="32"/>
+                    <rect key="frame" x="58.666666666666657" y="24" width="202.99999999999997" height="32"/>
                     <segments>
                         <segment title="" image="imageMonth" width="50"/>
                         <segment title="" image="imageWeek" width="50"/>
@@ -27,19 +27,19 @@
                     </connections>
                 </segmentedControl>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDz-SW-5Hc">
-                    <rect key="frame" x="8" y="67" width="76.333333333333329" height="18"/>
+                    <rect key="frame" x="8" y="63" width="76.333333333333329" height="18"/>
                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-Ur-qXZ">
-                    <rect key="frame" x="8" y="85" width="60" height="16"/>
+                    <rect key="frame" x="8" y="81" width="60" height="16"/>
                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cU4-a8-hx4">
-                    <rect key="frame" x="255" y="74" width="57" height="27"/>
+                    <rect key="frame" x="255" y="70" width="57" height="27"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="27" id="zpA-F9-LTy"/>
                     </constraints>
@@ -69,7 +69,7 @@
                 <constraint firstAttribute="trailing" secondItem="i4t-ex-Rxf" secondAttribute="trailing" constant="15" id="27K-mC-Elc"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="centerX" secondItem="48f-AC-xRm" secondAttribute="centerX" id="51q-HR-xHN"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="48f-AC-xRm" secondAttribute="leading" constant="16" id="Ldp-2d-RMK"/>
-                <constraint firstItem="N6X-aU-0Ty" firstAttribute="top" secondItem="i4t-ex-Rxf" secondAttribute="bottom" constant="8" id="WE3-1i-RAk"/>
+                <constraint firstItem="N6X-aU-0Ty" firstAttribute="top" secondItem="i4t-ex-Rxf" secondAttribute="bottom" constant="4" id="WE3-1i-RAk"/>
                 <constraint firstAttribute="trailing" secondItem="cU4-a8-hx4" secondAttribute="trailing" constant="8" id="YFg-Tf-g18"/>
                 <constraint firstItem="fDz-SW-5Hc" firstAttribute="top" secondItem="N6X-aU-0Ty" secondAttribute="bottom" constant="8" symbolic="YES" id="aKh-x6-Pxf"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="N6X-aU-0Ty" secondAttribute="trailing" constant="16" id="aLt-D7-dIR"/>

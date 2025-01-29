@@ -275,6 +275,8 @@ extension AlbumViewController
     }
 }
 
+
+// MARK: - ImageHeaderDelegate Methods
 extension AlbumViewController: ImageHeaderDelegate
 {
     func changeImageGrouping(for group: pwgImageGroup) {
@@ -417,6 +419,7 @@ extension AlbumViewController: ImageHeaderDelegate
 }
 
 
+// MARK: - iOS 14+ Menu
 @available(iOS 14, *)
 extension AlbumViewController
 {
