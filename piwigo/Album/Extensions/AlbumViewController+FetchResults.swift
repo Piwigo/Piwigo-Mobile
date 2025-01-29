@@ -18,8 +18,11 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Data source configured?
-        guard let dataSource = collectionView.dataSource as? DataSource
-        else { preconditionFailure("The data source has not implemented snapshot support while it should.") }
+        guard let dataSource = collectionView?.dataSource as? DataSource
+        else {
+            debugPrint("The data source has not implemented snapshot support while it should.")
+            return
+        }
         
         // Album or Image controller?
         let snapshot = snapshot as Snaphot
