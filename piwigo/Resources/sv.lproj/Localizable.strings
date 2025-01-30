@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Uppdaterad den %@";
 "categoryUpdatedAt" = "Uppdaterad den %@";
 "categoryUpdatedNow" = "Uppdaterad just nu";
-"categoryMainEmtpy" = "Inga album i din Piwigo ännu.\nProva med att dra ner för att uppdatera, eller logga in igen.";
+"categoryMainEmtpy" = "Inga album i din Piwigo ännu. Prova med att dra ner för att uppdatera, eller logga in igen.";
 "categoryImageList_selectButton" = "Välj";
 "categoryImageList_deselectButton" = "Avmarkera";
 "categoryImageList_noDataError" = "Fel inga Data";

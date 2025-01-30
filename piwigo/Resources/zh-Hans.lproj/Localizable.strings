@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "更新于 %@";
 "categoryUpdatedAt" = "更新于 %@";
 "categoryUpdatedNow" = "刚刚更新";
-"categoryMainEmtpy" = "您的Piwigo没有相册。\n您可以尝试下拉刷新或重新登录。";
+"categoryMainEmtpy" = "您的Piwigo没有相册。您可以尝试下拉刷新或重新登录。";
 "categoryImageList_selectButton" = "选择";
 "categoryImageList_deselectButton" = "反选";
 "categoryImageList_noDataError" = "错误：没有数据";

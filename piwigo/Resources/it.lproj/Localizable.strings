@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Aggiornato il %@";
 "categoryUpdatedAt" = "Aggiornato alle %@";
 "categoryUpdatedNow" = "Aggiornato proprio ora";
-"categoryMainEmtpy" = "Non è presente ancora nessun album nel tuo Piwigo.\nScorri verso il basso per aggiornare o ri-effettuare il login.";
+"categoryMainEmtpy" = "Non è presente ancora nessun album nel tuo Piwigo. Scorri verso il basso per aggiornare o ri-effettuare il login.";
 "categoryImageList_selectButton" = "Seleziona";
 "categoryImageList_deselectButton" = "Deseleziona";
 "categoryImageList_noDataError" = "Errore dati";

@@ -21,6 +21,7 @@ enum pwgImageAction {
 
 class AlbumViewController: UIViewController
 {
+    @IBOutlet weak var noAlbumLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
     var categoryId = Int32.zero
@@ -243,6 +244,13 @@ class AlbumViewController: UIViewController
         debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
         
+        // Initialise "no album / no photo" label
+        if albumData.pwgID == Int64.zero {
+            noAlbumLabel.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+        } else {
+            noAlbumLabel.text = NSLocalizedString("noImages", comment:"No Images")
+        }
+
         // Initialise dataSource
         if #available(iOS 13.0, *) {
             _diffableDataSource = configDataSource()
@@ -302,6 +310,7 @@ class AlbumViewController: UIViewController
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
+        noAlbumLabel.textColor = UIColor.piwigoColorHeader()
         
         // Navigation bar title
         let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)

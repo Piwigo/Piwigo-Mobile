@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Frissítve %@";
 "categoryUpdatedAt" = "Frissítve %@";
 "categoryUpdatedNow" = "Most frissült";
-"categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
+"categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban. Lefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
 "categoryImageList_selectButton" = "Kiválaszt";
 "categoryImageList_deselectButton" = "Elvet";
 "categoryImageList_noDataError" = "Hiba: nincs adat";

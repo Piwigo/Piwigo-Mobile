@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Updated on %@";
 "categoryUpdatedAt" = "Updated at %@";
 "categoryUpdatedNow" = "Updated just now";
-"categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda.\nAnda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
+"categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda. Anda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
 "categoryImageList_selectButton" = "Pilih";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Galat Tidak Ada Data";

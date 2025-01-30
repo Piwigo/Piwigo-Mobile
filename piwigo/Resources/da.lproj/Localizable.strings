@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Opdateret d. %@";
 "categoryUpdatedAt" = "Opdateret %@";
 "categoryUpdatedNow" = "Netop opdateret";
-"categoryMainEmtpy" = "Der er endnu ingen album i dit Piwigo.\nPrøv at trække ned for at opdatere eller log ind igen.";
+"categoryMainEmtpy" = "Der er endnu ingen album i dit Piwigo. Prøv at trække ned for at opdatere eller log ind igen.";
 "categoryImageList_selectButton" = "Vælg";
 "categoryImageList_deselectButton" = "Fravælg";
 "categoryImageList_noDataError" = "Fejl ingen Data";

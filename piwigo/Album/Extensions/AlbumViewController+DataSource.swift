@@ -388,6 +388,7 @@ extension AlbumViewController: UICollectionViewDataSource
                     indexPath = IndexPath(item: 0, section: (images.sections?.count ?? 0))
                 }
             }
+            
             // Update footer if needed
             guard let indexPath = indexPath else { return }
             if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {

@@ -101,66 +101,22 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         dataSource.apply(currentSnapshot as Snaphot, animatingDifferences: shouldAnimate)
         
         // Update headers if needed
-        self.updateHeaders()
+//        self.updateHeaders()
 
         // Update footer
         self.updateNberOfImagesInFooter()
 
         // Disable menu if there are no more images
         if self.categoryId != 0, self.albumData.nbImages == 0 {
-            debugPrint("••> No image ► disable menu")
             self.isSelect = false
             self.initBarsInPreviewMode()
         }
-
-        // Loop over all items
-//        var snapshot = snapshot as Snaphot
-//        let currentSnapshot = dataSource.snapshot() as Snaphot
-//        var reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers
-//        snapshot.itemIdentifiers.forEach({ itemIdentifier in
-//            // Will this item keep the same indexPath?
-//            guard let currentRow = currentSnapshot.indexOfItem(itemIdentifier),
-//                  let row = snapshot.indexOfItem(itemIdentifier),
-//                  row == currentRow,
-//                  let currentSectionIdentifier = currentSnapshot.sectionIdentifier(containingItem: itemIdentifier),
-//                  let currentSection = currentSnapshot.indexOfSection(currentSectionIdentifier),
-//                  let sectionIdentifier = snapshot.sectionIdentifier(containingItem: itemIdentifier),
-//                  let section = snapshot.indexOfSection(sectionIdentifier),
-//                  section == currentSection
-//            else { return }
-//            reloadIdentifiers.removeAll(where: {$0 == itemIdentifier})
-            // Update upload state
-//            let indexPath = IndexPath(row: row, section: section)
-//            if let album = try? controller.managedObjectContext.existingObject(with: itemIdentifier) as? Album {
-//                if AlbumVars.shared.displayAlbumDescriptions {
-//                    // Cell with album description
-//                    if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCellOld", for: indexPath) as? AlbumCollectionViewCellOld {
-//                    }
-//                }
-//                else {
-//                    // Cell w/o album description
-//                    if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlbumCollectionViewCell", for: indexPath) as? AlbumCollectionViewCell {
-//                    }
-//                }
-//            }
-//            else if let image = try? controller.managedObjectContext.existingObject(with: itemIdentifier) as? Image {
-//            }
-//        })
-
-        // Any item to reload/reconfigure?
-//        if reloadIdentifiers.isEmpty == false {
-//            // Animate only a non-empty UI
-//            let shouldAnimate = collectionView.numberOfSections != 0
-//            if #available(iOS 15.0, *) {
-//                snapshot.reconfigureItems(Array(reloadIdentifiers))
-//            } else {
-//                snapshot.reloadItems(Array(reloadIdentifiers))
-//            }
-//            dataSource.apply(snapshot as Snaphot, animatingDifferences: shouldAnimate)
-//        }
+        
+        // Show/hide "No album in your Piwigo"
+        let hasItems = currentSnapshot.numberOfItems != 0
+        noAlbumLabel.isHidden = hasItems
     }
 
-    
     // Exclusively for iOS 12.x
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Reset operation list
