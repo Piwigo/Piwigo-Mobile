@@ -169,7 +169,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShareMetadataCell", for: indexPath) as? ShareMetadataCell
-        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a ShareMetadataCell!") }
+        else { preconditionFailure("Could not load a ShareMetadataCell!") }
 
         let width = view.bounds.size.width
         switch indexPath.section {

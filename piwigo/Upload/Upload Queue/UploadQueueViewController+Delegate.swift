@@ -34,7 +34,7 @@ extension UploadQueueViewController: UITableViewDelegate
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "UploadImageHeaderView") as? UploadImageHeaderView
-        else { preconditionFailure("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!") }
+        else { preconditionFailure("Could not load a UploadImageHeaderView!") }
         if #available(iOS 13.0, *) {
             let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
             header.config(with: sectionKey)
@@ -62,7 +62,7 @@ extension UploadQueueViewController: UITableViewDelegate
         guard let cell = tableView.cellForRow(at: indexPath) as? UploadImageTableViewCell,
               let objectID = cell.objectID,
               let upload = try? self.mainContext.existingObject(with: objectID) as? Upload
-        else { preconditionFailure("Managed object should be available") }
+        else { return nil }
         
         // Create retry upload action
         let retry = UIContextualAction(style: .normal, title: nil,

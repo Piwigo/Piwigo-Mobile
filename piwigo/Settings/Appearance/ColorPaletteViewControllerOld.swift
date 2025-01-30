@@ -102,19 +102,19 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         case 0 /* Ligh and Dark options */:
             if UIDevice.current.userInterfaceIdiom == .phone {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell
-                else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!") }
+                else { preconditionFailure("Could not load a PhoneTableViewCell!") }
                 cell.configure()
                 tableViewCell = cell
             } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell
-                else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!") }
+                else { preconditionFailure("Could not load a PadTableViewCell!") }
                 cell.configure()
                 tableViewCell = cell
             }
 
         case 1 /* Automatic mode? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
+            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
             cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -145,7 +145,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
             
         case 2 /* Switch at ambient brightness? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!") }
+            else { preconditionFailure("Could not load a SliderTableViewCell!") }
             let value = Float(AppVars.shared.switchPaletteThreshold)
             let currentBrightness = UIScreen.main.brightness * 100
             let prefix = String(format: "%ld/", lroundf(Float(currentBrightness)))

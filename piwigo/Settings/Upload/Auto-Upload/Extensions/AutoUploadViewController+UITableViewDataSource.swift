@@ -38,7 +38,7 @@ extension AutoUploadViewController: UITableViewDataSource
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!") }
+            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
             cell.cellSwitch.setOn(UploadVars.isAutoUploadActive, animated: true)
@@ -63,7 +63,7 @@ extension AutoUploadViewController: UITableViewDataSource
             
         case 1:     // Source & destination albums
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!") }
+            else { preconditionFailure("Could not load a LabelTableViewCell!") }
             
             var title = "", detail = ""
             switch indexPath.row {
@@ -106,7 +106,7 @@ extension AutoUploadViewController: UITableViewDataSource
             switch indexPath.row {
             case 0 /* Tags */ :
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell
-                else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!") }
+                else { preconditionFailure("Could not load a EditImageTagsTableViewCell!") }
                 // Retrieve tags and switch to old cache data format
                 let tags = tagProvider.getTags(withIDs: UploadVars.autoUploadTagIds, taskContext: mainContext)
                 cell.config(withList: tags, inColor: UIColor.piwigoColorRightLabel())
@@ -114,7 +114,7 @@ extension AutoUploadViewController: UITableViewDataSource
 
             case 1 /* Comments */ :
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell
-                else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!") }
+                else { preconditionFailure("Could not load a EditImageTextViewTableViewCell!") }
                 cell.config(withText: NSAttributedString(string: UploadVars.autoUploadComments),
                             inColor: UIColor.piwigoColorRightLabel())
                 cell.textView.delegate = self

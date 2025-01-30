@@ -493,7 +493,7 @@ class AlbumViewController: UIViewController
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
                 guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
-                else { preconditionFailure("Couldd not load WhatsNewViewController") }
+                else { preconditionFailure("Could not load WhatsNewViewController") }
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
                     present(whatsNewVC, animated: true)

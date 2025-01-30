@@ -131,7 +131,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     {
         if #available(iOS 13.0, *) {
             guard let itemID = diffableDataSource.itemIdentifier(for: indexPath)
-            else { preconditionFailure("No item for that cell!") }
+            else { return CGSize.zero }
             // Album or image?
             if let _ = try? self.mainContext.existingObject(with: itemID) as? Album {
                 return getAlbumCellSize()

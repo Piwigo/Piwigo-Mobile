@@ -416,7 +416,8 @@ extension SettingsViewController: UITableViewDelegate
             case 0 /* Open Logs page */:
                 if #available(iOS 15, *) {
                     let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
-                    guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController else { preconditionFailure("Could not load TroubleshootingViewController") }
+                    guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
+                    else { preconditionFailure("Could not load TroubleshootingViewController") }
                     navigationController?.pushViewController(errorLogsVC, animated: true)
                 }
             case 1 /* Open Piwigo support forum webpage with default browser */:
