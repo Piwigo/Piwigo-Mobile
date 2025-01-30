@@ -80,7 +80,7 @@ extension UploadSessions {
         if let index = uploadCounters.firstIndex(where: {$0.uid == identifier}) {
             return uploadCounters[index].chunks
         }
-        preconditionFailure("!!! Upload counter not set for upload \(identifier)")
+        return Set<Int>()
     }
     
     // Returns progress value
@@ -88,7 +88,7 @@ extension UploadSessions {
         if let index = uploadCounters.firstIndex(where: {$0.uid == identifier}) {
             return uploadCounters[index].progress
         }
-        preconditionFailure("!!! Upload counter not set for upload \(identifier)")
+        return Float.zero
     }
     
     // Deallocate a counter upon upload completion
