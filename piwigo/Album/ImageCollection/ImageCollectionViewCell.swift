@@ -117,15 +117,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 
         // Title
-#if DEBUG
-        // Used for selecting cells in piwigoAppStore
         let title = getImageTitle(forSortOption: sortOption)
-        if title.string.contains("Clos de Vougeot") {
-            self.accessibilityIdentifier = "Clos de Vougeot"
-        } else if title.string.contains("Hotel de Coimbra") {
-            self.accessibilityIdentifier = "Hotel de Coimbra"
-        }
-#endif
         if AlbumVars.shared.displayImageTitles {
             nameLabel?.attributedText = title
             bottomLayer?.isHidden = false
@@ -134,6 +126,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
             bottomLayer?.isHidden = true
             nameLabel?.isHidden = true
         }
+#if DEBUG
+        // Used for selecting cells in piwigoAppStore
+        if title.string.contains("Clos de Vougeot") {
+            self.accessibilityIdentifier = "Clos de Vougeot"
+        } else if title.string.contains("Hotel de Coimbra") {
+            self.accessibilityIdentifier = "Hotel de Coimbra"
+        }
+#endif
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {

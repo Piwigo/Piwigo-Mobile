@@ -338,7 +338,7 @@ extension AlbumViewController: UICollectionViewDataSource
         else if totalCount == Int64.zero {
             // Not loading and no images
             if albumData.pwgID == Int64.zero {
-                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+                legend = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet. You may pull down to refresh or re-login.")
             } else {
                 legend = NSLocalizedString("noImages", comment:"No Images")
             }
