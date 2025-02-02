@@ -75,16 +75,18 @@ extension PwgSession {
     
     // Re-login if session was closed
     public static
-    func checkSession(ofUser user: User?,
+    func checkSession(ofUser user: User?, systematically: Bool = false,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
         // Check if the session is still active every 60 seconds or more
-        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
-        if secondsSinceLastCheck < 60,
-           PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi(),
-           NetworkVars.applicationShouldRelogin == false {
-            completion()
-            return
+        if systematically == false {
+            let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
+            if secondsSinceLastCheck < 60,
+               PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi(),
+               NetworkVars.applicationShouldRelogin == false {
+                completion()
+                return
+            }
         }
         
         // Determine if the session is still active
