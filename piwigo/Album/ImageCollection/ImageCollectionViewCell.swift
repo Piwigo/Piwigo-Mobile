@@ -253,7 +253,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
 
         isAccessibilityElement = false
-        cellImage.image = nil
         noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         accessibilityIdentifier = ""
     }
