@@ -111,10 +111,6 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             self.isSelect = false
             self.initBarsInPreviewMode()
         }
-        
-        // Show/hide "No album in your Piwigo"
-        let hasItems = currentSnapshot.numberOfItems != 0
-        noAlbumLabel.isHidden = hasItems
     }
 
     // Exclusively for iOS 12.x

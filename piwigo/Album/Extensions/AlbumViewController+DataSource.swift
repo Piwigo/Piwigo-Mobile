@@ -348,8 +348,13 @@ extension AlbumViewController: UICollectionViewDataSource
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             if let number = numberFormatter.string(from: NSNumber(value: totalCount)) {
+                // Prepare legend
                 let format:String = totalCount > 1 ? NSLocalizedString("severalImagesCount", comment:"%@ photos") : NSLocalizedString("singleImageCount", comment:"%@ photo")
                 legend = String(format: format, number)
+
+                // Show/hide "No album in your Piwigo"
+                let hasItems = totalCount != 0
+                noAlbumLabel.isHidden = hasItems
             }
             else {
                 legend = String(format: NSLocalizedString("severalImagesCount", comment:"%@ photos"), "?")
