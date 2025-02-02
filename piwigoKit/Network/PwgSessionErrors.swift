@@ -72,18 +72,26 @@ extension PwgSessionError: LocalizedError {
 
 extension PwgSession {
     public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
-        switch errorCode {
-        case 404:
-            return PwgSessionError.invalidURL
-        case 501:
-            return PwgSessionError.invalidMethod
-        case 999:
-            return PwgSessionError.invalidCredentials
-        case 1002:
-            return PwgSessionError.missingParameter
-        case 1003:
-            return PwgSessionError.invalidParameter
-        default:
+        if errorMessage.isEmpty {
+            switch errorCode {
+            case 401, 402, 403, 999:
+                return PwgSessionError.invalidMethod
+            case 400, 404, 405:
+                return PwgSessionError.invalidParameter
+            case 500:
+                return PwgSessionError.unexpectedError
+            case 501:
+                return PwgSessionError.invalidMethod
+            case 1002:
+                return PwgSessionError.missingParameter
+            case 1003:
+                return PwgSessionError.invalidParameter
+            default:
+                let error = NSError(domain: "Piwigo", code: errorCode,
+                                    userInfo: [NSLocalizedDescriptionKey : errorMessage])
+                return error as Error
+            }
+        } else {
             let error = NSError(domain: "Piwigo", code: errorCode,
                                 userInfo: [NSLocalizedDescriptionKey : errorMessage])
             return error as Error
