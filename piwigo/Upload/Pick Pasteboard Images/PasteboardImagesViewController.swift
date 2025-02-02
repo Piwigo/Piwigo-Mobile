@@ -96,6 +96,12 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Collection view — Register the cell before using it
+        collectionFlowLayout.scrollDirection = .vertical
+        collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
+        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
+        localImagesCollection.accessibilityIdentifier = "Pasteboard"
+        
         // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
         // and prevent their selection
@@ -146,12 +152,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // At start, there is no image selected
         selectedImages = .init(repeating: nil, count: pbObjects.count)
-        
-        // Collection view
-        collectionFlowLayout.scrollDirection = .vertical
-        collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
-        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
-        localImagesCollection.accessibilityIdentifier = "Pasteboard"
         
         // Navigation bar
         navigationController?.toolbar.tintColor = .piwigoColorOrange()

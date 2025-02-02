@@ -275,6 +275,10 @@ class SelectCategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Register the CategoryTableViewCell before using it
+        categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
+                                      forCellReuseIdentifier: "CategoryTableViewCell")
+
         // Check that a root album exists in cache (create it if necessary)
         guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
             return
@@ -291,10 +295,6 @@ class SelectCategoryViewController: UIViewController {
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
-
-        // Register CategoryTableViewCell
-        categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
-                                      forCellReuseIdentifier: "CategoryTableViewCell")
 
         // Set title and buttons
         switch wantedAction {

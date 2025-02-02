@@ -121,6 +121,12 @@ class LocalImagesViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Collection view - Register the cell before using it
+        collectionFlowLayout.scrollDirection = .vertical
+        collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
+        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
+        localImagesCollection.accessibilityIdentifier = "CameraRoll"
+        
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
@@ -147,12 +153,6 @@ class LocalImagesViewController: UIViewController
         DispatchQueue.global(qos: .userInitiated).async {
             self.sortImagesAndIndexUploads()
         }
-        
-        // Collection view
-        collectionFlowLayout.scrollDirection = .vertical
-        collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
-        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
-        localImagesCollection.accessibilityIdentifier = "CameraRoll"
         
         // Navigation bar
         navigationController?.toolbar.tintColor = .piwigoColorOrange()

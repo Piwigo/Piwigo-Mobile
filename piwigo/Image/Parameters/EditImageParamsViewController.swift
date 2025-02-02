@@ -109,6 +109,11 @@ class EditImageParamsViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Register the cells before using them
+        editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
+        editImageParamsTableView.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
+        editImageParamsTableView.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
+        
         // Title
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         
@@ -124,17 +129,8 @@ class EditImageParamsViewController: UIViewController
         navigationItem.rightBarButtonItem = done
         navigationController?.navigationBar.accessibilityIdentifier = "editParams"
         
-        // Register thumbnails cell
-        editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
-        
-        // Register date picker cell
-        editImageParamsTableView.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
-        hasDatePicker = false
-        
-        // Register date interval picker cell
-        editImageParamsTableView.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
-        
         // Reset common parameters
+        hasDatePicker = false
         resetCommonParameters()
         
         // Set colors, fonts, etc.

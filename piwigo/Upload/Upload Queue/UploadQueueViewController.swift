@@ -76,6 +76,9 @@ class UploadQueueViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Register section header view before using it
+        queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
+        
         // Buttons
         if #available(iOS 14.0, *) {
             // Menu
@@ -86,9 +89,6 @@ class UploadQueueViewController: UIViewController {
         }
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
-        
-        // Register section header view
-        queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
         
         // No extra space above tableView
         if #available(iOS 13.0, *) {

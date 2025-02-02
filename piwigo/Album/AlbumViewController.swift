@@ -244,6 +244,16 @@ class AlbumViewController: UIViewController
         debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
         
+        // Register classes before using them
+        collectionView?.isPrefetchingEnabled = true
+        collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
+        collectionView?.register(UINib(nibName: "AlbumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "AlbumCollectionViewCell")
+        collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
+        collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
+        collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
+        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
+        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
+        
         // Initialise "no album / no photo" label
         if albumData.pwgID == Int64.zero {
             noAlbumLabel.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
@@ -251,6 +261,25 @@ class AlbumViewController: UIViewController
             noAlbumLabel.text = NSLocalizedString("noImages", comment:"No Images")
         }
 
+        // Add buttons above table view and other buttons
+        view.insertSubview(addButton, aboveSubview: collectionView)
+        uploadQueueButton.layer.addSublayer(progressLayer)
+        uploadQueueButton.addSubview(nberOfUploadsLabel)
+        view.insertSubview(uploadQueueButton, belowSubview: addButton)
+        view.insertSubview(homeAlbumButton, belowSubview: addButton)
+        view.insertSubview(createAlbumButton, belowSubview: addButton)
+        view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        
+        // Sticky section headers
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.sectionHeadersPinToVisibleBounds = true
+        }
+        
+        // Refresh view
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+        collectionView?.refreshControl = refreshControl
+        
         // Initialise dataSource
         if #available(iOS 13.0, *) {
             _diffableDataSource = configDataSource()
@@ -272,35 +301,6 @@ class AlbumViewController: UIViewController
         if categoryId == 0 {
             initSearchBar()
         }
-        
-        // Add buttons above table view and other buttons
-        view.insertSubview(addButton, aboveSubview: collectionView)
-        uploadQueueButton.layer.addSublayer(progressLayer)
-        uploadQueueButton.addSubview(nberOfUploadsLabel)
-        view.insertSubview(uploadQueueButton, belowSubview: addButton)
-        view.insertSubview(homeAlbumButton, belowSubview: addButton)
-        view.insertSubview(createAlbumButton, belowSubview: addButton)
-        view.insertSubview(uploadImagesButton, belowSubview: addButton)
-        
-        // Register classes
-        collectionView?.isPrefetchingEnabled = true
-        collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
-        collectionView?.register(UINib(nibName: "AlbumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "AlbumCollectionViewCell")
-        collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
-        collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
-        collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
-        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
-        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
-        
-        // Sticky section headers
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.sectionHeadersPinToVisibleBounds = true
-        }
-        
-        // Refresh view
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-        collectionView?.refreshControl = refreshControl
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
