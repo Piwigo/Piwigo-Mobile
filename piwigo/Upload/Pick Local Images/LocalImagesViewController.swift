@@ -122,10 +122,10 @@ class LocalImagesViewController: UIViewController
         super.viewDidLoad()
 
         // Collection view - Register the cell before using it
-        collectionFlowLayout.scrollDirection = .vertical
-        collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
+        collectionFlowLayout?.scrollDirection = .vertical
+        collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
-        localImagesCollection.accessibilityIdentifier = "CameraRoll"
+        localImagesCollection?.accessibilityIdentifier = "CameraRoll"
         
         // Check collection Id
         if imageCollectionId.count == 0 {

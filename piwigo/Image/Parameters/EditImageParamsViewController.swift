@@ -84,35 +84,13 @@ class EditImageParamsViewController: UIViewController
 
 
     // MARK: - View Lifecycle
-    @objc func applyColorPalette() {
-        // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
-        
-        // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-        
-        // Table view
-        editImageParamsTableView.separatorColor = .piwigoColorSeparator()
-        editImageParamsTableView.backgroundColor = .piwigoColorBackground()
-        editImageParamsTableView.reloadData()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Register the cells before using them
-        editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
-        editImageParamsTableView.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
-        editImageParamsTableView.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
+        editImageParamsTableView?.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
+        editImageParamsTableView?.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
+        editImageParamsTableView?.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
         
         // Title
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
@@ -135,6 +113,28 @@ class EditImageParamsViewController: UIViewController
         
         // Set colors, fonts, etc.
         applyColorPalette()
+    }
+    
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = .piwigoColorBackground()
+        
+        // Navigation bar
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
+        ]
+        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        
+        // Table view
+        editImageParamsTableView?.separatorColor = .piwigoColorSeparator()
+        editImageParamsTableView?.backgroundColor = .piwigoColorBackground()
+        editImageParamsTableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -165,12 +165,12 @@ class EditImageParamsViewController: UIViewController
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
                 let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
-                                                                     bottom: navBarHeight, right: CGFloat.zero)
+                editImageParamsTableView?.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
+                                                                      bottom: navBarHeight, right: CGFloat.zero)
             }
             
             // Reload table view
-            editImageParamsTableView.reloadData()
+            editImageParamsTableView?.reloadData()
         })
     }
     

@@ -77,7 +77,7 @@ class UploadQueueViewController: UIViewController {
         super.viewDidLoad()
         
         // Register section header view before using it
-        queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
+        queueTableView?.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
         
         // Buttons
         if #available(iOS 14.0, *) {
