@@ -101,7 +101,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         dataSource.apply(currentSnapshot as Snaphot, animatingDifferences: shouldAnimate)
         
         // Update headers if needed
-//        self.updateHeaders()
+        self.updateHeaders()
 
         // Update footer
         self.updateNberOfImagesInFooter()
