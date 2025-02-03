@@ -161,24 +161,17 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         case .ratingScoreAscending, .ratingScoreDescending:
             // Rate score unknown until pwg.images.getInfo is called
-            if imageData.title.string.isEmpty {
-                if imageData.ratingScore > 0 {
-                    var rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
-                    let fileName = NSMutableAttributedString(string: imageData.fileName)
-                    rate.append(fileName)
-                    return attributedTitle(rate)
+            if imageData.ratingScore > 0.0 {
+                var rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
+                if imageData.title.string.isEmpty {
+                    rate.append(NSMutableAttributedString(string: imageData.fileName))
                 } else {
-                    return attributedTitle(NSAttributedString(string: imageData.fileName))
-                }
-            } else {
-                if imageData.ratingScore > 0 {
-                    var rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
                     rate.append(imageData.title)
-                    return attributedTitle(rate)
-                } else {
-                    return attributedTitle(imageData.title)
                 }
+                return attributedTitle(rate)
             }
+            fallthrough
+
         default:
             if imageData.title.string.isEmpty == false {
                 return attributedTitle(imageData.title)
