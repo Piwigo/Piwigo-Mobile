@@ -19,12 +19,7 @@ extension pwgImageType {
         case .album:
             return UIImage(named: "unknownAlbum")!
         case .image:
-            if #available(iOS 18, *) {
-                return UIImage(systemName: "photo.badge.exclamationmark")!
-            } else {
-                // Fallback on earlier versions
-                return UIImage(named: "unknownImage")!
-            }
+            return UIImage(named: "unknownImage")!
         }
     }
 }
