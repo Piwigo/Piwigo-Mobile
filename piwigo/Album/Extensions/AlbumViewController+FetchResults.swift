@@ -97,14 +97,18 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         }
         
         // Animate only a non-empty UI
-        let shouldAnimate = collectionView.numberOfSections != 0
+        let shouldAnimate = (collectionView?.numberOfSections ?? 0) != 0
         dataSource.apply(currentSnapshot as Snaphot, animatingDifferences: shouldAnimate)
         
         // Update headers if needed
         self.updateHeaders()
 
-        // Update footer
+        // Update footer if needed
         self.updateNberOfImagesInFooter()
+
+        // Show/hide "No album in your Piwigo" (e.g. after clearing the cache)
+        let hasItems = currentSnapshot.numberOfItems != 0
+        noAlbumLabel.isHidden = hasItems
 
         // Disable menu if there are no more images
         if self.categoryId != 0, self.albumData.nbImages == 0 {
