@@ -92,8 +92,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
         
     func applyColorPalette() {
-        bottomLayer?.backgroundColor = UIColor.piwigoColorBackground()
+        bottomLayer?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.7)
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        noDataLabel?.textColor = UIColor.piwigoColorLeftLabel()
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
         playImg?.tintColor = UIColor.white
