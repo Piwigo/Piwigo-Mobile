@@ -17,7 +17,7 @@ public enum pwgImageAttr: String {
     case dateCreated = "date_creation"
     case datePosted = "date_available"
     case rating = "rating_score"
-    case visits = "hits"
+    case visits = "hit"
 }
 
 public enum pwgImageOrder: String {
