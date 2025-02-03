@@ -153,30 +153,39 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
         
     private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
-        var title = NSAttributedString()
         switch sortOption {
         case .visitsAscending, .visitsDescending:
             let hits = NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits")
             let text = String(format: "%ld %@", Int(imageData.visits), hits)
-            title = attributedTitle(NSAttributedString(string: text))
+            return attributedTitle(NSAttributedString(string: text))
+        
         case .ratingScoreAscending, .ratingScoreDescending:
-            if imageData.title.string.isEmpty == false {
-                title = attributedTitle(imageData.title)
-                // Rate score unknown until pwg.images.getInfo is called
-//              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.title.string)
+            // Rate score unknown until pwg.images.getInfo is called
+            if imageData.title.string.isEmpty {
+                if imageData.ratingScore > 0 {
+                    var rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
+                    let fileName = NSMutableAttributedString(string: imageData.fileName)
+                    rate.append(fileName)
+                    return attributedTitle(rate)
+                } else {
+                    return attributedTitle(NSAttributedString(string: imageData.fileName))
+                }
             } else {
-                // Rate score unknown until pwg.images.getInfo is called
-                title = attributedTitle(NSAttributedString(string: imageData.fileName))
-//              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
+                if imageData.ratingScore > 0 {
+                    var rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
+                    rate.append(imageData.title)
+                    return attributedTitle(rate)
+                } else {
+                    return attributedTitle(imageData.title)
+                }
             }
         default:
             if imageData.title.string.isEmpty == false {
-                title = attributedTitle(imageData.title)
+                return attributedTitle(imageData.title)
             } else {
-                title = attributedTitle(NSAttributedString(string: imageData.fileName))
+                return attributedTitle(NSAttributedString(string: imageData.fileName))
             }
         }
-        return title
     }
     
     private func attributedTitle(_ title: NSAttributedString) -> NSAttributedString {
