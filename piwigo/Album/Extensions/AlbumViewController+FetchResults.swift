@@ -107,7 +107,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         self.updateNberOfImagesInFooter()
 
         // Show/hide "No album in your Piwigo" (e.g. after clearing the cache)
-        let hasItems = currentSnapshot.numberOfItems != 0
+        let hasItems = (categoryId < 0) || (currentSnapshot.numberOfItems != 0)
         noAlbumLabel.isHidden = hasItems
 
         // Disable menu if there are no more images

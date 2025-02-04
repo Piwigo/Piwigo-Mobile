@@ -357,7 +357,7 @@ extension AlbumViewController: UICollectionViewDataSource
                 legend = String(format: format, number)
 
                 // Show/hide "No album in your Piwigo"
-                let hasItems = totalCount != 0
+                let hasItems = (categoryId < 0) || (totalCount != 0)
                 noAlbumLabel.isHidden = hasItems
             }
             else {
