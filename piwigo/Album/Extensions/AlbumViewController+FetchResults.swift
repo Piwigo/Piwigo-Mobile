@@ -138,19 +138,19 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             case .insert:
                 updateOperations.append( BlockOperation { [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Insert image section #\(collectionSectionIndex)")
+//                    debugPrint("••> Insert image section #\(collectionSectionIndex)")
                     self.collectionView?.insertSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .delete:
                 updateOperations.append( BlockOperation { [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Delete image section #\(collectionSectionIndex)")
+//                    debugPrint("••> Delete image section #\(collectionSectionIndex)")
                     self.collectionView?.deleteSections(IndexSet(integer: collectionSectionIndex))
                 })
             case .move:
-                debugPrint("••> Move image section #\(collectionSectionIndex)")
+//                debugPrint("••> Move image section #\(collectionSectionIndex)")
             case .update:
-                debugPrint("••> Update image section #\(collectionSectionIndex)")
+//                debugPrint("••> Update image section #\(collectionSectionIndex)")
             @unknown default:
                 assertionFailure("Unknown NSFetchedResultsChangeType of section in AlbumViewController")
             }
@@ -170,14 +170,14 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 guard let newIndexPath = newIndexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Insert sub-album at \(newIndexPath) of album #\(self.categoryId)")
+//                    debugPrint("••> Insert sub-album at \(newIndexPath) of album #\(self.categoryId)")
                     self.collectionView?.insertItems(at: [newIndexPath])
                 })
             case .delete:
                 guard let indexPath = indexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Delete sub-album at \(indexPath) of album #\(self.categoryId)")
+//                    debugPrint("••> Delete sub-album at \(indexPath) of album #\(self.categoryId)")
                     self.collectionView?.deleteItems(at: [indexPath])
                 })
             case .move:
@@ -185,14 +185,14 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                       indexPath != newIndexPath else { return }
                 updateOperations.append( BlockOperation { [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Move sub-album of album #\(self.categoryId) from \(indexPath) to \(newIndexPath)")
+//                    debugPrint("••> Move sub-album of album #\(self.categoryId) from \(indexPath) to \(newIndexPath)")
                     self.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
                 guard let indexPath = indexPath else { return }
                 updateOperations.append( BlockOperation {  [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Update sub-album at \(indexPath) of album #\(self.categoryId)")
+//                    debugPrint("••> Update sub-album at \(indexPath) of album #\(self.categoryId)")
                     self.collectionView?.reloadItems(at: [indexPath])
                 })
             @unknown default:
@@ -207,7 +207,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 updateOperations.append( BlockOperation { [weak self] in
                     // Insert image
                     guard let self = self else { return }
-                    debugPrint("••> Insert image of album #\(self.categoryId) at \(newIndexPath)")
+//                    debugPrint("••> Insert image of album #\(self.categoryId) at \(newIndexPath)")
                     self.collectionView?.insertItems(at: [newIndexPath])
                     // Enable menu if this is the first added image
                     if self.albumData.nbImages == 1 {
@@ -226,7 +226,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Delete image of album #\(self.categoryId) at \(indexPath)")
+//                    debugPrint("••> Delete image of album #\(self.categoryId) at \(indexPath)")
                     self.collectionView?.deleteItems(at: [indexPath])
                 })
             case .move:
@@ -237,7 +237,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 // Move image
                 updateOperations.append( BlockOperation {  [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Move item of album #\(self.categoryId) from \(indexPath) to \(newIndexPath)")
+//                    debugPrint("••> Move item of album #\(self.categoryId) from \(indexPath) to \(newIndexPath)")
                     self.collectionView?.moveItem(at: indexPath, to: newIndexPath)
                 })
             case .update:
@@ -247,7 +247,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 // Update image
                 updateOperations.append( BlockOperation { [weak self] in
                     guard let self = self else { return }
-                    debugPrint("••> Update image at \(indexPath) of album #\(self.categoryId)")
+//                    debugPrint("••> Update image at \(indexPath) of album #\(self.categoryId)")
                     if let cell = self.collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                         // Re-configure image cell
                         cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
@@ -280,7 +280,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             self.updateNberOfImagesInFooter()
             // Disable menu if no image left
             if self.categoryId != 0, self.albumData.nbImages == 0 {
-                debugPrint("••> No image ► disable menu")
+//                debugPrint("••> No image ► disable menu")
                 self.isSelect = false
                 self.initBarsInPreviewMode()
             }
