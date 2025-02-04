@@ -120,12 +120,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Title
         let title = getImageTitle(forSortOption: sortOption)
         if AlbumVars.shared.displayImageTitles {
-            nameLabel?.attributedText = title
             bottomLayer?.isHidden = false
+            nameLabel?.attributedText = title
             nameLabel?.isHidden = false
+            noDataLabel?.isHidden = true
         } else {
             bottomLayer?.isHidden = true
             nameLabel?.isHidden = true
+            noDataLabel?.isHidden = true
         }
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
@@ -163,7 +165,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         case .ratingScoreAscending, .ratingScoreDescending:
             // Rate score unknown until pwg.images.getInfo is called
             if imageData.ratingScore > 0.0 {
-                var rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
+                let rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
                 if imageData.title.string.isEmpty {
                     rate.append(NSMutableAttributedString(string: imageData.fileName))
                 } else {
