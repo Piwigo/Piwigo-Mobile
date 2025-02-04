@@ -161,7 +161,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 // Album collection
                 // Show number of images shown in footer of root album and albums not containing photos
                 if categoryId != Int32.zero, nberOfSections > 1 {
-                    return CGSize.zero
+                    return CGSize(width: collectionView.frame.width, height: 8.0)
                 }
             } else {
                 // Image collection
@@ -174,8 +174,13 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             switch section {
             case 0 /* Albums */:
                 // Number of images shown in footer of root album
+                // or a spacer between albums and images
                 if categoryId != Int32.zero {
-                    return CGSize.zero
+                    if collectionView.numberOfItems(inSection: 0) == 0 {
+                        return  CGSize.zero
+                    } else {
+                        return CGSize(width: collectionView.frame.width, height: 8.0)
+                    }
                 }
                 
             default /* Images */:
@@ -199,7 +204,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     }
     
     
-    // MARK: Inset & Spacing for Sections
+    // MARK: - Inset & Spacing for Sections
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         if #available(iOS 13.0, *) {

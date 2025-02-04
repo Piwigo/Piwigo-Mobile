@@ -68,6 +68,9 @@ extension AlbumViewController
                 let nbImages = self.albumData.nbImages
                 if self.categoryId == 0 || nbImages == 0 {
                     // Done fetching images
+                    // ► Remove current album from list of album being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
                     // ► Check if the album has been deleted
                     if self.albumData.isDeleted {
                         DispatchQueue.main.async { [self] in
@@ -79,8 +82,6 @@ extension AlbumViewController
                     }
                     // ► Remove non-fetched images from album
                     self.removeImageWithIDs(oldImageIDs)
-                    // ► Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
                     completion()
                     return
                 }

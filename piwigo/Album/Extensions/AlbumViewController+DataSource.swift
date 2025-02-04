@@ -98,8 +98,12 @@ extension AlbumViewController
                 case UICollectionView.elementKindSectionFooter:
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}
-                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                    footer.nberImagesLabel?.text = self.getImageCount()
+                    if self.categoryId == Int64.zero {
+                        footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                        footer.nberImagesLabel?.text = self.getImageCount()
+                    } else {
+                        footer.nberImagesLabel?.text = ""
+                    }
                     return footer
                 default:
                     break
@@ -403,7 +407,7 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
     // MARK: - Headers & Footers for iOS 12.x
-    // Exclusively for iOS 12.x"
+    // Exclusively for iOS 12.x
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
     {
         let emptyView = UICollectionReusableView(frame: CGRect.zero)
@@ -418,8 +422,12 @@ extension AlbumViewController: UICollectionViewDataSource
             case UICollectionView.elementKindSectionFooter:
                 guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                 else { preconditionFailure("Could not load ImageFooterReusableView")}
-                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
-                footer.nberImagesLabel?.text = getImageCount()
+                if categoryId == Int64.zero {
+                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                    footer.nberImagesLabel?.text = getImageCount()
+                } else {
+                    footer.nberImagesLabel?.text = ""
+                }
                 return footer
             default:
                 break
@@ -483,14 +491,14 @@ extension AlbumViewController: UICollectionViewDataSource
     
 
     // MARK: - Sections
-    // Exclusively for iOS 12.x"
+    // Exclusively for iOS 12.x
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1 + (images.sections?.count ?? 1)
     }
     
 
     // MARK: - Items i.e. Albums & Images
-    // Exclusively for iOS 12.x"
+    // Exclusively for iOS 12.x
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0 /* Albums */:
@@ -504,7 +512,7 @@ extension AlbumViewController: UICollectionViewDataSource
         }
     }
     
-    // Exclusively for iOS 12.x"
+    // Exclusively for iOS 12.x
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0 /* Albums (see XIB file) */:
