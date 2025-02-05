@@ -457,9 +457,9 @@ class AlbumUtilities: NSObject {
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
         var albumThumbnailSize: CGFloat = 144
-        if #available(iOS 13.0, *) {
-            albumThumbnailSize *= pwgImageSize.maxSaliencyScale
-        }
+//        if #available(iOS 13.0, *) {
+//            albumThumbnailSize *= pwgImageSize.maxSaliencyScale
+//        }
         
         // Loop over all sizes
         let sizes = pwgImageSize.allCases.dropLast(1)
