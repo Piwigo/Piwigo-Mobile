@@ -78,7 +78,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Can be called too many times leading to thread management issues
         DispatchQueue.global(qos: .default).async { [self] in
             // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
+            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize, for: .album)
             
             // Process saliency if needed
 //            if #available(iOS 13.0, *) {

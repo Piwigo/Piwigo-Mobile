@@ -155,7 +155,7 @@ class ExternalDisplayViewController: UIViewController {
     }
 
     private func downsampleImage(atURL fileURL: URL, to screenSize: CGSize) {
-        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: screenSize)
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: screenSize, for: .image)
         self.presentFinalImage(cachedImage)
     }
     

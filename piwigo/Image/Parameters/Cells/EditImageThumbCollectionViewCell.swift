@@ -128,7 +128,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     
     private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
         // Downsample image
-        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize, for: .image)
 
         // Set image thumbnail
         setThumbnailWithImage(cachedImage)

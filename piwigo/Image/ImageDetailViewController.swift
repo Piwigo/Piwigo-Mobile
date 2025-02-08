@@ -209,7 +209,7 @@ class ImageDetailViewController: UIViewController
     }
     
     private func downsampleImage(atURL fileURL: URL) {
-        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize)
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize, for: .image)
         DispatchQueue.main.async { [self] in
             // Hide progress view
             self.progressView.isHidden = true
@@ -256,7 +256,7 @@ class ImageDetailViewController: UIViewController
     }
     
     private func downsampleImage(atURL fileURL: URL, rotateBy angle: Double, completion: @escaping () -> Void) {
-        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize)
+        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize, for: .image)
         DispatchQueue.main.async { [self] in
             // Hide progress view
             self.progressView.isHidden = true

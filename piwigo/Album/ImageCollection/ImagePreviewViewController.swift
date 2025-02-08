@@ -50,7 +50,7 @@ class ImagePreviewViewController: UIViewController
     
     private func downsampleImage(atURL fileURL: URL, to viewSize: CGSize) {
         DispatchQueue.main.async { [self] in
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: viewSize)
+            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: viewSize, for: .image)
             self.setImageView(with: cachedImage)
         }
     }

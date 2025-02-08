@@ -29,14 +29,14 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                         PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                    atURL: album.thumbnailUrl as? URL,
                                                    fromServer: album.user?.server?.uuid) { cachedImageURL in
-                            let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize)
+                            let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize, for: .album)
                         } failure: { _ in }
                     } else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                         // Download image if needed
                         PwgSession.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
                                                    atURL: ImageUtilities.getURL(image, ofMinSize: imageSize),
                                                    fromServer: image.server?.uuid, fileSize: image.fileSize) { cachedImageURL in
-                            let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize)
+                            let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize, for: .image)
                         } failure: { _ in }
                     }
                 }
@@ -52,7 +52,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                atURL: album.thumbnailUrl as? URL,
                                                fromServer: album.user?.server?.uuid) { cachedImageURL in
-                        let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize)
+                        let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize, for: .album)
                     } failure: { _ in }
                 default /* Images */:
                     // Retrieve image data
@@ -67,7 +67,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .image,
                                                atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
                                                fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { cachedImageURL in
-                        let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize)
+                        let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize, for: .image)
                     } failure: { _ in }
                 }
             }

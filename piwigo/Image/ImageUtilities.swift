@@ -244,7 +244,7 @@ class ImageUtilities: NSObject {
         return CGSizeMake(originalSize.width / scale, originalSize.height / scale)
     }
 
-    static func downsample(imageAt imageURL: URL, to pointSize: CGSize) -> UIImage {
+    static func downsample(imageAt imageURL: URL, to pointSize: CGSize, for type: pwgImageType) -> UIImage {
         // Optimised image available?
         let filePath = imageURL.path + CacheVars.shared.optImage
         if let optImage = UIImage(contentsOfFile: filePath) {
@@ -269,7 +269,7 @@ class ImageUtilities: NSObject {
             else {
                 // Delete corrupted cached image file if any
                 try? FileManager.default.removeItem(at: imageURL)
-                return UIImage(named: "unknownImage")!
+                return type.placeHolder
             }
             // Downsample image if needed
             guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
@@ -293,7 +293,7 @@ class ImageUtilities: NSObject {
                 } else {
                     // Delete corrupted cached image file
                     try? FileManager.default.removeItem(at: imageURL)
-                    return UIImage(named: "unknownImage")!
+                    return type.placeHolder
                 }
             }
             saveDownsampledImage(downsampledImage, atPath: filePath)

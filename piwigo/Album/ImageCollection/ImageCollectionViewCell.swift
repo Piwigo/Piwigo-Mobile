@@ -202,7 +202,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Process image in the background
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
+            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize, for: .image)
 
             // Set image
             self.configImage(cachedImage, withHiddenLabel: true)
