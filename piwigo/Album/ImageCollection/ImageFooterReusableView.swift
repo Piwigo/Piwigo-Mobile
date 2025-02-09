@@ -29,7 +29,7 @@ class ImageFooterReusableView: UICollectionReusableView {
 
         if let nberImagesLabel = nberImagesLabel {
             addSubview(nberImagesLabel)
-            addConstraints(NSLayoutConstraint.constraintCenter(nberImagesLabel)!)
+            addConstraint(NSLayoutConstraint.constraintCenterVerticalView(nberImagesLabel)!)
             addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-16-[header]-16-|",
                     options: [], metrics: nil, views: ["header": nberImagesLabel
             ]))
