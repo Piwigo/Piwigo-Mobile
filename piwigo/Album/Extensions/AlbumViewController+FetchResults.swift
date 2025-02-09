@@ -55,9 +55,11 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             collectionView.indexPathsForVisibleItems.forEach { indexPath in
                 if let objectID = diffableDataSource.itemIdentifier(for: indexPath), updatedItems.contains(objectID),
                    let album = try? self.mainContext.existingObject(with: objectID) as? Album {
-                    if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld {
+                    if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCellOld,
+                       cell.albumData != album {
                         cell.albumData = album
-                    } else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell {
+                    } else if let cell = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+                              cell.albumData != album {
                         cell.config(withAlbumData: album)
                     }
                 }
@@ -85,12 +87,17 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                    let image = try? self.mainContext.existingObject(with: objectID) as? Image,
                    let cell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                     // Update image title
-                    cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+                    if cell.imageData != image {
+                        cell.config(withImageData: image, size: self.imageSize, sortOption: self.sortOption)
+                    }
 
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if hasFavorites {
-                        cell.isFavorite = (image.albums ?? Set<Album>())
+                        let isFavorite = (image.albums ?? Set<Album>())
                             .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue})
+                        if cell.isFavorite != isFavorite {
+                            cell.isFavorite = isFavorite
+                        }
                     }
                 }
             }

@@ -26,63 +26,119 @@ extension PwgSession
             return
         }
         
+        // Determine URL of image in cache
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let fileURL = cacheDir.appendingPathComponent(imageSize.path)
+            .appendingPathComponent(String(imageID))
+
+        // Do we already have this image or video in cache?
+        let cachedFileSize = fileURL.fileSize
+//        debugPrint("••> Image \(fileURL.lastPathComponent) of \(cachedFileSize) bytes")
+        if cachedFileSize > 0 {
+            // We do have an image in cache, but is this the image or expected video?
+            if imageSize == .fullRes {
+                let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
+//                debugPrint("••> Image \(fileURL.lastPathComponent): \((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
+                if diff < 0.1 {     // i.e. 10%
+                    self.activeDownloads.removeValue(forKey: imageURL)
+                    completion(fileURL)
+                    return
+                }
+            } else {
+//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
+                self.activeDownloads.removeValue(forKey: imageURL)
+                completion(fileURL)
+                return
+            }
+        }
+        
+        // Does this download instance already exist?
+        guard let download = self.activeDownloads[imageURL]
+        else {
+            // Create Download instance
+            let download = ImageDownload(type: type, atURL: imageURL, fileSize: fileSize, toCacheAt: fileURL,
+                                         progress: progress, completion: completion, failure: failure)
+            // Launch image download
+            launchDownload(download)
+            return
+        }
+        
+        // Update handlers
+        download.progressHandler = progress
+        download.completionHandler = completion
+        download.failureHandler = failure
+        
+        // What should we do with this download instance?
+        if let task = download.task {
+            switch task.state {
+            case .running:
+                if let progressHandler = download.progressHandler {
+                    progressHandler(download.progress)
+                }
+            case .suspended:
+                #if DEBUG
+                if #available(iOSApplicationExtension 14.0, *) {
+                    PwgSession.logger.notice("Resume suspended download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                }
+                #endif
+                task.resume()
+            case .completed:
+                #if DEBUG
+                if #available(iOSApplicationExtension 14.0, *) {
+                    PwgSession.logger.notice("Delete download instance of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                }
+                #endif
+                self.activeDownloads[imageURL] = nil
+            default:
+                if let resumeData = download.resumeData {
+                    #if DEBUG
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        PwgSession.logger.notice("Resume download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                    }
+                    #endif
+                    download.task = self.dataSession.downloadTask(withResumeData: resumeData)
+                } else {
+                    #if DEBUG
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        PwgSession.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+                    }
+                    #endif
+                    launchDownload(download)
+                }
+            }
+        } else {
+            #if DEBUG
+            if #available(iOSApplicationExtension 14.0, *) {
+                PwgSession.logger.notice("Relaunch download of image \(fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+            }
+            #endif
+            launchDownload(download)
+        }
+    }
+    
+    private func launchDownload(_ download: ImageDownload) {
+        // Check provided image URL
+        guard let imageURL = download.imageURL
+        else { preconditionFailure("Image URL not provided before download")}
+        
         // Create the download request
         var request = URLRequest(url: imageURL)
         request.addValue(acceptedTypes, forHTTPHeaderField: "Accept")
         request.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
 
-        // Create Download instance
-        let download = ImageDownload(imageID: imageID, ofSize: imageSize, type: type,
-                                     atURL: imageURL, fromServer: serverID, fileSize: fileSize,
-                                     progress: progress, completion: completion, failure: failure)
-
-        // Do we already have this image or video in cache?
-        if download.fileURL.fileSize > 0 {
-            // We do have an image in cache, but is this the image or expected video?
-            if imageSize == .fullRes {
-                let cachedFileSize = download.fileURL.fileSize
-                let diff = abs((Double(cachedFileSize) - Double(fileSize)) / Double(fileSize))
-//                debugPrint("••> Image \(download.fileURL.lastPathComponent) of \(cachedFileSize) bytes (\((diff * 1000).rounded(.awayFromZero)/10)%) retrieved from cache.")
-                if diff < 0.1 {     // i.e. 10%
-                    completion(download.fileURL)
-                    return
-                }
-            } else {
-//                debugPrint("••> return cached image \(String(describing: download.fileURL.lastPathComponent)) i.e., downloaded from \(imageURL)")
-                completion(download.fileURL)
-                return
-            }
-        }
-
-        // Download this image in the background thread
-        guard let download = self.activeDownloads[imageURL]
-        else {
-//            debugPrint("••> Launch download of image: \(imageURL)")
-            download.task = self.dataSession.downloadTask(with: request)
-            download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
-            download.task?.countOfBytesClientExpectsToReceive = download.fileSize
-            download.task?.resume()
-            self.activeDownloads[imageURL] = download
-            return
-        }
-        
-        // Resume download
-//        debugPrint("••> Resume download of image: \(imageURL)")
-        download.progressHandler = progress
-        if let progressHandler = download.progressHandler {
-            progressHandler(download.progress)
-        }
-        download.completionHandler = completion
-        download.failureHandler = failure
-        if let resumeData = download.resumeData {
-            download.task = self.dataSession.downloadTask(withResumeData: resumeData)
-        } else {
-            download.task = self.dataSession.downloadTask(with: request)
-        }
+        // Create and resume download task
+        download.task = self.dataSession.downloadTask(with: request)
         download.task?.countOfBytesClientExpectsToSend = Int64((request.allHTTPHeaderFields ?? [:]).count)
         download.task?.countOfBytesClientExpectsToReceive = download.fileSize
         download.task?.resume()
+        
+        // Keep download instance in memory
         self.activeDownloads[imageURL] = download
+//        #if DEBUG
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            PwgSession.logger.notice("Launch download of image \(download.fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+//        }
+//        #endif
     }
     
     public func pauseDownload(atURL imageURL: URL) {
@@ -91,9 +147,23 @@ extension PwgSession
         else { return }
         
         // Cancel the download request
-        download.task?.cancel(byProducingResumeData: { imageData in
-//            debugPrint("••> Pause download: \(imageURL)")
-            download.resumeData = imageData
+        download.task?.cancel(byProducingResumeData: { data in
+            if let data = data {
+                #if DEBUG
+                if #available(iOSApplicationExtension 14.0, *) {
+                    PwgSession.logger.notice("Pause download of image \(download.fileURL.lastPathComponent) with resume data (\(self.activeDownloads.count) active downloads)")
+                }
+                #endif
+                download.resumeData = data
+            } else {
+                #if DEBUG
+                if #available(iOSApplicationExtension 14.0, *) {
+                    PwgSession.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) without resume data (\(self.activeDownloads.count) active downloads)")
+                }
+                #endif
+                download.task?.cancel()
+                download.task = nil
+            }
         })
     }
     
@@ -103,8 +173,13 @@ extension PwgSession
         else { return }
 
         // Cancel the download request
-//        debugPrint("••> Cancel download: \(imageURL)")
+        #if DEBUG
+        if #available(iOSApplicationExtension 14.0, *) {
+            PwgSession.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) (\(self.activeDownloads.count) active downloads)")
+        }
+        #endif
         download.task?.cancel()
+        download.task = nil
     }
 }
 

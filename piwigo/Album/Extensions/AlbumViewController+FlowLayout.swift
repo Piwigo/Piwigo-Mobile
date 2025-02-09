@@ -214,8 +214,9 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 if AlbumVars.shared.displayAlbumDescriptions {
                     return UIEdgeInsets.zero
                 } else {
-                    return UIEdgeInsets(top: CGFloat.zero, left: AlbumUtilities.kAlbumMarginsSpacing,
-                                        bottom: CGFloat.zero, right: AlbumUtilities.kAlbumMarginsSpacing)
+                    let margin = AlbumUtilities.kAlbumMarginsSpacing
+                    return UIEdgeInsets(top: CGFloat.zero, left: margin,
+                                        bottom: CGFloat.zero, right: margin)
                 }
             } else {                    /* Image collection */
                 return UIEdgeInsets.zero

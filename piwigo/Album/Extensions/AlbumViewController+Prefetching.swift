@@ -14,12 +14,8 @@ import piwigoKit
 extension AlbumViewController: UICollectionViewDataSourcePrefetching
 {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        // Download images in advance whenever necessary
 //        debugPrint("••> prefetchingItemsAt \(indexPaths.debugDescription)")
-        let scale = max(traitCollection.displayScale, 1.0)
-        let albumCellSize = getAlbumCellSize()
-        let albumThumbnailCellSize = CGSizeMake(albumCellSize.width * scale, albumCellSize.height * scale)
-        let imageCellSize = getImageCellSize()
-        let imageThumbnailCellSize = CGSizeMake(imageCellSize.width * scale, imageCellSize.height * scale)
         
         for indexPath in indexPaths {
             if #available(iOS 13.0, *) {
@@ -28,15 +24,13 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                         // Download image if needed
                         PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                    atURL: album.thumbnailUrl as? URL,
-                                                   fromServer: album.user?.server?.uuid) { cachedImageURL in
-                            let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize, for: .album)
+                                                   fromServer: album.user?.server?.uuid) { _ in
                         } failure: { _ in }
                     } else if let image = try? self.mainContext.existingObject(with: objectID) as? Image {
                         // Download image if needed
                         PwgSession.shared.getImage(withID: image.pwgID, ofSize: imageSize, type: .image,
-                                                   atURL: ImageUtilities.getURL(image, ofMinSize: imageSize),
-                                                   fromServer: image.server?.uuid, fileSize: image.fileSize) { cachedImageURL in
-                            let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize, for: .image)
+                                                   atURL: ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize),
+                                                   fromServer: image.server?.uuid, fileSize: image.fileSize) { _ in
                         } failure: { _ in }
                     }
                 }
@@ -51,8 +45,7 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     // Download image if needed
                     PwgSession.shared.getImage(withID: album.thumbnailId, ofSize: thumbSize, type: .album,
                                                atURL: album.thumbnailUrl as? URL,
-                                               fromServer: album.user?.server?.uuid) { cachedImageURL in
-                        let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: albumThumbnailCellSize, for: .album)
+                                               fromServer: album.user?.server?.uuid) { _ in
                     } failure: { _ in }
                 default /* Images */:
                     // Retrieve image data
@@ -65,9 +58,8 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
 
                     // Download image if needed
                     PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .image,
-                                               atURL: ImageUtilities.getURL(imageData, ofMinSize: imageSize),
-                                               fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { cachedImageURL in
-                        let _ = ImageUtilities.downsample(imageAt: cachedImageURL, to: imageThumbnailCellSize, for: .image)
+                                               atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: imageSize),
+                                               fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { _ in
                     } failure: { _ in }
                 }
             }
@@ -75,19 +67,20 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
     }
     
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        // Pause image downloads
 //        debugPrint("••> cancelPrefetchingForItemsAt \(indexPaths.debugDescription)")
         for indexPath in indexPaths {
             if #available(iOS 13.0, *) {
                 if let objectID = self.diffableDataSource.itemIdentifier(for: indexPath) {
                     if let album = try? self.mainContext.existingObject(with: objectID) as? Album,
                        let imageURL = album.thumbnailUrl as? URL {
-                        // Cancel download if needed
-                        PwgSession.shared.cancelDownload(atURL: imageURL)
+                        // Pause download if needed
+                        PwgSession.shared.pauseDownload(atURL: imageURL)
                     }
                     else if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                            let imageURL = ImageUtilities.getURL(image, ofMinSize: imageSize) {
-                        // Cancel download if needed
-                        PwgSession.shared.cancelDownload(atURL: imageURL)
+                            let imageURL = ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize) {
+                        // Pause download if needed
+                        PwgSession.shared.pauseDownload(atURL: imageURL)
                     }
                 }
             } else {
@@ -98,10 +91,10 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     if indexPath.item >= albums.fetchedObjects?.count ?? 0 { return }
                     let album = albums.object(at: indexPath)
                     
-                    // Cancel download if needed
+                    // Pause download if needed
                     guard let imageURL = album.thumbnailUrl as? URL
                     else { return }
-                    PwgSession.shared.cancelDownload(atURL: imageURL)
+                    PwgSession.shared.pauseDownload(atURL: imageURL)
                     
                 default /* Images */:
                     // Retrieve image data
@@ -111,10 +104,10 @@ extension AlbumViewController: UICollectionViewDataSourcePrefetching
                     if imageIndexPath.item >= sections[imageIndexPath.section].numberOfObjects { return }
                     let image = images.object(at: imageIndexPath)
                     
-                    // Cancel download if needed
-                    guard let imageURL = ImageUtilities.getURL(image, ofMinSize: imageSize)
+                    // Pause download if needed
+                    guard let imageURL = ImageUtilities.getPiwigoURL(image, ofMinSize: imageSize)
                     else { return }
-                    PwgSession.shared.cancelDownload(atURL: imageURL)
+                    PwgSession.shared.pauseDownload(atURL: imageURL)
                 }
             }
         }

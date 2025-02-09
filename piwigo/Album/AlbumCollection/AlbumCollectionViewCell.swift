@@ -12,6 +12,9 @@ import piwigoKit
 
 class AlbumCollectionViewCell: UICollectionViewCell {
     
+    var albumData: Album?
+    var imageURL: URL?
+
     @IBOutlet weak var albumThumbnail: UIImageView!
     @IBOutlet weak var albumName: UILabel!
     @IBOutlet weak var numberOfImages: UILabel!
@@ -19,6 +22,9 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var recentImage: UIImageView!
     
     func config(withAlbumData albumData: Album?) {
+        // Store album data
+        self.albumData = albumData
+
         // General settings
         recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
         recentImage.tintColor = UIColor.white
@@ -56,7 +62,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
             // Set representative (case where images were uploaded recently)
             albumData?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = ImageUtilities.getURL(firstImage, ofMinSize: thumnailSize) as NSURL?
+            albumData?.thumbnailUrl = ImageUtilities.getPiwigoURL(firstImage, ofMinSize: thumnailSize) as NSURL?
         }
         
         // Retrieve image from cache or download it
@@ -64,31 +70,28 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         let scale = max(self.albumThumbnail.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+        imageURL = albumData?.thumbnailUrl as? URL
         PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
-                                   atURL: albumData?.thumbnailUrl as? URL,
-                                   fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
-            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+                                   atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
+            // Process image in the background (.userInitiated leads to concurrency issues)
+            // Can be called too many times leading to thread management issues
+            guard let self = self else { return }
+            DispatchQueue.global(qos: .default).async { [self] in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
+                
+                // Process saliency if needed
+    //            if #available(iOS 13.0, *) {
+    //                self.setThumbnailWithImage(cachedImage.processSaliency() ?? cachedImage)
+    //            } else {
+                    self.setThumbnailWithImage(cachedImage)
+    //            }
+            }
         } failure: { [weak self] _ in
             self?.setThumbnailWithImage(pwgImageType.album.placeHolder)
         }
     }
-    
-    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
-        // Process image in the background (.userInitiated leads to concurrency issues)
-        // Can be called too many times leading to thread management issues
-        DispatchQueue.global(qos: .default).async { [self] in
-            // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize, for: .album)
-            
-            // Process saliency if needed
-//            if #available(iOS 13.0, *) {
-//                self.setThumbnailWithImage(cachedImage.processSaliency() ?? cachedImage)
-//            } else {
-                self.setThumbnailWithImage(cachedImage)
-//            }
-        }
-    }
-    
+        
     private func setThumbnailWithImage(_ image: UIImage) {
         DispatchQueue.main.async { [self] in
             self.albumThumbnail.image = image
@@ -143,6 +146,17 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        albumThumbnail.image = nil
+
+        // Pause the ongoing image download if needed
+        if let imageURL = self.imageURL {
+            PwgSession.shared.pauseDownload(atURL: imageURL)
+        }
+        
+        // Reset cell
+        self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.numberOfImages.text = ""
+        self.recentBckg.isHidden = true
+        self.recentImage.isHidden = true
+        self.albumThumbnail.image = pwgImageType.album.placeHolder
     }
 }

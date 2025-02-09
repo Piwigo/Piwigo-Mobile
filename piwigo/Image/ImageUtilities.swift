@@ -467,7 +467,7 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func getURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
+    static func getPiwigoURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution
         /// - The max size of a video thumbnail is xxLarge

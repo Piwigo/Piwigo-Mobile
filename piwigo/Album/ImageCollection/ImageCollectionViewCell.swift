@@ -14,6 +14,7 @@ import piwigoKit
 class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageData: Image!
+    var imageURL: URL?
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -106,16 +107,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Store image data
         self.imageData = imageData
-        if noDataLabel?.isHidden == false {
-            noDataLabel?.isHidden = true
-            isAccessibilityElement = true
-        }
+        noDataLabel?.isHidden = true
+        noDataLabel?.text = ""
+        isAccessibilityElement = true
 
         // Video icon
-        if playImg?.isHidden == imageData.isVideo {
-            playImg?.isHidden = !(imageData.isVideo)
-            playBckg?.isHidden = !(imageData.isVideo)
-        }
+        playImg?.isHidden = !(imageData.isVideo)
+        playBckg?.isHidden = !(imageData.isVideo)
 
         // Title
         let title = getImageTitle(forSortOption: sortOption)
@@ -123,11 +121,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
             bottomLayer?.isHidden = false
             nameLabel?.attributedText = title
             nameLabel?.isHidden = false
-            noDataLabel?.isHidden = true
         } else {
             bottomLayer?.isHidden = true
             nameLabel?.isHidden = true
-            noDataLabel?.isHidden = true
         }
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
@@ -146,15 +142,23 @@ class ImageCollectionViewCell: UICollectionViewCell {
         // Retrieve image from cache or download it
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
-        let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size)
+        imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: size)
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
                                    fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
-            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+            // Downsample image in the background
+            guard let self = self else { return }
+            DispatchQueue.global(qos: .userInitiated).async { [self] in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
+
+                // Set image
+                self.configImage(cachedImage, withHiddenLabel: true)
+            }
         } failure: { [weak self] _ in
             self?.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
         }
     }
-        
+    
     private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
         switch sortOption {
         case .visitsAscending, .visitsDescending:
@@ -198,17 +202,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         return attributedStr
     }
 
-    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
-        // Process image in the background
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
-            // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize, for: .image)
-
-            // Set image
-            self.configImage(cachedImage, withHiddenLabel: true)
-        }
-    }
-    
     private func configImage(_ image: UIImage, withHiddenLabel isHidden: Bool) {
         DispatchQueue.main.async { [self] in
             // Set image and label
@@ -253,24 +246,34 @@ class ImageCollectionViewCell: UICollectionViewCell {
             applyColorPalette()
         }
     }
-
+    
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        isAccessibilityElement = false
-        noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-        accessibilityIdentifier = ""
-    }
+        // Pause the ongoing image download if needed
+        if let imageURL = self.imageURL {
+            PwgSession.shared.pauseDownload(atURL: imageURL)
+        }
 
+        // Reset cell
+        self.nameLabel?.text = ""
+        self.noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.cellImage?.image = pwgImageType.image.placeHolder
+        self.isFavorite = false
+        self.isSelection = false
+        self.isAccessibilityElement = false
+        self.accessibilityIdentifier = ""
+    }
+    
     func highlight(onCompletion completion: @escaping () -> Void) {
         // Select cell of image of interest and apply effect
-        backgroundColor = UIColor.piwigoColorBackground()
-        contentMode = .scaleAspectFit
+        self.backgroundColor = UIColor.piwigoColorBackground()
+        self.contentMode = .scaleAspectFit
         UIView.animate(withDuration: 0.4, delay: 0.3, options: .allowUserInteraction, animations: { [self] in
             cellImage?.alpha = 0.2
         }) { [self] finished in
             UIView.animate(withDuration: 0.4, delay: 0.7, options: .allowUserInteraction, animations: { [self] in
-                cellImage?.alpha = 1.0
+                self.cellImage?.alpha = 1.0
             }) { finished in
                 completion()
             }

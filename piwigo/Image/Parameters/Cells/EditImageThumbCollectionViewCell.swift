@@ -118,7 +118,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let cellSize = CGSizeMake(imageThumbnail.bounds.size.width * scale, imageThumbnail.bounds.size.height * scale)
         let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: thumbnailSize, type: .image,
-                                   atURL: ImageUtilities.getURL(imageData, ofMinSize: thumbnailSize),
+                                   atURL: ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumbnailSize),
                                    fromServer: imageData.server?.uuid) { [weak self] cachedImageURL in
             self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
         } failure: { [weak self] _ in

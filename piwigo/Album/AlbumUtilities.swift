@@ -401,7 +401,7 @@ class AlbumUtilities: NSObject {
                     // Album thumbnail successfully changed ▶ Update catagory in cache
                     albumData.thumbnailId = imageData.pwgID
                     let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-                    albumData.thumbnailUrl = ImageUtilities.getURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
                     completion()
                 }
                 else {
@@ -456,7 +456,7 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Album Thumbnails
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
-        var albumThumbnailSize: CGFloat = 144
+        let albumThumbnailSize: CGFloat = 144
 //        if #available(iOS 13.0, *) {
 //            albumThumbnailSize *= pwgImageSize.maxSaliencyScale
 //        }

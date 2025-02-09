@@ -315,10 +315,7 @@ extension AlbumViewController: UICollectionViewDataSource
                 if let albumSection = snapshot.sectionIdentifiers.first {
                     snapshot.itemIdentifiers(inSection: albumSection).forEach { objectID in
                         guard let album = try? self.mainContext.existingObject(with: objectID) as? Album
-                        else {
-                            debugPrint("Managed item should be available")
-                            return
-                        }
+                        else { return }
                         totalCount += album.totalNbImages
                     }
                 }

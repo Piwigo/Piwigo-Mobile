@@ -18,7 +18,10 @@ extension UploadQueueViewController
         let dataSource = DataSource(tableView: queueTableView) { [self] (tableView, indexPath, objectID) -> UITableViewCell? in
             // Get data source item
             guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload
-            else { preconditionFailure("Managed item should be available") }
+            else {
+                debugPrint("Managed item should be available")
+                return nil
+            }
             // Configure cell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell
             else { preconditionFailure("Could not load a UploadImageTableViewCell!") }

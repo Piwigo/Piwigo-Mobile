@@ -39,25 +39,28 @@ class ImagePreviewViewController: UIViewController
             self.setImageView(with: imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder)
             
             // Download high-resolution image
-            if let imageURL = ImageUtilities.getURL(imageData, ofMinSize: previewSize) {
+            if let imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: previewSize) {
                 PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
                                            fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
-                    self?.downsampleImage(atURL: cachedImageURL, to: viewSize)
+                    // Downsample image in the background
+                    guard let self = self else { return }
+                    DispatchQueue.global(qos: .userInitiated).async { [self] in
+                        // Downsample image in cache
+                        let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: viewSize, for: .image)
+
+                        // Set image
+                        DispatchQueue.main.async { [self] in
+                            self.setImageView(with: cachedImage)
+                        }
+                    }
                 } failure: { _ in }
             }
         }
     }
     
-    private func downsampleImage(atURL fileURL: URL, to viewSize: CGSize) {
-        DispatchQueue.main.async { [self] in
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: viewSize, for: .image)
-            self.setImageView(with: cachedImage)
-        }
-    }
-    
     private func setImageView(with image: UIImage) {
-        imageView.image = image
-        imageView.frame.size = image.size
+        self.imageView.image = image
+        self.imageView.frame.size = image.size
     }
     
     required init?(coder: NSCoder) {
@@ -67,16 +70,16 @@ class ImagePreviewViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
+        self.imageView.clipsToBounds = true
+        self.imageView.contentMode = .scaleAspectFit
+        self.imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(imageView)
 
         NSLayoutConstraint.activate([
-            imageView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            imageView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            imageView.topAnchor.constraint(equalTo: view.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            self.imageView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            self.imageView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            self.imageView.topAnchor.constraint(equalTo: view.topAnchor),
+            self.imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     
@@ -85,6 +88,6 @@ class ImagePreviewViewController: UIViewController
         
         let width = view.bounds.width
         let height = width * aspectRatio
-        preferredContentSize = CGSize(width: width, height: height)
+        self.preferredContentSize = CGSize(width: width, height: height)
     }
 }
