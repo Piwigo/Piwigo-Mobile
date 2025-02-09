@@ -58,6 +58,7 @@ class ImageHeaderReusableView: UICollectionReusableView
             let dateIntervals = images.map {$0.datePosted}
             dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
         default:
+            dates = (" ", " ")
             break
         }
         
