@@ -337,7 +337,22 @@ extension AlbumViewController
         
     
     // MARK: - Title View
-    func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool) {
+    @objc func updateTitleView(_ notification: Notification?) {
+        // Check notification data
+        guard let info = notification?.userInfo,
+              let categoryID = info["pwgID"] as? Int32, categoryID == categoryId,
+              let progress = info["fetchProgressFraction"] as? Float
+        else { return }
+
+        // Update title view
+        if progress >= 1.0 {
+            setTitleViewFromAlbumData(whileUpdating: false)
+        } else {
+            setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
+        }
+    }
+    
+    func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool, progress: Float = 0) {
         // Title view
         if categoryId == 0 {
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
@@ -379,7 +394,14 @@ extension AlbumViewController
              UIApplication.shared.statusBarOrientation.isLandscape) {
             if isUpdating {
                 // Inform user that the app is fetching album data
-                subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                if progress == 0 {
+                    subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                } else {
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = NumberFormatter.Style.percent
+                    let percent = numberFormatter.string(from: NSNumber(value: progress)) ?? ""
+                    subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
+                }
             }
             else if isSelect {
                 let nberPhotos = selectedImageIDs.count
@@ -444,28 +466,25 @@ extension AlbumViewController
             titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
             let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
                                                         height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            navigationItem.titleView = twoLineTitleView
-            
             twoLineTitleView.addSubview(titleLabel)
             twoLineTitleView.addSubview(subTitleLabel)
             twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
             twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
             twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-            
             let views = ["title": titleLabel,
                          "subtitle": subTitleLabel]
             twoLineTitleView.addConstraints(
                 NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
                                                options: [], metrics: nil, views: views))
+            navigationItem.titleView = twoLineTitleView
         } else {
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
-            navigationItem.titleView = oneLineTitleView
-
             oneLineTitleView.addSubview(titleLabel)
             oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
             oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+            navigationItem.titleView = oneLineTitleView
         }
     }
 }

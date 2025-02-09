@@ -143,16 +143,30 @@ extension AlbumViewController
                 if onPage < newLastPage, query == albumData.query {
                     // Pursue fetch without HUD
                     DispatchQueue.main.async { [self] in
-                        navigationController?.hideHUD { [self] in
-                            // Set navigation bar buttons
-                            if self.isSelect {
-                                self.updateBarsInSelectMode()
-                            } else {
-                                self.updateBarsInPreviewMode()
-                            }
+                        if navigationController?.isShowingHUD() ?? false {
+                            navigationController?.hideHUD { [self] in
+                                // Set navigation bar buttons
+                                if self.isSelect {
+                                    self.updateBarsInSelectMode()
+                                } else {
+                                    self.updateBarsInPreviewMode()
+                                    if newLastPage > 2 {
+                                        let progress = Float(onPage + 1) / Float(newLastPage)
+                                        self.setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
+                                    }
+                                }
 
-                            // End refreshing if needed
-                            self.collectionView?.refreshControl?.endRefreshing()
+                                // End refreshing if needed
+                                self.collectionView?.refreshControl?.endRefreshing()
+                            }
+                        } else {
+                            if newLastPage > 2 {
+                                let progress = Float(onPage + 1) / Float(newLastPage)
+                                let userInfo = ["pwgID" : self.albumData.pwgID,
+                                                "fetchProgressFraction" : progress]
+                                NotificationCenter.default.post(name: Notification.Name.pwgFetchedImages,
+                                                                object: nil, userInfo: userInfo)
+                            }
                         }
                     }
                     // Is user editing the search string?

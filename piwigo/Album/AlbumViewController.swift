@@ -429,6 +429,10 @@ class AlbumViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
         
+        // Register fetch progress
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTitleView(_:)),
+                                               name: Notification.Name.pwgFetchedImages, object: nil)
+        
         // Register upload queue changes for reporting inability to upload and updating upload queue button
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
                                                name: Notification.Name.pwgLeftUploads, object: nil)
