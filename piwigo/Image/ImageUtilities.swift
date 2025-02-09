@@ -309,15 +309,17 @@ class ImageUtilities: NSObject {
                    let downsampledImage = image.preparingThumbnail(of: optSize) {
                     return downsampledImage
                 }
-            } else {
-                // Fallback on earlier versions
-                let options = [kCGImageSourceShouldCache: false] as CFDictionary
-                if let imageData = image.jpegData(compressionQuality: 1.0),
-                   let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
-                   let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
-                    return downsampledImage
-                }
             }
+            
+            // Fallback on earlier versions
+            let options = [kCGImageSourceShouldCache: false] as CFDictionary
+            if let imageData = image.jpegData(compressionQuality: 1.0),
+               let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
+               let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
+                return downsampledImage
+            }
+            
+            // Return original image
             return image
         }
     }
