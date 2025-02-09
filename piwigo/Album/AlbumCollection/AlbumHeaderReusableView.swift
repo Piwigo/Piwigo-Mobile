@@ -28,7 +28,7 @@ class AlbumHeaderReusableView: UICollectionReusableView {
         commentLabel?.attributedText = NSAttributedString()
         if let commentLabel = commentLabel {
             addSubview(commentLabel)
-            addConstraint(NSLayoutConstraint.constraintCenterVerticalView(commentLabel)!)
+            addConstraint(NSLayoutConstraint.constraintCenterHorizontalView(commentLabel)!)
             addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-16-[header]-16-|",
                     options: [], metrics: nil, views: ["header": commentLabel
             ]))

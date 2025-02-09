@@ -102,7 +102,7 @@ extension AlbumViewController
                         footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
                         footer.nberImagesLabel?.text = self.getImageCount()
                     } else {
-                        footer.nberImagesLabel?.text = ""
+                        footer.nberImagesLabel?.text = " "
                     }
                     return footer
                 default:
@@ -426,7 +426,7 @@ extension AlbumViewController: UICollectionViewDataSource
                     footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
                     footer.nberImagesLabel?.text = getImageCount()
                 } else {
-                    footer.nberImagesLabel?.text = ""
+                    footer.nberImagesLabel?.text = " "
                 }
                 return footer
             default:
