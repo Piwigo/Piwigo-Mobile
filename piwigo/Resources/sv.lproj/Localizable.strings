@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Data";
 "settings_cacheClear" = "Rensa cache";
+"settings_cacheClearing" = "Rensning av cacheminnet";
 "settings_cacheClearAll" = "Rensa alla";
 "settings_cacheClearMsg" = "Är du säker på att du vill rensa bild-cacheminnet? Detta betyder att album och bilder kommer att ta en stund att ladda igen.";
 

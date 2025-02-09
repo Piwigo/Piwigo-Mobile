@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cachegeheugen";
 "settings_database" = "Gegevens";
 "settings_cacheClear" = "Cache wissen";
+"settings_cacheClearing" = "De cache wissen";
 "settings_cacheClearAll" = "Alles wissen";
 "settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt verwijderen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 

@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Memoria caché";
 "settings_database" = "Datos";
 "settings_cacheClear" = "Limpiar caché";
+"settings_cacheClearing" = "Borrar la caché";
 "settings_cacheClearAll" = "Limpiar todo";
 "settings_cacheClearMsg" = "¿Estás seguro de querer borrar la caché de fotos? Esto hará que los álbumes y las fotos tarden un tiempo en volver a cargarse.";
 

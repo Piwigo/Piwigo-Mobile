@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Кэш";
 "settings_database" = "Данные";
 "settings_cacheClear" = "Очистить кэш-память";
+"settings_cacheClearing" = "Очистка кэша";
 "settings_cacheClearAll" = "Очистить все";
 "settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
 

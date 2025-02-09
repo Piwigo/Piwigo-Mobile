@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "缓存";
 "settings_database" = "数据";
 "settings_cacheClear" = "清除缓存";
+"settings_cacheClearing" = "清除缓存";
 "settings_cacheClearAll" = "全部清除";
 "settings_cacheClearMsg" = "您确定要清除图像缓存吗？这将使相册和图像需要一段时间才能再次加载。";
 

@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Data";
 "settings_cacheClear" = "Bersihkan Cache";
+"settings_cacheClearing" = "Mengosongkan Cache";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Apakah anda ingin membersihkan cache gambar? Hal ini membuat album dan gambar memerlukan waktu untuk memuat lagi.";
 

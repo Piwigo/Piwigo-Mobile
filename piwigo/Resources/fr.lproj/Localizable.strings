@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Données";
 "settings_cacheClear" = "Vider le cache";
+"settings_cacheClearing" = "Effacement du cache";
 "settings_cacheClearAll" = "Tout effacer";
 "settings_cacheClearMsg" = "Êtes-vous sûr de vouloir effacer le cache des photos? Les photos et les albums mettront un certain temps à se recharger.";
 

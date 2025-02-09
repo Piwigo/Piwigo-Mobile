@@ -75,12 +75,13 @@ extension SettingsViewController
 
     // MARK: - Return Clear Cache Alert
     func getClearCacheAlert() -> UIAlertController {
-        let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "", message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
+        let hudTitle = NSLocalizedString("settings_cacheClearing", comment: "Clearing Cache")
 
         var title = String(format: "%@ (%@)", NSLocalizedString("settings_database", comment: "Data"), dataCacheSize)
         let clearDataAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
-            self.navigationController?.showHUD(withTitle: "")
+            self.navigationController?.showHUD(withTitle: hudTitle)
 
             // Delete all data and directories in foreground queue
             ClearCache.clearData() { [self] in
@@ -103,7 +104,7 @@ extension SettingsViewController
         title = String(format: "%@ (%@)", NSLocalizedString("settingsHeader_thumbnails", comment: "Thumbnails"), thumbCacheSize)
         let clearThumbCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
-            self.navigationController?.showHUD(withTitle: "")
+            self.navigationController?.showHUD(withTitle: hudTitle)
 
             // Delete album and photo thumbnails in foreground queue
             guard let server = self.user?.server else {
@@ -124,7 +125,7 @@ extension SettingsViewController
         title = String(format: "%@ (%@)", NSLocalizedString("severalImages", comment: "Photos"), photoCacheSize)
         let clearPhotoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
-            self.navigationController?.showHUD(withTitle: "")
+            self.navigationController?.showHUD(withTitle: hudTitle)
 
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
@@ -145,7 +146,7 @@ extension SettingsViewController
         title = String(format: "%@ (%@)", NSLocalizedString("severalVideos", comment: "Videos"), videoCacheSize)
         let clearVideoCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
             // Display HUD during deletion
-            self.navigationController?.showHUD(withTitle: "")
+            self.navigationController?.showHUD(withTitle: hudTitle)
 
             // Delete high-resolution images in foreground queue
             guard let server = self.user.server else {
@@ -166,7 +167,7 @@ extension SettingsViewController
             title = String(format: "%@ (%@)", NSLocalizedString("UploadRequests_cache", comment: "Uploads"), uploadCacheSize)
             let clearUploadCacheAction = UIAlertAction(title: title, style: .default, handler: { action in
                 // Display HUD during deletion
-                self.navigationController?.showHUD(withTitle: "")
+                self.navigationController?.showHUD(withTitle: hudTitle)
 
                 // Delete upload data and Uploads/tempporary folders in foreground queue
                 ClearCache.clearUploads() {
@@ -191,7 +192,7 @@ extension SettingsViewController
         
         let clearAction = UIAlertAction(title: NSLocalizedString("settings_cacheClearAll", comment: "Clear All"), style: .destructive, handler: { action in
             // Display HUD during deletion
-            self.navigationController?.showHUD(withTitle: "")
+            self.navigationController?.showHUD(withTitle: hudTitle)
 
             // Delete whole cache and folders in foreground queue
             ClearCache.clearData() {
