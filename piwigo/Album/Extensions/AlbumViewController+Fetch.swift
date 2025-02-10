@@ -216,6 +216,8 @@ extension AlbumViewController
         DispatchQueue.main.async { [self] in
             // Remember when images were fetched
             self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
+            // Update titleView
+            self.setTitleViewFromAlbumData(whileUpdating: false)
             
             // Remove images if necessary
             if let images = self.albumData.images {
