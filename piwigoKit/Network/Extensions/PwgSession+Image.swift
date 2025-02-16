@@ -20,9 +20,7 @@ extension PwgSession
               let imageURL = imageURL, imageURL.isFileURL == false,
               let serverID = serverID, serverID.isEmpty == false
         else {
-            let error = NSError(domain: "Piwigo", code: PwgSessionError.failedToPrepareDownload.hashValue,
-                        userInfo: [NSLocalizedDescriptionKey : PwgSessionError.failedToPrepareDownload.localizedDescription])
-            failure(error)
+            failure(PwgSessionError.failedToPrepareDownload)
             return
         }
         
