@@ -48,6 +48,13 @@ public class Resolution: NSObject, NSSecureCoding {
         coder.encode(height, forKey: Key.height.rawValue)
         coder.encode(url, forKey: Key.url.rawValue)
     }
+    
+    public func dimensionsSwaped() {
+        let imageWidth = self.width
+        let imageHeight = self.height
+        self.width = imageHeight
+        self.height = imageWidth
+    }
 }
 
 extension Resolution {
