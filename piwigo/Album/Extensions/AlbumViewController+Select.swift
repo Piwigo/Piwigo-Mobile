@@ -386,9 +386,9 @@ extension AlbumViewController
         case .unfavorite:
             unfavorite(imagesWithID: imageIDs, total: Float(imageIDs.count), contextually: contextually)
         case .rotateImagesLeft:
-            rotateImages(withID: imageIDs, by: 90.0, total: Float(imageIDs.count))
+            rotateImages(withID: imageIDs, by: CGFloat(.pi/2.0), total: Float(imageIDs.count))
         case .rotateImagesRight:
-            rotateImages(withID: imageIDs, by: -90.0, total: Float(imageIDs.count))
+            rotateImages(withID: imageIDs, by: CGFloat(-.pi/2.0), total: Float(imageIDs.count))
         }
     }
 

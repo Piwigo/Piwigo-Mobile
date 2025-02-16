@@ -202,7 +202,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         return attributedStr
     }
 
-    private func configImage(_ image: UIImage, withHiddenLabel isHidden: Bool) {
+    func configImage(_ image: UIImage, withHiddenLabel isHidden: Bool) {
         DispatchQueue.main.async { [self] in
             // Set image and label
             self.cellImage?.image = image

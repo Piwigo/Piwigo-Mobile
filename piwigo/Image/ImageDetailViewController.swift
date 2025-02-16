@@ -242,31 +242,31 @@ class ImageDetailViewController: UIViewController
         configScrollView()
     }
     
-    func rotateImageView(by angle: Double, completion: @escaping () -> Void) {
-        // Download high-resolution image
-        imageURL = ImageUtilities.getPiwigoURL(self.imageData, ofMinSize: previewSize)
-        if let imageURL = self.imageURL {
-            PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: previewSize, type: .image, atURL: imageURL,
-                                       fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                self?.updateProgressView(with: fractionCompleted)
-            } completion: { [weak self] cachedImageURL in
-                self?.downsampleImage(atURL: cachedImageURL, rotateBy: angle, completion: completion)
-            } failure: { _ in }
-        }
-    }
-    
-    private func downsampleImage(atURL fileURL: URL, rotateBy angle: Double, completion: @escaping () -> Void) {
-        let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: self.imageSize, for: .image)
+    func rotateImageView(by angle: CGFloat, completion: @escaping () -> Void) {
         DispatchQueue.main.async { [self] in
-            // Hide progress view
-            self.progressView.isHidden = true
+            // Check if we already have the high-resolution image in cache
+            var cachedImage: UIImage?
+            if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
+                // Downsample image in cache if needed
+                cachedImage = ImageUtilities.downsample(image: wantedImage, to: imageSize)
+            } else {
+                // Display thumbnail image which should be in cache
+                let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+                cachedImage = self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
+            }
+            guard let cachedImage = cachedImage else {
+                // Reset image view with rotated image
+                self.didRotateImage = false
+                // Hide HUD
+                completion()
+                return
+            }
             
             // Rotate image keeping it displayed in fullscreen
             let aspectRatio = cachedImage.size.height / cachedImage.size.width
-            UIView.animate(withDuration: 0.5) { [self] in
+            UIView.animate(withDuration: 0.4) { [self] in
                 let scale = scrollView.minimumZoomScale * aspectRatio
-                let angleRad = -angle * .pi / 180.0
-                self.imageView.transform = CGAffineTransform(rotationAngle: angleRad).scaledBy(x: scale, y: scale)
+                self.imageView.transform = CGAffineTransform(rotationAngle: -angle).scaledBy(x: scale, y: scale)
             }
             completion: { [self] _ in
                 // Reset image view with rotated image
