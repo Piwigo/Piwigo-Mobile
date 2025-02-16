@@ -179,7 +179,7 @@ extension AlbumViewController
         ]
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Remove image from source album
                 imageData.removeFromAlbums(albumData)
@@ -200,7 +200,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
         }
     }
@@ -273,7 +273,7 @@ extension AlbumViewController
         }
 
         // Let's delete all images at once
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(toDelete) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save image IDs for marking Upload requests in the background
@@ -315,7 +315,7 @@ extension AlbumViewController
             } failure: { [self] error in
                 self.deleteImagesError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.deleteImagesError(error)
         }
     }

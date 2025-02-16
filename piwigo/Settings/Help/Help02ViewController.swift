@@ -70,7 +70,7 @@ class Help02ViewController: UIViewController {
         imageViewTop.layoutIfNeeded() // Ensure imageView is in its final size.
         var scale = max(imageViewTop.traitCollection.displayScale, 1.0)
         var imageSize = CGSizeMake(imageViewTop.bounds.size.width * scale, imageViewTop.bounds.size.height * scale)
-        imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize)
+        imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize, for: .album)
         
         // Set bottom image view
         guard let botImageUrl = Bundle.main.url(forResource: "help02-bot", withExtension: "png") else {
@@ -79,7 +79,7 @@ class Help02ViewController: UIViewController {
         imageViewBot.layoutIfNeeded() // Ensure imageView is in its final size.
         scale = max(imageViewBot.traitCollection.displayScale, 1.0)
         imageSize = CGSizeMake(imageViewBot.bounds.size.width * scale, imageViewBot.bounds.size.height * scale)
-        imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: imageSize)
+        imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: imageSize, for: .album)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID

@@ -4,18 +4,17 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" restorationIdentifier="ImageOldHeaderReusableView" id="48f-AC-xRm" customClass="ImageOldHeaderReusableView" customModule="piwigo" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="88"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="105"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="3" translatesAutoresizingMaskIntoConstraints="NO" id="N6X-aU-0Ty">
-                    <rect key="frame" x="58.666666666666657" y="8" width="202.99999999999997" height="32"/>
+                    <rect key="frame" x="58.666666666666657" y="24" width="202.99999999999997" height="32"/>
                     <segments>
                         <segment title="" image="imageMonth" width="50"/>
                         <segment title="" image="imageWeek" width="50"/>
@@ -28,19 +27,19 @@
                     </connections>
                 </segmentedControl>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDz-SW-5Hc">
-                    <rect key="frame" x="8" y="47" width="76.333333333333329" height="18"/>
+                    <rect key="frame" x="8" y="63" width="76.333333333333329" height="18"/>
                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-Ur-qXZ">
-                    <rect key="frame" x="8" y="65" width="60" height="16"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <rect key="frame" x="8" y="81" width="60" height="16"/>
+                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cU4-a8-hx4">
-                    <rect key="frame" x="255" y="54" width="57" height="27"/>
+                    <rect key="frame" x="255" y="70" width="57" height="27"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="27" id="zpA-F9-LTy"/>
                     </constraints>
@@ -52,35 +51,49 @@
                         <action selector="tappedSelectButton:" destination="48f-AC-xRm" eventType="touchUpInside" id="dBk-Tl-J7m"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i4t-ex-Rxf">
+                    <rect key="frame" x="15" y="4" width="290" height="16"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="a9f-v8-CHv"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <viewLayoutGuide key="safeArea" id="HIb-ek-pFu"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
             <accessibility key="accessibilityConfiguration" identifier="sortOption"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="i4t-ex-Rxf" secondAttribute="trailing" constant="15" id="27K-mC-Elc"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="centerX" secondItem="48f-AC-xRm" secondAttribute="centerX" id="51q-HR-xHN"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="48f-AC-xRm" secondAttribute="leading" constant="16" id="Ldp-2d-RMK"/>
-                <constraint firstItem="N6X-aU-0Ty" firstAttribute="top" secondItem="48f-AC-xRm" secondAttribute="top" constant="8" id="WE3-1i-RAk"/>
-                <constraint firstItem="HIb-ek-pFu" firstAttribute="trailing" secondItem="cU4-a8-hx4" secondAttribute="trailing" constant="8" id="YFg-Tf-g18"/>
+                <constraint firstItem="N6X-aU-0Ty" firstAttribute="top" secondItem="i4t-ex-Rxf" secondAttribute="bottom" constant="4" id="WE3-1i-RAk"/>
+                <constraint firstAttribute="trailing" secondItem="cU4-a8-hx4" secondAttribute="trailing" constant="8" id="YFg-Tf-g18"/>
                 <constraint firstItem="fDz-SW-5Hc" firstAttribute="top" secondItem="N6X-aU-0Ty" secondAttribute="bottom" constant="8" symbolic="YES" id="aKh-x6-Pxf"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="N6X-aU-0Ty" secondAttribute="trailing" constant="16" id="aLt-D7-dIR"/>
-                <constraint firstItem="Itr-Ur-qXZ" firstAttribute="leading" secondItem="HIb-ek-pFu" secondAttribute="leading" constant="8" id="dyK-nd-mhz"/>
+                <constraint firstItem="i4t-ex-Rxf" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="15" id="cIg-Gq-j2L"/>
+                <constraint firstItem="Itr-Ur-qXZ" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="8" id="dyK-nd-mhz"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="fDz-SW-5Hc" secondAttribute="trailing" constant="10" id="h0y-H0-Oiy"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="bottom" secondItem="Itr-Ur-qXZ" secondAttribute="bottom" id="iwk-6g-HUr"/>
                 <constraint firstItem="Itr-Ur-qXZ" firstAttribute="firstBaseline" secondItem="fDz-SW-5Hc" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="jEE-NY-puX"/>
-                <constraint firstItem="fDz-SW-5Hc" firstAttribute="leading" secondItem="HIb-ek-pFu" secondAttribute="leading" constant="8" id="mlX-pS-yHZ"/>
+                <constraint firstItem="fDz-SW-5Hc" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="8" id="mlX-pS-yHZ"/>
+                <constraint firstItem="i4t-ex-Rxf" firstAttribute="top" secondItem="48f-AC-xRm" secondAttribute="top" constant="4" id="qgx-2q-F9H"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Itr-Ur-qXZ" secondAttribute="trailing" constant="10" id="rtQ-es-ogk"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="albumLabel" destination="i4t-ex-Rxf" id="5vK-yF-tOX"/>
+                <outlet property="albumLabelHeight" destination="a9f-v8-CHv" id="AO3-yK-pX3"/>
                 <outlet property="detailLabel" destination="Itr-Ur-qXZ" id="GMF-BW-ej4"/>
                 <outlet property="mainLabel" destination="fDz-SW-5Hc" id="AX4-7b-PIO"/>
                 <outlet property="segmentedControl" destination="N6X-aU-0Ty" id="z3a-0b-Kuu"/>
                 <outlet property="selectButton" destination="cU4-a8-hx4" id="GzN-u7-fzs"/>
             </connections>
-            <point key="canvasLocation" x="-310" y="385"/>
+            <point key="canvasLocation" x="-344" y="281"/>
         </view>
     </objects>
     <resources>

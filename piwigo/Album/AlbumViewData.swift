@@ -49,7 +49,8 @@ class AlbumViewData: NSObject
     lazy var albums: NSFetchedResultsController<Album> = {
         let albums = NSFetchedResultsController(fetchRequest: fetchAlbumsRequest,
                                                 managedObjectContext: mainContext,
-                                                sectionNameKeyPath: nil, cacheName: nil)
+                                                sectionNameKeyPath: pwgAlbumGroup.none.sectionKey,
+                                                cacheName: nil)
         return albums
     }()
     

@@ -49,7 +49,7 @@ class Help04ViewController: UIViewController {
         imageView.layoutIfNeeded() // Ensure imageView is in its final size.
         let scale = max(imageView.traitCollection.displayScale, 1.0)
         let imageSize = CGSizeMake(imageView.bounds.size.width * scale, imageView.bounds.size.height * scale)
-        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize)
+        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize, for: .album)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID

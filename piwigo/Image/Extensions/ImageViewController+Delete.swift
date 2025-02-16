@@ -96,7 +96,7 @@ extension ImageViewController
                                           "multiple_value_mode" : "replace"]
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 // Retrieve album
                 if let albums = imageData.albums,
@@ -125,7 +125,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.removeImageFromAlbumError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.removeImageFromAlbumError(error)
         }
     }
@@ -171,46 +171,44 @@ extension ImageViewController
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("deleteSingleVideoHUD_deleting", comment: "Deleting Video…") : NSLocalizedString("deleteSingleImageHUD_deleting", comment: "Deleting Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.delete(Set([imageData])) { [self] in
-                // Save image ID for marking Upload request in the background
-                let imageID = imageData.pwgID
-                
-                // Delete image from cache (also deletes image files)
-                self.mainContext.delete(imageData)
-                
-                // Retrieve albums associated to the deleted image
-                if let albums = imageData.albums {
-                    // Remove image from cached albums
-                    albums.forEach { album in
-                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                DispatchQueue.main.async { [self] in
+                    // Save image ID for marking Upload request in the background
+                    let imageID = imageData.pwgID
+                    
+                    // Delete image from cache (also deletes image files)
+                    self.mainContext.delete(imageData)
+                    
+                    // Retrieve albums associated to the deleted image
+                    if let albums = imageData.albums {
+                        // Remove image from cached albums
+                        albums.forEach { album in
+                            self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                        }
                     }
-                }
-                
-                // Save changes
-                do {
-                    try self.mainContext.save()
-                } catch let error as NSError {
-                    debugPrint("Could not save albums after image deletion \(error), \(error.userInfo)")
-                }
-
-                // If this image was uploaded with the iOS app,
-                // delete upload request from cache so that it can be re-uploaded.
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: [imageID])
-                }
-
-                // Hide HUD
-                self.updateHUDwithSuccess { [self] in
-                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        // Display preceding/next image or return to album view
-                        self.didRemoveImage()
+                    
+                    // Save changes
+                    try? self.mainContext.save()
+                    
+                    // If this image was uploaded with the iOS app,
+                    // delete upload request from cache so that it can be re-uploaded.
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.deleteUploadsOfDeletedImages(withIDs: [imageID])
+                    }
+                    
+                    // Hide HUD
+                    self.updateHUDwithSuccess { [self] in
+                        self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            // Display preceding/next image or return to album view
+                            self.didRemoveImage()
+                        }
                     }
                 }
             } failure: { [self] error in
                 self.deleteImageFromDatabaseError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.deleteImageFromDatabaseError(error)
         }
     }

@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Обновлено %@";
 "categoryUpdatedAt" = "Обновлено в %@";
 "categoryUpdatedNow" = "Обновлено сейчас";
-"categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов.\nВы можете потянуть вниз для обновления или повторного входа.";
+"categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов. Вы можете потянуть вниз для обновления или повторного входа.";
 "categoryImageList_selectButton" = "Выбрать";
 "categoryImageList_deselectButton" = "Отменить выбор";
 "categoryImageList_noDataError" = "Ошибка: нет данных";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Кэш";
 "settings_database" = "Данные";
 "settings_cacheClear" = "Очистить кэш-память";
+"settings_cacheClearing" = "Очистка кэша";
 "settings_cacheClearAll" = "Очистить все";
 "settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
 

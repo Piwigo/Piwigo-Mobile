@@ -52,7 +52,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         self.cellImageViewSnapshot = cellImageViewSnapshot
         self.navBarSnapshot = navBarSnapshot
         
-        guard let window = albumViewController.view.window,
+        guard let window = albumViewController.view?.window,
               let animatedCell = albumViewController.animatedCell,
               let navBar = albumViewController.navigationController?.navigationBar
             else { return nil } // i.e. use default present/dismiss animation

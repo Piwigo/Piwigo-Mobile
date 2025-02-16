@@ -21,6 +21,7 @@ import UniformTypeIdentifiers        // Requires iOS 14
     - Image files are stored in cache, in a folder belonging to the appropriate server.
     - Image files are automatically deleted from the cache when deleting an instance.
  */
+@objc(Image)
 public class Image: NSManagedObject {
 
     // Logs Image updates

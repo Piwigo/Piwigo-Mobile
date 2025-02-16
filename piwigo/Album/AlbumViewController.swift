@@ -21,6 +21,7 @@ enum pwgImageAction {
 
 class AlbumViewController: UIViewController
 {
+    @IBOutlet weak var noAlbumLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
     var categoryId = Int32.zero
@@ -97,17 +98,13 @@ class AlbumViewController: UIViewController
     var selectedFavoriteIDs = Set<Int64>()
     var selectedVideosIDs = Set<Int64>()
     var selectedSections = [Int : SelectButtonState]()    // State of Select buttons
-
-
+    
+    
     // MARK: - Cached Values
     var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-    lazy var albumCellSize: CGSize = getAlbumCellSize()
-    lazy var albumPlaceHolder = UIImage(named: "placeholder")!
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-    lazy var imageCellSize: CGSize = getImageCellSize()
-    lazy var imagePlaceHolder = UIImage(named: "unknownImage")!
-
+    
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -115,7 +112,7 @@ class AlbumViewController: UIViewController
            NetworkVars.userStatus != .guest { return true }
         return false
     }()
-
+    
     // MARK: - Image Animated Transitioning
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
     var animatedCell: ImageCollectionViewCell?
@@ -158,6 +155,21 @@ class AlbumViewController: UIViewController
     
     
     // MARK: - Core Data Source
+    @available(iOS 13.0, *)
+    typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
+    @available(iOS 13.0, *)
+    typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+    /// Stored properties cannot be marked potentially unavailable with '@available'.
+    // "var diffableDataSource: DataSource!" replaced by below lines
+    var _diffableDataSource: NSObject? = nil
+    @available(iOS 13.0, *)
+    var diffableDataSource: DataSource {
+        if _diffableDataSource == nil {
+            _diffableDataSource = configDataSource()
+        }
+        return _diffableDataSource as! DataSource
+    }
+    
     lazy var user: User = {
         guard let user = userProvider.getUserAccount(inContext: mainContext) else {
             // Unknown user instance! ► Back to login view
@@ -225,14 +237,57 @@ class AlbumViewController: UIViewController
         return images
     }()
     
-
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
+        
+        // Register classes before using them
+        collectionView?.isPrefetchingEnabled = true
+        collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
+        collectionView?.register(UINib(nibName: "AlbumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "AlbumCollectionViewCell")
+        collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
+        collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
+        collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
+        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
+        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
+        
+        // Initialise "no album / no photo" label
+        if albumData.pwgID == Int64.zero {
+            noAlbumLabel.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
+        } else {
+            noAlbumLabel.text = NSLocalizedString("noImages", comment:"No Images")
+        }
 
-        // Initialise data source
+        // Add buttons above table view and other buttons
+        view.insertSubview(addButton, aboveSubview: collectionView)
+        uploadQueueButton.layer.addSublayer(progressLayer)
+        uploadQueueButton.addSubview(nberOfUploadsLabel)
+        view.insertSubview(uploadQueueButton, belowSubview: addButton)
+        view.insertSubview(homeAlbumButton, belowSubview: addButton)
+        view.insertSubview(createAlbumButton, belowSubview: addButton)
+        view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        
+        // Sticky section headers
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.sectionHeadersPinToVisibleBounds = true
+        }
+        
+        // Refresh view
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+        collectionView?.refreshControl = refreshControl
+        
+        // Initialise dataSource
+        if #available(iOS 13.0, *) {
+            _diffableDataSource = configDataSource()
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        // Fetch data (setting up the initial snapshot on iOS 13+)
         do {
             if categoryId >= Int32.zero {
                 try albums.performFetch()
@@ -247,35 +302,6 @@ class AlbumViewController: UIViewController
             initSearchBar()
         }
         
-        // Add buttons above table view and other buttons
-        view.insertSubview(addButton, aboveSubview: collectionView)
-        uploadQueueButton.layer.addSublayer(progressLayer)
-        uploadQueueButton.addSubview(nberOfUploadsLabel)
-        view.insertSubview(uploadQueueButton, belowSubview: addButton)
-        view.insertSubview(homeAlbumButton, belowSubview: addButton)
-        view.insertSubview(createAlbumButton, belowSubview: addButton)
-        view.insertSubview(uploadImagesButton, belowSubview: addButton)
-        
-        // Register classes
-        collectionView?.isPrefetchingEnabled = true
-        collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
-        collectionView?.register(UINib(nibName: "AlbumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "AlbumCollectionViewCell")
-        collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
-        collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
-        collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
-        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
-        collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
-
-        // Sticky section headers
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.sectionHeadersPinToVisibleBounds = true
-        }
-        
-        // Refresh view
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
-        collectionView?.refreshControl = refreshControl
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -284,7 +310,8 @@ class AlbumViewController: UIViewController
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
-
+        noAlbumLabel.textColor = UIColor.piwigoColorHeader()
+        
         // Navigation bar title
         let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)
         setTitleViewFromAlbumData(whileUpdating: isFetching)
@@ -368,7 +395,7 @@ class AlbumViewController: UIViewController
                 footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
             }
         }
-
+        
         // Refresh controller
         collectionView?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
         collectionView?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
@@ -401,6 +428,10 @@ class AlbumViewController: UIViewController
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        
+        // Register fetch progress
+        NotificationCenter.default.addObserver(self, selector: #selector(updateTitleView(_:)),
+                                               name: Notification.Name.pwgFetchedImages, object: nil)
         
         // Register upload queue changes for reporting inability to upload and updating upload queue button
         NotificationCenter.default.addObserver(self, selector: #selector(updateNberOfUploads(_:)),
@@ -438,7 +469,7 @@ class AlbumViewController: UIViewController
         
         // Check conditions before loading album and image data
         let lastLoad = Date.timeIntervalSinceReferenceDate - albumData.dateGetImages
-        let nbImages = (images.fetchedObjects ?? []).count
+        let nbImages = nberOfImages()
         let isSmartAlbum = self.categoryId < 0
         let expectedNbImages = self.albumData.nbImages
         let missingImages = (expectedNbImages > 0) && (nbImages < expectedNbImages / 2)
@@ -475,7 +506,7 @@ class AlbumViewController: UIViewController
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
                 guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
-                else { preconditionFailure("Couldd not load WhatsNewViewController") }
+                else { preconditionFailure("Could not load WhatsNewViewController") }
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
                     present(whatsNewVC, animated: true)
@@ -510,8 +541,7 @@ class AlbumViewController: UIViewController
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if (albums.fetchedObjects ?? []).count > 2,
-           user.hasAdminRights,
+        if nberOfAlbums() > 2, user.hasAdminRights,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
             displayHelpPagesWithID.append(3) // i.e. management of albums
         }
@@ -571,8 +601,6 @@ class AlbumViewController: UIViewController
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] _ in
             // Reload collection with appropriate cell sizes
-            albumCellSize = getAlbumCellSize()
-            imageCellSize = getImageCellSize()
             collectionView?.reloadData()
 
             // Update buttons
@@ -585,16 +613,6 @@ class AlbumViewController: UIViewController
                 uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
                 createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
                 uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
-            }
-            
-            // Update parent collection layouts
-            (navigationController?.viewControllers ?? []).forEach { viewController in
-                // Look for AlbumImagesViewControllers
-                if let albumController = viewController as? AlbumViewController, albumController != self {
-                    // Is this the view controller of the default album?
-                    albumController.albumCellSize = albumCellSize
-                    albumController.imageCellSize = imageCellSize
-                }
             }
         })
     }
@@ -713,7 +731,7 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        PwgSession.checkSession(ofUser: self.user) { [self] in
+        PwgSession.checkSession(ofUser: self.user, systematically: true) { [self] in
             self.fetchAlbumsAndImages { [self] in
                 self.fetchCompleted()
             }
@@ -741,7 +759,10 @@ class AlbumViewController: UIViewController
 
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
-        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false { return }
+        if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
+            debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId)")
+            return
+        }
                 
         // Check that the root album exists
         // (might have been deleted with a clear of the cache)
@@ -801,6 +822,35 @@ class AlbumViewController: UIViewController
 
 
     // MARK: - Utilities
+    func nberOfAlbums() -> Int {
+        var nberOfAlbums = Int.zero
+        if #available(iOS 13.0, *) {
+            let snapshot = diffableDataSource.snapshot() as Snaphot
+            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+                nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
+            }
+        } else {
+            // Fallback on earlier versions
+            nberOfAlbums = (albums.fetchedObjects ?? []).count
+        }
+        return nberOfAlbums
+    }
+    
+    func nberOfImages() -> Int {
+        var nberOfImages = Int.zero
+        if #available(iOS 13.0, *) {
+            let snapshot = diffableDataSource.snapshot() as Snaphot
+            nberOfImages = diffableDataSource.snapshot().numberOfItems
+            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+                nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
+            }
+        } else {
+            // Fallback on earlier versions
+            nberOfImages = (images.fetchedObjects ?? []).count
+        }
+        return nberOfImages
+    }
+    
     @objc func setTableViewMainHeader() {
         // Update table header only if being displayed
 //        if albumImageTableView?.window == nil { return }

@@ -14,6 +14,7 @@ import piwigoKit
 class ImageCollectionViewCell: UICollectionViewCell {
     
     var imageData: Image!
+    var imageURL: URL?
 
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
@@ -92,48 +93,46 @@ class ImageCollectionViewCell: UICollectionViewCell {
     }
         
     func applyColorPalette() {
-        bottomLayer?.backgroundColor = UIColor.piwigoColorBackground()
+        bottomLayer?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.7)
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        noDataLabel?.textColor = UIColor.piwigoColorLeftLabel()
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
         playImg?.tintColor = UIColor.white
     }
 
-    func config(with imageData: Image, placeHolder: UIImage, size: pwgImageSize, sortOption: pwgImageSort) {
+    func config(withImageData imageData: Image, size: pwgImageSize, sortOption: pwgImageSort) {
         // Do we have any info on that image ?
         if imageData.pwgID == Int64.zero { return }
 
         // Store image data
         self.imageData = imageData
-        if noDataLabel?.isHidden == false {
-            noDataLabel?.isHidden = true
-            isAccessibilityElement = true
-        }
+        noDataLabel?.isHidden = true
+        noDataLabel?.text = ""
+        isAccessibilityElement = true
 
         // Video icon
-        if playImg?.isHidden == imageData.isVideo {
-            playImg?.isHidden = !(imageData.isVideo)
-            playBckg?.isHidden = !(imageData.isVideo)
-        }
+        playImg?.isHidden = !(imageData.isVideo)
+        playBckg?.isHidden = !(imageData.isVideo)
 
         // Title
+        let title = getImageTitle(forSortOption: sortOption)
+        if AlbumVars.shared.displayImageTitles {
+            bottomLayer?.isHidden = false
+            nameLabel?.attributedText = title
+            nameLabel?.isHidden = false
+        } else {
+            bottomLayer?.isHidden = true
+            nameLabel?.isHidden = true
+        }
 #if DEBUG
         // Used for selecting cells in piwigoAppStore
-        let title = getImageTitle(forSortOption: sortOption)
         if title.string.contains("Clos de Vougeot") {
             self.accessibilityIdentifier = "Clos de Vougeot"
         } else if title.string.contains("Hotel de Coimbra") {
             self.accessibilityIdentifier = "Hotel de Coimbra"
         }
 #endif
-        if AlbumVars.shared.displayImageTitles {
-            nameLabel?.attributedText = getImageTitle(forSortOption: sortOption)
-            bottomLayer?.isHidden = false
-            nameLabel?.isHidden = false
-        } else {
-            bottomLayer?.isHidden = true
-            nameLabel?.isHidden = true
-        }
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -141,44 +140,52 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Retrieve image from cache or download it
-        let placeHolder = UIImage(named: "unknownImage")!
         let scale = max(traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.bounds.size.width * scale, self.bounds.size.height * scale)
-        let imageURL = ImageUtilities.getURL(imageData, ofMinSize: size)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, atURL: imageURL,
-                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize,
-                                   placeHolder: placeHolder) { [weak self] cachedImageURL in
-            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
+        imageURL = ImageUtilities.getPiwigoURL(imageData, ofMinSize: size)
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: size, type: .image, atURL: imageURL,
+                                   fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] cachedImageURL in
+            // Downsample image in the background
+            guard let self = self else { return }
+            DispatchQueue.global(qos: .userInitiated).async { [self] in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
+
+                // Set image
+                self.configImage(cachedImage, withHiddenLabel: true)
+            }
         } failure: { [weak self] _ in
-            self?.configImage(placeHolder, withHiddenLabel: false)
+            self?.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
         }
     }
     
     private func getImageTitle(forSortOption sortOption: pwgImageSort) -> NSAttributedString {
-        var title = NSAttributedString()
         switch sortOption {
         case .visitsAscending, .visitsDescending:
             let hits = NSLocalizedString("categoryDiscoverVisits_legend", comment: "hits")
             let text = String(format: "%ld %@", Int(imageData.visits), hits)
-            title = attributedTitle(NSAttributedString(string: text))
+            return attributedTitle(NSAttributedString(string: text))
+        
         case .ratingScoreAscending, .ratingScoreDescending:
-            if imageData.title.string.isEmpty == false {
-                title = attributedTitle(imageData.title)
-                // Rate score unknown until pwg.images.getInfo is called
-//              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.title.string)
-            } else {
-                // Rate score unknown until pwg.images.getInfo is called
-                title = attributedTitle(NSAttributedString(string: imageData.fileName))
-//              nameLabel?.text = String(format: "(%.2f) %@", imageData.ratingScore, imageData.fileName)
+            // Rate score unknown until pwg.images.getInfo is called
+            if imageData.ratingScore > 0.0 {
+                let rate = NSMutableAttributedString(string: String(format: "(%.2f) ", imageData.ratingScore))
+                if imageData.title.string.isEmpty {
+                    rate.append(NSMutableAttributedString(string: imageData.fileName))
+                } else {
+                    rate.append(imageData.title)
+                }
+                return attributedTitle(rate)
             }
+            fallthrough
+
         default:
             if imageData.title.string.isEmpty == false {
-                title = attributedTitle(imageData.title)
+                return attributedTitle(imageData.title)
             } else {
-                title = attributedTitle(NSAttributedString(string: imageData.fileName))
+                return attributedTitle(NSAttributedString(string: imageData.fileName))
             }
         }
-        return title
     }
     
     private func attributedTitle(_ title: NSAttributedString) -> NSAttributedString {
@@ -195,18 +202,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         return attributedStr
     }
 
-    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
-        // Process image in the background
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
-            // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
-
-            // Set image
-            self.configImage(cachedImage, withHiddenLabel: true)
-        }
-    }
-    
-    private func configImage(_ image: UIImage, withHiddenLabel isHidden: Bool) {
+    func configImage(_ image: UIImage, withHiddenLabel isHidden: Bool) {
         DispatchQueue.main.async { [self] in
             // Set image and label
             self.cellImage?.image = image
@@ -250,25 +246,34 @@ class ImageCollectionViewCell: UICollectionViewCell {
             applyColorPalette()
         }
     }
-
+    
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        isAccessibilityElement = false
-        cellImage.image = nil
-        noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-        accessibilityIdentifier = ""
-    }
+        // Pause the ongoing image download if needed
+        if let imageURL = self.imageURL {
+            PwgSession.shared.pauseDownload(atURL: imageURL)
+        }
 
+        // Reset cell
+        self.nameLabel?.text = ""
+        self.noDataLabel?.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.cellImage?.image = pwgImageType.image.placeHolder
+        self.isFavorite = false
+        self.isSelection = false
+        self.isAccessibilityElement = false
+        self.accessibilityIdentifier = ""
+    }
+    
     func highlight(onCompletion completion: @escaping () -> Void) {
         // Select cell of image of interest and apply effect
-        backgroundColor = UIColor.piwigoColorBackground()
-        contentMode = .scaleAspectFit
+        self.backgroundColor = UIColor.piwigoColorBackground()
+        self.contentMode = .scaleAspectFit
         UIView.animate(withDuration: 0.4, delay: 0.3, options: .allowUserInteraction, animations: { [self] in
             cellImage?.alpha = 0.2
         }) { [self] finished in
             UIView.animate(withDuration: 0.4, delay: 0.7, options: .allowUserInteraction, animations: { [self] in
-                cellImage?.alpha = 1.0
+                self.cellImage?.alpha = 1.0
             }) { finished in
                 completion()
             }

@@ -84,6 +84,37 @@ class EditImageParamsViewController: UIViewController
 
 
     // MARK: - View Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Register the cells before using them
+        editImageParamsTableView?.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
+        editImageParamsTableView?.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
+        editImageParamsTableView?.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
+        
+        // Title
+        title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+        
+        // Buttons
+        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
+        cancel.accessibilityIdentifier = "Cancel"
+        let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
+        done.accessibilityIdentifier = "Done"
+        
+        // Navigation bar
+        navigationController?.isNavigationBarHidden = false
+        navigationItem.leftBarButtonItem = cancel
+        navigationItem.rightBarButtonItem = done
+        navigationController?.navigationBar.accessibilityIdentifier = "editParams"
+        
+        // Reset common parameters
+        hasDatePicker = false
+        resetCommonParameters()
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
+    }
+    
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
@@ -101,44 +132,9 @@ class EditImageParamsViewController: UIViewController
         navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
         
         // Table view
-        editImageParamsTableView.separatorColor = .piwigoColorSeparator()
-        editImageParamsTableView.backgroundColor = .piwigoColorBackground()
-        editImageParamsTableView.reloadData()
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Title
-        title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
-        
-        // Buttons
-        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
-        cancel.accessibilityIdentifier = "Cancel"
-        let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
-        done.accessibilityIdentifier = "Done"
-        
-        // Navigation bar
-        navigationController?.isNavigationBarHidden = false
-        navigationItem.leftBarButtonItem = cancel
-        navigationItem.rightBarButtonItem = done
-        navigationController?.navigationBar.accessibilityIdentifier = "editParams"
-        
-        // Register thumbnails cell
-        editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
-        
-        // Register date picker cell
-        editImageParamsTableView.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
-        hasDatePicker = false
-        
-        // Register date interval picker cell
-        editImageParamsTableView.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
-        
-        // Reset common parameters
-        resetCommonParameters()
-        
-        // Set colors, fonts, etc.
-        applyColorPalette()
+        editImageParamsTableView?.separatorColor = .piwigoColorSeparator()
+        editImageParamsTableView?.backgroundColor = .piwigoColorBackground()
+        editImageParamsTableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -169,12 +165,12 @@ class EditImageParamsViewController: UIViewController
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
                 let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
-                editImageParamsTableView.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
-                                                                     bottom: navBarHeight, right: CGFloat.zero)
+                editImageParamsTableView?.contentInset = UIEdgeInsets(top: CGFloat.zero, left: CGFloat.zero,
+                                                                      bottom: navBarHeight, right: CGFloat.zero)
             }
             
             // Reload table view
-            editImageParamsTableView.reloadData()
+            editImageParamsTableView?.reloadData()
         })
     }
     
@@ -281,9 +277,9 @@ class EditImageParamsViewController: UIViewController
         
         // Update all images
         let index = 0
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             updateImageProperties(fromIndex: index)
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             // Display error
             self.hideHUD {
                 self.showUpdatePropertiesError(error, atIndex: index)
@@ -401,7 +397,7 @@ class EditImageParamsViewController: UIViewController
         }
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update image title?

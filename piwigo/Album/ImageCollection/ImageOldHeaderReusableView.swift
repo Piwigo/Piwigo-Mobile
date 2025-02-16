@@ -20,13 +20,16 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
 
+    @IBOutlet weak var albumLabel: UILabel!
+    @IBOutlet weak var albumLabelHeight: NSLayoutConstraint!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     
     func config(with images: [Image], sortKey: String, group: pwgImageGroup,
-                section: Int, selectState: SelectButtonState)
+                section: Int, selectState: SelectButtonState,
+                album description: NSAttributedString = NSAttributedString(), size: CGSize = CGSize.zero)
     {
         // Keep section for future use
         self.section = section
@@ -34,6 +37,15 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         // Set colors
         applyColorPalette()
 
+        // Set album description label
+        if size == CGSize.zero {
+            albumLabel.text = ""
+            albumLabelHeight.constant = 0
+        } else {
+            albumLabel.attributedText = description
+            albumLabelHeight.constant = size.height
+        }
+        
         // Segmented controller
         segmentedControl?.selectedSegmentIndex = group.segmentIndex
 

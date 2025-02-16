@@ -16,6 +16,7 @@ import UIKit
     - Instances share images belonging to a server.
     - Smart albums are defined with pwgSmartAlbum and have Piwigo IDs <= 0.
  */
+@objc(Album)
 public class Album: NSManagedObject {
     /**
      Updates an Album instance with the values from a CategoryData struct.
@@ -93,9 +94,10 @@ public class Album: NSManagedObject {
 
         // When "date_last" is null or not supplied: date in distant past
         /// - 'date_last' is the maximum 'date_available' of the images associated to an album.
-        if let newTimeInterval = DateUtilities.timeInterval(from: albumData.dateLast),
-           dateLast != newTimeInterval {
-            dateLast = newTimeInterval
+        if let newTimeInterval = DateUtilities.timeInterval(from: albumData.dateLast) {
+            if dateLast != newTimeInterval {
+                dateLast = newTimeInterval
+            }
         } else {
             dateLast = Date.distantPast.timeIntervalSinceReferenceDate
         }

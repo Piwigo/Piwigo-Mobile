@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "%@ に更新";
 "categoryUpdatedAt" = "%@ に更新";
 "categoryUpdatedNow" = "更新: たった今";
-"categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
+"categoryMainEmtpy" = "まだPiwigoにアルバムがありません。プルダウンして更新するか、再ログインしてください。";
 "categoryImageList_selectButton" = "選択";
 "categoryImageList_deselectButton" = "選択を解除";
 "categoryImageList_noDataError" = "エラー データがありません";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "キャッシュ";
 "settings_database" = "データ";
 "settings_cacheClear" = "キャッシュをクリア";
+"settings_cacheClearing" = "キャッシュのクリア";
 "settings_cacheClearAll" = "すべてを削除する";
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";
 

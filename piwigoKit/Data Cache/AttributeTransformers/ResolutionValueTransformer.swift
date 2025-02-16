@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+@objc(ResolutionValueTransformer)
 public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     public override class func allowsReverseTransformation() -> Bool {
@@ -25,7 +26,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
     
     public override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
-            fatalError("Wrong data type: value must be a Data object; received \(type(of: value))")
+            preconditionFailure("Wrong data type: value must be a Data object; received \(type(of: value))")
         }
         guard let resolution = super.transformedValue(data) as? Resolution else {
             return nil
@@ -43,7 +44,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     override public func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let resolution = value as? Resolution else {
-            fatalError("Wrong data type: value must be a Resolution object; received \(type(of: value))")
+            preconditionFailure("Wrong data type: value must be a Resolution object; received \(type(of: value))")
         }
         
         // Store relative URL as Data to save space and because the scheme and host might changed in future

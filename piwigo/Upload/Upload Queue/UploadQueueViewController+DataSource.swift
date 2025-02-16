@@ -17,12 +17,14 @@ extension UploadQueueViewController
     func configDataSource() -> DataSource {
         let dataSource = DataSource(tableView: queueTableView) { [self] (tableView, indexPath, objectID) -> UITableViewCell? in
             // Get data source item
-            guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload else {
-                preconditionFailure("Managed item should be available")
+            guard let upload = try? self.mainContext.existingObject(with: objectID) as? Upload
+            else {
+                debugPrint("Managed item should be available")
+                return nil
             }
             // Configure cell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!") }
+            else { preconditionFailure("Could not load a UploadImageTableViewCell!") }
             cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
             return cell
         }
@@ -53,7 +55,7 @@ extension UploadQueueViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell
-        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!") }
+        else { preconditionFailure("Could not load a UploadImageTableViewCell!") }
         cell.configure(with: uploads.object(at: indexPath),
                        availableWidth: Int(tableView.bounds.size.width))
         return cell

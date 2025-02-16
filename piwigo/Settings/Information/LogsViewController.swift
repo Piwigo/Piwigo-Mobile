@@ -33,7 +33,20 @@ class LogsViewController: UIViewController {
         if logEntries.isEmpty { return }
         category?.text = logEntries.first?.category
         dateTime?.text = DateUtilities.pwgDateFormatter.string(from: logEntries.first?.date ?? Date())
-        messages?.text = logEntries.map({$0.composedMessage + "\n"}).reduce("", +)
+        let msg = logEntries.map({$0.composedMessage + "\n"}).reduce("", +)
+        let attributedMsg = NSMutableAttributedString(string: msg)
+        let wholeRange = NSRange(location: 0, length: msg.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.left
+        style.lineSpacing = 0
+        style.paragraphSpacing = 9
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        attributedMsg.addAttributes(attributes, range: wholeRange)
+        messages?.attributedText = attributedMsg
     }
     
     @objc func applyColorPalette() {

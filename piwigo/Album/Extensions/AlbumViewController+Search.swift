@@ -106,6 +106,9 @@ extension AlbumViewController: UISearchControllerDelegate
             albumData.removeFromImages(images)
         }
         mainContext.saveIfNeeded()
+        
+        // Hides "no album/photo" label
+        noAlbumLabel.isHidden = true
     }
 }
 

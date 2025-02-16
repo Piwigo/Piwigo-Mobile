@@ -265,7 +265,7 @@ class TagsViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagTableViewCell", for: indexPath) as? TagTableViewCell
-        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a TagTableViewCell!") }
+        else { preconditionFailure("Could not load a TagTableViewCell!") }
         switch indexPath.section {
         case 0 /* Selected tags */:
             cell.configure(with: selectedTags.object(at: indexPath), andEditOption: .remove)

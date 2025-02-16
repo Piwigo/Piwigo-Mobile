@@ -1,5 +1,5 @@
 //
-//  ImageResolution.swift
+//  Resolution.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 10/09/2022.
@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(Resolution)
 public class Resolution: NSObject, NSSecureCoding {
     
     public static var supportsSecureCoding = true
@@ -46,6 +47,13 @@ public class Resolution: NSObject, NSSecureCoding {
         coder.encode(width, forKey: Key.width.rawValue)
         coder.encode(height, forKey: Key.height.rawValue)
         coder.encode(url, forKey: Key.url.rawValue)
+    }
+    
+    public func dimensionsSwaped() {
+        let imageWidth = self.width
+        let imageHeight = self.height
+        self.width = imageHeight
+        self.height = imageWidth
     }
 }
 

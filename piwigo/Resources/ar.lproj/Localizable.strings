@@ -64,7 +64,7 @@
 "CoreDataFetch_AlbumError" = "Fetch albums error!";
 "CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
 "CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
-"CoreData_AlbumNotFound" = "Album not in persistent cache.";
+"CoreData_AlbumNotFound" = "الألبوم ليس في ذاكرة التخزين المؤقت الثابتة.";
 
 // Image objects
 "CoreDataFetch_ImageError" = "Fetch photos/videos error!";
@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Updated on %@";
 "categoryUpdatedAt" = "Updated at %@";
 "categoryUpdatedNow" = "Updated just now";
-"categoryMainEmtpy" = "لا توجد ألبومات في Piwigo حتى الآن.\nيمكنك السحب إلى الأسفل لتحديث أو إعادة تسجيل الدخول.";
+"categoryMainEmtpy" = "لا توجد ألبومات في Piwigo حتى الآن. يمكنك السحب إلى الأسفل لتحديث أو إعادة تسجيل الدخول.";
 "categoryImageList_selectButton" = "حدد";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "خطأ لا توجد بيانات";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Data";
 "settings_cacheClear" = "Clear Cache";
+"settings_cacheClearing" = "Clearing the Cache";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Are you sure you want to clear the photo cache? This will make albums and photos take a while to load again.";
 

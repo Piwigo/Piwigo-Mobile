@@ -27,7 +27,7 @@ extension ImageViewController
                               image: UIImage(systemName: "rotate.right"),
                               handler: { [self] _ in
             // Edit image informations
-            self.rotateImage(by: -90.0)
+            self.rotateImage(by: CGFloat(-.pi/2.0))
         })
         action.accessibilityIdentifier = "Rotate Right"
         return action
@@ -39,7 +39,7 @@ extension ImageViewController
                               image: UIImage(systemName: "rotate.left"),
                               handler: { [self] _ in
             // Edit image informations
-            self.rotateImage(by: 90.0)
+            self.rotateImage(by: CGFloat(.pi/2.0))
         })
         action.accessibilityIdentifier = "Rotate Left"
         return action
@@ -51,7 +51,7 @@ extension ImageViewController
 extension ImageViewController
 {
     // MARK: - Rotate Image
-    @objc func rotateImage(by angle: Double) {
+    @objc func rotateImage(by angle: CGFloat) {
         guard let imageData = imageData else { return }
         // Disable buttons during action
         setEnableStateOfButtons(false)
@@ -60,46 +60,42 @@ extension ImageViewController
         showHUD(withTitle: NSLocalizedString("rotateSingleImageHUD_rotating", comment: "Rotating Photo…"))
         
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
-                // Retrieve updated image data i.e. width, height, URLs
-                /// We retrieve URLs of thumbnails which are not in cache anymore:
-                /// - available: https://piwigo…/_data/i/upload/2024/02/17/20240217192937-d5cf80b5-xx.jpg
-                /// - unavailable: https://piwigo…/i.php?/upload/2024/02/17/20240217192937-d5cf80b5-xx.jpg
-                let imageID = imageData.pwgID
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.categoryId) { [self] in
-                    // Download image in cache and present it
-                    DispatchQueue.main.async { [self] in
-                        if let imageDVC = pageViewController?.viewControllers?.first as? ImageDetailViewController,
-                           let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
-                            // Zoom out if needed
-                            imageDVC.scrollView.setZoomScale(imageDVC.scrollView.minimumZoomScale, animated: true)
-                            // Update image data
-                            if updatedImage.isFault {
-                                // The album is not fired yet.
-                                updatedImage.willAccessValue(forKey: nil)
-                                updatedImage.didAccessValue(forKey: nil)
-                            }
-                            imageDVC.imageData = updatedImage
-                            // Rotate image view
-                            imageDVC.rotateImageView(by: angle) { [self] in
-                                // Hide HUD
-                                self.updateHUDwithSuccess { [self] in
-                                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                                        // Re-enable buttons
-                                        setEnableStateOfButtons(true)
-                                    }
+                DispatchQueue.main.async { [self] in
+                    // Rotate image view
+                    if let imageDVC = pageViewController?.viewControllers?.first as? ImageDetailViewController {
+                        // Zoom out if needed
+                        imageDVC.scrollView.setZoomScale(imageDVC.scrollView.minimumZoomScale, animated: true)
+                        // Rotate image view
+                        imageDVC.rotateImageView(by: angle) { [self] in
+                            // Hide HUD
+                            self.updateHUDwithSuccess { [self] in
+                                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                                    // Re-enable buttons
+                                    setEnableStateOfButtons(true)
                                 }
                             }
                         }
                     }
-                } failure: { [self] error in
-                    self.rotateImageInDatabaseError(error)
+                    // Update thumbnails if needed
+                    if let children = presentingViewController?.children {
+                        let albumVCs = children.compactMap({$0 as? AlbumViewController}).filter({$0.categoryId != Int32.zero})
+                        albumVCs.forEach { albumVC in
+                            let visibleCells = albumVC.collectionView?.visibleCells ?? []
+                            let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                            if let cell = imageCells.first(where: { $0.imageData.pwgID == imageData.pwgID}) {
+                                cell.config(withImageData: imageData, size: albumVC.imageSize, sortOption: albumVC.sortOption)
+                            }
+                        }
+                    }
+                    // Save changes
+                    try? self.mainContext.save()
                 }
             } failure: { [self] error in
                 self.rotateImageInDatabaseError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.rotateImageInDatabaseError(error)
         }
     }
@@ -114,22 +110,23 @@ extension ImageViewController
                 return
             }
             
-            // Plugin rotateImage installed?
-            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
-            var message = ""
-            if let pwgError = error as? PwgSessionError,
-               pwgError == .invalidMethod {
-                message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
-            }
-            else {
-                message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
-            }
-
-            // Report error
-            self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [self] in
-                // Hide HUD
-                hideHUD { [self] in
+            // Hide HUD
+            self.hideHUD { [self] in
+                // Plugin rotateImage installed?
+                let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
+                var message = "", errorMsg = ""
+                if let pwgError = error as? PwgSessionError,
+                   pwgError == .otherError(code: 501, msg: "") {
+                    message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
+                }
+                else {
+                    message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
+                    errorMsg = error.localizedDescription
+                }
+                
+                // Report error
+                self.dismissPiwigoError(withTitle: title, message: message,
+                                        errorMessage: errorMsg) { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }

@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Mis à jour le %@";
 "categoryUpdatedAt" = "Mis à jour à %@";
 "categoryUpdatedNow" = "Mis à jour à l'instant";
-"categoryMainEmtpy" = "Pas encore d'albums dans votre Piwigo.\nVous pouvez tirer vers le bas pour actualiser ou vous reconnecter.";
+"categoryMainEmtpy" = "Pas encore d'albums dans votre Piwigo. Vous pouvez tirer vers le bas pour actualiser ou vous reconnecter.";
 "categoryImageList_selectButton" = "Sélectionner";
 "categoryImageList_deselectButton" = "Désélectionner";
 "categoryImageList_noDataError" = "Erreur aucune donnée";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Données";
 "settings_cacheClear" = "Vider le cache";
+"settings_cacheClearing" = "Effacement du cache";
 "settings_cacheClearAll" = "Tout effacer";
 "settings_cacheClearMsg" = "Êtes-vous sûr de vouloir effacer le cache des photos? Les photos et les albums mettront un certain temps à se recharger.";
 

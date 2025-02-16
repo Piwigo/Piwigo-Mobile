@@ -61,7 +61,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
     let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
     var indexedUploadsInQueue = [(String?,String?,pwgUploadState?)?]()  // Arrays of uploads at indices of corresponding image
-    let imagePlaceholder = UIImage(named: "placeholder")!
     lazy var imageCellSize: CGSize = getImageCellSize()
 
     var selectedImages = [UploadProperties?]()      // Array of images selected for upload
@@ -97,6 +96,12 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Collection view — Register the cell before using it
+        collectionFlowLayout?.scrollDirection = .vertical
+        collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
+        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
+        localImagesCollection?.accessibilityIdentifier = "Pasteboard"
+        
         // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
         // and prevent their selection
@@ -147,12 +152,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // At start, there is no image selected
         selectedImages = .init(repeating: nil, count: pbObjects.count)
-        
-        // Collection view
-        collectionFlowLayout.scrollDirection = .vertical
-        collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
-        localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
-        localImagesCollection.accessibilityIdentifier = "Pasteboard"
         
         // Navigation bar
         navigationController?.toolbar.tintColor = .piwigoColorOrange()
@@ -546,7 +545,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 // MARK: - Video Poster
 extension AVURLAsset {
     func extractedImage() -> UIImage! {
-        var image: UIImage! = UIImage(named: "placeholder")!
+        var image: UIImage = pwgImageType.image.placeHolder
         let imageGenerator = AVAssetImageGenerator(asset: self)
         imageGenerator.appliesPreferredTrackTransform = true
         do {

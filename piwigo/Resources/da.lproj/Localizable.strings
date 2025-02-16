@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Opdateret d. %@";
 "categoryUpdatedAt" = "Opdateret %@";
 "categoryUpdatedNow" = "Netop opdateret";
-"categoryMainEmtpy" = "Der er endnu ingen album i dit Piwigo.\nPrøv at trække ned for at opdatere eller log ind igen.";
+"categoryMainEmtpy" = "Der er endnu ingen album i dit Piwigo. Prøv at trække ned for at opdatere eller log ind igen.";
 "categoryImageList_selectButton" = "Vælg";
 "categoryImageList_deselectButton" = "Fravælg";
 "categoryImageList_noDataError" = "Fejl ingen Data";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Data";
 "settings_cacheClear" = "Ryd cache";
+"settings_cacheClearing" = "Rydning af cachen";
 "settings_cacheClearAll" = "Ryd alle";
 "settings_cacheClearMsg" = "Er du sikker på du vil slette billedcache? Dette vil bevirke at albums og billeder skal genindlæses ved næste visning.";
 

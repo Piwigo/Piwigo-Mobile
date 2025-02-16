@@ -122,7 +122,7 @@ class AlbumRenaming: NSObject
         topViewController.showHUD(withTitle: NSLocalizedString("renameCategoryHUD_label", comment: "Renaming Album…"))
 
         // Rename album, modify comment
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.setInfos(self.albumData.pwgID, withName: albumName, description: albumComment) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Hide swipe buttons
@@ -149,7 +149,7 @@ class AlbumRenaming: NSObject
             } failure: { [self] error in
                 self.renameCategoryError(error, completion: completion)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.renameCategoryError(error, completion: completion)
         }
     }

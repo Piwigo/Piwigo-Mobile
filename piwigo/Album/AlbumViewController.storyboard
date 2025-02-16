@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="THu-Vl-D77">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="THu-Vl-D77">
+    <device id="retina6_3" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,7 +15,7 @@
                 <navigationController storyboardIdentifier="AlbumNavigationController" automaticallyAdjustsScrollViewInsets="NO" modalTransitionStyle="crossDissolve" useStoryboardIdentifierAsRestorationIdentifier="YES" id="THu-Vl-D77" customClass="AlbumNavigationController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="acd-wZ-xcm">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
@@ -39,10 +39,10 @@
             <objects>
                 <viewController storyboardIdentifier="AlbumViewController" extendedLayoutIncludesOpaqueBars="YES" modalTransitionStyle="crossDissolve" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="AlbumViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="always" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6N3-3i-EO3">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" sectionInsetReference="safeArea" id="cdO-Zx-8lw">
                                     <size key="itemSize" width="128" height="128"/>
@@ -57,20 +57,32 @@
                                     <outlet property="prefetchDataSource" destination="Y6W-OH-hqX" id="pqn-D2-tZD"/>
                                 </connections>
                             </collectionView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No albums in your Piwigo yet. You may pull down to refresh or re-login." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5dc-e2-gdj">
+                                <rect key="frame" x="81" y="442.66666666666669" width="240" height="61"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="WOs-KU-5go"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="iFa-gb-Wiw"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="iFa-gb-Wiw" firstAttribute="trailing" secondItem="6N3-3i-EO3" secondAttribute="trailing" id="UGa-TE-mtS"/>
+                            <constraint firstItem="5dc-e2-gdj" firstAttribute="centerY" secondItem="iFa-gb-Wiw" secondAttribute="centerY" id="Gyx-mx-XCd"/>
+                            <constraint firstItem="6N3-3i-EO3" firstAttribute="trailing" secondItem="iFa-gb-Wiw" secondAttribute="trailing" id="UGa-TE-mtS"/>
                             <constraint firstItem="6N3-3i-EO3" firstAttribute="bottom" secondItem="5EZ-qb-Rvc" secondAttribute="bottom" id="aD2-la-U0E"/>
                             <constraint firstItem="6N3-3i-EO3" firstAttribute="leading" secondItem="iFa-gb-Wiw" secondAttribute="leading" id="awF-yt-xzm"/>
-                            <constraint firstAttribute="top" secondItem="6N3-3i-EO3" secondAttribute="top" id="g6P-WC-6W3"/>
+                            <constraint firstItem="6N3-3i-EO3" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="g6P-WC-6W3"/>
+                            <constraint firstItem="5dc-e2-gdj" firstAttribute="centerX" secondItem="iFa-gb-Wiw" secondAttribute="centerX" id="krm-4N-qXB"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ala-l6-CLq"/>
                     <connections>
                         <outlet property="collectionView" destination="6N3-3i-EO3" id="TpH-NW-J8g"/>
+                        <outlet property="noAlbumLabel" destination="5dc-e2-gdj" id="wm0-2f-At3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

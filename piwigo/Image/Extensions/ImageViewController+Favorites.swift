@@ -35,7 +35,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -54,7 +54,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.addToFavoritesError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.addToFavoritesError(error)
         }
     }
@@ -85,7 +85,7 @@ extension ImageViewController
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
@@ -110,7 +110,7 @@ extension ImageViewController
             } failure: { [self] error in
                 self.removeFromFavoritesError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.removeFromFavoritesError(error)
         }
     }

@@ -9,6 +9,21 @@
 import Foundation
 import UIKit
 
+public enum pwgImageType {
+    case album, image
+}
+
+extension pwgImageType {
+    public var placeHolder: UIImage {
+        switch self {
+        case .album:
+            return UIImage(named: "unknownAlbum")!
+        case .image:
+            return UIImage(named: "unknownImage")!
+        }
+    }
+}
+
 class ImageDownload {
     
     // MARK: - Variables and Properties
@@ -25,20 +40,18 @@ class ImageDownload {
     
     
     // MARK: - Initialization
-    init(imageID: Int64, ofSize imageSize: pwgImageSize, atURL imageURL: URL,
-         fromServer serverID: String, fileSize: Int64 = .zero,
-         placeHolder: UIImage, progress: ((Float) -> Void)? = nil,
-         completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+    init(type: pwgImageType, atURL imageURL: URL, fileSize: Int64 = .zero, toCacheAt fileURL: URL,
+         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
         
-        // Set URLs of image in cache
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
-        self.fileURL = cacheDir.appendingPathComponent(imageSize.path)
-            .appendingPathComponent(String(imageID))
+        // Store place holder according to image type
+        self.placeHolder = type.placeHolder
         
-        // Store file size and handlers
+        // Store file size
         self.imageURL = imageURL
         self.fileSize = fileSize
-        self.placeHolder = placeHolder
+        self.fileURL = fileURL
+        
+        // Store handlers
         self.progressHandler = progress
         self.completionHandler = completion
         self.failureHandler = failure

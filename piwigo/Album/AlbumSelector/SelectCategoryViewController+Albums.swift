@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import piwigoKit
 
 extension SelectCategoryViewController
@@ -21,7 +22,7 @@ extension SelectCategoryViewController
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
         // Move album
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.move(self.inputAlbum.pwgID,
                                 intoAlbumWithId: parentData.pwgID) { [self] in
                 // Remember that the app is fetching all album data
@@ -58,7 +59,7 @@ extension SelectCategoryViewController
                     self.showError(error)
                 }
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.hideHUD { [self] in
                 self.showError(error)
             }
@@ -74,7 +75,7 @@ extension SelectCategoryViewController
         showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.setRepresentative(albumData, with: imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save changes
@@ -83,7 +84,6 @@ extension SelectCategoryViewController
                     } catch let error as NSError {
                         debugPrint("Could not fetch \(error), \(error.userInfo)")
                     }
-
                     // Close HUD
                     self.updateHUDwithSuccess() { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -96,7 +96,7 @@ extension SelectCategoryViewController
                     self.showError(error)
                 }
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.hideHUD {
                 self.showError(error)
             }

@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Updated on %@";
 "categoryUpdatedAt" = "Updated at %@";
 "categoryUpdatedNow" = "Updated just now";
-"categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda.\nAnda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
+"categoryMainEmtpy" = "Belum ada album dalam Piwigo Anda. Anda dapat menarik ke bawah untuk menyegarkan atau menyambung kembali.";
 "categoryImageList_selectButton" = "Pilih";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Galat Tidak Ada Data";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Data";
 "settings_cacheClear" = "Bersihkan Cache";
+"settings_cacheClearing" = "Mengosongkan Cache";
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Apakah anda ingin membersihkan cache gambar? Hal ini membuat album dan gambar memerlukan waktu untuk memuat lagi.";
 

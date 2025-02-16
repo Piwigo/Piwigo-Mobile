@@ -475,9 +475,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func updateBadge(_ notification: Notification) {
-        guard let nberOfUploadsToComplete = notification.userInfo?["nberOfUploadsToComplete"] as? Int else {
-            preconditionFailure("!!! Did not provide an integer !!!")
-        }
+        guard let nberOfUploadsToComplete = notification.userInfo?["nberOfUploadsToComplete"] as? Int
+        else { preconditionFailure("!!! Expected an integer !!!") }
         if #available(iOS 16, *) {
             UNUserNotificationCenter.current().setBadgeCount(nberOfUploadsToComplete)
         } else {

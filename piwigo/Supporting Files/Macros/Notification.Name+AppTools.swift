@@ -13,6 +13,11 @@ public extension Notification.Name {
     /// - Change palette colour
     static let pwgPaletteChanged = Notification.Name("pwgNotificationPaletteChanged")
     
+    // MARK: - Fetch Images
+    /// - Did fetch images —> used to update title view
+    static let pwgFetchedImages = Notification.Name("pwgNotificationFetchedImages")
+
+    
     // MARK: - Play videos
     /// - Video ready to play, rate changed —> used to update buttons
     static let pwgVideoPlaybackStatus = Notification.Name("pwgNotificationVideoPlaybackStatus")

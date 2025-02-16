@@ -88,7 +88,7 @@ extension AlbumViewController
         showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Create album
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.create(withName: albumName, description: albumComment,
                                   status: "public", inParentWithId: parentId) { [self] newCatId in
                 // Album successfully created ▶ Add new album to cache and update parent albums
@@ -102,12 +102,18 @@ extension AlbumViewController
                     hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Reset buttons
                         didCancelTapAddButton()
+                        // Scroll to top if necessary
+                        let indexPath = IndexPath(item: 0, section: 0)
+                        let visibleCells = collectionView.indexPathsForVisibleItems
+                        if visibleCells.isEmpty == false, visibleCells.contains(indexPath) == false {
+                            collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+                        }
                     }
                 }
             } failure: { [self] error in
                 self.addCategoryError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             self.addCategoryError(error)
         }
     }

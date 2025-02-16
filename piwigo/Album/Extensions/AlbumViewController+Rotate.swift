@@ -61,7 +61,7 @@ extension AlbumViewController
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesRight, contextually: false)
     }
 
-    func rotateImages(withID someIDs: Set<Int64>, by angle: Double, total: Float) {
+    func rotateImages(withID someIDs: Set<Int64>, by angle: CGFloat, total: Float) {
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
@@ -99,45 +99,44 @@ extension AlbumViewController
         }
 
         // Send request to Piwigo server
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.rotate(imageData, by: angle) { [self] in
-                // Retrieve updated image data i.e. width, height, URLs
-                /// We retrieve URLs of thumbnails which are not in cache anymore:
-                /// - available: https://piwigo…/_data/i/upload/2024/02/17/20240217192937-d5cf80b5-xx.jpg
-                /// - unavailable: https://piwigo…/i.php?/upload/2024/02/17/20240217192937-d5cf80b5-xx.jpg
-                let imageID = imageData.pwgID
-                self.imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
-                    // Update HUD
-                    DispatchQueue.main.async { [self] in
-                        // Update progress indicator
-                        let progress: Float = 1 - Float(remainingIDs.count) / total
-                        self.navigationController?.updateHUD(withProgress: progress)
-                        
-                        // Rotate cell image
+                // Update HUD
+                DispatchQueue.main.async { [self] in
+                    // Update progress indicator
+                    let progress: Float = 1 - Float(remainingIDs.count) / total
+                    self.navigationController?.updateHUD(withProgress: progress)
+                    
+                    // Check if we already have the image in cache
+                    if let wantedImage = imageData.cachedThumbnail(ofSize: self.imageSize) {
+                        // Downsample thumbnail (should not be needed)
+                        let cachedImage = ImageUtilities.downsample(image: wantedImage, to: self.getImageCellSize())
+                        // Rotate cell image if needed
                         let visibleCells = self.collectionView?.visibleCells ?? []
-                        for cell in visibleCells {
-                            if let cell = cell as? ImageCollectionViewCell, cell.imageData.pwgID == imageID,
-                               let updatedImage = self.images.fetchedObjects?.filter({$0.pwgID == imageID}).first {
-                                cell.config(with: updatedImage, placeHolder: self.imagePlaceHolder,
-                                            size: self.imageSize, sortOption: self.sortOption)
+                        let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                        if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {
+                            // Rotate thumbnail
+                            UIView.animate(withDuration: 0.25) {
+                                cell.cellImage.transform = CGAffineTransform(rotationAngle: -angle)
+                            } completion: { _ in
+                                cell.cellImage.image = cachedImage
+                                cell.cellImage.transform = CGAffineTransformIdentity
                             }
                         }
                     }
-                    
-                    // Next image
-                    remainingIDs.removeFirst()
-                    selectedImageIDs.remove(imageID)
-                    selectedFavoriteIDs.remove(imageID)
-                    selectedVideosIDs.remove(imageID)
-                    rotateImages(withID: remainingIDs, by: angle, total: total)
-                    
-                } failure: { [self] error in
-                    rotateImagesInDatabaseError(error)
                 }
+                
+                // Next image
+                remainingIDs.removeFirst()
+                selectedImageIDs.remove(imageID)
+                selectedFavoriteIDs.remove(imageID)
+                selectedVideosIDs.remove(imageID)
+                rotateImages(withID: remainingIDs, by: angle, total: total)
+                
             } failure: { [self] error in
                 rotateImagesInDatabaseError(error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             rotateImagesInDatabaseError(error)
         }
     }
@@ -152,13 +151,23 @@ extension AlbumViewController
                 return
             }
 
-            // Report error
-            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
-            let message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [self] in
-                // Hide HUD
-                navigationController?.hideHUD { [self] in
+            // Hide HUD
+            navigationController?.hideHUD { [self] in
+                // Plugin rotateImage installed?
+                let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
+                var message = "", errorMsg = ""
+                if let pwgError = error as? PwgSessionError,
+                   pwgError == .otherError(code: 501, msg: "") {
+                    message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
+                }
+                else {
+                    message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
+                    errorMsg = error.localizedDescription
+                }
+                
+                // Report error
+                navigationController?.dismissPiwigoError(withTitle: title, message: message,
+                                                         errorMessage: errorMsg) { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }

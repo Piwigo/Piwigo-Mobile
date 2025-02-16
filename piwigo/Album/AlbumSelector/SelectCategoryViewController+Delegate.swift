@@ -228,7 +228,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             let message = String(format: NSLocalizedString("categoryImageSet_message", comment:"Are you sure you want to set this image for the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { [self] _ in
-                // Add category to list of recent albums
+                // Set image as thumbnail of selected album
                 self.setRepresentative(for: albumData)
             })
 

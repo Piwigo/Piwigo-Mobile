@@ -14,13 +14,13 @@ import UIKit
 
 class ImageUtilities: NSObject {
     
-    // MARK: - Piwigo Server Methods    
+    // MARK: - Piwigo Server Methods
     static func rotate(_ image: Image, by angle: Double,
                        completion: @escaping () -> Void,
                        failure: @escaping (NSError) -> Void) {
         // Prepare parameters for rotating image
         let paramsDict: [String : Any] = ["image_id"  : image.pwgID,
-                                          "angle"     : angle,
+                                          "angle"     : angle * 180.0 / .pi,
                                           "pwg_token" : NetworkVars.pwgToken,
                                           "rotate_hd" : true]
         
@@ -43,13 +43,15 @@ class ImageUtilities: NSObject {
                 }
                 
                 // Successful?
+                /// Image data not always immediately available after rotation.
+                /// We rotate the images stored in cache instead of downloading them.
                 if uploadJSON.result {
-                    // Images rotated successfully ► Delete images in cache
-                    image.deleteCachedFiles()
+                    // Image rotated successfully ► Rotate thumbnails in cache
+                    rotateThumbnailsOfImage(image, by: angle)
                     completion()
                 }
                 else {
-                    // Could not delete images
+                    // Could not rotate image
                     failure(PwgSessionError.unexpectedError as NSError)
                 }
             } catch {
@@ -211,7 +213,7 @@ class ImageUtilities: NSObject {
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size
     /// WWDC 2018 - Session 219 - Image and Graphics Best practices
-
+    
     // Bug introduced on 6 September 2024 (commit 18e427379a8132575a72ef053fe7d26090e09525)
     static let dateCommit18e4273 = ISO8601DateFormatter().date(from: "2024-09-06T00:00:00Z")!
     static let dateOfFirstOptImageV323 = {
@@ -229,7 +231,7 @@ class ImageUtilities: NSObject {
         // Return reduced size or nil if no downsampling should be performed
         return reducedSize(from: image.size, to: pointSize)
     }
-        
+    
     static func reducedSize(from originalSize: CGSize, to pointSize: CGSize) -> CGSize? {
         // Wanted size too small?
         if pointSize.width < 1 || pointSize.height < 1 { return nil }
@@ -243,8 +245,8 @@ class ImageUtilities: NSObject {
         // Image size larger than pointSize
         return CGSizeMake(originalSize.width / scale, originalSize.height / scale)
     }
-
-    static func downsample(imageAt imageURL: URL, to pointSize: CGSize) -> UIImage {
+    
+    static func downsample(imageAt imageURL: URL, to pointSize: CGSize, for type: pwgImageType) -> UIImage {
         // Optimised image available?
         let filePath = imageURL.path + CacheVars.shared.optImage
         if let optImage = UIImage(contentsOfFile: filePath) {
@@ -269,7 +271,7 @@ class ImageUtilities: NSObject {
             else {
                 // Delete corrupted cached image file if any
                 try? FileManager.default.removeItem(at: imageURL)
-                return UIImage(named: "unknownImage")!
+                return type.placeHolder
             }
             // Downsample image if needed
             guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
@@ -293,7 +295,7 @@ class ImageUtilities: NSObject {
                 } else {
                     // Delete corrupted cached image file
                     try? FileManager.default.removeItem(at: imageURL)
-                    return UIImage(named: "unknownImage")!
+                    return type.placeHolder
                 }
             }
             saveDownsampledImage(downsampledImage, atPath: filePath)
@@ -309,15 +311,17 @@ class ImageUtilities: NSObject {
                    let downsampledImage = image.preparingThumbnail(of: optSize) {
                     return downsampledImage
                 }
-            } else {
-                // Fallback on earlier versions
-                let options = [kCGImageSourceShouldCache: false] as CFDictionary
-                if let imageData = image.jpegData(compressionQuality: 1.0),
-                   let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
-                   let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
-                    return downsampledImage
-                }
             }
+            
+            // Fallback on earlier versions
+            let options = [kCGImageSourceShouldCache: false] as CFDictionary
+            if let imageData = image.jpegData(compressionQuality: 1.0),
+               let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
+               let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
+                return downsampledImage
+            }
+            
+            // Return original image
             return image
         }
     }
@@ -377,14 +381,14 @@ class ImageUtilities: NSObject {
     @available(iOS, introduced: 12.0, deprecated: 15.0, message: "")
     public static func supportsPixelFormat(ofCGImage image: CGImage) -> Bool {
         guard let colorSpace = image.colorSpace else {
-          return false
+            return false
         }
         #if os(iOS) || os(watchOS) || os(tvOS)
         let iOS = true
         #else
         let iOS = false
         #endif
-
+        
         #if os(OSX)
         let macOS = true
         #else
@@ -465,7 +469,7 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func getURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
+    static func getPiwigoURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution
         /// - The max size of a video thumbnail is xxLarge
@@ -479,7 +483,7 @@ class ImageUtilities: NSObject {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size == .square, let imageURL = pwgURL {
             return imageURL as URL
@@ -491,7 +495,7 @@ class ImageUtilities: NSObject {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .thumb, let imageURL = pwgURL {
             return imageURL as URL
@@ -503,90 +507,155 @@ class ImageUtilities: NSObject {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .xxSmall, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // X Small Size
         if NetworkVars.hasXSmallSizeImages,
            let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .xSmall, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // Small Size
         if NetworkVars.hasSmallSizeImages,
            let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .small, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // Medium Size (should always be available)
         if NetworkVars.hasMediumSizeImages,
            let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .medium, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // Large Size
         if NetworkVars.hasLargeSizeImages,
            let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .large, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // X Large Size
         if NetworkVars.hasXLargeSizeImages,
            let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached
         if size <= .xLarge, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // XX Large Size
         if NetworkVars.hasXXLargeSizeImages,
            let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
-
+        
         // Done if wanted size reached or video
         if (size <= .xxLarge) || imageData.isVideo, let imageURL = pwgURL {
             return imageURL as URL
         }
-
+        
         // Full Resolution
         if imageData.isVideo == false,
-            let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
+           let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
         }
         return pwgURL as URL?
+    }
+    
+
+    // MARK: Image Rotation
+    static func rotateThumbnailsOfImage(_ imageData: Image, by angle: CGFloat) {
+        // Initialisation
+        guard let serverID = imageData.server?.uuid else { return }
+        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let fm = FileManager.default
+
+        // Loop over all sizes
+        autoreleasepool {
+            pwgImageSize.allCases.forEach { size in
+                // Determine URL of image in cache
+                let fileURL = cacheDir.appendingPathComponent(size.path)
+                    .appendingPathComponent(String(imageData.pwgID))
+                
+                // Rotate thumbnail if any
+                if let image = UIImage(contentsOfFile: fileURL.path),
+                   let rotatedImage = image.rotated(by: -angle),
+                   let data = rotatedImage.jpegData(compressionQuality: 1.0) as? NSData
+                {
+                    let filePath = fileURL.path
+                    try? fm.removeItem(atPath: filePath)
+                    do {
+                        try data.write(toFile: filePath, options: .atomic)
+                    } catch {
+                        debugPrint(error.localizedDescription)
+                    }
+                }
+                
+                // Swap dimensions
+                switch size {
+                case .square:
+                    imageData.sizes.square?.dimensionsSwaped()
+                case .thumb:
+                    imageData.sizes.thumb?.dimensionsSwaped()
+                case .xxSmall:
+                    imageData.sizes.xxsmall?.dimensionsSwaped()
+                case .xSmall:
+                    imageData.sizes.xsmall?.dimensionsSwaped()
+                case .small:
+                    imageData.sizes.small?.dimensionsSwaped()
+                case .medium:
+                    imageData.sizes.medium?.dimensionsSwaped()
+                case .large:
+                    imageData.sizes.large?.dimensionsSwaped()
+                case .xLarge:
+                    imageData.sizes.xlarge?.dimensionsSwaped()
+                case .xxLarge:
+                    imageData.sizes.xxlarge?.dimensionsSwaped()
+                case .fullRes:
+                    imageData.fullRes?.dimensionsSwaped()
+                }
+ 
+                // Rotate optimised image if any
+                let filePath = fileURL.path + CacheVars.shared.optImage
+                if let image = UIImage(contentsOfFile: filePath),
+                   let rotatedImage = image.rotated(by: -angle) {
+                    saveDownsampledImage(rotatedImage, atPath: filePath)
+                }
+                
+                // The file size and MD5 checksum are unchanged.
+            }
+        }
     }
 }

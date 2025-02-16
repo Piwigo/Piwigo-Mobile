@@ -23,12 +23,15 @@ class ImageHeaderReusableView: UICollectionReusableView
     
     weak var imageHeaderDelegate: ImageHeaderDelegate?
 
+    @IBOutlet weak var albumLabel: UILabel!
+    @IBOutlet weak var albumLabelHeight: NSLayoutConstraint!
     @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     
     func config(with images: [Image], sortKey: String,
-                section: Int, selectState: SelectButtonState)
+                section: Int, selectState: SelectButtonState,
+                album description: NSAttributedString = NSAttributedString(), size: CGSize = CGSize.zero)
     {
         // Keep section for future use
         self.section = section
@@ -36,6 +39,15 @@ class ImageHeaderReusableView: UICollectionReusableView
         // Set colors
         applyColorPalette()
 
+        // Set album description label
+        if size == CGSize.zero {
+            albumLabel.text = ""
+            albumLabelHeight.constant = 0
+        } else {
+            albumLabel.attributedText = description
+            albumLabelHeight.constant = size.height
+        }
+        
         // Get date labels from images in section
         var dates = ("", "")
         switch sortKey {
@@ -46,6 +58,7 @@ class ImageHeaderReusableView: UICollectionReusableView
             let dateIntervals = images.map {$0.datePosted}
             dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
         default:
+            dates = (" ", " ")
             break
         }
         
@@ -86,6 +99,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         mainLabel.textColor = .piwigoColorLeftLabel()
         detailLabel.textColor = .piwigoColorRightLabel()
         selectButton.backgroundColor = .piwigoColorBackground()
+        albumLabel.textColor = .piwigoColorHeader()
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {

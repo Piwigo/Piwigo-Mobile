@@ -151,7 +151,7 @@
 "categoryUpdatedOn" = "Bijgewerkt op %@";
 "categoryUpdatedAt" = "Bijgewerkt op %@";
 "categoryUpdatedNow" = "Zojuist bijgewerkt";
-"categoryMainEmtpy" = "Nog geen albums in jouw Piwigo.\nGebruik de pull down om te vernieuwen, of meld opnieuw aan.";
+"categoryMainEmtpy" = "Nog geen albums in jouw Piwigo. Gebruik de pull-down om te vernieuwen, of meld opnieuw aan.";
 "categoryImageList_selectButton" = "Selecteer";
 "categoryImageList_deselectButton" = "Deselecteren";
 "categoryImageList_noDataError" = "Fout geen gegevens";
@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Cachegeheugen";
 "settings_database" = "Gegevens";
 "settings_cacheClear" = "Cache wissen";
+"settings_cacheClearing" = "De cache wissen";
 "settings_cacheClearAll" = "Alles wissen";
 "settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt verwijderen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 

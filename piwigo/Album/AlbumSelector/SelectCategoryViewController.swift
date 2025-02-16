@@ -275,6 +275,10 @@ class SelectCategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Register the CategoryTableViewCell before using it
+        categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
+                                      forCellReuseIdentifier: "CategoryTableViewCell")
+
         // Check that a root album exists in cache (create it if necessary)
         guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
             return
@@ -291,10 +295,6 @@ class SelectCategoryViewController: UIViewController {
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "CancelSelect"
-
-        // Register CategoryTableViewCell
-        categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
-                                      forCellReuseIdentifier: "CategoryTableViewCell")
 
         // Set title and buttons
         switch wantedAction {
@@ -382,7 +382,7 @@ class SelectCategoryViewController: UIViewController {
         // Use the AlbumProvider to fetch album data recursively. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .thumb
-        PwgSession.checkSession(ofUser: user) { [unowned self] in
+        PwgSession.checkSession(ofUser: user) { [self] in
             // Fetch albums recursively
             albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                       thumbnailSize: thumnailSize) { [self] error in
@@ -394,7 +394,7 @@ class SelectCategoryViewController: UIViewController {
                 }
                 didFetchAlbumsWithError(error: error)
             }
-        } failure: { [unowned self] error in
+        } failure: { [self] error in
             didFetchAlbumsWithError(error: error)
         }
     }

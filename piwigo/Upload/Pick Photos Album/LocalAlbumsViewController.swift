@@ -407,7 +407,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         switch albumType {
         case .pasteboard:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!") }
+            else { preconditionFailure("Could not load a LocalAlbumsNoDatesTableViewCell!") }
             let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
             let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: pasteboardTypes)?.count ?? NSNotFound
             cell.configure(with: title, nberPhotos: Int64(nberPhotos))
@@ -446,7 +446,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Display [+] button at the bottom of section presenting a limited number of albums
         guard let aCollection = assetCollection else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LocalAlbumsMoreTableViewCell!") }
+            else { preconditionFailure("Could not load a LocalAlbumsMoreTableViewCell!") }
             cell.configure()
             cell.isAccessibilityElement = true
             return cell
@@ -458,7 +458,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         if let startDate = aCollection.startDate, let endDate = aCollection.endDate {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LocalAlbumsTableViewCell!") }
+            else { preconditionFailure("Could not load a LocalAlbumsTableViewCell!") }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
             cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if aCollection.assetCollectionType == .smartAlbum,
@@ -470,7 +470,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell
-            else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!") }
+            else { preconditionFailure("Could not load a LocalAlbumsNoDatesTableViewCell!") }
             cell.configure(with: title, nberPhotos: nberPhotos)
             cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if aCollection.assetCollectionType == .smartAlbum,

@@ -24,6 +24,32 @@ public enum PwgSessionError: Error {
     case invalidCredentials     // 999
     case missingParameter       // 1002
     case invalidParameter       // 1003
+    case otherError(code: Int, msg: String)
+}
+
+extension PwgSessionError: Equatable {
+    static public func ==(lhs: PwgSessionError, rhs: PwgSessionError) -> Bool {
+        switch (lhs, rhs) {
+        case (.networkUnavailable, .networkUnavailable),
+             (.emptyJSONobject, .emptyJSONobject),
+             (.invalidJSONobject, .invalidJSONobject),
+             (.wrongJSONobject, .wrongJSONobject),
+             (.authenticationFailed, .authenticationFailed),
+             (.unexpectedError, .unexpectedError),
+             (.incompatiblePwgVersion, .incompatiblePwgVersion),
+             (.failedToPrepareDownload, .failedToPrepareDownload),
+             (.invalidURL, .invalidURL),
+             (.invalidMethod, .invalidMethod),
+             (.invalidCredentials, .invalidCredentials),
+             (.missingParameter, .missingParameter),
+             (.invalidParameter, .invalidParameter):
+            return true
+        case (let .otherError(lhsCode, _), let .otherError(rhsCode, _)):
+            return lhsCode == rhsCode
+        default:
+            return false
+        }
+    }
 }
 
 extension PwgSessionError: LocalizedError {
@@ -44,9 +70,6 @@ extension PwgSessionError: LocalizedError {
         case .authenticationFailed:
             return NSLocalizedString("sessionStatusError_message",
                                      comment: "Failed to authenticate with server.\nTry logging in again.")
-        case .unexpectedError:
-            return NSLocalizedString("serverUnknownError_message",
-                                     comment: "Unexpected error encountered while calling server method with provided parameters.")
         case .invalidMethod:
             return NSLocalizedString("serverInvalidMethodError_message",
                                      comment: "Failed to call server method.")
@@ -66,27 +89,36 @@ extension PwgSessionError: LocalizedError {
             return NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address.")
         case .failedToPrepareDownload:
             return NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
+        case .unexpectedError:
+            fallthrough
+        default:
+            return NSLocalizedString("serverUnknownError_message",
+                                     comment: "Unexpected error encountered while calling server method with provided parameters.")
         }
     }
 }
 
 extension PwgSession {
     public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
-        switch errorCode {
-        case 404:
-            return PwgSessionError.invalidURL
-        case 501:
-            return PwgSessionError.invalidMethod
-        case 999:
-            return PwgSessionError.invalidCredentials
-        case 1002:
-            return PwgSessionError.missingParameter
-        case 1003:
-            return PwgSessionError.invalidParameter
-        default:
-            let error = NSError(domain: "Piwigo", code: errorCode,
-                                userInfo: [NSLocalizedDescriptionKey : errorMessage])
-            return error as Error
+        if errorMessage.isEmpty {
+            switch errorCode {
+            case 401, 402, 403, 999:
+                return PwgSessionError.invalidMethod
+            case 400, 404, 405:
+                return PwgSessionError.invalidParameter
+            case 500:
+                return PwgSessionError.unexpectedError
+            case 501:
+                return PwgSessionError.invalidMethod
+            case 1002:
+                return PwgSessionError.missingParameter
+            case 1003:
+                return PwgSessionError.invalidParameter
+            default:
+                return PwgSessionError.unexpectedError
+            }
+        } else {
+            return PwgSessionError.otherError(code: errorCode, msg: errorMessage)
         }
     }
 }

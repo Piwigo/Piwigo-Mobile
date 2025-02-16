@@ -802,6 +802,7 @@
 "settingsHeader_cache" = "Pamięć podręczna";
 "settings_database" = "Dane";
 "settings_cacheClear" = "Wyczyść pamięć podręczną";
+"settings_cacheClearing" = "Czyszczenie pamięci podręcznej";
 "settings_cacheClearAll" = "Wyczyść wszystko";
 "settings_cacheClearMsg" = "Na pewno chcesz wyczyścić pamięć podręczną zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
 

@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 class LocalImagePreviewViewController: UIViewController {
     private var aspectRatio = 1.0
@@ -28,7 +29,7 @@ class LocalImagePreviewViewController: UIViewController {
                     if let error = info?[PHImageErrorKey] as? Error {
                         debugPrint("••> Error : \(error.localizedDescription)")
                     }
-                    self.imageView.image = UIImage(named: "placeholder")!
+                    self.imageView.image = pwgImageType.image.placeHolder
                     return
                 }
                 self.imageView.image = image

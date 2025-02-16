@@ -13,6 +13,8 @@ import piwigoKit
 
 class AlbumTableViewCell: UITableViewCell {
     
+    var imageURL: URL?
+
     @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var topCut: UIButton!
     @IBOutlet weak var bottomCut: UIButton!
@@ -79,37 +81,33 @@ class AlbumTableViewCell: UITableViewCell {
             // Set representative (case where images were uploaded recently)
             albumData?.thumbnailId = firstImage.pwgID
             let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-            albumData?.thumbnailUrl = ImageUtilities.getURL(firstImage, ofMinSize: thumnailSize) as NSURL?
+            albumData?.thumbnailUrl = ImageUtilities.getPiwigoURL(firstImage, ofMinSize: thumnailSize) as NSURL?
         }
         
         // Retrieve image from cache or download it
         self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
-        let placeHolder = UIImage(named: "placeholder")!
         let scale = max(self.backgroundImage.traitCollection.displayScale, 1.0)
         let cellSize = CGSizeMake(self.backgroundImage.bounds.size.width * scale, self.backgroundImage.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
-        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize,
-                                   atURL: albumData?.thumbnailUrl as? URL,
-                                   fromServer: albumData?.user?.server?.uuid,
-                                   placeHolder: placeHolder) { [weak self] cachedImageURL in
-            self?.downsampleImage(atURL: cachedImageURL, to: cellSize)
-        } failure: { [weak self] _ in
-            self?.setBackgroundWithImage(placeHolder)
-        }
-    }
-    
-    private func downsampleImage(atURL fileURL: URL, to cellSize: CGSize) {
-        // Process image in the background (.userInitiated leads to concurrency issues)
-        DispatchQueue.global(qos: .default).async { [self] in
-            // Downsample image in cache
-            let cachedImage = ImageUtilities.downsample(imageAt: fileURL, to: cellSize)
-            
-            // Process saliency if needed
-            if #available(iOS 13.0, *) {
-                self.setBackgroundWithImage(cachedImage.processSaliency() ?? cachedImage)
-            } else {
-                self.setBackgroundWithImage(cachedImage)
+        imageURL = albumData?.thumbnailUrl as? URL
+        PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
+                                   atURL: imageURL, fromServer: albumData?.user?.server?.uuid) { [weak self] cachedImageURL in
+            // Process image in the background (.userInitiated leads to concurrency issues)
+            // Can be called too many times leading to thread management issues
+            guard let self = self else { return }
+            DispatchQueue.global(qos: .default).async { [self] in
+                // Downsample image in cache
+                let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
+                
+                // Process saliency if needed
+    //            if #available(iOS 13.0, *) {
+    //                self.setBackgroundWithImage(cachedImage.processSaliency() ?? cachedImage)
+    //            } else {
+                    self.setBackgroundWithImage(cachedImage)
+    //            }
             }
+        } failure: { [weak self] _ in
+            self?.setBackgroundWithImage(pwgImageType.album.placeHolder)
         }
     }
     
@@ -226,6 +224,18 @@ class AlbumTableViewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        backgroundImage.image = nil
+        
+        // Pause the ongoing image download if needed
+        if let imageURL = self.imageURL {
+            PwgSession.shared.pauseDownload(atURL: imageURL)
+        }
+        
+        // Reset cell
+        self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
+        self.albumComment.attributedText = NSAttributedString()
+        self.numberOfImages.text = ""
+        self.recentBckg.isHidden = true
+        self.recentImage.isHidden = true
+        self.backgroundImage.image = pwgImageType.album.placeHolder
     }
 }

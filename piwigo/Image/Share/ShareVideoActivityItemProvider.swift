@@ -123,9 +123,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, atURL: imageURL,
-                                   fromServer: serverID, fileSize: imageData.fileSize,
-                                   placeHolder: placeholderItem as! UIImage) { [weak self] fractionCompleted in
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
+                                   fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
         } completion: { [unowned self] fileURL in

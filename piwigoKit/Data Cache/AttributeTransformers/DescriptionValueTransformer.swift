@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(DescriptionValueTransformer)
 public class DescriptionValueTransformer: NSSecureUnarchiveFromDataTransformer {
 
     public override class func allowsReverseTransformation() -> Bool {
@@ -24,14 +25,14 @@ public class DescriptionValueTransformer: NSSecureUnarchiveFromDataTransformer {
     
     public override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
-            fatalError("Wrong data type: value must be a Data object; received \(type(of: value))")
+            preconditionFailure("Wrong data type: value must be a Data object; received \(type(of: value))")
         }
         return super.transformedValue(data)
     }
     
     public override func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let description = value as? NSAttributedString else {
-            fatalError("Wrong data type: value must be a NSAttributedString object; received \(type(of: value))")
+            preconditionFailure("Wrong data type: value must be a NSAttributedString object; received \(type(of: value))")
         }
         return super.reverseTransformedValue(description)
     }

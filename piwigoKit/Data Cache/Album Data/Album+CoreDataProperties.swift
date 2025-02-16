@@ -37,6 +37,10 @@ extension Album {
     @NSManaged public var user: User?
     @NSManaged public var images: Set<Image>?
 
+    @objc var albumSection: String? {
+        /* Used to name the album section */
+        return pwgAlbumGroup.none.sectionKey
+    }
 }
 
 // MARK: Generated accessors for images

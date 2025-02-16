@@ -8,6 +8,23 @@
 
 import Foundation
 
+// Grouping options when sorting albums
+public enum pwgAlbumGroup: Int16, CaseIterable {
+    case none = 0
+}
+
+extension pwgAlbumGroup
+{
+    // See DataModel
+    public var sectionKey: String {
+        switch self {
+        case .none:
+            return "albumSection"
+        }
+    }
+}
+
+
 // Grouping options when sorting images by date
 public enum pwgImageGroup: Int16, CaseIterable {
     case none = 0

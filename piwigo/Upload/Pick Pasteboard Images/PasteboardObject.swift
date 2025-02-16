@@ -22,7 +22,7 @@ class PasteboardObject {
     var md5Sum: String
     var identifier: String
     var state = PasteboardObjectState.new
-    var image: UIImage! = UIImage(named: "placeholder")!
+    var image: UIImage = pwgImageType.image.placeHolder
     
     init(identifier: String, types: [String]) {
         self.md5Sum = ""
@@ -196,12 +196,12 @@ class ObjectPreparation : Operation {
             if pbObject.identifier.contains("mov") {
                 pbObject.image = AVURLAsset(url: fileURL)
                     .extractedImage()
-                    .crop(width: 1.0, height: 1.0)?
+                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
                     .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
             } else {
-                pbObject.image = (UIImage(data: data) ?? UIImage(named: "placeholder")!)
+                pbObject.image = (UIImage(data: data) ?? pwgImageType.image.placeHolder)
                     .fixOrientation()
-                    .crop(width: 1.0, height: 1.0)?
+                    .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
                     .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
             }
         }

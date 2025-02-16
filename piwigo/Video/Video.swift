@@ -39,7 +39,7 @@ extension Image
            let pwgURL = self.fullRes?.url {
             // Create video object
             let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-            let artwork = self.cachedThumbnail(ofSize: size) ?? UIImage(named: "unknownImage")!
+            let artwork = self.cachedThumbnail(ofSize: size) ?? pwgImageType.image.placeHolder
             return Video(pwgID: self.pwgID, pwgURL: pwgURL as URL, cacheURL: cacheURL,
                          title: self.titleStr, artwork: artwork)
         }

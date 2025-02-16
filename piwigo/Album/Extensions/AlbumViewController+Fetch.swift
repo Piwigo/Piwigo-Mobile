@@ -18,6 +18,21 @@ extension AlbumViewController
         // from main context before calling background tasks
         /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
         /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
+//        var oldImageIDs = Set<Int64>()
+//        if #available(iOS 13.0, *) {
+//            let snapshot = self.diffableDataSource.snapshot() as Snaphot
+//            oldImageIDs = Set(snapshot.itemIdentifiers
+//                .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
+//                .compactMap({ $0.pwgID }) )
+//            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+//                oldImageIDs.subtract(Set(snapshot.itemIdentifiers(inSection: pwgAlbumGroup.none.sectionKey)
+//                    .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
+//                    .compactMap({ $0.pwgID })) )
+//            }
+//        } else {
+//            // Fallback on earlier versions
+//            oldImageIDs = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
+//        }
         let oldImageIDs = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
         let query = albumData.query
 
@@ -53,6 +68,9 @@ extension AlbumViewController
                 let nbImages = self.albumData.nbImages
                 if self.categoryId == 0 || nbImages == 0 {
                     // Done fetching images
+                    // ► Remove current album from list of album being fetched
+                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+
                     // ► Check if the album has been deleted
                     if self.albumData.isDeleted {
                         DispatchQueue.main.async { [self] in
@@ -64,8 +82,6 @@ extension AlbumViewController
                     }
                     // ► Remove non-fetched images from album
                     self.removeImageWithIDs(oldImageIDs)
-                    // ► Remove current album from list of album being fetched
-                    AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
                     completion()
                     return
                 }
@@ -108,22 +124,15 @@ extension AlbumViewController
                     // Re-calculate number of pages for some smart albums
                     if [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue].contains(albumData.pwgID) {
                         // Update smart album data (limited to 'perPage' photos - 15 on webUI)
-                        if albumData.nbImages != Int64(perPage) {
-                            albumData.nbImages = Int64(perPage)
-                        }
-                        if albumData.totalNbImages != Int64(perPage) {
-                            albumData.totalNbImages = Int64(perPage)
-                        }
+                        albumData.nbImages = min(totalCount, Int64(perPage))
+                        albumData.totalNbImages = albumData.nbImages
                     } else {
+                        // Calculate number of pages to fetch
                         newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
                         // Update smart album data
-                        if albumData.nbImages != totalCount {
-                            albumData.nbImages = totalCount
-                        }
-                        if albumData.totalNbImages != totalCount {
-                            albumData.totalNbImages = totalCount
-                        }
+                        albumData.nbImages = totalCount
+                        albumData.totalNbImages = totalCount
                     }
                 }
                 
@@ -134,16 +143,30 @@ extension AlbumViewController
                 if onPage < newLastPage, query == albumData.query {
                     // Pursue fetch without HUD
                     DispatchQueue.main.async { [self] in
-                        navigationController?.hideHUD { [self] in
-                            // Set navigation bar buttons
-                            if self.isSelect {
-                                self.updateBarsInSelectMode()
-                            } else {
-                                self.updateBarsInPreviewMode()
-                            }
+                        if navigationController?.isShowingHUD() ?? false {
+                            navigationController?.hideHUD { [self] in
+                                // Set navigation bar buttons
+                                if self.isSelect {
+                                    self.updateBarsInSelectMode()
+                                } else {
+                                    self.updateBarsInPreviewMode()
+                                    if newLastPage > 2 {
+                                        let progress = Float(onPage + 1) / Float(newLastPage)
+                                        self.setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
+                                    }
+                                }
 
-                            // End refreshing if needed
-                            self.collectionView?.refreshControl?.endRefreshing()
+                                // End refreshing if needed
+                                self.collectionView?.refreshControl?.endRefreshing()
+                            }
+                        } else {
+                            if newLastPage > 2 {
+                                let progress = Float(onPage + 1) / Float(newLastPage)
+                                let userInfo = ["pwgID" : self.albumData.pwgID,
+                                                "fetchProgressFraction" : progress]
+                                NotificationCenter.default.post(name: Notification.Name.pwgFetchedImages,
+                                                                object: nil, userInfo: userInfo)
+                            }
                         }
                     }
                     // Is user editing the search string?
@@ -193,6 +216,8 @@ extension AlbumViewController
         DispatchQueue.main.async { [self] in
             // Remember when images were fetched
             self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
+            // Update titleView
+            self.setTitleViewFromAlbumData(whileUpdating: false)
             
             // Remove images if necessary
             if let images = self.albumData.images {
