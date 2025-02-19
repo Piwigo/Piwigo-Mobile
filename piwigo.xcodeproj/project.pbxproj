@@ -271,6 +271,9 @@
 		AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD76646A298867FC00CFD66F /* AlbumDeletion.swift */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParamsViewController.storyboard */; };
 		AD778357267E34F800317F36 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
+		AD79E8A32D63D75500106643 /* pwg.images.setCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD79E8A22D63D75500106643 /* pwg.images.setCategory.swift */; };
+		AD79E8A42D63D75500106643 /* pwg.images.setCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD79E8A22D63D75500106643 /* pwg.images.setCategory.swift */; };
+		AD79E8A72D63D8DF00106643 /* pwg.images.setCategory.json in Resources */ = {isa = PBXBuildFile; fileRef = AD79E8A52D63D83E00106643 /* pwg.images.setCategory.json */; };
 		AD7A0CC22C10FF4A008AB50F /* UIButton+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */; };
 		AD7A8FE52849252F00171592 /* pwg.categories.move.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE42849252F00171592 /* pwg.categories.move.json */; };
 		AD7A8FE72849256800171592 /* pwg.categories.setRepresentative.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */; };
@@ -898,6 +901,8 @@
 		AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = piwigoIntentsRelease.entitlements; sourceTree = "<group>"; };
 		AD778368267E384500317F36 /* UploadPhotosHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadPhotosHandler.swift; sourceTree = "<group>"; };
 		AD7783B1267E4AB700317F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
+		AD79E8A22D63D75500106643 /* pwg.images.setCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.setCategory.swift; sourceTree = "<group>"; };
+		AD79E8A52D63D83E00106643 /* pwg.images.setCategory.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.setCategory.json; sourceTree = "<group>"; };
 		AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+AppTools.swift"; sourceTree = "<group>"; };
 		AD7A8FE42849252F00171592 /* pwg.categories.move.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.move.json; sourceTree = "<group>"; };
 		AD7A8FE62849256800171592 /* pwg.categories.setRepresentative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setRepresentative.swift; sourceTree = "<group>"; };
@@ -2036,6 +2041,7 @@
 				AD23882628FAB4050037696E /* pwg.images.search.swift */,
 				ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */,
 				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
+				AD79E8A22D63D75500106643 /* pwg.images.setCategory.swift */,
 				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
 				AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */,
 				ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */,
@@ -2196,6 +2202,7 @@
 				AD06E3812A42275D007CACD7 /* pwg.images.exist.json */,
 				ADE21700250E23EC003AE588 /* pwg.images.getInfo.json */,
 				AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */,
+				AD79E8A52D63D83E00106643 /* pwg.images.setCategory.json */,
 				AD11E46824A9319C00C8876F /* pwg.images.upload.json */,
 				ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */,
 				ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */,
@@ -2890,6 +2897,7 @@
 				AD98DEB227C1AF2900FAC983 /* pwg.session.getStatus.json in Resources */,
 				AD211A8C27C14B7E005D5E4F /* pwg.session.logout.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
+				AD79E8A72D63D8DF00106643 /* pwg.images.setCategory.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
 				AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */,
 				AD29BC972A4B73B400777390 /* pwg.tags.getAdminList2.json in Resources */,
@@ -3170,6 +3178,7 @@
 				ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */,
 				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
 				ADF72EA126712CA80027E2CC /* UploadProvider.swift in Sources */,
+				AD79E8A42D63D75500106643 /* pwg.images.setCategory.swift in Sources */,
 				ADF72EA226712CAB0027E2CC /* UploadError.swift in Sources */,
 				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
 				ADE250D72670016900285978 /* PwgSession+Utilities.swift in Sources */,
@@ -3224,6 +3233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADD485C32B13A24500C7E30E /* pwg.history.log.swift in Sources */,
+				AD79E8A32D63D75500106643 /* pwg.images.setCategory.swift in Sources */,
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
 				AD865773284CFE6D00C06EF4 /* community.categories.getList.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
@@ -4458,7 +4468,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.5;
+				MARKETING_VERSION = 3.3;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo";
@@ -4507,7 +4517,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.5;
+				MARKETING_VERSION = 3.3;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;

@@ -34,19 +34,23 @@ public extension PwgSession {
                     return
                 }
                 
-                // Check if the Community extension is installed and active (> 2.9a)
+                // Check if the Community extension is installed and active (since Piwigo 2.9a)
                 NetworkVars.usesCommunityPluginV29 = methodsJSON.data.contains("community.session.getStatus")
                 
-                // Check if the pwg.images.uploadAsync method is available
+                // Check if the pwg.images.uploadAsync method is available (since Piwigo 11)
                 NetworkVars.usesUploadAsync = methodsJSON.data.contains("pwg.images.uploadAsync")
                 
-                // Check if the pwg.categories.calculateOrphans method is available
+                // Check if the pwg.categories.calculateOrphans method is available (since Piwigo 12)
                 NetworkVars.usesCalcOrphans = methodsJSON.data.contains("pwg.categories.calculateOrphans")
                 
+                // Check if the pwg.images.setCategory method is available (since Piwigo 14)
+                NetworkVars.usesSetCategory = methodsJSON.data.contains("pwg.images.setCategory")
+                
                 if #available(iOSApplicationExtension 14.0, *) {
-                    PwgSession.logger.notice("Has Community plugin: \(NetworkVars.usesCommunityPluginV29, privacy: .public)")
-                    PwgSession.logger.notice("Has uploadAsync method: \(NetworkVars.usesUploadAsync, privacy: .public)")
-                    PwgSession.logger.notice("Has calculateOrphans method: \(NetworkVars.usesCalcOrphans, privacy: .public)")
+                    PwgSession.logger.notice("Community plugin installed: \(NetworkVars.usesCommunityPluginV29, privacy: .public)")
+                    PwgSession.logger.notice("uploadAsync method available: \(NetworkVars.usesUploadAsync, privacy: .public)")
+                    PwgSession.logger.notice("calculateOrphans method available: \(NetworkVars.usesCalcOrphans, privacy: .public)")
+                    PwgSession.logger.notice("setCategory method available: \(NetworkVars.usesSetCategory, privacy: .public)")
                 }
                 completion()
             }

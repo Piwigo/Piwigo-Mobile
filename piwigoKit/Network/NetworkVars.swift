@@ -106,7 +106,7 @@ public class NetworkVars: NSObject {
     @UserDefault("serverFileTypes", defaultValue: "jpg,jpeg,png,gif", userDefaults: UserDefaults.dataSuite)
     public static var serverFileTypes: String
 
-    /// - Community methods available, false by default (available since  version 2.9 of the plugin)
+    /// - Community methods available, false by default (available since version 2.9 of the plugin)
     @UserDefault("usesCommunityPluginV29", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCommunityPluginV29:Bool
     
@@ -117,6 +117,10 @@ public class NetworkVars: NSObject {
     /// - pwg.categories.calculateOrphans method available, false by default (available since Piwigo 12)
     @UserDefault("usesCalcOrphans", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var usesCalcOrphans: Bool
+
+    /// - pwg.images.setCategory method available, false by default (available since Piwigo 14)
+    @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public static var usesSetCategory: Bool
 
     
     // MARK: - Vars in Memory
