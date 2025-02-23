@@ -148,16 +148,18 @@ extension AlbumViewController
               let albums = imageData.albums
         else {
             if toDelete.isEmpty {
-                navigationController?.updateHUDwithSuccess() { [self] in
-                    // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
-                    }
-                    // Hide HUD and deselect images
-                    navigationController?.hideHUD() { [self] in
-                        cancelSelect()
+                DispatchQueue.main.async { [self] in
+                    self.navigationController?.updateHUDwithSuccess() { [self] in
+                        // Save changes
+                        do {
+                            try self.mainContext.save()
+                        } catch let error {
+                            debugPrint("Could not save moved images \(error)")
+                        }
+                        // Hide HUD and deselect images
+                        navigationController?.hideHUD() { [self] in
+                            cancelSelect()
+                        }
                     }
                 }
             } else {
