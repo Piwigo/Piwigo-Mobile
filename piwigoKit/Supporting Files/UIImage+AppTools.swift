@@ -38,7 +38,7 @@ extension UIImage {
                 height = dimension / aspectRatio
             }
         default:
-            fatalError("UIIMage.resizeToFit(): FATAL: Unimplemented ContentMode")
+            preconditionFailure("UIIMage.resizeToFit(): FATAL: Unimplemented ContentMode")
         }
 
         let renderFormat = UIGraphicsImageRendererFormat.default()

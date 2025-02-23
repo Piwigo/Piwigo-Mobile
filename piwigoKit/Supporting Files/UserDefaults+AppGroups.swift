@@ -22,7 +22,7 @@ extension UserDefaults {
     
     public static let dataSuite = { () -> UserDefaults in
         guard let dataSuite = UserDefaults(suiteName: appGroup) else {
-             fatalError("Could not load UserDefaults for app group \(appGroup)")
+            preconditionFailure("Could not load UserDefaults for app group \(appGroup)")
         }
         
         return dataSuite
