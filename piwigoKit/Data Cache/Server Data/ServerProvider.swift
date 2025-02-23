@@ -63,7 +63,7 @@ public class ServerProvider: NSObject {
                     currentServer = server
                 }
                 catch ServerError.wrongURL {
-                    // Delete invalid Tag from the private queue context.
+                    // Delete invalid Server from the private queue context.
                     debugPrint(ServerError.wrongURL.localizedDescription)
                     taskContext.delete(server)
                 }

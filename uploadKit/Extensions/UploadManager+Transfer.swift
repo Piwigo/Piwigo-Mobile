@@ -35,9 +35,7 @@ extension UploadManager {
 
         // Check that the MD5 checksum is known
         if upload.md5Sum.isEmpty {
-            let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue,
-                                userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            upload.setState(.uploadingFail, error: error, save: true)
+            upload.setState(.uploadingFail, error: UploadError.missingAsset, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -88,9 +86,7 @@ extension UploadManager {
             guard let imageData = imageSet.first, let albums = imageData.albums,
                   let albumData = self.albumProvider.getAlbum(ofUser: upload.user, withId: upload.category)
             else {
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue,
-                                    userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                upload.setState(.uploadingFail, error: error, save: true)
+                upload.setState(.uploadingFail, error: UploadError.missingAsset, save: true)
                 self.backgroundQueue.async {
                     self.uploadProvider.bckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
@@ -237,9 +233,7 @@ extension UploadManager {
         let chunks = Int(chunksDiv.rounded(.up))
         if chunks == 0, upload.fileName.isEmpty,
            upload.md5Sum.isEmpty, upload.category == 0 {
-            let error = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue,
-                                userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
-            upload.setState(.preparingFail, error: error, save: true)
+            upload.setState(.preparingFail, error: UploadError.missingFile, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -271,8 +265,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = NSError(domain: error.domain, code: error.code,
-                              userInfo: [NSLocalizedDescriptionKey : msg])
+            let err = PwgSessionError.otherError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -375,7 +368,7 @@ extension UploadManager {
                 let upload = try uploadProvider.bckgContext.existingObject(with: uploadID) as! Upload
 
                 // Update upload request status
-                if let error = error as NSError? {
+                if let error = error {
                     self.backgroundQueue.async {
                         upload.setState(.uploadingError, error: error, save: false)
                         self.backgroundQueue.async {
@@ -386,8 +379,7 @@ extension UploadManager {
                 }
                 else if let httpResponse = task.response as? HTTPURLResponse {
                     let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                    let error = NSError(domain: "Piwigo", code: httpResponse.statusCode,
-                                        userInfo: [NSLocalizedDescriptionKey : msg])
+                    let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: msg)
                     if (400...499).contains(httpResponse.statusCode) {
                         upload.setState(.uploadingFail, error: error, save: false)
                     } else {
@@ -578,8 +570,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = NSError(domain: error.domain, code: error.code,
-                              userInfo: [NSLocalizedDescriptionKey : msg])
+            let err = PwgSessionError.otherError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -633,7 +624,7 @@ extension UploadManager {
         do {
             try httpBody.write(to: chunkURL, options: [.noFileProtection])
         }
-        catch let error as NSError {
+        catch let error {
             // Disk full? —> to be managed…
             debugPrint(error)
             return
@@ -693,8 +684,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = NSError(domain: error.domain, code: error.code,
-                              userInfo: [NSLocalizedDescriptionKey : msg])
+            let err = PwgSessionError.otherError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -739,7 +729,7 @@ extension UploadManager {
                 do {
                     try httpBody.write(to: fileURL, options: [.atomic])
                 }
-                catch let error as NSError {
+                catch let error {
                     // Disk full? —> to be managed…
                     debugPrint(error)
                     return
@@ -883,7 +873,7 @@ extension UploadManager {
             }
 
             // Update upload request status
-            if let error = error as NSError? {
+            if let error = error {
                 upload.setState(.uploadingError, error: error, save: false)
                 self.backgroundQueue.async {
                     self.uploadProvider.bckgContext.saveIfNeeded()
@@ -892,8 +882,7 @@ extension UploadManager {
             }
             else if let httpResponse = task.response as? HTTPURLResponse {
                 let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                let error = NSError(domain: "Piwigo", code: httpResponse.statusCode,
-                                    userInfo: [NSLocalizedDescriptionKey : msg])
+                let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: msg)
                 if (400...499).contains(httpResponse.statusCode) {
                     upload.setState(.uploadingFail, error: error, save: false)
                 } else {

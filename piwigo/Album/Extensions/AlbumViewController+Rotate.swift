@@ -141,12 +141,11 @@ extension AlbumViewController
         }
     }
     
-    private func rotateImagesInDatabaseError(_ error: NSError) {
+    private func rotateImagesInDatabaseError(_ error: Error) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -155,19 +154,18 @@ extension AlbumViewController
             navigationController?.hideHUD { [self] in
                 // Plugin rotateImage installed?
                 let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
-                var message = "", errorMsg = ""
+                var message = ""
                 if let pwgError = error as? PwgSessionError,
                    pwgError == .otherError(code: 501, msg: "") {
                     message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
                 }
                 else {
                     message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
-                    errorMsg = error.localizedDescription
                 }
                 
                 // Report error
                 navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                                                         errorMessage: errorMsg) { [self] in
+                                                         errorMessage: error.localizedDescription) { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }

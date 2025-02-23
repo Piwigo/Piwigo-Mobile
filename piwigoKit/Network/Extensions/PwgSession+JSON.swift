@@ -15,7 +15,7 @@ extension PwgSession
                                           jsonObjectClientExpectsToReceive: T.Type,
                                           countOfBytesClientExpectsToReceive: Int64,
                                           success: @escaping (Data) -> Void,
-                                          failure: @escaping (NSError) -> Void) {
+                                          failure: @escaping (Error) -> Void) {
         // Create POST request
         let url = URL(string: NetworkVars.service + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
@@ -23,10 +23,11 @@ extension PwgSession
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("utf-8", forHTTPHeaderField: "Accept-Charset")
+
+        // Identify requests performed for a specific album
+        // so that they can be easily cancelled.
         switch method {
         case pwgCategoriesGetList, pwgCategoriesGetImages:
-            // Identify requests performed for a specific album
-            // so that they can be easily cancelled.
             if let albumId = paramDict["cat_id"] as? Int {
                 request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.HTTPCatID)
             }
@@ -34,30 +35,27 @@ extension PwgSession
             break
         }
 
-        // Combine percent encoded parameters
-        var encPairs = [String]()
+        // Combine percent encoded parameters  d
+        var urlComponents = URLComponents()
+        var queryItems: [URLQueryItem] = []
         for (key, value) in paramDict {
             if let valStr = value as? String, valStr.isEmpty == false {
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 let utf8mb3Str = PwgSession.utf8mb3String(from: valStr)
-                let encVal = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
-                encPairs.append(String(format: "%@=%@", encKey, encVal))
-                continue
+                let queryItem = URLQueryItem(name: key, value: utf8mb3Str)
+                queryItems.append(queryItem)
             }
             else if let val = value as? NSNumber {
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
-                let encVal = val.stringValue
-                encPairs.append(String(format: "%@=%@", encKey, encVal))
-                continue
+                let queryItem = URLQueryItem(name: key, value: val.stringValue)
+                queryItems.append(queryItem)
             }
             else {
-                let encKey = key.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? key
-                encPairs.append(encKey)
+                let queryItem = URLQueryItem(name: key, value: nil)
+                queryItems.append(queryItem)
             }
         }
-        let encParams = encPairs.joined(separator: "&")
-        let httpBody = encParams.data(using: .utf8, allowLossyConversion: true)
+        urlComponents.queryItems = queryItems
+        let httpBody = urlComponents.query?.data(using: .utf8)
         request.httpBody = httpBody
 
         // Launch the HTTP(S) request
@@ -72,14 +70,15 @@ extension PwgSession
                     guard var jsonData = data, jsonData.isEmpty == false else {
                         // Empty JSON data
                         guard let httpResponse = response as? HTTPURLResponse else {
-                            // Nothing to report
-                            failure(PwgSessionError.emptyJSONobject as NSError)
+                            // Nothing returned
+                            failure(PwgSessionError.emptyJSONobject)
                             return
                         }
                         
                         // Return error code
-                        let error = self.localizedError(for: httpResponse.statusCode)
-                        failure(error as NSError)
+                        let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                        let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: errorMessage)
+                        failure(error)
                         return
                     }
 
@@ -98,15 +97,14 @@ extension PwgSession
                         }
                         guard let httpResponse = response as? HTTPURLResponse else {
                             // Nothing to report
-                            failure(PwgSessionError.invalidJSONobject as NSError)
+                            failure(PwgSessionError.invalidJSONobject)
                             return
                         }
                         
                         // Return error code
                         let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                        let error = self.localizedError(for: httpResponse.statusCode,
-                                                        errorMessage: errorMessage)
-                        failure(error as NSError)
+                        let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: errorMessage)
+                        failure(error)
                         return
                     }
                     
@@ -116,14 +114,14 @@ extension PwgSession
                 }
                 
                 // Return transaction error
-                failure(error as NSError)
+                failure(error)
                 return
             }
             
             // No error, check that the JSON object is not empty
             guard var jsonData = data, jsonData.isEmpty == false else {
                 // Empty JSON data
-                failure(PwgSessionError.emptyJSONobject as NSError)
+                failure(PwgSessionError.emptyJSONobject)
                 return
             }
             
@@ -142,7 +140,7 @@ extension PwgSession
             // Return Piwigo error if no error and no data returned.
             guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self, 
                                                  method: method) else {
-                failure(PwgSessionError.invalidJSONobject as NSError)
+                failure(PwgSessionError.invalidJSONobject)
                 return
             }
 

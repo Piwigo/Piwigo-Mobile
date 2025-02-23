@@ -13,7 +13,7 @@ public extension PwgSession {
     
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
-                      failure: @escaping (NSError) -> Void) {
+                      failure: @escaping (Error) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             #if DEBUG
             PwgSession.logger.notice("Open session for \(username, privacy: .public).")
@@ -32,13 +32,12 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type SessionLoginJSON.
                 let decoder = JSONDecoder()
-                let loginJSON = try decoder.decode(SessionLoginJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(SessionLoginJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if loginJSON.errorCode != 0 {
-                    let error = self.localizedError(for: loginJSON.errorCode,
-                                                    errorMessage: loginJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
@@ -47,7 +46,6 @@ public extension PwgSession {
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -59,7 +57,7 @@ public extension PwgSession {
     }
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
-                                 failure: @escaping (NSError) -> Void) {
+                                 failure: @escaping (Error) -> Void) {
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
@@ -68,19 +66,18 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type SessionGetStatusJSON.
                 let decoder = JSONDecoder()
-                let statusJSON = try decoder.decode(SessionGetStatusJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(SessionGetStatusJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if statusJSON.errorCode != 0 {
-                    let error = self.localizedError(for: statusJSON.errorCode,
-                                                    errorMessage: statusJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // No status returned?
-                guard let data = statusJSON.data else {
-                    failure(PwgSessionError.authenticationFailed as NSError)
+                guard let data = pwgData.data else {
+                    failure(PwgSessionError.authenticationFailed)
                     return
                 }
 
@@ -174,7 +171,7 @@ public extension PwgSession {
                         NetworkVars.userStatus = userStatus
                     }
                 } else {
-                    failure(UserError.unknownUserStatus as NSError)
+                    failure(UserError.unknownUserStatus)
                     return
                 }
 
@@ -196,7 +193,6 @@ public extension PwgSession {
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -208,7 +204,7 @@ public extension PwgSession {
     }
 
     func sessionLogout(completion: @escaping () -> Void,
-                              failure: @escaping (NSError) -> Void) {
+                              failure: @escaping (Error) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Close session.")
         }
@@ -220,13 +216,12 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type SessionLogoutJSON.
                 let decoder = JSONDecoder()
-                let loginJSON = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if loginJSON.errorCode != 0 {
-                    let error = self.localizedError(for: loginJSON.errorCode,
-                                                    errorMessage: loginJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
 
@@ -235,7 +230,6 @@ public extension PwgSession {
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in

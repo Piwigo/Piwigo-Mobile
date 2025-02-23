@@ -9,6 +9,7 @@
 import Foundation
 
 public enum ServerError: Error {
+    // App errors
     case wrongURL
     case creationError
 }

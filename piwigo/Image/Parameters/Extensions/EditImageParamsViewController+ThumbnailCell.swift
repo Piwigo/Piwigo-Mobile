@@ -42,8 +42,8 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         // Update data source
         do {
             try mainContext.save()
-        } catch let error as NSError {
-            debugPrint("Could not fetch \(error), \(error.userInfo)")
+        } catch let error {
+            debugPrint("Could not save renamed file, \(error)")
         }
 
         // Update parent image view

@@ -139,7 +139,7 @@ extension UploadManager {
             let fileURL = self.getUploadFileURL(from: upload, deleted: true)
 
             // Determine MD5 checksum
-            let error: NSError?
+            let error: Error?
             (upload.md5Sum, error) = originalFileURL.MD5checksum()
             debugPrint("\(self.dbg()) MD5: \(String(describing: upload.md5Sum))")
             if error != nil {
@@ -156,7 +156,7 @@ extension UploadManager {
                 self.didPrepareVideo(for: upload, nil)
                 return
             }
-            catch let error as NSError {
+            catch let error {
                 // Could not copy the video file
                 self.didPrepareVideo(for: upload, error)
             }
@@ -395,8 +395,7 @@ extension UploadManager {
             // Get export session
             guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                            presetName: exportPreset) else {
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                didPrepareVideo(for: upload, error)
+                didPrepareVideo(for: upload, UploadError.missingAsset)
                 return
             }
             
@@ -455,8 +454,7 @@ extension UploadManager {
                     } catch {
                     }
                     // Report error
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.didPrepareVideo(for: upload, error)
+                    self.didPrepareVideo(for: upload, UploadError.missingAsset)
                     return
                 }
 

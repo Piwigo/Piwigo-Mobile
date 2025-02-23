@@ -137,8 +137,8 @@ class AlbumRenaming: NSObject
                     }
                     do {
                         try mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not save context, \(error.userInfo)")
+                    } catch let error {
+                        debugPrint("Could not save album renaming, \(error)")
                     }
                     
                     // Hide HUD
@@ -154,12 +154,11 @@ class AlbumRenaming: NSObject
         }
     }
     
-    private func renameCategoryError(_ error: NSError, completion: @escaping (Bool) -> Void) {
+    private func renameCategoryError(_ error: Error, completion: @escaping (Bool) -> Void) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
                 return
             }
@@ -168,8 +167,7 @@ class AlbumRenaming: NSObject
             let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
             let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
             self.topViewController.hideHUD() { [self] in
-                self.topViewController.dismissPiwigoError(withTitle: title, message: message,
-                                                          errorMessage: error.localizedDescription) {
+                self.topViewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
                     completion(true)
                 }
             }

@@ -10,6 +10,7 @@
 import Foundation
 
 public enum TagError: Error {
+    // App errors
     case fetchFailed
     case wrongDataFormat
     case missingData

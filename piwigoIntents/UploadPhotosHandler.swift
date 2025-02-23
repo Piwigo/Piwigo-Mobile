@@ -85,7 +85,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         var selectedImages = [UploadProperties]()      // Array of images to upload
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
-            let error: NSError?, md5Sum: String!
+            let error: Error?, md5Sum: String!
             (md5Sum, error) = selectedFiles[idx].MD5checksum()
             if let error = error {
                 // Could not determine the MD5 checksum

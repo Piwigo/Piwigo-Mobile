@@ -69,9 +69,9 @@ extension NSManagedObjectContext {
         do {
             try save()
         }
-        catch let error as NSError {
+        catch let error {
             // Will try later…
-            debugPrint("Could not save context: \(error), \(error.userInfo)")
+            debugPrint("Could not save context: \(error.localizedDescription)")
         }
     }
 }

@@ -318,12 +318,11 @@ class EditImageParamsViewController: UIViewController
         }
     }
 
-    private func showUpdatePropertiesError(_ error: NSError, atIndex index: Int) {
+    private func showUpdatePropertiesError(_ error: Error, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-            .contains(pwgError) {
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -332,8 +331,7 @@ class EditImageParamsViewController: UIViewController
         let title = NSLocalizedString("editImageDetailsError_title", comment: "Failed to Update")
         let message = NSLocalizedString("editImageDetailsError_message", comment: "Failed to update your changes with your server.")
         if index + 1 < images.count {
-            cancelDismissPiwigoError(withTitle: title, message: message,
-                                     errorMessage: error.localizedDescription) {
+            cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
             } dismiss: { [self] in
                 // Bypass this image
                 if index + 1 < images.count {
@@ -350,7 +348,7 @@ class EditImageParamsViewController: UIViewController
     
     private func setProperties(ofImage imageData: Image,
                                completion: @escaping () -> Void,
-                               failure: @escaping (NSError) -> Void) {
+                               failure: @escaping (Error) -> Void) {
         // Image ID
         var paramsDict: [String : Any] = ["image_id" : imageData.pwgID,
                                           "single_value_mode"   : "replace",

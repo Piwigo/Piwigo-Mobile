@@ -110,8 +110,8 @@ extension ImageViewController
                     // Save changes
                     do {
                         try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not save copied images \(error), \(error.userInfo)")
+                    } catch let error {
+                        debugPrint("Could not save copied images \(error)")
                     }
                 }
 
@@ -130,12 +130,11 @@ extension ImageViewController
         }
     }
     
-    private func removeImageFromAlbumError(_ error: NSError) {
+    private func removeImageFromAlbumError(_ error: Error) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -143,8 +142,7 @@ extension ImageViewController
             // Report error
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [self] in
+            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 // Hide HUD
                 hideHUD { [self] in
                     // Re-enable buttons
@@ -213,12 +211,11 @@ extension ImageViewController
         }
     }
     
-    private func deleteImageFromDatabaseError(_ error: NSError) {
+    private func deleteImageFromDatabaseError(_ error: Error) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -226,8 +223,7 @@ extension ImageViewController
             // Report error
             let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message,
-                                    errorMessage: error.localizedDescription) { [self] in
+            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 // Hide HUD
                 hideHUD { [self] in
                     // Re-enable buttons

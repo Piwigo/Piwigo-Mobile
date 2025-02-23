@@ -429,12 +429,11 @@ extension AlbumViewController
         }
     }
     
-    private func retrieveImageDataError(_ error: NSError, contextually: Bool) {
+    private func retrieveImageDataError(_ error: Error, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed] .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -442,8 +441,7 @@ extension AlbumViewController
             // Report error
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
-            dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [self] in
+            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)

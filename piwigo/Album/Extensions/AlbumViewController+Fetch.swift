@@ -243,7 +243,7 @@ extension AlbumViewController
     // MARK: - Error Management
     private func showError(_ error: Error?) {
         DispatchQueue.main.async { [self] in
-            guard let error = error as? NSError else {
+            guard let error = error else {
                 navigationController?.showHUD(
                     withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
                     detail: " ", minWidth: 200,
@@ -254,7 +254,7 @@ extension AlbumViewController
             }
             
             // Returns to login view only when credentials are rejected
-            if [NSURLErrorUserAuthenticationRequired, 401, 403].contains(error.code) ||
+            if [NSURLErrorUserAuthenticationRequired, 401, 403].contains((error as NSError).code) ||
                 NetworkVars.didFailHTTPauthentication {
                 // Invalid Piwigo or HTTP credentials
                 navigationController?.showHUD(

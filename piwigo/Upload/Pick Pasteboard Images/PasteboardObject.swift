@@ -205,9 +205,9 @@ class ObjectPreparation : Operation {
                     .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
             }
         }
-        catch let error as NSError {
+        catch let error {
             // Disk full?
-            debugPrint("could not save image file: \(error)")
+            debugPrint("could not save image file: \(error.localizedDescription)")
             pbObject.state = .failed
         }
         

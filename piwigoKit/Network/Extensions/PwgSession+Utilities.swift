@@ -14,10 +14,10 @@ extension PwgSession {
     // MARK: - Sessionn Management
     public static
     func requestServerMethods(completion: @escaping () -> Void,
-                              didRejectCertificate: @escaping (NSError) -> Void,
-                              didFailHTTPauthentication: @escaping (NSError) -> Void,
-                              didFailSecureConnection: @escaping (NSError) -> Void,
-                              failure: @escaping (NSError) -> Void) {
+                              didRejectCertificate: @escaping (Error) -> Void,
+                              didFailHTTPauthentication: @escaping (Error) -> Void,
+                              didFailSecureConnection: @escaping (Error) -> Void,
+                              failure: @escaping (Error) -> Void) {
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
         PwgSession.shared.getMethods {
@@ -77,7 +77,7 @@ extension PwgSession {
     public static
     func checkSession(ofUser user: User?, systematically: Bool = false,
                       completion: @escaping () -> Void,
-                      failure: @escaping (NSError) -> Void) {
+                      failure: @escaping (Error) -> Void) {
         // Check if the session is still active every 60 seconds or more
         if systematically == false {
             let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
@@ -166,14 +166,14 @@ extension PwgSession {
     }
     
     static func getPiwigoConfig(completion: @escaping () -> Void,
-                                failure: @escaping (NSError) -> Void) {
+                                failure: @escaping (Error) -> Void) {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.usesCommunityPluginV29 {
             PwgSession.shared.communityGetStatus {
                 PwgSession.shared.sessionGetStatus { _ in
                     // Check Piwigo server version
                     if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
-                        failure(PwgSessionError.incompatiblePwgVersion as NSError) }
+                        failure(PwgSessionError.incompatiblePwgVersion) }
                     else {
                         completion()
                     }
@@ -187,7 +187,7 @@ extension PwgSession {
             PwgSession.shared.sessionGetStatus { _ in
                 // Check Piwigo server version
                 if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
-                    failure(PwgSessionError.incompatiblePwgVersion as NSError) }
+                    failure(PwgSessionError.incompatiblePwgVersion) }
                 else {
                     completion()
                 }
@@ -218,7 +218,7 @@ extension PwgSession {
     // See https://github.com/Piwigo/Piwigo-Mobile/issues/429, https://github.com/Piwigo/Piwigo/issues/750
     public static
     func utf8mb3String(from string: String?) -> String {
-        // Return empty string is nothing provided
+        // Return empty string if nothing provided
         guard let strToFilter = string, strToFilter.isEmpty == false else {
             return ""
         }

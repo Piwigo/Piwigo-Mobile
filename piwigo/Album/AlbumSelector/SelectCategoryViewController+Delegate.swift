@@ -254,6 +254,11 @@ extension SelectCategoryViewController: UITableViewDelegate
                                 forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
+                
+                // Add category to list of recent albums
+                let userInfo = ["categoryId": albumData.pwgID]
+                NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+
                 // Copy single image to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
                     // Copy single image to selected album
@@ -295,10 +300,15 @@ extension SelectCategoryViewController: UITableViewDelegate
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath, handler: { [self] _ in
                 // Display HUD
-                self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                             inMode: .determinate)
+                self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"), inMode: .determinate)
+                
+                // Add category to list of recent albums
+                let userInfo = ["categoryId": albumData.pwgID]
+                NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+                
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
+                    // Copy images to selected album
                     self.copyImages(toAlbum: albumData)
                 }
             })

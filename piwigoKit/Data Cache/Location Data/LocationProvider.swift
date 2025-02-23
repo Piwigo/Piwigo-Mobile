@@ -266,8 +266,8 @@ public class LocationProvider: NSObject {
             let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
-        catch let error as NSError {
-            debugPrint("••> Album count not fetched \(error), \(error.userInfo)")
+        catch let error {
+            debugPrint("••> Album count not fetched \(error)")
         }
         return Int64.zero
     }

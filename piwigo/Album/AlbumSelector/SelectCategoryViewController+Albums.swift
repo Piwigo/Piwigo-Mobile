@@ -81,8 +81,8 @@ extension SelectCategoryViewController
                     // Save changes
                     do {
                         try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not fetch \(error), \(error.userInfo)")
+                    } catch let error {
+                        debugPrint("Could not save album representative, \(error)")
                     }
                     // Close HUD
                     self.updateHUDwithSuccess() { [self] in

@@ -825,7 +825,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // may not be suggested or other may be deleted, we store more than 10, say 20.
         let nberExtraCats: Int = max(0, newList.count - 20)
         AlbumVars.shared.recentCategories = newList.dropLast(nberExtraCats).joined(separator: ",")
-//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+        debugPrint("••> Added album \(categoryId); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
@@ -853,7 +853,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Update list
         AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
-//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories)"
+        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(AlbumVars.shared.recentCategories)")
     }
 
 

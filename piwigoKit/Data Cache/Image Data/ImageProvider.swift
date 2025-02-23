@@ -57,8 +57,8 @@ public class ImageProvider: NSObject {
             let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
-        catch let error as NSError {
-            debugPrint("••> Image count not fetched \(error), \(error.userInfo)")
+        catch let error {
+            debugPrint("••> Could not ftech image count, \(error)")
         }
         return Int64.zero
     }
@@ -172,12 +172,11 @@ public class ImageProvider: NSObject {
                     
                     // Decode the JSON into codable type CategoriesGetImagesJSON.
                     let decoder = JSONDecoder()
-                    let imageJSON = try decoder.decode(CategoriesGetImagesJSON.self, from: jsonData)
+                    let pwgData = try decoder.decode(CategoriesGetImagesJSON.self, from: jsonData)
                     
                     // Piwigo error?
-                    if imageJSON.errorCode != 0 {
-                        let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-                                                                     errorMessage: imageJSON.errorMessage)
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                         completion(Set(), totalCount, error)
                         return
                     }
@@ -185,34 +184,34 @@ public class ImageProvider: NSObject {
                     // Import the imageJSON into Core Data.
                     if [.rankAscending, .random].contains(sort) {
                         let startRank = Int64(page * perPage)
-                        try self.importImages(imageJSON.data, inAlbum: albumId,
+                        try self.importImages(pwgData.data, inAlbum: albumId,
                                               sort: sort, fromRank: startRank)
                     } else {
-                        try self.importImages(imageJSON.data, inAlbum: albumId, sort: sort)
+                        try self.importImages(pwgData.data, inAlbum: albumId, sort: sort)
                     }
                     
                     // Retrieve total number of images
                     if albumId == pwgSmartAlbum.favorites.rawValue {
-                        totalCount = imageJSON.paging?.count ?? Int64.zero
+                        totalCount = pwgData.paging?.count ?? Int64.zero
                     } else {
                         // Bug leading to server providing wrong total_count value
                         // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
                         // See https://github.com/Piwigo/Piwigo/issues/1871
                         if NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
                             NetworkVars.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
-                            totalCount = imageJSON.paging?.totalCount?.int64Value ?? Int64.zero
+                            totalCount = pwgData.paging?.totalCount?.int64Value ?? Int64.zero
                         } else {
-                            totalCount = imageJSON.paging?.count ?? Int64.zero
+                            totalCount = pwgData.paging?.count ?? Int64.zero
                         }
                     }
                     
                     // Retrieve IDs of fetched images
-                    let fetchedImageIds = Set(imageJSON.data.compactMap({$0.id}))
+                    let fetchedImageIds = Set(pwgData.data.compactMap({$0.id}))
                     completion(fetchedImageIds, totalCount, nil)
                     
                 } catch {
                     // Alert the user if data cannot be digested.
-                    completion(Set(), Int64.zero, error as NSError)
+                    completion(Set(), Int64.zero, error)
                 }
             }
         } failure: { error in
@@ -237,7 +236,7 @@ public class ImageProvider: NSObject {
      */
     public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
                          completion: @escaping () -> Void,
-                         failure: @escaping (NSError) -> Void) {
+                         failure: @escaping (Error) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id" : imageId]
         
@@ -250,25 +249,23 @@ public class ImageProvider: NSObject {
             do {
                 // Decode the JSON into codable type ImagesGetInfoJSON.
                 let decoder = JSONDecoder()
-                let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if imageJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-                                                                 errorMessage: imageJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Import the imageJSON into Core Data
                 // The provided sort option will not change the rankManual/rankRandom values.
-                try self.importImages([imageJSON.data], inAlbum: albumId, sort: .albumDefault)
+                try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
                 
                 completion()
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in

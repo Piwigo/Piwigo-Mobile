@@ -388,7 +388,9 @@ class ImageViewController: UIViewController {
                 }
             } failure: { [self] error in
                 // Don't display an error if there is no Internet connection
-                if [NSURLErrorDataNotAllowed, NSURLErrorNotConnectedToInternet, NSURLErrorInternationalRoamingOff].contains(error.code) {
+                if [NSURLErrorDataNotAllowed,
+                    NSURLErrorNotConnectedToInternet,
+                    NSURLErrorInternationalRoamingOff].contains((error as NSError).code) {
                     return
                 }
                 // Display error only once and when image data is incomplete
@@ -399,12 +401,11 @@ class ImageViewController: UIViewController {
         }
     }
 
-    private func retrieveImageDataError(_ error: NSError) {
+    private func retrieveImageDataError(_ error: Error) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -412,8 +413,7 @@ class ImageViewController: UIViewController {
             // Report error
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
-            dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { }
+            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
         }
     }
 
@@ -437,8 +437,7 @@ class ImageViewController: UIViewController {
         } failure: { [self] error in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }

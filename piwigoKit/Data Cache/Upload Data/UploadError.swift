@@ -10,6 +10,7 @@
 import Foundation
 
 public enum UploadError: Error {
+    // App errors
     case wrongDataFormat
     case creationError
     case deletionError

@@ -106,12 +106,11 @@ extension AlbumViewController
         }
     }
     
-    private func favoriteError(_ error: NSError, contextually: Bool) {
+    private func favoriteError(_ error: Error, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -119,8 +118,7 @@ extension AlbumViewController
             // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [self] in
+            navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)
@@ -209,12 +207,11 @@ extension AlbumViewController
         }
     }
     
-    private func unfavoriteError(_ error: NSError, contextually: Bool) {
+    private func unfavoriteError(_ error: Error, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -222,8 +219,7 @@ extension AlbumViewController
             // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [self] in
+            navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)

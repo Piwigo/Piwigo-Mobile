@@ -210,50 +210,49 @@ extension AlbumViewController
     }
     
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, 
-                              total: Float, error: NSError) {
-        // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-            .contains(pwgError) {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-            return
-        }
-        
-        // Report error
-        var imagesToRemove = toRemove
-        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
-        if imagesToRemove.count > 1 {
-            cancelDismissPiwigoError(withTitle: title, message: message,
-                                     errorMessage: error.localizedDescription) { [self] in
-                navigationController?.hideHUD() { [self] in
-                    // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
-                    }
-                    // Hide HUD and update buttons
-                    updateBarsInSelectMode()
-                }
-            } dismiss: { [self] in
-                // Bypass image
-                imagesToRemove.removeFirst()
-                // Continue removing images
-                removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
+                              total: Float, error: Error) {
+        DispatchQueue.main.async { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
             }
-        } else {
-            dismissPiwigoError(withTitle: title, message: message,
-                                     errorMessage: error.localizedDescription) { [self] in
-                navigationController?.hideHUD() { [self] in
-                    // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not save moved images \(error), \(error.userInfo)")
+            
+            // Report error
+            var imagesToRemove = toRemove
+            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
+            if imagesToRemove.count > 1 {
+                cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+                    navigationController?.hideHUD() { [self] in
+                        // Save changes
+                        do {
+                            try self.mainContext.save()
+                        } catch let error {
+                            debugPrint("Could not save moved images \(error)")
+                        }
+                        // Hide HUD and update buttons
+                        updateBarsInSelectMode()
                     }
-                    // Hide HUD and update buttons
-                    updateBarsInSelectMode()
+                } dismiss: { [self] in
+                    // Bypass image
+                    imagesToRemove.removeFirst()
+                    // Continue removing images
+                    removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
+                }
+            } else {
+                dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+                    navigationController?.hideHUD() { [self] in
+                        // Save changes
+                        do {
+                            try self.mainContext.save()
+                        } catch let error {
+                            debugPrint("Could not save moved images \(error)")
+                        }
+                        // Hide HUD and update buttons
+                        updateBarsInSelectMode()
+                    }
                 }
             }
         }
@@ -265,8 +264,8 @@ extension AlbumViewController
                 // Save changes
                 do {
                     try self.mainContext.save()
-                } catch let error as NSError {
-                    debugPrint("Could not save deleted images \(error), \(error.userInfo)")
+                } catch let error {
+                    debugPrint("Could not save deleted images \(error)")
                 }
                 // Hide HUD and deselect images
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -324,12 +323,11 @@ extension AlbumViewController
         }
     }
     
-    private func deleteImagesError(_ error: NSError) {
+    private func deleteImagesError(_ error: Error) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -341,8 +339,8 @@ extension AlbumViewController
                 // Save changes
                 do {
                     try self.mainContext.save()
-                } catch let error as NSError {
-                    debugPrint("Could not save moved images \(error), \(error.userInfo)")
+                } catch let error {
+                    debugPrint("Could not save moved images \(error)")
                 }
                 // Hide HUD and update buttons
                 navigationController?.hideHUD() { [self] in

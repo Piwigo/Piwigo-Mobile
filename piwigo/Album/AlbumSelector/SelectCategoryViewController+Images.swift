@@ -13,28 +13,9 @@ extension SelectCategoryViewController
 {
     // MARK: - Copy Images Methods
     func copyImages(toAlbum albumData: Album) {
-        // Add category to list of recent albums
-        let userInfo = ["categoryId": albumData.pwgID]
-        NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-        
         // Check image data
         guard let imageData = inputImages.first else {
-            // Close HUD
-            updateHUDwithSuccess() { [self] in
-                // Save changes
-                do {
-                    try self.mainContext.save()
-                } catch let error as NSError {
-                    debugPrint("Could not save copied images \(error), \(error.userInfo)")
-                }
-                // Hide HUD and dismiss album selector
-                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    self.dismiss(animated: true) { [self] in
-                        // Update image data in current view (ImageDetailImage view)
-                        self.imageCopiedDelegate?.didCopyImage()
-                    }
-                }
-            }
+            self.didCopyImagesWithSuccess()
             return
         }
         
@@ -46,16 +27,13 @@ extension SelectCategoryViewController
             self.copyImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
-            // Close HUD, inform user and save in Core Data store
-            self.hideHUD { [self] in
-                self.showError(error)
-            }
+            self.copyImagesDidFailWithError(error)
         }
     }
     
     private func copyImage(_ imageData: Image, toAlbum albumData: Album,
                            onCompletion completion: @escaping () -> Void,
-                           onFailure fail: @escaping (_ error: NSError?) -> Void) {
+                           onFailure fail: @escaping (_ error: Error?) -> Void) {
         // Append selected category ID to image category list
         let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})
@@ -163,8 +141,8 @@ extension SelectCategoryViewController
                 // Save changes
                 do {
                     try self.mainContext.save()
-                } catch let error as NSError {
-                    debugPrint("Could not save moved images \(error), \(error.userInfo)")
+                } catch let error {
+                    debugPrint("Could not save moved images, \(error)")
                 }
 
                 // Hide HUD and dismiss album selector
@@ -195,7 +173,7 @@ extension SelectCategoryViewController
     
     private func moveImage(_ imageData: Image, toCategory albumData: Album,
                            onCompletion completion: @escaping () -> Void,
-                           onFailure fail: @escaping (_ error: NSError?) -> Void) {
+                           onFailure fail: @escaping (_ error: Error?) -> Void) {
         // Append selected category ID to image category list
         let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})

@@ -151,12 +151,11 @@ public class AlbumProvider: NSObject {
                 do {
                     // Decode the JSON into codable type CategoriesGetListJSON.
                     let decoder = JSONDecoder()
-                    let albumJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
+                    let pwgData = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
                     
                     // Piwigo error?
-                    if albumJSON.errorCode != 0 {
-                        let error = PwgSession.shared.localizedError(for: albumJSON.errorCode,
-                                                                     errorMessage: albumJSON.errorMessage)
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                         completion(error)
                         return
                     }
@@ -166,17 +165,17 @@ public class AlbumProvider: NSObject {
                        NetworkVars.usesCommunityPluginV29 {
                         // Non-admin user and Community installed —> collect Community albums
                         self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
-                                                  albums: albumJSON.data, completion: completion)
+                                                  albums: pwgData.data, completion: completion)
                         return
                     }
                     
                     // Import the albumJSON into Core Data.
-                    try self.importAlbums(albumJSON.data, recursively: recursively, inParent: parentId)
+                    try self.importAlbums(pwgData.data, recursively: recursively, inParent: parentId)
                     completion(nil)
                     
                 } catch {
                     // Alert the user if data cannot be digested.
-                    completion(error as NSError)
+                    completion(error)
                 }
             }
         } failure: { error in
@@ -202,20 +201,19 @@ public class AlbumProvider: NSObject {
             do {
                 // Decode the JSON into codable type CommunityCategoriesGetListJSON.
                 let decoder = JSONDecoder()
-                let albumsJSON = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if albumsJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: albumsJSON.errorCode,
-                                                                 errorMessage: albumsJSON.errorMessage)
-                    debugPrint("••> fetchCommunityAlbums error: \(error as NSError)")
+                if pwgData.errorCode != 0 {
+                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    debugPrint("••> fetchCommunityAlbums error: \(error)")
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
                 }
                 
                 // No Community albums?
-                if albumsJSON.data.isEmpty == true {
+                if pwgData.data.isEmpty == true {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
@@ -223,7 +221,7 @@ public class AlbumProvider: NSObject {
                 
                 // Update album list
                 var combinedAlbums = albums
-                for comAlbum in albumsJSON.data {
+                for comAlbum in pwgData.data {
                     if let index = combinedAlbums.firstIndex(where: { $0.id == comAlbum.id }) {
                         combinedAlbums[index].hasUploadRights = true
                     } else {
@@ -240,7 +238,7 @@ public class AlbumProvider: NSObject {
                 do {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                 } catch {
-                    completion(error as NSError)
+                    completion(error)
                 }
             }
         } failure: { error in
@@ -250,7 +248,7 @@ public class AlbumProvider: NSObject {
             do {
                 try self.importAlbums(albums, recursively: recursively, inParent: parentId)
             } catch {
-                completion(error as NSError)
+                completion(error)
             }
         }
     }
@@ -619,8 +617,8 @@ public class AlbumProvider: NSObject {
             let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
-        catch let error as NSError {
-            debugPrint("••> Album count not fetched \(error), \(error.userInfo)")
+        catch let error {
+            debugPrint("••> Album count not fetched \(error)")
         }
         return Int64.zero
     }
