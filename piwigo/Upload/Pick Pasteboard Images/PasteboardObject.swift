@@ -42,7 +42,7 @@ class PendingOperations {
     }()
 }
 
-class ObjectPreparation : Operation {
+class ObjectPreparation : Operation, @unchecked Sendable {
     let pbObject: PasteboardObject
     let index: Int
 
