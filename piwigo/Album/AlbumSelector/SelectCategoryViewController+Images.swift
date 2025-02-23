@@ -93,6 +93,62 @@ extension SelectCategoryViewController
         }
     }
     
+    func associateImages(toAlbum albumData: Album) {
+        // Send request to Piwigo server
+        PwgSession.checkSession(ofUser: user) { [self] in
+            ImageUtilities.setCategory(albumData, forImages: self.inputImages, withAction: .associate) {
+                DispatchQueue.main.async { [self] in
+                    // Add image to album
+                    albumData.addToImages(self.inputImages)
+                    
+                    // Update albums
+                    let nberOfImages = Int64(self.inputImages.count)
+                    self.albumProvider.updateAlbums(addingImages: nberOfImages, toAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+                    if [nil, Int64.zero].contains(albumData.thumbnailId) || albumData.thumbnailUrl == nil,
+                       let imageData = inputImages.first {
+                        albumData.thumbnailId = imageData.pwgID
+                        let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+                        albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
+                    }
+                    // Close HUD, save modified data
+                    self.didCopyImagesWithSuccess()
+                }
+            } failure: { [self] error in
+                self.copyImagesDidFailWithError(error)
+            }
+        } failure: { [self] error in
+            self.copyImagesDidFailWithError(error)
+        }
+    }
+    
+    private func didCopyImagesWithSuccess() {
+        // Close HUD
+        updateHUDwithSuccess() { [self] in
+            // Save changes
+            do {
+                try self.mainContext.save()
+            } catch let error {
+                debugPrint("Could not save copied images, \(error)")
+            }
+            // Hide HUD and dismiss album selector
+            self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                self.dismiss(animated: true) { [self] in
+                    // Update image data in current view (ImageDetailImage view)
+                    self.imageCopiedDelegate?.didCopyImage()
+                }
+            }
+        }
+    }
+    
+    private func copyImagesDidFailWithError(_ error: Error?) {
+        // Close HUD, inform user and save in Core Data store
+        self.hideHUD { [self] in
+            self.showError(error)
+        }
+    }
+    
     
     // MARK: - Move Images Methods
     func moveImages(toAlbum albumData: Album) {

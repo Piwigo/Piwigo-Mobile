@@ -255,7 +255,14 @@ extension SelectCategoryViewController: UITableViewDelegate
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
                 // Copy single image to selected album
-                self.copyImages(toAlbum: albumData)
+                DispatchQueue.global(qos: .userInitiated).async { [self] in
+                    // Copy single image to selected album
+                    if NetworkVars.usesSetCategory {
+                        self.associateImages(toAlbum: albumData)
+                    } else {
+                        self.copyImages(toAlbum: albumData)
+                    }
+                }
             })
 
         case .moveImage:
