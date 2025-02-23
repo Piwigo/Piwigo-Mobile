@@ -193,8 +193,10 @@ extension AlbumViewController
                 imagesToRemove.removeFirst()
 
                 // Update HUD
-                let ratio = Float(imagesToRemove.count) / total
-                navigationController?.updateHUD(withProgress: 1.0 - ratio)
+                DispatchQueue.main.async { [self] in
+                    let ratio = Float(imagesToRemove.count) / total
+                    self.navigationController?.updateHUD(withProgress: 1.0 - ratio)
+                }
 
                 // Next image
                 removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
