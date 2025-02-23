@@ -481,7 +481,7 @@ extension UploadManager {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                    let error = PwgSession.shared.error(for: uploadJSON.errorCode,
                                                                  errorMessage: uploadJSON.errorMessage)
                     if (400...499).contains(uploadJSON.errorCode) {
                         upload.setState(.uploadingFail, error: error, save: false)
@@ -993,7 +993,7 @@ extension UploadManager {
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
                 debugPrint("\(dbg()) \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
-                let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+                let error = PwgSession.shared.error(for: uploadJSON.errorCode,
                                                              errorMessage: uploadJSON.errorMessage)
                 if (400...499).contains(uploadJSON.errorCode) {
                     upload.setState(.uploadingFail, error: error, save: false)

@@ -65,7 +65,7 @@ class AlbumUtilities: NSObject {
     //
     //                // Piwigo error?
     //                if uploadJSON.errorCode != 0 {
-    //                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+    //                    let error = PwgSession.shared.error(for: uploadJSON.errorCode,
     //                                                                 errorMessage: uploadJSON.errorMessage)
     //                    failure(error as NSError)
     //                    return
@@ -147,7 +147,7 @@ class AlbumUtilities: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
@@ -197,7 +197,7 @@ class AlbumUtilities: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
@@ -243,7 +243,7 @@ class AlbumUtilities: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
@@ -287,7 +287,7 @@ class AlbumUtilities: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
@@ -332,7 +332,7 @@ class AlbumUtilities: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
@@ -380,7 +380,7 @@ class AlbumUtilities: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }

@@ -176,7 +176,7 @@ public class ImageProvider: NSObject {
                     
                     // Piwigo error?
                     if pwgData.errorCode != 0 {
-                        let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                         completion(Set(), totalCount, error)
                         return
                     }
@@ -253,7 +253,7 @@ public class ImageProvider: NSObject {
                 
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }

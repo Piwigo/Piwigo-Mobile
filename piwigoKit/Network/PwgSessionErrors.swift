@@ -107,7 +107,7 @@ extension PwgSessionError: LocalizedError {
 extension PwgSession {
     // Always return an error message, localized or not.
     /// Updated on 23 February 2025 — Piwigo 15.3.0 using BBEdit multi-file search "PwgError"
-    public func localizedError(for errorCode: Int, errorMessage: String = "") -> Error {
+    public func error(for errorCode: Int, errorMessage: String = "") -> Error {
         switch errorCode {
         case 400:
             // Messages not translated in Piwigo:

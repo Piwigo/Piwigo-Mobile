@@ -531,7 +531,7 @@ class LoginViewController: UIViewController {
         }
         else if let pwgError = error as? PwgSessionError,
                 pwgError == PwgSessionError.invalidCredentials {
-            title = NSLocalizedString("loginError_title", comment: "loginError_title")
+            title = NSLocalizedString("loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
         }
         else if detail.isEmpty {
@@ -548,7 +548,7 @@ class LoginViewController: UIViewController {
         hideLoading()
         
         // Suggest to retrieve password
-        let title = NSLocalizedString("loginError_title", comment: "loginError_title")
+        let title = NSLocalizedString("loginError_title", comment: "Login Fail")
         let message = NSLocalizedString("loginError_resetPwd", comment: "Would you like to reset your password from the web interface?")
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
