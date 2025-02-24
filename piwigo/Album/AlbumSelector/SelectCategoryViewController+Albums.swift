@@ -17,7 +17,7 @@ extension SelectCategoryViewController
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
 
-        // Add category to list of recent albums
+        // Add category ID to list of recently used albums
         let userInfo = ["categoryId": parentData.pwgID]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 

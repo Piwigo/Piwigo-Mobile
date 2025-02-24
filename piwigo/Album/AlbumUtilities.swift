@@ -154,7 +154,7 @@ class AlbumUtilities: NSObject {
                 
                 // Successful?
                 if let catId = pwgData.data.id, catId != Int32.min {
-                    // Album successfully created ▶ Add it to list of recent albums
+                    // Album successfully created ▶ Add it to list of recently used albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catId)]
                     NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
                                                     object: nil, userInfo: userInfo)
@@ -339,7 +339,7 @@ class AlbumUtilities: NSObject {
                 
                 // Successful?
                 if pwgData.success {
-                    // Album successfully deleted ▶ Remove category from list of recent albums
+                    // Album successfully deleted ▶ Remove category ID from list of recently used albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catID)]
                     NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
                                                     object: nil, userInfo: userInfo)

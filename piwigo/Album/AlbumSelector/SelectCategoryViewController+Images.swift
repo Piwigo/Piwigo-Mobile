@@ -130,7 +130,7 @@ extension SelectCategoryViewController
     
     // MARK: - Move Images Methods
     func moveImages(toAlbum albumData: Album) {
-        // Add category to list of recent albums
+        // Add category ID to list of recently used albums
         let userInfo = ["categoryId": albumData.pwgID]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
         

@@ -255,7 +255,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
                 
-                // Add category to list of recent albums
+                // Add category ID to list of recently used albums
                 let userInfo = ["categoryId": albumData.pwgID]
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
@@ -302,7 +302,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"), inMode: .determinate)
                 
-                // Add category to list of recent albums
+                // Add category ID to list of recently used albums
                 let userInfo = ["categoryId": albumData.pwgID]
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
                 

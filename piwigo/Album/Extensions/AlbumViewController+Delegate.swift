@@ -68,7 +68,7 @@ extension AlbumViewController: UICollectionViewDelegate
                     return
                 }
                 
-                // Add category to list of recent albums
+                // Add category ID to list of recently used albums
                 let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
                 
@@ -132,7 +132,7 @@ extension AlbumViewController: UICollectionViewDelegate
                     return
                 }
                 
-                // Add category to list of recent albums
+                // Add category ID to list of recently used albums
                 let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
                 

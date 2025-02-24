@@ -808,52 +808,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
         guard let categoryId = notification.userInfo?["categoryId"] as? Int32 else {
-            fatalError("!!! Did not provide a category ID !!!")
+            preconditionFailure("!!! Did not provide a category ID !!!")
         }
         if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
-        // Create new set of recent albums with new album ID
-        var newList: Set<String> = Set([String(categoryId)])
+        // Get album ID to add as string
+        let categoryIdStr = String(categoryId)
 
-        // Get current set of recent albums
-        let oldList: Set<String> = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0}))
-
-        // Add recent albums while avoiding duplicates
-        newList.formUnion(oldList)
+        // Get current list of recent albums
+        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
+        
+        // Add or put back album ID to beginning of list
+        if recentAlbumsStr.contains(categoryIdStr) {
+            recentAlbumsStr.removeAll { $0 == categoryIdStr }
+        }
+        recentAlbumsStr.insert(categoryIdStr, at: 0)
 
         // We will present 3 - 10 albums (5 by default), but because some recent albums
         // may not be suggested or other may be deleted, we store more than 10, say 20.
-        let nberExtraCats: Int = max(0, newList.count - 20)
-        AlbumVars.shared.recentCategories = newList.dropLast(nberExtraCats).joined(separator: ",")
+        let nberExtraCats: Int = max(0, recentAlbumsStr.count - 20)
+        AlbumVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
         debugPrint("••> Added album \(categoryId); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
         guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
-            fatalError("!!! Did not provide a category ID !!!")
+            preconditionFailure("!!! Did not provide a category ID !!!")
         }
         if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
-        if recentAlbumsStr.isEmpty { return }
-
-        // Get new album Id as string
+        // Get album ID to remove as string
         let categoryIdStr = String(categoryId)
 
-        // Remove albumId from list if necessary
-        var recentCategories = recentAlbumsStr.components(separatedBy: ",")
-        recentCategories.removeAll(where: { $0 == categoryIdStr })
+        // Get current list of recent albums
+        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
 
-        // List should not be empty (add root album Id)
-        if recentCategories.isEmpty {
-            recentCategories.append(String(0))
+        // Remove album ID from list if necessary
+        if recentAlbumsStr.contains(categoryIdStr) {
+            recentAlbumsStr.removeAll { $0 == categoryIdStr }
+        }
+
+        // List should not be empty (add root album ID)
+        if recentAlbumsStr.isEmpty {
+            recentAlbumsStr.append(String(0))
         }
 
         // Update list
-        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
-        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(AlbumVars.shared.recentCategories)")
+        AlbumVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
+        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
 

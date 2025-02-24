@@ -20,7 +20,7 @@ extension UploadManager
         isPreparing = true
         upload.setState(.preparing, save: true)
 
-        // Add category to list of recent albums
+        // Add category ID to list of recently used albums
         let userInfo = ["categoryId": upload.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
