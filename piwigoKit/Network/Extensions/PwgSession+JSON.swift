@@ -39,14 +39,30 @@ extension PwgSession
         var urlComponents = URLComponents()
         var queryItems: [URLQueryItem] = []
         for (key, value) in paramDict {
-            if let valStr = value as? String, valStr.isEmpty == false {
+            if let valArray = value as? [NSNumber] {
+                let keyArray = key + "[]"
+                valArray.forEach { valNum in
+                    let queryItem = URLQueryItem(name: keyArray, value: valNum.stringValue)
+                    queryItems.append(queryItem)
+                }
+            }
+            else if let valArray = value as? [String] {
+                let keyArray = key + "[]"
+                valArray.forEach { valStr in
+                    // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+                    let utf8mb3Str = PwgSession.utf8mb3String(from: valStr)
+                    let queryItem = URLQueryItem(name: keyArray, value: utf8mb3Str)
+                    queryItems.append(queryItem)
+                }
+            }
+            else if let valNum = value as? NSNumber {
+                let queryItem = URLQueryItem(name: key, value: valNum.stringValue)
+                queryItems.append(queryItem)
+            }
+            else if let valStr = value as? String, valStr.isEmpty == false {
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
                 let utf8mb3Str = PwgSession.utf8mb3String(from: valStr)
                 let queryItem = URLQueryItem(name: key, value: utf8mb3Str)
-                queryItems.append(queryItem)
-            }
-            else if let val = value as? NSNumber {
-                let queryItem = URLQueryItem(name: key, value: val.stringValue)
                 queryItems.append(queryItem)
             }
             else {
