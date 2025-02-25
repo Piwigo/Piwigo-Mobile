@@ -70,7 +70,7 @@ class ImageUtilities: NSObject {
                             completion: @escaping () -> Void,
                             failure: @escaping (Error) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let listOfImageIds = images.map({ "\($0.pwgID)" }).joined(separator: ",")
+        let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"    : listOfImageIds,
                                           "category_id" : album.pwgID,
                                           "action"      : action.rawValue,
@@ -118,7 +118,7 @@ class ImageUtilities: NSObject {
                        completion: @escaping () -> Void,
                        failure: @escaping (Error) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let listOfImageIds = images.map({ "\($0.pwgID)" }).joined(separator: "|")
+        let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
                                           "pwg_token" : NetworkVars.pwgToken]
         
