@@ -119,7 +119,7 @@ extension AlbumViewController
                             UIView.animate(withDuration: 0.25) {
                                 cell.cellImage.transform = CGAffineTransform(rotationAngle: -angle)
                             } completion: { _ in
-                                cell.cellImage.image = cachedImage
+                                cell.configImage(cachedImage, withHiddenLabel: true)
                                 cell.cellImage.transform = CGAffineTransformIdentity
                             }
                         }
