@@ -12,6 +12,7 @@ import piwigoKit
 extension SelectCategoryViewController
 {
     // MARK: - Copy Images Methods
+    /// For calling Piwigo server in version 2.10 to 13.x
     func copyImages(toAlbum albumData: Album) {
         // Check image data
         guard let imageData = inputImages.first else {
@@ -27,10 +28,11 @@ extension SelectCategoryViewController
             self.copyImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
-            self.copyImagesDidFailWithError(error)
+            self.didFailWithError(error)
         }
     }
     
+    /// For calling Piwigo server in version 2.10 to 13.x
     private func copyImage(_ imageData: Image, toAlbum albumData: Album,
                            onCompletion completion: @escaping () -> Void,
                            onFailure fail: @escaping (_ error: Error?) -> Void) {
@@ -71,7 +73,8 @@ extension SelectCategoryViewController
         }
     }
     
-    func associateImages(toAlbum albumData: Album) {
+    /// For calling Piwigo server in version +14.0
+    func associateImages(toAlbum albumData: Album, andDissociateFromPreviousAlbum dissociate: Bool = false) {
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.setCategory(albumData, forImages: self.inputImages, withAction: .associate) {
@@ -90,14 +93,21 @@ extension SelectCategoryViewController
                         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                         albumData.thumbnailUrl = ImageUtilities.getPiwigoURL(imageData, ofMinSize: thumnailSize) as NSURL?
                     }
-                    // Close HUD, save modified data
-                    self.didCopyImagesWithSuccess()
+                    
+                    // Should we also dissociate the images?
+                    if dissociate {
+                        // Dissociate images from the current album
+                        self.dissociateImages(fromAlbum: self.inputAlbum)
+                    } else {
+                        // Close HUD, save modified data
+                        self.didCopyImagesWithSuccess()
+                    }
                 }
             } failure: { [self] error in
-                self.copyImagesDidFailWithError(error)
+                self.didFailWithError(error)
             }
         } failure: { [self] error in
-            self.copyImagesDidFailWithError(error)
+            self.didFailWithError(error)
         }
     }
     
@@ -120,8 +130,8 @@ extension SelectCategoryViewController
         }
     }
     
-    private func copyImagesDidFailWithError(_ error: Error?) {
-        // Close HUD, inform user and save in Core Data store
+    private func didFailWithError(_ error: Error?) {
+        // Hide HUD and inform user
         self.hideHUD { [self] in
             self.showError(error)
         }
@@ -129,6 +139,7 @@ extension SelectCategoryViewController
     
     
     // MARK: - Move Images Methods
+    /// For calling Piwigo server in version 2.10 to 13.x
     func moveImages(toAlbum albumData: Album) {
         // Add category ID to list of recently used albums
         let userInfo = ["categoryId": albumData.pwgID]
@@ -136,23 +147,7 @@ extension SelectCategoryViewController
         
         // Jobe done?
         guard let imageData = inputImages.first else {
-            // Close HUD
-            updateHUDwithSuccess() { [self] in
-                // Save changes
-                do {
-                    try self.mainContext.save()
-                } catch let error {
-                    debugPrint("Could not save moved images, \(error)")
-                }
-
-                // Hide HUD and dismiss album selector
-                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                    self.dismiss(animated: true) { [self] in
-                        // Remove image from ImageViewController
-                        self.imageRemovedDelegate?.didRemoveImage()
-                    }
-                }
-            }
+            self.didMoveImagesWithSuccess()
             return
         }
         
@@ -164,13 +159,11 @@ extension SelectCategoryViewController
             self.moveImages(toAlbum: albumData)
         }
         onFailure: { [self] error in
-            // Close HUD, inform user and save in Core Data store
-            self.hideHUD { [self] in
-                self.showError(error)
-            }
+            self.didFailWithError(error)
         }
     }
     
+    /// For calling Piwigo server in version 2.10 to 13.x
     private func moveImage(_ imageData: Image, toCategory albumData: Album,
                            onCompletion completion: @escaping () -> Void,
                            onFailure fail: @escaping (_ error: Error?) -> Void) {
@@ -217,6 +210,56 @@ extension SelectCategoryViewController
             }
         } failure: { error in
             fail(error)
+        }
+    }
+    
+    /// For calling Piwigo server in version +14.0
+    func dissociateImages(fromAlbum albumData: Album) {
+        // Send request to Piwigo server
+        PwgSession.checkSession(ofUser: user) { [self] in
+            ImageUtilities.setCategory(albumData, forImages: self.inputImages, withAction: .dissociate) {
+                DispatchQueue.main.async { [self] in
+                    // Remove images from album
+                    albumData.removeFromImages(self.inputImages)
+                    
+                    // Update albums
+                    let nberOfImages = Int64(self.inputImages.count)
+                    self.albumProvider.updateAlbums(removingImages: nberOfImages, fromAlbum: albumData)
+                    
+                    // Set album thumbnail with first copied image if necessary
+                    if albumData.images?.count == 0 {
+                        albumData.thumbnailId = Int64.zero
+                        albumData.thumbnailUrl = nil
+                    }
+
+                    // Close HUD, save modified data
+                    self.didMoveImagesWithSuccess()
+                }
+            } failure: { [self] error in
+                self.didFailWithError(error)
+            }
+        } failure: { [self] error in
+            self.didFailWithError(error)
+        }
+    }
+    
+    private func didMoveImagesWithSuccess() {
+        // Close HUD
+        updateHUDwithSuccess() { [self] in
+            // Save changes
+            do {
+                try self.mainContext.save()
+            } catch let error {
+                debugPrint("Could not save moved images, \(error)")
+            }
+            
+            // Hide HUD and dismiss album selector
+            self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                self.dismiss(animated: true) { [self] in
+                    // Remove image from ImageViewController
+                    self.imageRemovedDelegate?.didRemoveImage()
+                }
+            }
         }
     }
 }

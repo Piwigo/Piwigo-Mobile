@@ -300,44 +300,34 @@ extension AlbumViewController
 
         // Prepare variable for HUD and attribute action
         switch action {
-        case .edit         /* Edit images parameters */,
-             .delete       /* Distinguish orphanes and ask for confirmation */,
-             .share        /* Check Photo Library access rights */,
-             .copyImages   /* Copy images to album */,
-             .moveImages   /* Move images to album */:
+        case .edit              /* Edit images parameters */,
+             .delete            /* Distinguish orphanes and ask for confirmation */,
+             .share             /* Check Photo Library access rights */:
             
-            // Remove images from which we already have complete data
-            var imageIDsToRetrieve = imageIDs
-            let selectedImages = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
-            for imageID in imageIDs {
-                guard let selectedImage = selectedImages.first(where: {$0.pwgID == imageID})
-                else { continue }
-                if selectedImage.fileSize != Int64.zero {
-                    imageIDsToRetrieve.remove(imageID)
-                }
-            }
+            // Identify images with incomplete data, retrieve missing data and perform wanted action
+            prepareDataRetrieval(ofImagesWithIDs: imageIDs, beforeAction: action, contextually: contextually)
             
-            // Should we retrieve data of some images?
-            if imageIDsToRetrieve.isEmpty {
+        case .copyImages        /* Copy images to album to select */,
+             .moveImages        /* Move images to album to select */:
+            
+            // Add category ID to list of recently used albums
+            let userInfo = ["categoryId": albumData.pwgID]
+            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+            
+            // Complete image data is not necessary for Piwigo server version +14.x
+            if NetworkVars.usesSetCategory {
+                // Select album and copy images into that album
                 performAction(action, withImageIDs: imageIDs, contextually: contextually)
             } else {
-                // Display HUD
-                navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                              inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
-                
-                // Retrieve image data if needed
-                PwgSession.checkSession(ofUser: user) {  [self] in
-                    retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
-                                 beforeAction: action, contextually: contextually)
-                } failure: { [self] error in
-                    retrieveImageDataError(error, contextually: contextually)
-                }
+                // Identify images with incomplete data, retrieve missing data and perform wanted action
+                prepareDataRetrieval(ofImagesWithIDs: imageIDs, beforeAction: action, contextually: contextually)
             }
             
-        case .favorite         /* Favorite photos   */,
-             .unfavorite       /* Unfavorite photos */:
+        case .favorite          /* Favorite photos   */,
+             .unfavorite        /* Unfavorite photos */:
+            
             // Display HUD
-            let title = imageIDs.count > 1 ? 
+            let title = imageIDs.count > 1 ?
                 NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
                 NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
@@ -345,8 +335,9 @@ extension AlbumViewController
             // Add or remove image from favorites
             performAction(action, withImageIDs: imageIDs, contextually: contextually)
             
-        case .rotateImagesLeft      /* Rotate photos 90° to left */,
-             .rotateImagesRight     /* Rotate photos 90° to right */:
+        case .rotateImagesLeft  /* Rotate photos 90° to left */,
+             .rotateImagesRight /* Rotate photos 90° to right */:
+            
             // Display HUD
             let title = imageIDs.count > 1 ?
                 NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
@@ -392,6 +383,37 @@ extension AlbumViewController
         }
     }
 
+    private func prepareDataRetrieval(ofImagesWithIDs imageIDs: Set<Int64>,
+                                      beforeAction action: pwgImageAction, contextually: Bool) {
+        // Remove images from which we already have complete data
+        var imageIDsToRetrieve = imageIDs
+        let selectedImages = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
+        for imageID in imageIDs {
+            guard let selectedImage = selectedImages.first(where: {$0.pwgID == imageID})
+            else { continue }
+            if selectedImage.fileSize != Int64.zero {
+                imageIDsToRetrieve.remove(imageID)
+            }
+        }
+        
+        // Should we retrieve data of some images?
+        if imageIDsToRetrieve.isEmpty {
+            performAction(action, withImageIDs: imageIDs, contextually: contextually)
+        } else {
+            // Display HUD
+            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                          inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
+            
+            // Retrieve image data if needed
+            PwgSession.checkSession(ofUser: user) {  [self] in
+                retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
+                             beforeAction: action, contextually: contextually)
+            } failure: { [self] error in
+                retrieveImageDataError(error, contextually: contextually)
+            }
+        }
+    }
+    
     private func retrieveData(ofImagesWithID someIDs: Set<Int64>, among imageIDs: Set<Int64>,
                               beforeAction action:pwgImageAction, contextually: Bool) {
         // Get image ID if any
