@@ -89,6 +89,15 @@ extension AlbumViewController
                         try? mainContext.save()
                     }
                     
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if self.hasFavorites {
+                        let visibleCells = self.collectionView?.visibleCells ?? []
+                        let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                        if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {
+                            cell.isFavorite = true
+                        }
+                    }
+                    
                     // Next image
                     remainingIDs.remove(imageID)
                     if contextually == false {
@@ -188,6 +197,15 @@ extension AlbumViewController
                         self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
                         // Save changes
                         try? mainContext.save()
+                    }
+                    
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if self.hasFavorites {
+                        let visibleCells = self.collectionView?.visibleCells ?? []
+                        let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                        if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {
+                            cell.isFavorite = false
+                        }
                     }
                     
                     // Next image
