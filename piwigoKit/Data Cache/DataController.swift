@@ -63,7 +63,8 @@ extension NSManagedObjectContext {
     /// - Returns: `true` if a save was needed. Otherwise, `false`.
     public func saveIfNeeded() {
         // Anything to save?
-        guard hasChanges else { return }
+        guard hasChanges
+        else { return }
         
         // Save changes
         do {

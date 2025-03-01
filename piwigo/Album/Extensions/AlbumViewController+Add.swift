@@ -64,7 +64,7 @@ extension AlbumViewController
                 // Create album
                 let albumName = alert.textFields?.first?.text ?? NSLocalizedString("categorySelection_title", comment: "Album")
                 addCategory(withName: albumName, andComment: alert.textFields?.last?.text ?? "",
-                            inParent: categoryId)
+                            inParent: albumData)
         })
 
         alert.addAction(cancelAction)
@@ -83,18 +83,19 @@ extension AlbumViewController
     }
 
     func addCategory(withName albumName: String, andComment albumComment: String,
-                     inParent parentId: Int32) {
+                     inParent albumData: Album) {
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("createNewAlbumHUD_label", comment: "Creating Album…"))
 
         // Create album
         PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.create(withName: albumName, description: albumComment,
-                                  status: "public", inParentWithId: parentId) { [self] newCatId in
+                                  status: "public", inAlbumWithId: albumData.pwgID) { [self] newCatId in
                 // Album successfully created ▶ Add new album to cache and update parent albums
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
                     self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
-                                                intoAlbumWithId: parentId)
+                                                inAlbumWithObjectID: albumData.objectID,
+                                                forUserWithObjectID: user.objectID)
                 }
                 
                 // Hide HUD

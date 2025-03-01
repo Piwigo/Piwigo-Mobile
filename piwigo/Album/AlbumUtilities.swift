@@ -125,13 +125,13 @@ class AlbumUtilities: NSObject {
     //    }
     
     static func create(withName name:String, description: String, status: String,
-                       inParentWithId parentCategeoryId: Int32,
+                       inAlbumWithId parentAlbumId: Int32,
                        completion: @escaping (Int32) -> Void,
                        failure: @escaping (Error) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["name"    : name,
-                                          "parent"  : parentCategeoryId,
+                                          "parent"  : parentAlbumId,
                                           "comment" : description,
                                           "status"  : status]
         

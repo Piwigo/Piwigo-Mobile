@@ -21,7 +21,7 @@ public class Album: NSManagedObject {
     /**
      Updates an Album instance with the values from a CategoryData struct.
      */
-    func update(with albumData: CategoryData, userInstance: User) throws {
+    func update(with albumData: CategoryData, userObjectID: NSManagedObjectID) throws {
         
         // Update the album only if the Id and Name properties have values.
         guard let newPwgId = albumData.id,
@@ -104,7 +104,7 @@ public class Album: NSManagedObject {
 
         // This album belongs to the provided user
         if user == nil,
-           let userInContext = self.managedObjectContext?.object(with: userInstance.objectID) as? User {
+           let userInContext = self.managedObjectContext?.object(with: userObjectID) as? User {
             user = userInContext
         }
     }
