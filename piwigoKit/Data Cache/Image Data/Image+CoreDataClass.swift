@@ -51,7 +51,7 @@ public class Image: NSManagedObject {
         if let newTitle = imageData.title {
             let titleUTF8 = PwgSession.utf8mb4String(from: newTitle)
             let titleAttrStr = titleUTF8.htmlToAttributedString
-            if title.string != titleUTF8 {
+            if titleStr != titleUTF8 {
                 title = titleAttrStr
                 titleStr = titleUTF8
             }
