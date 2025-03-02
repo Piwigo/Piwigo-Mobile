@@ -47,22 +47,21 @@ public class Image: NSManagedObject {
             pwgID = newPwgID
         }
         
-        // Image title
-        if let newTitle = imageData.title {
-            let titleUTF8 = PwgSession.utf8mb4String(from: newTitle)
-            let titleAttrStr = titleUTF8.htmlToAttributedString
-            if titleStr != titleUTF8 {
-                title = titleAttrStr
-                titleStr = titleUTF8
-            }
+        // Image title (required)
+        let titleUTF8 = PwgSession.utf8mb4String(from: imageData.title)
+        if titleStr != titleUTF8 {
+            titleStr = titleUTF8
+        }
+        let titleAttrStr = titleUTF8.htmlToAttributedString
+        if title != titleAttrStr {
+            title = titleAttrStr
         }
         
-        // Image description
-        if let desc = imageData.comment {
-            let newDesc = PwgSession.utf8mb4String(from: desc).htmlToAttributedString
-            if comment.string != newDesc.string {
-                comment = newDesc
-            }
+        // Image description (required)
+        let newCommentUTF8 = PwgSession.utf8mb4String(from: imageData.comment)
+        let newCommentAttrStr = newCommentUTF8.htmlToAttributedString
+        if comment != newCommentAttrStr {
+            comment = newCommentAttrStr
         }
         
         // Image visits (returned by pwg.category.getImages)
@@ -270,6 +269,12 @@ public class Image: NSManagedObject {
             self.longitude = longitude
         }
         
+        // Download URL not nil and modified?
+        let newDownloadUrl = PwgSession.encodedImageURL(imageData.downloadUrl ?? "")
+        if downloadUrl != newDownloadUrl {
+            downloadUrl = newDownloadUrl
+        }
+
         // Rank of image in album
         switch sort {
         case .rankAscending:
