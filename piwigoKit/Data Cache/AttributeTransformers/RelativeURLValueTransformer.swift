@@ -20,7 +20,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     public override class var allowedTopLevelClasses: [AnyClass] {
-        return [NSURL.self]
+        return super.allowedTopLevelClasses + [NSURL.self]
     }
     
     public override func transformedValue(_ value: Any?) -> Any? {

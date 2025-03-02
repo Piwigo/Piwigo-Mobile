@@ -20,7 +20,7 @@ public class DescriptionValueTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     public override class var allowedTopLevelClasses: [AnyClass] {
-        return [NSAttributedString.self]
+        return super.allowedTopLevelClasses + [NSAttributedString.self]
     }
     
     public override func transformedValue(_ value: Any?) -> Any? {

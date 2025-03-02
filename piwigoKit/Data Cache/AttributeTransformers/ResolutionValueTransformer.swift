@@ -21,7 +21,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     public override class var allowedTopLevelClasses: [AnyClass] {
-        return [Resolution.self, NSString.self, NSURL.self]
+        return super.allowedTopLevelClasses + [Resolution.self, NSString.self, NSURL.self]
     }
     
     public override func transformedValue(_ value: Any?) -> Any? {
