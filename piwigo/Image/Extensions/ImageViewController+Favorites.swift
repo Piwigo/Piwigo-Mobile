@@ -38,6 +38,7 @@ extension ImageViewController
         PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.addToFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
+                    // Update Favorite smart album
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Add image to favorites album
                         favAlbum.addToImages(imageData)
@@ -49,6 +50,17 @@ extension ImageViewController
                         favoriteBarButton?.setFavoriteImage(for: true)
                         favoriteBarButton?.action = #selector(self.removeFromFavorites)
                         favoriteBarButton?.isEnabled = true
+                    }
+                    // Update thumbnails if needed
+                    if let children = presentingViewController?.children {
+                        let albumVCs = children.compactMap({$0 as? AlbumViewController}).filter({$0.categoryId != Int32.zero})
+                        albumVCs.forEach { albumVC in
+                            let visibleCells = albumVC.collectionView?.visibleCells ?? []
+                            let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                            if let cell = imageCells.first(where: { $0.imageData.pwgID == imageData.pwgID}) {
+                                cell.isFavorite = true
+                            }
+                        }
                     }
                 }
             } failure: { [self] error in
@@ -86,6 +98,7 @@ extension ImageViewController
         PwgSession.checkSession(ofUser: user) { [self] in
             ImageUtilities.removeFromFavorites(imageData) { [self] in
                 DispatchQueue.main.async { [self] in
+                    // Update Favorite smart album
                     if let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) {
                         // Remove image from favorites album
                         favAlbum.removeFromImages(imageData)
@@ -102,6 +115,17 @@ extension ImageViewController
                             self.favoriteBarButton?.setFavoriteImage(for: false)
                             self.favoriteBarButton?.action = #selector(self.addToFavorites)
                             self.favoriteBarButton?.isEnabled = true
+                        }
+                    }
+                    // Update thumbnails if needed
+                    if let children = presentingViewController?.children {
+                        let albumVCs = children.compactMap({$0 as? AlbumViewController}).filter({$0.categoryId != Int32.zero})
+                        albumVCs.forEach { albumVC in
+                            let visibleCells = albumVC.collectionView?.visibleCells ?? []
+                            let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                            if let cell = imageCells.first(where: { $0.imageData.pwgID == imageData.pwgID}) {
+                                cell.isFavorite = false
+                            }
                         }
                     }
                 }
