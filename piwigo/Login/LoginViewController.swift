@@ -197,8 +197,6 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = true
         NetworkVars.userStatus = pwgUserStatus.guest
         NetworkVars.usesCommunityPluginV29 = false
-        debugPrint(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
 
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
@@ -345,9 +343,6 @@ class LoginViewController: UIViewController {
     }
 
     func performLogin() {
-        debugPrint(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
-
         // Perform login if username exists
         let username = userTextField.text ?? ""
         let password = passwordTextField.text ?? ""
@@ -396,8 +391,6 @@ class LoginViewController: UIViewController {
 
     // Determine true user rights when Community extension installed
     func getCommunityStatus() {
-        debugPrint(
-            "   usesCommunityPluginV29=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         // Community plugin installed?
         if NetworkVars.usesCommunityPluginV29 {
             // Update HUD during login
@@ -427,8 +420,6 @@ class LoginViewController: UIViewController {
 
     // Check Piwigo version, get token, available sizes, etc.
     func getSessionStatus() {
-        debugPrint(
-            "   hasCommunityPlugin=\(NetworkVars.usesCommunityPluginV29 ? "YES" : "NO"), hasUserRights=\(NetworkVars.userStatus.rawValue)")
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
