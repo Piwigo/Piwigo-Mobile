@@ -70,9 +70,22 @@ extension NSManagedObjectContext {
         do {
             try save()
         }
-        catch let error {
+        catch let error as NSError {
             // Will try later…
-            debugPrint("Could not save context: \(error.localizedDescription)")
+            debugPrint("••> Could not save context: \(error.localizedDescription)")
+            // Multiple errors?
+            if error.code == NSValidationMultipleErrorsError {
+                let detailedErrors: [NSError] = error.userInfo[NSDetailedErrorsKey] as? [NSError] ?? []
+                let errorCount = detailedErrors.count
+                debugPrint("••> \(errorCount) validation error\(errorCount == 1 ? "" : "s"):")
+                var printedErros: Set<String> = []
+                for detailError in detailedErrors {
+                    guard !printedErros.contains(detailError.localizedDescription)
+                    else { continue }
+                    printedErros.insert(detailError.localizedDescription)
+                    debugPrint("••> - \(detailError.localizedDescription)")
+                }
+            }
         }
     }
 }
