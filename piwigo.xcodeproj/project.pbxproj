@@ -494,6 +494,9 @@
 		ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
 		ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04A24AF73E800CDC765 /* community.images.uploadCompleted.json */; };
 		ADDD210A270A13E300CACFF2 /* pwg.users.favorites.addRemove.json in Resources */ = {isa = PBXBuildFile; fileRef = ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */; };
+		ADDF397D2D7494A5008E2037 /* AlbumToAlbumMigrationPolicy_0F_to_0G.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDF397C2D7494A5008E2037 /* AlbumToAlbumMigrationPolicy_0F_to_0G.swift */; };
+		ADDF397F2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDF397E2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift */; };
+		ADDF39812D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADDF39802D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel */; };
 		ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */; };
 		ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
 		ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */; };
@@ -1195,6 +1198,10 @@
 		ADDC36D328D10DD700E5AE4B /* DescriptionValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionValueTransformer.swift; sourceTree = "<group>"; };
 		ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.users.favorites.addRemove.json; sourceTree = "<group>"; };
 		ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.users.favorites.addRemove.swift; sourceTree = "<group>"; };
+		ADDF39772D748F16008E2037 /* DataModel 0G (NSAttributedString).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0G (NSAttributedString).xcdatamodel"; sourceTree = "<group>"; };
+		ADDF397C2D7494A5008E2037 /* AlbumToAlbumMigrationPolicy_0F_to_0G.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumToAlbumMigrationPolicy_0F_to_0G.swift; sourceTree = "<group>"; };
+		ADDF397E2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageToImageMigrationPolicy_0F_to_0G.swift; sourceTree = "<group>"; };
+		ADDF39802D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0F_to_0G.xcmappingmodel; sourceTree = "<group>"; };
 		ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
 		ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AppTools.swift"; sourceTree = "<group>"; };
 		ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewControllerOld.swift; sourceTree = "<group>"; };
@@ -1526,6 +1533,9 @@
 				AD1BB5EB29AE82E50041E24E /* MappingModel_0A_to_0B.xcmappingmodel */,
 				ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */,
 				AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */,
+				ADDF39802D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel */,
+				ADDF397C2D7494A5008E2037 /* AlbumToAlbumMigrationPolicy_0F_to_0G.swift */,
+				ADDF397E2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift */,
 			);
 			path = "Migration Tools";
 			sourceTree = "<group>";
@@ -3114,6 +3124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADDC36D428D10DD700E5AE4B /* DescriptionValueTransformer.swift in Sources */,
+				ADDF397F2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift in Sources */,
 				AD243D9228E05F60002DCC5F /* RelativeURLValueTransformer.swift in Sources */,
 				AD06B6E32BEBD6CD00C5F078 /* PwgSession+Delegate.swift in Sources */,
 				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
@@ -3146,6 +3157,7 @@
 				ADF35E7A28B283A8009F3ECE /* Server+CoreDataProperties.swift in Sources */,
 				ADF35E7E28B29A06009F3ECE /* ServerProvider.swift in Sources */,
 				ADF35E7C28B296D2009F3ECE /* ServerError.swift in Sources */,
+				ADDF39812D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel in Sources */,
 				AD98E53228BB8C3A008C846A /* User+CoreDataClass.swift in Sources */,
 				AD98E53328BB8C3A008C846A /* User+CoreDataProperties.swift in Sources */,
 				AD98E53728BBC94E008C846A /* UserProvider.swift in Sources */,
@@ -3156,6 +3168,7 @@
 				AD76646B298867FC00CFD66F /* AlbumDeletion.swift in Sources */,
 				AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */,
 				ADDC36CC28CCEA9C00E5AE4B /* AlbumProvider.swift in Sources */,
+				ADDF397D2D7494A5008E2037 /* AlbumToAlbumMigrationPolicy_0F_to_0G.swift in Sources */,
 				ADDC36CE28CDE54200E5AE4B /* AlbumError.swift in Sources */,
 				ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */,
 				ADDC36C628CCE8CE00E5AE4B /* Image+CoreDataProperties.swift in Sources */,
@@ -4616,6 +4629,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				ADDF39772D748F16008E2037 /* DataModel 0G (NSAttributedString).xcdatamodel */,
 				ADFD63762C1A040800FBA514 /* DataModel 0F (None).xcdatamodel */,
 				ADC592762C0674AE002B6F82 /* DataModel 0E (Image).xcdatamodel */,
 				AD6BA1052BA8E32700755257 /* DataModel 0D (Album).xcdatamodel */,
@@ -4632,7 +4646,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = ADFD63762C1A040800FBA514 /* DataModel 0F (None).xcdatamodel */;
+			currentVersion = ADDF39772D748F16008E2037 /* DataModel 0G (NSAttributedString).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
