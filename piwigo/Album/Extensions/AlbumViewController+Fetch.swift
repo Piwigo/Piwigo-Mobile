@@ -224,6 +224,9 @@ extension AlbumViewController
                 if imageIDs.isEmpty == false {
                     let toRemove = images.filter({ imageIDs.contains($0.pwgID) })
                     self.albumData.removeFromImages(toRemove)
+                    self.selectedImageIDs.subtract(imageIDs)
+                    self.selectedVideosIDs.subtract(imageIDs)
+                    self.selectedFavoriteIDs.subtract(imageIDs)
                     try? self.mainContext.save()
                 } else if self.albumData.nbImages == Int64.zero,
                           images.isEmpty == false {
