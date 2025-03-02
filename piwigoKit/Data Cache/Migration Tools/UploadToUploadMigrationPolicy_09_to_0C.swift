@@ -12,11 +12,8 @@ import CoreData
 let uploadErrorDomain = "Upload Migration"
 
 class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
-    
-    // Logs migration activity
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: UploadToUploadMigrationPolicy_09_to_0C.self))
+    // Constants
+    let logPrefix = "Upload 09 ► Upload 0C"
 
     /**
      UploadToUpload custom migration following these steps:
@@ -49,12 +46,18 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                        }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
+                if #available(iOSApplicationExtension 14.0, *) {
+                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -74,7 +77,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         // Forget upload requests of images deleted from the Piwigo server
         if newUpload.value(forKey: "requestState") as? Int16 == 13 {
             if #available(iOSApplicationExtension 14.0, *) {
-                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > Upload request of deleted image are non longer needed.")
+                DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > Upload request of deleted image are non longer needed.")
             }
             return
         }
@@ -90,7 +93,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
               let _ = URL(string: serverPath) else {
             // We discard records whose server path is incorrect.
             if #available(iOSApplicationExtension 14.0, *) {
-                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > Upload request instance w/ wrong serverPath!")
+                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > Upload request instance w/ wrong serverPath!")
             }
             return
         }
@@ -98,7 +101,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         // Did we create a record of the currently used server?
         guard var userInfo = manager.userInfo else {
             if #available(iOSApplicationExtension 14.0, *) {
-                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
+                DataMigrator.logger.error("\(self.logPrefix): userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
             }
             return
         }
@@ -171,7 +174,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Associate new Upload object to old one
         if #available(iOSApplicationExtension 14.0, *) {
-            UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > \(newUpload)")
+            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
         }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
     }

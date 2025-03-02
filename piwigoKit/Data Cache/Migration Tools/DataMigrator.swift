@@ -6,6 +6,7 @@
 //  Copyright © 2022 Piwigo.org. All rights reserved.
 //
 
+import os
 import Foundation
 import CoreData
 
@@ -29,6 +30,11 @@ import CoreData
  */
 public class DataMigrator: NSObject {
     
+    // Logs migration activity
+    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
+    @available(iOSApplicationExtension 14.0, *)
+    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: DataMigrator.self))
+
     public func requiresMigration() -> Bool {
         // URL of the store in the App Group directory
         let storeURL = DataDirectories.shared.appGroupDirectory
@@ -61,6 +67,14 @@ public class DataMigrator: NSObject {
     }
 
     public func migrateStore() {
+        // Initialise time counter
+        let timeCounter = CFAbsoluteTimeGetCurrent()
+        if #available(iOSApplicationExtension 14.0, *) {
+            DataMigrator.logger.notice("Migration started…")
+        } else {
+            debugPrint("••> Migration started…")
+        }
+
         // URL of the store in the App Group directory
         let storeURL = DataDirectories.shared.appGroupDirectory
             .appendingPathComponent("DataModel.sqlite")
@@ -72,6 +86,14 @@ public class DataMigrator: NSObject {
             // Perform the migration (version after version)
             migrateStore(at: oldStoreURL,
                          toVersion: DataMigrationVersion.current, at: storeURL)
+
+            // Log time needed to perform the migration
+            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+            if #available(iOSApplicationExtension 14.0, *) {
+                DataMigrator.logger.notice("Migration completed in \(duration) s")
+            } else {
+                debugPrint("••> Migration completed in \(duration.rounded()) s")
+            }
             return
         }
         
@@ -82,8 +104,17 @@ public class DataMigrator: NSObject {
             // Perform the migration (version after version)
             migrateStore(at: oldStoreURL,
                          toVersion: DataMigrationVersion.current, at: storeURL)
+
             // Move Upload folder to container if needed
             self.moveFilesToUpload()
+
+            // Log time needed to perform the migration
+            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+            if #available(iOSApplicationExtension 14.0, *) {
+                DataMigrator.logger.notice("Migration completed in \(duration) s")
+            } else {
+                debugPrint("••> Migration completed in \(duration.rounded()) s")
+            }
             return
         }
 
@@ -92,6 +123,14 @@ public class DataMigrator: NSObject {
             // Perform the migration (version after version)
             migrateStore(at: storeURL,
                          toVersion: DataMigrationVersion.current, at: storeURL)
+            
+            // Log time needed to perform the migration
+            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+            if #available(iOSApplicationExtension 14.0, *) {
+                DataMigrator.logger.notice("Migration completed in \(duration) s")
+            } else {
+                debugPrint("••> Migration completed in \(duration.rounded()) s")
+            }
             return
         }
     }
@@ -325,39 +364,62 @@ private extension DataMigrationVersion {
         // In case where the data model is not found, try to guess the current data model…
         if compatibleVersion == nil {
             if let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+                let logPrefix = "Trying to guess data model from app version \(appVersion) smaller than "
                 if appVersion.compare("2.5", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 2.5")
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 2.5.")
+                    }
                     return .version01
                 }
                 else if appVersion.compare("2.5.2", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 2.5.2")
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 2.5.2")
+                    }
                     return .version03
                 }
                 else if appVersion.compare("2.6", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 2.6")
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 2.6")
+                    }
                     return .version04
                 }
                 else if appVersion.compare("2.6.2", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 2.6.2")
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 2.6.2")
+                    }
                     return .version06
                 }
                 else if appVersion.compare("2.7", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 2.7")
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 2.7")
+                    }
                     return .version07
                 }
                 else if appVersion.compare("2.12", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 2.12")
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 2.12")
+                    }
                     return .version08
                 }
-                else if appVersion.compare("3.00", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 3.00")
+                else if appVersion.compare("3.0", options: .numeric) == .orderedAscending {
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 3.0")
+                    }
                     return .version09
                 }
-                else if appVersion.compare("3.20", options: .numeric) == .orderedAscending {
-        //            debugPrint("••> \(appVersion) is smaller than 3.2")
+                else if appVersion.compare("3.2", options: .numeric) == .orderedAscending {
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 3.2")
+                    }
                     return .version0C
                 }
-                return .version0F
+                else if appVersion.compare("3.3", options: .numeric) == .orderedAscending {
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 3.3")
+                    }
+                    return .version0F
+                }
+                return .version0G
             }
         }
         return compatibleVersion

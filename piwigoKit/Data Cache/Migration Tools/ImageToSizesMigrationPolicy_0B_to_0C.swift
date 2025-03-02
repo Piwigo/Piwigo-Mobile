@@ -6,18 +6,15 @@
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
-//import os
+import os
 import CoreData
 
 let sizesErrorDomain = "Sizes Migration"
 
 class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
+    // Contants
+    let logPrefix = "Image 0B ► Sizes 0C"
     
-    // Logs migration activity
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-//    @available(iOSApplicationExtension 14.0, *)
-//    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: "ImageToSizesMigrationPolicy_0B_to_0C")
-
     /**
      ImageToSizes custom migration performed following these steps:
      - Creates a Sizes instance in the destination context
@@ -44,12 +41,18 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                        }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: sizesErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
+                if #available(iOSApplicationExtension 14.0, *) {
+                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: sizesErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -74,9 +77,9 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         }
 
         // Associate new Sizes object to Image request
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            ImageToSizesMigrationPolicy_0B_to_0C.logger.notice("Image ► Sizes: \(newSizes)")
-//        }
+        if #available(iOSApplicationExtension 14.0, *) {
+            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
+        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newSizes, for: mapping)
     }
 }

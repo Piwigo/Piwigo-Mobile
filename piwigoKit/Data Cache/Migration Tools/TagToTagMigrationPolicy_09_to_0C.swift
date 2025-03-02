@@ -12,11 +12,8 @@ import CoreData
 let tagErrorDomain = "Tag Migration"
 
 class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
-
-    // Logs migration activity
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: TagToTagMigrationPolicy_09_to_0C.self))
+    // Contants
+    let logPrefix = "Tag 09 ► Tag 0C"
 
     /**
      If needed, creates a Server instance of the currently used server before migrating Tag entities.
@@ -64,12 +61,18 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                        }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: tagErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
+                if #available(iOSApplicationExtension 14.0, *) {
+                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: tagErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -95,7 +98,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         newTag.setValue(newServer, forKey: "server")
         
         // Add Tag destination instance to userInfo for reuse
-        // in UploaddToUploadMigrationPolicy_09_to_0C.swift
+        // in UploadToUploadMigrationPolicy_09_to_0C.swift
         if let tagId = sInstance.value(forKey: "tagId") {
             userInfo["\(tagId)"] = newTag
             manager.userInfo = userInfo
@@ -103,7 +106,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
 
         // Associate new Tag to old one
         if #available(iOSApplicationExtension 14.0, *) {
-            TagToTagMigrationPolicy_09_to_0C.logger.notice("Tag ► Tag: \(sInstance) > \(newTag)")
+            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
         }
         manager.associate(sourceInstance: sInstance,
                           withDestinationInstance: newTag,
