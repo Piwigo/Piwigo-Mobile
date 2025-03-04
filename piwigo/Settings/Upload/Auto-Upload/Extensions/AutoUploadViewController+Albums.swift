@@ -15,12 +15,12 @@ extension AutoUploadViewController: LocalAlbumsSelectorDelegate {
         // Check selection
         if photoAlbumId.isEmpty {
             // Did not select a Photo Library album
-            UploadVars.autoUploadAlbumId = ""
-            UploadVars.isAutoUploadActive = false
-        } else if photoAlbumId != UploadVars.autoUploadAlbumId {
+            UploadVars.shared.autoUploadAlbumId = ""
+            UploadVars.shared.isAutoUploadActive = false
+        } else if photoAlbumId != UploadVars.shared.autoUploadAlbumId {
             // Did select another album
-            UploadVars.autoUploadAlbumId = photoAlbumId
-            UploadVars.isAutoUploadActive = false
+            UploadVars.shared.autoUploadAlbumId = photoAlbumId
+            UploadVars.shared.isAutoUploadActive = false
         }
     }
 }
@@ -33,12 +33,12 @@ extension AutoUploadViewController: SelectCategoryDelegate {
         // Check selection
         if categoryId == Int32.min {
             // Did not select a Piwigo album
-            UploadVars.autoUploadCategoryId = Int32.min
-            UploadVars.isAutoUploadActive = false
-        } else if categoryId != UploadVars.autoUploadCategoryId {
+            UploadVars.shared.autoUploadCategoryId = Int32.min
+            UploadVars.shared.isAutoUploadActive = false
+        } else if categoryId != UploadVars.shared.autoUploadCategoryId {
             // Did select another category
-            UploadVars.autoUploadCategoryId = categoryId
-            UploadVars.isAutoUploadActive = false
+            UploadVars.shared.autoUploadCategoryId = categoryId
+            UploadVars.shared.isAutoUploadActive = false
         }
     }
 }

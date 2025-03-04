@@ -45,7 +45,7 @@ public class UploadSessions: NSObject {
 //        }
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-        config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
+        config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 minute)
         config.timeoutIntervalForRequest = 60
@@ -89,7 +89,7 @@ public class UploadSessions: NSObject {
         config.shouldUseExtendedBackgroundIdleMode = true
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-        config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
+        config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 day)
         config.timeoutIntervalForRequest = 1 * 24 * 60 * 60

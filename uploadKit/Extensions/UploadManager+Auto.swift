@@ -14,11 +14,11 @@ extension UploadManager {
     // MARK: - Add Auto-Upload Requests
     public func appendAutoUploadRequests() {
         // Check access to Photo Library album
-        let collectionID = UploadVars.autoUploadAlbumId
+        let collectionID = UploadVars.shared.autoUploadAlbumId
         guard collectionID.isEmpty == false,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album -> Reset album ID
-            UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album
+            UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
 
             // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
@@ -26,10 +26,10 @@ extension UploadManager {
         }
 
         // Check existence of Piwigo album
-        let categoryId = UploadVars.autoUploadCategoryId
+        let categoryId = UploadVars.shared.autoUploadCategoryId
         guard categoryId != Int32.min else {
             // Cannot access Piwigo album -> Reset album ID
-            UploadVars.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
+            UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
@@ -96,8 +96,8 @@ extension UploadManager {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
-                uploadRequest.tagIds = UploadVars.autoUploadTagIds
-                uploadRequest.comment = UploadVars.autoUploadComments
+                uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
+                uploadRequest.comment = UploadVars.shared.autoUploadComments
                 uploadRequestsToAppend.append(uploadRequest)
 
                 // Check if we have reached the max number of requests to append
@@ -119,9 +119,9 @@ extension UploadManager {
     
     public func disableAutoUpload(withTitle title:String = "", message:String = "") {
         // Something to do?
-        if !UploadVars.isAutoUploadActive { return }
+        if !UploadVars.shared.isAutoUploadActive { return }
         // Disable auto-uploading
-        UploadVars.isAutoUploadActive = false
+        UploadVars.shared.isAutoUploadActive = false
         
         // If the Settings or Settings/AutoUpload view is displayed:
         /// - switch off Auto-Upload control

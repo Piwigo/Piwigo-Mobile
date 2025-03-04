@@ -228,7 +228,7 @@ extension UploadManager {
         }
 
         // Calculate number of chunks
-        let chunkSize = UploadVars.uploadChunkSize * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         if chunks == 0, upload.fileName.isEmpty,
@@ -272,7 +272,7 @@ extension UploadManager {
         }
 
         // Prepare chunk
-        let chunkSize = UploadVars.uploadChunkSize * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let length = imageData.count
         let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
@@ -577,7 +577,7 @@ extension UploadManager {
         }
 
         // Calculate number of chunks
-        let chunkSize = UploadVars.uploadChunkSize * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
@@ -705,7 +705,7 @@ extension UploadManager {
         
         // Prepare boundary, chunk size, creation date as Piwigo string
         let boundary = createBoundary(from: upload.md5Sum)
-        let chunkSize = UploadVars.uploadChunkSize * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let chunksStr = String(format: "%ld", chunks)
         let creationDate = DateUtilities.string(from: upload.creationDate)
 

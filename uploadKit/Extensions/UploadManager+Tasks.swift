@@ -52,7 +52,7 @@ extension UploadManager
         /// - Wi-Fi required but unavailable
         if isPaused || isExecutingBackgroundUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.wifiOnlyUploading && !NetworkVars.isConnectedToWiFi()) {
+            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.isConnectedToWiFi()) {
             return
         }
         
@@ -251,7 +251,7 @@ extension UploadManager
         isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if not called by In-App intent or Extension
-        if UploadVars.isAutoUploadActive && !triggeredByExtension {
+        if UploadVars.shared.isAutoUploadActive && !triggeredByExtension {
             appendAutoUploadRequests()
         }
         
@@ -287,8 +287,8 @@ extension UploadManager
             // Will then launch transfers of prepared uploads
             let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
-                .union(Set(prepared[..<min(maxNberOfUploadsPerBckgTask,prepared.count)]))
-            debugPrint("\(dbg()) collected \(min(maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
+                .union(Set(prepared[..<min(UploadVars.shared.maxNberOfUploadsPerBckgTask,prepared.count)]))
+            debugPrint("\(dbg()) collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
         }
         
         // Finally, get list of upload requests to prepare

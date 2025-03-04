@@ -48,7 +48,7 @@ class AutoUploadViewController: UIViewController {
         case .normal:
             // Community user with upload rights?
             if user.uploadRights.components(separatedBy: ",")
-                .contains(String(UploadVars.autoUploadCategoryId)) {
+                .contains(String(UploadVars.shared.autoUploadCategoryId)) {
                 return true
             }
         }

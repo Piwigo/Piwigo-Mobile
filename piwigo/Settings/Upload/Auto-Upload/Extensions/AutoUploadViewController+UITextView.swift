@@ -15,7 +15,7 @@ extension AutoUploadViewController : UITextViewDelegate {
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let oldText = textView.text as NSString
         let finalString = oldText.replacingCharacters(in: range, with: text)
-        UploadVars.autoUploadComments = finalString
+        UploadVars.shared.autoUploadComments = finalString
         return true
     }
 
@@ -25,7 +25,7 @@ extension AutoUploadViewController : UITextViewDelegate {
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        UploadVars.autoUploadComments = textView.text
+        UploadVars.shared.autoUploadComments = textView.text
     }
 }
 

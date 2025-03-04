@@ -203,8 +203,8 @@ class AlbumDeletion: NSObject
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
-                if UploadVars.autoUploadCategoryId == albumData.pwgID {
-                    UploadVars.autoUploadCategoryId = Int32.min
+                if UploadVars.shared.autoUploadCategoryId == albumData.pwgID {
+                    UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
                 
                 // Update UI and cache

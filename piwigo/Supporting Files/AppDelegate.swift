@@ -74,6 +74,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register launch handlers for tasks if using iOS 13+
         /// Will have to check if pwg.images.uploadAsync is available
         if #available(iOS 13.0, *) {
+            // Don't init UploadManager when registering bckg tasks
+            // because a database migration might be called in parallel
             registerBgTasks()
         }
 
@@ -386,10 +388,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13.0, *)
     func scheduleNextUpload() {
-        // Schedule upload not earlier than 1 minute from now
+        // Schedule upload not earlier than 15 minute from now
         // Uploading requires network connectivity and external power
         let request = BGProcessingTaskRequest.init(identifier: pwgBackgroundTaskUpload)
-        request.earliestBeginDate = Date.init(timeIntervalSinceNow: 1 * 60)
+        request.earliestBeginDate = Date.init(timeIntervalSinceNow: 15 * 60)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = true
         
@@ -404,8 +406,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13.0, *)
     private func handleNextUpload(task: BGProcessingTask) {
+        // Don't call UploadManager as it might happen during database migration
         // Schedule the next upload if needed
-        if UploadManager.shared.nberOfUploadsToComplete > 0 {
+        if UploadVars.shared.nberOfUploadsToComplete > 0 {
             debugPrint("    > Schedule next uploads.")
             scheduleNextUpload()
         }
@@ -440,7 +443,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         uploadOperations.append(resumeOperation)
 
         // Add image preparation which will be followed by transfer operations
-        for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
+        for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
             let uploadOperation = BlockOperation {
                 // Prepare then transfer image
                 UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
@@ -475,15 +478,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func updateBadge(_ notification: Notification) {
-        guard let nberOfUploadsToComplete = notification.userInfo?["nberOfUploadsToComplete"] as? Int
+        // Verify user info
+        guard let nberOfUploads = notification.userInfo?["nberOfUploadsToComplete"] as? Int
         else { preconditionFailure("!!! Expected an integer !!!") }
+        
+        // Store number of upload requests for next app launch
+        UploadVars.shared.nberOfUploadsToComplete = nberOfUploads
+        
+        // Update the badge of the app
         if #available(iOS 16, *) {
-            UNUserNotificationCenter.current().setBadgeCount(nberOfUploadsToComplete)
+            UNUserNotificationCenter.current().setBadgeCount(nberOfUploads)
         } else {
-            UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+            UIApplication.shared.applicationIconBadgeNumber = nberOfUploads
         }
-        // Re-enable sleep mode if uploads are completed
-        if nberOfUploadsToComplete == 0 {
+        
+        // Always re-enable sleep mode if uploads are completed
+        if nberOfUploads == 0 {
             UIApplication.shared.isIdleTimerDisabled = false
         }
     }

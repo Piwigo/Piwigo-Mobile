@@ -41,13 +41,13 @@ extension AutoUploadViewController: UITableViewDataSource
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
-            cell.cellSwitch.setOn(UploadVars.isAutoUploadActive, animated: true)
+            cell.cellSwitch.setOn(UploadVars.shared.isAutoUploadActive, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Enable/disable auto-upload option
                 UploadManager.shared.backgroundQueue.async {
                     if switchState {
                         // Enable auto-uploading
-                        UploadVars.isAutoUploadActive = true
+                        UploadVars.shared.isAutoUploadActive = true
                         UploadManager.shared.appendAutoUploadRequests()
                         // Update Settings tableview
                         DispatchQueue.main.async {
@@ -69,14 +69,14 @@ extension AutoUploadViewController: UITableViewDataSource
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :
                 title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
-                let collectionID = UploadVars.autoUploadAlbumId
+                let collectionID = UploadVars.shared.autoUploadAlbumId
                 if collectionID.isEmpty == false,
                    let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject {
                     detail = collection.localizedTitle ?? ""
                 } else {
                     // Did not find the Photo Library album
-                    UploadVars.autoUploadAlbumId = ""
-                    UploadVars.isAutoUploadActive = false
+                    UploadVars.shared.autoUploadAlbumId = ""
+                    UploadVars.shared.isAutoUploadActive = false
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -84,13 +84,13 @@ extension AutoUploadViewController: UITableViewDataSource
 
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
-                let categoryId = UploadVars.autoUploadCategoryId
+                let categoryId = UploadVars.shared.autoUploadCategoryId
                 if let albumData = albumProvider.getAlbum(ofUser: user, withId: categoryId) {
                     detail = albumData.name
                 } else {
                     // Did not find the Piwigo album
-                    UploadVars.autoUploadCategoryId = Int32.min
-                    UploadVars.isAutoUploadActive = false
+                    UploadVars.shared.autoUploadCategoryId = Int32.min
+                    UploadVars.shared.isAutoUploadActive = false
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -108,14 +108,14 @@ extension AutoUploadViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell
                 else { preconditionFailure("Could not load a EditImageTagsTableViewCell!") }
                 // Retrieve tags and switch to old cache data format
-                let tags = tagProvider.getTags(withIDs: UploadVars.autoUploadTagIds, taskContext: mainContext)
+                let tags = tagProvider.getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)
                 cell.config(withList: tags, inColor: UIColor.piwigoColorRightLabel())
                 tableViewCell = cell
 
             case 1 /* Comments */ :
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell
                 else { preconditionFailure("Could not load a EditImageTextViewTableViewCell!") }
-                cell.config(withText: NSAttributedString(string: UploadVars.autoUploadComments),
+                cell.config(withText: NSAttributedString(string: UploadVars.shared.autoUploadComments),
                             inColor: UIColor.piwigoColorRightLabel())
                 cell.textView.delegate = self
                 tableViewCell = cell

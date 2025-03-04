@@ -78,7 +78,7 @@ class AlbumUtilities: NSObject {
     //                let didUpdateCats = CategoriesData.sharedInstance().replaceAllCategories(albums)
     //
     //                // Check whether the auto-upload category still exists
-    //                let autoUploadCatId = UploadVars.autoUploadCategoryId
+    //                let autoUploadCatId = UploadVars.shared.autoUploadCategoryId
     //                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
     //                if indexOfAutoUpload == Int32.min {
     //                    UploadManager.shared.disableAutoUpload()

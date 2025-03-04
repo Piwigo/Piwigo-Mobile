@@ -66,24 +66,24 @@ extension UploadProperties {
             mimeType: "", md5Sum: "", isVideo: false,
             
             // Photo author name defaults to name entered in Settings
-            author: UploadVars.defaultAuthor,
+            author: UploadVars.shared.defaultAuthor,
             
             // Privacy level defaults to level selected in Settings
-            privacyLevel: pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody,
+            privacyLevel: pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody,
             
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: Int64.min,
             
             // Upload settings
-            stripGPSdataOnUpload: UploadVars.stripGPSdataOnUpload,
-            resizeImageOnUpload: UploadVars.resizeImageOnUpload,
-            photoMaxSize: UploadVars.photoMaxSize,
-            videoMaxSize: UploadVars.videoMaxSize,
-            compressImageOnUpload: UploadVars.compressImageOnUpload,
-            photoQuality: UploadVars.photoQuality,
-            prefixFileNameBeforeUpload: UploadVars.prefixFileNameBeforeUpload,
-            defaultPrefix: UploadVars.defaultPrefix,
-            deleteImageAfterUpload: UploadVars.deleteImageAfterUpload,
+            stripGPSdataOnUpload: UploadVars.shared.stripGPSdataOnUpload,
+            resizeImageOnUpload: UploadVars.shared.resizeImageOnUpload,
+            photoMaxSize: UploadVars.shared.photoMaxSize,
+            videoMaxSize: UploadVars.shared.videoMaxSize,
+            compressImageOnUpload: UploadVars.shared.compressImageOnUpload,
+            photoQuality: UploadVars.shared.photoQuality,
+            prefixFileNameBeforeUpload: UploadVars.shared.prefixFileNameBeforeUpload,
+            defaultPrefix: UploadVars.shared.defaultPrefix,
+            deleteImageAfterUpload: UploadVars.shared.deleteImageAfterUpload,
             markedForAutoUpload: false)
     }
     

@@ -155,9 +155,9 @@ public extension PwgSession {
 
                 // Upload chunk size is null if not provided by server
                 if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
-                    UploadVars.uploadChunkSize = uploadChunkSize
+                    UploadVars.shared.uploadChunkSize = uploadChunkSize
                 } else {
-                    UploadVars.uploadChunkSize = 500    // i.e. 500 ko
+                    UploadVars.shared.uploadChunkSize = 500    // i.e. 500 ko
                 }
 
                 // Images and videos can be uploaded if their file types are found.

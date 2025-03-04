@@ -91,7 +91,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
         // Number of items depends on image sort type and date order
         switch sortType {
         case .month:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 return indexOfImageSortedByMonth[section].count
             case .dateCreatedAscending:
@@ -100,7 +100,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
                 return 0
             }
         case .week:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 return indexOfImageSortedByWeek[section].count
             case .dateCreatedAscending:
@@ -109,7 +109,7 @@ extension LocalImagesViewController: UICollectionViewDataSource
                 return 0
             }
         case .day:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 return indexOfImageSortedByDay[section].count
             case .dateCreatedAscending:

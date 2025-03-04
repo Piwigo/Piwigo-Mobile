@@ -129,7 +129,7 @@ extension LocalImagesViewController: UIGestureRecognizerDelegate
 
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
-        if UploadVars.localImagesSort == .dateCreatedDescending {
+        if UploadVars.shared.localImagesSort == .dateCreatedDescending {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {

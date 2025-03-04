@@ -24,9 +24,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
     var commonTitle = ""
     private var shouldUpdateTitle = false
-    var commonAuthor = UploadVars.defaultAuthor
+    var commonAuthor = UploadVars.shared.defaultAuthor
     private var shouldUpdateAuthor = false
-    var commonPrivacyLevel = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
+    var commonPrivacyLevel = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody
     private var shouldUpdatePrivacyLevel = false
     var commonTags = Set<Tag>()
     private var shouldUpdateTags = false
@@ -200,9 +200,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         case .author:
             // only update if not yet set, dont overwrite
             if commonAuthor.isEmpty,
-               UploadVars.defaultAuthor.isEmpty == false {
+               UploadVars.shared.defaultAuthor.isEmpty == false {
                 // must know the default author
-                commonAuthor = UploadVars.defaultAuthor
+                commonAuthor = UploadVars.shared.defaultAuthor
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
 

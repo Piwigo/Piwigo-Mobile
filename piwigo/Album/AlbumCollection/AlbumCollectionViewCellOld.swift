@@ -168,8 +168,8 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         rename.image = UIImage(named: "swipeRename.png")
 
         // Disallow user to delete the active auto-upload destination album
-        if (UploadVars.autoUploadCategoryId == Int(albumData.pwgID)),
-            UploadVars.isAutoUploadActive {
+        if (UploadVars.shared.autoUploadCategoryId == Int(albumData.pwgID)),
+            UploadVars.shared.isAutoUploadActive {
             return UISwipeActionsConfiguration(actions: [move, rename])
         } else {
             return UISwipeActionsConfiguration(actions: [trash, move, rename])

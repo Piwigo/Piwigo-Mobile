@@ -856,11 +856,11 @@ class AlbumViewController: UIViewController
 //        if albumImageTableView?.window == nil { return }
 //        DispatchQueue.main.async { [self] in
 //            // Any upload request in the queue?
-//            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+//              if UploadVars.shared.shared.nberOfUploadsToComplete == 0 {
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
-//            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+//            else if !NetworkVars.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
 //                // No Wi-Fi and user wishes to upload only on Wi-Fi
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,

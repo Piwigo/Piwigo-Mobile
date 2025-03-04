@@ -74,14 +74,14 @@ extension UploadManager
         self.resumeAllFailedUploads()
         
         // Propose to delete uploaded image of the photo Library once a day
-        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
+        if Date().timeIntervalSinceReferenceDate > UploadVars.shared.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
             // Are there images to delete from the Photo Library?
             let assetsToDelete = (completed.fetchedObjects ?? [])
                 .filter({$0.deleteImageAfterUpload == true})
                 .filter({isDeleting.contains($0.objectID) == false})
             if assetsToDelete.count > 0 {
                 // Store date of deletion
-                UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
+                UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
                 debugPrint("\(dbg()) \(assetsToDelete.count) upload requests should be deleted")
@@ -119,7 +119,7 @@ extension UploadManager
             self.findNextImageToUpload()
             
             // Append auto-upload requests if requested
-            if UploadVars.isAutoUploadActive {
+            if UploadVars.shared.isAutoUploadActive {
                 self.appendAutoUploadRequests()
             } else {
                 self.disableAutoUpload()

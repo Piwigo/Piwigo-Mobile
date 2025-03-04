@@ -478,7 +478,7 @@ class LocalImagesViewController: UIViewController
     // MARK: - Swap Sort Order
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortImage() -> UIImage {
-        switch UploadVars.localImagesSort {
+        switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescending")!
@@ -498,7 +498,7 @@ class LocalImagesViewController: UIViewController
 
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortCompactImage() -> UIImage {
-        switch UploadVars.localImagesSort {
+        switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescendingCompact")!
@@ -520,7 +520,7 @@ class LocalImagesViewController: UIViewController
     func swapOrderAction() -> UIAction {
         // Initialise menu items
         let swapOrder: UIAction!
-        switch UploadVars.localImagesSort {
+        switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
             swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
@@ -537,11 +537,11 @@ class LocalImagesViewController: UIViewController
 
     @objc func swapSortOrder() {
         // Swap between the two sort options
-        switch UploadVars.localImagesSort {
+        switch UploadVars.shared.localImagesSort {
         case .dateCreatedDescending:
-            UploadVars.localImagesSort = .dateCreatedAscending
+            UploadVars.shared.localImagesSort = .dateCreatedAscending
         case .dateCreatedAscending:
-            UploadVars.localImagesSort = .dateCreatedDescending
+            UploadVars.shared.localImagesSort = .dateCreatedDescending
         default:
             return
         }

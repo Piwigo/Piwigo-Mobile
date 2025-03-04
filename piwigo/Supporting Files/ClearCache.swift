@@ -39,11 +39,11 @@ class ClearCache: NSObject {
             NetworkVars.userStatus = pwgUserStatus.guest
             
             // Disable Auto-Uploading and clear settings
-            UploadVars.isAutoUploadActive = false
-            UploadVars.autoUploadCategoryId = Int32.min
-            UploadVars.autoUploadAlbumId = ""
-            UploadVars.autoUploadTagIds = ""
-            UploadVars.autoUploadComments = ""
+            UploadVars.shared.isAutoUploadActive = false
+            UploadVars.shared.autoUploadCategoryId = Int32.min
+            UploadVars.shared.autoUploadAlbumId = ""
+            UploadVars.shared.autoUploadTagIds = ""
+            UploadVars.shared.autoUploadComments = ""
             
             // Display login view
             DispatchQueue.main.async {

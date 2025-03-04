@@ -234,11 +234,11 @@ class UploadQueueViewController: UIViewController {
             // Anything to do?
             if queueTableView?.window == nil { return }
             // No upload request in the queue?
-            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+            if UploadVars.shared.nberOfUploadsToComplete == 0 {
                 queueTableView.tableHeaderView = nil
                 UIApplication.shared.isIdleTimerDisabled = false
             }
-            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+            else if !NetworkVars.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,

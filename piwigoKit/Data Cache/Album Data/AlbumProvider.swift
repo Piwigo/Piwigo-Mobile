@@ -434,7 +434,7 @@ public class AlbumProvider: NSObject {
                 // Albums not returned by the fetch are deleted first
                 if albumToDeleteIDs.isEmpty == false {
                     // Check whether the auto-upload category will be deleted
-                    if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
+                    if albumToDeleteIDs.contains(UploadVars.shared.autoUploadCategoryId) {
                         NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
                     }
                     
