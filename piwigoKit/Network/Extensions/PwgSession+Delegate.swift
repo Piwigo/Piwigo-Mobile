@@ -39,7 +39,7 @@ extension PwgSession: URLSessionDelegate {
         }
 
         // Initialise SSL certificate approval flag
-        NetworkVars.didRejectCertificate = false
+        NetworkVars.shared.didRejectCertificate = false
 
         // Get state of the server SSL transaction state
         guard let serverTrust = protectionSpace.serverTrust else {
@@ -48,7 +48,7 @@ extension PwgSession: URLSessionDelegate {
         }
 
         // Check validity of certificate
-        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.domain()) {
+        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -67,7 +67,7 @@ extension PwgSession: URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain()) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -75,16 +75,16 @@ extension PwgSession: URLSessionDelegate {
         
         // No certificate or different non-trusted certificate found in Keychain
         // Did the user approve this certificate?
-        if NetworkVars.didApproveCertificate {
+        if NetworkVars.shared.didApproveCertificate {
             // Delete certificate in Keychain (updating the certificate data is not sufficient)
-            KeychainUtilities.deleteCertificate(for: NetworkVars.domain())
+            KeychainUtilities.deleteCertificate(for: NetworkVars.shared.domain())
 
             // Store server certificate in Keychain with same label "Piwigo:<host>"
-            KeychainUtilities.storeCertificate(certificate, for: NetworkVars.domain())
+            KeychainUtilities.storeCertificate(certificate, for: NetworkVars.shared.domain())
 
             // Will reject a connection if the certificate is changed during a session
             // but it will still be possible to logout.
-            NetworkVars.didApproveCertificate = false
+            NetworkVars.shared.didApproveCertificate = false
             
             // Accept connection
             let credential = URLCredential(trust: serverTrust)
@@ -93,8 +93,8 @@ extension PwgSession: URLSessionDelegate {
         }
         
         // Will ask the user whether we should trust this server.
-        NetworkVars.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.domain())
-        NetworkVars.didRejectCertificate = true
+        NetworkVars.shared.certificateInformation = KeychainUtilities.getCertificateInfo(certificate, for: NetworkVars.shared.domain())
+        NetworkVars.shared.didRejectCertificate = true
 
         // Reject the request
         completionHandler(.performDefaultHandling, nil)

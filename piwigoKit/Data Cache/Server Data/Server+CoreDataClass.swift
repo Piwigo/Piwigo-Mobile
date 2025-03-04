@@ -22,11 +22,11 @@ public class Server: NSManagedObject {
      Updates the attributes of a Server instance.
      */
     func update(withPath path: String,
-                fileTypes: String = NetworkVars.serverFileTypes,
+                fileTypes: String = NetworkVars.shared.serverFileTypes,
                 lastUsed: Date = Date()) throws {
         // Server path
         guard path.isEmpty == false,
-              let _ = URL(string: NetworkVars.serverProtocol + path) else {
+              let _ = URL(string: NetworkVars.shared.serverProtocol + path) else {
             throw ServerError.wrongURL
         }
         if self.path != path {

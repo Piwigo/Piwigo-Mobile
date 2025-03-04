@@ -312,7 +312,7 @@ public class TagProvider: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
             
             // Look for tags belonging to the currently active server
-            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -347,7 +347,7 @@ public class TagProvider: NSObject {
         fetchRequest.resultType = .countResultType
         
         // Select tags of the current server only
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Fetch number of objects
         do {
@@ -369,7 +369,7 @@ public class TagProvider: NSObject {
         let fetchRequest = Tag.fetchRequest()
 
         // Select tags of the current server only
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)

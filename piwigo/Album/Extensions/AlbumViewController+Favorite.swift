@@ -15,10 +15,10 @@ extension AlbumViewController
     // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending {
+        if NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending {
             return nil
         }
-        if NetworkVars.userStatus == .guest {
+        if NetworkVars.shared.userStatus == .guest {
             return nil
         }
         

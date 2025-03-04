@@ -57,7 +57,7 @@ class SettingsViewController: UIViewController {
     var editedRow: IndexPath?
     
     // The image sort type is returned with album data since Piwigo 14.0.
-    lazy var defaultSortUnknown: Bool = NetworkVars.pwgVersion
+    lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
     
     // Present image title and album description options on iOS 12.0 - 13.x
@@ -398,7 +398,7 @@ class SettingsViewController: UIViewController {
         }
         
         // Guest user?
-        if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
+        if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }

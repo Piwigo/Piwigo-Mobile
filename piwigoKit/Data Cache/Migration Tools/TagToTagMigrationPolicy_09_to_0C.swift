@@ -21,17 +21,17 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
      */
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Check current server path
-        guard let _ = URL(string: NetworkVars.serverPath) else {  return }
+        guard let _ = URL(string: NetworkVars.shared.serverPath) else {  return }
 
         // Create instance for the currently used server if needed
         let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
         let newServer = Server(entity: description!, insertInto: manager.destinationContext)
         newServer.setValue(UUID().uuidString, forKey: "uuid")
-        newServer.setValue(NetworkVars.serverPath, forKey: "path")
-        newServer.setValue(NetworkVars.serverFileTypes, forKey: "fileTypes")
+        newServer.setValue(NetworkVars.shared.serverPath, forKey: "path")
+        newServer.setValue(NetworkVars.shared.serverFileTypes, forKey: "fileTypes")
 
         // Store new server instance in userInfo for reuse
-        manager.userInfo = [NetworkVars.serverPath : newServer]
+        manager.userInfo = [NetworkVars.shared.serverPath : newServer]
     }
     
     /**
@@ -91,7 +91,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Retrieve Server instance common to all tags
         guard var userInfo = manager.userInfo,
-              let newServer = userInfo[NetworkVars.serverPath] as? NSManagedObject else { return }
+              let newServer = userInfo[NetworkVars.shared.serverPath] as? NSManagedObject else { return }
         
         // Add relationship from Tag to Server
         // Core Data creates automatically the inverse relationship

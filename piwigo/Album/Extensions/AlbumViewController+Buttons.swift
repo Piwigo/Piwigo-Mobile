@@ -392,7 +392,7 @@ extension AlbumViewController
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
-            if (!NetworkVars.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading) ||
+            if (!NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
                 nberOfUploadsLabel.text = "⚠️"
             } else {

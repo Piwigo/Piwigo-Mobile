@@ -19,12 +19,12 @@ extension SettingsViewController: UITableViewDelegate
         case .server:
             title = String(format: "%@ %@",
                            NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                           NetworkVars.pwgVersion)
-            if (NetworkVars.serverProtocol == "http://") {
+                           NetworkVars.shared.pwgVersion)
+            if (NetworkVars.shared.serverProtocol == "http://") {
                 title += "\n"
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-            if NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
+            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
                 if !title.contains("\n") { title += "\n" }
                 if !text.isEmpty { text += " — " }
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
@@ -115,7 +115,7 @@ extension SettingsViewController: UITableViewDelegate
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
                 4  /* Upload Photo Size */,
@@ -184,11 +184,11 @@ extension SettingsViewController: UITableViewDelegate
         var footer = ""
         switch activeSection(section) {
         case .logout:
-            if NetworkVars.serverFileTypes.isEmpty == false {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if NetworkVars.shared.serverFileTypes.isEmpty == false {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case .about:
-            footer = NetworkVars.pwgStatistics
+            footer = NetworkVars.shared.pwgStatistics
         default:
             footer = ""
         }
@@ -274,7 +274,7 @@ extension SettingsViewController: UITableViewDelegate
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -441,7 +441,7 @@ extension SettingsViewController: UITableViewDelegate
                     // Compile ticket number from current date
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyyMMddHHmm"
-                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.language) as Locale
+                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.shared.language) as Locale
                     let date = Date()
                     let ticketDate = dateFormatter.string(from: date)
 

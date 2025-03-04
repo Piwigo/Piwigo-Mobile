@@ -23,7 +23,7 @@ extension UploadManager {
         upload.setState(.finishing, save: true)
         
         // Work depends on Piwigo server version
-        if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+        if "12.0.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending {
             // Uploaded with pwg.images.uploadAsync -> Empty the lounge
             emptyLounge(for: upload)
         } else {
@@ -162,7 +162,7 @@ extension UploadManager {
         // Launch request
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
-                                         "pwg_token": NetworkVars.pwgToken,
+                                         "pwg_token": NetworkVars.shared.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
@@ -228,7 +228,7 @@ extension UploadManager {
         debugPrint("\(dbg()) moderateImages() in", queueName())
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
-                                         "pwg_token": NetworkVars.pwgToken,
+                                         "pwg_token": NetworkVars.shared.pwgToken,
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,

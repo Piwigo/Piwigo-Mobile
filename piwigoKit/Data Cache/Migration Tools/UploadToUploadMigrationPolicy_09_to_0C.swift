@@ -121,20 +121,20 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Can we reuse the user account?
-        let userAccountKey = NetworkVars.username + " @ " + serverPath
+        let userAccountKey = NetworkVars.shared.username + " @ " + serverPath
         if let user = userInfo[userAccountKey] as? NSManagedObject {
             // Add relationship from Upload to User
             // Core Data creates automatically the inverse relationship
             newUpload.setValue(user, forKey: "user")
         }
-        else if NetworkVars.username.isEmpty == false,
+        else if NetworkVars.shared.username.isEmpty == false,
                 let server = userInfo[serverPath] as? NSManagedObject {
             // Create User destination instance…
             // …assuming that the current user account is the appropriate one.
             let description = NSEntityDescription.entity(forEntityName: "User", in: manager.destinationContext)
             let newUser = User(entity: description!, insertInto: manager.destinationContext)
             newUser.setValue(userAccountKey, forKey: "name")
-            newUser.setValue(NetworkVars.username, forKey: "username")
+            newUser.setValue(NetworkVars.shared.username, forKey: "username")
             if let requestDate = sInstance.value(forKey: "requestDate") {
                 newUser.setValue(requestDate, forKey: "lastUsed")
             }
@@ -154,7 +154,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Are there Tags of the current server associated to this Upload request?
         // Tags associations to another server will be lost.
-        if serverPath == NetworkVars.serverPath,
+        if serverPath == NetworkVars.shared.serverPath,
            let tagIds = sInstance.value(forKey: "tagIds") as? String,
            tagIds.isEmpty == false {
             // List of Tag IDs attached to the source instance

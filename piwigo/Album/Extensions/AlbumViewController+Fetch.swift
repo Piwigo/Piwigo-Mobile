@@ -258,7 +258,7 @@ extension AlbumViewController
             
             // Returns to login view only when credentials are rejected
             if [NSURLErrorUserAuthenticationRequired, 401, 403].contains((error as NSError).code) ||
-                NetworkVars.didFailHTTPauthentication {
+                NetworkVars.shared.didFailHTTPauthentication {
                 // Invalid Piwigo or HTTP credentials
                 navigationController?.showHUD(
                     withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),

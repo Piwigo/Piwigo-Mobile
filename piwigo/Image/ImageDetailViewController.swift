@@ -149,11 +149,11 @@ class ImageDetailViewController: UIViewController
         
         // Look for the first available image of lower resolution
         if previewSize == .fullRes {
-            if NetworkVars.hasXXLargeSizeImages {
+            if NetworkVars.shared.hasXXLargeSizeImages {
                 previewSize = .xxLarge
-            } else if NetworkVars.hasXLargeSizeImages {
+            } else if NetworkVars.shared.hasXLargeSizeImages {
                 previewSize = .xLarge
-            } else if NetworkVars.hasLargeSizeImages {
+            } else if NetworkVars.shared.hasLargeSizeImages {
                 previewSize = .large
             } else {
                 previewSize = .medium

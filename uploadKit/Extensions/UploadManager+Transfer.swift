@@ -172,7 +172,7 @@ extension UploadManager {
         // Choose recent method when called by:
         /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
         /// - Community users as from Piwigo 12.
-        if NetworkVars.usesUploadAsync || isExecutingBackgroundUploadTask {
+        if NetworkVars.shared.usesUploadAsync || isExecutingBackgroundUploadTask {
             // Prepare transfer
             self.transferInBackground(for: upload)
         } else {
@@ -280,7 +280,7 @@ extension UploadManager {
         debugPrint("\(dbg()) #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
-        let url = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUpload)")
+        let url = URL(string: NetworkVars.shared.service + "/ws.php?\(pwgImagesUpload)")
         guard let validUrl = url else { fatalError() }
         
         // Initialise boundary of upload request
@@ -293,7 +293,7 @@ extension UploadManager {
         httpBody.append(convertFormField(named: "name", value: upload.fileName, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "pwg_token", value: NetworkVars.pwgToken, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "pwg_token", value: NetworkVars.shared.pwgToken, using: boundary).data(using: .utf8)!)
 
         // Chunk of data
         httpBody.append(convertFileData(fieldName: "file",
@@ -588,14 +588,14 @@ extension UploadManager {
         }
         
         // Prepare upload URL
-        guard let uploadUrl = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUploadAsync)")
+        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
 
         // Prepare creation date as Piwigo string
         let creationDate = DateUtilities.string(from: upload.creationDate)
 
         // Prepare credentials
-        let username = NetworkVars.username
+        let username = NetworkVars.shared.username
         guard let serverPath = upload.user?.server?.path else {
             upload.setState(.preparingFail, error: UploadError.missingData, save: true)
             self.didEndTransfer(for: upload)
@@ -691,11 +691,11 @@ extension UploadManager {
         }
 
         // Prepare upload URL
-        guard let uploadUrl = URL(string: NetworkVars.service + "/ws.php?\(pwgImagesUploadAsync)")
+        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
 
         // Get credentials
-        let username = NetworkVars.username
+        let username = NetworkVars.shared.username
         guard let serverPath = upload.user?.server?.path else {
             upload.setState(.preparingFail, error: UploadError.missingData, save: true)
             self.didEndTransfer(for: upload)
@@ -1088,7 +1088,7 @@ extension UploadManager {
 
             // Update state of upload
             /// Since version 12, one must empty the lounge.
-            if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+            if "12.0.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending {
                 // Uploading with pwg.images.uploadAsync since version 12
                 upload.setState(.uploaded, save: false)
             } else {

@@ -272,7 +272,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppVars.shared.applicationIsActive = true
         
         // Flag used to force relogin at start
-        NetworkVars.applicationShouldRelogin = true
+        NetworkVars.shared.applicationShouldRelogin = true
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -382,7 +382,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        if NetworkVars.usesUploadAsync {
+        if NetworkVars.shared.usesUploadAsync {
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             appDelegate?.scheduleNextUpload()
         }

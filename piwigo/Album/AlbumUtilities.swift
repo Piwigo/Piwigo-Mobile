@@ -49,7 +49,7 @@ class AlbumUtilities: NSObject {
     //        let paramsDict: [String : Any] = [
     //            "cat_id"            : 0,
     //            "recursive"         : true,
-    //            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
+    //            "faked_by_community": NetworkVars.shared.usesCommunityPluginV29 ? "false" : "true",
     //            "thumbnail_size"    : thumbnailSizeArg()
     //        ]
     //
@@ -94,8 +94,8 @@ class AlbumUtilities: NSObject {
     //                }
     //
     //                // Update albums if Community extension installed (not needed for admins)
-    //                if !NetworkVars.hasAdminRights,
-    //                   NetworkVars.usesCommunityPluginV29 {
+    //                if !NetworkVars.shared.hasAdminRights,
+    //                   NetworkVars.shared.usesCommunityPluginV29 {
     //                    getCommunityAlbums { comAlbums in
     //                        // Loop over Community albums
     //                        for comAlbum in comAlbums {
@@ -229,7 +229,7 @@ class AlbumUtilities: NSObject {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "parent"      : newParentId,
-                                          "pwg_token"   : NetworkVars.pwgToken]
+                                          "pwg_token"   : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
@@ -318,7 +318,7 @@ class AlbumUtilities: NSObject {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : catID,
                                           "photo_deletion_mode" : mode.pwgArg,
-                                          "pwg_token"           : NetworkVars.pwgToken]
+                                          "pwg_token"           : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,

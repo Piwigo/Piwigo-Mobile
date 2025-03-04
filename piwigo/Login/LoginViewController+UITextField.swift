@@ -90,7 +90,7 @@ extension LoginViewController: UITextFieldDelegate
         }
         else if textField == userTextField {
             // User entered username
-            let pwd = KeychainUtilities.password(forService: NetworkVars.serverPath,
+            let pwd = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
                                                  account: userTextField.text ?? "")
             passwordTextField.text = pwd
             passwordTextField.becomeFirstResponder()

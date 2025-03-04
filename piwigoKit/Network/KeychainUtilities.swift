@@ -129,7 +129,7 @@ class KeychainUtilities : NSObject {
               username.isEmpty == false else { return "" }
 
         // Did found non-empty username
-        if username != NetworkVars.username {
+        if username != NetworkVars.shared.username {
             // No known password
             return ""
         }
@@ -247,11 +247,11 @@ class KeychainUtilities : NSObject {
     public class
     func getCertificateInfo(_ certificate: SecCertificate, for fomain: String) -> String {
         // Initialise string that will be presented to the user.
-        var certString = "(" + NetworkVars.domain()
+        var certString = "(" + NetworkVars.shared.domain()
         
         // Add summary, e.g. "QNAP NAS"
         if let summary = SecCertificateCopySubjectSummary(certificate) as? String,
-           summary.isEmpty == false, summary != NetworkVars.domain() {
+           summary.isEmpty == false, summary != NetworkVars.shared.domain() {
             certString.append(", " + summary)
         }
         

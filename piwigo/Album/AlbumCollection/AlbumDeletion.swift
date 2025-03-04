@@ -65,7 +65,7 @@ class AlbumDeletion: NSObject
             let keepImagesAction = UIAlertAction(
                 title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
                 style: .default, handler: { [self] action in
-                    if NetworkVars.usesCalcOrphans, nbOrphans == Int64.zero {
+                    if NetworkVars.shared.usesCalcOrphans, nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
                         deleteAlbum(withDeletionMode: .none, completion: completion)
                     } else {
@@ -76,8 +76,8 @@ class AlbumDeletion: NSObject
                 })
             alert.addAction(keepImagesAction)
             
-            if NetworkVars.usesCalcOrphans == false ||
-                (NetworkVars.usesCalcOrphans && nbOrphans == Int64.min) {
+            if NetworkVars.shared.usesCalcOrphans == false ||
+                (NetworkVars.shared.usesCalcOrphans && nbOrphans == Int64.min) {
                 let orphanImagesAction = UIAlertAction(
                     title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,

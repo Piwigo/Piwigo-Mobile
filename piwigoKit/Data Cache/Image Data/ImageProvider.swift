@@ -50,7 +50,7 @@ public class ImageProvider: NSObject {
         fetchRequest.resultType = .countResultType
         
         // Select images of the current server
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Fetch number of objects
         do {
@@ -73,7 +73,7 @@ public class ImageProvider: NSObject {
         /// — having an ID matching one of the given image IDs
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request and context.
@@ -197,8 +197,8 @@ public class ImageProvider: NSObject {
                         // Bug leading to server providing wrong total_count value
                         // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
                         // See https://github.com/Piwigo/Piwigo/issues/1871
-                        if NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
-                            NetworkVars.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
+                        if NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                            NetworkVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
                             totalCount = pwgData.paging?.totalCount?.int64Value ?? Int64.zero
                         } else {
                             totalCount = pwgData.paging?.count ?? Int64.zero
@@ -491,8 +491,8 @@ public class ImageProvider: NSObject {
         
         // Select images of the current server not belonging to an album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.shared.username))
         andPredicates.append(NSPredicate(format: "albums.@count == 0"))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
@@ -511,7 +511,7 @@ public class ImageProvider: NSObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
         
         // Select images of the current server
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)

@@ -138,23 +138,23 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
         // Disable unavailable and useless sizes
         switch imageSize {
         case .square:
-            configCell(cell, forSize: .square, available: NetworkVars.hasSquareSizeImages)
+            configCell(cell, forSize: .square, available: NetworkVars.shared.hasSquareSizeImages)
         case .thumb:
-            configCell(cell, forSize: .thumb, available: NetworkVars.hasThumbSizeImages)
+            configCell(cell, forSize: .thumb, available: NetworkVars.shared.hasThumbSizeImages)
         case .xxSmall:
-            configCell(cell, forSize: .xxSmall, available: NetworkVars.hasXXSmallSizeImages)
+            configCell(cell, forSize: .xxSmall, available: NetworkVars.shared.hasXXSmallSizeImages)
         case .xSmall:
-            configCell(cell, forSize: .xSmall, available: NetworkVars.hasXSmallSizeImages)
+            configCell(cell, forSize: .xSmall, available: NetworkVars.shared.hasXSmallSizeImages)
         case .small:
-            configCell(cell, forSize: .small, available: NetworkVars.hasSmallSizeImages)
+            configCell(cell, forSize: .small, available: NetworkVars.shared.hasSmallSizeImages)
         case .medium:
-            configCell(cell, forSize: .medium, available: NetworkVars.hasMediumSizeImages)
+            configCell(cell, forSize: .medium, available: NetworkVars.shared.hasMediumSizeImages)
         case .large:
-            configCell(cell, forSize: .large, available: NetworkVars.hasLargeSizeImages)
+            configCell(cell, forSize: .large, available: NetworkVars.shared.hasLargeSizeImages)
         case .xLarge:
-            configCell(cell, forSize: .xLarge, available: NetworkVars.hasXLargeSizeImages)
+            configCell(cell, forSize: .xLarge, available: NetworkVars.shared.hasXLargeSizeImages)
         case .xxLarge:
-            configCell(cell, forSize: .xxLarge, available: NetworkVars.hasXXLargeSizeImages)
+            configCell(cell, forSize: .xxLarge, available: NetworkVars.shared.hasXXLargeSizeImages)
         case .fullRes:
             cell.isUserInteractionEnabled = false
             cell.textLabel?.textColor = .piwigoColorRightLabel()

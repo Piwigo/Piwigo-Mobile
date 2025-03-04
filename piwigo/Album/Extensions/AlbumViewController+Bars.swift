@@ -41,7 +41,7 @@ extension AlbumViewController
             // Search bar => No action button
             navigationItem.setRightBarButtonItems([], animated: true)
         }
-        else if NetworkVars.userStatus != .guest {
+        else if NetworkVars.shared.userStatus != .guest {
             if #available(iOS 14, *) {
                 // Menu for activating the selection mode and changing the way images are sorted
                 actionBarButton = nil
@@ -92,7 +92,7 @@ extension AlbumViewController
             return
         }
         
-        if NetworkVars.userStatus != .guest {
+        if NetworkVars.shared.userStatus != .guest {
             if #available(iOS 14, *) {
                 // Menu for activating the selection mode or change the way images are sorted
                 let children = [selectMenu(), sortMenu(), viewOptionsMenu()].compactMap({$0})
@@ -185,7 +185,7 @@ extension AlbumViewController
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             }
-            else if NetworkVars.userStatus != .guest {
+            else if NetworkVars.shared.userStatus != .guest {
                 // All buttons in navigation bar
                 navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
                 navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
@@ -264,7 +264,7 @@ extension AlbumViewController
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             }
-            else if NetworkVars.userStatus != .guest {
+            else if NetworkVars.shared.userStatus != .guest {
                 // Non-guest can only share images
                 navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
                 navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)

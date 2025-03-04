@@ -21,7 +21,7 @@ class ImageUtilities: NSObject {
         // Prepare parameters for rotating image
         let paramsDict: [String : Any] = ["image_id"  : image.pwgID,
                                           "angle"     : angle * 180.0 / .pi,
-                                          "pwg_token" : NetworkVars.pwgToken,
+                                          "pwg_token" : NetworkVars.shared.pwgToken,
                                           "rotate_hd" : true]
         
         let JSONsession = PwgSession.shared
@@ -74,7 +74,7 @@ class ImageUtilities: NSObject {
         let paramsDict: [String : Any] = ["image_id"    : listOfImageIds,
                                           "category_id" : album.pwgID,
                                           "action"      : action.rawValue,
-                                          "pwg_token"   : NetworkVars.pwgToken]
+                                          "pwg_token"   : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesSetCategory, paramDict: paramsDict,
@@ -120,7 +120,7 @@ class ImageUtilities: NSObject {
         // Prepare parameters for retrieving image/video infos
         let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
-                                          "pwg_token" : NetworkVars.pwgToken]
+                                          "pwg_token" : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesDelete, paramDict: paramsDict,
@@ -519,7 +519,7 @@ class ImageUtilities: NSObject {
         var pwgURL: NSURL?
         
         // Square Size (should always be available)
-        if NetworkVars.hasSquareSizeImages,
+        if NetworkVars.shared.hasSquareSizeImages,
            let imageURL = sizes.square?.url,
            (imageURL.absoluteString ?? "").isEmpty == false {
             // Ensure that at least an URL will be returned
@@ -532,7 +532,7 @@ class ImageUtilities: NSObject {
         }
         
         // Thumbnail Size (should always be available)
-        if NetworkVars.hasThumbSizeImages,
+        if NetworkVars.shared.hasThumbSizeImages,
            let imageURL = sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -544,7 +544,7 @@ class ImageUtilities: NSObject {
         }
         
         // XX Small Size
-        if NetworkVars.hasXXSmallSizeImages,
+        if NetworkVars.shared.hasXXSmallSizeImages,
            let imageURL = sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -556,7 +556,7 @@ class ImageUtilities: NSObject {
         }
         
         // X Small Size
-        if NetworkVars.hasXSmallSizeImages,
+        if NetworkVars.shared.hasXSmallSizeImages,
            let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -568,7 +568,7 @@ class ImageUtilities: NSObject {
         }
         
         // Small Size
-        if NetworkVars.hasSmallSizeImages,
+        if NetworkVars.shared.hasSmallSizeImages,
            let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -580,7 +580,7 @@ class ImageUtilities: NSObject {
         }
         
         // Medium Size (should always be available)
-        if NetworkVars.hasMediumSizeImages,
+        if NetworkVars.shared.hasMediumSizeImages,
            let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -592,7 +592,7 @@ class ImageUtilities: NSObject {
         }
         
         // Large Size
-        if NetworkVars.hasLargeSizeImages,
+        if NetworkVars.shared.hasLargeSizeImages,
            let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -604,7 +604,7 @@ class ImageUtilities: NSObject {
         }
         
         // X Large Size
-        if NetworkVars.hasXLargeSizeImages,
+        if NetworkVars.shared.hasXLargeSizeImages,
            let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL
@@ -616,7 +616,7 @@ class ImageUtilities: NSObject {
         }
         
         // XX Large Size
-        if NetworkVars.hasXXLargeSizeImages,
+        if NetworkVars.shared.hasXXLargeSizeImages,
            let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL

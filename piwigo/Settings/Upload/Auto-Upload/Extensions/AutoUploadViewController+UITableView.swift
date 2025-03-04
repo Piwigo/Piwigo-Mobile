@@ -82,7 +82,7 @@ extension AutoUploadViewController: UITableViewDelegate
         switch section {
         case 0:
             if UploadVars.shared.isAutoUploadActive {
-                if NetworkVars.serverFileTypes.contains("mp4") {
+                if NetworkVars.shared.serverFileTypes.contains("mp4") {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")

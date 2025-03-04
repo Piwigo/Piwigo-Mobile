@@ -682,8 +682,8 @@ extension PlayerViewControllerCoordinator: AVAssetResourceLoaderDelegate
         }
         else if protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic {
             // HTTP basic authentification credentials
-            let user = NetworkVars.httpUsername
-            let password = KeychainUtilities.password(forService: NetworkVars.service, account: user)
+            let user = NetworkVars.shared.httpUsername
+            let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: user)
             authenticationChallenge.sender?.use(
                 URLCredential(user: user, password: password, persistence: .synchronizable),
                               for: authenticationChallenge)

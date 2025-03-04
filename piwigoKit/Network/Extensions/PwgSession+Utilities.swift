@@ -25,14 +25,14 @@ extension PwgSession {
             completion()
         } failure: { error in
             // If Piwigo uses a non-trusted certificate, ask permission
-            if NetworkVars.didRejectCertificate {
+            if NetworkVars.shared.didRejectCertificate {
                 // The SSL certificate is not trusted
                 didRejectCertificate(error)
                 return
             }
 
             // HTTP Basic authentication required?
-            if (error as NSError).code == 401 || (error as NSError).code == 403 || NetworkVars.didFailHTTPauthentication {
+            if (error as NSError).code == 401 || (error as NSError).code == 403 || NetworkVars.shared.didFailHTTPauthentication {
                 // Without prior knowledge, the app already tried Piwigo credentials
                 // but unsuccessfully, so we request HTTP credentials
                 didFailHTTPauthentication(error)
@@ -54,7 +54,7 @@ extension PwgSession {
             case NSURLErrorCannotConnectToHost,    // Happens when the server does not reply to the request (HTTP or HTTPS)
                 NSURLErrorSecureConnectionFailed:
                 // HTTPS request failed ?
-                if NetworkVars.serverProtocol == "https://" {
+                if NetworkVars.shared.serverProtocol == "https://" {
                     // Suggest HTTP connection if HTTPS attempt failed
                     didFailSecureConnection(error)
                     return
@@ -82,8 +82,8 @@ extension PwgSession {
         if systematically == false {
             let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
             if secondsSinceLastCheck < 60,
-               PwgSession.shared.wasConnectedToWifi == NetworkVars.isConnectedToWiFi(),
-               NetworkVars.applicationShouldRelogin == false {
+               PwgSession.shared.wasConnectedToWifi == NetworkVars.shared.isConnectedToWiFi(),
+               NetworkVars.shared.applicationShouldRelogin == false {
                 completion()
                 return
             }
@@ -91,28 +91,28 @@ extension PwgSession {
         
         // Determine if the session is still active
         if #available(iOSApplicationExtension 14.0, *) {
-            if NetworkVars.isConnectedToWiFi() {
+            if NetworkVars.shared.isConnectedToWiFi() {
                 logger.notice("Start checking session… (WiFi)")
             } else {
                 logger.notice("Start checking session… (Cellular)")
             }
         }
-        let oldToken = NetworkVars.pwgToken
+        let oldToken = NetworkVars.shared.pwgToken
         PwgSession.shared.sessionGetStatus { username in
             if #available(iOSApplicationExtension 14.0, *) {
                 #if DEBUG
-                logger.notice("Session: \(NetworkVars.username, privacy: .public)/\(username, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.pwgToken, privacy: .public)")
+                logger.notice("Session: \(NetworkVars.shared.username, privacy: .public)/\(username, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.shared.pwgToken, privacy: .public)")
                 #else
-                logger.notice("Session: \(NetworkVars.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.pwgToken, privacy: .private(mask: .hash))")
+                logger.notice("Session: \(NetworkVars.shared.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))")
                 #endif
             }
-            if username != NetworkVars.username || oldToken.isEmpty || NetworkVars.pwgToken != oldToken {
+            if username != NetworkVars.shared.username || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
                 requestServerMethods {
                     // Known methods, perform re-login
                     // Don't use userStatus as it may not be known after Core Data migration
-                    if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
+                    if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
                         if #available(iOSApplicationExtension 14.0, *) {
                             logger.notice("Session opened for Guest")
                         }
@@ -120,25 +120,25 @@ extension PwgSession {
                         getPiwigoConfig {
                             // Update date of accesss to the server by guest
                             user?.setLastUsedToNow()
-                            user?.status = NetworkVars.userStatus.rawValue
-                            NetworkVars.applicationShouldRelogin = false
-                            PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
+                            user?.status = NetworkVars.shared.userStatus.rawValue
+                            NetworkVars.shared.applicationShouldRelogin = false
+                            PwgSession.shared.wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
                             completion()
                         } failure: { error in
                             failure(error)
                         }
                     } else {
                         // Perform login
-                        let username = NetworkVars.username
-                        let password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: username)
+                        let username = NetworkVars.shared.username
+                        let password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: username)
                         PwgSession.shared.sessionLogin(withUsername: username, password: password) {
                             // Session now opened
                             getPiwigoConfig {
                                 // Update date of accesss to the server by user
                                 user?.setLastUsedToNow()
-                                user?.status = NetworkVars.userStatus.rawValue
-                                NetworkVars.applicationShouldRelogin = false
-                                PwgSession.shared.wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
+                                user?.status = NetworkVars.shared.userStatus.rawValue
+                                NetworkVars.shared.applicationShouldRelogin = false
+                                PwgSession.shared.wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
                                 completion()
                             } failure: { error in
                                 failure(error)
@@ -168,11 +168,11 @@ extension PwgSession {
     static func getPiwigoConfig(completion: @escaping () -> Void,
                                 failure: @escaping (Error) -> Void) {
         // Check Piwigo version, get token, available sizes, etc.
-        if NetworkVars.usesCommunityPluginV29 {
+        if NetworkVars.shared.usesCommunityPluginV29 {
             PwgSession.shared.communityGetStatus {
                 PwgSession.shared.sessionGetStatus { _ in
                     // Check Piwigo server version
-                    if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
+                    if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
                         failure(PwgSessionError.incompatiblePwgVersion) }
                     else {
                         completion()
@@ -186,7 +186,7 @@ extension PwgSession {
         } else {
             PwgSession.shared.sessionGetStatus { _ in
                 // Check Piwigo server version
-                if NetworkVars.pwgVersion.compare(NetworkVars.pwgMinVersion, options: .numeric) == .orderedAscending {
+                if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
                     failure(PwgSessionError.incompatiblePwgVersion) }
                 else {
                     completion()
@@ -207,7 +207,7 @@ extension PwgSession {
         }
         
         // Convert string to UTF-8 encoding
-        let serverEncoding = String.Encoding(rawValue: NetworkVars.stringEncoding )
+        let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
         if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
             return String(data: strData, encoding: .utf8) ?? strToConvert
         }
@@ -277,7 +277,7 @@ extension PwgSession {
 
             // The Piwigo server may not be in the root e.g. example.com/piwigo/…
             // So we remove the path to avoid a duplicate if necessary
-            if let loginURL = URL(string: NetworkVars.service),
+            if let loginURL = URL(string: NetworkVars.shared.service),
                loginURL.path.count > 0, leftURL.hasPrefix(loginURL.path) {
                 leftURL.removeFirst(loginURL.path.count)
             }
@@ -295,11 +295,11 @@ extension PwgSession {
                     // Could not apply percent encoding —> return image.jpg but should never happen
                     return nil
                 }
-                serverURL = NSURL(string: NetworkVars.service + newQuery + newPath)
+                serverURL = NSURL(string: NetworkVars.shared.service + newQuery + newPath)
             } else {
                 // No query -> remaining string is a path
                 let newPath = String(leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)
-                serverURL = NSURL(string: NetworkVars.service + newPath)
+                serverURL = NSURL(string: NetworkVars.shared.service + newPath)
             }
             
             // Last check
@@ -326,7 +326,7 @@ extension PwgSession {
 
         // The Piwigo server may not be in the root e.g. example.com/piwigo/…
         // and images may not be in the same path
-        var loginPath = NetworkVars.service
+        var loginPath = NetworkVars.shared.service
         if let loginURL = URL(string: loginPath), loginURL.path.count > 0 {
             if cleanPath.hasPrefix(loginURL.path) {
                 // Remove the path to avoid a duplicate

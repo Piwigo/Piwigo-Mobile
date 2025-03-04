@@ -23,22 +23,22 @@ extension PwgSession: URLSessionDataDelegate {
         }
         
         // Initialise HTTP authentication flag
-        NetworkVars.didFailHTTPauthentication = false
+        NetworkVars.shared.didFailHTTPauthentication = false
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.service
-        var account = NetworkVars.httpUsername
+        let service = NetworkVars.shared.service
+        var account = NetworkVars.shared.httpUsername
         var password = KeychainUtilities.password(forService: service, account: account)
 
         // Without HTTP credentials available, tries Piwigo credentials
         if account.isEmpty || password.isEmpty {
             // Retrieve Piwigo credentials
-            account = NetworkVars.username
-            password = KeychainUtilities.password(forService: NetworkVars.serverPath, account: account)
+            account = NetworkVars.shared.username
+            password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: account)
             
             // Adopt Piwigo credentials as HTTP basic authentification credentials
-            NetworkVars.httpUsername = account
-            KeychainUtilities.setPassword(password, forService: NetworkVars.service, account: account)
+            NetworkVars.shared.httpUsername = account
+            KeychainUtilities.setPassword(password, forService: NetworkVars.shared.service, account: account)
         }
 
         // Supply requested credentials if not provided yet
@@ -55,7 +55,7 @@ extension PwgSession: URLSessionDataDelegate {
         KeychainUtilities.deletePassword(forService: service, account: account)
 
         // Remember failed HTTP authentication
-        NetworkVars.didFailHTTPauthentication = true
+        NetworkVars.shared.didFailHTTPauthentication = true
         completionHandler(.performDefaultHandling, nil)
     }
 }

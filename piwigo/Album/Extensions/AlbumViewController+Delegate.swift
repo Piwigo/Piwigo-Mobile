@@ -338,13 +338,13 @@ extension AlbumViewController: UICollectionViewDelegate
         var children = [UIMenuElement]()
         if let imageID = cell.imageData?.pwgID {
             // Guest cannot share images
-            if NetworkVars.userStatus != .guest {
+            if NetworkVars.shared.userStatus != .guest {
                 children.append(shareImageAction(withID: imageID))
             }
             
             // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-            let isGuest = NetworkVars.userStatus == .guest
-            let versionTooOld = NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
+            let isGuest = NetworkVars.shared.userStatus == .guest
+            let versionTooOld = NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
             if isGuest == false, versionTooOld == false {
                 if cell.isFavorite {
                     children.append(unfavoriteImageAction(withID: imageID))
@@ -354,7 +354,7 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // Only identified users can select images
-            if NetworkVars.userStatus != .guest {
+            if NetworkVars.shared.userStatus != .guest {
                 if self.selectedImageIDs.contains(imageID) {
                     // Image not selected ► Propose to select it
                     children.append(deselectImageAction(forCell: cell, imageID: imageID, at: indexPath))

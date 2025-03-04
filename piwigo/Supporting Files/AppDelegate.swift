@@ -226,7 +226,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // This call is then followed by a call to applicationDidBecomeActive().
         
         // Flag used to force relogin at start
-        NetworkVars.applicationShouldRelogin = true
+        NetworkVars.shared.applicationShouldRelogin = true
     }
         
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -1000,8 +1000,8 @@ extension AppDelegate: AppLockDelegate {
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
             // Look for credentials if server address provided
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
+            let username = NetworkVars.shared.username
+            let service = NetworkVars.shared.serverPath
             var password = ""
 
             // Look for paswword in Keychain if server address and username are provided

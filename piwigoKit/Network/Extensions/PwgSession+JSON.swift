@@ -17,7 +17,7 @@ extension PwgSession
                                           success: @escaping (Data) -> Void,
                                           failure: @escaping (Error) -> Void) {
         // Create POST request
-        let url = URL(string: NetworkVars.service + "/ws.php?\(method)")
+        let url = URL(string: NetworkVars.shared.service + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -29,7 +29,7 @@ extension PwgSession
         switch method {
         case pwgCategoriesGetList, pwgCategoriesGetImages:
             if let albumId = paramDict["cat_id"] as? Int {
-                request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.HTTPCatID)
+                request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.shared.HTTPCatID)
             }
         default:
             break

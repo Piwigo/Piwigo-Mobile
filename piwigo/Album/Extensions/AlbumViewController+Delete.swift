@@ -105,7 +105,7 @@ extension AlbumViewController
                         msgHUD = toDelete.isEmpty
                         ? NSLocalizedString("removeSeveralImagesHUD_removing", comment: "Removing Photos/Videos…")
                         : NSLocalizedString("deleteSeveralImagesHUD_deleting", comment: "Deleting Photos/Videos…")
-                        navigationController?.showHUD(withTitle: msgHUD, inMode: NetworkVars.usesSetCategory ? .indeterminate : .determinate)
+                        navigationController?.showHUD(withTitle: msgHUD, inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
                     } else if toRemove.isEmpty {
                         // Delete a single image
                         if let imageData = toDelete.first, imageData.isVideo {
@@ -125,7 +125,7 @@ extension AlbumViewController
                     }
 
                     // Start removing images
-                    if NetworkVars.usesSetCategory {
+                    if NetworkVars.shared.usesSetCategory {
                         self.dissociateImages(toRemove, andThenDelete: toDelete)
                     } else {
                         self.removeImages(toRemove, andThenDelete: toDelete, total: Float(totalNberToDelete))

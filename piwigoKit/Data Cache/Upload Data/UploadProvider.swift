@@ -106,8 +106,8 @@ public class UploadProvider: NSObject {
             // Select upload requests:
             /// — for the current server and user only
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -190,8 +190,8 @@ public class UploadProvider: NSObject {
         // Select upload requests:
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Fetch number of objects
@@ -220,8 +220,8 @@ public class UploadProvider: NSObject {
         // Select upload requests:
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create batch delete request

@@ -18,7 +18,7 @@ extension SettingsViewController: UITableViewDataSource
         /// User can upload images/videos if he/she is logged in and has:
         /// — admin rights
         /// — normal rights with upload access to some categories with Community
-        return user.hasAdminRights || (user.role == .normal && NetworkVars.usesCommunityPluginV29)
+        return user.hasAdminRights || (user.role == .normal && NetworkVars.shared.usesCommunityPluginV29)
     }
     
     func activeSection(_ section: Int) -> SettingsSection {
@@ -61,7 +61,7 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.shared.prefixFileNameBeforeUpload ? 1 : 0)
-            nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
+            nberOfRows += (NetworkVars.shared.usesUploadAsync ? 1 : 0)
         case .privacy:
             nberOfRows = 3
         case .appearance:
@@ -96,13 +96,13 @@ extension SettingsViewController: UITableViewDataSource
             case 0:
                 // See https://iosref.com/res
                 let title = NSLocalizedString("settings_server", comment: "Address")
-                cell.configure(with: title, detail: NetworkVars.service)
+                cell.configure(with: title, detail: NetworkVars.shared.service)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
             
             case 1:
                 let title = NSLocalizedString("settings_username", comment: "Username")
-                let detail = NetworkVars.username.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : NetworkVars.username
+                let detail = NetworkVars.shared.username.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : NetworkVars.shared.username
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "user"
@@ -115,7 +115,7 @@ extension SettingsViewController: UITableViewDataSource
         case .logout /* Login/Logout Button */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
             else { preconditionFailure("Could not load ButtonTableViewCell") }
-            if NetworkVars.username.isEmpty {
+            if NetworkVars.shared.username.isEmpty {
                 cell.configure(with: NSLocalizedString("login", comment: "Login"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_logout", comment: "Logout"))
@@ -369,7 +369,7 @@ extension SettingsViewController: UITableViewDataSource
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
             row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell

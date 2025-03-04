@@ -41,7 +41,7 @@ public class AlbumProvider: NSObject {
         /// — from the current server which is accessible to the current user
         /// — whose ID is the ID of the displayed album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
         andPredicates.append(NSPredicate(format: "pwgID == %i", albumId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -137,7 +137,7 @@ public class AlbumProvider: NSObject {
         let paramsDict: [String : Any] = [
             "cat_id"            : parentId,
             "recursive"         : recursively,
-            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
+            "faked_by_community": NetworkVars.shared.usesCommunityPluginV29 ? "false" : "true",
             "thumbnail_size"    : thumbnailSize.argument
         ]
         
@@ -162,7 +162,7 @@ public class AlbumProvider: NSObject {
                     
                     // Update albums if Community installed (not needed for admins)
                     if user.hasAdminRights == false,
-                       NetworkVars.usesCommunityPluginV29 {
+                       NetworkVars.shared.usesCommunityPluginV29 {
                         // Non-admin user and Community installed —> collect Community albums
                         self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
                                                   albums: pwgData.data, completion: completion)
@@ -337,7 +337,7 @@ public class AlbumProvider: NSObject {
             /// — whose parent ID is the ID of the parent album
             /// — whose ID is positive i.e. not a smart album
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
             andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
             if recursively {
                 andPredicates.append(NSPredicate(format: "pwgID >= 0"))
@@ -588,8 +588,8 @@ public class AlbumProvider: NSObject {
         /// — whose ID is the ID of a parent album
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
@@ -646,8 +646,8 @@ public class AlbumProvider: NSObject {
         /// — whose ID is the ID of the deleted album
         /// — whose one of the upper album IDs is the ID of the deleted album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         andPredicates.append(NSPredicate(format: "parentId == %i", albumID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
@@ -691,8 +691,8 @@ public class AlbumProvider: NSObject {
         /// — from the current server
         /// — whose one of the upper album IDs is the ID of the parent album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         let regExp =  NSRegularExpression.escapedPattern(for: String(album.pwgID))
         let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
         andPredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
@@ -782,8 +782,8 @@ public class AlbumProvider: NSObject {
         /// — whose ID is the ID of a parent album
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
@@ -829,7 +829,7 @@ public class AlbumProvider: NSObject {
         fetchRequest.resultType = .countResultType
         
         // Select albums of the current server only
-        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath)
         
         // Fetch number of objects
         do {
@@ -852,7 +852,7 @@ public class AlbumProvider: NSObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
         
         // Select albums of the current server only
-        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath)
         
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)

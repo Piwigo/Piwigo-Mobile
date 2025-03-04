@@ -83,11 +83,11 @@ public extension PwgSession {
 
                 // Update Piwigo token
                 if let pwgToken = data.pwgToken {
-                    NetworkVars.pwgToken = pwgToken
+                    NetworkVars.shared.pwgToken = pwgToken
                 }
                 
                 // Default language
-                NetworkVars.language = data.language ?? ""
+                NetworkVars.shared.language = data.language ?? ""
                 
                 // Piwigo server version should be of format 1.2.3
                 var versionStr = data.version ?? ""
@@ -100,57 +100,57 @@ public extension PwgSession {
                     default:
                         break
                 }
-                NetworkVars.pwgVersion = versionStr
+                NetworkVars.shared.pwgVersion = versionStr
 
                 // Community users cannot upload with uploadAsync with Piwigo 11.x
-                if NetworkVars.usesCommunityPluginV29,
-                   NetworkVars.userStatus == pwgUserStatus.normal,
+                if NetworkVars.shared.usesCommunityPluginV29,
+                   NetworkVars.shared.userStatus == pwgUserStatus.normal,
                    "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
                    "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
-                    NetworkVars.usesUploadAsync = false
+                    NetworkVars.shared.usesUploadAsync = false
                 }
 
                 // Retrieve charset used by the Piwigo server
                 let charset = (data.charset ?? "UTF-8").uppercased()
                 switch charset {
                 case "UNICODE":
-                    NetworkVars.stringEncoding = String.Encoding.unicode.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.unicode.rawValue
                 case "UNICODEFFFE":
-                    NetworkVars.stringEncoding = String.Encoding.utf16BigEndian.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.utf16BigEndian.rawValue
                 case "UTF-8":
-                    NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.utf8.rawValue
                 case "UTF-16":
-                    NetworkVars.stringEncoding = String.Encoding.utf16.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.utf16.rawValue
                 case "UTF-32":
-                    NetworkVars.stringEncoding = String.Encoding.utf32.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.utf32.rawValue
                 case "ISO-2022-JP":
-                    NetworkVars.stringEncoding = String.Encoding.iso2022JP.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.iso2022JP.rawValue
                 case "ISO-8859-1":
-                    NetworkVars.stringEncoding = String.Encoding.windowsCP1252.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1252.rawValue
                 case "ISO-8859-3":
-                    NetworkVars.stringEncoding = String.Encoding.isoLatin1.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.isoLatin1.rawValue
                 case "CP870":
-                    NetworkVars.stringEncoding = String.Encoding.isoLatin2.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.isoLatin2.rawValue
                 case "MACINTOSH":
-                    NetworkVars.stringEncoding = String.Encoding.macOSRoman.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.macOSRoman.rawValue
                 case "SHIFT-JIS":
-                    NetworkVars.stringEncoding = String.Encoding.shiftJIS.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.shiftJIS.rawValue
                 case "WINDOWS-1250":
-                    NetworkVars.stringEncoding = String.Encoding.windowsCP1250.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1250.rawValue
                 case "WINDOWS-1251":
-                    NetworkVars.stringEncoding = String.Encoding.windowsCP1251.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1251.rawValue
                 case "WINDOWS-1252":
-                    NetworkVars.stringEncoding = String.Encoding.windowsCP1252.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1252.rawValue
                 case "WINDOWS-1253":
-                    NetworkVars.stringEncoding = String.Encoding.windowsCP1253.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1253.rawValue
                 case "WINDOWS-1254":
-                    NetworkVars.stringEncoding = String.Encoding.windowsCP1254.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1254.rawValue
                 case "X-EUC":
-                    NetworkVars.stringEncoding = String.Encoding.japaneseEUC.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.japaneseEUC.rawValue
                 case "US-ASCII":
-                    NetworkVars.stringEncoding = String.Encoding.ascii.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.ascii.rawValue
                 default:
-                    NetworkVars.stringEncoding = String.Encoding.utf8.rawValue
+                    NetworkVars.shared.stringEncoding = String.Encoding.utf8.rawValue
                 }
 
                 // Upload chunk size is null if not provided by server
@@ -162,13 +162,13 @@ public extension PwgSession {
 
                 // Images and videos can be uploaded if their file types are found.
                 // The iPhone creates mov files that will be uploaded in mp4 format.
-                NetworkVars.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
+                NetworkVars.shared.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
                 
                 // User rights are determined by Community extension (if installed)
                 if let status = data.userStatus, status.isEmpty == false,
                    let userStatus = pwgUserStatus(rawValue: status) {
-                    if NetworkVars.usesCommunityPluginV29 == false {
-                        NetworkVars.userStatus = userStatus
+                    if NetworkVars.shared.usesCommunityPluginV29 == false {
+                        NetworkVars.shared.userStatus = userStatus
                     }
                 } else {
                     failure(UserError.unknownUserStatus)
@@ -176,18 +176,18 @@ public extension PwgSession {
                 }
 
                 // Retrieve the list of available sizes
-                NetworkVars.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
-                NetworkVars.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
-                NetworkVars.hasXXSmallSizeImages = data.imageSizes?.contains("2small") ?? false
-                NetworkVars.hasXSmallSizeImages  = data.imageSizes?.contains("xsmall") ?? false
-                NetworkVars.hasSmallSizeImages   = data.imageSizes?.contains("small") ?? false
-                NetworkVars.hasMediumSizeImages  = data.imageSizes?.contains("medium") ?? false
-                NetworkVars.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
-                NetworkVars.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
-                NetworkVars.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
+                NetworkVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
+                NetworkVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
+                NetworkVars.shared.hasXXSmallSizeImages = data.imageSizes?.contains("2small") ?? false
+                NetworkVars.shared.hasXSmallSizeImages  = data.imageSizes?.contains("xsmall") ?? false
+                NetworkVars.shared.hasSmallSizeImages   = data.imageSizes?.contains("small") ?? false
+                NetworkVars.shared.hasMediumSizeImages  = data.imageSizes?.contains("medium") ?? false
+                NetworkVars.shared.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
+                NetworkVars.shared.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
+                NetworkVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
                 
                 // Should the app log visits and downloads? (since Piwigo 14)
-                NetworkVars.saveVisits = data.saveVisits ?? false
+                NetworkVars.shared.saveVisits = data.saveVisits ?? false
 
                 completion(data.userName ?? "")
             }

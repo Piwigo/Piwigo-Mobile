@@ -24,40 +24,40 @@ class LoginUtilities: NSObject {
         // and select the next available size in case of unavailability
         switch pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
         case .xxSmall:
-            if !NetworkVars.hasXXSmallSizeImages {
+            if !NetworkVars.shared.hasXXSmallSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasXSmallSizeImages {
+                if NetworkVars.shared.hasXSmallSizeImages {
                     AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.xSmall.rawValue
-                } else if NetworkVars.hasSmallSizeImages {
+                } else if NetworkVars.shared.hasSmallSizeImages {
                     AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.small.rawValue
                 } else {
                     AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                 }
             }
         case .xSmall:
-            if !NetworkVars.hasXSmallSizeImages {
+            if !NetworkVars.shared.hasXSmallSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasSmallSizeImages {
+                if NetworkVars.shared.hasSmallSizeImages {
                     AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.small.rawValue
                 } else {
                     AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
                 }
             }
         case .small:
-            if !NetworkVars.hasSmallSizeImages {
+            if !NetworkVars.shared.hasSmallSizeImages {
                 // Select next available larger size
                 AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .large:
-            if !NetworkVars.hasLargeSizeImages {
+            if !NetworkVars.shared.hasLargeSizeImages {
                 AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .xLarge:
-            if !NetworkVars.hasXLargeSizeImages {
+            if !NetworkVars.shared.hasXLargeSizeImages {
                 AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .xxLarge:
-            if !NetworkVars.hasXXLargeSizeImages {
+            if !NetworkVars.shared.hasXXLargeSizeImages {
                 AlbumVars.shared.defaultAlbumThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .square, .thumb, .medium, .fullRes:
@@ -71,40 +71,40 @@ class LoginUtilities: NSObject {
         // and select the next available size in case of unavailability
         switch pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) {
         case .xxSmall:
-            if !NetworkVars.hasXXSmallSizeImages {
+            if !NetworkVars.shared.hasXXSmallSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasXSmallSizeImages {
+                if NetworkVars.shared.hasXSmallSizeImages {
                     AlbumVars.shared.defaultThumbnailSize = pwgImageSize.xSmall.rawValue
-                } else if NetworkVars.hasSmallSizeImages {
+                } else if NetworkVars.shared.hasSmallSizeImages {
                     AlbumVars.shared.defaultThumbnailSize = pwgImageSize.small.rawValue
                 } else {
                     AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
                 }
             }
         case .xSmall:
-            if !NetworkVars.hasXSmallSizeImages {
+            if !NetworkVars.shared.hasXSmallSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasSmallSizeImages {
+                if NetworkVars.shared.hasSmallSizeImages {
                     AlbumVars.shared.defaultThumbnailSize = pwgImageSize.small.rawValue
                 } else {
                     AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
                 }
             }
         case .small:
-            if !NetworkVars.hasSmallSizeImages {
+            if !NetworkVars.shared.hasSmallSizeImages {
                 // Select next available larger size
                 AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .large:
-            if !NetworkVars.hasLargeSizeImages {
+            if !NetworkVars.shared.hasLargeSizeImages {
                 AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .xLarge:
-            if !NetworkVars.hasXLargeSizeImages {
+            if !NetworkVars.shared.hasXLargeSizeImages {
                 AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .xxLarge:
-            if !NetworkVars.hasXXLargeSizeImages {
+            if !NetworkVars.shared.hasXXLargeSizeImages {
                 AlbumVars.shared.defaultThumbnailSize = pwgImageSize.medium.rawValue
             }
         case .square, .thumb, .medium, .fullRes:
@@ -125,52 +125,52 @@ class LoginUtilities: NSObject {
         // and select the next available size in case of unavailability
         switch pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) {
         case .xxSmall:
-            if !NetworkVars.hasXXSmallSizeImages {
+            if !NetworkVars.shared.hasXXSmallSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasXSmallSizeImages {
+                if NetworkVars.shared.hasXSmallSizeImages {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xSmall.rawValue
-                } else if NetworkVars.hasSmallSizeImages {
+                } else if NetworkVars.shared.hasSmallSizeImages {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.small.rawValue
                 } else {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.medium.rawValue
                 }
             }
         case .xSmall:
-            if !NetworkVars.hasXSmallSizeImages {
+            if !NetworkVars.shared.hasXSmallSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasSmallSizeImages {
+                if NetworkVars.shared.hasSmallSizeImages {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.small.rawValue
                 } else {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.medium.rawValue
                 }
             }
         case .small:
-            if !NetworkVars.hasSmallSizeImages {
+            if !NetworkVars.shared.hasSmallSizeImages {
                 // Select next available larger size
                 ImageVars.shared.defaultImagePreviewSize = pwgImageSize.medium.rawValue
             }
         case .large:
-            if !NetworkVars.hasLargeSizeImages {
+            if !NetworkVars.shared.hasLargeSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasXLargeSizeImages {
+                if NetworkVars.shared.hasXLargeSizeImages {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xLarge.rawValue
-                } else if NetworkVars.hasXXLargeSizeImages {
+                } else if NetworkVars.shared.hasXXLargeSizeImages {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xxLarge.rawValue
                 } else {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
                 }
             }
         case .xLarge:
-            if !NetworkVars.hasXLargeSizeImages {
+            if !NetworkVars.shared.hasXLargeSizeImages {
                 // Look for next available larger size
-                if NetworkVars.hasXXLargeSizeImages {
+                if NetworkVars.shared.hasXXLargeSizeImages {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.xxLarge.rawValue
                 } else {
                     ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
                 }
             }
         case .xxLarge:
-            if !NetworkVars.hasXXLargeSizeImages {
+            if !NetworkVars.shared.hasXXLargeSizeImages {
                 ImageVars.shared.defaultImagePreviewSize = pwgImageSize.fullRes.rawValue
             }
         case .square, .thumb, .medium, .fullRes:

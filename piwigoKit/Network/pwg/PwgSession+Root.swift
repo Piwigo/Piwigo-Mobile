@@ -97,7 +97,7 @@ public extension PwgSession {
                         stats.append(" | " + info)
                     }
                 }
-                NetworkVars.pwgStatistics = stats
+                NetworkVars.shared.pwgStatistics = stats
             }
             catch let error {
                 // Data cannot be digested

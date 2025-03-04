@@ -22,7 +22,7 @@ public class User: NSManagedObject {
      Updates the attributes of a User Account instance.
      */
     func update(username: String, ofServer server: Server,
-                userStatus: pwgUserStatus = NetworkVars.userStatus,
+                userStatus: pwgUserStatus = NetworkVars.shared.userStatus,
                 withName name: String = "", lastUsed: Date = Date()) throws {
         // Check user's status
         guard pwgUserStatus.allCases.contains(userStatus) else {

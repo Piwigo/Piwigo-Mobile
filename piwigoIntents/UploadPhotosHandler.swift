@@ -42,7 +42,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // Check files compatibility with server
         var selectedFiles = [URL]()
-        let fileTypes = NetworkVars.serverFileTypes
+        let fileTypes = NetworkVars.shared.serverFileTypes
         for index in 0..<files.count {
             guard let fileUrl = files[index].fileURL else { continue }
             debugPrint("••> \(String(describing: files[index].typeIdentifier))")

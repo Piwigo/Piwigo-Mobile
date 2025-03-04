@@ -40,7 +40,7 @@ class AutoUploadViewController: UIViewController {
 
     private lazy var hasTagCreationRights: Bool = {
         // Depends on the user's rights
-        switch NetworkVars.userStatus {
+        switch NetworkVars.shared.userStatus {
         case .guest, .generic:
             return false
         case .admin, .webmaster:

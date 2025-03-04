@@ -430,7 +430,7 @@ extension AlbumViewController
         
         // Update menu
         var children = [UIMenu?]()
-        if NetworkVars.userStatus == .guest {
+        if NetworkVars.shared.userStatus == .guest {
             children = [sortMenu(), viewOptionsMenu()]
         } else {
             children = [selectMenu(), sortMenu(), viewOptionsMenu()]

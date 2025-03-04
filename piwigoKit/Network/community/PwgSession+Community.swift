@@ -40,7 +40,7 @@ public extension PwgSession {
                     failure(UserError.unknownUserStatus)
                     return
                 }
-                NetworkVars.userStatus = userStatus
+                NetworkVars.shared.userStatus = userStatus
                 completion()
             }
             catch {

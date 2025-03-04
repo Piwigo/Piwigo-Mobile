@@ -18,7 +18,7 @@ class ClearCache: NSObject {
         switch error {
         case .incompatiblePwgVersion:
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            message = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
+            message = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
@@ -35,8 +35,8 @@ class ClearCache: NSObject {
             // Back to default values
             AlbumVars.shared.defaultCategory = 0
             AlbumVars.shared.recentCategories = "0"
-            NetworkVars.usesCommunityPluginV29 = false
-            NetworkVars.userStatus = pwgUserStatus.guest
+            NetworkVars.shared.usesCommunityPluginV29 = false
+            NetworkVars.shared.userStatus = pwgUserStatus.guest
             
             // Disable Auto-Uploading and clear settings
             UploadVars.shared.isAutoUploadActive = false

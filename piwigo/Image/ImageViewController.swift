@@ -419,7 +419,7 @@ class ImageViewController: UIViewController {
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
         PwgSession.checkSession(ofUser: user) { [self] in
-            if NetworkVars.saveVisits {
+            if NetworkVars.shared.saveVisits {
                 PwgSession.shared.logVisitOfImage(withID: imageID, asDownload: asDownload) {
                     // Statistics updated
                 } failure: { [self] error in
@@ -625,7 +625,7 @@ class ImageViewController: UIViewController {
                 navigationController?.setToolbarHidden(true, animated: true)
             }
         }
-        else if NetworkVars.userStatus != .guest {
+        else if NetworkVars.shared.userStatus != .guest {
             // All buttons in navigation bar
             navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }
@@ -698,7 +698,7 @@ class ImageViewController: UIViewController {
                 navigationController?.setToolbarHidden(true, animated: true)
             }
         }
-        else if NetworkVars.userStatus != .guest {
+        else if NetworkVars.shared.userStatus != .guest {
             // All buttons in navigation bar
             navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [shareBarButton, muteBarButton].compactMap { $0 }

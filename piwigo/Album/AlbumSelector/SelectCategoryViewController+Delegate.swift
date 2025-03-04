@@ -257,7 +257,7 @@ extension SelectCategoryViewController: UITableViewDelegate
 
                 // Copy single image to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.usesSetCategory {
+                    if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData)
                     } else {
                         self.copyImages(toAlbum: albumData)
@@ -282,7 +282,7 @@ extension SelectCategoryViewController: UITableViewDelegate
 
                 // Move single image to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.usesSetCategory {
+                    if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
                     } else {
                         self.moveImages(toAlbum: albumData)
@@ -303,11 +303,11 @@ extension SelectCategoryViewController: UITableViewDelegate
                                 forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                             inMode: NetworkVars.usesSetCategory ? .indeterminate : .determinate)
+                             inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
                 
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.usesSetCategory {
+                    if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData)
                     } else {
                         self.copyImages(toAlbum: albumData)
@@ -328,11 +328,11 @@ extension SelectCategoryViewController: UITableViewDelegate
                                 forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
-                             inMode: NetworkVars.usesSetCategory ? .indeterminate : .determinate)
+                             inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
 
                 // Move several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.usesSetCategory {
+                    if NetworkVars.shared.usesSetCategory {
                         self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
                     } else {
                         self.moveImages(toAlbum: albumData)

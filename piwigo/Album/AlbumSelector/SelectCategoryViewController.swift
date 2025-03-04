@@ -79,15 +79,15 @@ class SelectCategoryViewController: UIViewController {
 
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
-        if NetworkVars.userStatus != .normal { return [] }
+        if NetworkVars.shared.userStatus != .normal { return [] }
         let userUploadRights = user.uploadRights
         return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
     }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         return andPredicates
     }()
 

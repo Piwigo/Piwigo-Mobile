@@ -226,7 +226,7 @@ extension AlbumViewController
     
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
         // No selector for guests
-        if NetworkVars.userStatus == .guest { return .none}
+        if NetworkVars.shared.userStatus == .guest { return .none}
 
         // Album section?
         if #available(iOS 13.0, *) {
@@ -315,7 +315,7 @@ extension AlbumViewController
             NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
             
             // Complete image data is not necessary for Piwigo server version +14.x
-            if NetworkVars.usesSetCategory {
+            if NetworkVars.shared.usesSetCategory {
                 // Select album and copy images into that album
                 performAction(action, withImageIDs: imageIDs, contextually: contextually)
             } else {

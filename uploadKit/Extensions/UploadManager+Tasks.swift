@@ -52,7 +52,7 @@ extension UploadManager
         /// - Wi-Fi required but unavailable
         if isPaused || isExecutingBackgroundUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.isConnectedToWiFi()) {
+            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi()) {
             return
         }
         
@@ -152,8 +152,8 @@ extension UploadManager
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
         let finished = (uploads.fetchedObjects ?? []).filter({$0.state == .finished})
-        if NetworkVars.userStatus == .normal,
-           NetworkVars.usesCommunityPluginV29, finished.count > 0 {
+        if NetworkVars.shared.userStatus == .normal,
+           NetworkVars.shared.usesCommunityPluginV29, finished.count > 0 {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused {

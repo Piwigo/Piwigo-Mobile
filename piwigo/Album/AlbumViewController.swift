@@ -108,8 +108,8 @@ class AlbumViewController: UIViewController
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.userStatus != .guest { return true }
+        if "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.shared.userStatus != .guest { return true }
         return false
     }()
     
@@ -650,7 +650,7 @@ class AlbumViewController: UIViewController
         PwgSession.shared.dataSession.getAllTasks { [unowned self] tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
+                .value(forHTTPHeaderField: NetworkVars.shared.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
@@ -797,10 +797,10 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch favorites in the background if needed
-        if NetworkVars.userStatus != .guest,
+        if NetworkVars.shared.userStatus != .guest,
            categoryId != pwgSmartAlbum.favorites.rawValue,
-           "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+           "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
@@ -860,7 +860,7 @@ class AlbumViewController: UIViewController
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
-//            else if !NetworkVars.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
+//            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
 //                // No Wi-Fi and user wishes to upload only on Wi-Fi
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,
