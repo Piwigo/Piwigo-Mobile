@@ -77,9 +77,9 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         }
 
         // Associate new Sizes object to Image request
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
-        }
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
+//        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newSizes, for: mapping)
     }
 }

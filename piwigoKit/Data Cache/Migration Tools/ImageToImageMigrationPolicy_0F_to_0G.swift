@@ -74,19 +74,19 @@ class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         // Replace nil title with NSAttributedString()
         if newImage.value(forKey: "title") == nil {
             newImage.setValue(NSAttributedString(), forKey: "title")
-            if #available(iOSApplicationExtension 14.0, *),
-               let imageId = sInstance.value(forKey: "pwgID") as? Int64 {
-                DataMigrator.logger.notice("\(self.logPrefix): empty title for image #\(imageId)")
-            }
+//            if #available(iOSApplicationExtension 14.0, *),
+//               let imageId = sInstance.value(forKey: "pwgID") as? Int64 {
+//                DataMigrator.logger.notice("\(self.logPrefix): empty title for image #\(imageId)")
+//            }
         }
 
         // Replace nil comments with NSAttributedString()
         if newImage.value(forKey: "comment") == nil {
             newImage.setValue(NSAttributedString(), forKey: "comment")
-            if #available(iOSApplicationExtension 14.0, *),
-               let imageId = sInstance.value(forKey: "pwgID") as? Int64 {
-                DataMigrator.logger.notice("\(self.logPrefix): empty comment for image #\(imageId)")
-            }
+//            if #available(iOSApplicationExtension 14.0, *),
+//               let imageId = sInstance.value(forKey: "pwgID") as? Int64 {
+//                DataMigrator.logger.notice("\(self.logPrefix): empty comment for image #\(imageId)")
+//            }
         }
         
         // Create downloadUrl attribute

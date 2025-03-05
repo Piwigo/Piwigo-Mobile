@@ -173,9 +173,9 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Associate new Upload object to old one
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
-        }
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
+//        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
     }
 }

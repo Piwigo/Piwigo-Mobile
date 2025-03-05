@@ -105,9 +105,9 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
 
         // Associate new Tag to old one
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
-        }
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
+//        }
         manager.associate(sourceInstance: sInstance,
                           withDestinationInstance: newTag,
                           for: mapping)

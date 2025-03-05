@@ -15,11 +15,6 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
     // Contants
     let logPrefix = "Album 0F ► Album 0G"
     
-    // Logs migration activity
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: AlbumToAlbumMigrationPolicy_0F_to_0G.self))
-    
     /**
      AlbumToAlbum custom migration performed following these steps:
      - Creates a Sizes instance in the destination context
@@ -78,10 +73,10 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         // Replace nil comments with NSAttributedString()
         if newAlbum.value(forKey: "comment") == nil {
             newAlbum.setValue(NSAttributedString(), forKey: "comment")
-            if #available(iOSApplicationExtension 14.0, *),
-               let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
-                DataMigrator.logger.notice("\(self.logPrefix): Empty comment for album #\(albumId)")
-            }
+//            if #available(iOSApplicationExtension 14.0, *),
+//               let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
+//                DataMigrator.logger.notice("\(self.logPrefix): Empty comment for album #\(albumId)")
+//            }
         }
 
         // Associate comment object to Album request
