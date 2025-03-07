@@ -15,7 +15,7 @@ extension ImageViewController
     // MARK: - Share Image Bar Button
     func getShareButton() -> UIBarButtonItem? {
         // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
-        // For previous versions, we assume that all only registred users have download rights
+        // For previous versions, we assume that all only registered users have download rights
         let isGuest = NetworkVars.shared.userStatus == .guest
         let versionTooOld = NetworkVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending
         if versionTooOld && isGuest {
