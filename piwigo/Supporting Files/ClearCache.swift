@@ -32,10 +32,17 @@ class ClearCache: NSObject {
     static func closeSession() {
         // Cancel tasks
         cancelTasks {
-            // Back to default values
+            // Back to default album settings
             AlbumVars.shared.defaultCategory = 0
             AlbumVars.shared.recentCategories = "0"
+            
+            // Back to default server properties
             NetworkVars.shared.usesCommunityPluginV29 = false
+            NetworkVars.shared.usesUploadAsync = false
+            NetworkVars.shared.usesCalcOrphans = false
+            NetworkVars.shared.usesSetCategory = false
+            
+            // Back to default user properties
             NetworkVars.shared.userStatus = pwgUserStatus.guest
             
             // Disable Auto-Uploading and clear settings
