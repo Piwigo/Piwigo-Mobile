@@ -322,8 +322,9 @@ extension AlbumViewController: UICollectionViewDelegate
                                   at indexPath: IndexPath) -> UIMenu {
         var children = [UIMenuElement]()
         if let imageID = cell.imageData?.pwgID {
-            // Guest cannot share images
-            if NetworkVars.shared.userStatus != .guest {
+            // Since Piwigo 14, we know whether a user is allowed to download images
+            let canShareImages = user.canDownloadImages()
+            if canShareImages {
                 children.append(shareImageAction(withID: imageID))
             }
             
@@ -336,14 +337,14 @@ extension AlbumViewController: UICollectionViewDelegate
                 }
             }
             
-            // Only identified users can select images
-            if NetworkVars.shared.userStatus != .guest {
+            // Not all users can select/deselect images
+            if canShareImages || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
                 if self.selectedImageIDs.contains(imageID) {
                     // Image not selected ► Propose to select it
-                    children.append(deselectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+                    children.append(deselectImageAction(forCell: cell, at: indexPath))
                 } else {
                     // Image selected ► Propose to deselect it
-                    children.append(selectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+                    children.append(selectImageAction(forCell: cell, at: indexPath))
                 }
             }
             
