@@ -43,6 +43,6 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         self.mainContext.saveIfNeeded()
 
         // Update parent image view
-        delegate?.didChangeImageParameters(imageData)
+        self.delegate?.didChangeImageParameters(imageData)
     }
 }

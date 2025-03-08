@@ -90,7 +90,8 @@ extension AlbumViewController: UICollectionViewDelegate
                 // Action depends on mode
                 if inSelectionMode {
                     // Check image ID
-                    guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
+                    guard let imageData = selectedCell.imageData,
+                          imageData.pwgID != 0
                     else { return }
                     
                     // Selection mode active => add/remove image from selection
