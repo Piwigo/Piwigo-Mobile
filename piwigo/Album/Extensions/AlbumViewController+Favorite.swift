@@ -86,7 +86,7 @@ extension AlbumViewController
                         // Update favorites album data
                         self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
                         // Save changes
-                        try? mainContext.save()
+                        self.mainContext.saveIfNeeded()
                     }
                     
                     // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -196,7 +196,7 @@ extension AlbumViewController
                         // Update favorites album data
                         self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
                         // Save changes
-                        try? mainContext.save()
+                        self.mainContext.saveIfNeeded()
                     }
                     
                     // pwg.users.favorites… methods available from Piwigo version 2.10

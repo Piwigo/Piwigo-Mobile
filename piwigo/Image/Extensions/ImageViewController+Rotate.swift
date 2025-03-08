@@ -90,7 +90,7 @@ extension ImageViewController
                         }
                     }
                     // Save changes
-                    try? self.mainContext.save()
+                    self.mainContext.saveIfNeeded()
                 }
             } failure: { [self] error in
                 self.rotateImageInDatabaseError(error)

@@ -217,11 +217,7 @@ extension AlbumViewController
                 cancelDismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                     navigationController?.hideHUD() { [self] in
                         // Save changes
-                        do {
-                            try self.mainContext.save()
-                        } catch let error {
-                            debugPrint("Could not save moved images \(error)")
-                        }
+                        self.mainContext.saveIfNeeded()
                         // Hide HUD and update buttons
                         updateBarsInSelectMode()
                     }
@@ -235,11 +231,7 @@ extension AlbumViewController
                 dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                     navigationController?.hideHUD() { [self] in
                         // Save changes
-                        do {
-                            try self.mainContext.save()
-                        } catch let error {
-                            debugPrint("Could not save moved images \(error)")
-                        }
+                        self.mainContext.saveIfNeeded()
                         // Hide HUD and update buttons
                         updateBarsInSelectMode()
                     }
@@ -287,11 +279,7 @@ extension AlbumViewController
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error {
-                        debugPrint("Could not save moved images \(error)")
-                    }
+                    self.mainContext.saveIfNeeded()
                     // Hide HUD and update buttons
                     updateBarsInSelectMode()
                 }
@@ -380,11 +368,7 @@ extension AlbumViewController
             let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted.")
             dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 // Save changes
-                do {
-                    try self.mainContext.save()
-                } catch let error {
-                    debugPrint("Could not save moved images \(error)")
-                }
+                self.mainContext.saveIfNeeded()
                 // Hide HUD and update buttons
                 navigationController?.hideHUD() { [self] in
                     updateBarsInSelectMode()

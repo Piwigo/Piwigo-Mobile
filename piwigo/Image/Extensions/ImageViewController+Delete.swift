@@ -108,11 +108,7 @@ extension ImageViewController
                     self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
 
                     // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error {
-                        debugPrint("Could not save copied images \(error)")
-                    }
+                    self.mainContext.saveIfNeeded()
                 }
 
                 // Hide HUD
@@ -187,7 +183,7 @@ extension ImageViewController
                     }
                     
                     // Save changes
-                    try? self.mainContext.save()
+                    self.mainContext.saveIfNeeded()
                     
                     // If this image was uploaded with the iOS app,
                     // delete upload request from cache so that it can be re-uploaded.

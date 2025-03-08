@@ -386,7 +386,7 @@ class UploadQueueViewController: UIViewController {
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
                     // Delete failed uploads
                     impossibleUploads.forEach({ self.mainContext.delete($0) })
-                    try? self.mainContext.save()
+                    self.mainContext.saveIfNeeded()
                     // Resume failed uploads
                     UploadManager.shared.backgroundQueue.async {
                         // Update number of uploads

@@ -170,7 +170,7 @@ public class Upload: NSManagedObject {
         
         // Should we save changes now?
         if save {
-            try? self.managedObjectContext?.save()
+            self.managedObjectContext?.saveIfNeeded()
         }
     }
     

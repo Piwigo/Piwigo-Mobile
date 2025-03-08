@@ -79,11 +79,7 @@ extension SelectCategoryViewController
             AlbumUtilities.setRepresentative(albumData, with: imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error {
-                        debugPrint("Could not save album representative, \(error)")
-                    }
+                    self.mainContext.saveIfNeeded()
                     // Close HUD
                     self.updateHUDwithSuccess() { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in

@@ -393,9 +393,7 @@ class SettingsViewController: UIViewController {
         let now = Date.timeIntervalSinceReferenceDate
         user?.lastUsed = now
         user?.server?.lastUsed = now
-        if mainContext.hasChanges {
-            try? mainContext.save()
-        }
+        mainContext.saveIfNeeded()
         
         // Guest user?
         if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {

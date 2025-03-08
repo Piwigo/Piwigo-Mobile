@@ -231,7 +231,7 @@ extension AlbumViewController
                 } else if self.albumData.nbImages == Int64.zero,
                           images.isEmpty == false {
                     self.albumData.removeFromImages(images)
-                    try? self.mainContext.save()
+                    self.mainContext.saveIfNeeded()
                 }
             }
         }

@@ -293,7 +293,7 @@ class EditImageParamsViewController: UIViewController
             // Done, save, hide HUD and dismiss controller
             self.updateHUDwithSuccess { [self] in
                 // Save changes
-                try? mainContext.save()
+                self.mainContext.saveIfNeeded()
                 // Close HUD
                 self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                     // Return to image preview or album view

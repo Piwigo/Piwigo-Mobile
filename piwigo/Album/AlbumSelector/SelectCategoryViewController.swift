@@ -559,11 +559,7 @@ class SelectCategoryViewController: UIViewController {
             // Forget the choice
             self.selectedCategoryId = Int32.min
             // Save changes if any
-            do {
-                try self.mainContext.save()
-            } catch let error {
-                debugPrint("Could not save fetched albums, \(error)")
-            }
+            self.mainContext.saveIfNeeded()
             // Dismiss the view
             self.dismiss(animated: true, completion: {})
         }

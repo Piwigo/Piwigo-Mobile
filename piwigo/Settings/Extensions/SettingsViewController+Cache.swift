@@ -90,7 +90,7 @@ extension SettingsViewController
                     assert(self.user?.server != nil, "••> User not provided!")
                     return
                 }
-                try? self.mainContext.save()
+                self.mainContext.saveIfNeeded()
 
                 // Refresh Settings cell related with data
                 self.dataCacheSize = server.getAlbumImageCount()
@@ -176,7 +176,7 @@ extension SettingsViewController
                         assert(self.user?.server != nil, "••> User not provided!")
                         return
                     }
-                    try? self.mainContext.save()
+                    self.mainContext.saveIfNeeded()
                     
                     // Refresh upload cache cell
                     self.uploadCacheSize = server.getUploadCount()
@@ -201,7 +201,7 @@ extension SettingsViewController
                     assert(self.user?.server != nil, "••> User not provided!")
                     return
                 }
-                try? self.mainContext.save()
+                self.mainContext.saveIfNeeded()
 
                 // Clear all image files
                 server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)

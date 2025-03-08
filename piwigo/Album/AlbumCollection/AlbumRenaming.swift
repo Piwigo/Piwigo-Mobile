@@ -135,11 +135,7 @@ class AlbumRenaming: NSObject
                     if albumData.comment.string != albumComment {
                         albumData.comment = albumComment.htmlToAttributedString
                     }
-                    do {
-                        try mainContext.save()
-                    } catch let error {
-                        debugPrint("Could not save album renaming, \(error)")
-                    }
+                    self.mainContext.saveIfNeeded()
                     
                     // Hide HUD
                     self.topViewController.updateHUDwithSuccess() {

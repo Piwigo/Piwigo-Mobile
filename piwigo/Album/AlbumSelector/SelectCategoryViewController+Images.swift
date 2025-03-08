@@ -115,11 +115,7 @@ extension SelectCategoryViewController
         // Close HUD
         updateHUDwithSuccess() { [self] in
             // Save changes
-            do {
-                try self.mainContext.save()
-            } catch let error {
-                debugPrint("Could not save copied images, \(error)")
-            }
+            self.mainContext.saveIfNeeded()
             // Hide HUD and dismiss album selector
             self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                 self.dismiss(animated: true) { [self] in
@@ -241,11 +237,7 @@ extension SelectCategoryViewController
         // Close HUD
         updateHUDwithSuccess() { [self] in
             // Save changes
-            do {
-                try self.mainContext.save()
-            } catch let error {
-                debugPrint("Could not save moved images, \(error)")
-            }
+            self.mainContext.saveIfNeeded()
             
             // Hide HUD and dismiss album selector
             self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
