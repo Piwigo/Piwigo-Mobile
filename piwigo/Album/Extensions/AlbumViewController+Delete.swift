@@ -233,7 +233,7 @@ extension AlbumViewController
                         // Save changes
                         self.mainContext.saveIfNeeded()
                         // Hide HUD and update buttons
-                        updateBarsInSelectMode()
+                        self.updateBarsInSelectMode()
                     }
                 }
             }
@@ -281,7 +281,7 @@ extension AlbumViewController
                     // Save changes
                     self.mainContext.saveIfNeeded()
                     // Hide HUD and update buttons
-                    updateBarsInSelectMode()
+                    self.updateBarsInSelectMode()
                 }
             }
         }
