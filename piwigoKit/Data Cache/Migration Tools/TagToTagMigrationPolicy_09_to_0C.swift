@@ -20,6 +20,21 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
      ATTENTION: This class must be called before UploadToUploadMigrationPolicy_09_to_0A.
      */
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Start… (\(percent))")
+        }
+        
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
+
         // Check current server path
         guard let _ = URL(string: NetworkVars.shared.serverPath) else {  return }
 
@@ -111,5 +126,21 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         manager.associate(sourceInstance: sInstance,
                           withDestinationInstance: newTag,
                           for: mapping)
+    }
+    
+    override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): End (\(percent) done)")
+        }
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
     }
 }

@@ -14,6 +14,7 @@ class DataMigrationViewController: UIViewController {
     @IBOutlet var migrationLabel: UILabel!
     @IBOutlet var pleaseWaitLabel: UILabel!
     @IBOutlet var piwigoUrlLabel: UILabel!
+    @IBOutlet weak var progressView: UIProgressView!
     
     
     // MARK: - View Lifecycle
@@ -48,6 +49,9 @@ class DataMigrationViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register progress
+        NotificationCenter.default.addObserver(self, selector: #selector(updateProgress),
+                                               name: Notification.Name.pwgMigrationProgressUpdated, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -57,6 +61,11 @@ class DataMigrationViewController: UIViewController {
         }, completion: nil)
     }
 
+    @objc func updateProgress(_ notification: Notification) {
+        guard let progressString = notification.userInfo?["progress"] as? Float else { return }
+        progressView.progress = Float(progressString)
+    }
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)

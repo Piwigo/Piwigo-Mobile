@@ -87,6 +87,12 @@ public class DataMigrator: NSObject {
             migrateStore(at: oldStoreURL,
                          toVersion: DataMigrationVersion.current, at: storeURL)
 
+            // Progress bar
+            DispatchQueue.main.async {
+                let userInfo = ["progress" : NSNumber.init(value: 1)]
+                NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                                object: nil, userInfo: userInfo)
+            }
             // Log time needed to perform the migration
             let duration = CFAbsoluteTimeGetCurrent() - timeCounter
             if #available(iOSApplicationExtension 14.0, *) {
@@ -108,6 +114,12 @@ public class DataMigrator: NSObject {
             // Move Upload folder to container if needed
             self.moveFilesToUpload()
 
+            // Progress bar
+            DispatchQueue.main.async {
+                let userInfo = ["progress" : NSNumber.init(value: 1)]
+                NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                                object: nil, userInfo: userInfo)
+            }
             // Log time needed to perform the migration
             let duration = CFAbsoluteTimeGetCurrent() - timeCounter
             if #available(iOSApplicationExtension 14.0, *) {
@@ -123,7 +135,13 @@ public class DataMigrator: NSObject {
             // Perform the migration (version after version)
             migrateStore(at: storeURL,
                          toVersion: DataMigrationVersion.current, at: storeURL)
-            
+
+            // Progress bar
+            DispatchQueue.main.async {
+                let userInfo = ["progress" : NSNumber.init(value: 1)]
+                NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                                object: nil, userInfo: userInfo)
+            }
             // Log time needed to perform the migration
             let duration = CFAbsoluteTimeGetCurrent() - timeCounter
             if #available(iOSApplicationExtension 14.0, *) {
@@ -419,7 +437,7 @@ private extension DataMigrationVersion {
                     }
                     return .version0F
                 }
-                return .version0G
+                return .version0H
             }
         }
         return compatibleVersion

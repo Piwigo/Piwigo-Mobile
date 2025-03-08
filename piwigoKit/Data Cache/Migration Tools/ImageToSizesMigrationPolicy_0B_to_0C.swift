@@ -15,20 +15,36 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
     // Contants
     let logPrefix = "Image 0B ► Sizes 0C"
     
+    override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Start… (\(percent))")
+        }
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
+    }
+    
     /**
      ImageToSizes custom migration performed following these steps:
      - Creates a Sizes instance in the destination context
      - Sets the values of the attributes from the source instance
      - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
-    */
+     */
     override func createDestinationInstances(forSource sInstance: NSManagedObject,
                                              in mapping: NSEntityMapping,
                                              manager: NSMigrationManager) throws {
         // Create Sizes destination instance
         let description = NSEntityDescription.entity(forEntityName: "Sizes", in: manager.destinationContext)
         let newSizes = Sizes(entity: description!, insertInto: manager.destinationContext)
-
+        
         // Function iterating over the property mappings if they are present in the migration
         func traversePropertyMappings(block: (NSPropertyMapping, String) -> Void) throws {
             // Retrieve attribute mappings
@@ -57,7 +73,7 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
                 throw NSError(domain: sizesErrorDomain, code: 0, userInfo: userInfo)
             }
         }
-
+        
         // The attribute migrations are performed using the expressions defined in the mapping model.
         try traversePropertyMappings { propertyMapping, destinationName in
             // Retrieve source value expression
@@ -75,11 +91,27 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         if let newImage = newImages.first {
             newImage.setValue(newSizes, forKey: "sizes")
         }
-
+        
         // Associate new Sizes object to Image request
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
-//        }
+        //        if #available(iOSApplicationExtension 14.0, *) {
+        //            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
+        //        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newSizes, for: mapping)
+    }
+    
+    override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): End (\(percent) done)")
+        }
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
     }
 }

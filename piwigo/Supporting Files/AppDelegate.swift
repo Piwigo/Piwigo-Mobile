@@ -692,9 +692,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Create data migration view
         let migrationSB = UIStoryboard(name: "DataMigrationViewController", bundle: nil)
-        guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController else {
-            fatalError("!!! No DataMigrationViewController !!!")
-        }
+        guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController
+        else { preconditionFailure("!!! No DataMigrationViewController !!!") }
         _migrationVC = migrationVC
         return _migrationVC
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_72" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_3" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,11 +14,11 @@
             <objects>
                 <viewController storyboardIdentifier="DataMigrationViewController" modalTransitionStyle="crossDissolve" useStoryboardIdentifierAsRestorationIdentifier="YES" id="01J-lp-oVM" userLabel="View Controller" customClass="DataMigrationViewController" customModule="piwigo" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoText" translatesAutoresizingMaskIntoConstraints="NO" id="tRi-ye-f0P">
-                                <rect key="frame" x="80" y="99" width="270" height="67"/>
+                                <rect key="frame" x="80" y="101.99999999999999" width="242" height="60.333333333333329"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="300" id="bvu-Oo-zZh"/>
                                     <constraint firstAttribute="width" secondItem="tRi-ye-f0P" secondAttribute="height" multiplier="981:244" id="dJY-ra-u7y"/>
@@ -44,8 +44,21 @@
                                     </mask>
                                 </variation>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Migration in progress..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kHR-tM-JMa">
+                                <rect key="frame" x="91" y="438.33333333333331" width="220" height="25.333333333333314"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="21"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CiE-H2-A7h">
+                                <rect key="frame" x="91" y="479.66666666666669" width="220" height="4"/>
+                                <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </progressView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We are currently migrating some of your data. Please wait until it is complete. Do not kill the application." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXF-wk-KFP">
-                                <rect key="frame" x="39" y="448" width="352" height="61"/>
+                                <rect key="frame" x="25" y="503.66666666666674" width="352" height="61"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -56,17 +69,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Migration in progress..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kHR-tM-JMa">
-                                <rect key="frame" x="105" y="382.66666666666669" width="220" height="25.333333333333314"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
-                                </accessibility>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="21"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="piwigo.org" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Owz-oH-9TO">
-                                <rect key="frame" x="189.66666666666666" y="883" width="51" height="12"/>
+                                <rect key="frame" x="175.66666666666666" y="825" width="51" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -76,17 +80,22 @@
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="bottom" secondItem="Owz-oH-9TO" secondAttribute="bottom" constant="3" id="1Km-tK-OBM"/>
+                            <constraint firstItem="CiE-H2-A7h" firstAttribute="width" secondItem="kHR-tM-JMa" secondAttribute="width" id="1ve-ZY-gVk"/>
+                            <constraint firstItem="kHR-tM-JMa" firstAttribute="centerY" secondItem="1cY-dd-xU8" secondAttribute="centerY" id="2Mw-uu-cqp"/>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" secondItem="tRi-ye-f0P" secondAttribute="trailing" constant="80" id="4Gk-NX-elf"/>
+                            <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="kHR-tM-JMa" secondAttribute="trailing" constant="20" id="858-vS-FUZ"/>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="dXF-wk-KFP" secondAttribute="trailing" constant="20" id="9Jn-gm-Ieg"/>
                             <constraint firstItem="Owz-oH-9TO" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="9WW-j0-MVr"/>
                             <constraint firstItem="dXF-wk-KFP" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="BHT-20-ryR"/>
                             <constraint firstItem="dXF-wk-KFP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="20" id="GnZ-3w-2Tg"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="leading" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="80" id="R6W-s0-Fh5"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="Tcr-7U-hfi"/>
+                            <constraint firstItem="kHR-tM-JMa" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="bDc-g3-cvM"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="top" secondItem="1cY-dd-xU8" secondAttribute="top" constant="40" id="c7l-Dq-xIR"/>
-                            <constraint firstItem="dXF-wk-KFP" firstAttribute="centerY" secondItem="1cY-dd-xU8" secondAttribute="centerY" id="hsD-gT-T0M"/>
                             <constraint firstItem="kHR-tM-JMa" firstAttribute="bottom" secondItem="dXF-wk-KFP" secondAttribute="top" constant="-40" id="pZc-tl-PQl"/>
-                            <constraint firstItem="kHR-tM-JMa" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="qA8-JJ-MVq"/>
+                            <constraint firstItem="kHR-tM-JMa" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="20" id="qA8-JJ-MVq"/>
+                            <constraint firstItem="CiE-H2-A7h" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="up5-9I-jSq"/>
+                            <constraint firstItem="CiE-H2-A7h" firstAttribute="bottom" secondItem="dXF-wk-KFP" secondAttribute="top" constant="-20" id="vWL-aY-lM2"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -106,11 +115,12 @@
                         <outlet property="piwigoLogo" destination="tRi-ye-f0P" id="apX-Hx-rkh"/>
                         <outlet property="piwigoUrlLabel" destination="Owz-oH-9TO" id="h0y-n9-oE0"/>
                         <outlet property="pleaseWaitLabel" destination="dXF-wk-KFP" id="ah2-9i-yML"/>
+                        <outlet property="progressView" destination="CiE-H2-A7h" id="r1A-It-6SO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="50.625" y="373.75"/>
+            <point key="canvasLocation" x="49.253731343283576" y="372.76887871853546"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
