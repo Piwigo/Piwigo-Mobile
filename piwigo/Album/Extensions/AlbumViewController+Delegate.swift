@@ -33,24 +33,17 @@ extension AlbumViewController: UICollectionViewDelegate
                 // Action depends on mode
                 if inSelectionMode {
                     // Check image ID
-                    guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
+                    guard let imageData = selectedCell.imageData,
+                          imageData.pwgID != 0
                     else { return }
                     
                     // Selection mode active => add/remove image from selection
-                    if !selectedImageIDs.contains(imageID) {
-                        selectedImageIDs.insert(imageID)
+                    if !selectedImageIDs.contains(imageData.pwgID) {
+                        selectImage(imageData, isFavorite: selectedCell.isFavorite)
                         selectedCell.isSelection = true
-                        if selectedCell.isFavorite {
-                            selectedFavoriteIDs.insert(imageID)
-                        }
-                        if selectedCell.imageData.isVideo {
-                            selectedVideosIDs.insert(imageID)
-                        }
                     } else {
+                        deselectImages(withIDs: Set([imageData.pwgID]))
                         selectedCell.isSelection = false
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
                     }
                     
                     // Update nav buttons
@@ -101,20 +94,12 @@ extension AlbumViewController: UICollectionViewDelegate
                     else { return }
                     
                     // Selection mode active => add/remove image from selection
-                    if !selectedImageIDs.contains(imageID) {
-                        selectedImageIDs.insert(imageID)
+                    if !selectedImageIDs.contains(imageData.pwgID) {
+                        selectImage(imageData, isFavorite: selectedCell.isFavorite)
                         selectedCell.isSelection = true
-                        if selectedCell.isFavorite {
-                            selectedFavoriteIDs.insert(imageID)
-                        }
-                        if selectedCell.imageData.isVideo {
-                            selectedVideosIDs.insert(imageID)
-                        }
                     } else {
+                        deselectImages(withIDs: Set([imageData.pwgID]))
                         selectedCell.isSelection = false
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
                     }
                     
                     // Update nav buttons
@@ -401,17 +386,12 @@ extension AlbumViewController: UICollectionViewDelegate
                                    at indexPath: IndexPath) -> UIAction {
         // Image not selected ► Propose to select it
         return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
-                        image: UIImage(systemName: "checkmark.circle")) { _ in
+                        image: UIImage(systemName: "checkmark.circle")) { [self] _ in
             // Select image
-            self.selectedImageIDs.insert(imageID)
+            guard let imageData = cell.imageData else { return }
+            self.selectImage(imageData, isFavorite: cell.isFavorite)
             cell.isSelection = true
-            if cell.isFavorite {
-                self.selectedFavoriteIDs.insert(imageID)
-            }
-            if cell.imageData.isVideo {
-                self.selectedVideosIDs.insert(imageID)
-            }
-            
+
             // Check if the selection mode is active
             if self.inSelectionMode {
                 // Update the navigation bar and title view
@@ -447,10 +427,9 @@ extension AlbumViewController: UICollectionViewDelegate
         return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect image
+            guard let imageData = cell.imageData else { return }
+            self.deselectImages(withIDs: Set([imageData.pwgID]))
             cell.isSelection = false
-            self.selectedImageIDs.remove(imageID)
-            self.selectedFavoriteIDs.remove(imageID)
-            self.selectedVideosIDs.remove(imageID)
             
             // Check if the selection mode should be disabled
             if self.selectedImageIDs.isEmpty {

@@ -61,9 +61,7 @@ extension AlbumViewController: EditImageParamsDelegate
 {
     func didDeselectImage(withID imageID: Int64) {
         // Deselect image
-        selectedImageIDs.remove(imageID)
-        selectedFavoriteIDs.remove(imageID)
-        selectedVideosIDs.remove(imageID)
+        deselectImages(withIDs: Set([imageID]))
         collectionView?.reloadData()
     }
 

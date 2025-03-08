@@ -236,9 +236,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
             presentedViewController?.hideHUD { }
         } else if contextually == false, selectedImageIDs.contains(imageID) {
             // Remove image from selection
-            selectedImageIDs.remove(imageID)
-            selectedFavoriteIDs.remove(imageID)
-            selectedVideosIDs.remove(imageID)
+            deselectImages(withIDs: Set([imageID]))
             updateBarsInSelectMode()
 
             // Close HUD if last image

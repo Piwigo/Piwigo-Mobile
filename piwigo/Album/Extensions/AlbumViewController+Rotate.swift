@@ -83,9 +83,7 @@ extension AlbumViewController
         else {
             // Forget this image
             remainingIDs.removeFirst()
-            selectedImageIDs.remove(imageID)
-            selectedFavoriteIDs.remove(imageID)
-            selectedVideosIDs.remove(imageID)
+            deselectImages(withIDs: Set([imageID]))
 
             // Update HUD
             DispatchQueue.main.async { [self] in
@@ -128,9 +126,7 @@ extension AlbumViewController
                 
                 // Next image
                 remainingIDs.removeFirst()
-                selectedImageIDs.remove(imageID)
-                selectedFavoriteIDs.remove(imageID)
-                selectedVideosIDs.remove(imageID)
+                deselectImages(withIDs: Set([imageID]))
                 rotateImages(withID: remainingIDs, by: angle, total: total)
                 
             } failure: { [self] error in

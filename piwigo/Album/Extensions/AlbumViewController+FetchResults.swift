@@ -214,9 +214,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 else { return }
                 indexPath.section += 1
                 // Deselect image
-                selectedImageIDs.remove(image.pwgID)
-                selectedFavoriteIDs.remove(image.pwgID)
-                selectedVideosIDs.remove(image.pwgID)
+                deselectImages(withIDs: Set([image.pwgID]))
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
                     guard let self = self else { return }

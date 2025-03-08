@@ -224,6 +224,22 @@ extension AlbumViewController
         }
     }
     
+    func selectImage(_ imageData: Image, isFavorite: Bool) {
+        self.selectedImageIDs.insert(imageData.pwgID)
+        if isFavorite {
+            selectedFavoriteIDs.insert(imageData.pwgID)
+        }
+        if imageData.isVideo {
+            selectedVideosIDs.insert(imageData.pwgID)
+        }
+    }
+
+    func deselectImages(withIDs imageIDs: Set<Int64>) {
+        self.selectedImageIDs.subtract(imageIDs)
+        self.selectedVideosIDs.subtract(imageIDs)
+        self.selectedFavoriteIDs.subtract(imageIDs)
+    }
+
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
         // No selector for guests
         if NetworkVars.shared.userStatus == .guest { return .none}
@@ -513,29 +529,21 @@ extension AlbumViewController: UIGestureRecognizerDelegate
         {
             // Get cell at touch position
             if let imageCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-               let imageID = imageCell.imageData?.pwgID
+               let imageData = imageCell.imageData
             {
                 // Update the selection if not already done
-                if touchedImageIDs.contains(imageID) { return }
+                if touchedImageIDs.contains(imageData.pwgID) { return }
                 
                 // Store that the user touched this cell during this gesture
-                touchedImageIDs.append(imageID)
+                touchedImageIDs.append(imageData.pwgID)
                 
                 // Update the selection state
-                if !selectedImageIDs.contains(imageID) {
-                    selectedImageIDs.insert(imageID)
+                if !selectedImageIDs.contains(imageData.pwgID) {
+                    selectImage(imageData, isFavorite: imageCell.isFavorite)
                     imageCell.isSelection = true
-                    if imageCell.isFavorite {
-                        selectedFavoriteIDs.insert(imageID)
-                    }
-                    if imageCell.imageData.isVideo {
-                        selectedVideosIDs.insert(imageID)
-                    }
                 } else {
                     imageCell.isSelection = false
-                    selectedImageIDs.remove(imageID)
-                    selectedFavoriteIDs.remove(imageID)
-                    selectedVideosIDs.remove(imageID)
+                    deselectImages(withIDs: Set([imageData.pwgID]))
                 }
                 
                 // Update the navigation bar

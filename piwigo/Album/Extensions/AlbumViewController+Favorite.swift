@@ -59,9 +59,7 @@ extension AlbumViewController
             // Forget this image
             remainingIDs.removeFirst()
             if contextually == false {
-                selectedImageIDs.remove(imageID)
-                selectedFavoriteIDs.remove(imageID)
-                selectedVideosIDs.remove(imageID)
+                deselectImages(withIDs: Set([imageID]))
             }
 
             // Update HUD
@@ -101,9 +99,7 @@ extension AlbumViewController
                     // Next image
                     remainingIDs.remove(imageID)
                     if contextually == false {
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
+                        deselectImages(withIDs: Set([imageID]))
                     }
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
@@ -169,9 +165,7 @@ extension AlbumViewController
             // Deselect this image if needed
             remainingIDs.remove(imageID)
             if contextually == false {
-                selectedImageIDs.remove(imageID)
-                selectedFavoriteIDs.remove(imageID)
-                selectedVideosIDs.remove(imageID)
+                deselectImages(withIDs: Set([imageID]))
             }
 
             // Update HUD
@@ -211,9 +205,7 @@ extension AlbumViewController
                     // Next image
                     remainingIDs.removeFirst()
                     if contextually == false {
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
+                        deselectImages(withIDs: Set([imageID]))
                     }
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
