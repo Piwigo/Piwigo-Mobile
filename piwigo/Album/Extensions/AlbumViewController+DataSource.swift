@@ -487,14 +487,14 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
 
-    // MARK: - Sections
+    // MARK: - Sections for iOS 12.x
     // Exclusively for iOS 12.x
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1 + (images.sections?.count ?? 1)
     }
     
 
-    // MARK: - Items i.e. Albums & Images
+    // MARK: - Items i.e. Albums & Images for iOS 12.x
     // Exclusively for iOS 12.x
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
