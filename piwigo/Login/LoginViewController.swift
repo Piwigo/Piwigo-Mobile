@@ -197,7 +197,10 @@ class LoginViewController: UIViewController {
         isAlreadyTryingToLogin = true
         NetworkVars.shared.userStatus = pwgUserStatus.guest
         NetworkVars.shared.usesCommunityPluginV29 = false
-
+        NetworkVars.shared.usesUploadAsync = false
+        NetworkVars.shared.usesCalcOrphans = false
+        NetworkVars.shared.usesSetCategory = false
+        
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {
             let title = NSLocalizedString("loginEmptyServer_title", comment: "Enter a Web Address")
