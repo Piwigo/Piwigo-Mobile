@@ -292,11 +292,7 @@ extension AlbumViewController
             DispatchQueue.main.async { [self] in
                 self.navigationController?.updateHUDwithSuccess() { [self] in
                     // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error {
-                        debugPrint("Could not save deleted images \(error)")
-                    }
+                    self.mainContext.saveIfNeeded()
                     // Hide HUD and deselect images
                     self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         self.cancelSelect()
@@ -328,11 +324,7 @@ extension AlbumViewController
                     }
                     
                     // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not save albums after image deletion \(error), \(error.userInfo)")
-                    }
+                    self.mainContext.saveIfNeeded()
 
                     // Delete upload requests of images deleted from the Piwigo server
                     UploadManager.shared.backgroundQueue.async {

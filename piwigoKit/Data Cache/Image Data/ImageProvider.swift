@@ -116,7 +116,8 @@ public class ImageProvider: NSObject {
      */
     public func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
                             sort: pwgImageSort, fromPage page:Int, perPage: Int,
-                            completion: @escaping (Set<Int64>, Int64, Error?) -> Void) {
+                            completed: @escaping (Set<Int64>, Int64, Bool) -> Void,
+                            failed: @escaping (Error) -> Void) {
         debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
         // Prepare parameters for collecting image data
         var method = pwgCategoriesGetImages
@@ -177,7 +178,7 @@ public class ImageProvider: NSObject {
                     // Piwigo error?
                     if pwgData.errorCode != 0 {
                         let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        completion(Set(), totalCount, error)
+                        failed(error)
                         return
                     }
                     
@@ -207,18 +208,25 @@ public class ImageProvider: NSObject {
                     
                     // Retrieve IDs of fetched images
                     let fetchedImageIds = Set(pwgData.data.compactMap({$0.id}))
-                    completion(fetchedImageIds, totalCount, nil)
+                    
+                    // Determine if the user has the right to download images
+                    var hasDownloadRight = false
+                    if pwgData.data.isEmpty == false,
+                       pwgData.data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
+                        hasDownloadRight = true
+                    }
+                    completed(fetchedImageIds, totalCount, hasDownloadRight)
                     
                 } catch {
                     // Alert the user if data cannot be digested.
-                    completion(Set(), Int64.zero, error)
+                    failed(error)
                 }
             }
         } failure: { error in
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            completion(Set(), Int64.zero, error)
+            failed(error)
         }
     }
     

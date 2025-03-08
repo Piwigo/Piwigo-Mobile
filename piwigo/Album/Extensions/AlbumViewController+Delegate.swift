@@ -382,8 +382,7 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     @available(iOS 13.0, *)
-    private func selectImageAction(forCell cell: ImageCollectionViewCell, imageID: Int64,
-                                   at indexPath: IndexPath) -> UIAction {
+    private func selectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image not selected ► Propose to select it
         return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
                         image: UIImage(systemName: "checkmark.circle")) { [self] _ in
@@ -415,8 +414,7 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     @available(iOS 13.0, *)
-    private func deselectImageAction(forCell cell: ImageCollectionViewCell, imageID: Int64,
-                                     at indexPath: IndexPath) -> UIAction {
+    private func deselectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image selected ► Propose to deselect it
         var image: UIImage?
         if #available(iOS 16, *) {

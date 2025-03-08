@@ -62,8 +62,8 @@ class AlbumViewController: UIViewController
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     var actionBarButton: UIBarButtonItem?
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
-    lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
+    var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
     
     var selectBarButton: UIBarButtonItem?

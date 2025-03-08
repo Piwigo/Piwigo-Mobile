@@ -116,90 +116,90 @@ extension AlbumViewController
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
-                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
-            guard let error = error else {
-                // No error ► Smart album?
-                var newLastPage = lastPage
-                if albumData.pwgID < 0, onPage == 0 {
-                    // Re-calculate number of pages for some smart albums
-                    if [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue].contains(albumData.pwgID) {
-                        // Update smart album data (limited to 'perPage' photos - 15 on webUI)
-                        albumData.nbImages = min(totalCount, Int64(perPage))
-                        albumData.totalNbImages = albumData.nbImages
-                    } else {
-                        // Calculate number of pages to fetch
-                        newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
+                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, hasDownloadRight in
+            // Store user's right to download
+            user.downloadRights = hasDownloadRight
+            
+            // Smart album?
+            var newLastPage = lastPage
+            if albumData.pwgID < 0, onPage == 0 {
+                // Re-calculate number of pages for some smart albums
+                if [pwgSmartAlbum.visits.rawValue, pwgSmartAlbum.best.rawValue].contains(albumData.pwgID) {
+                    // Update smart album data (limited to 'perPage' photos - 15 on webUI)
+                    albumData.nbImages = min(totalCount, Int64(perPage))
+                    albumData.totalNbImages = albumData.nbImages
+                } else {
+                    // Calculate number of pages to fetch
+                    newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
-                        // Update smart album data
-                        albumData.nbImages = totalCount
-                        albumData.totalNbImages = totalCount
-                    }
+                    // Update smart album data
+                    albumData.nbImages = totalCount
+                    albumData.totalNbImages = totalCount
                 }
-                
-                // Will not remove fetched images from album image list
-                let imageIDs = oldImageIDs.subtracting(fetchedImageIds)
-                
-                // Should we continue?
-                if onPage < newLastPage, query == albumData.query {
-                    // Pursue fetch without HUD
-                    DispatchQueue.main.async { [self] in
-                        if navigationController?.isShowingHUD() ?? false {
-                            navigationController?.hideHUD { [self] in
-                                // Set navigation bar buttons
-                                if self.inSelectionMode {
-                                    self.updateBarsInSelectMode()
-                                } else {
-                                    self.updateBarsInPreviewMode()
-                                    if newLastPage > 2 {
-                                        let progress = Float(onPage + 1) / Float(newLastPage)
-                                        self.setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
-                                    }
+            }
+            
+            // Will not remove fetched images from album image list
+            let imageIDs = oldImageIDs.subtracting(fetchedImageIds)
+            
+            // Should we continue?
+            if onPage < newLastPage, query == albumData.query {
+                // Pursue fetch without HUD
+                DispatchQueue.main.async { [self] in
+                    if navigationController?.isShowingHUD() ?? false {
+                        navigationController?.hideHUD { [self] in
+                            // Set navigation bar buttons
+                            if self.inSelectionMode {
+                                self.updateBarsInSelectMode()
+                            } else {
+                                self.updateBarsInPreviewMode()
+                                if newLastPage > 2 {
+                                    let progress = Float(onPage + 1) / Float(newLastPage)
+                                    self.setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
                                 }
+                            }
 
-                                // End refreshing if needed
-                                self.collectionView?.refreshControl?.endRefreshing()
-                            }
-                        } else {
-                            if newLastPage > 2 {
-                                let progress = Float(onPage + 1) / Float(newLastPage)
-                                let userInfo = ["pwgID" : self.albumData.pwgID,
-                                                "fetchProgressFraction" : progress]
-                                NotificationCenter.default.post(name: Notification.Name.pwgFetchedImages,
-                                                                object: nil, userInfo: userInfo)
-                            }
+                            // End refreshing if needed
+                            self.collectionView?.refreshControl?.endRefreshing()
+                        }
+                    } else {
+                        if newLastPage > 2 {
+                            let progress = Float(onPage + 1) / Float(newLastPage)
+                            let userInfo = ["pwgID" : self.albumData.pwgID,
+                                            "fetchProgressFraction" : progress]
+                            NotificationCenter.default.post(name: Notification.Name.pwgFetchedImages,
+                                                            object: nil, userInfo: userInfo)
                         }
                     }
-                    // Is user editing the search string?
-                    if imageProvider.userDidCancelSearch {
-                        // Remove non-fetched images from album
-                        removeImageWithIDs(imageIDs)
-                        // Store parameters
-                        self.oldImageIDs = imageIDs
-                        self.onPage = onPage + 1
-                        self.lastPage = newLastPage
-                        self.perPage = perPage
-                        return
-                    }
-                    // Load next page of images
-                    self.fetchImages(withInitialImageIds: imageIDs, query: query,
-                                     fromPage: onPage + 1, toPage: newLastPage,
-                                     completion: completion)
+                }
+                // Is user editing the search string?
+                if imageProvider.userDidCancelSearch {
+                    // Remove non-fetched images from album
+                    removeImageWithIDs(imageIDs)
+                    // Store parameters
+                    self.oldImageIDs = imageIDs
+                    self.onPage = onPage + 1
+                    self.lastPage = newLastPage
                     return
                 }
-                
-                // Done fetching images
-                // ► Remove non-fetched images from album
-                removeImageWithIDs(imageIDs)
-                // ► Remove current album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-                // ► Delete orphaned images in the background
-                imageProvider.purgeOrphans()
-
-                completion()
+                // Load next page of images
+                self.fetchImages(withInitialImageIds: imageIDs, query: query,
+                                 fromPage: onPage + 1, toPage: newLastPage,
+                                 completion: completion)
                 return
             }
             
-            // Show the error
+            // Done fetching images
+            // ► Remove non-fetched images from album
+            removeImageWithIDs(imageIDs)
+            // ► Remove current album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+            // ► Delete orphaned images in the background
+            imageProvider.purgeOrphans()
+
+            completion()
+            return
+        }
+        failed: { error in
             DispatchQueue.main.async { [self] in
                 // Done fetching images
                 // ► Remove current album from list of album being fetched
@@ -318,17 +318,9 @@ extension AlbumViewController
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         imageProvider.fetchImages(ofAlbumWithId: album.pwgID, withQuery: "", sort: sortOption,
-                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, error in
-            // Any error?
-            if error != nil {
-                // Remove favorite album from list of album being fetched
-                AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
-                return
-            }
-            
-            // No error
-            var newLastPage = lastPage
+                                  fromPage: onPage, perPage: perPage) { [self] fetchedImageIds, totalCount, hasDownloadRight in
             // Re-calculate number of pages
+            var newLastPage = lastPage
             newLastPage = Int(totalCount.quotientAndRemainder(dividingBy: Int64(perPage)).quotient)
 
             // Update smart album data
@@ -364,6 +356,9 @@ extension AlbumViewController
             DispatchQueue.main.async { [self] in
                 self.mainContext.saveIfNeeded()
             }
+        } failed: { error in
+            // Remove favorite album from list of album being fetched
+            AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
         }
     }
 }

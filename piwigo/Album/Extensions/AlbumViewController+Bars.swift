@@ -41,45 +41,52 @@ extension AlbumViewController
             // Search bar => No action button
             navigationItem.setRightBarButtonItems([], animated: true)
         }
-        else if NetworkVars.shared.userStatus != .guest {
+        else {
+            // Share button depends on Piwigo server version, user role and image data
+            shareBarButton = getShareBarButton()
+            // Favorites button depends on Piwigo server version, user role and image data
+            favoriteBarButton = getFavoriteBarButton()
+
             if #available(iOS 14, *) {
                 // Menu for activating the selection mode and changing the way images are sorted
-                actionBarButton = nil
-                let children = [selectMenu(), sortMenu(), viewOptionsMenu()]
-                let menu = UIMenu(title: "", children: children.compactMap({$0}))
-                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                selectBarButton?.accessibilityIdentifier = "select"
+                initRightSideInPreviewModeNew()
             } else {
-                // Button for sorting photos
-                actionBarButton = getSortBarButton()
-                // Button for activating the selection mode (not for guests)
-                selectBarButton = getSelectBarButton()
+                // Button for selecting and sorting photos
+                initRightSideInPreviewModeOld()
             }
-            navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
-            let hasImages = albumData.nbImages != 0
-            actionBarButton?.isEnabled = hasImages
-            selectBarButton?.isEnabled = hasImages
-        }
-        else {
-            if #available(iOS 14, *) {
-                // Menu for changing the way images are sorted
-                actionBarButton = nil
-                let children = [sortMenu(), viewOptionsMenu()]
-                let menu = UIMenu(title: "", children: children.compactMap({$0}))
-                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                selectBarButton?.accessibilityIdentifier = "sort"
-            } else {
-                // Button for sorting photos
-                actionBarButton = getSortBarButton()
-                // Button for activating the selection mode (not for guests)
-                selectBarButton = nil
-            }
-            navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
-            let hasImages = albumData.nbImages != 0
-            actionBarButton?.isEnabled = hasImages
         }
     }
     
+    @available(iOS 14, *)
+    private func initRightSideInPreviewModeNew() {
+        // Menu for activating the selection mode and changing the way images are sorted
+        var children = [sortMenu(), viewOptionsMenu()]
+        if shareBarButton != nil || favoriteBarButton != nil {
+            children.insert(selectMenu(), at: 0)
+        }
+        let menu = UIMenu(title: "", children: children.compactMap({$0}))
+        selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        selectBarButton?.accessibilityIdentifier = "select"
+        
+        // Set right bar buttons
+        navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
+        let hasImages = albumData.nbImages != 0
+        selectBarButton?.isEnabled = hasImages
+    }
+
+    private func initRightSideInPreviewModeOld() {
+        // Button for sorting photos
+        actionBarButton = getSortBarButton()
+        
+        // Button for activating the selection mode
+        selectBarButton = shareBarButton != nil || favoriteBarButton != nil ? getSelectBarButton() : nil
+        
+        // Set right bar buttons
+        navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
+        let hasImages = albumData.nbImages != 0
+        actionBarButton?.isEnabled = hasImages
+    }
+
     func updateBarsInPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
         if let displayedVC = navigationController?.viewControllers.last,
@@ -92,26 +99,21 @@ extension AlbumViewController
             return
         }
         
-        if NetworkVars.shared.userStatus != .guest {
-            if #available(iOS 14, *) {
-                // Menu for activating the selection mode or change the way images are sorted
-                let children = [selectMenu(), sortMenu(), viewOptionsMenu()].compactMap({$0})
-                let updatedMenu = selectBarButton?.menu?.replacingChildren(children)
-                selectBarButton?.menu = updatedMenu
+        // Share button depends on Piwigo server version, user role and image data
+        shareBarButton = getShareBarButton()
+        
+        let hasImages = albumData.nbImages != 0
+        if #available(iOS 14, *) {
+            // Menu for activating the selection mode or change the way images are sorted
+            var children = [sortMenu(), viewOptionsMenu()]
+            if shareBarButton != nil || favoriteBarButton != nil {
+                children.insert(selectMenu(), at: 0)
             }
-            let hasImages = albumData.nbImages != 0
+            let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
+            selectBarButton?.menu = updatedMenu
+            selectBarButton?.isEnabled = hasImages
+        } else {
             actionBarButton?.isEnabled = hasImages
-            selectBarButton?.isEnabled = hasImages
-        }
-        else {
-            if #available(iOS 14, *) {
-                // Menu for activating the selection mode or change the way images are sorted
-                let children = [sortMenu(), viewOptionsMenu()].compactMap({$0})
-                let updatedMenu = selectBarButton?.menu?.replacingChildren(children)
-                selectBarButton?.menu = updatedMenu
-            }
-            let hasImages = albumData.nbImages != 0
-            selectBarButton?.isEnabled = hasImages
         }
     }
     
@@ -121,169 +123,141 @@ extension AlbumViewController
         // Hide back or Settings button
         navigationItem.hidesBackButton = true
 
-        // Favorites button depends on Piwigo server version, user role and image data
-        favoriteBarButton = getFavoriteBarButton()
+        // Share button depends on Piwigo server version, user role and image data
+        shareBarButton = getShareBarButton()
 
         // Button displayed in all circumstances
         if #available(iOS 14, *) {
-            // Interface depends on device and orientation
-            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-
-            // User with admin or upload rights can do everything
-            if user.hasUploadRights(forCatID: categoryId) {
-                // The action button proposes:
-                /// - to copy or move images to other albums
-                /// - to edit image parameters
-                /// - to rotate images
-                let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
-                actionBarButton?.accessibilityIdentifier = "actions"
-
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
-
-                    // Remaining buttons in navigation toolbar
-                    /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
-                    /// They also disappear when coming back to portrait orientation.
-                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
-                                        favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                        deleteBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
-                } else {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
-
-                    // Hide toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            } else if favoriteBarButton != nil {
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    
-                    // No button on the right
-                    navigationItem.setRightBarButtonItems([], animated: true)
-                    
-                    // Remaining buttons in navigation toolbar
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
-                } else {
-                    // All buttons in navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
-                    
-                    // Hide navigation toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.shared.userStatus != .guest {
-                // All buttons in navigation bar
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
-
-                // Hide navigation toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
-            else {
-                // Guest cannot share images
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([].compactMap { $0 }, animated: true)
-
-                // Hide navigation toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
+            initBarsInSelectModeNew()
         } else {
             // Fallback on earlier versions
-            // Interface depends on device and orientation
-            let orientation = UIApplication.shared.statusBarOrientation
-
-            // User with admin or upload rights can do everything
-            // WRONG =====> 'normal' user with upload access to the current category can edit images
-            // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
-            if user.hasUploadRights(forCatID: categoryId) {
-                // Button for rotating photos
-                actionBarButton = getActionBarButton()
-                // Button for editing properties
-                selectBarButton = getEditBarButton()
-
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
-
-                    // Remaining buttons in navigation toolbar
-                    /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
-                    /// They also disappear when coming back to portrait orientation.
-                    let toolBarItems = [shareBarButton, UIBarButtonItem.space(),
-                                        moveBarButton, UIBarButtonItem.space(),
-                                        favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
-                                        deleteBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
-                } else {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton, moveBarButton].compactMap { $0 }, animated: true)
-
-                    // Right side of navigation bar
-                    let rightBarButtonItems = [selectBarButton, actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
-
-                    // Hide toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            } else if favoriteBarButton != nil {
-                if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    
-                    // No button on the right
-                    navigationItem.setRightBarButtonItems([], animated: true)
-                    
-                    // Remaining buttons in navigation toolbar
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = [shareBarButton, UIBarButtonItem.space(), favoriteBarButton].compactMap { $0 }
-                } else {
-                    // Left side of navigation bar
-                    navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                    
-                    // All other buttons in navigation bar
-                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
-                    
-                    // Hide navigation toolbar
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.shared.userStatus != .guest {
-                // Non-guest can only share images
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
-
-                // Hide toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
-            else {
-                // Guest cannot share images
-                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-                navigationItem.setRightBarButtonItems([].compactMap { $0 }, animated: true)
-
-                // Hide toolbar
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
+            initBarsInSelectModeOld()
         }
 
         // Set initial status
         updateBarsInSelectMode()
+    }
+    
+    @available(iOS 14.0, *)
+    private func initBarsInSelectModeNew() {
+        // Interface depends on device and orientation
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+
+        // User with admin or upload rights can do everything
+        // except may be downloading images (i.e. sharing images)
+        // User without admin rights cannot set album thumbnails, delete images
+        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+        //              This requires 'user_id' and 'added_by' values of images for checking rights
+        if user.hasUploadRights(forCatID: categoryId) {
+            // The action button proposes:
+            /// - to copy or move images to other albums
+            /// - to rotate a photo clockwise or counterclockwise,
+            /// - to edit image parameters
+            let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
+            actionBarButton?.accessibilityIdentifier = "actions"
+
+            if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                // Left side of navigation bar
+                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+
+                // Right side of navigation bar
+                navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
+
+                // Remaining buttons in navigation toolbar
+                /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
+                /// They also disappear when coming back to portrait orientation.
+                /// [share - delete] or [ favorite - delete ] or [share - favorite - delete]
+                let toolBarItems = [shareBarButton, .space(),
+                                    favoriteBarButton, favoriteBarButton == nil ? nil : .space(),
+                                    deleteBarButton, shareBarButton == nil ? .space() : nil].compactMap { $0 }
+                navigationController?.setToolbarHidden(false, animated: true)
+                toolbarItems = toolBarItems
+            } else {
+                // Left side of navigation bar
+                navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
+
+                // Right side of navigation bar
+                let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+                navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
+
+                // Hide toolbar
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+        } else {
+            initBarsInSelectModeForStdUserOrGuest(for: orientation)
+        }
+    }
+
+    private func initBarsInSelectModeOld() {
+        // Interface depends on device and orientation
+        let orientation = UIApplication.shared.statusBarOrientation
+
+        // User with admin or upload rights can do everything
+        // except may be downloading images (i.e. sharing images)
+        // User without admin rights cannot set album thumbnails, delete images
+        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+        //              This requires 'user_id' and 'added_by' values of images for checking rights
+        if user.hasUploadRights(forCatID: categoryId) {
+            // Button for rotating photos
+            actionBarButton = getActionBarButton()
+            // Button for editing properties
+            selectBarButton = getEditBarButton()
+
+            if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+                // Left side of navigation bar
+                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+
+                // Right side of navigation bar
+                navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
+
+                // Remaining buttons in navigation toolbar
+                /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
+                /// They also disappear when coming back to portrait orientation.
+                let toolBarItems = [shareBarButton, shareBarButton == nil ? nil : .space(),
+                                    moveBarButton, .space(),
+                                    favoriteBarButton, favoriteBarButton == nil ? nil : UIBarButtonItem.space(),
+                                    deleteBarButton].compactMap { $0 }
+                navigationController?.setToolbarHidden(false, animated: true)
+                toolbarItems = toolBarItems
+            } else {
+                // Left side of navigation bar
+                navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton, moveBarButton].compactMap { $0 }, animated: true)
+
+                // Right side of navigation bar
+                let rightBarButtonItems = [selectBarButton, actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
+                navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
+
+                // Hide toolbar
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+        } else {
+            initBarsInSelectModeForStdUserOrGuest(for: orientation)
+        }
+    }
+
+    private func initBarsInSelectModeForStdUserOrGuest(for orientation: UIInterfaceOrientation) {
+        // Left side of navigation bar
+        navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+
+        // Right side and toolbar
+        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+            // Remaining two buttons
+            // Button on the right
+            navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
+
+            // Hide navigation toolbar
+            navigationController?.setToolbarHidden(true, animated: true)
+        } else {
+            // All buttons in navigation bar
+            navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+            navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
+            
+            // Hide navigation toolbar
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
     }
     
     func updateBarsInSelectMode() {
@@ -292,12 +266,15 @@ extension AlbumViewController
         cancelBarButton.isEnabled = true
 
         // User with admin or upload rights can do everything
-        // WRONG =====> 'normal' user with upload access to the current category can edit images
-        // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by'
+        // except may be downloading images (i.e. sharing images)
+        // User without admin rights cannot set album thumbnails, delete images
+        // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+        // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+        //              This requires 'user_id' and 'added_by' values of images for checking rights
         if user.hasUploadRights(forCatID: categoryId) {
             selectBarButton?.isEnabled = hasImagesSelected
             actionBarButton?.isEnabled = hasImagesSelected
-            shareBarButton.isEnabled = hasImagesSelected
+            shareBarButton?.isEnabled = hasImagesSelected
             deleteBarButton.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
             let areFavorites = selectedImageIDs == selectedFavoriteIDs
@@ -305,6 +282,7 @@ extension AlbumViewController
             favoriteBarButton?.action = areFavorites ? #selector(unfavoriteSelection) : #selector(favoriteSelection)
 
             if #available(iOS 14, *) {
+                // Update menu
                 let children = [albumMenu(), imagesMenu()].compactMap({$0})
                 let updatedMenu = actionBarButton?.menu?.replacingChildren(children)
                 actionBarButton?.menu = updatedMenu
@@ -315,7 +293,7 @@ extension AlbumViewController
             // Right side of navigation bar
             /// — guests can share photo of high-resolution or not
             /// — non-guest users can set favorites in addition
-            shareBarButton.isEnabled = hasImagesSelected
+            shareBarButton?.isEnabled = hasImagesSelected
             favoriteBarButton?.isEnabled = hasImagesSelected
             let areFavorites = selectedImageIDs == selectedFavoriteIDs
             favoriteBarButton?.setFavoriteImage(for: areFavorites)
@@ -331,7 +309,7 @@ extension AlbumViewController
         actionBarButton?.isEnabled = state
         deleteBarButton.isEnabled = state
         moveBarButton.isEnabled = state
-        shareBarButton.isEnabled = state
+        shareBarButton?.isEnabled = state
         favoriteBarButton?.isEnabled = state
     }
         

@@ -445,11 +445,12 @@ extension AlbumViewController
         updateImageCollection(afterFetchingRanks: shouldFetch)
         
         // Update menu
+        // Not all users can select/deselect images
         var children = [UIMenu?]()
-        if NetworkVars.shared.userStatus == .guest {
-            children = [sortMenu(), viewOptionsMenu()]
-        } else {
+        if user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
             children = [selectMenu(), sortMenu(), viewOptionsMenu()]
+        } else {
+            children = [sortMenu(), viewOptionsMenu()]
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu

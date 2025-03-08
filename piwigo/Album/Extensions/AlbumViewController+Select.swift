@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// MARK: Buttons
 extension AlbumViewController
 {
     // MARK: - Cancel Buttons
@@ -73,6 +74,7 @@ extension AlbumViewController
 }
 
 
+// MARK: - Menus
 @available(iOS 14, *)
 extension AlbumViewController
 {
@@ -241,8 +243,10 @@ extension AlbumViewController
     }
 
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
-        // No selector for guests
-        if NetworkVars.shared.userStatus == .guest { return .none}
+        // No selector for users not allowed to share images or manage favorites
+        if (user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId)) == false {
+            return .none
+        }
 
         // Album section?
         if #available(iOS 13.0, *) {
