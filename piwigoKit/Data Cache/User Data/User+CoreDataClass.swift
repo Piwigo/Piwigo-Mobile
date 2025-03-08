@@ -100,6 +100,29 @@ extension User {
         return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
     }
     
+    public func canManageFavorites() -> Bool {
+        // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
+        let versionTooOld = NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
+        if versionTooOld || self.role == .guest {
+            return false
+        }
+        return true
+    }
+    
+    public func canDownloadImages() -> Bool {
+        // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
+        // For previous versions, we assumed that all only registered users have download rights
+        // The download right is reset each time a batch of images is imported.
+        let versionTooOld = NetworkVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending
+        if versionTooOld, self.role == .guest {
+            return false
+        }
+        if versionTooOld == false, self.downloadRights == false {
+            return false
+        }
+        return true
+    }
+    
     public func setLastUsedToNow() {
         let dateOfLogin = Date.timeIntervalSinceReferenceDate
         self.lastUsed = dateOfLogin
