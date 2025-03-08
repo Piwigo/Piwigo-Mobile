@@ -91,6 +91,7 @@
 "login_loggingIn" = "登入中...";
 "login_connecting" = "連線中";
 "login_newSession" = "開始作業階段";
+"login_closeSession" = "閉幕會議...";
 "login_communityParameters" = "社群參數";
 "login_serverParameters" = "Piwigo參數";
 "login_connectionChanged" = "連線變更!";

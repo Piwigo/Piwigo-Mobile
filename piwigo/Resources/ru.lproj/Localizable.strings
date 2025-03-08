@@ -91,6 +91,7 @@
 "login_loggingIn" = "Выполняется вход...";
 "login_connecting" = "Соединение";
 "login_newSession" = "Открытие сессии";
+"login_closeSession" = "Закрытие сессии...";
 "login_communityParameters" = "Параметры сообщества";
 "login_serverParameters" = "Параметры Piwigo";
 "login_connectionChanged" = "Соединение изменено!";

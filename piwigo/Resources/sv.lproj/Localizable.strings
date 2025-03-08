@@ -91,6 +91,7 @@
 "login_loggingIn" = "Loggar In...";
 "login_connecting" = "Ansluter";
 "login_newSession" = "Öppnar session";
+"login_closeSession" = "Stänger session...";
 "login_communityParameters" = "Communityparametrar";
 "login_serverParameters" = "Piwigoparametrar";
 "login_connectionChanged" = "Anslutningen ändrad!";

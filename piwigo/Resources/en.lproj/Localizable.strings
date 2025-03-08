@@ -91,6 +91,7 @@
 "login_loggingIn" = "Logging In...";
 "login_connecting" = "Connecting";
 "login_newSession" = "Opening Session";
+"login_closeSession" = "Closing Session...";
 "login_communityParameters" = "Community Parameters";
 "login_serverParameters" = "Piwigo Parameters";
 "login_connectionChanged" = "Connection Changed!";

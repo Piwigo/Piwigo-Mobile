@@ -91,6 +91,7 @@
 "login_loggingIn" = "Bezig met aanmelden...";
 "login_connecting" = "Bezig met verbinden";
 "login_newSession" = "Sessie openen";
+"login_closeSession" = "Sessie sluiten...";
 "login_communityParameters" = "Gemeenschap Parameters";
 "login_serverParameters" = "Piwigo parameters";
 "login_connectionChanged" = "Verbinding gewijzigd!";

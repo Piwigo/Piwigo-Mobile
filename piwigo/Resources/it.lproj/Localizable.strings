@@ -91,6 +91,7 @@
 "login_loggingIn" = "Accesso in corso...";
 "login_connecting" = "Connessione in corso";
 "login_newSession" = "Sessione di apertura";
+"login_closeSession" = "Chiusura Sessione...";
 "login_communityParameters" = "Parametri di Community";
 "login_serverParameters" = "Parametri di Piwigo";
 "login_connectionChanged" = "Connessione cambiata!";

@@ -410,18 +410,29 @@ class SettingsViewController: UIViewController {
         })
         
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
+            // Show HUD
+            let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
+            self.navigationController?.showHUD(withTitle: title)
+
+            // Perform Logout
             PwgSession.shared.sessionLogout {
                 // Close session
-                DispatchQueue.main.async {
-                    ClearCache.closeSession()
+                DispatchQueue.main.async { [self] in
+                    self.navigationController?.hideHUD {
+                        ClearCache.closeSession()
+                    }
                 }
             } failure: { error in
                 // Failed! This may be due to the replacement of a self-signed certificate.
                 // So we inform the user that there may be something wrong with the server,
                 // or simply a connection drop.
-                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
-                                        message: error.localizedDescription) {
-                    ClearCache.closeSession()
+                DispatchQueue.main.async { [self] in
+                    self.navigationController?.hideHUD {
+                        self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                                                      message: error.localizedDescription) {
+                            ClearCache.closeSession()
+                        }
+                    }
                 }
             }
         })

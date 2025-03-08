@@ -91,6 +91,7 @@
 "login_loggingIn" = "登录中……";
 "login_connecting" = "连接中";
 "login_newSession" = "打开会话";
+"login_closeSession" = "闭幕会议...";
 "login_communityParameters" = "社区参数";
 "login_serverParameters" = "Piwigo参数";
 "login_connectionChanged" = "连接已更改！";

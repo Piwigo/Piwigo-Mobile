@@ -91,6 +91,7 @@
 "login_loggingIn" = "Anmeldung läuft...";
 "login_connecting" = "Verbinde";
 "login_newSession" = "Starte die Sitzung";
+"login_closeSession" = "Abschlusssitzung...";
 "login_communityParameters" = "Community Parameter";
 "login_serverParameters" = "Piwigo Parameter";
 "login_connectionChanged" = "Verbindung geändert!";

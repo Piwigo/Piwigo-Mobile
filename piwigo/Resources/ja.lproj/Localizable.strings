@@ -91,6 +91,7 @@
 "login_loggingIn" = "ログイン中...";
 "login_connecting" = "接続しています";
 "login_newSession" = "セッションを開いています";
+"login_closeSession" = "セッションを閉じています...";
 "login_communityParameters" = "Communityの設定";
 "login_serverParameters" = "Piwigoの設定";
 "login_connectionChanged" = "接続が変更されました！";

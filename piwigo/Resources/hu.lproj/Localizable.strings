@@ -91,6 +91,7 @@
 "login_loggingIn" = "Bejelentkezés...";
 "login_connecting" = "Kapcsolódás";
 "login_newSession" = "Munkamenet megnyitása";
+"login_closeSession" = "Záró ülés...";
 "login_communityParameters" = "Community paraméterek";
 "login_serverParameters" = "Piwigo paraméterek";
 "login_connectionChanged" = "A kapcsolat megváltozott!";

@@ -91,6 +91,7 @@
 "login_loggingIn" = "Logger ind...";
 "login_connecting" = "Forbinder";
 "login_newSession" = "Åbner session";
+"login_closeSession" = "Lukker Session...";
 "login_communityParameters" = "Community parametre";
 "login_serverParameters" = "Piwigo Parametre";
 "login_connectionChanged" = "Forbindelsen ændret!";

@@ -91,6 +91,7 @@
 "login_loggingIn" = "Proses Masuk...";
 "login_connecting" = "Menyambungkan";
 "login_newSession" = "Membuka Sesi";
+"login_closeSession" = "Sesi penutupan...";
 "login_communityParameters" = "Parameter Komunitas";
 "login_serverParameters" = "Parameter Piwigo";
 "login_connectionChanged" = "Koneksi diubah!";
