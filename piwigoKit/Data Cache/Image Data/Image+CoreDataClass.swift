@@ -91,6 +91,8 @@ public class Image: NSManagedObject {
         let newMD5 = imageData.md5checksum ?? ""
         if newMD5.isEmpty == false, md5sum != newMD5 {
             md5sum = newMD5
+            // Delete cache files to force a reload
+            self.deleteCachedFiles()
         }
         let newFile = PwgSession.utf8mb4String(from: imageData.fileName ?? "")
         if newFile.isEmpty == false {
