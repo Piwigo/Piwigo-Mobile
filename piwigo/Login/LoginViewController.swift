@@ -565,11 +565,9 @@ class LoginViewController: UIViewController {
 
     // MARK: - Utilities
     func saveServerAddress(_ serverString: String?, andUsername username: String?) -> Bool {
-        guard var serverString = serverString else { return false }
-        if serverString.isEmpty {
-            // The URL is not correct
-            return false
-        }
+        // Check server address
+        guard var serverString = serverString, serverString.isEmpty == false
+        else { return false }
 
         // Remove extra "/" at the end of the server address
         while serverString.hasSuffix("/") {
