@@ -119,35 +119,35 @@ public class UserProvider: NSObject {
     /**
      Returns all User Account instances of a server
      */
-    public func getUserAccounts(inContext taskContext: NSManagedObjectContext,
-                                atPath path: String = NetworkVars.shared.serverPath) -> Set<User> {
-        var users = Set<User>()
-        
-        // Perform the fetch
-        taskContext.performAndWait {
-            // Create a fetch request for the User entity
-            let fetchRequest = User.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
-                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-            
-            // Look for all user accounts of the server at path
-            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: taskContext,
-                                                        sectionNameKeyPath: nil, cacheName: nil)
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            
-            // Return user instances
-            users = Set(controller.fetchedObjects ?? [])
-        }
-        
-        return users
-    }
+//    public func getUserAccounts(inContext taskContext: NSManagedObjectContext,
+//                                atPath path: String = NetworkVars.shared.serverPath) -> Set<User> {
+//        var users = Set<User>()
+//        
+//        // Perform the fetch
+//        taskContext.performAndWait {
+//            // Create a fetch request for the User entity
+//            let fetchRequest = User.fetchRequest()
+//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
+//                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+//            
+//            // Look for all user accounts of the server at path
+//            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
+//
+//            // Create a fetched results controller and set its fetch request, context, and delegate.
+//            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                                        managedObjectContext: taskContext,
+//                                                        sectionNameKeyPath: nil, cacheName: nil)
+//            // Perform the fetch.
+//            do {
+//                try controller.performFetch()
+//            } catch {
+//                fatalError("Unresolved error \(error)")
+//            }
+//            
+//            // Return user instances
+//            users = Set(controller.fetchedObjects ?? [])
+//        }
+//        
+//        return users
+//    }
 }
