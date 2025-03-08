@@ -271,7 +271,7 @@ public class Image: NSManagedObject {
         
         // Download URL not nil and modified?
         let newDownloadUrl = PwgSession.encodedImageURL(imageData.downloadUrl ?? "")
-        if downloadUrl != newDownloadUrl {
+        if newDownloadUrl != nil, downloadUrl != newDownloadUrl {
             downloadUrl = newDownloadUrl
         }
 
