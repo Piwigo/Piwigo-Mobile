@@ -328,9 +328,7 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-            let isGuest = NetworkVars.shared.userStatus == .guest
-            let versionTooOld = NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
-            if isGuest == false, versionTooOld == false {
+            if hasFavorites {
                 if cell.isFavorite {
                     children.append(unfavoriteImageAction(withID: imageID))
                 } else {

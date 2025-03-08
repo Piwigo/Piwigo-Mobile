@@ -15,9 +15,9 @@ extension ImageViewController
     // MARK: - Favorite Bar Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        let isGuest = NetworkVars.shared.userStatus == .guest
-        let versionTooOld = NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
-        if isGuest || versionTooOld { return nil }
+        if user.canManageFavorites() == false {
+            return nil
+        }
         
         // Is this image a favorite?
         let isFavorite = (imageData?.albums ?? Set<Album>())

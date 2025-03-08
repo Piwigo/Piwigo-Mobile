@@ -108,9 +108,7 @@ class AlbumViewController: UIViewController
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.shared.userStatus != .guest { return true }
-        return false
+        return user.canManageFavorites()
     }()
     
     // MARK: - Image Animated Transitioning
@@ -797,8 +795,7 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch favorites in the background if needed
-        if NetworkVars.shared.userStatus != .guest,
-           categoryId != pwgSmartAlbum.favorites.rawValue,
+        if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
            "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
            NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
