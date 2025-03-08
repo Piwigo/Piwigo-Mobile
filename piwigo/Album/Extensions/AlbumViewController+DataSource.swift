@@ -30,8 +30,8 @@ extension AlbumViewController
                     cell.pushAlbumDelegate = self
                     
                     // Disable album cells in Image selection mode
-                    cell.contentView.alpha = self.isSelect ? 0.5 : 1.0
-                    cell.isUserInteractionEnabled = !self.isSelect
+                    cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
+                    cell.isUserInteractionEnabled = !self.inSelectionMode
                     return cell
                 }
                 else {
@@ -43,8 +43,8 @@ extension AlbumViewController
                     cell.config(withAlbumData: album)
                     
                     // Disable album cells in Image selection mode
-                    cell.contentView.alpha = self.isSelect ? 0.5 : 1.0
-                    cell.isUserInteractionEnabled = !self.isSelect
+                    cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
+                    cell.isUserInteractionEnabled = !self.inSelectionMode
                     return cell
                 }
             }
@@ -533,8 +533,8 @@ extension AlbumViewController: UICollectionViewDataSource
                 cell.pushAlbumDelegate = self
 
                 // Disable album cells in Image selection mode
-                cell.contentView.alpha = isSelect ? 0.5 : 1.0
-                cell.isUserInteractionEnabled = !isSelect
+                cell.contentView.alpha = inSelectionMode ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !inSelectionMode
                 return cell
             }
             else {
@@ -546,8 +546,8 @@ extension AlbumViewController: UICollectionViewDataSource
                 cell.config(withAlbumData: album)
 
                 // Disable album cells in Image selection mode
-                cell.contentView.alpha = isSelect ? 0.5 : 1.0
-                cell.isUserInteractionEnabled = !isSelect
+                cell.contentView.alpha = inSelectionMode ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !inSelectionMode
                 return cell
             }
             

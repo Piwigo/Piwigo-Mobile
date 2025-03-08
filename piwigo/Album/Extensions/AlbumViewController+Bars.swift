@@ -403,7 +403,7 @@ extension AlbumViewController
                     subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
                 }
             }
-            else if isSelect {
+            else if inSelectionMode {
                 let nberPhotos = selectedImageIDs.count
                 switch nberPhotos {
                 case 0:

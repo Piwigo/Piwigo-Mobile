@@ -137,7 +137,7 @@ extension AlbumViewController
         hideButtons()
         
         // Activate Images Selection mode
-        isSelect = true
+        inSelectionMode = true
         
         // Disable interaction with category cells and scroll to first image cell if needed
         var numberOfImageCells = 0
@@ -171,7 +171,7 @@ extension AlbumViewController
     
     @objc func cancelSelect() {
         // Disable Images Selection mode
-        isSelect = false
+        inSelectionMode = false
         
         // Update navigation bar and toolbar
         initBarsInPreviewMode()
@@ -481,7 +481,7 @@ extension AlbumViewController: UIGestureRecognizerDelegate
 {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         // Will examine touchs only in select mode
-        if isSelect {
+        if inSelectionMode {
             return true
         }
         return false

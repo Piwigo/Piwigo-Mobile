@@ -31,7 +31,7 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             else if let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                 // Action depends on mode
-                if isSelect {
+                if inSelectionMode {
                     // Check image ID
                     guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
                     else { return }
@@ -95,7 +95,7 @@ extension AlbumViewController: UICollectionViewDelegate
                 else { return }
                 
                 // Action depends on mode
-                if isSelect {
+                if inSelectionMode {
                     // Check image ID
                     guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
                     else { return }
@@ -413,12 +413,12 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             
             // Check if the selection mode is active
-            if self.isSelect {
+            if self.inSelectionMode {
                 // Update the navigation bar and title view
                 self.updateBarsInSelectMode()
             } else {
                 // Enable the selection mode
-                self.isSelect = true
+                self.inSelectionMode = true
                 self.hideButtons()
                 self.initBarsInSelectMode()
             }

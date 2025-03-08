@@ -146,7 +146,7 @@ extension AlbumViewController
                         if navigationController?.isShowingHUD() ?? false {
                             navigationController?.hideHUD { [self] in
                                 // Set navigation bar buttons
-                                if self.isSelect {
+                                if self.inSelectionMode {
                                     self.updateBarsInSelectMode()
                                 } else {
                                     self.updateBarsInPreviewMode()

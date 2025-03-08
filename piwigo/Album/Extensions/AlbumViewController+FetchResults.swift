@@ -106,7 +106,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
 
         // Disable menu if there are no more images
         if self.categoryId != 0, self.albumData.nbImages == 0 {
-            self.isSelect = false
+            self.inSelectionMode = false
             self.initBarsInPreviewMode()
         }
     }
@@ -275,7 +275,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             // Disable menu if no image left
             if self.categoryId != 0, self.albumData.nbImages == 0 {
 //                debugPrint("••> No image ► disable menu")
-                self.isSelect = false
+                self.inSelectionMode = false
                 self.initBarsInPreviewMode()
             }
         }

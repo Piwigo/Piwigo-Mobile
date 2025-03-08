@@ -183,7 +183,7 @@ extension AlbumViewController
 
                 // Present share image activity view controller
                 activityViewController.view.tag = count
-                if isSelect, contextually == false {
+                if inSelectionMode, contextually == false {
                     activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
                 } else if let imageID = imageIDs.first,
                           let visibleCells = collectionView?.visibleCells,

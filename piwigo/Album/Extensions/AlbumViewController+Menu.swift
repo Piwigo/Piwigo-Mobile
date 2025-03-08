@@ -289,12 +289,12 @@ extension AlbumViewController: ImageHeaderDelegate
     
     func didSelectImagesOfSection(_ section: Int) {
         // Is the selection mode active?
-        if isSelect == false {
+        if inSelectionMode == false {
             // Hide buttons
             hideButtons()
             
             // Activate Images Selection mode
-            isSelect = true
+            inSelectionMode = true
             
             // Disable interaction with album cells
             for cell in collectionView?.visibleCells ?? []

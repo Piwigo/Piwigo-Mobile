@@ -92,7 +92,7 @@ class AlbumViewController: UIViewController
     // MARK: Image Managemennt
     var imageOfInterest = IndexPath(item: 0, section: 0)
     var indexOfImageToRestore = Int.min
-    var isSelect = false
+    var inSelectionMode = false
     var touchedImageIDs = [Int64]()
     var selectedImageIDs = Set<Int64>()
     var selectedFavoriteIDs = Set<Int64>()
@@ -604,7 +604,7 @@ class AlbumViewController: UIViewController
             collectionView?.reloadData()
 
             // Update buttons
-            if isSelect {
+            if inSelectionMode {
                 initBarsInSelectMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
@@ -786,7 +786,7 @@ class AlbumViewController: UIViewController
             self.updateNberOfImagesInFooter()
 
             // Set navigation bar buttons
-            if self.isSelect {
+            if self.inSelectionMode {
                 self.updateBarsInSelectMode()
             } else {
                 self.updateBarsInPreviewMode()
