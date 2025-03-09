@@ -25,7 +25,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = NumberFormatter.Style.percent
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Start… (\(percent))")
+            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         }
         
         // Progress bar
@@ -134,7 +134,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = NumberFormatter.Style.percent
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): End (\(percent) done)")
+            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         }
         // Progress bar
         DispatchQueue.main.async {
