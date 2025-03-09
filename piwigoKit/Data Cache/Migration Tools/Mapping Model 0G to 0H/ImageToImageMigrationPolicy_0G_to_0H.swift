@@ -1,5 +1,5 @@
 //
-//  AlbumToAlbumMigrationPolicy_0F_to_0G.swift
+//  ImageToImageMigrationPolicy_0G_to_0H.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 02/03/2025.
@@ -8,12 +8,11 @@
 
 import os
 import CoreData
+import Foundation
 
-let albumErrorDomain = "Album Migration"
-
-class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
+class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
     // Contants
-    let logPrefix = "Album 0F ► Album 0G"
+    let logPrefix = "Image 0G ► Image 0H"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
@@ -30,11 +29,12 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                                             object: nil, userInfo: userInfo)
         }
     }
-    
+
     /**
      AlbumToAlbum custom migration performed following these steps:
      - Creates a Sizes instance in the destination context
      - Sets the values of the attributes from the source instance
+     - Sets the value of the attribute 'downloadUrl' to nil
      - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
     */
@@ -43,8 +43,8 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                                              manager: NSMigrationManager) throws {
 
         // Create destination instance
-        let description = NSEntityDescription.entity(forEntityName: "Album", in: manager.destinationContext)
-        let newAlbum = Album(entity: description!, insertInto: manager.destinationContext)
+        let description = NSEntityDescription.entity(forEntityName: "Image", in: manager.destinationContext)
+        let newImage = Image(entity: description!, insertInto: manager.destinationContext)
 
         // Function iterating over the property mappings if they are present in the migration
         func traversePropertyMappings(block: (NSPropertyMapping, String) -> Void) throws {
@@ -83,20 +83,30 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
             let context: NSMutableDictionary = ["source": sInstance]
             guard let destinationValue = valueExpression.expressionValue(with: sInstance, context: context) else { return }
             // Set attribute value
-            newAlbum.setValue(destinationValue, forKey: destinationName)
+            newImage.setValue(destinationValue, forKey: destinationName)
         }
         
-        // Replace nil comments with NSAttributedString()
-        if newAlbum.value(forKey: "comment") == nil {
-            newAlbum.setValue(NSAttributedString(), forKey: "comment")
-//            if #available(iOSApplicationExtension 14.0, *),
-//               let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
-//                DataMigrator.logger.notice("\(self.logPrefix): Empty comment for album #\(albumId)")
-//            }
-        }
-
+        // Create downloadUrl attribute
+        newImage.setValue(nil, forKey: "downloadUrl")
+        
         // Associate comment object to Album request
-        manager.associate(sourceInstance: sInstance, withDestinationInstance: newAlbum, for: mapping)
+        manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+    }
+    
+    override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
+        }
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {

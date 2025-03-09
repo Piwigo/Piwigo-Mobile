@@ -39,13 +39,6 @@ public class DataMigrator: NSObject {
     static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: DataMigrator.self))
 
     public func requiresMigration() -> Bool {
-        // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("Migration required?")
-        } else {
-            debugPrint("••> Migration required?")
-        }
-
         // URL of the store in the App Group directory
         let storeURL = DataDirectories.shared.appGroupDirectory
             .appendingPathComponent(SQLfileName)
@@ -54,12 +47,6 @@ public class DataMigrator: NSObject {
         var oldStoreURL = DataDirectories.shared.appDocumentsDirectory
             .appendingPathComponent(SQLfileName)
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
-            // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration of store saved in App documents directory required")
-            } else {
-                debugPrint("••> Migration of store saved in App documents directory required")
-            }
             return true
         }
         
@@ -67,23 +54,11 @@ public class DataMigrator: NSObject {
         oldStoreURL = DataDirectories.shared.appSupportDirectory
             .appendingPathComponent(SQLfileName)
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
-            // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration of store saved in App Support directory required")
-            } else {
-                debugPrint("••> Migration of store saved in App Support directory required")
-            }
             return true
         }
 
         // Migrate store to new data model if needed
         if requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
-            // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration of store saved in App Group directory required")
-            } else {
-                debugPrint("••> Migration of store saved in App Group directory required")
-            }
             return true
         }
         

@@ -1,5 +1,5 @@
 //
-//  ImageToImageMigrationPolicy_0F_to_0G.swift
+//  ImageToImageMigrationPolicy_0F_to_0H.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 02/03/2025.
@@ -10,11 +10,9 @@ import os
 import CoreData
 import Foundation
 
-let imageErrorDomain = "Image Migration"
-
-class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
+class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
     // Contants
-    let logPrefix = "Image 0F ► Image 0G: "
+    let logPrefix = "Image 0F ► Image 0H"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
@@ -36,6 +34,9 @@ class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
      AlbumToAlbum custom migration performed following these steps:
      - Creates a Sizes instance in the destination context
      - Sets the values of the attributes from the source instance
+     - Sets the value of the attribute 'title' to NSAttributedString() if nil in source
+     - Sets the value of the attribute 'comment' to NSAttributedString() if nil in source
+     - Sets the value of the attribute 'downloadUrl' to nil
      - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
     */
@@ -96,7 +97,7 @@ class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
 //            }
         }
 
-        // Replace nil comments with NSAttributedString()
+        // Replace nil comment with NSAttributedString()
         if newImage.value(forKey: "comment") == nil {
             newImage.setValue(NSAttributedString(), forKey: "comment")
 //            if #available(iOSApplicationExtension 14.0, *),
@@ -110,6 +111,22 @@ class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         
         // Associate comment object to Album request
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+    }
+    
+    override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
+        }
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {

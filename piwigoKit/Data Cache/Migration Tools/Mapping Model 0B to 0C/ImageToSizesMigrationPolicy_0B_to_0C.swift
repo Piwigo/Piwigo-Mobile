@@ -1,24 +1,20 @@
 //
-//  TagToTagMigrationPolicy_09_to_0C.swift
+//  ImageToSizesMigrationPolicy_0B_to_0C.swift
 //  piwigoKit
 //
-//  Created by Eddy Lelièvre-Berna on 04/06/2023.
+//  Created by Eddy Lelièvre-Berna on 16/05/2023.
 //  Copyright © 2023 Piwigo.org. All rights reserved.
 //
 
 import os
 import CoreData
 
-let tagErrorDomain = "Tag Migration"
+let sizesErrorDomain = "Sizes Migration"
 
-class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
+class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
     // Contants
-    let logPrefix = "Tag 09 ► Tag 0C"
-
-    /**
-     If needed, creates a Server instance of the currently used server before migrating Tag entities.
-     ATTENTION: This class must be called before UploadToUploadMigrationPolicy_09_to_0A.
-     */
+    let logPrefix = "Image 0B ► Sizes 0C"
+    
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
@@ -27,43 +23,28 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         }
-        
         // Progress bar
         DispatchQueue.main.async {
             let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
             NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
                                             object: nil, userInfo: userInfo)
         }
-
-        // Check current server path
-        guard let _ = URL(string: NetworkVars.shared.serverPath) else {  return }
-
-        // Create instance for the currently used server if needed
-        let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
-        let newServer = Server(entity: description!, insertInto: manager.destinationContext)
-        newServer.setValue(UUID().uuidString, forKey: "uuid")
-        newServer.setValue(NetworkVars.shared.serverPath, forKey: "path")
-        newServer.setValue(NetworkVars.shared.serverFileTypes, forKey: "fileTypes")
-
-        // Store new server instance in userInfo for reuse
-        manager.userInfo = [NetworkVars.shared.serverPath : newServer]
     }
     
     /**
-     TagToTag custom migration performed following these steps:
-     - Creates a Tag instance in the destination context
+     ImageToSizes custom migration performed following these steps:
+     - Creates a Sizes instance in the destination context
      - Sets the values of the attributes from the source instance
-     - Sets the relationship to the current Server instance created in begin()
-     - Stores the new Tag instance in userInfo for reuse in UploadToUploadMigrationPolicy_09_to_0C
+     - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
-    */
+     */
     override func createDestinationInstances(forSource sInstance: NSManagedObject,
                                              in mapping: NSEntityMapping,
                                              manager: NSMigrationManager) throws {
-        // Create destination instance
-        let description = NSEntityDescription.entity(forEntityName: "Tag", in: manager.destinationContext)
-        let newTag = Tag(entity: description!, insertInto: manager.destinationContext)
-
+        // Create Sizes destination instance
+        let description = NSEntityDescription.entity(forEntityName: "Sizes", in: manager.destinationContext)
+        let newSizes = Sizes(entity: description!, insertInto: manager.destinationContext)
+        
         // Function iterating over the property mappings if they are present in the migration
         func traversePropertyMappings(block: (NSPropertyMapping, String) -> Void) throws {
             // Retrieve attribute mappings
@@ -80,7 +61,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                             DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                        throw NSError(domain: tagErrorDomain, code: 0, userInfo: userInfo)
+                        throw NSError(domain: sizesErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
@@ -89,10 +70,10 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                     DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                throw NSError(domain: tagErrorDomain, code: 0, userInfo: userInfo)
+                throw NSError(domain: sizesErrorDomain, code: 0, userInfo: userInfo)
             }
         }
-
+        
         // The attribute migrations are performed using the expressions defined in the mapping model.
         try traversePropertyMappings { propertyMapping, destinationName in
             // Retrieve source value expression
@@ -101,31 +82,37 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
             let context: NSMutableDictionary = ["source": sInstance]
             guard let destinationValue = valueExpression.expressionValue(with: sInstance, context: context) else { return }
             // Set attribute value
-            newTag.setValue(destinationValue, forKey: destinationName)
+            newSizes.setValue(destinationValue, forKey: destinationName)
         }
         
-        // Retrieve Server instance common to all tags
-        guard var userInfo = manager.userInfo,
-              let newServer = userInfo[NetworkVars.shared.serverPath] as? NSManagedObject else { return }
-        
-        // Add relationship from Tag to Server
+        // Add relationship from Image to Sizes
         // Core Data creates automatically the inverse relationship
-        newTag.setValue(newServer, forKey: "server")
-        
-        // Add Tag destination instance to userInfo for reuse
-        // in UploadToUploadMigrationPolicy_09_to_0C.swift
-        if let tagId = sInstance.value(forKey: "tagId") {
-            userInfo["\(tagId)"] = newTag
-            manager.userInfo = userInfo
+        let newImages = manager.destinationInstances(forEntityMappingName: "ImageToImage", sourceInstances: [sInstance])
+        if let newImage = newImages.first {
+            newImage.setValue(newSizes, forKey: "sizes")
         }
-
-        // Associate new Tag to old one
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
-//        }
-        manager.associate(sourceInstance: sInstance,
-                          withDestinationInstance: newTag,
-                          for: mapping)
+        
+        // Associate new Sizes object to Image request
+        //        if #available(iOSApplicationExtension 14.0, *) {
+        //            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
+        //        }
+        manager.associate(sourceInstance: sInstance, withDestinationInstance: newSizes, for: mapping)
+    }
+    
+    override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.percent
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
+        }
+        // Progress bar
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
