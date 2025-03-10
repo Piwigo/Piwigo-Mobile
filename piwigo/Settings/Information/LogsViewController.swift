@@ -122,6 +122,8 @@ class LogsViewController: UIViewController {
         // Share logs
         let items = [self]
         let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        ac.popoverPresentationController?.barButtonItem = shareBarButton
+        ac.popoverPresentationController?.permittedArrowDirections = .up
         present(ac, animated: true) {
             self.shareBarButton?.isEnabled = true
         }
