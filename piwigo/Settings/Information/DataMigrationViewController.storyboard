@@ -119,8 +119,14 @@
                                 <exclude reference="xZU-bs-2ae"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="kmJ-rB-V1p"/>
                                 <exclude reference="4Gk-NX-elf"/>
                                 <exclude reference="R6W-s0-Fh5"/>
+                                <exclude reference="Wh6-Rb-g7t"/>
+                                <exclude reference="FwC-D5-vgX"/>
+                                <exclude reference="aS3-Vi-xGr"/>
+                                <exclude reference="fM5-cV-0MC"/>
+                                <exclude reference="P0t-0C-Px5"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
@@ -128,10 +134,20 @@
                                 <include reference="Ofv-cX-acU"/>
                                 <include reference="xZU-bs-2ae"/>
                             </mask>
+                            <mask key="constraints">
+                                <include reference="kmJ-rB-V1p"/>
+                                <include reference="aS3-Vi-xGr"/>
+                                <include reference="fM5-cV-0MC"/>
+                                <include reference="P0t-0C-Px5"/>
+                            </mask>
                         </variation>
                         <variation key="heightClass=regular">
                             <mask key="subviews">
                                 <include reference="Msh-RB-rTZ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="Wh6-Rb-g7t"/>
+                                <include reference="FwC-D5-vgX"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
