@@ -210,9 +210,15 @@ class LoginViewController: UIViewController {
         }
 
         // Display HUD during login
+        var buttonTitle = ""
+        if #available(iOS 13.0, *) {
+            buttonTitle = NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection")
+        } else {
+            buttonTitle = " " + NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection") + " "
+        }
         showHUD(withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
                 detail: NSLocalizedString("login_connecting", comment: "Connecting"),
-                buttonTitle: NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection"),
+                buttonTitle: buttonTitle,
                 buttonTarget: self, buttonSelector: #selector(cancelLoggingIn), inMode: .indeterminate)
 
         // Save credentials in Keychain (needed before login when using HTTP Authentication)
