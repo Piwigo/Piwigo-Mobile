@@ -53,7 +53,7 @@
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
 "CoreDataFetch_DigestError" = "Értelmezhetetlen a letöltött adat.";
 "CoreData_MigrationProgress" = "Migráció folyamatban...";
-"Coredata_MigrationPleaseWait" = "Jelenleg az Ön adatainak egy részét migráljuk. Kérjük, várjon, amíg ez befejeződik. Ne állítsa le az alkalmazást.";
+"Coredata_MigrationPleaseWait" = "Jelenleg folyamatban van az adatok egy részének migrálása. Kérjük, várjon a végéig. Ne lépjen ki vagy ne állítsa le az alkalmazást.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Elveti az érvényes felhasználónév nélküli felhasználói fiókokat.";

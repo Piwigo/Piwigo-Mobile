@@ -53,7 +53,7 @@
 "CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
 "CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
 "CoreData_MigrationProgress" = "移行中...";
-"Coredata_MigrationPleaseWait" = "現在、お客様のデータの一部を移行しています。完了するまでお待ちください。アプリケーションは終了させないでください。";
+"Coredata_MigrationPleaseWait" = "現在、一部のデータを移行中です。最後までお待ちください。アプリケーションは終了しないでください。";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "有効なユーザー名がないユーザーアカウントは破棄されます。";

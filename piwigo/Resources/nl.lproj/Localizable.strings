@@ -53,7 +53,7 @@
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
 "CoreData_MigrationProgress" = "Migratie in uitvoering...";
-"Coredata_MigrationPleaseWait" = "We migreren momenteel enkele van uw data. Wacht tot het is voltooid. Stop de applicatie niet.";
+"Coredata_MigrationPleaseWait" = "We zijn bezig met het migreren van een deel van je gegevens. Wacht tot het einde. Sluit de toepassing niet af of stop deze niet.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";

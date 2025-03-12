@@ -53,7 +53,7 @@
 "CoreDataStore_WarningMessage" = "Se ha producido un error grave en la aplicación mientras Piwigo intentaba leer la caché de datos. Por lo tanto, se ha creado una nueva caché.";
 "CoreDataFetch_DigestError" = "No se han podido procesar los datos obtenidos.";
 "CoreData_MigrationProgress" = "Migración en curso...";
-"Coredata_MigrationPleaseWait" = "Actualmente estamos migrando algunos de sus datos. Por favor, espere hasta que la migración se complete. No elimine la aplicación.";
+"Coredata_MigrationPleaseWait" = "Estamos migrando algunos de sus datos. Por favor, espere hasta el final. No salga de la aplicación ni la cierre.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Descartará una cuenta de usuario que no tenga un nombre de usuario válido.";

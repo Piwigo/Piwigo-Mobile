@@ -53,7 +53,7 @@
 "CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
 "CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
 "CoreData_MigrationProgress" = "Migrering pågår...";
-"Coredata_MigrationPleaseWait" = "Vi migrerar för närvarande vissa av dina data. Vänta tills det är klart. Döda inte programmet.";
+"Coredata_MigrationPleaseWait" = "Vi håller på att migrera en del av dina data. Vänligen vänta till slutet. Avsluta inte eller döda inte programmet.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Kommer att kassera ett användarkonto som saknar ett giltigt användarnamn.";

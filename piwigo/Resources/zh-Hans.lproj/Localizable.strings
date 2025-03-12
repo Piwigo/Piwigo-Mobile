@@ -53,7 +53,7 @@
 "CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
 "CoreDataFetch_DigestError" = "无法解析获取到的数据";
 "CoreData_MigrationProgress" = "正在进行迁移.....";
-"Coredata_MigrationPleaseWait" = "我们正在迁移您的某些数据。请等待完成。请不要关闭应用程序。";
+"Coredata_MigrationPleaseWait" = "我们正在迁移您的部分数据。请等待结束。请勿退出或杀死应用程序。";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "将丢弃缺少有效用户名的用户帐户。";
