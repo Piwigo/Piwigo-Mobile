@@ -49,7 +49,7 @@ extension UploadManager
                         debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = self.uploadProvider.bckgContext.persistentStoreCoordinator?
+                    guard let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
                         .managedObjectID(forURIRepresentation: objectURI) else {
                         debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
@@ -204,7 +204,7 @@ extension UploadManager
         
         // Delete upload requests in appropriate context
         if let taskContext = uploads.first?.managedObjectContext,
-           taskContext == self.uploadProvider.bckgContext {
+           taskContext == self.uploadBckgContext {
             DispatchQueue.global(qos: .background).async {
                 self.uploadProvider.delete(uploadRequests: uploads) { _ in
                     self.isDeleting = Set()

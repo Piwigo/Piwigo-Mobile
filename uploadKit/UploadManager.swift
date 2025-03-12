@@ -167,7 +167,7 @@ public class UploadManager: NSObject {
 
 
     // MARK: - Core Data Object Context
-    lazy var bckgContext: NSManagedObjectContext = {
+    lazy var uploadBckgContext: NSManagedObjectContext = {
         return uploadProvider.bckgContext
     }()
 
@@ -208,7 +208,7 @@ public class UploadManager: NSObject {
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
-                                                 managedObjectContext: self.uploadProvider.bckgContext,
+                                                 managedObjectContext: self.uploadBckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         uploads.delegate = self
@@ -235,7 +235,7 @@ public class UploadManager: NSObject {
 
     public lazy var completed: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
-                                                 managedObjectContext: self.uploadProvider.bckgContext,
+                                                 managedObjectContext: self.uploadBckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         return uploads

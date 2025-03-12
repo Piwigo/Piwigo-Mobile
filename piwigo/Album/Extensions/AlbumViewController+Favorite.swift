@@ -36,7 +36,7 @@ extension AlbumViewController
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
-//            bckgContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Close HUD with success
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -80,8 +80,6 @@ extension AlbumViewController
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
                         self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
-                        // Save changes
-                        self.mainContext.saveIfNeeded()
                     }
                     
                     // pwg.users.favorites… methods available from Piwigo version 2.10
@@ -142,7 +140,7 @@ extension AlbumViewController
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
-//            bckgContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Close HUD with success
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -186,8 +184,6 @@ extension AlbumViewController
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
                         self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
-                        // Save changes
-                        self.mainContext.saveIfNeeded()
                     }
                     
                     // pwg.users.favorites… methods available from Piwigo version 2.10

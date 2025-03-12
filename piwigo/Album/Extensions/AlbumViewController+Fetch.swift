@@ -344,7 +344,7 @@ extension AlbumViewController
             
             // Done fetching images
             // ► Remove non-fetched images from album
-            let images = imageProvider.getImages(inContext: bckgContext, withIds: newImageIds)
+            let images = imageProvider.getImages(inContext: albumBckgContext, withIds: newImageIds)
             album.removeFromImages(images)
             // ► Remember when favorites were fetched
             album.dateGetImages = Date().timeIntervalSinceReferenceDate
@@ -352,7 +352,7 @@ extension AlbumViewController
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
             
             // Save changes
-            bckgContext.saveIfNeeded()
+            albumBckgContext.saveIfNeeded()
             DispatchQueue.main.async { [self] in
                 self.mainContext.saveIfNeeded()
             }

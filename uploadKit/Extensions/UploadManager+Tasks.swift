@@ -64,7 +64,7 @@ extension UploadManager
             finishing.forEach({ upload in
                 upload.setState(.finishingError, error: PwgSessionError.networkUnavailable, save: false)
             })
-            uploadProvider.bckgContext.saveIfNeeded()
+            uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
             return
         }
@@ -87,7 +87,7 @@ extension UploadManager
             preparing.forEach { upload in
                 upload.setState(.preparingError, error: UploadError.missingAsset, save: false)
             }
-            uploadProvider.bckgContext.saveIfNeeded()
+            uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
             return
         }
@@ -314,7 +314,7 @@ extension UploadManager
                         debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = uploadProvider.bckgContext
+                    guard let uploadID = uploadBckgContext
                         .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                         debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
@@ -345,7 +345,7 @@ extension UploadManager
                             debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                             continue
                         }
-                        guard let uploadID = uploadProvider.bckgContext
+                        guard let uploadID = uploadBckgContext
                             .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                             debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                             continue

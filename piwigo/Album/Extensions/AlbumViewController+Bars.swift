@@ -69,7 +69,7 @@ extension AlbumViewController
         selectBarButton?.accessibilityIdentifier = "select"
         
         // Set right bar buttons
-        navigationItem.setRightBarButtonItems([actionBarButton, selectBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
         let hasImages = albumData.nbImages != 0
         selectBarButton?.isEnabled = hasImages
     }

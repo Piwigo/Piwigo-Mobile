@@ -209,7 +209,7 @@ extension UploadManager {
 
         // Consider next image
         backgroundQueue.async {
-            self.uploadProvider.bckgContext.saveIfNeeded()
+            self.uploadBckgContext.saveIfNeeded()
             self.didFinishTransfer()
         }
     }

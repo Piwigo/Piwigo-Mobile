@@ -20,7 +20,7 @@ public class AlbumProvider: NSObject {
         return DataController.shared.mainContext
     }()
     
-    private lazy var bckgContext: NSManagedObjectContext = {
+    public private(set) lazy var bckgContext: NSManagedObjectContext = {
         return DataController.shared.newTaskContext()
     }()
     

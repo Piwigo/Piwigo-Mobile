@@ -143,12 +143,10 @@ class AlbumViewController: UIViewController
     
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
+        return DataController.shared.mainContext
     }()
-    lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+    lazy var albumBckgContext: NSManagedObjectContext = {
+        return albumProvider.bckgContext
     }()
     
     
@@ -225,12 +223,12 @@ class AlbumViewController: UIViewController
     
     lazy var data = AlbumViewData(withAlbum: albumData)
     lazy var albums: NSFetchedResultsController<Album> = {
-        let albums = data.albums
+        let albums: NSFetchedResultsController<Album> = data.albums
         albums.delegate = self
         return albums
     }()
     lazy var images: NSFetchedResultsController<Image> = {
-        let images = data.images(sortedBy: sortOption)
+        let images: NSFetchedResultsController<Image> = data.images(sortedBy: sortOption)
         images.delegate = self
         return images
     }()

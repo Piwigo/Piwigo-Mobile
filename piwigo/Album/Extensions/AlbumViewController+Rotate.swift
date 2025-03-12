@@ -65,7 +65,7 @@ extension AlbumViewController
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
-//            bckgContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Close HUD with success
             DispatchQueue.main.async { [self] in
                 self.navigationController?.updateHUDwithSuccess() { [self] in
