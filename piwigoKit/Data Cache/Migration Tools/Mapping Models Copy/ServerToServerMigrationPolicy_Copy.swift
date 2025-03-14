@@ -22,12 +22,9 @@ class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         }
+        
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
 
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -39,11 +36,7 @@ class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
             DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         }
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -55,11 +48,7 @@ class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
             DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         }
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -71,10 +60,6 @@ class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
             DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         }
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
 }
