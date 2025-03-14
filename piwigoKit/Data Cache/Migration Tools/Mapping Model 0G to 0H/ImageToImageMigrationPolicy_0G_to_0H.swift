@@ -18,6 +18,7 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
         numberFormatter.numberStyle = NumberFormatter.Style.percent
         return numberFormatter
     }()
+    var nberOfInstancesCopied: Int = 0
 
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
@@ -90,6 +91,12 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
         
         // Associate new Image object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+        
+        // Increment number of instances copied
+        nberOfInstancesCopied += 1
+        if nberOfInstancesCopied.isMultiple(of: 100) {
+            updateProgressBar(manager.migrationProgress)
+        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {

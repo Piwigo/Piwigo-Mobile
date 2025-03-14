@@ -13,21 +13,22 @@ import Foundation
 class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Image 0F ► Image 0H"
-    
+    let numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.percent
+        return numberFormatter
+    }()
+    var nberOfInstancesCopied: Int = 0
+
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = NumberFormatter.Style.percent
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         }
+        
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
 
     /**
@@ -110,53 +111,44 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         
         // Associate new Image object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+        
+        // Increment number of instances copied
+        nberOfInstancesCopied += 1
+        if nberOfInstancesCopied.isMultiple(of: 100) {
+            updateProgressBar(manager.migrationProgress)
+        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = NumberFormatter.Style.percent
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         }
+        
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = NumberFormatter.Style.percent
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         }
+        
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = NumberFormatter.Style.percent
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         }
+        
         // Progress bar
-        DispatchQueue.main.async {
-            let userInfo = ["progress" : NSNumber.init(value: manager.migrationProgress)]
-            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                            object: nil, userInfo: userInfo)
-        }
+        updateProgressBar(manager.migrationProgress)
     }
 }
