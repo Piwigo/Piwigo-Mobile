@@ -108,7 +108,7 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         // Create downloadUrl attribute
         newImage.setValue(nil, forKey: "downloadUrl")
         
-        // Associate comment object to Album request
+        // Associate new Image object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
     }
     

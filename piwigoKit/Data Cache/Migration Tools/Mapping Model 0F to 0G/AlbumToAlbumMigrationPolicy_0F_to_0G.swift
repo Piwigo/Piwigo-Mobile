@@ -95,7 +95,7 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
 //            }
         }
 
-        // Associate comment object to Album request
+        // Associate new Album object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newAlbum, for: mapping)
     }
     

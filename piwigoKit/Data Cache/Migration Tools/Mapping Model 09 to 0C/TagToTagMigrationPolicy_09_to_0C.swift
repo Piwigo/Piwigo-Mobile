@@ -119,7 +119,7 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
             manager.userInfo = userInfo
         }
 
-        // Associate new Tag to old one
+        // Associate new Tag object to old one
 //        if #available(iOSApplicationExtension 14.0, *) {
 //            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
 //        }

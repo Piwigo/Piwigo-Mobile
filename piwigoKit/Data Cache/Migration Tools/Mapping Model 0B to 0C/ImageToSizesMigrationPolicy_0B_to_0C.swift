@@ -92,7 +92,7 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
             newImage.setValue(newSizes, forKey: "sizes")
         }
         
-        // Associate new Sizes object to Image request
+        // Associate new Sizes object to source Image object
         //        if #available(iOSApplicationExtension 14.0, *) {
         //            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
         //        }
