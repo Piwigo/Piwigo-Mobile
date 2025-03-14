@@ -33,7 +33,6 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
     
     /**
      AlbumToAlbum custom migration performed following these steps:
-     - Creates a Sizes instance in the destination context
      - Sets the values of the attributes from the source instance
      - Sets the value of the attribute 'comment' to NSAttributedString() if nil in source
      - Sets the relationship from the source instance

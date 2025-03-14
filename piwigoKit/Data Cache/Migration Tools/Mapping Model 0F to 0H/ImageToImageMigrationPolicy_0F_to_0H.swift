@@ -31,8 +31,7 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
     }
 
     /**
-     AlbumToAlbum custom migration performed following these steps:
-     - Creates a Sizes instance in the destination context
+     ImageToImage custom migration performed following these steps:
      - Sets the values of the attributes from the source instance
      - Sets the value of the attribute 'title' to NSAttributedString() if nil in source
      - Sets the value of the attribute 'comment' to NSAttributedString() if nil in source
