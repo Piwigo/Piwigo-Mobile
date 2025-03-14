@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class UserToUserMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "User ► User (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

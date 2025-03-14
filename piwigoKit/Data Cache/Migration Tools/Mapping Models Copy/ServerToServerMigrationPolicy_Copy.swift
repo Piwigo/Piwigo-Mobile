@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Server ► Server (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

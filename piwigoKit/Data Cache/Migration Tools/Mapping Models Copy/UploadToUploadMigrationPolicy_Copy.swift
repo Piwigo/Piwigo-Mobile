@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class UploadToUploadMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Upload ► Upload (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

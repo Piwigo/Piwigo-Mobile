@@ -13,7 +13,7 @@ import Foundation
 let imageErrorDomain = "Image Migration"
 
 class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Image 0F ► Image 0G"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

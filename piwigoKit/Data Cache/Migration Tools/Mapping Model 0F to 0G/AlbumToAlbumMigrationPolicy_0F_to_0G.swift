@@ -12,7 +12,7 @@ import CoreData
 let albumErrorDomain = "Album Migration"
 
 class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Album 0F ► Album 0G"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

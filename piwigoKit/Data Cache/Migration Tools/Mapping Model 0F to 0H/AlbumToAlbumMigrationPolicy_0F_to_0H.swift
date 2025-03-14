@@ -10,7 +10,7 @@ import os
 import CoreData
 
 class AlbumToAlbumMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Album 0F ► Album 0H"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

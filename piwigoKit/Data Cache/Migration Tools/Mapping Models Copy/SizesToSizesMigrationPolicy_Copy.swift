@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class SizesToSizesMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Sizes ► Sizes (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

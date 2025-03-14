@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class ImageToImageMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Image ► Image (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

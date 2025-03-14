@@ -12,7 +12,7 @@ import CoreData
 let sizesErrorDomain = "Sizes Migration"
 
 class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Image 0B ► Sizes 0C"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

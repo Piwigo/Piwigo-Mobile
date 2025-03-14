@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Image 0F ► Image 0H"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class LocationToLocationMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Location ► Location (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

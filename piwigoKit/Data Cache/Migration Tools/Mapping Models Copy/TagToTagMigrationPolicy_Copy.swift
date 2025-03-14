@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class TagToTagMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Tag ► Tag (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {

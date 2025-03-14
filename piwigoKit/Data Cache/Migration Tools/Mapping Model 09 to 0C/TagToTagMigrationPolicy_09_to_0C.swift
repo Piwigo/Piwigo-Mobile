@@ -12,7 +12,7 @@ import CoreData
 let tagErrorDomain = "Tag Migration"
 
 class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Tag 09 ► Tag 0C"
 
     /**

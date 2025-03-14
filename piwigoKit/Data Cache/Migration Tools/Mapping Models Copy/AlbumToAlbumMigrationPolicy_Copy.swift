@@ -11,7 +11,7 @@ import CoreData
 import Foundation
 
 class AlbumToAlbumMigrationPolicy_Copy: NSEntityMigrationPolicy {
-    // Contants
+    // Constants
     let logPrefix = "Album ► Album (Copy)"
     
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
