@@ -379,32 +379,17 @@ public class DataMigrator: NSObject {
             }
         }
     }
-
+    
     private func moveIncompatibleStore(storeURL: URL) {
         let fm = FileManager.default
-        let applicationIncompatibleStoresDirectory = DataDirectories.shared.appSupportDirectory
-            .appendingPathComponent("Incompatible")
-
-        // Create the Piwigo/Incompatible directory if needed
-        if !fm.fileExists(atPath: applicationIncompatibleStoresDirectory.path) {
-            do {
-                try fm.createDirectory(at: applicationIncompatibleStoresDirectory,
-                                       withIntermediateDirectories: true, attributes: nil)
-            } catch let error {
-                if #available(iOSApplicationExtension 14.0, *) {
-                    DataMigrator.logger.notice("Unable to create a directory for corrupted data stores: \(error.localizedDescription)")
-                } else {
-                    debugPrint("••> Unable to create a directory for corrupted data stores: \(error.localizedDescription)")
-                }
-            }
-        }
-        
+        let appIncompatibleStoresDirectory = DataDirectories.shared.appIncompatibleDirectory
+                
         // Rename files with current date
         let dateFormatter = DateFormatter()
         dateFormatter.formatterBehavior = .behavior10_4
         dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
         let nameForIncompatibleStore = "\(dateFormatter.string(from: Date()))"
-
+        
         // Loop over all files of the data store
         storeExtension.allCases.forEach { ext in
             // URL of the file to move
@@ -412,20 +397,16 @@ public class DataMigrator: NSObject {
             
             // Move this file if it exists
             if fm.fileExists(atPath: fileURL.path) {
-                let corruptURL = applicationIncompatibleStoresDirectory
+                let corruptURL = appIncompatibleStoresDirectory
                     .appendingPathComponent(nameForIncompatibleStore)
                     .appendingPathExtension(ext.rawValue)
-
+                
                 // Move the corrupt data store
                 try? fm.removeItem(at: corruptURL)
                 do {
                     try fm.moveItem(at: storeURL, to: corruptURL)
                 } catch let error {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.notice("Unable to move a corrupted data store: \(error.localizedDescription)")
-                    } else {
-                        debugPrint("••> Unable to move a corrupted data store: \(error.localizedDescription)")
-                    }
+                    logNotice("Unable to move a corrupted data store: \(error.localizedDescription)")
                 }
             }
         }
@@ -435,9 +416,8 @@ public class DataMigrator: NSObject {
         let fm = FileManager.default
         let oldURL = DataDirectories.shared.appSupportDirectory
             .appendingPathComponent("Uploads")
-        let newURL = DataDirectories.shared.appGroupDirectory
-            .appendingPathComponent("Uploads")
-
+        let newURL = DataDirectories.shared.appUploadsDirectory
+                
         // Move Uploads directory
         do {
             // Get list of files
@@ -453,11 +433,7 @@ public class DataMigrator: NSObject {
             try fm.removeItem(at: oldURL)
         }
         catch let error {
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Unable to move content of Uploads directory: \(error.localizedDescription)")
-            } else {
-                debugPrint("••> Unable to move content of Uploads directory: \(error.localizedDescription)")
-            }
+            logNotice("Unable to move content of Uploads directory: \(error.localizedDescription)")
         }
     }
     
