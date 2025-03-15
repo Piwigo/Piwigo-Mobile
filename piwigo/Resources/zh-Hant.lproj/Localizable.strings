@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "無法讀取接收到的資料。";
 "CoreData_MigrationProgress" = "轉移進行中...";
 "Coredata_MigrationPleaseWait" = "我們正在遷移您的部分資料。請等待至結束。請勿退出或終止應用程式。";
+"CoreData_MigrationError_title" = "遷移失敗";
+"CoreData_MigrationError_generic" = "遷移過程中發生了意外錯誤。";
+"CoreData_MigrationError_timeout" = "應用程式在遷移資料庫時暫停。請重新啟動應用程式並重試。";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "會拋棄無效使用者名稱的帳號。";

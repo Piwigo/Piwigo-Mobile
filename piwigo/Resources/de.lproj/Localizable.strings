@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "Konnte die abgerufenen Daten nicht verarbeiten.";
 "CoreData_MigrationProgress" = "Migration läuft...";
 "Coredata_MigrationPleaseWait" = "Wir sind gerade dabei, einige Ihrer Daten zu migrieren. Bitte haben Sie bis zum Ende Geduld. Verlassen Sie die Anwendung nicht und töten Sie sie nicht.";
+"CoreData_MigrationError_title" = "Migration fehlgeschlagen";
+"CoreData_MigrationError_generic" = "Während der Migration ist ein unerwarteter Fehler aufgetreten.";
+"CoreData_MigrationError_timeout" = "Die Anwendung wurde während der Migration der Datenbank angehalten. Bitte starten Sie die Anwendung neu und versuchen Sie es erneut.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen.";

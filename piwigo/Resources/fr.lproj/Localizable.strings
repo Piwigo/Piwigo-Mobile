@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "Impossible de digérer les données récupérées.";
 "CoreData_MigrationProgress" = "Migration en cours...";
 "Coredata_MigrationPleaseWait" = "Nous sommes en train de migrer certaines de vos données. Veuillez patienter jusqu'à la fin. Ne quittez pas l'application et ne la tuez pas.";
+"CoreData_MigrationError_title" = "Échec de la migration";
+"CoreData_MigrationError_generic" = "Une erreur inattendue s'est produite lors de la migration.";
+"CoreData_MigrationError_timeout" = "L'application a été suspendue lors de la migration de la base de données. Veuillez redémarrer l'application et réessayer.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Jettera un compte utilisateur manquant un nom d'utilisateur valide.";

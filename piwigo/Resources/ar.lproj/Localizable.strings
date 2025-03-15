@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
 "CoreData_MigrationProgress" = "جاري الانتقال ...";
 "Coredata_MigrationPleaseWait" = "نحن بصدد ترحيل بعض بياناتك. يرجى الانتظار حتى النهاية. لا تقم بإنهاء التطبيق أو إيقاف تشغيله.";
+"CoreData_MigrationError_title" = "فشل الترحيل";
+"CoreData_MigrationError_generic" = "حدث خطأ غير متوقع أثناء الهجرة.";
+"CoreData_MigrationError_timeout" = "تم تعليق التطبيق أثناء ترحيل قاعدة البيانات. الرجاء إعادة تشغيل التطبيق والمحاولة مرة أخرى.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "سيتم تجاهل حساب المستخدم الذي يفتقر إلى اسم مستخدم صالح.";
@@ -401,7 +404,7 @@
 
 // Image tags errors
 "tagsAddError_message" = "Failed to create new tag";
-"tagsAddError_title" = "Create Fail";
+"tagsAddError_title" = "Creation Failed";
 
 // Image select
 "selectImages" = "تحديد صور";
@@ -504,7 +507,7 @@
 "copySeveralImagesHUD_copying" = "Copying Photos…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
+"copyImageError_title" = "Copy Failed";
 "copySingleImageError_message" = "Failed to copy your photo";
 "copySeveralImagesError_message" = "Failed to copy some photos";
 
@@ -608,7 +611,7 @@
 "shareActivityCode_Other" = "Share with other apps";
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
-"shareFailError_title" = "Share Fail";
+"shareFailError_title" = "Share Failed";
 "shareMetadataError_message" = "Cannot strip private metadata";
 "shareFailError_tooLarge" = "Selection too large to share";
 

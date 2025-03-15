@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
 "CoreData_MigrationProgress" = "Migratie in uitvoering...";
 "Coredata_MigrationPleaseWait" = "We zijn bezig met het migreren van een deel van je gegevens. Wacht tot het einde. Sluit de toepassing niet af of stop deze niet.";
+"CoreData_MigrationError_title" = "Migratie mislukt";
+"CoreData_MigrationError_generic" = "Er is een onverwachte fout opgetreden tijdens de migratie.";
+"CoreData_MigrationError_timeout" = "De app werd opgeschort tijdens het migreren van de database. Start de app opnieuw op en probeer het opnieuw.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";

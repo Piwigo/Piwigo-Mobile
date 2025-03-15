@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 "CoreData_MigrationProgress" = "Migration in progress...";
 "Coredata_MigrationPleaseWait" = "We are in the process of migrating some of your data. Please wait until the end. Do not quit or kill the application.";
+"CoreData_MigrationError_title" = "Migration Failed";
+"CoreData_MigrationError_generic" = "An unexpected error occurred during the migration.";
+"CoreData_MigrationError_timeout" = "The app was suspended while migrating the database. Please restart the app and try again.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
@@ -114,7 +117,7 @@
 "serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
 "serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
 
-"loginError_title" = "Login Fail";
+"loginError_title" = "Login Failed";
 "loginError_message" = "The username and password don't match on the given web address";
 "loginError_resetPwd" = "Would you like to reset your password from the web interface?";
 "loginEmptyServer_title" = "Enter a Web Address";
@@ -128,7 +131,7 @@
 "serverVersionNotCompatible_title" = "Incompatible Server";
 "serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.";
 
-"sessionStatusError_title" = "Authentication Fail";
+"sessionStatusError_title" = "Authentication Failed";
 "sessionStatusError_message" = "Failed to authenticate with the server. Try logging in again.";
 
 // Logout
@@ -257,14 +260,14 @@
 "renameCategoryHUD_label" = "Renaming Album…";
 
 // Album rename — Errors
-"renameCategoyError_title" = "Rename Fail";
+"renameCategoyError_title" = "Renaming Failed";
 "renameCategoyError_message" = "Failed to rename your album";
 
 // Album refresh representative
 "refreshCategoryHUD_label" = "Refreshing Representative…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
+"refreshCategoyError_title" = "Refresh Failed";
 "refreshCategoyError_message" = "Failed to refresh your album representative";
 
 // Album delete
@@ -284,7 +287,7 @@
 // Album delete — errors
 "deleteCategoryMatchError_title" = "Number Doesn't Match";
 "deleteCategoryMatchError_message" = "The number of photos you entered doesn't match the number of photos in the category. Please try again if you desire to delete this album";
-"deleteCategoryError_title" = "Delete Fail";
+"deleteCategoryError_title" = "Deletion Failed";
 "deleteCategoryError_message" = "Failed to delete your album";
 
 // Album move
@@ -294,7 +297,7 @@
 "moveCategoryHUD_moving" = "Moving Album…";
 
 // Album move — Errors
-"moveCategoryError_title" = "Move Fail";
+"moveCategoryError_title" = "Move Failed";
 "moveCategoryError_message" = "Failed to move your album";
 
 // Album set photo thumbnail
@@ -401,7 +404,7 @@
 
 // Image tags errors
 "tagsAddError_message" = "Failed to create new tag";
-"tagsAddError_title" = "Create Fail";
+"tagsAddError_title" = "Creation Failed";
 
 // Image select
 "selectImages" = "Select Photos";
@@ -469,15 +472,15 @@
 "downloadingVideo" = "Downloading Video";
 
 // Image download — Errors
-"downloadImageFail_title" = "Download Fail";
+"downloadImageFail_title" = "Download Failed";
 "downloadImageFail_message" = "Failed to download photo!\n%@";
 "downloadVideoFail_message" = "Failed to download video!\n%@";
 "downloadVideoFail_Photos" = "Video format not accepted by Photos!";
 
-"imageSaveError_title" = "Fail Saving Photo";
+"imageSaveError_title" = "Failed Saving Photo";
 "imageSaveError_message" = "Failed to save photo. Error: %@";
 
-"videoSaveError_title" = "Fail Saving Video";
+"videoSaveError_title" = "Failed Saving Video";
 "videoSaveError_message" = "Failed to save video. Error: %@";
 
 // Image move
@@ -490,7 +493,7 @@
 "moveSeveralImagesHUD_moving" = "Moving Photos…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
+"moveImageError_title" = "Move Failed";
 "moveSingleImageError_message" = "Failed to move your photo";
 "moveSeveralImagesError_message" = "Failed to move some photos";
 
@@ -504,7 +507,7 @@
 "copySeveralImagesHUD_copying" = "Copying Photos…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
+"copyImageError_title" = "Copy Failed";
 "copySingleImageError_message" = "Failed to copy your photo";
 "copySeveralImagesError_message" = "Failed to copy some photos";
 
@@ -608,7 +611,7 @@
 "shareActivityCode_Other" = "Share with other apps";
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
-"shareFailError_title" = "Share Fail";
+"shareFailError_title" = "Share Failed";
 "shareMetadataError_message" = "Cannot strip private metadata";
 "shareFailError_tooLarge" = "Selection too large to share";
 

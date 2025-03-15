@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
 "CoreData_MigrationProgress" = "Migracja w toku...";
 "Coredata_MigrationPleaseWait" = "Jesteśmy w trakcie migracji niektórych danych. Poczekaj do końca. Nie zamykaj ani nie wyłączaj aplikacji.";
+"CoreData_MigrationError_title" = "Migracja nie powiodła się";
+"CoreData_MigrationError_generic" = "Podczas migracji wystąpił nieoczekiwany błąd.";
+"CoreData_MigrationError_timeout" = "Aplikacja została zawieszona podczas migracji bazy danych. Uruchom ponownie aplikację i spróbuj ponownie.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika.";

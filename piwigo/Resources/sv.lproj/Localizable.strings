@@ -54,6 +54,9 @@
 "CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
 "CoreData_MigrationProgress" = "Migrering pågår...";
 "Coredata_MigrationPleaseWait" = "Vi håller på att migrera en del av dina data. Vänligen vänta till slutet. Avsluta inte eller döda inte programmet.";
+"CoreData_MigrationError_title" = "Migreringen misslyckades";
+"CoreData_MigrationError_generic" = "Ett oväntat fel inträffade under migreringen.";
+"CoreData_MigrationError_timeout" = "Appen avbröts medan databasen migrerades. Vänligen starta om appen och försök igen.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Kommer att kassera ett användarkonto som saknar ett giltigt användarnamn.";
