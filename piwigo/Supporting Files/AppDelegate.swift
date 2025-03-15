@@ -91,21 +91,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Check if a migration is necessary
             let migrator = DataMigrator()
             if migrator.requiresMigration() {
-                // Tell user to wait until migration is completed
-                loadMigrationView(in: window)
-
-                // Perform migration in background thread to prevent triggering watchdog after 10 s
-                DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
-                    // Perform migration
-                    migrator.migrateStore()
-
-                    // Present views
+                // Will load the Login view after the migration
+                let completionHandler = { [weak self] in
+                    guard let self else { return }
                     DispatchQueue.main.async { [self] in
-                        // Create login view
-                        loadLoginView(in: window)
-                        addPrivacyProtectionIfNeeded()
+                        self.loadLoginView(in: self.window)
+                        self.addPrivacyProtectionIfNeeded()
                     }
                 }
+                
+                // Tell user to wait until migration is completed and launch the migration
+                loadMigrationView(in: window, startMigrationWith: migrator,
+                                  completionHandler: completionHandler)
             } else {
                 // Create login view
                 loadLoginView(in: window)
@@ -126,7 +123,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    private func addPrivacyProtectionIfNeeded() {
+    func addPrivacyProtectionIfNeeded() {
         // Blur view if the App Lock is enabled
         /// The passcode window is not presented  so that the app
         /// does not request the passcode until it is put into the background.
@@ -345,7 +342,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
 
-    // MARK: - Background Uploading
+    // MARK: - Background Task | Uploads
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
         debugPrint("    > Handle events for background session with ID: \(identifier)");
@@ -698,16 +695,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return _migrationVC
     }
     
-    func loadMigrationView(in window: UIWindow?) {
-        guard let window = window else { return }
+    func loadMigrationView(in window: UIWindow?, startMigrationWith migrator: DataMigrator? = nil,
+                           completionHandler: (() -> Void)? = nil) {
+        guard let window = window
+        else { preconditionFailure("!!! No UIWindow !!!") }
         
-        // Load Login view
+        // Load Migration view
+        migrationVC.migrator = migrator
+        migrationVC.completionHandler = completionHandler
         let nav = LoginNavigationController(rootViewController: migrationVC)
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
         if #available(iOS 13.0, *) {
-            // Transition to login view
+            // Transition to migration view
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve,
                               animations: nil) { _ in }

@@ -10,6 +10,10 @@ import os
 import Foundation
 import CoreData
 
+//public protocol DataMigratorDelegate: NSObjectProtocol {
+//    func canPursueMigration(with timeRequired: TimeInterval) -> Bool
+//}
+
 // MARK: - Core Data Migrator
 /// See: https://williamboles.com/progressive-core-data-migration/
 /**
@@ -38,6 +42,7 @@ public class DataMigrator: NSObject {
     }
     
     let SQLfileName = "DataModel" + ".\(storeExtension.sqlite.rawValue)"
+//    public weak var dataMigrationDelegate: DataMigratorDelegate?
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
@@ -72,95 +77,7 @@ public class DataMigrator: NSObject {
         // No migration required
         return false
     }
-
-    public func migrateStore() {
-        // Initialise time counter
-        let timeCounter = CFAbsoluteTimeGetCurrent()
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("Migration started…")
-        } else {
-            debugPrint("••> Migration started…")
-        }
-
-        // URL of the store in the App Group directory
-        let storeURL = DataDirectories.shared.appGroupDirectory
-            .appendingPathComponent(SQLfileName)
-
-        // Move the very old store to the new folder if needed
-        var oldStoreURL = DataDirectories.shared.appDocumentsDirectory
-            .appendingPathComponent(SQLfileName)
-        if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
-            // Perform the migration (version after version)
-            migrateStore(at: oldStoreURL,
-                         toVersion: DataMigrationVersion.current, at: storeURL)
-
-            // Progress bar
-            DispatchQueue.main.async {
-                let userInfo = ["progress" : NSNumber.init(value: 1)]
-                NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                                object: nil, userInfo: userInfo)
-            }
-            // Log time needed to perform the migration
-            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration completed in \(duration) s")
-            } else {
-                debugPrint("••> Migration completed in \(duration) s")
-            }
-            return
-        }
-        
-        // Move the old store to the new folder if needed
-        oldStoreURL = DataDirectories.shared.appSupportDirectory
-            .appendingPathComponent(SQLfileName)
-        if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
-            // Perform the migration (version after version)
-            migrateStore(at: oldStoreURL,
-                         toVersion: DataMigrationVersion.current, at: storeURL)
-
-            // Move Upload folder to container if needed
-            self.moveFilesToUpload()
-
-            // Progress bar
-            DispatchQueue.main.async {
-                let userInfo = ["progress" : NSNumber.init(value: 1)]
-                NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                                object: nil, userInfo: userInfo)
-            }
-            // Log time needed to perform the migration
-            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration completed in \(duration) s")
-            } else {
-                debugPrint("••> Migration completed in \(duration) s")
-            }
-            return
-        }
-
-        // Migrate store to new data model if needed
-        if requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
-            // Perform the migration (version after version)
-            migrateStore(at: storeURL,
-                         toVersion: DataMigrationVersion.current, at: storeURL)
-
-            // Progress bar
-            DispatchQueue.main.async {
-                let userInfo = ["progress" : NSNumber.init(value: 1)]
-                NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
-                                                object: nil, userInfo: userInfo)
-            }
-            // Log time needed to perform the migration
-            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration completed in \(duration) s")
-            } else {
-                debugPrint("••> Migration completed in \(duration) s")
-            }
-            return
-        }
-    }
     
-    // MARK: - Check
     private func requiresMigration(at storeURL: URL, toVersion version: DataMigrationVersion) -> Bool {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL)
         else { return false }
@@ -169,84 +86,159 @@ public class DataMigrator: NSObject {
     }
     
     
-    // MARK: - Migration
-    private func migrateStore(at oldStoreURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL) {
-        // Backup the store for restoring it if user canceled the migration
+    // MARK: - Perform Migration
+    public func migrateStore() throws {
+        // Initialise time counter
+        let timeCounter = CFAbsoluteTimeGetCurrent()
+        logNotice("Migration started…")
+        
+        // URL of the store in the App Group directory
+        let storeURL = DataDirectories.shared.appGroupDirectory
+            .appendingPathComponent(SQLfileName)
+        
+        // Move the very old store to the new folder if needed
+        var oldStoreURL = DataDirectories.shared.appDocumentsDirectory
+            .appendingPathComponent(SQLfileName)
+        if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
+            // Perform the migration (version after version)
+            do {
+                try migrateStore(at: oldStoreURL,
+                                 toVersion: DataMigrationVersion.current, at: storeURL)
+                // Progress bar
+                updateProgressBar(1)
+
+                // Log time needed to perform the migration
+                let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+                logNotice("Migration completed in \(duration) s")
+                return
+            } catch {
+                let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+                logNotice("Migration failed after \(duration) s")
+                throw error
+            }
+        }
+        
+        // Move the old store to the new folder if needed
+        oldStoreURL = DataDirectories.shared.appSupportDirectory
+            .appendingPathComponent(SQLfileName)
+        if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
+            // Perform the migration (version after version)
+            do {
+                try migrateStore(at: oldStoreURL,
+                                 toVersion: DataMigrationVersion.current, at: storeURL)
+                
+                // Move Upload folder to container if needed
+                self.moveFilesToUpload()
+                
+                // Progress bar
+                updateProgressBar(1)
+
+                // Log time needed to perform the migration
+                let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+                logNotice("Migration completed in \(duration) s")
+                return
+            } catch {
+                let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+                logNotice("Migration failed after \(duration) s")
+                throw error
+            }
+        }
+        
+        // Migrate store to new data model if needed
+        if requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
+            // Perform the migration (version after version)
+            do {
+                try migrateStore(at: storeURL,
+                                 toVersion: DataMigrationVersion.current, at: storeURL)
+                // Progress bar
+                updateProgressBar(1)
+
+                // Log time needed to perform the migration
+                let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+                logNotice("Migration completed in \(duration) s")
+                return
+            } catch {
+                let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+                logNotice("Migration failed after \(duration) s")
+                throw error
+            }
+        }
+    }
+    
+    private func migrateStore(at oldStoreURL: URL, toVersion version: DataMigrationVersion, at newStoreURL: URL) throws {
+        // Backup the store so that we can restore it if the migration could not be completed
         backupStore(storeURL: oldStoreURL)
         
         // Force WAL checkpoint
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("WAL checkpoint: Starting…")
-        } else {
-            debugPrint("••> WAL checkpoint: Starting…")
+        do {
+            try forceWALCheckpointingForStore(at: oldStoreURL)
+        } catch {
+            restoreStore(storeURL: oldStoreURL)
+            throw error
         }
-        forceWALCheckpointingForStore(at: oldStoreURL)
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("WAL checkpoint: Completed")
-        } else {
-            debugPrint("••> WAL checkpoint: Completed")
-        }
-
+        
+        // Backup the checkpointed store so that we can restore a checkpointed version
+        // if the migration could not be completed
+        backupStore(storeURL: oldStoreURL)
+        
+        // Did the user already put the app in background mode?
+//        if isOutOfExecutionTime(withLessThan: 10) {
+//            throw DataMigrationError.timeout
+//        }
+        
         // Initialisation
         var currentURL = oldStoreURL
         let migrationSteps = self.migrationStepsForStore(at: oldStoreURL, toVersion: version)
         if migrationSteps.isEmpty {
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("No migration steps found.")
-            } else {
-                debugPrint("••> No migration steps found.")
-            }
+            logNotice("No migration steps found.")
             return
         }
         
         // Loop over the migration steps
         for (index, migrationStep) in migrationSteps.enumerated() {
-            // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration step \(index + 1)/\(migrationSteps.count): Starting…")
-            } else {
-                debugPrint("••> Migration step \(index + 1)/\(migrationSteps.count): Starting…")
-            }
-            autoreleasepool {
-                let manager = NSMigrationManager(sourceModel: migrationStep.sourceModel,
-                                                 destinationModel: migrationStep.destinationModel)
-                var tempStoreURL: URL
-                if newStoreURL != oldStoreURL, index + 1 == migrationSteps.count {
-                    tempStoreURL = newStoreURL
-                } else {
-                    tempStoreURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
-                }
-                
-                // Perform a migration
-                do {
-                    try manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType,
-                                             options: nil, with: migrationStep.mappingModel,
-                                             toDestinationURL: tempStoreURL,
-                                             destinationType: NSSQLiteStoreType, destinationOptions: nil)
-                } catch let error {
-                    // Move store to directory of incompatible stores
-                    moveIncompatibleStore(storeURL: currentURL)
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.notice("Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
+            logNotice("Migration step \(index + 1)/\(migrationSteps.count): Starting…")
+            do {
+                try autoreleasepool {
+                    let manager = NSMigrationManager(sourceModel: migrationStep.sourceModel,
+                                                     destinationModel: migrationStep.destinationModel)
+                    var tempStoreURL: URL
+                    if newStoreURL != oldStoreURL, index + 1 == migrationSteps.count {
+                        tempStoreURL = newStoreURL
                     } else {
-                        debugPrint("••> Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
+                        tempStoreURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
                     }
-                    fatalError()
+                    
+                    // Perform a migration
+                    do {
+                        try manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType,
+                                                 options: nil, with: migrationStep.mappingModel,
+                                                 toDestinationURL: tempStoreURL,
+                                                 destinationType: NSSQLiteStoreType, destinationOptions: nil)
+                    } catch let error {
+                        // Timeout?
+                        if let error = error as? DataMigrationError, error == .timeout {
+                            restoreStore(storeURL: oldStoreURL)
+                            throw error
+                        }
+                        
+                        // Move store to directory of incompatible stores
+                        moveIncompatibleStore(storeURL: currentURL)
+                        logNotice("Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
+                        throw error
+                    }
+                    
+                    // Destroy intermediate step's store
+                    if ![oldStoreURL, newStoreURL].contains(currentURL) {
+                        NSPersistentStoreCoordinator.destroyStore(at: currentURL)
+                    }
+                    
+                    // Use URL of migrated store for next step
+                    currentURL = tempStoreURL
                 }
                 
-                // Destroy intermediate step's store
-                if ![oldStoreURL, newStoreURL].contains(currentURL) {
-                    NSPersistentStoreCoordinator.destroyStore(at: currentURL)
-                }
-                
-                // Use URL of migrated store for next step
-                currentURL = tempStoreURL
-            }
-            // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Migration step \(index + 1)/\(migrationSteps.count): Completed")
-            } else {
-                debugPrint("••> Migration step \(index + 1)/\(migrationSteps.count): Completed")
+                logNotice("Migration step \(index + 1)/\(migrationSteps.count): Completed")
+            } catch {
+                throw error
             }
         }
         
@@ -402,27 +394,31 @@ public class DataMigrator: NSObject {
     }
     
     
-    // MARK: - WAL
-    private func forceWALCheckpointingForStore(at storeURL: URL) {
+    // MARK: - WAL Checkpointing
+    private func forceWALCheckpointingForStore(at storeURL: URL) throws {
         guard let metadata = NSPersistentStoreCoordinator.metadata(at: storeURL),
-              let currentModel = NSManagedObjectModel.compatibleModelForStoreMetadata(metadata) else {
-            return
-        }
+              let currentModel = NSManagedObjectModel.compatibleModelForStoreMetadata(metadata)
+        else { return }
         
+        logNotice("WAL checkpointing: Starting…")
         do {
             let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: currentModel)
             let options = [NSSQLitePragmasOption: ["journal_mode": "DELETE"]]
             let store = persistentStoreCoordinator.addPersistentStore(at: storeURL, options: options)
             try persistentStoreCoordinator.remove(store)
-        } catch let error {
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Failed to force WAL checkpointing, error: \(error.localizedDescription)")
-            } else {
-                debugPrint("••> Failed to force WAL checkpointing, error: \(error.localizedDescription)")
-            }
-            fatalError()
+            logNotice("WAL checkpointing: Completed")
+        }
+        catch let error {
+            logNotice("WAL checkpointing failed: \(error.localizedDescription)")
+            throw error
         }
     }
+    
+    
+    // MARK: - Out Of Execution Time?
+//    private func isOutOfExecutionTime(withLessThan minimumTime: TimeInterval) -> Bool {
+//        return dataMigrationDelegate?.canPursueMigration(with: minimumTime) ?? false
+//    }
 }
 
 
@@ -515,8 +511,17 @@ private extension DataMigrationVersion {
 }
 
 
-// MARK: - Logs
+// MARK: - Utilities
 extension DataMigrator {
+    // Updates the progress bar of the DataMigrationViewController
+    func updateProgressBar(_ progress: Float) {
+        DispatchQueue.main.async {
+            let userInfo = ["progress" : NSNumber.init(value: progress)]
+            NotificationCenter.default.post(name: Notification.Name.pwgMigrationProgressUpdated,
+                                            object: nil, userInfo: userInfo)
+        }
+    }
+
     func logNotice(_ message: String) {
         if #available(iOSApplicationExtension 14.0, *) {
             DataMigrator.logger.notice("\(message)")
@@ -525,11 +530,11 @@ extension DataMigrator {
         }
     }
 
-    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
-        } else {
-            debugPrint("\(file):\(function):\(line): \(message)")
-        }
-    }
+//    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
+//        } else {
+//            debugPrint("\(file):\(function):\(line): \(message)")
+//        }
+//    }
 }
