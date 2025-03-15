@@ -324,8 +324,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
-        // Save cached data in the main thread
-        mainContext.saveIfNeeded()
+        // Should we save changes in cache?
+        if AppVars.shared.isMigrationRunning == false {
+            // Save cached data in the main thread
+            mainContext.saveIfNeeded()
+        }
 
         // Cancel tasks and close session
         PwgSession.shared.dataSession.invalidateAndCancel()
