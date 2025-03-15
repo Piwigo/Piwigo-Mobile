@@ -68,7 +68,6 @@ class DataMigrationViewController: UIViewController {
         // Should this view launch the migration?
         guard let migrator = self.migrator
         else { return }
-//        migrator.dataMigrationDelegate = self
 
         // Perform migration in background thread to prevent triggering watchdog after 10 s
         DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
@@ -163,25 +162,3 @@ class DataMigrationViewController: UIViewController {
         endBackgroundTaskIfActive()
     }
 }
-
-
-// MARK: - DataMigratorDelegate Methods
-//extension DataMigrationViewController: DataMigratorDelegate {
-//    // Called by the migrator to determine if the migration should pursue
-//    func canPursueMigration(with timeRequired: TimeInterval) -> Bool {
-//        switch UIApplication.shared.applicationState {
-//        case .background:
-//            let timeRemaining = UIApplication.shared.backgroundTimeRemaining
-//            if timeRemaining < Double.greatestFiniteMagnitude {
-//                let secondsRemaining = String(format: "%.1f seconds remaining", timeRemaining)
-//                debugPrint("Data Migration: App is backgrounded - \(secondsRemaining)")
-//                return timeRemaining < timeRequired ? false : true
-//            }
-//        case .active, .inactive:
-//            return true
-//        default:
-//            break
-//        }
-//        return false
-//    }
-//}

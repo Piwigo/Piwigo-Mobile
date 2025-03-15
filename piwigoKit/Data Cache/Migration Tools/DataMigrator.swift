@@ -10,10 +10,6 @@ import os
 import Foundation
 import CoreData
 
-//public protocol DataMigratorDelegate: NSObjectProtocol {
-//    func canPursueMigration(with timeRequired: TimeInterval) -> Bool
-//}
-
 // MARK: - Core Data Migrator
 /// See: https://williamboles.com/progressive-core-data-migration/
 /**
@@ -42,7 +38,7 @@ public class DataMigrator: NSObject {
     }
     
     let SQLfileName = "DataModel" + ".\(storeExtension.sqlite.rawValue)"
-//    public weak var dataMigrationDelegate: DataMigratorDelegate?
+    var timeCounter = CFAbsoluteTime.zero
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
@@ -89,7 +85,7 @@ public class DataMigrator: NSObject {
     // MARK: - Perform Migration
     public func migrateStore() throws {
         // Initialise time counter
-        let timeCounter = CFAbsoluteTimeGetCurrent()
+        timeCounter = CFAbsoluteTimeGetCurrent()
         logNotice("Migration started…")
         
         // URL of the store in the App Group directory
@@ -180,11 +176,6 @@ public class DataMigrator: NSObject {
         // Backup the checkpointed store so that we can restore a checkpointed version
         // if the migration could not be completed
         backupStore(storeURL: oldStoreURL)
-        
-        // Did the user already put the app in background mode?
-//        if isOutOfExecutionTime(withLessThan: 10) {
-//            throw DataMigrationError.timeout
-//        }
         
         // Initialisation
         var currentURL = oldStoreURL
@@ -406,19 +397,14 @@ public class DataMigrator: NSObject {
             let options = [NSSQLitePragmasOption: ["journal_mode": "DELETE"]]
             let store = persistentStoreCoordinator.addPersistentStore(at: storeURL, options: options)
             try persistentStoreCoordinator.remove(store)
-            logNotice("WAL checkpointing: Completed")
+            let duration = CFAbsoluteTimeGetCurrent() - timeCounter
+            logNotice("WAL checkpointing: Completed in \(duration) s")
         }
         catch let error {
             logNotice("WAL checkpointing failed: \(error.localizedDescription)")
             throw error
         }
     }
-    
-    
-    // MARK: - Out Of Execution Time?
-//    private func isOutOfExecutionTime(withLessThan minimumTime: TimeInterval) -> Bool {
-//        return dataMigrationDelegate?.canPursueMigration(with: minimumTime) ?? false
-//    }
 }
 
 
