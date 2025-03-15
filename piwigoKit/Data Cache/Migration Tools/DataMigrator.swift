@@ -36,19 +36,20 @@ public class DataMigrator: NSObject {
         case sqliteShm = "sqlite-shm"
         case sqliteWAL = "sqlite-wal"
     }
-
+    
     let SQLfileName = "DataModel" + ".\(storeExtension.sqlite.rawValue)"
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
     @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: DataMigrator.self))
-
+    
+    // MARK: - Migration Required?
     public func requiresMigration() -> Bool {
         // URL of the store in the App Group directory
         let storeURL = DataDirectories.shared.appGroupDirectory
             .appendingPathComponent(SQLfileName)
-
+        
         // Move the very old store to the new folder if needed
         var oldStoreURL = DataDirectories.shared.appDocumentsDirectory
             .appendingPathComponent(SQLfileName)
@@ -62,7 +63,7 @@ public class DataMigrator: NSObject {
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             return true
         }
-
+        
         // Migrate store to new data model if needed
         if requiresMigration(at: storeURL, toVersion: DataMigrationVersion.current) {
             return true
@@ -268,20 +269,20 @@ public class DataMigrator: NSObject {
         
         return migrationSteps(fromSourceVersion: sourceVersion, toDestinationVersion: destinationVersion)
     }
-
+    
     private func migrationSteps(fromSourceVersion sourceVersion: DataMigrationVersion,
                                 toDestinationVersion destinationVersion: DataMigrationVersion) -> [DataMigrationStep] {
         var sourceVersion = sourceVersion
         var migrationSteps = [DataMigrationStep]()
-
+        
         while sourceVersion != destinationVersion, let nextVersion = sourceVersion.nextVersion() {
             let migrationStep = DataMigrationStep(sourceVersion: sourceVersion,
                                                   destinationVersion: nextVersion)
             migrationSteps.append(migrationStep)
-
+            
             sourceVersion = nextVersion
         }
-
+        
         return migrationSteps
     }
     
@@ -429,7 +430,7 @@ public class DataMigrator: NSObject {
             }
         }
     }
-
+    
     private func moveFilesToUpload() {
         let fm = FileManager.default
         let oldURL = DataDirectories.shared.appSupportDirectory
@@ -441,7 +442,7 @@ public class DataMigrator: NSObject {
         do {
             // Get list of files
             let filesToMove = try fm.contentsOfDirectory(at: oldURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-
+            
             // Move files
             for fileToMove in filesToMove {
                 let newFileURL = newURL.appendingPathComponent(fileToMove.lastPathComponent)
@@ -485,7 +486,7 @@ public class DataMigrator: NSObject {
 }
 
 
-// MARK: - Compatible
+// MARK: - Model Version Compatibility
 private extension DataMigrationVersion {
     static func compatibleVersionForStoreMetadata(_ metadata: [String : Any]) -> DataMigrationVersion? {
         let compatibleVersion = DataMigrationVersion.allCases.first {
@@ -570,5 +571,25 @@ private extension DataMigrationVersion {
             }
         }
         return compatibleVersion
+    }
+}
+
+
+// MARK: - Logs
+extension DataMigrator {
+    func logNotice(_ message: String) {
+        if #available(iOSApplicationExtension 14.0, *) {
+            DataMigrator.logger.notice("\(message)")
+        } else {
+            debugPrint("••> \(message)")
+        }
+    }
+
+    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
+        if #available(iOSApplicationExtension 14.0, *) {
+            DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
+        } else {
+            debugPrint("\(file):\(function):\(line): \(message)")
+        }
     }
 }
