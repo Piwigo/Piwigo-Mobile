@@ -142,6 +142,26 @@ public class DataDirectories
     }()
     
     // "Library/Application Support/Piwigo" inside the Data Container of the Sandbox.
+    /// - The Incompatible directory into which data stores are saved.
+    public lazy var appIncompatibleDirectory: URL = {
+        // Get path of Backup directory
+        let incompatibleURL = appSupportDirectory.appendingPathComponent("Incompatible")
+
+        // Create the Piwigo/Backup directory if needed
+        let fm = FileManager.default
+        if fm.fileExists(atPath: incompatibleURL.path) == false {
+            do {
+                try fm.createDirectory(at: incompatibleURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                fatalError("Unable to create the \"Incompatible\" directory in \"Library/Application Support\" (\(error.localizedDescription).")
+            }
+        }
+
+        debugPrint("••> incompatibleDirectory: \(incompatibleURL)")
+        return incompatibleURL
+    }()
+
+    // "Library/Application Support/Piwigo" inside the Data Container of the Sandbox.
     /// - The Backup directory into which data stores are backuped.
     public lazy var appBackupDirectory: URL = {
         // Get path of Backup directory
