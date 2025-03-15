@@ -74,10 +74,17 @@ class DataMigrationViewController: UIViewController {
         DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
             // Perform migration
             do {
+                // Remember that a migration is running
+                AppVars.shared.isMigrationRunning = true
+                
+                // Launch the migration of the database
                 try migrator.migrateStore()
                 
                 // Tell iOS that the background task can be ended
                 endBackgroundTaskIfActive()
+                
+                // Migration completed
+                AppVars.shared.isMigrationRunning = false
                 
                 // Present login and/or album views
                 guard let completionHandler = self.completionHandler

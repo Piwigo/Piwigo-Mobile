@@ -375,14 +375,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Remember to ask for passcode or not
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
 
-        // Save changes in the app's managed object context when the app transitions to the background.
-        mainContext.saveIfNeeded()
-        
-        // Schedule background tasks after cancelling pending onces
-        BGTaskScheduler.shared.cancelAllTaskRequests()
-        if NetworkVars.shared.usesUploadAsync {
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.scheduleNextUpload()
+        // Should we save changes in cache and schedule background tasks?
+        if AppVars.shared.isMigrationRunning == false {
+            // Save changes in the app's managed object context
+            mainContext.saveIfNeeded()
+            
+            // Schedule background tasks after cancelling pending onces
+            BGTaskScheduler.shared.cancelAllTaskRequests()
+            if NetworkVars.shared.usesUploadAsync {
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.scheduleNextUpload()
+            }
         }
 
         // Clean up /tmp directory
