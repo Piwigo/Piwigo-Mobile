@@ -290,22 +290,14 @@ public class DataMigrator: NSObject {
     // MARK: - File Management
     private func backupStore(storeURL: URL) {
         let fm = FileManager.default
-        let applicationBackupStoresDirectory = DataDirectories.shared.appSupportDirectory
-            .appendingPathComponent("Backup")
-
-        // Create the Piwigo/Backup directory if needed
-        if !fm.fileExists(atPath: applicationBackupStoresDirectory.path) {
-            do {
-                try fm.createDirectory(at: applicationBackupStoresDirectory,
-                                       withIntermediateDirectories: true, attributes: nil)
-            } catch let error {
-                // Logs
-                if #available(iOSApplicationExtension 14.0, *) {
-                    DataMigrator.logger.notice("Unable to create a directory for backuping data stores: \(error.localizedDescription)")
-                } else {
-                    debugPrint("••> Unable to create a directory for backuping data stores: \(error.localizedDescription)")
-                }
-            }
+        let appBackupStoresDirectory = DataDirectories.shared.appBackupDirectory
+        
+        // Delete old backup files so that we won't restore files from mixed versions
+        storeExtension.allCases.forEach { ext in
+            let backupURL = appBackupStoresDirectory
+                .appendingPathComponent(storeURL.lastPathComponent)
+                .deletingPathExtension().appendingPathExtension(ext.rawValue)
+            try? fm.removeItem(at: backupURL)
         }
         
         // Loop over all files of the data store
@@ -313,41 +305,23 @@ public class DataMigrator: NSObject {
             // URL of the file to backup
             let fileURL = storeURL.deletingPathExtension().appendingPathExtension(ext.rawValue)
             
-            // Backup file if it exists
-            if fm.fileExists(atPath: storeURL.path) {
-                let backupURL = applicationBackupStoresDirectory
+            // Backup the file if it exists
+            if fm.fileExists(atPath: fileURL.path) {
+                let backupURL = appBackupStoresDirectory
                     .appendingPathComponent(fileURL.lastPathComponent)
-
-                // Copy the data store to the Piwigo/Backup directory
-                try? fm.removeItem(at: backupURL)
                 do {
                     try fm.copyItem(at: fileURL, to: backupURL)
-                } catch let error {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.notice("Unable to backup data store: \(error.localizedDescription)")
-                    } else {
-                        debugPrint("••> Unable to backup data store: \(error.localizedDescription)")
-                    }
+                }
+                catch let error {
+                    logNotice("Unable to backup data store: \(error.localizedDescription)")
                 }
             }
         }
     }
-
+    
     private func restoreStore(storeURL: URL) {
         let fm = FileManager.default
-        let applicationBackupStoresDirectory = DataDirectories.shared.appSupportDirectory
-            .appendingPathComponent("Backup")
-
-        // Check that the Piwigo/Backup directory exists
-        if !fm.fileExists(atPath: applicationBackupStoresDirectory.path) {
-            // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("Impossible to restore the store because the Backup directory does not exist")
-            } else {
-                debugPrint("••> Impossible to restore the store because the Backup directory does not exist")
-            }
-            return
-        }
+        let appBackupStoresDirectory = DataDirectories.shared.appBackupDirectory
         
         // Loop over all files of the data store
         storeExtension.allCases.forEach { ext in
@@ -355,28 +329,18 @@ public class DataMigrator: NSObject {
             let fileURL = storeURL.deletingPathExtension().appendingPathExtension(ext.rawValue)
             
             // Check if the backup file exists
-            let restoreURL = applicationBackupStoresDirectory
+            let restoreURL = appBackupStoresDirectory
                 .appendingPathComponent(fileURL.lastPathComponent)
             if fm.fileExists(atPath: restoreURL.path) {
                 // Restore the data store from the Piwigo/Backup directory
                 try? fm.removeItem(at: fileURL)
                 do {
                     try fm.copyItem(at: restoreURL, to: fileURL)
-                } catch let error {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.notice("Unable to restore data store: \(error.localizedDescription)")
-                    } else {
-                        debugPrint("••> Unable to restore data store: \(error.localizedDescription)")
-                    }
                 }
-            } else {
-                if #available(iOSApplicationExtension 14.0, *) {
-                    DataMigrator.logger.notice("Impossible to restore the .\(ext.rawValue) file because it does not exist")
-                } else {
-                    debugPrint("••> Impossible to restore the .\(ext.rawValue) file because it does not exist")
+                catch let error {
+                    logNotice("Unable to restore data store: \(error.localizedDescription)")
                 }
-                return
-            }
+             }
         }
     }
     
