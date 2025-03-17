@@ -37,7 +37,7 @@ public class DataDirectories
     // "Library/Application Support/Piwigo" in the AppGroup container.
     /// - The shared database and temporary files to upload are stored in the App Group
     ///   container so that they can be used and shared by the app and the extensions.
-    lazy var appGroupDirectory: URL = {
+    public lazy var appGroupDirectory: URL = {
         // Get path of group container
         let piwigoURL = containerDirectory.appendingPathComponent("Library")
             .appendingPathComponent("Application Support")

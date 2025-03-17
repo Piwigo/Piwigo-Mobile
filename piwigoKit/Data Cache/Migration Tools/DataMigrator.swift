@@ -302,7 +302,7 @@ public class DataMigrator: NSObject {
         }
     }
     
-    private func restoreStore(storeURL: URL) {
+    public func restoreStore(storeURL: URL) {
         let fm = FileManager.default
         let appBackupStoresDirectory = DataDirectories.shared.appBackupDirectory
         

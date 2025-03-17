@@ -60,41 +60,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // Check if a migration is necessary
                 let migrator = DataMigrator()
                 if migrator.requiresMigration() {
-                    // Will load the Login view after the migration
-                    // and manage the other scenes created by the user
-                    let completionHandler = { [weak self] in
-                        guard let self else { return }
-                        DispatchQueue.main.async { [self] in
-                            // Create login view
-                            appDelegate.loadLoginView(in: window)
-                            
-                            // Blur views if the App Lock is enabled
-                            self.addPrivacyProtection(toFirstScene: true)
-                            
-                            // Manages privacy protection and resume uploads
-                            self.sceneDidBecomeActive(scene)
-                            
-                            // Did user create other scenes during the migration?
-                            let otherScenes = UIApplication.shared.connectedScenes
-                                .filter({($0.session.role == .windowApplication) &&
-                                         ($0.session.persistentIdentifier != session.persistentIdentifier)})
-                            otherScenes.forEach { scene in
-                                if let windowScene = (scene as? UIWindowScene) {
-                                    // Replace migration with album view controller
-                                    let window = UIWindow(windowScene: windowScene)
-                                    appDelegate.loadNavigation(in: window)
-                                    // Blur views if the App Lock is enabled
-                                    self.addPrivacyProtection(toFirstScene: false)
-                                    // Manages privacy protection and resume uploads
-                                    self.sceneDidBecomeActive(scene)
-                                }
-                            }
-                        }
-                    }
                     // Tell user to wait until migration is completed and launch the migration
-                    appDelegate.loadMigrationView(in: window, startMigrationWith: migrator,
-                                                  completionHandler: completionHandler)
-                } else {
+                    appDelegate.loadMigrationView(in: window, startMigrationWith: migrator)
+                }
+                else {
                     // Create login view
                     appDelegate.loadLoginView(in: window)
                     
@@ -102,8 +71,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     addPrivacyProtection(toFirstScene: true)
                 }
             } else {
-                // Create additional scene ► default album OR wait for migration?
-                if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty {
+                // Create additional scene ► default album unless a migration is running
+                if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty,
+                   AppVars.shared.isMigrationRunning == false {
                     // Create additional scene ► default album
                     appDelegate.loadNavigation(in: window)
                     
@@ -126,56 +96,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Check if a migration is necessary
             let migrator = DataMigrator()
             if migrator.requiresMigration() {
-                // Will load the Login view after the migration
-                // and restore the other scenes
-                let completionHandler = { [weak self] in
-                    guard let self else { return }
-                    // Present views
-                    DispatchQueue.main.async { [self] in
-                        // Restore scene
-                        if self.configure(window: window, session: session, with: userActivity) {
-                            // Remember this activity for later when this app quits or suspends.
-                            scene.userActivity = userActivity
-                            // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
-                            scene.title = userActivity.title
-                            // Blur views if the App Lock is enabled
-                            self.addPrivacyProtection(toFirstScene: true)
-                            // Manages privacy protection and resume uploads
-                            self.sceneDidBecomeActive(scene)
-                        } else {
-                            debugPrint("Failed to restore scene from \(userActivity)")
-                        }
-                        
-                        // Are there other scenes to restore?
-                        let otherScenes = UIApplication.shared.connectedScenes
-                            .filter({$0.session.role == .windowApplication})
-                            .filter({$0.session.persistentIdentifier != session.persistentIdentifier})
-                        otherScenes.forEach { scene in
-                            if let windowScene = (scene as? UIWindowScene),
-                               let userActivity =  scene.userActivity ?? scene.session.stateRestorationActivity {
-                                // Replace migration with appropriate view controller
-                                let window = UIWindow(windowScene: windowScene)
-                                if self.configure(window: window, session: scene.session, with: userActivity) {
-                                    // Remember this activity for later when this app quits or suspends.
-                                    scene.userActivity = userActivity
-                                    // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
-                                    scene.title = userActivity.title
-                                    // Blur views if the App Lock is enabled
-                                    self.addPrivacyProtection(toFirstScene: true)
-                                    // Manages privacy protection and resume uploads
-                                    self.sceneDidBecomeActive(scene)
-                                } else {
-                                    debugPrint("Failed to restore scene from \(userActivity)")
-                                }
-                            }
-                        }
-                    }
-                }
-
                 // Tell user to wait until migration is completed and launch the migration
-                appDelegate.loadMigrationView(in: window, startMigrationWith: migrator,
-                                              completionHandler: completionHandler)
-            } else {
+                appDelegate.loadMigrationView(in: window, startMigrationWith: migrator)
+            }
+            else {
                 // Restore scene
                 if configure(window: window, session: session, with: userActivity) {
                     // Remember this activity for later when this app quits or suspends.
@@ -190,7 +114,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         } else {
             // Restore additional scene ► default album / login view OR wait for migration?
-            if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty {
+            if otherScenes.filter({($0 as? UIWindowScene)?.topMostViewController() is DataMigrationViewController}).isEmpty,
+               AppVars.shared.isMigrationRunning == false {
                 // Restore scene
                 if configure(window: window, session: session, with: userActivity) {
                     // Remember this activity for later when this app quits or suspends.
@@ -213,7 +138,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
     }
     
-    private func addPrivacyProtection(toFirstScene isFirstScene: Bool) {
+    func addPrivacyProtection(toFirstScene isFirstScene: Bool) {
         // Check whether this is the first restored scene
         if isFirstScene {
             // First created/restored scene ► Blur views if the App Lock is enabled
@@ -281,7 +206,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called during biometric authentication or data migration?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
-        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData { return }
+        if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || AppVars.shared.isMigrationRunning { return }
 
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {

@@ -91,18 +91,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Check if a migration is necessary
             let migrator = DataMigrator()
             if migrator.requiresMigration() {
-                // Will load the Login view after the migration
-                let completionHandler = { [weak self] in
-                    guard let self else { return }
-                    DispatchQueue.main.async { [self] in
-                        self.loadLoginView(in: self.window)
-                        self.addPrivacyProtectionIfNeeded()
-                    }
-                }
-                
                 // Tell user to wait until migration is completed and launch the migration
-                loadMigrationView(in: window, startMigrationWith: migrator,
-                                  completionHandler: completionHandler)
+                loadMigrationView(in: window, startMigrationWith: migrator)
             } else {
                 // Create login view
                 loadLoginView(in: window)
@@ -688,28 +678,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     // MARK: - Data Migration View
-    private var _migrationVC: DataMigrationViewController!
-    var migrationVC: DataMigrationViewController {
-        // Already existing?
-        if _migrationVC != nil { return _migrationVC }
+    func loadMigrationView(in window: UIWindow?, startMigrationWith migrator: DataMigrator? = nil) {
+        guard let window = window
+        else { preconditionFailure("!!! No UIWindow !!!") }
         
         // Create data migration view
         let migrationSB = UIStoryboard(name: "DataMigrationViewController", bundle: nil)
         guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController
         else { preconditionFailure("!!! No DataMigrationViewController !!!") }
-        _migrationVC = migrationVC
-        return _migrationVC
-    }
-    
-    func loadMigrationView(in window: UIWindow?, startMigrationWith migrator: DataMigrator? = nil,
-                           completionHandler: (() -> Void)? = nil) {
-        guard let window = window
-        else { preconditionFailure("!!! No UIWindow !!!") }
-        
-        // Load Migration view
         migrationVC.migrator = migrator
-        migrationVC.completionHandler = completionHandler
-        let nav = LoginNavigationController(rootViewController: migrationVC)
+        
+        // Show migration view in provided window
+        let nav = UINavigationController(rootViewController: migrationVC)
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
@@ -752,15 +732,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Transition to login view
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve,
-                              animations: nil) { [self] success in
-                if success {
-                    self._migrationVC = nil
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            _migrationVC?.removeFromParent()
-            _migrationVC = nil
+                              animations: nil) { _ in }
         }
     }
 
@@ -774,7 +746,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     // MARK: - Album Navigator
-    func loadNavigation(in window: UIWindow?) {
+    func loadNavigation(in window: UIWindow?, keepLoginView: Bool = false) {
         guard let window = window else { return }
         
         // Display default album
@@ -787,7 +759,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
                 completion: { [self] success in
-                    if success {
+                    if success, keepLoginView == false {
                         self._loginVC = nil
                     }
                 }
