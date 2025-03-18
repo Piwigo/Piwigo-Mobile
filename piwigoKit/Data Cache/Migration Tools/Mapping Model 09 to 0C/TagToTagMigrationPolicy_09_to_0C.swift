@@ -19,7 +19,6 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         numberFormatter.numberStyle = NumberFormatter.Style.percent
         return numberFormatter
     }()
-    var nberOfInstancesCopied: Int = 0
 
     /**
      If needed, creates a Server instance of the currently used server before migrating Tag entities.
@@ -124,12 +123,6 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
 //            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
 //        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newTag, for: mapping)
-        
-        // Increment number of instances copied
-        nberOfInstancesCopied += 1
-        if nberOfInstancesCopied.isMultiple(of: 100) {
-            updateProgressBar(manager.migrationProgress)
-        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {

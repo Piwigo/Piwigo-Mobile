@@ -19,7 +19,6 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         numberFormatter.numberStyle = NumberFormatter.Style.percent
         return numberFormatter
     }()
-    var nberOfInstancesCopied: Int = 0
 
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
@@ -194,12 +193,6 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
 //            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
 //        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
-        
-        // Increment number of instances copied
-        nberOfInstancesCopied += 1
-        if nberOfInstancesCopied.isMultiple(of: 100) {
-            updateProgressBar(manager.migrationProgress)
-        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
