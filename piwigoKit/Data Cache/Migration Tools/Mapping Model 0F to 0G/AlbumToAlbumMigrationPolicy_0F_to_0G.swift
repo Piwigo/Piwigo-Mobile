@@ -29,6 +29,11 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     /**
@@ -97,6 +102,11 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
 
         // Associate new Album object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newAlbum, for: mapping)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -108,6 +118,20 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -119,6 +143,11 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -130,5 +159,10 @@ class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }

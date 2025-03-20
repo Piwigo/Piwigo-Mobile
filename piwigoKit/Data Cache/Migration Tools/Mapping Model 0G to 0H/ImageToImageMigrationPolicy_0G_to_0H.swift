@@ -28,6 +28,11 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 
     /**
@@ -90,6 +95,11 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
         
         // Associate new Image object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -98,8 +108,23 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         }
+        
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -108,8 +133,14 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         }
+
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -118,7 +149,13 @@ class ImageToImageMigrationPolicy_0G_to_0H: NSEntityMigrationPolicy {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
             DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         }
+
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }

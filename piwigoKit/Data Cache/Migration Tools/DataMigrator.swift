@@ -189,48 +189,51 @@ public class DataMigrator: NSObject {
         for (index, migrationStep) in migrationSteps.enumerated() {
             logNotice("Migration step \(index + 1)/\(migrationSteps.count): Starting…")
             do {
-                try autoreleasepool {
-                    let manager = NSMigrationManager(sourceModel: migrationStep.sourceModel,
-                                                     destinationModel: migrationStep.destinationModel)
-                    var tempStoreURL: URL
-                    if newStoreURL != oldStoreURL, index + 1 == migrationSteps.count {
-                        tempStoreURL = newStoreURL
+                let manager = NSMigrationManager(sourceModel: migrationStep.sourceModel,
+                                                 destinationModel: migrationStep.destinationModel)
+                var tempStoreURL: URL
+                if newStoreURL != oldStoreURL, index + 1 == migrationSteps.count {
+                    tempStoreURL = newStoreURL
+                } else {
+                    tempStoreURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+                }
+                
+                // Perform a migration
+                do {
+                    if #available(iOS 15, *) {
+                        try manager.migrateStore(from: currentURL, type: .sqlite, options: nil,
+                                                 mapping: migrationStep.mappingModel,
+                                                 to: tempStoreURL, type: .sqlite, options: nil)
                     } else {
-                        tempStoreURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
-                    }
-                    
-                    // Perform a migration
-                    do {
+                        // Fallback to previous version
                         try manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType,
                                                  options: nil, with: migrationStep.mappingModel,
                                                  toDestinationURL: tempStoreURL,
                                                  destinationType: NSSQLiteStoreType, destinationOptions: nil)
-                    } catch let error {
-                        // Timeout?
-                        if let error = error as? DataMigrationError, error == .timeout {
-                            restoreStore(storeURL: oldStoreURL)
-                            throw error
-                        }
-                        
-                        // Move store to directory of incompatible stores
-                        moveIncompatibleStore(storeURL: currentURL)
-                        logNotice("Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
+                    }
+                } catch let error {
+                    // Timeout?
+                    if let error = error as? DataMigrationError, error == .timeout {
+                        restoreStore(storeURL: oldStoreURL)
                         throw error
                     }
                     
-                    // Destroy intermediate step's store
-                    if ![oldStoreURL, newStoreURL].contains(currentURL) {
-                        NSPersistentStoreCoordinator.destroyStore(at: currentURL)
-                    }
-                    
-                    // Use URL of migrated store for next step
-                    currentURL = tempStoreURL
+                    // Move store to directory of incompatible stores
+                    moveIncompatibleStore(storeURL: currentURL)
+                    logNotice("Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
+                    throw error
                 }
                 
-                logNotice("Migration step \(index + 1)/\(migrationSteps.count): Completed")
-            } catch {
-                throw error
+                // Destroy intermediate step's store
+                if ![oldStoreURL, newStoreURL].contains(currentURL) {
+                    NSPersistentStoreCoordinator.destroyStore(at: currentURL)
+                }
+                
+                // Use URL of migrated store for next step
+                currentURL = tempStoreURL
             }
+            
+            logNotice("Migration step \(index + 1)/\(migrationSteps.count): Completed")
         }
         
         // Replace original store with new store if old and new URLs are identical
@@ -507,7 +510,7 @@ extension DataMigrator {
                                             object: nil, userInfo: userInfo)
         }
     }
-
+    
     func logNotice(_ message: String) {
         if #available(iOSApplicationExtension 14.0, *) {
             DataMigrator.logger.notice("\(message)")
@@ -515,12 +518,39 @@ extension DataMigrator {
             debugPrint("••> \(message)")
         }
     }
+    
+    //    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
+    //        if #available(iOSApplicationExtension 14.0, *) {
+    //            DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
+    //        } else {
+    //            debugPrint("\(file):\(function):\(line): \(message)")
+    //        }
+    //    }
+    
+    func queueName() -> String {
+        if let currentOperationQueue = OperationQueue.current {
+            if let currentDispatchQueue = currentOperationQueue.underlyingQueue {
+                return "dispatch queue: \(currentDispatchQueue.label.nonEmpty ?? currentDispatchQueue.description)"
+            }
+            else {
+                return "operation queue: \(currentOperationQueue.name?.nonEmpty ?? currentOperationQueue.description)"
+            }
+        }
+        else {
+            let currentThread = Thread.current
+            return "thread: \(currentThread.name?.nonEmpty ?? currentThread.description)"
+        }
+    }
+}
 
-//    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
-//        } else {
-//            debugPrint("\(file):\(function):\(line): \(message)")
-//        }
-//    }
+extension String {
+    /// Returns this string if it is not empty, else `nil`.
+    var nonEmpty: String? {
+        if self.isEmpty {
+            return nil
+        }
+        else {
+            return self
+        }
+    }
 }

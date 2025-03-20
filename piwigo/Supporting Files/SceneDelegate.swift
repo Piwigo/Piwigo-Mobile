@@ -59,6 +59,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if otherScenes.isEmpty {
                 // Check if a migration is necessary
                 let migrator = DataMigrator()
+#if DEBUG
+                // For debugging purposes | Force a migration
+                // Restore the database from the files available in the AppGroup Piwigo folder
+//                let SQLfileName = "DataModel.sqlite"
+//                let storeURL = DataDirectories.shared.appGroupDirectory
+//                    .appendingPathComponent(SQLfileName)
+//                migrator.restoreStore(storeURL: storeURL)
+#endif
                 if migrator.requiresMigration() {
                     // Tell user to wait until migration is completed and launch the migration
                     appDelegate.loadMigrationView(in: window, startMigrationWith: migrator)

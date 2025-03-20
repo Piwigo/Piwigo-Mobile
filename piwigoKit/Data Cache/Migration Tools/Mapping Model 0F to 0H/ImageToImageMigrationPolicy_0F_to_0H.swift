@@ -28,6 +28,11 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 
     /**
@@ -110,9 +115,16 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         
         // Associate new Image object to old one
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newImage, for: mapping)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.endInstanceCreation(forMapping: mapping, manager: manager)
+        
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
@@ -121,9 +133,25 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.endRelationshipCreation(forMapping: mapping, manager: manager)
+        
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
@@ -132,9 +160,16 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.end(mapping, manager: manager)
+        
         // Logs
         if #available(iOSApplicationExtension 14.0, *) {
             let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
@@ -143,5 +178,10 @@ class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }

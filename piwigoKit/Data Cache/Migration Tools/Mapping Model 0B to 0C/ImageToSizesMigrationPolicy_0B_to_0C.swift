@@ -29,6 +29,11 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     /**
@@ -97,7 +102,12 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         //            DataMigrator.logger.notice("\(self.logPrefix): \(newSizes)")
         //        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newSizes, for: mapping)
-    }
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+   }
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
@@ -108,6 +118,20 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -119,6 +143,11 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -130,5 +159,10 @@ class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }

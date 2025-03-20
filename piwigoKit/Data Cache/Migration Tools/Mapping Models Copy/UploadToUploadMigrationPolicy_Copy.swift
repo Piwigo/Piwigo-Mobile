@@ -28,6 +28,20 @@ class UploadToUploadMigrationPolicy_Copy: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+
+    override func createDestinationInstances(forSource sInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createDestinationInstances(forSource: sInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -39,6 +53,20 @@ class UploadToUploadMigrationPolicy_Copy: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -50,6 +78,11 @@ class UploadToUploadMigrationPolicy_Copy: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -61,5 +94,10 @@ class UploadToUploadMigrationPolicy_Copy: NSEntityMigrationPolicy {
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }
