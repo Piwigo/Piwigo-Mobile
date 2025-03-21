@@ -49,22 +49,20 @@ public class TagProvider: NSObject {
                 do {
                     // Decode the JSON into codable type TagJSON.
                     let decoder = JSONDecoder()
-                    let tagJSON = try decoder.decode(TagJSON.self, from: jsonData)
+                    let pwgData = try decoder.decode(TagJSON.self, from: jsonData)
 
                     // Piwigo error?
-                    if tagJSON.errorCode != 0 {
-                        let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
-                                                                     errorMessage: tagJSON.errorMessage)
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                         completionHandler(error)
                         return
                     }
 
                     // Import the tagJSON into Core Data.
-                    try self.importTags(from: tagJSON.data, asAdmin: asAdmin)
+                    try self.importTags(from: pwgData.data, asAdmin: asAdmin)
 
                 } catch {
                     // Alert the user if data cannot be digested.
-                    let error = error as NSError
                     completionHandler(error)
                     return
                 }
@@ -262,18 +260,17 @@ public class TagProvider: NSObject {
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
-                let tagJSON = try decoder.decode(TagAddJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(TagAddJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if tagJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: tagJSON.errorCode,
-                                                        errorMessage: tagJSON.errorMessage)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     completionHandler(error)
                     return
                 }
 
                 // Import the tagJSON into Core Data.
-                guard let tagId = tagJSON.data.id else {
+                guard let tagId = pwgData.data.id else {
                     completionHandler(TagError.missingData)
                     return
                 }
@@ -289,7 +286,6 @@ public class TagProvider: NSObject {
                 }
             } catch {
                 // Alert the user if data cannot be digested.
-                let error = error as NSError
                 completionHandler(error)
                 return
             }
@@ -316,7 +312,7 @@ public class TagProvider: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
             
             // Look for tags belonging to the currently active server
-            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+            fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -351,15 +347,15 @@ public class TagProvider: NSObject {
         fetchRequest.resultType = .countResultType
         
         // Select tags of the current server only
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Fetch number of objects
         do {
             let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
-        catch let error as NSError {
-            debugPrint("••> Tag count not fetched \(error), \(error.userInfo)")
+        catch let error {
+            debugPrint("••> Tag count not fetched \(error)")
         }
         return Int64.zero
     }
@@ -373,7 +369,7 @@ public class TagProvider: NSObject {
         let fetchRequest = Tag.fetchRequest()
 
         // Select tags of the current server only
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)

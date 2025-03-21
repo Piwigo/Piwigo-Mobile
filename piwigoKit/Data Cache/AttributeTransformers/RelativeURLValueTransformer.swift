@@ -20,7 +20,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     public override class var allowedTopLevelClasses: [AnyClass] {
-        return [NSURL.self]
+        return super.allowedTopLevelClasses + [NSURL.self]
     }
     
     public override func transformedValue(_ value: Any?) -> Any? {
@@ -34,7 +34,7 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
         // Return absolute URL from data containing relative URL
         if relativeURL.scheme == nil, relativeURL.host == nil,
            let path = relativeURL.absoluteString, path.isEmpty == false,
-           let absoluteURL = NSURL(string: NetworkVars.service + path) {
+           let absoluteURL = NSURL(string: NetworkVars.shared.service + path) {
             return absoluteURL
         }
         return relativeURL
@@ -46,8 +46,8 @@ public class RelativeURLValueTransformer: NSSecureUnarchiveFromDataTransformer {
         }
         
         // Store relative URL as Data to save space and because the scheme and host might changed in future
-        if var path = absoluteURL.absoluteString, path.hasPrefix(NetworkVars.service) {
-            path.removeFirst(NetworkVars.service.count)
+        if var path = absoluteURL.absoluteString, path.hasPrefix(NetworkVars.shared.service) {
+            path.removeFirst(NetworkVars.shared.service.count)
             let relativeURL = NSURL(string: path) ?? absoluteURL
             return super.reverseTransformedValue(relativeURL)
         }

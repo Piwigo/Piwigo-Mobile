@@ -81,8 +81,8 @@ extension AutoUploadViewController: UITableViewDelegate
         var footer = ""
         switch section {
         case 0:
-            if UploadVars.isAutoUploadActive {
-                if NetworkVars.serverFileTypes.contains("mp4") {
+            if UploadVars.shared.isAutoUploadActive {
+                if NetworkVars.shared.serverFileTypes.contains("mp4") {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
@@ -145,7 +145,7 @@ extension AutoUploadViewController: UITableViewDelegate
             case 1 /* Select Piwigo album*/ :
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                if categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
+                if categoryVC.setInput(parameter: UploadVars.shared.autoUploadCategoryId,
                                        for: .setAutoUploadAlbum) {
                     categoryVC.delegate = self
                     categoryVC.user = user
@@ -164,7 +164,7 @@ extension AutoUploadViewController: UITableViewDelegate
                 if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
                     tagsVC.delegate = self
                     tagsVC.user = user
-                    tagsVC.setPreselectedTagIds(Set(UploadVars.autoUploadTagIds
+                    tagsVC.setPreselectedTagIds(Set(UploadVars.shared.autoUploadTagIds
                                                         .components(separatedBy: ",")
                                                         .map { Int32($0) ?? nil }.compactMap {$0}))
                     navigationController?.pushViewController(tagsVC, animated: true)

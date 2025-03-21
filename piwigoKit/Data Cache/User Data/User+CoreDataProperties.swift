@@ -25,6 +25,7 @@ extension User {
     @NSManaged public var server: Server?
     @NSManaged public var albums: Set<Album>?
     @NSManaged public var uploadRights: String
+    @NSManaged public var downloadRights: Bool
     @NSManaged public var uploads: Set<Upload>?
     @NSManaged public var images: Set<Image>?
 

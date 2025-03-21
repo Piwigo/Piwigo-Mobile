@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
 "CoreData_MigrationProgress" = "Migratie in uitvoering...";
-"Coredata_MigrationPleaseWait" = "We migreren momenteel enkele van uw data. Wacht tot het is voltooid. Stop de applicatie niet.";
+"Coredata_MigrationPleaseWait" = "We zijn bezig met het migreren van een deel van je gegevens. Wacht tot het einde. Sluit de toepassing niet af of stop deze niet.";
+"CoreData_MigrationError_title" = "Migratie mislukt";
+"CoreData_MigrationError_generic" = "Er is een onverwachte fout opgetreden tijdens de migratie.";
+"CoreData_MigrationError_timeout" = "De app werd opgeschort tijdens het migreren van de database. Start de app opnieuw op en probeer het opnieuw.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "Bezig met aanmelden...";
 "login_connecting" = "Bezig met verbinden";
 "login_newSession" = "Sessie openen";
+"login_closeSession" = "Sessie sluiten...";
 "login_communityParameters" = "Gemeenschap Parameters";
 "login_serverParameters" = "Piwigo parameters";
 "login_connectionChanged" = "Verbinding gewijzigd!";

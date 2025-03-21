@@ -50,15 +50,15 @@ public class ImageProvider: NSObject {
         fetchRequest.resultType = .countResultType
         
         // Select images of the current server
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Fetch number of objects
         do {
             let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
-        catch let error as NSError {
-            debugPrint("••> Image count not fetched \(error), \(error.userInfo)")
+        catch let error {
+            debugPrint("••> Could not ftech image count, \(error)")
         }
         return Int64.zero
     }
@@ -73,7 +73,7 @@ public class ImageProvider: NSObject {
         /// — having an ID matching one of the given image IDs
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "pwgID IN %@", Array(imageIds)))
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create a fetched results controller and set its fetch request and context.
@@ -116,7 +116,8 @@ public class ImageProvider: NSObject {
      */
     public func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
                             sort: pwgImageSort, fromPage page:Int, perPage: Int,
-                            completion: @escaping (Set<Int64>, Int64, Error?) -> Void) {
+                            completed: @escaping (Set<Int64>, Int64, Bool) -> Void,
+                            failed: @escaping (Error) -> Void) {
         debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
         // Prepare parameters for collecting image data
         var method = pwgCategoriesGetImages
@@ -172,54 +173,60 @@ public class ImageProvider: NSObject {
                     
                     // Decode the JSON into codable type CategoriesGetImagesJSON.
                     let decoder = JSONDecoder()
-                    let imageJSON = try decoder.decode(CategoriesGetImagesJSON.self, from: jsonData)
+                    let pwgData = try decoder.decode(CategoriesGetImagesJSON.self, from: jsonData)
                     
                     // Piwigo error?
-                    if imageJSON.errorCode != 0 {
-                        let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-                                                                     errorMessage: imageJSON.errorMessage)
-                        completion(Set(), totalCount, error)
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failed(error)
                         return
                     }
                     
                     // Import the imageJSON into Core Data.
                     if [.rankAscending, .random].contains(sort) {
                         let startRank = Int64(page * perPage)
-                        try self.importImages(imageJSON.data, inAlbum: albumId,
+                        try self.importImages(pwgData.data, inAlbum: albumId,
                                               sort: sort, fromRank: startRank)
                     } else {
-                        try self.importImages(imageJSON.data, inAlbum: albumId, sort: sort)
+                        try self.importImages(pwgData.data, inAlbum: albumId, sort: sort)
                     }
                     
                     // Retrieve total number of images
                     if albumId == pwgSmartAlbum.favorites.rawValue {
-                        totalCount = imageJSON.paging?.count ?? Int64.zero
+                        totalCount = pwgData.paging?.count ?? Int64.zero
                     } else {
                         // Bug leading to server providing wrong total_count value
                         // Discovered in Piwigo 13.5.0, appeared in 13.0.0, fixed in 13.6.0.
                         // See https://github.com/Piwigo/Piwigo/issues/1871
-                        if NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
-                            NetworkVars.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
-                            totalCount = imageJSON.paging?.totalCount?.int64Value ?? Int64.zero
+                        if NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending ||
+                            NetworkVars.shared.pwgVersion.compare("13.5.0", options: .numeric) == .orderedDescending {
+                            totalCount = pwgData.paging?.totalCount?.int64Value ?? Int64.zero
                         } else {
-                            totalCount = imageJSON.paging?.count ?? Int64.zero
+                            totalCount = pwgData.paging?.count ?? Int64.zero
                         }
                     }
                     
                     // Retrieve IDs of fetched images
-                    let fetchedImageIds = Set(imageJSON.data.compactMap({$0.id}))
-                    completion(fetchedImageIds, totalCount, nil)
+                    let fetchedImageIds = Set(pwgData.data.compactMap({$0.id}))
+                    
+                    // Determine if the user has the right to download images
+                    var hasDownloadRight = false
+                    if pwgData.data.isEmpty == false,
+                       pwgData.data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
+                        hasDownloadRight = true
+                    }
+                    completed(fetchedImageIds, totalCount, hasDownloadRight)
                     
                 } catch {
                     // Alert the user if data cannot be digested.
-                    completion(Set(), Int64.zero, error as NSError)
+                    failed(error)
                 }
             }
         } failure: { error in
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            completion(Set(), Int64.zero, error)
+            failed(error)
         }
     }
     
@@ -237,7 +244,7 @@ public class ImageProvider: NSObject {
      */
     public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
                          completion: @escaping () -> Void,
-                         failure: @escaping (NSError) -> Void) {
+                         failure: @escaping (Error) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id" : imageId]
         
@@ -250,25 +257,23 @@ public class ImageProvider: NSObject {
             do {
                 // Decode the JSON into codable type ImagesGetInfoJSON.
                 let decoder = JSONDecoder()
-                let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if imageJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: imageJSON.errorCode,
-                                                                 errorMessage: imageJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Import the imageJSON into Core Data
                 // The provided sort option will not change the rankManual/rankRandom values.
-                try self.importImages([imageJSON.data], inAlbum: albumId, sort: .albumDefault)
+                try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
                 
                 completion()
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -494,8 +499,8 @@ public class ImageProvider: NSObject {
         
         // Select images of the current server not belonging to an album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.shared.username))
         andPredicates.append(NSPredicate(format: "albums.@count == 0"))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
@@ -514,7 +519,7 @@ public class ImageProvider: NSObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Image.pwgID), ascending: true)]
         
         // Select images of the current server
-        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.serverPath)
+        fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)

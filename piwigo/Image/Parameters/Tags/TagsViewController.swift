@@ -47,7 +47,7 @@ class TagsViewController: UITableViewController {
 
     // MARK: - Core Data Source
     lazy var tagPredicates: [NSPredicate] = {
-        let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.serverPath)]
+        let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)]
         return andPredicates
     }()
     

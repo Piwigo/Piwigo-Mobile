@@ -338,7 +338,7 @@ extension LocalImagesViewController
     func getImageIndex(for indexPath:IndexPath) -> Int {
         switch sortType {
         case .month:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByMonth[indexPath.section].first {
                     return index + indexPath.item
@@ -356,7 +356,7 @@ extension LocalImagesViewController
                 return 0
             }
         case .week:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByWeek[indexPath.section].first {
                     return index + indexPath.item
@@ -374,7 +374,7 @@ extension LocalImagesViewController
                 return 0
             }
         case .day:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 if let index = indexOfImageSortedByDay[indexPath.section].first {
                     return index + indexPath.item
@@ -392,7 +392,7 @@ extension LocalImagesViewController
                 return 0
             }
         case .none:
-            switch UploadVars.localImagesSort {
+            switch UploadVars.shared.localImagesSort {
             case .dateCreatedDescending:
                 return indexPath.item
             case .dateCreatedAscending:

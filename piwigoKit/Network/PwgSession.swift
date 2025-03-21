@@ -70,7 +70,7 @@ public class PwgSession: NSObject {
     lazy var activeDownloads: [URL : ImageDownload] = [ : ]
     
     // Remember if the session was opened with a WiFi
-    lazy var wasConnectedToWifi = NetworkVars.isConnectedToWiFi()
+    lazy var wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
     
     // Will accept the image formats supported by UIImage
     lazy var acceptedTypes: String = {

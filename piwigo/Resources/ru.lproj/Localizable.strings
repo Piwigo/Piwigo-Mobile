@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Произошла серьезная ошибка приложения при попытке Piwigo прочитать кэш данных. Поэтому был создан новый кэш.";
 "CoreDataFetch_DigestError" = "Не удалось обработать полученные данные.";
 "CoreData_MigrationProgress" = "Миграция в процессе...";
-"Coredata_MigrationPleaseWait" = "В настоящее время мы мигрируем некоторые ваши данные. Пожалуйста, подождите, пока он не будет завершён. Не закрывайте приложение.";
+"Coredata_MigrationPleaseWait" = "Мы находимся в процессе переноса некоторых ваших данных. Пожалуйста, подождите до конца. Не выходите из приложения и не завершайте его работу.";
+"CoreData_MigrationError_title" = "Миграция не удалась";
+"CoreData_MigrationError_generic" = "Во время миграции произошла непредвиденная ошибка.";
+"CoreData_MigrationError_timeout" = "Работа приложения была приостановлена во время миграции базы данных. Пожалуйста, перезапустите приложение и повторите попытку.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Сбросит имя пользователя без корректного имени пользователя.";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "Выполняется вход...";
 "login_connecting" = "Соединение";
 "login_newSession" = "Открытие сессии";
+"login_closeSession" = "Закрытие сессии...";
 "login_communityParameters" = "Параметры сообщества";
 "login_serverParameters" = "Параметры Piwigo";
 "login_connectionChanged" = "Соединение изменено!";

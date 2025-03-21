@@ -37,7 +37,7 @@ class ExternalDisplayUtilities {
         var pwgSize: pwgImageSize = .square, pwgURL: NSURL?
 
         // Square Size (should always be available)
-        if NetworkVars.hasSquareSizeImages,
+        if NetworkVars.shared.hasSquareSizeImages,
            let imageURL = sizes.square?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.square?.maxSize ?? 1
@@ -48,7 +48,7 @@ class ExternalDisplayUtilities {
         }
         
         // Thumbnail Size (should always be available)
-        if NetworkVars.hasThumbSizeImages,
+        if NetworkVars.shared.hasThumbSizeImages,
            let imageURL = sizes.thumb?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.thumb?.maxSize ?? 1
@@ -62,7 +62,7 @@ class ExternalDisplayUtilities {
         }
         
         // XX Small Size
-        if NetworkVars.hasXXSmallSizeImages,
+        if NetworkVars.shared.hasXXSmallSizeImages,
            let imageURL = sizes.xxsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xxsmall?.maxSize ?? 1
@@ -76,7 +76,7 @@ class ExternalDisplayUtilities {
         }
         
         // X Small Size
-        if NetworkVars.hasXSmallSizeImages,
+        if NetworkVars.shared.hasXSmallSizeImages,
            let imageURL = sizes.xsmall?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xsmall?.maxSize ?? 1
@@ -90,7 +90,7 @@ class ExternalDisplayUtilities {
         }
         
         // Small Size
-        if NetworkVars.hasSmallSizeImages,
+        if NetworkVars.shared.hasSmallSizeImages,
            let imageURL = sizes.small?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.small?.maxSize ?? 1
@@ -104,7 +104,7 @@ class ExternalDisplayUtilities {
         }
         
         // Medium Size (should always be available)
-        if NetworkVars.hasMediumSizeImages,
+        if NetworkVars.shared.hasMediumSizeImages,
            let imageURL = sizes.medium?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.medium?.maxSize ?? 1
@@ -118,7 +118,7 @@ class ExternalDisplayUtilities {
         }
         
         // Large Size
-        if NetworkVars.hasLargeSizeImages,
+        if NetworkVars.shared.hasLargeSizeImages,
            let imageURL = sizes.large?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.large?.maxSize ?? 1
@@ -132,7 +132,7 @@ class ExternalDisplayUtilities {
         }
         
         // X Large Size
-        if NetworkVars.hasXLargeSizeImages,
+        if NetworkVars.shared.hasXLargeSizeImages,
            let imageURL = sizes.xlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xlarge?.maxSize ?? 1
@@ -146,7 +146,7 @@ class ExternalDisplayUtilities {
         }
         
         // XX Large Size
-        if NetworkVars.hasXXLargeSizeImages,
+        if NetworkVars.shared.hasXXLargeSizeImages,
            let imageURL = sizes.xxlarge?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Max dimension of this image
             let size = sizes.xxlarge?.maxSize ?? 1

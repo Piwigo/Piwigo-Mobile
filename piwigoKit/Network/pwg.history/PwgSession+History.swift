@@ -23,13 +23,12 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type HistoryLogJSON.
                 let decoder = JSONDecoder()
-                let historyJSON = try decoder.decode(HistoryLogJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(HistoryLogJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if historyJSON.errorCode != 0 {
+                if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = self.localizedError(for: historyJSON.errorCode,
-                                                    errorMessage: historyJSON.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
@@ -37,7 +36,6 @@ public extension PwgSession {
                 completion()
             }
             catch {
-                let error = error as NSError
                 failure(error)
                 return
             }

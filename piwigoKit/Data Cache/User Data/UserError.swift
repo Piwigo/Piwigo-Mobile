@@ -9,6 +9,7 @@
 import Foundation
 
 public enum UserError: Error {
+    // App errors
     case emptyUsername
     case unknownUserStatus
     case creationError

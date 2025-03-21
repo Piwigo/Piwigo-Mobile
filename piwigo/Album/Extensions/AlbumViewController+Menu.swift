@@ -289,12 +289,12 @@ extension AlbumViewController: ImageHeaderDelegate
     
     func didSelectImagesOfSection(_ section: Int) {
         // Is the selection mode active?
-        if isSelect == false {
+        if inSelectionMode == false {
             // Hide buttons
             hideButtons()
             
             // Activate Images Selection mode
-            isSelect = true
+            inSelectionMode = true
             
             // Disable interaction with album cells
             for cell in collectionView?.visibleCells ?? []
@@ -329,10 +329,18 @@ extension AlbumViewController: ImageHeaderDelegate
                     else { return }
                     
                     // Select this image
-                    selectedImageIDs.insert(image.pwgID)
                     if let indexPath = diffableDataSource.indexPath(for: objectID),
                        let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        selectImage(image, isFavorite: cell.isFavorite)
                         cell.isSelection = true
+                    } else {
+                        // pwg.users.favorites… methods available from Piwigo version 2.10
+                        if hasFavorites {
+                            selectImage(image, isFavorite: (image.albums ?? Set<Album>())
+                                .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
+                        } else {
+                            selectImage(image, isFavorite: false)
+                        }
                     }
                 }
             } else {
@@ -346,10 +354,18 @@ extension AlbumViewController: ImageHeaderDelegate
                     if selectedImageIDs.contains(image.pwgID) { continue }
                     
                     // Select this image
-                    selectedImageIDs.insert(image.pwgID)
                     let indexPath = IndexPath(item: item, section: section)
                     if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                        selectImage(image, isFavorite: cell.isFavorite)
                         cell.isSelection = true
+                    } else {
+                        // pwg.users.favorites… methods available from Piwigo version 2.10
+                        if hasFavorites {
+                            selectImage(image, isFavorite: (image.albums ?? Set<Album>())
+                                .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
+                        } else {
+                            selectImage(image, isFavorite: false)
+                        }
                     }
                 }
             }
@@ -369,7 +385,7 @@ extension AlbumViewController: ImageHeaderDelegate
                     else { return }
                     
                     // Deselect this image
-                    selectedImageIDs.remove(image.pwgID)
+                    deselectImages(withIDs: Set([image.pwgID]))
                     if let indexPath = diffableDataSource.indexPath(for: objectID),
                        let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                         cell.isSelection = false
@@ -386,7 +402,7 @@ extension AlbumViewController: ImageHeaderDelegate
                     if selectedImageIDs.contains(image.pwgID) == false { continue }
                     
                     // Deselect this image
-                    selectedImageIDs.remove(image.pwgID)
+                    deselectImages(withIDs: Set([image.pwgID]))
                     let indexPath = IndexPath(item: item, section: section)
                     if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                         cell.isSelection = false
@@ -429,11 +445,12 @@ extension AlbumViewController
         updateImageCollection(afterFetchingRanks: shouldFetch)
         
         // Update menu
+        // Not all users can select/deselect images
         var children = [UIMenu?]()
-        if NetworkVars.userStatus == .guest {
-            children = [sortMenu(), viewOptionsMenu()]
-        } else {
+        if user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
             children = [selectMenu(), sortMenu(), viewOptionsMenu()]
+        } else {
+            children = [sortMenu(), viewOptionsMenu()]
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu

@@ -70,7 +70,6 @@ public class UploadManager: NSObject {
 
     // Constants used to manage background tasks
     public let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
-    public let maxNberOfUploadsPerBckgTask = 100            // i.e. 100 requests to be considered
     public let maxNberOfAutoUploadsPerCheck = 500           // i.e. do not add more than 500 requests at a time
 
     
@@ -111,14 +110,13 @@ public class UploadManager: NSObject {
     let decoder = JSONDecoder()
     
     /// Number of pending upload requests
-    public var nberOfUploadsToComplete = 0                  // Stored and used by the App delegate
     public func updateNberOfUploadsToComplete() {
-        // Update value
-        nberOfUploadsToComplete = (uploads.fetchedObjects ?? []).count
-        // Update badge and default album view button
-        DispatchQueue.main.async { [self] in
+        // Get number of uploads to complete
+        let nberOfUploadsToComplete = (uploads.fetchedObjects ?? []).count
+        // Store number, update badge and default album view button
+        DispatchQueue.main.async {
             // Update app badge and button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
             NotificationCenter.default.post(name: .pwgLeftUploads, object: nil, userInfo: uploadInfo)
         }
     }
@@ -169,7 +167,7 @@ public class UploadManager: NSObject {
 
 
     // MARK: - Core Data Object Context
-    lazy var bckgContext: NSManagedObjectContext = {
+    lazy var uploadBckgContext: NSManagedObjectContext = {
         return uploadProvider.bckgContext
     }()
 
@@ -202,15 +200,15 @@ public class UploadManager: NSObject {
         fetchRequest.sortDescriptors = sortDescriptors
 
         // Retrieves only non-completed upload requests
-        let variables = ["serverPath" : NetworkVars.serverPath,
-                         "userName"   : NetworkVars.username]
+        let variables = ["serverPath" : NetworkVars.shared.serverPath,
+                         "userName"   : NetworkVars.shared.username]
         fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
 
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
-                                                 managedObjectContext: self.uploadProvider.bckgContext,
+                                                 managedObjectContext: self.uploadBckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         uploads.delegate = self
@@ -229,15 +227,15 @@ public class UploadManager: NSObject {
         fetchRequest.sortDescriptors = sortDescriptors
 
         // Retrieves only completed upload requests
-        let variables = ["serverPath" : NetworkVars.serverPath,
-                         "userName"   : NetworkVars.username]
+        let variables = ["serverPath" : NetworkVars.shared.serverPath,
+                         "userName"   : NetworkVars.shared.username]
         fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
 
     public lazy var completed: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
-                                                 managedObjectContext: self.uploadProvider.bckgContext,
+                                                 managedObjectContext: self.uploadBckgContext,
                                                  sectionNameKeyPath: nil,
                                                  cacheName: nil)
         return uploads

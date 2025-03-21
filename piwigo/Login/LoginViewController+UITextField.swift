@@ -56,10 +56,11 @@ extension LoginViewController: UITextFieldDelegate
         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
 
         if textField == serverTextField {
-            // Disable Login button if URL invalid
-            let _ = saveServerAddress(finalString, andUsername: userTextField.text)
-            loginButton.isEnabled = true
-        } else if let httpAlertController = httpAlertController {
+            // URL valid ► Save server address and username
+            // URL invalid ► Disable Login button
+            loginButton.isEnabled = saveServerAddress(finalString, andUsername: userTextField.text)
+        }
+        else if let httpAlertController = httpAlertController {
             // Requesting autorisation to access non secure web site
             // or asking HTTP basic authentication credentials
             if (httpAlertController.textFields?.count ?? 0) > 0 {
@@ -90,28 +91,30 @@ extension LoginViewController: UITextFieldDelegate
         }
         else if textField == userTextField {
             // User entered username
-            let pwd = KeychainUtilities.password(forService: NetworkVars.serverPath,
+            let pwd = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
                                                  account: userTextField.text ?? "")
             passwordTextField.text = pwd
             passwordTextField.becomeFirstResponder()
         }
         else if textField == passwordTextField {
-            // User entered password —> Launch login
-            launchLogin()
+            // User entered password —> Launch login?
+            if saveServerAddress(serverTextField.text, andUsername: userTextField.text) {
+                loginButton.isEnabled = true
+                launchLogin()
+            } else {
+                // Incorrect URL
+                showIncorrectWebAddressAlert()
+                return false
+            }
         }
         return true
     }
 
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         if textField == serverTextField {
-            // Save server address and username to disk
-            let validURL = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
-            loginButton.isEnabled = validURL
-            if !validURL {
-                // Incorrect URL
-                showIncorrectWebAddressAlert()
-                return false
-            }
+            // URL valid ► Save server address and username
+            // URL invalid ► Disable Login button
+            loginButton.isEnabled = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
         }
         return true
     }

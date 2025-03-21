@@ -170,7 +170,7 @@ public class Upload: NSManagedObject {
         
         // Should we save changes now?
         if save {
-            try? self.managedObjectContext?.save()
+            self.managedObjectContext?.saveIfNeeded()
         }
     }
     
@@ -221,8 +221,8 @@ extension Upload {
             // Category ID of the album to upload to
             category: self.category,
             // Server parameters
-            serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
-            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.serverFileTypes,
+            serverPath: self.user?.server?.path ?? NetworkVars.shared.serverPath,
+            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.shared.serverFileTypes,
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
@@ -249,8 +249,8 @@ extension Upload {
             // Category ID of the album to upload to
             category: self.category,
             // Server parameters
-            serverPath: self.user?.server?.path ?? NetworkVars.serverPath,
-            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.serverFileTypes,
+            serverPath: self.user?.server?.path ?? NetworkVars.shared.serverPath,
+            serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.shared.serverFileTypes,
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename

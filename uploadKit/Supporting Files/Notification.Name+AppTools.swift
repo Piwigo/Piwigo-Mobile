@@ -11,10 +11,10 @@ import Foundation
 public extension Notification.Name {
     
     // MARK: - Recent albums
-    /// - Add category ID to the top of the list of recent albums
+    /// - Add category ID to the top of the list of recently used albums
     static let pwgAddRecentAlbum = Notification.Name("pwgNotificationAddRecentAlbum")
     
-    /// - Remove category ID from the list of recent albums
+    /// - Remove category ID from the list of recently used albums
     static let pwgRemoveRecentAlbum = Notification.Name("pwgNotificationRemoveRecentAlbum")
     
     

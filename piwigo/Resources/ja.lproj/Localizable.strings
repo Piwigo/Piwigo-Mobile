@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
 "CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
 "CoreData_MigrationProgress" = "移行中...";
-"Coredata_MigrationPleaseWait" = "現在、お客様のデータの一部を移行しています。完了するまでお待ちください。アプリケーションは終了させないでください。";
+"Coredata_MigrationPleaseWait" = "現在、一部のデータを移行中です。最後までお待ちください。アプリケーションは終了しないでください。";
+"CoreData_MigrationError_title" = "マイグレーション失敗";
+"CoreData_MigrationError_generic" = "移行中に予期しないエラーが発生しました。";
+"CoreData_MigrationError_timeout" = "データベースの移行中にアプリが停止しました。アプリを再起動して再試行してください。";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "有効なユーザー名がないユーザーアカウントは破棄されます。";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "ログイン中...";
 "login_connecting" = "接続しています";
 "login_newSession" = "セッションを開いています";
+"login_closeSession" = "セッションを閉じています...";
 "login_communityParameters" = "Communityの設定";
 "login_serverParameters" = "Piwigoの設定";
 "login_connectionChanged" = "接続が変更されました！";

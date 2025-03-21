@@ -42,7 +42,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // Check files compatibility with server
         var selectedFiles = [URL]()
-        let fileTypes = NetworkVars.serverFileTypes
+        let fileTypes = NetworkVars.shared.serverFileTypes
         for index in 0..<files.count {
             guard let fileUrl = files[index].fileURL else { continue }
             debugPrint("••> \(String(describing: files[index].typeIdentifier))")
@@ -85,7 +85,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         var selectedImages = [UploadProperties]()      // Array of images to upload
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
-            let error: NSError?, md5Sum: String!
+            let error: Error?, md5Sum: String!
             (md5Sum, error) = selectedFiles[idx].MD5checksum()
             if let error = error {
                 // Could not determine the MD5 checksum
@@ -117,7 +117,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             }
             
             // Create the upload request
-            let categoryId = UploadVars.autoUploadCategoryId
+            let categoryId = UploadVars.shared.autoUploadCategoryId
             var uploadProperties = UploadProperties(localIdentifier: identifier, category: categoryId)
             uploadProperties.md5Sum = md5Sum
             uploadProperties.fileName = selectedFiles[idx].lastPathComponent
@@ -162,7 +162,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
                 uploadOperations.append(resumeOperation)
 
                 // Add image preparation which will be followed by transfer operations
-                for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
+                for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
                     let uploadOperation = BlockOperation {
                         // Transfer image
                         UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()

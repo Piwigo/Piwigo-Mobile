@@ -11,7 +11,7 @@ import Foundation
 extension URL {
     // Return the MD5 checksum of a file
     /// https://developer.apple.com/forums/thread/115401
-    public func MD5checksum() -> (String, NSError?) {
+    public func MD5checksum() -> (String, Error?) {
         var fileData: Data = Data()
         do {
             try fileData = NSData(contentsOf: self, options: .alwaysMapped) as Data
@@ -20,7 +20,7 @@ extension URL {
             let md5Checksum = fileData.MD5checksum()
             return (md5Checksum, nil)
         }
-        catch let error as NSError {
+        catch let error {
             // Report failure
             return ("", error)
         }

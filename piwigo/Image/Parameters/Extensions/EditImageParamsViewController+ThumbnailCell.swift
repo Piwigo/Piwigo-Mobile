@@ -40,13 +40,9 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
 
     func didRenameFileOfImage(_ imageData: Image) {
         // Update data source
-        do {
-            try mainContext.save()
-        } catch let error as NSError {
-            debugPrint("Could not fetch \(error), \(error.userInfo)")
-        }
+        self.mainContext.saveIfNeeded()
 
         // Update parent image view
-        delegate?.didChangeImageParameters(imageData)
+        self.delegate?.didChangeImageParameters(imageData)
     }
 }

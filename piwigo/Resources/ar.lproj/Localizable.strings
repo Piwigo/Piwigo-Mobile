@@ -52,12 +52,15 @@
 "CoreDataStore_WarningTitle" = "تحذير";
 "CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
 "CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
-"CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"CoreData_MigrationProgress" = "جاري الانتقال ...";
+"Coredata_MigrationPleaseWait" = "نحن بصدد ترحيل بعض بياناتك. يرجى الانتظار حتى النهاية. لا تقم بإنهاء التطبيق أو إيقاف تشغيله.";
+"CoreData_MigrationError_title" = "فشل الترحيل";
+"CoreData_MigrationError_generic" = "حدث خطأ غير متوقع أثناء الهجرة.";
+"CoreData_MigrationError_timeout" = "تم تعليق التطبيق أثناء ترحيل قاعدة البيانات. الرجاء إعادة تشغيل التطبيق والمحاولة مرة أخرى.";
 
 // User objects
-"CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
-"CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
+"CoreDataFetch_UserMissingData" = "سيتم تجاهل حساب المستخدم الذي يفتقر إلى اسم مستخدم صالح.";
+"CoreDataFetch_UserUnknownStatus" = "أخفق الحصول على معلمات إضافة المجتمع. حاول تسجيل الدخول مرة أخرى.";
 "CoreData_UserCreateFailed" = "Failed to create a new User object.";
 
 // Album objects
@@ -67,7 +70,7 @@
 "CoreData_AlbumNotFound" = "الألبوم ليس في ذاكرة التخزين المؤقت الثابتة.";
 
 // Image objects
-"CoreDataFetch_ImageError" = "Fetch photos/videos error!";
+"CoreDataFetch_ImageError" = "خطأ في جلب الصور/الفيديوها!";
 "CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
 "CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
 
@@ -91,6 +94,7 @@
 "login_loggingIn" = "جاري تسجيل الدخول...";
 "login_connecting" = "جاري الإتصال";
 "login_newSession" = "الجلسة المفتوحة";
+"login_closeSession" = "اختتام الجلسة...";
 "login_communityParameters" = "المعلمات Community";
 "login_serverParameters" = "معايير Piwigo";
 "login_connectionChanged" = "تم تغيير الاتصال!";
@@ -109,21 +113,21 @@
 "serverMethodsError_title" = "طرق غير معروفة";
 "serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
 "serverInvalidMethodError_message" = "فشل استدعاء منهج الخادم.";
-"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
+"serverMissingParamError_message" = "فشل في تنفيذ طريقة الخادم مع المعلمة المفقودة.";
 "serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
-"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
+"serverUnknownError_message" = "حدث خطأ غير متوقع أثناء الاتصال بطريقة الخادم مع المعلمات المقدمة.";
 
 "loginError_title" = "أخفق تسجيل الدخول";
 "loginError_message" = "لا يتطابق اسم المستخدم وكلمة المرور مع عنوان الويب المحدد";
-"loginError_resetPwd" = "Would you like to reset your password from the web interface?";
+"loginError_resetPwd" = "هل ترغب في إعادة تعيين كلمة المرور الخاصة بك من واجهة الويب؟";
 "loginEmptyServer_title" = "أدخل عنوان ويب";
 "loginEmptyServer_message" = "يرجى تحديد بروتوكول وإدخال عنوان ويب Piwigo للمواصلة.";
 
 "serverConnectionError_title" = "فشل الإتصال";
 "serverConnectionError_message" = "تعذر إنشاء اتصال HTTPS آمن. يرجى التحقق من العنوان أو محاولة وضع HTTP غير المشفرة؟";
 
-"serverVersionOld_title" = "Server Update Available";
-"serverVersionOld_message" = "Your Piwigo server version is %@. Please ask the administrator to update it.";
+"serverVersionOld_title" = "تحديث السيرفر متاح";
+"serverVersionOld_message" = "إصدار خادم Piwigo الخاص بك هو %@. يرجى طلب من المسؤول تحديثه.";
 "serverVersionNotCompatible_title" = "الخادم غير متوافق";
 "serverVersionNotCompatible_message" = "إصدار خادم Piwigo هو %@. Piwigo موبايل يدعم فقط على الأقل نسخة من 2.8. يرجى تحديث الخادم الخاص بك لاستخدام Piwigo موبايل. هل ما زلت ترغب في المتابعة؟";
 
@@ -147,15 +151,15 @@
 "severalSubAlbumsCount" = "%@ sub-albums";
 
 // Albums view
-"categoryUpdating" = "Updating…";
+"categoryUpdating" = "يتم التحديث…";
 "categoryUpdatedOn" = "Updated on %@";
 "categoryUpdatedAt" = "Updated at %@";
 "categoryUpdatedNow" = "Updated just now";
 "categoryMainEmtpy" = "لا توجد ألبومات في Piwigo حتى الآن. يمكنك السحب إلى الأسفل لتحديث أو إعادة تسجيل الدخول.";
 "categoryImageList_selectButton" = "حدد";
-"categoryImageList_deselectButton" = "Deselect";
+"categoryImageList_deselectButton" = "إلغاء التحديد";
 "categoryImageList_noDataError" = "خطأ لا توجد بيانات";
-"categoryImageList_share" = "Share";
+"categoryImageList_share" = "مشاركة";
 "categoryImageList_favorite" = "Favorite";
 "categoryImageList_unfavorite" = "Unfavorite";
 
@@ -400,7 +404,7 @@
 
 // Image tags errors
 "tagsAddError_message" = "Failed to create new tag";
-"tagsAddError_title" = "Create Fail";
+"tagsAddError_title" = "Creation Failed";
 
 // Image select
 "selectImages" = "تحديد صور";
@@ -503,7 +507,7 @@
 "copySeveralImagesHUD_copying" = "Copying Photos…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
+"copyImageError_title" = "Copy Failed";
 "copySingleImageError_message" = "Failed to copy your photo";
 "copySeveralImagesError_message" = "Failed to copy some photos";
 
@@ -607,7 +611,7 @@
 "shareActivityCode_Other" = "Share with other apps";
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
-"shareFailError_title" = "Share Fail";
+"shareFailError_title" = "Share Failed";
 "shareMetadataError_message" = "Cannot strip private metadata";
 "shareFailError_tooLarge" = "Selection too large to share";
 

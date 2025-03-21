@@ -240,7 +240,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         do {
             try FileManager.default.moveItem(at: imageFileURL, to: newSourceURL)
         }
-        catch let error as NSError {
+        catch let error {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.

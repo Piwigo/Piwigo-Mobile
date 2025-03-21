@@ -49,7 +49,7 @@ class AlbumUtilities: NSObject {
     //        let paramsDict: [String : Any] = [
     //            "cat_id"            : 0,
     //            "recursive"         : true,
-    //            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
+    //            "faked_by_community": NetworkVars.shared.usesCommunityPluginV29 ? "false" : "true",
     //            "thumbnail_size"    : thumbnailSizeArg()
     //        ]
     //
@@ -65,7 +65,7 @@ class AlbumUtilities: NSObject {
     //
     //                // Piwigo error?
     //                if uploadJSON.errorCode != 0 {
-    //                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
+    //                    let error = PwgSession.shared.error(for: uploadJSON.errorCode,
     //                                                                 errorMessage: uploadJSON.errorMessage)
     //                    failure(error as NSError)
     //                    return
@@ -78,7 +78,7 @@ class AlbumUtilities: NSObject {
     //                let didUpdateCats = CategoriesData.sharedInstance().replaceAllCategories(albums)
     //
     //                // Check whether the auto-upload category still exists
-    //                let autoUploadCatId = UploadVars.autoUploadCategoryId
+    //                let autoUploadCatId = UploadVars.shared.autoUploadCategoryId
     //                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
     //                if indexOfAutoUpload == Int32.min {
     //                    UploadManager.shared.disableAutoUpload()
@@ -94,8 +94,8 @@ class AlbumUtilities: NSObject {
     //                }
     //
     //                // Update albums if Community extension installed (not needed for admins)
-    //                if !NetworkVars.hasAdminRights,
-    //                   NetworkVars.usesCommunityPluginV29 {
+    //                if !NetworkVars.shared.hasAdminRights,
+    //                   NetworkVars.shared.usesCommunityPluginV29 {
     //                    getCommunityAlbums { comAlbums in
     //                        // Loop over Community albums
     //                        for comAlbum in comAlbums {
@@ -125,13 +125,13 @@ class AlbumUtilities: NSObject {
     //    }
     
     static func create(withName name:String, description: String, status: String,
-                       inParentWithId parentCategeoryId: Int32,
+                       inAlbumWithId parentAlbumId: Int32,
                        completion: @escaping (Int32) -> Void,
-                       failure: @escaping (NSError) -> Void) {
+                       failure: @escaping (Error) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["name"    : name,
-                                          "parent"  : parentCategeoryId,
+                                          "parent"  : parentAlbumId,
                                           "comment" : description,
                                           "status"  : status]
         
@@ -143,19 +143,18 @@ class AlbumUtilities: NSObject {
             do {
                 // Decode the JSON into codable type CategoriesAddJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(CategoriesAddJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CategoriesAddJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Successful?
-                if let catId = uploadJSON.data.id, catId != Int32.min {
-                    // Album successfully created ▶ Add it to list of recent albums
+                if let catId = pwgData.data.id, catId != Int32.min {
+                    // Album successfully created ▶ Add it to list of recently used albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catId)]
                     NotificationCenter.default.post(name: Notification.Name.pwgAddRecentAlbum,
                                                     object: nil, userInfo: userInfo)
@@ -163,11 +162,10 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not create album
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -180,7 +178,7 @@ class AlbumUtilities: NSObject {
     
     static func setInfos(_ albumId: Int32, withName name:String, description: String,
                          completion: @escaping () -> Void,
-                         failure: @escaping (NSError) -> Void) {
+                         failure: @escaping (Error) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
@@ -195,28 +193,26 @@ class AlbumUtilities: NSObject {
             do {
                 // Decode the JSON into codable type CategoriesSetInfoJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(CategoriesSetInfoJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CategoriesSetInfoJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Successful?
-                if uploadJSON.success {
+                if pwgData.success {
                     // Album successfully updated
                     completion()
                 }
                 else {
                     // Could not set album data
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -229,11 +225,11 @@ class AlbumUtilities: NSObject {
     
     static func move(_ albumId: Int32, intoAlbumWithId newParentId: Int32,
                      completion: @escaping () -> Void,
-                     failure: @escaping (NSError) -> Void) {
+                     failure: @escaping (Error) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "parent"      : newParentId,
-                                          "pwg_token"   : NetworkVars.pwgToken]
+                                          "pwg_token"   : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
@@ -243,28 +239,26 @@ class AlbumUtilities: NSObject {
             do {
                 // Decode the JSON into codable type CategoriesMoveJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(CategoriesMoveJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CategoriesMoveJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Successful?
-                if uploadJSON.success {
+                if pwgData.success {
                     // Album successfully moved
                     completion()
                 }
                 else {
                     // Could not move album
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -277,7 +271,7 @@ class AlbumUtilities: NSObject {
     
     static func calcOrphans(_ catID: Int32,
                             completion: @escaping (Int64) -> Void,
-                            failure: @escaping (NSError) -> Void) {
+                            failure: @escaping (Error) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id": catID]
         
@@ -289,27 +283,25 @@ class AlbumUtilities: NSObject {
             do {
                 // Decode the JSON into codable type CategoriesCalcOrphansJSON.
                 let decoder = JSONDecoder()
-                let orphansJSON = try decoder.decode(CategoriesCalcOrphansJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CategoriesCalcOrphansJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if orphansJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: orphansJSON.errorCode,
-                                                                 errorMessage: orphansJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Data retrieved successfully?
-                guard let nberOrphans = orphansJSON.data?.first?.nbImagesBecomingOrphan else {
+                guard let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan else {
                     // Could not retrieve number of orphans
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                     return
                 }
                 
                 completion(nberOrphans)
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -322,11 +314,11 @@ class AlbumUtilities: NSObject {
     
     static func delete(_ catID: Int32, inMode mode: pwgAlbumDeletionMode,
                        completion: @escaping () -> Void,
-                       failure: @escaping (NSError) -> Void) {
+                       failure: @escaping (Error) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : catID,
                                           "photo_deletion_mode" : mode.pwgArg,
-                                          "pwg_token"           : NetworkVars.pwgToken]
+                                          "pwg_token"           : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
@@ -336,19 +328,18 @@ class AlbumUtilities: NSObject {
             do {
                 // Decode the JSON into codable type CategoriesDeleteJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(CategoriesDeleteJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CategoriesDeleteJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Successful?
-                if uploadJSON.success {
-                    // Album successfully deleted ▶ Remove category from list of recent albums
+                if pwgData.success {
+                    // Album successfully deleted ▶ Remove category ID from list of recently used albums
                     let userInfo = ["categoryId" : NSNumber.init(value: catID)]
                     NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
                                                     object: nil, userInfo: userInfo)
@@ -356,11 +347,10 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not delete album
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in
@@ -373,7 +363,7 @@ class AlbumUtilities: NSObject {
     
     static func setRepresentative(_ albumData: Album, with imageData: Image,
                                   completion: @escaping () -> Void,
-                                  failure: @escaping (NSError) -> Void) {
+                                  failure: @escaping (Error) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
                                           "image_id"    : imageData.pwgID]
@@ -386,18 +376,17 @@ class AlbumUtilities: NSObject {
             do {
                 // Decode the JSON into codable type CategoriesSetRepresentativeJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(CategoriesSetRepresentativeJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CategoriesSetRepresentativeJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Successful?
-                if uploadJSON.success {
+                if pwgData.success {
                     // Album thumbnail successfully changed ▶ Update catagory in cache
                     albumData.thumbnailId = imageData.pwgID
                     let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
@@ -406,11 +395,10 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album thumbnail
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in

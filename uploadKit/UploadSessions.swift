@@ -37,7 +37,7 @@ public class UploadSessions: NSObject {
         
         /// The foreground session should wait for connectivity to become available (can be retried)
         /// only when the app uses the pwg.images.uploadAsync method.
-//        config.waitsForConnectivity = NetworkVars.usesUploadAsync
+//        config.waitsForConnectivity = NetworkVars.shared.usesUploadAsync
         
         /// Connections should not use the network when the user has specified Low Data Mode
 //        if #available(iOS 13.0, *) {
@@ -45,7 +45,7 @@ public class UploadSessions: NSObject {
 //        }
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-        config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
+        config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 minute)
         config.timeoutIntervalForRequest = 60
@@ -89,7 +89,7 @@ public class UploadSessions: NSObject {
         config.shouldUseExtendedBackgroundIdleMode = true
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-        config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
+        config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 day)
         config.timeoutIntervalForRequest = 1 * 24 * 60 * 60
@@ -108,7 +108,7 @@ public class UploadSessions: NSObject {
         /// We send a custom cookie to avoid a reject by ModSecurity if it is set to reject requests not containing cookies.
         config.httpShouldSetCookies = false
         config.httpCookieAcceptPolicy = .never
-        if let validUrl = URL(string: NetworkVars.service) {
+        if let validUrl = URL(string: NetworkVars.shared.service) {
             var params: [HTTPCookiePropertyKey : Any] = [
                 HTTPCookiePropertyKey.version           : NSString("0"),
                 HTTPCookiePropertyKey.name              : NSString("pwg_method"),
@@ -118,7 +118,7 @@ public class UploadSessions: NSObject {
                 HTTPCookiePropertyKey.expires           : NSDate(),
                 HTTPCookiePropertyKey.discard           : NSString("TRUE")
             ]
-            if NetworkVars.serverProtocol == "https" {
+            if NetworkVars.shared.serverProtocol == "https" {
                 params[HTTPCookiePropertyKey.secure] = "TRUE"
             }
             if let cookie = HTTPCookie(properties: params) {
@@ -197,7 +197,7 @@ extension UploadSessions: URLSessionDelegate {
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-              protectionSpace.host.contains(NetworkVars.domain()) else {
+              protectionSpace.host.contains(NetworkVars.shared.domain()) else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -210,7 +210,7 @@ extension UploadSessions: URLSessionDelegate {
 
         // Check validity of certificate
         if KeychainUtilities.isSSLtransactionValid(inState: serverTrust,
-                                                   for: NetworkVars.domain()) {
+                                                   for: NetworkVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -230,7 +230,7 @@ extension UploadSessions: URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.domain()) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(certificate, for: NetworkVars.shared.domain()) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -272,8 +272,8 @@ extension UploadSessions: URLSessionTaskDelegate {
         }
         
         // Get HTTP basic authentification credentials
-        let account = NetworkVars.httpUsername
-        let password = KeychainUtilities.password(forService: NetworkVars.service, account: account)
+        let account = NetworkVars.shared.httpUsername
+        let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: account)
         if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)
             return

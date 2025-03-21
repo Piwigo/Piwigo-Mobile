@@ -47,8 +47,8 @@ class UploadQueueViewController: UIViewController {
         
         // Retrieves non-completed upload requests:
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         var unwantedStates: [pwgUploadState] = [.finished, .moderated]
         andPredicates.append(NSPredicate(format: "NOT (requestState IN %@)", unwantedStates.map({$0.rawValue})))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -234,11 +234,11 @@ class UploadQueueViewController: UIViewController {
             // Anything to do?
             if queueTableView?.window == nil { return }
             // No upload request in the queue?
-            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+            if UploadVars.shared.nberOfUploadsToComplete == 0 {
                 queueTableView.tableHeaderView = nil
                 UIApplication.shared.isIdleTimerDisabled = false
             }
-            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
@@ -386,7 +386,7 @@ class UploadQueueViewController: UIViewController {
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
                     // Delete failed uploads
                     impossibleUploads.forEach({ self.mainContext.delete($0) })
-                    try? self.mainContext.save()
+                    self.mainContext.saveIfNeeded()
                     // Resume failed uploads
                     UploadManager.shared.backgroundQueue.async {
                         // Update number of uploads

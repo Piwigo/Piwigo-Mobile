@@ -63,7 +63,8 @@ extension NSManagedObjectContext {
     /// - Returns: `true` if a save was needed. Otherwise, `false`.
     public func saveIfNeeded() {
         // Anything to save?
-        guard hasChanges else { return }
+        guard hasChanges
+        else { return }
         
         // Save changes
         do {
@@ -71,7 +72,20 @@ extension NSManagedObjectContext {
         }
         catch let error as NSError {
             // Will try later…
-            debugPrint("Could not save context: \(error), \(error.userInfo)")
+            debugPrint("••> Could not save context: \(error.localizedDescription)")
+            // Multiple errors?
+            if error.code == NSValidationMultipleErrorsError {
+                let detailedErrors: [NSError] = error.userInfo[NSDetailedErrorsKey] as? [NSError] ?? []
+                let errorCount = detailedErrors.count
+                debugPrint("••> \(errorCount) validation error\(errorCount == 1 ? "" : "s"):")
+                var printedErros: Set<String> = []
+                for detailError in detailedErrors {
+                    guard !printedErros.contains(detailError.localizedDescription)
+                    else { continue }
+                    printedErros.insert(detailError.localizedDescription)
+                    debugPrint("••> - \(detailError.localizedDescription)")
+                }
+            }
         }
     }
 }

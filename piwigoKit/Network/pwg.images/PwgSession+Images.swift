@@ -22,25 +22,23 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type ImagesExistJSON.
                 let decoder = JSONDecoder()
-                let imageJSON = try decoder.decode(ImagesExistJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(ImagesExistJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if imageJSON.errorCode != 0 {
+                if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = self.localizedError(for: imageJSON.errorCode,
-                                                    errorMessage: imageJSON.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
                     return
                 }
 
-                if let imageID = imageJSON.data.first(where: {$0.md5sum == md5sum})?.imageID {
+                if let imageID = pwgData.data.first(where: {$0.md5sum == md5sum})?.imageID {
                     completion(imageID)
                 } else {
                     completion(nil)
                 }
             }
             catch {
-                let error = error as NSError
                 failure(error)
                 return
             }
@@ -54,7 +52,7 @@ public extension PwgSession {
 
     func setInfos(with paramsDict: [String: Any],
                   completion: @escaping () -> Void,
-                  failure: @escaping (NSError) -> Void) {
+                  failure: @escaping (Error) -> Void) {
         postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                     countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { jsonData in
@@ -62,28 +60,26 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type ImagesSetInfoJSON.
                 let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if uploadJSON.errorCode != 0 {
-                    let error = self.localizedError(for: uploadJSON.errorCode,
-                                                    errorMessage: uploadJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Successful?
-                if uploadJSON.success {
+                if pwgData.success {
                     // Image properties successfully updated ▶ update image
                     completion()
                 }
                 else {
                     // Could not set image parameters
-                    failure(PwgSessionError.unexpectedError as NSError)
+                    failure(PwgSessionError.unexpectedError)
                 }
             } catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in

@@ -10,7 +10,9 @@
             <plist version="1.0">
                 <dict>
                     <key>NSPersistenceFrameworkVersion</key>
-                    <integer>1251</integer>
+                    <integer>1419</integer>
+                    <key>NSStoreModelVersionChecksumKey</key>
+                    <string>bMpud663vz0bXQE24C6Rh4MvJ5jVnzsD2sI3njZkKbc=</string>
                     <key>NSStoreModelVersionHashes</key>
                     <dict>
                         <key>XDDevAttributeMapping</key>
@@ -204,23 +206,25 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z215"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z135">
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.UserToUserMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">User</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">4</attribute>
         <attribute name="destinationname" type="string">User</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z107"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z165 z121 z169 z200 z204"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z151 z103 z159 z194"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z169 z204 z165 z121 z200"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z103 z151 z194 z159"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z136">
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.AlbumToAlbumMigrationPolicy_0F_to_0G</attribute>
         <attribute name="sourcename" type="string">Album</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">5</attribute>
         <attribute name="destinationname" type="string">Album</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z107"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z182 z115 z128 z104 z217 z164 z163 z137 z149 z144 z153 z180 z207 z109 z203"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z153 z163 z109 z149 z137 z144 z203 z180 z128 z164 z115 z182 z217 z104 z207"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z138 z210"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z137">
@@ -249,14 +253,15 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z179"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z142">
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.UploadToUploadMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">Upload</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">6</attribute>
         <attribute name="destinationname" type="string">Upload</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z107"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z205 z150 z201 z183 z198 z178 z216 z188 z102 z147 z124 z186 z173 z176 z117 z118 z122 z116 z166 z132 z157 z129 z191 z105 z211 z174"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z131 z145"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z188 z105 z166 z150 z198 z191 z205 z201 z174 z117 z173 z116 z216 z176 z102 z183 z178 z157 z124 z129 z211 z132 z122 z118 z186 z147"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z145 z131"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z143">
         <attribute name="name" type="string">numberOfImagesUnderTag</attribute>
@@ -335,13 +340,14 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z196"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z161">
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.ServerToServerMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">Server</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">2</attribute>
         <attribute name="destinationname" type="string">Server</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z107"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z146 z202 z199 z175 z184"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z184 z146 z175 z199 z202"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z106 z140 z206"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z162">
@@ -420,13 +426,14 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z142"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z179">
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.TagToTagMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">Tag</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">3</attribute>
         <attribute name="destinationname" type="string">Tag</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z107"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z141 z148 z143 z125"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z125 z143 z148 z141"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z167 z123 z208"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z180">
@@ -597,14 +604,15 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGsCwwXGB0eJiswMTQ4VSRudWxs1Q0ODxAREhMUFRZZTlNP
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z215"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z215">
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.ImageToImageMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">Image</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">7</attribute>
         <attribute name="destinationname" type="string">Image</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z107"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z152 z212 z134 z197 z162 z214 z155 z218 z172 z158 z187 z170 z110 z156 z114 z130 z209 z127 z189"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z154 z193 z181 z133"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z130 z212 z187 z110 z156 z214 z170 z158 z134 z197 z152 z172 z209 z162 z114 z218 z155 z127 z189"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z181 z133 z154 z193"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z216">
         <attribute name="name" type="string">fileName</attribute>

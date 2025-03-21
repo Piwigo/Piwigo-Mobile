@@ -149,11 +149,11 @@ class ImageDetailViewController: UIViewController
         
         // Look for the first available image of lower resolution
         if previewSize == .fullRes {
-            if NetworkVars.hasXXLargeSizeImages {
+            if NetworkVars.shared.hasXXLargeSizeImages {
                 previewSize = .xxLarge
-            } else if NetworkVars.hasXLargeSizeImages {
+            } else if NetworkVars.shared.hasXLargeSizeImages {
                 previewSize = .xLarge
-            } else if NetworkVars.hasLargeSizeImages {
+            } else if NetworkVars.shared.hasLargeSizeImages {
                 previewSize = .large
             } else {
                 previewSize = .medium
@@ -254,7 +254,9 @@ class ImageDetailViewController: UIViewController
                 let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 cachedImage = self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
             }
-            guard let cachedImage = cachedImage else {
+            guard let cachedImage = cachedImage,
+                  let imageSize = imageView?.image?.size
+            else {
                 // Reset image view with rotated image
                 self.didRotateImage = false
                 // Hide HUD
@@ -263,10 +265,11 @@ class ImageDetailViewController: UIViewController
             }
             
             // Rotate image keeping it displayed in fullscreen
-            let aspectRatio = cachedImage.size.height / cachedImage.size.width
+            let widthScale = viewSize.width / imageSize.height
+            let heightScale = viewSize.height / imageSize.width
+            let newMinScale = min(widthScale, heightScale)
             UIView.animate(withDuration: 0.4) { [self] in
-                let scale = scrollView.minimumZoomScale * aspectRatio
-                self.imageView.transform = CGAffineTransform(rotationAngle: -angle).scaledBy(x: scale, y: scale)
+                self.imageView.transform = CGAffineTransform(rotationAngle: -angle).scaledBy(x: newMinScale, y: newMinScale)
             }
             completion: { [self] _ in
                 // Reset image view with rotated image

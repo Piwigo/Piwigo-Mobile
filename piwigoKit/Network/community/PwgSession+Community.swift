@@ -12,7 +12,7 @@ import Foundation
 public extension PwgSession {
     
     func communityGetStatus(completion: @escaping () -> Void,
-                            failure: @escaping (NSError) -> Void) {
+                            failure: @escaping (Error) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Retrieve community status.")
         }
@@ -24,28 +24,28 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type CommunitySessionGetStatusJSON.
                 let decoder = JSONDecoder()
-                let statusJSON = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
 
                 // Piwigo error?
-                if statusJSON.errorCode != 0 {
-                    let error = self.localizedError(for: statusJSON.errorCode,
-                                                    errorMessage: statusJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
                 // Update user's status
-                guard statusJSON.realUser.isEmpty == false,
-                      let userStatus = pwgUserStatus(rawValue: statusJSON.realUser) else {
-                    failure(UserError.unknownUserStatus as NSError)
+                guard pwgData.realUser.isEmpty == false,
+                      let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
+                else {
+                    failure(UserError.unknownUserStatus)
                     return
                 }
-                NetworkVars.userStatus = userStatus
+                NetworkVars.shared.userStatus = userStatus
                 completion()
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
+                let error = error
                 failure(error)
             }
         } failure: { error in

@@ -57,7 +57,7 @@ class SettingsViewController: UIViewController {
     var editedRow: IndexPath?
     
     // The image sort type is returned with album data since Piwigo 14.0.
-    lazy var defaultSortUnknown: Bool = NetworkVars.pwgVersion
+    lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
     
     // Present image title and album description options on iOS 12.0 - 13.x
@@ -185,15 +185,15 @@ class SettingsViewController: UIViewController {
         applyColorPalette()
         
         // Check whether we should display the max size options
-        if UploadVars.resizeImageOnUpload,
-           UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
-            UploadVars.resizeImageOnUpload = false
+        if UploadVars.shared.resizeImageOnUpload,
+           UploadVars.shared.photoMaxSize == 0, UploadVars.shared.videoMaxSize == 0 {
+            UploadVars.shared.resizeImageOnUpload = false
         }
         
         // Check whether we should show the prefix option
-        if UploadVars.prefixFileNameBeforeUpload,
-           UploadVars.defaultPrefix.isEmpty {
-            UploadVars.prefixFileNameBeforeUpload = false
+        if UploadVars.shared.prefixFileNameBeforeUpload,
+           UploadVars.shared.defaultPrefix.isEmpty {
+            UploadVars.shared.prefixFileNameBeforeUpload = false
         }
     }
     
@@ -393,12 +393,10 @@ class SettingsViewController: UIViewController {
         let now = Date.timeIntervalSinceReferenceDate
         user?.lastUsed = now
         user?.server?.lastUsed = now
-        if mainContext.hasChanges {
-            try? mainContext.save()
-        }
+        mainContext.saveIfNeeded()
         
         // Guest user?
-        if NetworkVars.username.isEmpty || NetworkVars.username.lowercased() == "guest" {
+        if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }
@@ -410,18 +408,29 @@ class SettingsViewController: UIViewController {
         })
         
         let logoutAction = UIAlertAction(title: NSLocalizedString("logoutConfirmation_title", comment: "Logout"), style: .destructive, handler: { action in
+            // Show HUD
+            let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
+            self.navigationController?.showHUD(withTitle: title)
+
+            // Perform Logout
             PwgSession.shared.sessionLogout {
                 // Close session
-                DispatchQueue.main.async {
-                    ClearCache.closeSession()
+                DispatchQueue.main.async { [self] in
+                    self.navigationController?.hideHUD {
+                        ClearCache.closeSession()
+                    }
                 }
             } failure: { error in
                 // Failed! This may be due to the replacement of a self-signed certificate.
                 // So we inform the user that there may be something wrong with the server,
                 // or simply a connection drop.
-                self.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
-                                        message: error.localizedDescription) {
-                    ClearCache.closeSession()
+                DispatchQueue.main.async { [self] in
+                    self.navigationController?.hideHUD {
+                        self.navigationController?.dismissPiwigoError(withTitle: NSLocalizedString("logoutFail_title", comment: "Logout Failed"),
+                                                                      message: error.localizedDescription) {
+                            ClearCache.closeSession()
+                        }
+                    }
                 }
             }
         })

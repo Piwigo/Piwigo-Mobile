@@ -74,6 +74,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register launch handlers for tasks if using iOS 13+
         /// Will have to check if pwg.images.uploadAsync is available
         if #available(iOS 13.0, *) {
+            // Don't init UploadManager when registering bckg tasks
+            // because a database migration might be called in parallel
             registerBgTasks()
         }
 
@@ -89,21 +91,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Check if a migration is necessary
             let migrator = DataMigrator()
             if migrator.requiresMigration() {
-                // Tell user to wait until migration is completed
-                loadMigrationView(in: window)
-
-                // Perform migration in background thread to prevent triggering watchdog after 10 s
-                DispatchQueue(label: "com.piwigo.migrator", qos: .userInitiated).async { [self] in
-                    // Perform migration
-                    migrator.migrateStore()
-
-                    // Present views
-                    DispatchQueue.main.async { [self] in
-                        // Create login view
-                        loadLoginView(in: window)
-                        addPrivacyProtectionIfNeeded()
-                    }
-                }
+                // Tell user to wait until migration is completed and launch the migration
+                loadMigrationView(in: window, startMigrationWith: migrator)
             } else {
                 // Create login view
                 loadLoginView(in: window)
@@ -124,7 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    private func addPrivacyProtectionIfNeeded() {
+    func addPrivacyProtectionIfNeeded() {
         // Blur view if the App Lock is enabled
         /// The passcode window is not presented  so that the app
         /// does not request the passcode until it is put into the background.
@@ -224,7 +213,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // This call is then followed by a call to applicationDidBecomeActive().
         
         // Flag used to force relogin at start
-        NetworkVars.applicationShouldRelogin = true
+        NetworkVars.shared.applicationShouldRelogin = true
     }
         
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -310,8 +299,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-        // Save cached data in the main thread
-        mainContext.saveIfNeeded()
+        // Should we save changes in cache?
+        if AppVars.shared.isMigrationRunning == false {
+            // Save cached data in the main thread
+            mainContext.saveIfNeeded()
+        }
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
@@ -322,8 +314,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate.
         // Save data if appropriate. See also applicationDidEnterBackground:.
         
-        // Save cached data in the main thread
-        mainContext.saveIfNeeded()
+        // Should we save changes in cache?
+        if AppVars.shared.isMigrationRunning == false {
+            // Save cached data in the main thread
+            mainContext.saveIfNeeded()
+        }
 
         // Cancel tasks and close session
         PwgSession.shared.dataSession.invalidateAndCancel()
@@ -343,7 +338,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
 
-    // MARK: - Background Uploading
+    // MARK: - Background Task | Uploads
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession
                         identifier: String, completionHandler: @escaping () -> Void) {
         debugPrint("    > Handle events for background session with ID: \(identifier)");
@@ -386,10 +381,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13.0, *)
     func scheduleNextUpload() {
-        // Schedule upload not earlier than 1 minute from now
+        // Schedule upload not earlier than 15 minute from now
         // Uploading requires network connectivity and external power
         let request = BGProcessingTaskRequest.init(identifier: pwgBackgroundTaskUpload)
-        request.earliestBeginDate = Date.init(timeIntervalSinceNow: 1 * 60)
+        request.earliestBeginDate = Date.init(timeIntervalSinceNow: 15 * 60)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = true
         
@@ -404,8 +399,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13.0, *)
     private func handleNextUpload(task: BGProcessingTask) {
+        // Don't call UploadManager as it might happen during database migration
         // Schedule the next upload if needed
-        if UploadManager.shared.nberOfUploadsToComplete > 0 {
+        if UploadVars.shared.nberOfUploadsToComplete > 0 {
             debugPrint("    > Schedule next uploads.")
             scheduleNextUpload()
         }
@@ -440,7 +436,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         uploadOperations.append(resumeOperation)
 
         // Add image preparation which will be followed by transfer operations
-        for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
+        for _ in 0..<UploadVars.shared.maxNberOfUploadsPerBckgTask {
             let uploadOperation = BlockOperation {
                 // Prepare then transfer image
                 UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
@@ -475,15 +471,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func updateBadge(_ notification: Notification) {
-        guard let nberOfUploadsToComplete = notification.userInfo?["nberOfUploadsToComplete"] as? Int
+        // Verify user info
+        guard let nberOfUploads = notification.userInfo?["nberOfUploadsToComplete"] as? Int
         else { preconditionFailure("!!! Expected an integer !!!") }
+        
+        // Store number of upload requests for next app launch
+        UploadVars.shared.nberOfUploadsToComplete = nberOfUploads
+        
+        // Update the badge of the app
         if #available(iOS 16, *) {
-            UNUserNotificationCenter.current().setBadgeCount(nberOfUploadsToComplete)
+            UNUserNotificationCenter.current().setBadgeCount(nberOfUploads)
         } else {
-            UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+            UIApplication.shared.applicationIconBadgeNumber = nberOfUploads
         }
-        // Re-enable sleep mode if uploads are completed
-        if nberOfUploadsToComplete == 0 {
+        
+        // Always re-enable sleep mode if uploads are completed
+        if nberOfUploads == 0 {
             UIApplication.shared.isIdleTimerDisabled = false
         }
     }
@@ -675,30 +678,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     // MARK: - Data Migration View
-    private var _migrationVC: DataMigrationViewController!
-    var migrationVC: DataMigrationViewController {
-        // Already existing?
-        if _migrationVC != nil { return _migrationVC }
+    func loadMigrationView(in window: UIWindow?, startMigrationWith migrator: DataMigrator? = nil) {
+        guard let window = window
+        else { preconditionFailure("!!! No UIWindow !!!") }
         
         // Create data migration view
         let migrationSB = UIStoryboard(name: "DataMigrationViewController", bundle: nil)
-        guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController else {
-            fatalError("!!! No DataMigrationViewController !!!")
-        }
-        _migrationVC = migrationVC
-        return _migrationVC
-    }
-    
-    func loadMigrationView(in window: UIWindow?) {
-        guard let window = window else { return }
+        guard let migrationVC = migrationSB.instantiateViewController(withIdentifier: "DataMigrationViewController") as? DataMigrationViewController
+        else { preconditionFailure("!!! No DataMigrationViewController !!!") }
+        migrationVC.migrator = migrator
         
-        // Load Login view
-        let nav = LoginNavigationController(rootViewController: migrationVC)
+        // Show migration view in provided window
+        let nav = UINavigationController(rootViewController: migrationVC)
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
         if #available(iOS 13.0, *) {
-            // Transition to login view
+            // Transition to migration view
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve,
                               animations: nil) { _ in }
@@ -736,15 +732,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Transition to login view
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve,
-                              animations: nil) { [self] success in
-                if success {
-                    self._migrationVC = nil
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            _migrationVC?.removeFromParent()
-            _migrationVC = nil
+                              animations: nil) { _ in }
         }
     }
 
@@ -758,7 +746,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     // MARK: - Album Navigator
-    func loadNavigation(in window: UIWindow?) {
+    func loadNavigation(in window: UIWindow?, keepLoginView: Bool = false) {
         guard let window = window else { return }
         
         // Display default album
@@ -771,7 +759,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIView.transition(with: window, duration: 0.5,
                               options: .transitionCrossDissolve) { }
                 completion: { [self] success in
-                    if success {
+                    if success, keepLoginView == false {
                         self._loginVC = nil
                     }
                 }
@@ -808,52 +796,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func addRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
         guard let categoryId = notification.userInfo?["categoryId"] as? Int32 else {
-            fatalError("!!! Did not provide a category ID !!!")
+            preconditionFailure("!!! Did not provide a category ID !!!")
         }
         if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
-        // Create new set of recent albums with new album ID
-        var newList: Set<String> = Set([String(categoryId)])
+        // Get album ID to add as string
+        let categoryIdStr = String(categoryId)
 
-        // Get current set of recent albums
-        let oldList: Set<String> = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0}))
-
-        // Add recent albums while avoiding duplicates
-        newList.formUnion(oldList)
+        // Get current list of recent albums
+        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
+        
+        // Add or put back album ID to beginning of list
+        if recentAlbumsStr.contains(categoryIdStr) {
+            recentAlbumsStr.removeAll { $0 == categoryIdStr }
+        }
+        recentAlbumsStr.insert(categoryIdStr, at: 0)
 
         // We will present 3 - 10 albums (5 by default), but because some recent albums
         // may not be suggested or other may be deleted, we store more than 10, say 20.
-        let nberExtraCats: Int = max(0, newList.count - 20)
-        AlbumVars.shared.recentCategories = newList.dropLast(nberExtraCats).joined(separator: ",")
-//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
+        let nberExtraCats: Int = max(0, recentAlbumsStr.count - 20)
+        AlbumVars.shared.recentCategories = recentAlbumsStr.dropLast(nberExtraCats).joined(separator: ",")
+        debugPrint("••> Added album \(categoryId); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
     @objc func removeRecentAlbumWithAlbumId(_ notification: Notification) {
         // NOP if albumId undefined, root or smart album
         guard let categoryId = notification.userInfo?["categoryId"] as? Int else {
-            fatalError("!!! Did not provide a category ID !!!")
+            preconditionFailure("!!! Did not provide a category ID !!!")
         }
         if (categoryId <= 0) || (categoryId == Int32.min) { return }
 
-        // Get current list of recent albums
-        let recentAlbumsStr = AlbumVars.shared.recentCategories
-        if recentAlbumsStr.isEmpty { return }
-
-        // Get new album Id as string
+        // Get album ID to remove as string
         let categoryIdStr = String(categoryId)
 
-        // Remove albumId from list if necessary
-        var recentCategories = recentAlbumsStr.components(separatedBy: ",")
-        recentCategories.removeAll(where: { $0 == categoryIdStr })
+        // Get current list of recent albums
+        var recentAlbumsStr = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({$0})
 
-        // List should not be empty (add root album Id)
-        if recentCategories.isEmpty {
-            recentCategories.append(String(0))
+        // Remove album ID from list if necessary
+        if recentAlbumsStr.contains(categoryIdStr) {
+            recentAlbumsStr.removeAll { $0 == categoryIdStr }
+        }
+
+        // List should not be empty (add root album ID)
+        if recentAlbumsStr.isEmpty {
+            recentAlbumsStr.append(String(0))
         }
 
         // Update list
-        AlbumVars.shared.recentCategories = recentCategories.joined(separator: ",")
-//        debugPrint("••> Recent albums: \(AlbumVars.shared.recentCategories)"
+        AlbumVars.shared.recentCategories = recentAlbumsStr.joined(separator: ",")
+        debugPrint("••> Removed album \(categoryIdStr); Recent albums: \(AlbumVars.shared.recentCategories) (max: \(AlbumVars.shared.maxNberRecentCategories))")
     }
 
 
@@ -987,8 +978,8 @@ extension AppDelegate: AppLockDelegate {
         if let rootVC = self.window?.rootViewController,
             let child = rootVC.children.first, child is LoginViewController {
             // Look for credentials if server address provided
-            let username = NetworkVars.username
-            let service = NetworkVars.serverPath
+            let username = NetworkVars.shared.username
+            let service = NetworkVars.shared.serverPath
             var password = ""
 
             // Look for paswword in Keychain if server address and username are provided

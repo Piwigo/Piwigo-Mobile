@@ -69,10 +69,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-com.apple.CoreData.concurrencyDebug 1"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = ""
+            argument = "-com.apple.CoreData.SQLDebug 1"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
@@ -84,6 +84,21 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "IDEPreferLogStreaming"
+            value = "1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "SQLITE_ENABLE_THREAD_ASSERTIONS"
+            value = "1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "SQLITE_AUTO_TRACE"
+            value = "1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "SQLITE_ENABLE_FILE_ASSERTIONS"
             value = "1"
             isEnabled = "NO">
          </EnvironmentVariable>

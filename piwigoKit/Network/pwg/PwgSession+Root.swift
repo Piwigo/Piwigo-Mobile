@@ -25,13 +25,12 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type GetInfosJSON.
                 let decoder = JSONDecoder()
-                let serverJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(GetInfosJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if serverJSON.errorCode != 0 {
+                if pwgData.errorCode != 0 {
 #if DEBUG
-                    let error = PwgSession.shared.localizedError(for: serverJSON.errorCode,
-                                                                 errorMessage: serverJSON.errorMessage)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     debugPrint(error)
 #endif
                     return
@@ -40,7 +39,7 @@ public extension PwgSession {
                 // Collect statistics
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = .decimal
-                for info in serverJSON.data {
+                for info in pwgData.data {
                     guard let nber = info.value?.intValue else { continue }
                     switch info.name ?? "" {
                     case "nb_elements":
@@ -98,12 +97,12 @@ public extension PwgSession {
                         stats.append(" | " + info)
                     }
                 }
-                NetworkVars.pwgStatistics = stats
+                NetworkVars.shared.pwgStatistics = stats
             }
-            catch let error as NSError {
+            catch let error {
                 // Data cannot be digested
 #if DEBUG
-                debugPrint(error)
+                debugPrint(error.localizedDescription)
 #endif
             }
         } failure: { _ in

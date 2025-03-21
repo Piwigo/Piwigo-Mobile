@@ -9,6 +9,7 @@
 import Foundation
 
 public enum AlbumError: Error {
+    // App errors
     case fetchFailed
     case wrongDataFormat
     case missingData

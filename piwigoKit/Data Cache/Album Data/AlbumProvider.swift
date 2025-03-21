@@ -20,7 +20,7 @@ public class AlbumProvider: NSObject {
         return DataController.shared.mainContext
     }()
     
-    private lazy var bckgContext: NSManagedObjectContext = {
+    public private(set) lazy var bckgContext: NSManagedObjectContext = {
         return DataController.shared.newTaskContext()
     }()
     
@@ -41,7 +41,7 @@ public class AlbumProvider: NSObject {
         /// — from the current server which is accessible to the current user
         /// — whose ID is the ID of the displayed album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
         andPredicates.append(NSPredicate(format: "pwgID == %i", albumId))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
@@ -98,7 +98,7 @@ public class AlbumProvider: NSObject {
                 // Populate the Album's properties using the default data.
                 do {
                     let smartAlbum = CategoryData(withId: albumId, albumName: name)
-                    try album.update(with: smartAlbum, userInstance: taskUser)
+                    try album.update(with: smartAlbum, userObjectID: taskUser.objectID)
                     currentAlbum = album
                 }
                 catch {
@@ -137,7 +137,7 @@ public class AlbumProvider: NSObject {
         let paramsDict: [String : Any] = [
             "cat_id"            : parentId,
             "recursive"         : recursively,
-            "faked_by_community": NetworkVars.usesCommunityPluginV29 ? "false" : "true",
+            "faked_by_community": NetworkVars.shared.usesCommunityPluginV29 ? "false" : "true",
             "thumbnail_size"    : thumbnailSize.argument
         ]
         
@@ -151,32 +151,31 @@ public class AlbumProvider: NSObject {
                 do {
                     // Decode the JSON into codable type CategoriesGetListJSON.
                     let decoder = JSONDecoder()
-                    let albumJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
+                    let pwgData = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
                     
                     // Piwigo error?
-                    if albumJSON.errorCode != 0 {
-                        let error = PwgSession.shared.localizedError(for: albumJSON.errorCode,
-                                                                     errorMessage: albumJSON.errorMessage)
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                         completion(error)
                         return
                     }
                     
                     // Update albums if Community installed (not needed for admins)
                     if user.hasAdminRights == false,
-                       NetworkVars.usesCommunityPluginV29 {
+                       NetworkVars.shared.usesCommunityPluginV29 {
                         // Non-admin user and Community installed —> collect Community albums
                         self.fetchCommunityAlbums(inParentWithId: parentId, recursively: recursively,
-                                                  albums: albumJSON.data, completion: completion)
+                                                  albums: pwgData.data, completion: completion)
                         return
                     }
                     
                     // Import the albumJSON into Core Data.
-                    try self.importAlbums(albumJSON.data, recursively: recursively, inParent: parentId)
+                    try self.importAlbums(pwgData.data, recursively: recursively, inParent: parentId)
                     completion(nil)
                     
                 } catch {
                     // Alert the user if data cannot be digested.
-                    completion(error as NSError)
+                    completion(error)
                 }
             }
         } failure: { error in
@@ -202,20 +201,19 @@ public class AlbumProvider: NSObject {
             do {
                 // Decode the JSON into codable type CommunityCategoriesGetListJSON.
                 let decoder = JSONDecoder()
-                let albumsJSON = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if albumsJSON.errorCode != 0 {
-                    let error = PwgSession.shared.localizedError(for: albumsJSON.errorCode,
-                                                                 errorMessage: albumsJSON.errorMessage)
-                    debugPrint("••> fetchCommunityAlbums error: \(error as NSError)")
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    debugPrint("••> fetchCommunityAlbums error: \(error)")
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
                 }
                 
                 // No Community albums?
-                if albumsJSON.data.isEmpty == true {
+                if pwgData.data.isEmpty == true {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                     return
@@ -223,7 +221,7 @@ public class AlbumProvider: NSObject {
                 
                 // Update album list
                 var combinedAlbums = albums
-                for comAlbum in albumsJSON.data {
+                for comAlbum in pwgData.data {
                     if let index = combinedAlbums.firstIndex(where: { $0.id == comAlbum.id }) {
                         combinedAlbums[index].hasUploadRights = true
                     } else {
@@ -240,7 +238,7 @@ public class AlbumProvider: NSObject {
                 do {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                 } catch {
-                    completion(error as NSError)
+                    completion(error)
                 }
             }
         } failure: { error in
@@ -250,7 +248,7 @@ public class AlbumProvider: NSObject {
             do {
                 try self.importAlbums(albums, recursively: recursively, inParent: parentId)
             } catch {
-                completion(error as NSError)
+                completion(error)
             }
         }
     }
@@ -265,7 +263,7 @@ public class AlbumProvider: NSObject {
         // We keep album IDs of albums to delete
         // Initialised and then updated at each iteration
         var albumToDeleteIDs: Set<Int32>? = nil
-
+        
         // We shall perform at least one import in case where
         // the user did delete all albums
         guard albumArray.isEmpty == false else {
@@ -313,7 +311,7 @@ public class AlbumProvider: NSObject {
                                 inParent parentId: Int32, albumIDs: Set<Int32>?) -> (Bool, Set<Int32>) {
         var success = false
         var albumToDeleteIDs = Set<Int32>()
-
+        
         // Get current user object (will create server and user objects if needed)
         guard let user = userProvider.getUserAccount(inContext: bckgContext) else {
             debugPrint("AlbumProvider.importOneBatch() unresolved error: Could not get user object!")
@@ -324,7 +322,7 @@ public class AlbumProvider: NSObject {
             user.willAccessValue(forKey: nil)
             user.didAccessValue(forKey: nil)
         }
-
+        
         // Runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
@@ -339,7 +337,7 @@ public class AlbumProvider: NSObject {
             /// — whose parent ID is the ID of the parent album
             /// — whose ID is positive i.e. not a smart album
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
             andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
             if recursively {
                 andPredicates.append(NSPredicate(format: "pwgID >= 0"))
@@ -382,7 +380,7 @@ public class AlbumProvider: NSObject {
                     do {
                         // The current user will be added so that we know which albums
                         // are accessible to that user.
-                        try cachedAlbums[index].update(with: albumData, userInstance: user)
+                        try cachedAlbums[index].update(with: albumData, userObjectID: user.objectID)
                         
                         // IDs of albums to which the user has upload access
                         // are stored in the uploadRights attribute.
@@ -413,7 +411,7 @@ public class AlbumProvider: NSObject {
                     
                     // Populate the Album's properties using the raw data.
                     do {
-                        try album.update(with: albumData, userInstance: user)
+                        try album.update(with: albumData, userObjectID: user.objectID)
                         if albumData.hasUploadRights {
                             user.addUploadRightsToAlbum(withID: ID)
                         } else {
@@ -436,7 +434,7 @@ public class AlbumProvider: NSObject {
                 // Albums not returned by the fetch are deleted first
                 if albumToDeleteIDs.isEmpty == false {
                     // Check whether the auto-upload category will be deleted
-                    if albumToDeleteIDs.contains(UploadVars.autoUploadCategoryId) {
+                    if albumToDeleteIDs.contains(UploadVars.shared.autoUploadCategoryId) {
                         NotificationCenter.default.post(name: .pwgDisableAutoUpload, object: nil, userInfo: nil)
                     }
                     
@@ -446,7 +444,7 @@ public class AlbumProvider: NSObject {
                         debugPrint("••> delete album with ID:\(album.pwgID) and name:\(album.name)")
                         bckgContext.delete(album)
                     }
-
+                    
                     // Delete duplicate albums, if any
                     let otherAlbums = cachedAlbums.filter({albumToDeleteIDs.contains($0.pwgID) == false})
                     let duplicates = duplicates(inArray: otherAlbums)
@@ -467,7 +465,7 @@ public class AlbumProvider: NSObject {
             DispatchQueue.main.async {
                 self.mainContext.saveIfNeeded()
             }
-
+            
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
             
@@ -488,9 +486,9 @@ public class AlbumProvider: NSObject {
         }
         return duplicates
     }
-
     
-    // MARK: - Update Albums
+    
+    // MARK: - Albums Related Utilities
     /**
      Create an album inside a parent album stored in the persistent cache.
      - the album is created with a 'globalRank' corresponding to the top position,
@@ -500,152 +498,69 @@ public class AlbumProvider: NSObject {
      N.B.: Task performed in the background.
      */
     public func addAlbum(_ catID: Int32, withName name: String, comment: String,
-                         intoAlbumWithId parentID: Int32) {
+                         inAlbumWithObjectID parentObjectID: NSManagedObjectID,
+                         forUserWithObjectID userObjectID: NSManagedObjectID) {
         // Job performed in the background
         bckgContext.performAndWait {
-            
-            // Get current user and parent album objects
-            // Create an Album managed object on the private queue context.
-            guard let user = userProvider.getUserAccount(inContext: bckgContext),
-                  let parent = getAlbum(ofUser: user, withId: parentID),
-                  let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
-                                                                  into: bckgContext) as? Album else {
-                debugPrint(AlbumError.creationError.localizedDescription)
-                return
-            }
-            
-            // Populate the Album's properties using the raw data.
-            let upperIDs = parentID == Int32.zero ? String(catID) : parent.upperIds + "," + String(catID)
-            let newCat = CategoryData(withId: catID,
-                                      albumName: name, albumComment: comment,
-                                      albumRank: parent.globalRank,
-                                      parentId: String(parentID), parentIds: upperIDs,
-                                      nberImages: Int64.zero, totalNberImages: Int64.zero)
             do {
-                try album.update(with: newCat, userInstance: user)
-                if newCat.hasUploadRights {
-                    user.addUploadRightsToAlbum(withID: catID)
-                } else {
-                    user.removeUploadRightsToAlbum(withID: catID)
+                // Get current user and parent album objects
+                // Create an Album managed object on the private queue context.
+                guard let user = try bckgContext.existingObject(with: userObjectID) as? User,
+                      let parent = try bckgContext.existingObject(with: parentObjectID) as? Album,
+                      let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
+                                                                      into: bckgContext) as? Album else {
+                    debugPrint(AlbumError.creationError.localizedDescription)
+                    return
                 }
                 
-                // Update parent and sub-albums albums
-                if parentID == Int32.zero {
-                    // Update ranks of albums and sub-albums in root
-                    updateRankOfAlbums(by: +1, inAlbum: Int32.zero, ofUser: user,
-                                       afterRank: parent.globalRank)
-                } else {
-                    // Update parent albums and sub-albums
-                    updateParents(adding: album)
+                // Populate the Album's properties using the raw data.
+                let upperIDs = parent.pwgID == Int32.zero ? String(catID) : parent.upperIds + "," + String(catID)
+                let newCat = CategoryData(withId: catID,
+                                          albumName: name, albumComment: comment,
+                                          albumRank: parent.globalRank,
+                                          parentId: String(parent.pwgID), parentIds: upperIDs,
+                                          nberImages: Int64.zero, totalNberImages: Int64.zero)
+                do {
+                    try album.update(with: newCat, userObjectID: userObjectID)
+                    if newCat.hasUploadRights {
+                        user.addUploadRightsToAlbum(withID: catID)
+                    } else {
+                        user.removeUploadRightsToAlbum(withID: catID)
+                    }
+                    
+                    // Update parent and sub-albums albums
+                    if parent.pwgID == Int32.zero {
+                        // Update ranks of albums and sub-albums in root
+                        updateRankOfAlbums(by: +1, inAlbumWithID: Int32.zero, afterRank: parent.globalRank)
+                    } else {
+                        // Update parent albums and sub-albums
+                        updateParents(adding: album)
+                    }
                 }
-            }
-            catch AlbumError.missingData {
-                // Delete invalid Album from the private queue context.
-                debugPrint(AlbumError.missingData.localizedDescription)
-                bckgContext.delete(album)
-            }
-            catch {
+                catch AlbumError.missingData {
+                    // Delete invalid Album from the private queue context.
+                    debugPrint(AlbumError.missingData.localizedDescription)
+                    bckgContext.delete(album)
+                }
+                catch {
+                    debugPrint(error.localizedDescription)
+                }
+                
+                // Save all insertions from the context to the store.
+                bckgContext.saveIfNeeded()
+                DispatchQueue.main.async {
+                    self.mainContext.saveIfNeeded()
+                }
+                
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                bckgContext.reset()
+            } catch {
                 debugPrint(error.localizedDescription)
-            }
-            
-            // Save all insertions from the context to the store.
-            bckgContext.saveIfNeeded()
-            DispatchQueue.main.async {
-                self.mainContext.saveIfNeeded()
-            }
-
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            bckgContext.reset()
-        }
-    }
-    
-    
-    public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) {
-        // Remove image from album
-        album.nbImages += nbImages
-        if album.totalNbImages < (Int64.max - nbImages) {   // Avoids possible crash with e.g. smart albums
-            album.totalNbImages += nbImages
-        }
-
-        // Keep 'date_last' set as expected by the server
-        album.dateLast = max(Date().timeIntervalSinceReferenceDate, album.dateLast)
-
-        // Update album and its parent albums in the background
-        updateParents(ofAlbum: album, nbImages: +(nbImages))
-   }
-
-    public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album) {
-        // Remove image from album
-        album.nbImages -= nbImages
-        if album.totalNbImages > (Int64.min + nbImages) {   // Avoids possible crash with e.g. smart albums
-            album.totalNbImages -= nbImages
-        }
-
-        // Keep 'date_last' set as expected by the server
-        var dateLast = DateUtilities.unknownDateInterval    // i.e. unknown date
-        for keptImage in album.images ?? Set<Image>() {
-            if dateLast < keptImage.datePosted {
-                dateLast = keptImage.datePosted
+                return
             }
         }
-        album.dateLast = dateLast
-        
-        // Reset source album thumbnail if necessary
-        if album.nbImages == 0 {
-            album.thumbnailId = Int64.zero
-            album.thumbnailUrl = nil
-        }
-
-        // Update album and its parent albums in the background
-        updateParents(ofAlbum: album, nbImages: -(nbImages))
     }
-    
-    
-    // MARK: - Clear Album Data
-    /**
-        Return number of albums stored in cache
-     */
-    public func getObjectCount() -> Int64 {
-
-        // Create a fetch request for the Album entity
-        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
-        fetchRequest.resultType = .countResultType
         
-        // Select albums of the current server only
-        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath)
-        
-        // Fetch number of objects
-        do {
-            let countResult = try bckgContext.fetch(fetchRequest)
-            return countResult.first!.int64Value
-        }
-        catch let error as NSError {
-            debugPrint("••> Album count not fetched \(error), \(error.userInfo)")
-        }
-        return Int64.zero
-    }
-
-    /**
-     Clear cached Core Data album entry
-     */
-    public func clearAll() {
-        
-        // Create a fetch request for the Album entity
-        let fetchRequest = Album.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
-        
-        // Select albums of the current server only
-        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath)
-        
-        // Create batch delete request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
-        
-        // Execute batch delete request
-        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
-    }
-    
-    
-    // MARK: - Albums Related Utilities
     /**
      The attribute 'nbSubAlbums' of parent albums must be:
      - incremented when an album is added to an album,
@@ -658,32 +573,60 @@ public class AlbumProvider: NSObject {
     private func updateParents(adding album: Album) {
         updateParents(of: album, sign: +1)
     }
-
+    
     private func updateParents(removing album: Album) {
         updateParents(of: album, sign: -1)
     }
     
     private func updateParents(of album: Album, sign: Int) {
-        let parentIDs = album.upperIds.components(separatedBy: ",")
-            .compactMap({Int32($0)})
-        for upperID in parentIDs {
-            // Check that it is not the root album, nor the album
-            if (upperID == 0) || (upperID == album.pwgID) { continue }
+        // Retrieve parent albums
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        // Retrieve all parent albums:
+        /// — from the current server
+        /// — whose ID is the ID of a parent album
+        /// — whose ID is not the one of the root album
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
+            .filter({ [0, album.pwgID].contains($0) == false })
+        andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        
+        // Create a fetched results controller and set its fetch request and context.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                    managedObjectContext: bckgContext,
+                                                    sectionNameKeyPath: nil, cacheName: nil)
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        
+        // Update parent albums
+        let parentAlbums = controller.fetchedObjects ?? []
+        parentAlbums.forEach { parentAlbum in
+            // Update number of sub-albums and images
+            parentAlbum.nbSubAlbums += Int32(sign) * (album.nbSubAlbums + 1)
+            parentAlbum.totalNbImages += Int64(sign) * (album.totalNbImages)
             
-            // Get a parent album
-            guard let user = album.user else { return }
-            if let upperAlbum = getAlbum(ofUser: user, withId: upperID) {
-                // Update number of sub-albums and images
-                upperAlbum.nbSubAlbums += Int32(sign) * (album.nbSubAlbums + 1)
-                upperAlbum.totalNbImages += Int64(sign) * (album.totalNbImages)
-
-                // Update rank of sub-albums
-                if upperID == album.parentId, upperAlbum.nbSubAlbums > 0 {
-                    updateRankOfAlbums(by: sign, inAlbum: upperID, ofUser: user,
-                                       afterRank: album.globalRank)
-                }
+            // Update rank of sub-albums
+            if parentAlbum.pwgID == album.parentId, parentAlbum.nbSubAlbums > 0 {
+                updateRankOfAlbums(by: sign, inAlbumWithID: parentAlbum.pwgID, afterRank: album.globalRank)
             }
         }
+        
+        // Save modifications
+        bckgContext.saveIfNeeded()
+        DispatchQueue.main.async {
+            self.mainContext.saveIfNeeded()
+        }
+        
+        // Reset the taskContext to free the cache and lower the memory footprint.
+        bckgContext.reset()
     }
     
     /**
@@ -692,8 +635,7 @@ public class AlbumProvider: NSObject {
      - decremented when an album is removed so that the rank is properly set.
      N.B.: Task exectued in the background.
      */
-    private func updateRankOfAlbums(by diff: Int, inAlbum albumID: Int32, ofUser user: User,
-                                    afterRank rank: String) {
+    private func updateRankOfAlbums(by diff: Int, inAlbumWithID albumID: Int32, afterRank rank: String) {
         // Retrieve albums in parent album
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
@@ -704,8 +646,8 @@ public class AlbumProvider: NSObject {
         /// — whose ID is the ID of the deleted album
         /// — whose one of the upper album IDs is the ID of the deleted album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         andPredicates.append(NSPredicate(format: "parentId == %i", albumID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
@@ -723,7 +665,7 @@ public class AlbumProvider: NSObject {
         // Update the rank of all sub-albums
         let minRank = rank.components(separatedBy: ",").compactMap({Int($0)}).last ?? 0
         let otherAlbums = controller.fetchedObjects ?? []
-        for otherAlbum in otherAlbums {
+        otherAlbums.forEach { otherAlbum in
             // Update rank of sub-albums at first level
             var rankArray = otherAlbum.globalRank.components(separatedBy: ".").compactMap({Int($0)})
             if var rank = rankArray.last, rank >= minRank {
@@ -739,10 +681,9 @@ public class AlbumProvider: NSObject {
         }
     }
     
+    // N.B.: Task exectued in the background.
     private func updateRankOfSubAlbums(inAlbum album: Album) {
         // Retrieve sub-albums in parent album
-        guard let taskContext = album.managedObjectContext,
-              let user = album.user else { return }
         let fetchRequest = Album.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
         
@@ -750,8 +691,8 @@ public class AlbumProvider: NSObject {
         /// — from the current server
         /// — whose one of the upper album IDs is the ID of the parent album
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", user.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         let regExp =  NSRegularExpression.escapedPattern(for: String(album.pwgID))
         let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
         andPredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
@@ -759,7 +700,7 @@ public class AlbumProvider: NSObject {
         
         // Create a fetched results controller and set its fetch request and context.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                    managedObjectContext: taskContext,
+                                                    managedObjectContext: bckgContext,
                                                     sectionNameKeyPath: nil, cacheName: nil)
         // Perform the fetch.
         do {
@@ -772,7 +713,7 @@ public class AlbumProvider: NSObject {
         let parentRank = album.globalRank
         let range = parentRank.startIndex..<parentRank.endIndex
         let subAlbums = controller.fetchedObjects ?? []
-        for subAlbum in subAlbums {
+        subAlbums.forEach { subAlbum in
             let rank = subAlbum.globalRank
             subAlbum.globalRank = rank.replacingCharacters(in: range, with: parentRank)
         }
@@ -784,21 +725,139 @@ public class AlbumProvider: NSObject {
      Add/substract the number of moved images to
      - the attibute 'nbImages' of the album.
      - the attribute 'totalNbImages' of the album and its parent albums.
-     N.B.: Task exectued in the background.
+     N.B.: Parent albums are updated in the background.
      */
-    private func updateParents(ofAlbum album: Album, nbImages: Int64) {
-        guard let user = album.user else { return }
-        let parentIDs = album.upperIds.components(separatedBy: ",")
-            .compactMap({Int32($0)})
-        for upperID in parentIDs {
-            // Check that it is not the root album nor the selected album
-            if (upperID == 0) || (upperID == album.pwgID) { continue }
-
-            // Get a parent album
-            if let upperAlbum = getAlbum(ofUser: user, withId: upperID) {
-                // Update number of images
-                upperAlbum.totalNbImages += nbImages
+    public func updateAlbums(addingImages nbImages: Int64, toAlbum album: Album) {
+        // Add images from album
+        album.nbImages += nbImages
+        if album.totalNbImages < (Int64.max - nbImages) {   // Avoids possible crash with e.g. smart albums
+            album.totalNbImages += nbImages
+        }
+        
+        // Keep 'date_last' set as expected by the server
+        album.dateLast = max(Date().timeIntervalSinceReferenceDate, album.dateLast)
+        
+        // Update parent albums in the background
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            self.updateParents(ofAlbum: album, nbImages: +(nbImages))
+        }
+    }
+    
+    public func updateAlbums(removingImages nbImages: Int64, fromAlbum album: Album) {
+        // Removes image from album
+        album.nbImages -= nbImages
+        if album.totalNbImages > (Int64.min + nbImages) {   // Avoids possible crash with e.g. smart albums
+            album.totalNbImages -= nbImages
+        }
+        
+        // Keep 'date_last' set as expected by the server
+        var dateLast = DateUtilities.unknownDateInterval    // i.e. unknown date
+        for keptImage in album.images ?? Set<Image>() {
+            if dateLast < keptImage.datePosted {
+                dateLast = keptImage.datePosted
             }
         }
+        album.dateLast = dateLast
+        
+        // Reset source album thumbnail if necessary
+        if album.nbImages == 0 {
+            album.thumbnailId = Int64.zero
+            album.thumbnailUrl = nil
+        }
+        
+        // Update parent albums in the background
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            self.updateParents(ofAlbum: album, nbImages: -(nbImages))
+        }
+    }
+    
+    // N.B.: Task exectued in the background.
+    private func updateParents(ofAlbum album: Album, nbImages: Int64) {
+        // Retrieve parent albums
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
+                                                         selector: #selector(NSString.localizedStandardCompare(_:)))]
+        // Retrieve all parent albums:
+        /// — from the current server
+        /// — whose ID is the ID of a parent album
+        /// — whose ID is not the one of the root album
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
+            .filter({ [0, album.pwgID].contains($0) == false })
+        andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        
+        // Create a fetched results controller and set its fetch request and context.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                    managedObjectContext: bckgContext,
+                                                    sectionNameKeyPath: nil, cacheName: nil)
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        
+        // Update parent albums
+        let parentAlbums = controller.fetchedObjects ?? []
+        parentAlbums.forEach { parentAlbum in
+            // Update number of images
+            parentAlbum.totalNbImages += nbImages
+        }
+        
+        // Save modifications
+        bckgContext.saveIfNeeded()
+        DispatchQueue.main.async {
+            self.mainContext.saveIfNeeded()
+        }
+        
+        // Reset the taskContext to free the cache and lower the memory footprint.
+        bckgContext.reset()
+    }
+
+    
+    // MARK: - Clear Album Data
+    /**
+        Return number of albums stored in cache
+     */
+    public func getObjectCount() -> Int64 {
+
+        // Create a fetch request for the Album entity
+        let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
+        fetchRequest.resultType = .countResultType
+        
+        // Select albums of the current server only
+        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath)
+        
+        // Fetch number of objects
+        do {
+            let countResult = try bckgContext.fetch(fetchRequest)
+            return countResult.first!.int64Value
+        }
+        catch let error {
+            debugPrint("••> Album count not fetched \(error)")
+        }
+        return Int64.zero
+    }
+
+    /**
+     Clear cached Core Data album entry
+     */
+    public func clearAll() {
+        
+        // Create a fetch request for the Album entity
+        let fetchRequest = Album.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
+        
+        // Select albums of the current server only
+        fetchRequest.predicate = NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath)
+        
+        // Create batch delete request
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        
+        // Execute batch delete request
+        try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
 }

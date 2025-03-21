@@ -26,9 +26,9 @@ extension NSManagedObjectContext {
                     into: [self]
                 )
             }
-        } catch let error as NSError {
+        } catch let error {
             // Handle any thrown errors.
-            fatalError("Unresolved error \(error), \(error.userInfo)")
+            fatalError("Unresolved error \(error)")
         }
     }
 }

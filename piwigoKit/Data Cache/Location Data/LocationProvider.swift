@@ -163,16 +163,13 @@ public class LocationProvider: NSObject {
                     // Log placemarks[0]
 //                    debugPrint("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""), inlandWater:\(inlandWater), ocean:\(ocean)\n")
 
-                    DispatchQueue.global(qos: .background).async {
-                        // Create a private queue context.
-                        let taskContext = DataController.shared.newTaskContext()
-                                
+                    DispatchQueue.global(qos: .background).async { [self] in
                         // Add new location to CoreData store
                         let newLocation = LocationProperties(latitude: location.latitude,
                                                              longitude: location.longitude,
                                                              radius: region.radius,
                                                              placeName: placeName, streetName: streetName)
-                        self.importOneLocation(newLocation, taskContext: taskContext) {
+                        self.importOneLocation(newLocation, taskContext: self.bckgContext) {
                             // Remove location from queue
                             self.queuedLocations.remove(location)
                             // Update corresponding headers
@@ -266,8 +263,8 @@ public class LocationProvider: NSObject {
             let countResult = try bckgContext.fetch(fetchRequest)
             return countResult.first!.int64Value
         }
-        catch let error as NSError {
-            debugPrint("••> Album count not fetched \(error), \(error.userInfo)")
+        catch let error {
+            debugPrint("••> Album count not fetched \(error)")
         }
         return Int64.zero
     }

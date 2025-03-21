@@ -79,15 +79,15 @@ class SelectCategoryViewController: UIViewController {
 
     lazy var userUploadRights: [Int32] = {
         // Case of Community user?
-        if NetworkVars.userStatus != .normal { return [] }
+        if NetworkVars.shared.userStatus != .normal { return [] }
         let userUploadRights = user.uploadRights
         return userUploadRights.components(separatedBy: ",").compactMap({ Int32($0) })
     }()
     
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
         return andPredicates
     }()
 
@@ -97,20 +97,20 @@ class SelectCategoryViewController: UIViewController {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true,
                                          selector: #selector(NSString.localizedStandardCompare(_:)))]
         var andPredicates = predicates
-        var recentCatIds: Set<Int32> = Set(AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)}))
+        var recentCatIds: [Int32] = AlbumVars.shared.recentCategories.components(separatedBy: ",").compactMap({Int32($0)})
         // Root album proposed for some actions, input album not proposed
         if [.setDefaultAlbum, .moveAlbum].contains(wantedAction) == false {
-            recentCatIds.remove(Int32.zero)
+            recentCatIds.removeAll(where: { $0 == Int32.zero })
         }
         // Removes current album
-        recentCatIds.remove(self.inputAlbum.pwgID)
+        recentCatIds.removeAll(where: { $0 == self.inputAlbum.pwgID })
         // Removes parent album
-        recentCatIds.remove(self.inputAlbum.parentId)
+        recentCatIds.removeAll(where: { $0 == self.inputAlbum.parentId })
         // Limit the number of recent albums
         let nberExtraCats: Int = max(0, recentCatIds.count - AlbumVars.shared.maxNberRecentCategories)
         andPredicates.append(NSPredicate(format: "pwgID IN %@", recentCatIds.dropLast(nberExtraCats)))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        fetchRequest.fetchLimit = 10
+        fetchRequest.fetchLimit = AlbumVars.shared.maxNberRecentCategories
         return fetchRequest
     }()
 
@@ -404,8 +404,7 @@ class SelectCategoryViewController: UIViewController {
             navigationController?.hideHUD { [self] in
                 // Session logout required?
                 if let pwgError = error as? PwgSessionError,
-                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                    .contains(pwgError) {
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                     return
                 }
@@ -524,8 +523,7 @@ class SelectCategoryViewController: UIViewController {
     func showError(_ error: Error?) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-            .contains(pwgError) {
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -561,11 +559,7 @@ class SelectCategoryViewController: UIViewController {
             // Forget the choice
             self.selectedCategoryId = Int32.min
             // Save changes if any
-            do {
-                try self.mainContext.save()
-            } catch let error as NSError {
-                debugPrint("Could not fetch \(error), \(error.userInfo)")
-            }
+            self.mainContext.saveIfNeeded()
             // Dismiss the view
             self.dismiss(animated: true, completion: {})
         }

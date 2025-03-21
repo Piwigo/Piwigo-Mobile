@@ -52,7 +52,7 @@ extension UploadManager
         /// - Wi-Fi required but unavailable
         if isPaused || isExecutingBackgroundUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.wifiOnlyUploading && !NetworkVars.isConnectedToWiFi()) {
+            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi()) {
             return
         }
         
@@ -64,7 +64,7 @@ extension UploadManager
             finishing.forEach({ upload in
                 upload.setState(.finishingError, error: PwgSessionError.networkUnavailable, save: false)
             })
-            uploadProvider.bckgContext.saveIfNeeded()
+            uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
             return
         }
@@ -87,7 +87,7 @@ extension UploadManager
             preparing.forEach { upload in
                 upload.setState(.preparingError, error: UploadError.missingAsset, save: false)
             }
-            uploadProvider.bckgContext.saveIfNeeded()
+            uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
             return
         }
@@ -152,8 +152,8 @@ extension UploadManager
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
         let finished = (uploads.fetchedObjects ?? []).filter({$0.state == .finished})
-        if NetworkVars.userStatus == .normal,
-           NetworkVars.usesCommunityPluginV29, finished.count > 0 {
+        if NetworkVars.shared.userStatus == .normal,
+           NetworkVars.shared.usesCommunityPluginV29, finished.count > 0 {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused {
@@ -251,7 +251,7 @@ extension UploadManager
         isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if not called by In-App intent or Extension
-        if UploadVars.isAutoUploadActive && !triggeredByExtension {
+        if UploadVars.shared.isAutoUploadActive && !triggeredByExtension {
             appendAutoUploadRequests()
         }
         
@@ -287,8 +287,8 @@ extension UploadManager
             // Will then launch transfers of prepared uploads
             let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
-                .union(Set(prepared[..<min(maxNberOfUploadsPerBckgTask,prepared.count)]))
-            debugPrint("\(dbg()) collected \(min(maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
+                .union(Set(prepared[..<min(UploadVars.shared.maxNberOfUploadsPerBckgTask,prepared.count)]))
+            debugPrint("\(dbg()) collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
         }
         
         // Finally, get list of upload requests to prepare
@@ -314,7 +314,7 @@ extension UploadManager
                         debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = uploadProvider.bckgContext
+                    guard let uploadID = uploadBckgContext
                         .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                         debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
@@ -345,7 +345,7 @@ extension UploadManager
                             debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
                             continue
                         }
-                        guard let uploadID = uploadProvider.bckgContext
+                        guard let uploadID = uploadBckgContext
                             .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                             debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
                             continue

@@ -217,10 +217,10 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("moveCategory", comment: "Move Album")
             let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), inputAlbum.name, albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { [self] _ in
+                                forCategory: albumData, at: indexPath) { [self] _ in
                 // Move album to selected category
                 self.moveCategory(intoCategory: albumData)
-            })
+            }
 
         case .setAlbumThumbnail:
             // Ask user to confirm
@@ -251,12 +251,19 @@ extension SelectCategoryViewController: UITableViewDelegate
             let imageTitle = inputImages.first?.title.string ?? ""
             let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { [self] _ in
+                                forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
+
                 // Copy single image to selected album
-                self.copyImages(toAlbum: albumData)
-            })
+                DispatchQueue.global(qos: .userInitiated).async { [self] in
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData)
+                    } else {
+                        self.copyImages(toAlbum: albumData)
+                    }
+                }
+            }
 
         case .moveImage:
             // Do nothing if this is the root album
@@ -272,8 +279,15 @@ extension SelectCategoryViewController: UITableViewDelegate
                                 forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
+
                 // Move single image to selected album
-                self.moveImages(toAlbum: albumData)
+                DispatchQueue.global(qos: .userInitiated).async { [self] in
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
+                    } else {
+                        self.moveImages(toAlbum: albumData)
+                    }
+                }
             }
 
         case .copyImages:
@@ -286,15 +300,20 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
             let message = String(format: NSLocalizedString("copySeveralImages_message", comment:"Are you sure you want to copy the photos to the album \"%@\"?"), albumData.name)
             requestConfirmation(withTitle: title, message: message,
-                                forCategory: albumData, at: indexPath, handler: { [self] _ in
+                                forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                             inMode: .determinate)
+                             inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+                
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    self.copyImages(toAlbum: albumData)
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData)
+                    } else {
+                        self.copyImages(toAlbum: albumData)
+                    }
                 }
-            })
+            }
 
         case .moveImages:
             // Do nothing if this is the root album
@@ -309,10 +328,15 @@ extension SelectCategoryViewController: UITableViewDelegate
                                 forCategory: albumData, at: indexPath) { [self] _ in
                 // Display HUD
                 self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
-                             inMode: .determinate)
+                             inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
+
                 // Move several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    self.moveImages(toAlbum: albumData)
+                    if NetworkVars.shared.usesSetCategory {
+                        self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
+                    } else {
+                        self.moveImages(toAlbum: albumData)
+                    }
                 }
             }
 

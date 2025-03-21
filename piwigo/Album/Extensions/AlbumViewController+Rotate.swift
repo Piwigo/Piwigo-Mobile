@@ -65,7 +65,7 @@ extension AlbumViewController
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
-//            bckgContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Close HUD with success
             DispatchQueue.main.async { [self] in
                 self.navigationController?.updateHUDwithSuccess() { [self] in
@@ -83,9 +83,7 @@ extension AlbumViewController
         else {
             // Forget this image
             remainingIDs.removeFirst()
-            selectedImageIDs.remove(imageID)
-            selectedFavoriteIDs.remove(imageID)
-            selectedVideosIDs.remove(imageID)
+            deselectImages(withIDs: Set([imageID]))
 
             // Update HUD
             DispatchQueue.main.async { [self] in
@@ -119,7 +117,7 @@ extension AlbumViewController
                             UIView.animate(withDuration: 0.25) {
                                 cell.cellImage.transform = CGAffineTransform(rotationAngle: -angle)
                             } completion: { _ in
-                                cell.cellImage.image = cachedImage
+                                cell.configImage(cachedImage, withHiddenLabel: true)
                                 cell.cellImage.transform = CGAffineTransformIdentity
                             }
                         }
@@ -128,9 +126,7 @@ extension AlbumViewController
                 
                 // Next image
                 remainingIDs.removeFirst()
-                selectedImageIDs.remove(imageID)
-                selectedFavoriteIDs.remove(imageID)
-                selectedVideosIDs.remove(imageID)
+                deselectImages(withIDs: Set([imageID]))
                 rotateImages(withID: remainingIDs, by: angle, total: total)
                 
             } failure: { [self] error in
@@ -141,12 +137,11 @@ extension AlbumViewController
         }
     }
     
-    private func rotateImagesInDatabaseError(_ error: NSError) {
+    private func rotateImagesInDatabaseError(_ error: Error) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -155,19 +150,18 @@ extension AlbumViewController
             navigationController?.hideHUD { [self] in
                 // Plugin rotateImage installed?
                 let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
-                var message = "", errorMsg = ""
+                var message = ""
                 if let pwgError = error as? PwgSessionError,
                    pwgError == .otherError(code: 501, msg: "") {
                     message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
                 }
                 else {
                     message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
-                    errorMsg = error.localizedDescription
                 }
                 
                 // Report error
                 navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                                                         errorMessage: errorMsg) { [self] in
+                                                         errorMessage: error.localizedDescription) { [self] in
                     // Re-enable buttons
                     setEnableStateOfButtons(true)
                 }

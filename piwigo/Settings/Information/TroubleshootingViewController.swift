@@ -10,6 +10,7 @@ import Foundation
 import OSLog
 import UIKit
 import piwigoKit
+import uploadKit
 
 @available(iOS 15, *)
 class TroubleshootingViewController: UIViewController {
@@ -147,19 +148,15 @@ class TroubleshootingViewController: UIViewController {
                 debugPrint("••> completed in \(duration.rounded()) ms")
                 let entries = allEntries.compactMap({$0 as? OSLogEntryLog})
                 // piwigoKit — Core Data
-                var someLogs = entries.filter({$0.category == "TagToTagMigrationPolicy_09_to_0C"})
+                var someLogs = entries.filter({$0.category == String(describing: DataMigrator.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
-                someLogs = entries.filter({$0.category == "UploadToUploadMigrationPolicy_09_to_0C"})
-                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                someLogs = entries.filter({$0.category == "ImageToSizesMigrationPolicy_0B_to_0C"})
-                if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
-                someLogs = entries.filter({$0.category == "Image"})
+                someLogs = entries.filter({$0.category == String(describing: Image.self)})
                 if someLogs.isEmpty ==  false { self.pwgLogs.append(someLogs)}
                 // piwigoKit — Networking
-                someLogs = entries.filter({$0.category == "PwgSession"})
+                someLogs = entries.filter({$0.category == String(describing: PwgSession.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
                 // uploadKit — UploadSessions
-                someLogs = entries.filter({$0.category == "UploadSessions"})
+                someLogs = entries.filter({$0.category == String(describing: UploadSessions.self)})
                 if someLogs.isEmpty == false { self.pwgLogs.append(someLogs) }
             } catch {
                 debugPrint("••> Could not retrieve logs.")

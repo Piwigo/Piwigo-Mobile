@@ -103,7 +103,7 @@ class UploadImageTableViewCell: UITableViewCell {
                 // Fix orientation if needed
                 image = image.fixOrientation()
             }
-            catch let error as NSError {
+            catch let error {
                 // Could not find the file to upload!
                 debugPrint(error.localizedDescription)
                 image = pwgImageType.image.placeHolder

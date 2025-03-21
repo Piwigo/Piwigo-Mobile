@@ -106,7 +106,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
 
         // Disable menu if there are no more images
         if self.categoryId != 0, self.albumData.nbImages == 0 {
-            self.isSelect = false
+            self.inSelectionMode = false
             self.initBarsInPreviewMode()
         }
     }
@@ -214,9 +214,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                 else { return }
                 indexPath.section += 1
                 // Deselect image
-                selectedImageIDs.remove(image.pwgID)
-                selectedFavoriteIDs.remove(image.pwgID)
-                selectedVideosIDs.remove(image.pwgID)
+                deselectImages(withIDs: Set([image.pwgID]))
                 // Delete image
                 updateOperations.append( BlockOperation {  [weak self] in
                     guard let self = self else { return }
@@ -275,7 +273,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
             // Disable menu if no image left
             if self.categoryId != 0, self.albumData.nbImages == 0 {
 //                debugPrint("••> No image ► disable menu")
-                self.isSelect = false
+                self.inSelectionMode = false
                 self.initBarsInPreviewMode()
             }
         }

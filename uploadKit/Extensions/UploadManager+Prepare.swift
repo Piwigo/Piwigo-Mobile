@@ -20,7 +20,7 @@ extension UploadManager
         isPreparing = true
         upload.setState(.preparing, save: true)
 
-        // Add category to list of recent albums
+        // Add category ID to list of recently used albums
         let userInfo = ["categoryId": upload.category]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
@@ -131,14 +131,14 @@ extension UploadManager
             upload.fileName = fileName
 
             // Chek that the image format is accepted by the Piwigo server
-            if NetworkVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
                 prepareImage(atURL: fileURL, for: upload)
                 return
             }
             
             // Try to convert image if JPEG format is accepted by Piwigo server
-            if NetworkVars.serverFileTypes.contains("jpg"),
+            if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 debugPrint("\(dbg()) converting photo \(upload.fileName)…")
@@ -175,7 +175,7 @@ extension UploadManager
             upload.fileName = fileName
 
             // Chek that the video format is accepted by the Piwigo server
-            if NetworkVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 debugPrint("\(dbg()) preparing video \(upload.fileName)…")
 
@@ -185,7 +185,7 @@ extension UploadManager
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
-            if NetworkVars.serverFileTypes.contains("mp4"),
+            if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 debugPrint("\(dbg()) converting video \(upload.fileName)…")
@@ -308,14 +308,14 @@ extension UploadManager
         case .image:
             upload.isVideo = false
             // Chek that the image format is accepted by the Piwigo server
-            if NetworkVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
                 // Launch preparation job
                 self.prepareImage(atURL: uploadFileURL, for: upload)
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if NetworkVars.serverFileTypes.contains("jpg"),
+            if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
                 debugPrint("\(dbg()) converting photo \(upload.fileName)…")
@@ -335,7 +335,7 @@ extension UploadManager
         case .video:
             upload.isVideo = true
             // Chek that the video format is accepted by the Piwigo server
-            if NetworkVars.serverFileTypes.contains(fileExt) {
+            if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 debugPrint("\(dbg()) preparing video \(upload.fileName)…")
                 
@@ -344,7 +344,7 @@ extension UploadManager
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if NetworkVars.serverFileTypes.contains("mp4"),
+            if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
                 debugPrint("\(dbg()) converting video \(upload.fileName)…")

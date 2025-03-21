@@ -22,7 +22,7 @@ public class User: NSManagedObject {
      Updates the attributes of a User Account instance.
      */
     func update(username: String, ofServer server: Server,
-                userStatus: pwgUserStatus = NetworkVars.userStatus,
+                userStatus: pwgUserStatus = NetworkVars.shared.userStatus,
                 withName name: String = "", lastUsed: Date = Date()) throws {
         // Check user's status
         guard pwgUserStatus.allCases.contains(userStatus) else {
@@ -98,6 +98,29 @@ extension User {
         if self.hasAdminRights { return true }
         if self.role != .normal { return false }
         return self.uploadRights.components(separatedBy: ",").contains(String(categoryId))
+    }
+    
+    public func canManageFavorites() -> Bool {
+        // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
+        let versionTooOld = NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
+        if versionTooOld || self.role == .guest {
+            return false
+        }
+        return true
+    }
+    
+    public func canDownloadImages() -> Bool {
+        // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
+        // For previous versions, we assumed that all only registered users have download rights
+        // The download right is reset each time a batch of images is imported.
+        let versionTooOld = NetworkVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending
+        if versionTooOld, self.role == .guest {
+            return false
+        }
+        if versionTooOld == false, self.downloadRights == false {
+            return false
+        }
+        return true
     }
     
     public func setLastUsedToNow() {

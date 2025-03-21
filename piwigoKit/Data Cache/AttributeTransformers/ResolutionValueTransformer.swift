@@ -21,7 +21,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
     }
     
     public override class var allowedTopLevelClasses: [AnyClass] {
-        return [Resolution.self, NSString.self, NSURL.self]
+        return super.allowedTopLevelClasses + [Resolution.self, NSString.self, NSURL.self]
     }
     
     public override func transformedValue(_ value: Any?) -> Any? {
@@ -36,7 +36,7 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
         if let relativeURL = resolution.url,
            relativeURL.scheme == nil, relativeURL.host == nil,
            let path = relativeURL.absoluteString, path.isEmpty == false,
-           let absoluteURL = NSURL(string: NetworkVars.service + path) {
+           let absoluteURL = NSURL(string: NetworkVars.shared.service + path) {
             resolution.url = absoluteURL
         }
         return resolution
@@ -51,8 +51,8 @@ public class ResolutionValueTransformer: NSSecureUnarchiveFromDataTransformer {
         guard let absoluteURL = resolution.url else {
             return super.reverseTransformedValue(resolution)
         }
-        if var path = absoluteURL.absoluteString, path.hasPrefix(NetworkVars.service) {
-            path.removeFirst(NetworkVars.service.count)
+        if var path = absoluteURL.absoluteString, path.hasPrefix(NetworkVars.shared.service) {
+            path.removeFirst(NetworkVars.shared.service.count)
             let newResolution = Resolution(imageWidth: resolution.width,
                                            imageHeight: resolution.height,
                                            imagePath: path)

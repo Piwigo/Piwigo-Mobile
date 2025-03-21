@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Ein schwerwiegender Anwendungsfehler trat auf, während Piwigo versuchte, den Daten-Cache zu lesen. Daher wurde ein neuer Cache angelegt.";
 "CoreDataFetch_DigestError" = "Konnte die abgerufenen Daten nicht verarbeiten.";
 "CoreData_MigrationProgress" = "Migration läuft...";
-"Coredata_MigrationPleaseWait" = "Wir migrieren derzeit einige Ihrer Daten. Bitte warten Sie, bis der Vorgang abgeschlossen ist. Beenden Sie die Anwendung nicht.";
+"Coredata_MigrationPleaseWait" = "Wir migrieren derzeit einige Ihrer Daten. Bitte haben Sie Geduld, bis der Vorgang abgeschlossen ist. Beenden oder verlassen Sie die Anwendung während dessen nicht.";
+"CoreData_MigrationError_title" = "Migration fehlgeschlagen";
+"CoreData_MigrationError_generic" = "Während der Migration ist ein unerwarteter Fehler aufgetreten.";
+"CoreData_MigrationError_timeout" = "Die Anwendung wurde während der Migration der Datenbank angehalten. Bitte starten Sie die Anwendung neu und versuchen Sie es erneut.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Verwirft ein Benutzerkonto ohne gültigen Benutzernamen.";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "Anmeldung läuft...";
 "login_connecting" = "Verbinde";
 "login_newSession" = "Starte die Sitzung";
+"login_closeSession" = "Beenden der Session ...";
 "login_communityParameters" = "Community Parameter";
 "login_serverParameters" = "Piwigo Parameter";
 "login_connectionChanged" = "Verbindung geändert!";

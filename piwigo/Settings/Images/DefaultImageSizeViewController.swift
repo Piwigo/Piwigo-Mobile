@@ -137,23 +137,23 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         // Disable unavailable sizes
         switch imageSize {
         case .square:
-            configCell(cell, forSize: .square, available: NetworkVars.hasSquareSizeImages, allowed: false)
+            configCell(cell, forSize: .square, available: NetworkVars.shared.hasSquareSizeImages, allowed: false)
         case .thumb:
-            configCell(cell, forSize: .thumb, available: NetworkVars.hasThumbSizeImages, allowed: false)
+            configCell(cell, forSize: .thumb, available: NetworkVars.shared.hasThumbSizeImages, allowed: false)
         case .xxSmall:
-            configCell(cell, forSize: .xxSmall, available: NetworkVars.hasXXSmallSizeImages, allowed: false)
+            configCell(cell, forSize: .xxSmall, available: NetworkVars.shared.hasXXSmallSizeImages, allowed: false)
         case .xSmall:
-            configCell(cell, forSize: .xSmall, available: NetworkVars.hasXSmallSizeImages, allowed: false)
+            configCell(cell, forSize: .xSmall, available: NetworkVars.shared.hasXSmallSizeImages, allowed: false)
         case .small:
-            configCell(cell, forSize: .small, available: NetworkVars.hasSmallSizeImages, allowed: false)
+            configCell(cell, forSize: .small, available: NetworkVars.shared.hasSmallSizeImages, allowed: false)
         case .medium:
-            configCell(cell, forSize: .medium, available: NetworkVars.hasMediumSizeImages)
+            configCell(cell, forSize: .medium, available: NetworkVars.shared.hasMediumSizeImages)
         case .large:
-            configCell(cell, forSize: .large, available: NetworkVars.hasLargeSizeImages)
+            configCell(cell, forSize: .large, available: NetworkVars.shared.hasLargeSizeImages)
         case .xLarge:
-            configCell(cell, forSize: .xLarge, available: NetworkVars.hasXLargeSizeImages)
+            configCell(cell, forSize: .xLarge, available: NetworkVars.shared.hasXLargeSizeImages)
         case .xxLarge:
-            configCell(cell, forSize: .xxLarge, available: NetworkVars.hasXXLargeSizeImages)
+            configCell(cell, forSize: .xxLarge, available: NetworkVars.shared.hasXXLargeSizeImages)
         case .fullRes:
             configCell(cell, forSize: .fullRes, available: true)
         }

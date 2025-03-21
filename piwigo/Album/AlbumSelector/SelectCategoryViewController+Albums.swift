@@ -17,7 +17,7 @@ extension SelectCategoryViewController
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
 
-        // Add category to list of recent albums
+        // Add category ID to list of recently used albums
         let userInfo = ["categoryId": parentData.pwgID]
         NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
 
@@ -79,11 +79,7 @@ extension SelectCategoryViewController
             AlbumUtilities.setRepresentative(albumData, with: imageData) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Save changes
-                    do {
-                        try self.mainContext.save()
-                    } catch let error as NSError {
-                        debugPrint("Could not fetch \(error), \(error.userInfo)")
-                    }
+                    self.mainContext.saveIfNeeded()
                     // Close HUD
                     self.updateHUDwithSuccess() { [self] in
                         self.hideHUD(afterDelay: pwgDelayHUD) { [self] in

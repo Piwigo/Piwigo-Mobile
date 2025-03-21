@@ -65,7 +65,7 @@ class AlbumDeletion: NSObject
             let keepImagesAction = UIAlertAction(
                 title: NSLocalizedString("deleteCategory_noImages", comment: "Keep Photos"),
                 style: .default, handler: { [self] action in
-                    if NetworkVars.usesCalcOrphans, nbOrphans == Int64.zero {
+                    if NetworkVars.shared.usesCalcOrphans, nbOrphans == Int64.zero {
                         // There will be no more orphans after the album deletion
                         deleteAlbum(withDeletionMode: .none, completion: completion)
                     } else {
@@ -76,8 +76,8 @@ class AlbumDeletion: NSObject
                 })
             alert.addAction(keepImagesAction)
             
-            if NetworkVars.usesCalcOrphans == false ||
-                (NetworkVars.usesCalcOrphans && nbOrphans == Int64.min) {
+            if NetworkVars.shared.usesCalcOrphans == false ||
+                (NetworkVars.shared.usesCalcOrphans && nbOrphans == Int64.min) {
                 let orphanImagesAction = UIAlertAction(
                     title: NSLocalizedString("deleteCategory_orphanedImages", comment: "Delete Orphans"),
                     style: .destructive,
@@ -197,12 +197,14 @@ class AlbumDeletion: NSObject
             .compactMap({Int32($0)})).filter({$0 != albumData.pwgID}).union(Set([pwgSmartAlbum.root.rawValue]))
         
         // Delete the category
+        let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
+        let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
         PwgSession.checkSession(ofUser: user) { [self] in
             AlbumUtilities.delete(albumData.pwgID, inMode: deletionMode) { [self] in
                 // Auto-upload already disabled by AlbumProvider if necessary
                 // Also remove this album from the auto-upload destination
-                if UploadVars.autoUploadCategoryId == albumData.pwgID {
-                    UploadVars.autoUploadCategoryId = Int32.min
+                if UploadVars.shared.autoUploadCategoryId == albumData.pwgID {
+                    UploadVars.shared.autoUploadCategoryId = Int32.min
                 }
                 
                 // Update UI and cache
@@ -215,13 +217,9 @@ class AlbumDeletion: NSObject
                 self.fetchAlbumData(ofParentsWithIDs: parentIds)
                 
             } failure: { [self] error in
-                let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
-                let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
                 self.deleteAlbumError(error, title: title, message: message)
             }
         } failure: { [self] error in
-            let title = NSLocalizedString("deleteCategoryError_title", comment: "Delete Fail")
-            let message = NSLocalizedString("deleteCategoryError_message", comment: "Failed to delete your album")
             self.deleteAlbumError(error, title: title, message: message)
         }
     }
@@ -241,7 +239,7 @@ class AlbumDeletion: NSObject
                 AlbumVars.shared.isFetchingAlbumData.remove(parentID)
                 
                 // Any error?
-                if let error = error as? NSError {
+                if let error = error {
                     DispatchQueue.main.async { [self] in
                         self.topViewController.hideHUD { [self] in
                             // Display error alert after fetching album data
@@ -263,12 +261,11 @@ class AlbumDeletion: NSObject
         }
     }
     
-    private func deleteAlbumError(_ error: NSError, title: String, message: String) {
+    private func deleteAlbumError(_ error: Error, title: String, message: String) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
                 return
             }

@@ -62,8 +62,8 @@ class AlbumViewController: UIViewController
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     var actionBarButton: UIBarButtonItem?
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
-    lazy var shareBarButton: UIBarButtonItem = getShareBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
+    var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
     
     var selectBarButton: UIBarButtonItem?
@@ -92,7 +92,7 @@ class AlbumViewController: UIViewController
     // MARK: Image Managemennt
     var imageOfInterest = IndexPath(item: 0, section: 0)
     var indexOfImageToRestore = Int.min
-    var isSelect = false
+    var inSelectionMode = false
     var touchedImageIDs = [Int64]()
     var selectedImageIDs = Set<Int64>()
     var selectedFavoriteIDs = Set<Int64>()
@@ -108,9 +108,7 @@ class AlbumViewController: UIViewController
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.userStatus != .guest { return true }
-        return false
+        return user.canManageFavorites()
     }()
     
     // MARK: - Image Animated Transitioning
@@ -145,12 +143,10 @@ class AlbumViewController: UIViewController
     
     // MARK: - Core Data Object Contexts
     lazy var mainContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.mainContext
-        return context
+        return DataController.shared.mainContext
     }()
-    lazy var bckgContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = DataController.shared.newTaskContext()
-        return context
+    lazy var albumBckgContext: NSManagedObjectContext = {
+        return albumProvider.bckgContext
     }()
     
     
@@ -227,12 +223,12 @@ class AlbumViewController: UIViewController
     
     lazy var data = AlbumViewData(withAlbum: albumData)
     lazy var albums: NSFetchedResultsController<Album> = {
-        let albums = data.albums
+        let albums: NSFetchedResultsController<Album> = data.albums
         albums.delegate = self
         return albums
     }()
     lazy var images: NSFetchedResultsController<Image> = {
-        let images = data.images(sortedBy: sortOption)
+        let images: NSFetchedResultsController<Image> = data.images(sortedBy: sortOption)
         images.delegate = self
         return images
     }()
@@ -604,7 +600,7 @@ class AlbumViewController: UIViewController
             collectionView?.reloadData()
 
             // Update buttons
-            if isSelect {
+            if inSelectionMode {
                 initBarsInSelectMode()
             } else {
                 // Update position of buttons (recalculated after device rotation)
@@ -650,7 +646,7 @@ class AlbumViewController: UIViewController
         PwgSession.shared.dataSession.getAllTasks { [unowned self] tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.HTTPCatID) == catIDstr })
+                .value(forHTTPHeaderField: NetworkVars.shared.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
@@ -786,7 +782,7 @@ class AlbumViewController: UIViewController
             self.updateNberOfImagesInFooter()
 
             // Set navigation bar buttons
-            if self.isSelect {
+            if self.inSelectionMode {
                 self.updateBarsInSelectMode()
             } else {
                 self.updateBarsInPreviewMode()
@@ -797,10 +793,9 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch favorites in the background if needed
-        if NetworkVars.userStatus != .guest,
-           categoryId != pwgSmartAlbum.favorites.rawValue,
-           "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
-           NetworkVars.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
+        if hasFavorites, categoryId != pwgSmartAlbum.favorites.rawValue,
+           "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending,
+           NetworkVars.shared.pwgVersion.compare("13.0.0", options: .numeric) == .orderedAscending,
            AlbumVars.shared.isFetchingAlbumData.contains(pwgSmartAlbum.favorites.rawValue) == false,
            let favAlbum = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue),
            Date.timeIntervalSinceReferenceDate - favAlbum.dateGetImages > TimeInterval(86400) { // i.e. a day
@@ -856,11 +851,11 @@ class AlbumViewController: UIViewController
 //        if albumImageTableView?.window == nil { return }
 //        DispatchQueue.main.async { [self] in
 //            // Any upload request in the queue?
-//            if UploadManager.shared.nberOfUploadsToComplete == 0 {
+//              if UploadVars.shared.shared.nberOfUploadsToComplete == 0 {
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
-//            else if !NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading {
+//            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
 //                // No Wi-Fi and user wishes to upload only on Wi-Fi
 //                let headerView = TableHeaderView(frame: .zero)
 //                headerView.configure(width: albumImageTableView.frame.size.width,

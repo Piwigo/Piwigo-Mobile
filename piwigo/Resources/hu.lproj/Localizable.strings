@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
 "CoreDataFetch_DigestError" = "Értelmezhetetlen a letöltött adat.";
 "CoreData_MigrationProgress" = "Migráció folyamatban...";
-"Coredata_MigrationPleaseWait" = "Jelenleg az Ön adatainak egy részét migráljuk. Kérjük, várjon, amíg ez befejeződik. Ne állítsa le az alkalmazást.";
+"Coredata_MigrationPleaseWait" = "Jelenleg folyamatban van az adatok egy részének migrálása. Kérjük, várjon a végéig. Ne lépjen ki vagy ne állítsa le az alkalmazást.";
+"CoreData_MigrationError_title" = "A migráció sikertelen";
+"CoreData_MigrationError_generic" = "Váratlan hiba történt az áttelepítés során.";
+"CoreData_MigrationError_timeout" = "Az alkalmazás felfüggesztésre került az adatbázis migrálása közben. Kérjük, indítsa újra az alkalmazást, és próbálja meg újra.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Elveti az érvényes felhasználónév nélküli felhasználói fiókokat.";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "Bejelentkezés...";
 "login_connecting" = "Kapcsolódás";
 "login_newSession" = "Munkamenet megnyitása";
+"login_closeSession" = "Záró ülés...";
 "login_communityParameters" = "Community paraméterek";
 "login_serverParameters" = "Piwigo paraméterek";
 "login_connectionChanged" = "A kapcsolat megváltozott!";

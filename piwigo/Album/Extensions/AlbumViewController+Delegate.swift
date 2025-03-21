@@ -31,26 +31,19 @@ extension AlbumViewController: UICollectionViewDelegate
             }
             else if let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                 // Action depends on mode
-                if isSelect {
+                if inSelectionMode {
                     // Check image ID
-                    guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
+                    guard let imageData = selectedCell.imageData,
+                          imageData.pwgID != 0
                     else { return }
                     
                     // Selection mode active => add/remove image from selection
-                    if !selectedImageIDs.contains(imageID) {
-                        selectedImageIDs.insert(imageID)
+                    if !selectedImageIDs.contains(imageData.pwgID) {
+                        selectImage(imageData, isFavorite: selectedCell.isFavorite)
                         selectedCell.isSelection = true
-                        if selectedCell.isFavorite {
-                            selectedFavoriteIDs.insert(imageID)
-                        }
-                        if selectedCell.imageData.isVideo {
-                            selectedVideosIDs.insert(imageID)
-                        }
                     } else {
+                        deselectImages(withIDs: Set([imageData.pwgID]))
                         selectedCell.isSelection = false
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
                     }
                     
                     // Update nav buttons
@@ -68,7 +61,7 @@ extension AlbumViewController: UICollectionViewDelegate
                     return
                 }
                 
-                // Add category to list of recent albums
+                // Add category ID to list of recently used albums
                 let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
                 
@@ -95,26 +88,19 @@ extension AlbumViewController: UICollectionViewDelegate
                 else { return }
                 
                 // Action depends on mode
-                if isSelect {
+                if inSelectionMode {
                     // Check image ID
-                    guard let imageID = selectedCell.imageData?.pwgID, imageID != 0
+                    guard let imageData = selectedCell.imageData,
+                          imageData.pwgID != 0
                     else { return }
                     
                     // Selection mode active => add/remove image from selection
-                    if !selectedImageIDs.contains(imageID) {
-                        selectedImageIDs.insert(imageID)
+                    if !selectedImageIDs.contains(imageData.pwgID) {
+                        selectImage(imageData, isFavorite: selectedCell.isFavorite)
                         selectedCell.isSelection = true
-                        if selectedCell.isFavorite {
-                            selectedFavoriteIDs.insert(imageID)
-                        }
-                        if selectedCell.imageData.isVideo {
-                            selectedVideosIDs.insert(imageID)
-                        }
                     } else {
+                        deselectImages(withIDs: Set([imageData.pwgID]))
                         selectedCell.isSelection = false
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
                     }
                     
                     // Update nav buttons
@@ -132,7 +118,7 @@ extension AlbumViewController: UICollectionViewDelegate
                     return
                 }
                 
-                // Add category to list of recent albums
+                // Add category ID to list of recently used albums
                 let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
                 NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
                 
@@ -337,15 +323,14 @@ extension AlbumViewController: UICollectionViewDelegate
                                   at indexPath: IndexPath) -> UIMenu {
         var children = [UIMenuElement]()
         if let imageID = cell.imageData?.pwgID {
-            // Guest cannot share images
-            if NetworkVars.userStatus != .guest {
+            // Since Piwigo 14, we know whether a user is allowed to download images
+            let canShareImages = user.canDownloadImages()
+            if canShareImages {
                 children.append(shareImageAction(withID: imageID))
             }
             
             // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-            let isGuest = NetworkVars.userStatus == .guest
-            let versionTooOld = NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
-            if isGuest == false, versionTooOld == false {
+            if hasFavorites {
                 if cell.isFavorite {
                     children.append(unfavoriteImageAction(withID: imageID))
                 } else {
@@ -353,14 +338,14 @@ extension AlbumViewController: UICollectionViewDelegate
                 }
             }
             
-            // Only identified users can select images
-            if NetworkVars.userStatus != .guest {
+            // Not all users can select/deselect images
+            if canShareImages || hasFavorites || user.hasUploadRights(forCatID: categoryId) {
                 if self.selectedImageIDs.contains(imageID) {
                     // Image not selected ► Propose to select it
-                    children.append(deselectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+                    children.append(deselectImageAction(forCell: cell, at: indexPath))
                 } else {
                     // Image selected ► Propose to deselect it
-                    children.append(selectImageAction(forCell: cell, imageID: imageID, at: indexPath))
+                    children.append(selectImageAction(forCell: cell, at: indexPath))
                 }
             }
             
@@ -397,28 +382,22 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     @available(iOS 13.0, *)
-    private func selectImageAction(forCell cell: ImageCollectionViewCell, imageID: Int64,
-                                   at indexPath: IndexPath) -> UIAction {
+    private func selectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image not selected ► Propose to select it
         return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
-                        image: UIImage(systemName: "checkmark.circle")) { _ in
+                        image: UIImage(systemName: "checkmark.circle")) { [self] _ in
             // Select image
-            self.selectedImageIDs.insert(imageID)
+            guard let imageData = cell.imageData else { return }
+            self.selectImage(imageData, isFavorite: cell.isFavorite)
             cell.isSelection = true
-            if cell.isFavorite {
-                self.selectedFavoriteIDs.insert(imageID)
-            }
-            if cell.imageData.isVideo {
-                self.selectedVideosIDs.insert(imageID)
-            }
-            
+
             // Check if the selection mode is active
-            if self.isSelect {
+            if self.inSelectionMode {
                 // Update the navigation bar and title view
                 self.updateBarsInSelectMode()
             } else {
                 // Enable the selection mode
-                self.isSelect = true
+                self.inSelectionMode = true
                 self.hideButtons()
                 self.initBarsInSelectMode()
             }
@@ -435,8 +414,7 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     @available(iOS 13.0, *)
-    private func deselectImageAction(forCell cell: ImageCollectionViewCell, imageID: Int64,
-                                     at indexPath: IndexPath) -> UIAction {
+    private func deselectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image selected ► Propose to deselect it
         var image: UIImage?
         if #available(iOS 16, *) {
@@ -447,10 +425,9 @@ extension AlbumViewController: UICollectionViewDelegate
         return UIAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"),
                         image: image) { _ in
             // Deselect image
+            guard let imageData = cell.imageData else { return }
+            self.deselectImages(withIDs: Set([imageData.pwgID]))
             cell.isSelection = false
-            self.selectedImageIDs.remove(imageID)
-            self.selectedFavoriteIDs.remove(imageID)
-            self.selectedVideosIDs.remove(imageID)
             
             // Check if the selection mode should be disabled
             if self.selectedImageIDs.isEmpty {

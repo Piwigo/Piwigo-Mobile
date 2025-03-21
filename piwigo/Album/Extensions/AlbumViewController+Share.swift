@@ -9,15 +9,22 @@
 import Foundation
 import Photos
 import UIKit
+import piwigoKit
 
 extension AlbumViewController
 {
     // MARK: Share Bar Button
-    func getShareBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
-                                     action: #selector(shareSelection))
-        button.tintColor = UIColor.piwigoColorOrange()
-        return button
+    func getShareBarButton() -> UIBarButtonItem? {
+        // Since Piwigo 14, pwg.categories.getImages method returns download_url if the user has download rights
+        // For previous versions, we assume that all only registered users have download rights
+        if user.canDownloadImages() {
+            let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                         action: #selector(shareSelection))
+            button.tintColor = UIColor.piwigoColorOrange()
+            return button
+        } else {
+            return nil
+        }
     }
 
 
@@ -183,7 +190,7 @@ extension AlbumViewController
 
                 // Present share image activity view controller
                 activityViewController.view.tag = count
-                if isSelect, contextually == false {
+                if inSelectionMode, contextually == false {
                     activityViewController.popoverPresentationController?.barButtonItem = shareBarButton
                 } else if let imageID = imageIDs.first,
                           let visibleCells = collectionView?.visibleCells,
@@ -236,9 +243,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
             presentedViewController?.hideHUD { }
         } else if contextually == false, selectedImageIDs.contains(imageID) {
             // Remove image from selection
-            selectedImageIDs.remove(imageID)
-            selectedFavoriteIDs.remove(imageID)
-            selectedVideosIDs.remove(imageID)
+            deselectImages(withIDs: Set([imageID]))
             updateBarsInSelectMode()
 
             // Close HUD if last image

@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Se ha producido un error grave en la aplicación mientras Piwigo intentaba leer la caché de datos. Por lo tanto, se ha creado una nueva caché.";
 "CoreDataFetch_DigestError" = "No se han podido procesar los datos obtenidos.";
 "CoreData_MigrationProgress" = "Migración en curso...";
-"Coredata_MigrationPleaseWait" = "Actualmente estamos migrando algunos de sus datos. Por favor, espere hasta que la migración se complete. No elimine la aplicación.";
+"Coredata_MigrationPleaseWait" = "Estamos migrando algunos de sus datos. Por favor, espere hasta el final. No salga de la aplicación ni la cierre.";
+"CoreData_MigrationError_title" = "La migración ha fallado";
+"CoreData_MigrationError_generic" = "Se ha producido un error inesperado durante la migración.";
+"CoreData_MigrationError_timeout" = "La aplicación se ha suspendido durante la migración de la base de datos. Reinicie la aplicación e inténtelo de nuevo.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Descartará una cuenta de usuario que no tenga un nombre de usuario válido.";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "Iniciando sesión...";
 "login_connecting" = "Conectando";
 "login_newSession" = "Abriendo sesión";
+"login_closeSession" = "Cerrando sesión...";
 "login_communityParameters" = "Parámetros de comunidad";
 "login_serverParameters" = "Parámetros de Piwigo";
 "login_connectionChanged" = "¡Ha cambiado la conexión!";
@@ -802,7 +806,7 @@
 "settingsHeader_cache" = "Memoria caché";
 "settings_database" = "Datos";
 "settings_cacheClear" = "Limpiar caché";
-"settings_cacheClearing" = "Borrar la caché";
+"settings_cacheClearing" = "Borrado de la caché";
 "settings_cacheClearAll" = "Limpiar todo";
 "settings_cacheClearMsg" = "¿Estás seguro de querer borrar la caché de fotos? Esto hará que los álbumes y las fotos tarden un tiempo en volver a cargarse.";
 

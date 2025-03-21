@@ -12,29 +12,45 @@ import CoreData
 let tagErrorDomain = "Tag Migration"
 
 class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
-
-    // Logs migration activity
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: TagToTagMigrationPolicy_09_to_0C.self))
+    // Constants
+    let logPrefix = "Tag 09 ► Tag 0C"
+    let numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.percent
+        return numberFormatter
+    }()
 
     /**
      If needed, creates a Server instance of the currently used server before migrating Tag entities.
      ATTENTION: This class must be called before UploadToUploadMigrationPolicy_09_to_0A.
      */
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
         // Check current server path
-        guard let _ = URL(string: NetworkVars.serverPath) else {  return }
+        guard let _ = URL(string: NetworkVars.shared.serverPath) else {  return }
 
         // Create instance for the currently used server if needed
         let description = NSEntityDescription.entity(forEntityName: "Server", in: manager.destinationContext)
         let newServer = Server(entity: description!, insertInto: manager.destinationContext)
         newServer.setValue(UUID().uuidString, forKey: "uuid")
-        newServer.setValue(NetworkVars.serverPath, forKey: "path")
-        newServer.setValue(NetworkVars.serverFileTypes, forKey: "fileTypes")
+        newServer.setValue(NetworkVars.shared.serverPath, forKey: "path")
+        newServer.setValue(NetworkVars.shared.serverFileTypes, forKey: "fileTypes")
 
         // Store new server instance in userInfo for reuse
-        manager.userInfo = [NetworkVars.serverPath : newServer]
+        manager.userInfo = [NetworkVars.shared.serverPath : newServer]
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
     
     /**
@@ -64,12 +80,18 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                        }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: tagErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
+                if #available(iOSApplicationExtension 14.0, *) {
+                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: tagErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -88,25 +110,85 @@ class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Retrieve Server instance common to all tags
         guard var userInfo = manager.userInfo,
-              let newServer = userInfo[NetworkVars.serverPath] as? NSManagedObject else { return }
+              let newServer = userInfo[NetworkVars.shared.serverPath] as? NSManagedObject else { return }
         
         // Add relationship from Tag to Server
         // Core Data creates automatically the inverse relationship
         newTag.setValue(newServer, forKey: "server")
         
         // Add Tag destination instance to userInfo for reuse
-        // in UploaddToUploadMigrationPolicy_09_to_0C.swift
+        // in UploadToUploadMigrationPolicy_09_to_0C.swift
         if let tagId = sInstance.value(forKey: "tagId") {
             userInfo["\(tagId)"] = newTag
             manager.userInfo = userInfo
         }
 
-        // Associate new Tag to old one
-        if #available(iOSApplicationExtension 14.0, *) {
-            TagToTagMigrationPolicy_09_to_0C.logger.notice("Tag ► Tag: \(sInstance) > \(newTag)")
+        // Associate new Tag object to old one
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newTag)")
+//        }
+        manager.associate(sourceInstance: sInstance, withDestinationInstance: newTag, for: mapping)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
         }
-        manager.associate(sourceInstance: sInstance,
-                          withDestinationInstance: newTag,
-                          for: mapping)
+    }
+    
+    override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }

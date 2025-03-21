@@ -30,8 +30,8 @@ extension AlbumViewController
                     cell.pushAlbumDelegate = self
                     
                     // Disable album cells in Image selection mode
-                    cell.contentView.alpha = self.isSelect ? 0.5 : 1.0
-                    cell.isUserInteractionEnabled = !self.isSelect
+                    cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
+                    cell.isUserInteractionEnabled = !self.inSelectionMode
                     return cell
                 }
                 else {
@@ -43,8 +43,8 @@ extension AlbumViewController
                     cell.config(withAlbumData: album)
                     
                     // Disable album cells in Image selection mode
-                    cell.contentView.alpha = self.isSelect ? 0.5 : 1.0
-                    cell.isUserInteractionEnabled = !self.isSelect
+                    cell.contentView.alpha = self.inSelectionMode ? 0.5 : 1.0
+                    cell.isUserInteractionEnabled = !self.inSelectionMode
                     return cell
                 }
             }
@@ -487,14 +487,14 @@ extension AlbumViewController: UICollectionViewDataSource
     }
     
 
-    // MARK: - Sections
+    // MARK: - Sections for iOS 12.x
     // Exclusively for iOS 12.x
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1 + (images.sections?.count ?? 1)
     }
     
 
-    // MARK: - Items i.e. Albums & Images
+    // MARK: - Items i.e. Albums & Images for iOS 12.x
     // Exclusively for iOS 12.x
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
@@ -533,8 +533,8 @@ extension AlbumViewController: UICollectionViewDataSource
                 cell.pushAlbumDelegate = self
 
                 // Disable album cells in Image selection mode
-                cell.contentView.alpha = isSelect ? 0.5 : 1.0
-                cell.isUserInteractionEnabled = !isSelect
+                cell.contentView.alpha = inSelectionMode ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !inSelectionMode
                 return cell
             }
             else {
@@ -546,8 +546,8 @@ extension AlbumViewController: UICollectionViewDataSource
                 cell.config(withAlbumData: album)
 
                 // Disable album cells in Image selection mode
-                cell.contentView.alpha = isSelect ? 0.5 : 1.0
-                cell.isUserInteractionEnabled = !isSelect
+                cell.contentView.alpha = inSelectionMode ? 0.5 : 1.0
+                cell.isUserInteractionEnabled = !inSelectionMode
                 return cell
             }
             

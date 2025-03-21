@@ -14,14 +14,14 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     @IBOutlet var settingsTableView: UITableView!
     
-    var stripGPSdataOnUpload = UploadVars.stripGPSdataOnUpload
-    var resizeImageOnUpload = UploadVars.resizeImageOnUpload
-    var photoMaxSize: Int16 = UploadVars.photoMaxSize
-    var videoMaxSize: Int16 = UploadVars.videoMaxSize
-    var compressImageOnUpload = UploadVars.compressImageOnUpload
-    var photoQuality: Int16 = UploadVars.photoQuality
-    var prefixFileNameBeforeUpload = UploadVars.prefixFileNameBeforeUpload
-    var defaultPrefix = UploadVars.defaultPrefix
+    var stripGPSdataOnUpload = UploadVars.shared.stripGPSdataOnUpload
+    var resizeImageOnUpload = UploadVars.shared.resizeImageOnUpload
+    var photoMaxSize: Int16 = UploadVars.shared.photoMaxSize
+    var videoMaxSize: Int16 = UploadVars.shared.videoMaxSize
+    var compressImageOnUpload = UploadVars.shared.compressImageOnUpload
+    var photoQuality: Int16 = UploadVars.shared.photoQuality
+    var prefixFileNameBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+    var defaultPrefix = UploadVars.shared.defaultPrefix
     private var shouldUpdateDefaultPrefix = false
     private var canDeleteImages = false
     var deleteImageAfterUpload = false
@@ -58,7 +58,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         if let switchVC = parent as? UploadSwitchViewController {
             canDeleteImages = switchVC.canDeleteImages
             if canDeleteImages {
-                deleteImageAfterUpload = UploadVars.deleteImageAfterUpload
+                deleteImageAfterUpload = UploadVars.shared.deleteImageAfterUpload
             }
         }
     }
@@ -377,7 +377,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         case .prefix:
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
             defaultPrefix = PwgSession.utf8mb3String(from: textField.text)
-            if defaultPrefix == UploadVars.defaultPrefix {
+            if defaultPrefix == UploadVars.shared.defaultPrefix {
                 shouldUpdateDefaultPrefix = false
             }
 

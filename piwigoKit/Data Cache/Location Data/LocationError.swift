@@ -10,6 +10,7 @@
 import Foundation
 
 public enum LocationError: Error {
+    // App errors
     case creationError
     case missingData
 }

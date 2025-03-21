@@ -20,7 +20,7 @@ public class ServerProvider: NSObject {
      Will create the Server object if it does not exist before returning it.
      */
     public func getServer(inContext taskContext: NSManagedObjectContext,
-                          atPath path:String = NetworkVars.serverPath) -> Server? {
+                          atPath path:String = NetworkVars.shared.serverPath) -> Server? {
         // Initialisation
         var currentServer: Server?
         
@@ -63,7 +63,7 @@ public class ServerProvider: NSObject {
                     currentServer = server
                 }
                 catch ServerError.wrongURL {
-                    // Delete invalid Tag from the private queue context.
+                    // Delete invalid Server from the private queue context.
                     debugPrint(ServerError.wrongURL.localizedDescription)
                     taskContext.delete(server)
                 }

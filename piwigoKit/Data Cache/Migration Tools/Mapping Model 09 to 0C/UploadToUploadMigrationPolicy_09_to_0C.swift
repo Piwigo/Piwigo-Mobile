@@ -12,12 +12,30 @@ import CoreData
 let uploadErrorDomain = "Upload Migration"
 
 class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
-    
-    // Logs migration activity
-    /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
-    static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: UploadToUploadMigrationPolicy_09_to_0C.self))
+    // Constants
+    let logPrefix = "Upload 09 ► Upload 0C"
+    let numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.percent
+        return numberFormatter
+    }()
 
+    override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+   }
+    
     /**
      UploadToUpload custom migration following these steps:
      - creates an Upload request instance in the destination context
@@ -49,12 +67,18 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                        }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
+                if #available(iOSApplicationExtension 14.0, *) {
+                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
+                }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -74,7 +98,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         // Forget upload requests of images deleted from the Piwigo server
         if newUpload.value(forKey: "requestState") as? Int16 == 13 {
             if #available(iOSApplicationExtension 14.0, *) {
-                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > Upload request of deleted image are non longer needed.")
+                DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > Upload request of deleted image are non longer needed.")
             }
             return
         }
@@ -90,7 +114,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
               let _ = URL(string: serverPath) else {
             // We discard records whose server path is incorrect.
             if #available(iOSApplicationExtension 14.0, *) {
-                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > Upload request instance w/ wrong serverPath!")
+                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > Upload request instance w/ wrong serverPath!")
             }
             return
         }
@@ -98,7 +122,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         // Did we create a record of the currently used server?
         guard var userInfo = manager.userInfo else {
             if #available(iOSApplicationExtension 14.0, *) {
-                UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
+                DataMigrator.logger.error("\(self.logPrefix): userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
             }
             return
         }
@@ -118,20 +142,20 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Can we reuse the user account?
-        let userAccountKey = NetworkVars.username + " @ " + serverPath
+        let userAccountKey = NetworkVars.shared.username + " @ " + serverPath
         if let user = userInfo[userAccountKey] as? NSManagedObject {
             // Add relationship from Upload to User
             // Core Data creates automatically the inverse relationship
             newUpload.setValue(user, forKey: "user")
         }
-        else if NetworkVars.username.isEmpty == false,
+        else if NetworkVars.shared.username.isEmpty == false,
                 let server = userInfo[serverPath] as? NSManagedObject {
             // Create User destination instance…
             // …assuming that the current user account is the appropriate one.
             let description = NSEntityDescription.entity(forEntityName: "User", in: manager.destinationContext)
             let newUser = User(entity: description!, insertInto: manager.destinationContext)
             newUser.setValue(userAccountKey, forKey: "name")
-            newUser.setValue(NetworkVars.username, forKey: "username")
+            newUser.setValue(NetworkVars.shared.username, forKey: "username")
             if let requestDate = sInstance.value(forKey: "requestDate") {
                 newUser.setValue(requestDate, forKey: "lastUsed")
             }
@@ -151,7 +175,7 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Are there Tags of the current server associated to this Upload request?
         // Tags associations to another server will be lost.
-        if serverPath == NetworkVars.serverPath,
+        if serverPath == NetworkVars.shared.serverPath,
            let tagIds = sInstance.value(forKey: "tagIds") as? String,
            tagIds.isEmpty == false {
             // List of Tag IDs attached to the source instance
@@ -170,9 +194,71 @@ class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Associate new Upload object to old one
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadToUploadMigrationPolicy_09_to_0C.logger.notice("Upload ► Upload: \(sInstance) > \(newUpload)")
-        }
+//        if #available(iOSApplicationExtension 14.0, *) {
+//            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
+//        }
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func createRelationships(forDestination dInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        try super.createRelationships(forDestination: dInstance, in: mapping, manager: manager)
+        
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
+    }
+    
+    override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
+        // Logs
+        if #available(iOSApplicationExtension 14.0, *) {
+            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
+        }
+        
+        // Progress bar
+        updateProgressBar(manager.migrationProgress)
+
+        // Stop migration?
+        if OperationQueue.current?.operations.first?.isCancelled ?? false {
+            throw DataMigrationError.timeout
+        }
     }
 }

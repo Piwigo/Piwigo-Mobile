@@ -14,17 +14,16 @@ import uploadKit
 class ClearCache: NSObject {
     
     static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgSessionError) {
-        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-        var message = ""
+        var title = "", message = ""
         switch error {
         case .incompatiblePwgVersion:
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            message = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.pwgVersion, NetworkVars.pwgMinVersion)
+            message = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         default:
-            message = error.localizedDescription
+            title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
         DispatchQueue.main.async {
-            viewController.dismissPiwigoError(withTitle: title, message: message) {
+            viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
                 closeSession()
             }
         }
@@ -33,18 +32,25 @@ class ClearCache: NSObject {
     static func closeSession() {
         // Cancel tasks
         cancelTasks {
-            // Back to default values
+            // Back to default album settings
             AlbumVars.shared.defaultCategory = 0
             AlbumVars.shared.recentCategories = "0"
-            NetworkVars.usesCommunityPluginV29 = false
-            NetworkVars.userStatus = pwgUserStatus.guest
+            
+            // Back to default server properties
+            NetworkVars.shared.usesCommunityPluginV29 = false
+            NetworkVars.shared.usesUploadAsync = false
+            NetworkVars.shared.usesCalcOrphans = false
+            NetworkVars.shared.usesSetCategory = false
+            
+            // Back to default user properties
+            NetworkVars.shared.userStatus = pwgUserStatus.guest
             
             // Disable Auto-Uploading and clear settings
-            UploadVars.isAutoUploadActive = false
-            UploadVars.autoUploadCategoryId = Int32.min
-            UploadVars.autoUploadAlbumId = ""
-            UploadVars.autoUploadTagIds = ""
-            UploadVars.autoUploadComments = ""
+            UploadVars.shared.isAutoUploadActive = false
+            UploadVars.shared.autoUploadCategoryId = Int32.min
+            UploadVars.shared.autoUploadAlbumId = ""
+            UploadVars.shared.autoUploadTagIds = ""
+            UploadVars.shared.autoUploadComments = ""
             
             // Display login view
             DispatchQueue.main.async {

@@ -27,6 +27,7 @@ extension Image {
     @NSManaged public var dateCreated: TimeInterval
     @NSManaged public var dateGetInfos: TimeInterval
     @NSManaged public var fullRes: Resolution?
+    @NSManaged public var downloadUrl: NSURL?
     @NSManaged public var isVideo: Bool
     
     @NSManaged public var author: String

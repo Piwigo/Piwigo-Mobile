@@ -166,7 +166,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             } else {
                 // Image collection
                 // Number of images shown in footer of last section of images
-                guard categoryId != Int32.zero, section == nberOfSections - 1
+                guard categoryId != Int32.zero, section == nberOfSections - 1, albumData.nbImages > 0
                 else { return CGSize.zero }
             }
         } else {

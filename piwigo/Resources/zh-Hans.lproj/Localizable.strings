@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
 "CoreDataFetch_DigestError" = "无法解析获取到的数据";
 "CoreData_MigrationProgress" = "正在进行迁移.....";
-"Coredata_MigrationPleaseWait" = "我们正在迁移您的某些数据。请等待完成。请不要关闭应用程序。";
+"Coredata_MigrationPleaseWait" = "我们正在迁移您的部分数据。请等待结束。请勿退出或杀死应用程序。";
+"CoreData_MigrationError_title" = "迁移失败";
+"CoreData_MigrationError_generic" = "迁移过程中发生意外错误。";
+"CoreData_MigrationError_timeout" = "迁移数据库时暂停了应用程序。请重启应用程序并重试。";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "将丢弃缺少有效用户名的用户帐户。";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "登录中……";
 "login_connecting" = "连接中";
 "login_newSession" = "打开会话";
+"login_closeSession" = "闭幕会议...";
 "login_communityParameters" = "社区参数";
 "login_serverParameters" = "Piwigo参数";
 "login_connectionChanged" = "连接已更改！";

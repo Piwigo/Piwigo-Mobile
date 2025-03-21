@@ -53,7 +53,7 @@ class TagSelectorViewController: UITableViewController {
     var searchQuery = ""
     lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.serverPath))
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", 0))
         andPredicates.append(NSPredicate(format: "numberOfImagesUnderTag != %ld", Int64.max))
         andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))

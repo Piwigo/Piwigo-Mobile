@@ -22,8 +22,8 @@ extension UploadManager
         isUploading = Set<NSManagedObjectID>()
         
         // Reset predicates in casse user switched to another Piwigo
-        let variables = ["serverPath" : NetworkVars.serverPath,
-                         "userName"   : NetworkVars.username]
+        let variables = ["serverPath" : NetworkVars.shared.serverPath,
+                         "userName"   : NetworkVars.shared.username]
         uploads.fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         completed.fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
 
@@ -49,7 +49,7 @@ extension UploadManager
                         debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
-                    guard let uploadID = self.uploadProvider.bckgContext.persistentStoreCoordinator?
+                    guard let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
                         .managedObjectID(forURIRepresentation: objectURI) else {
                         debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no objectID!")
                         continue
@@ -74,14 +74,14 @@ extension UploadManager
         self.resumeAllFailedUploads()
         
         // Propose to delete uploaded image of the photo Library once a day
-        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
+        if Date().timeIntervalSinceReferenceDate > UploadVars.shared.dateOfLastPhotoLibraryDeletion + TimeInterval(86400) {
             // Are there images to delete from the Photo Library?
             let assetsToDelete = (completed.fetchedObjects ?? [])
                 .filter({$0.deleteImageAfterUpload == true})
                 .filter({isDeleting.contains($0.objectID) == false})
             if assetsToDelete.count > 0 {
                 // Store date of deletion
-                UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
+                UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
                 debugPrint("\(dbg()) \(assetsToDelete.count) upload requests should be deleted")
@@ -119,7 +119,7 @@ extension UploadManager
             self.findNextImageToUpload()
             
             // Append auto-upload requests if requested
-            if UploadVars.isAutoUploadActive {
+            if UploadVars.shared.isAutoUploadActive {
                 self.appendAutoUploadRequests()
             } else {
                 self.disableAutoUpload()
@@ -204,7 +204,7 @@ extension UploadManager
         
         // Delete upload requests in appropriate context
         if let taskContext = uploads.first?.managedObjectContext,
-           taskContext == self.uploadProvider.bckgContext {
+           taskContext == self.uploadBckgContext {
             DispatchQueue.global(qos: .background).async {
                 self.uploadProvider.delete(uploadRequests: uploads) { _ in
                     self.isDeleting = Set()

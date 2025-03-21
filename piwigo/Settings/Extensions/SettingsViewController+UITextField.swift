@@ -18,8 +18,8 @@ extension SettingsViewController: UITextFieldDelegate {
             editedRow = IndexPath(row: 0, section: SettingsSection.imageUpload.rawValue)
         case .prefix:
             editedRow = IndexPath(row: 5 + (user.hasAdminRights ? 1 : 0)
-                                         + (UploadVars.resizeImageOnUpload ? 2 : 0)
-                                         + (UploadVars.compressImageOnUpload ? 1 : 0),
+                                         + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
+                                         + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
                                   section: SettingsSection.imageUpload.rawValue)
         default:
             break
@@ -39,15 +39,15 @@ extension SettingsViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch ImageUploadSetting(rawValue: textField.tag) {
         case .author:
-            UploadVars.defaultAuthor = textField.text ?? ""
+            UploadVars.shared.defaultAuthor = textField.text ?? ""
         case .prefix:
-            UploadVars.defaultPrefix = textField.text ?? ""
-            if UploadVars.defaultPrefix.isEmpty {
-                UploadVars.prefixFileNameBeforeUpload = false
+            UploadVars.shared.defaultPrefix = textField.text ?? ""
+            if UploadVars.shared.defaultPrefix.isEmpty {
+                UploadVars.shared.prefixFileNameBeforeUpload = false
                 // Remove row in existing table
                 let prefixIndexPath = IndexPath(row: 5 + (user.hasAdminRights ? 1 : 0)
-                                                       + (UploadVars.resizeImageOnUpload ? 2 : 0)
-                                                       + (UploadVars.compressImageOnUpload ? 1 : 0),
+                                                       + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
+                                                       + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
                                                 section: SettingsSection.imageUpload.rawValue)
                 settingsTableView?.deleteRows(at: [prefixIndexPath], with: .automatic)
 

@@ -53,7 +53,10 @@
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 "CoreData_MigrationProgress" = "Migration in progress...";
-"Coredata_MigrationPleaseWait" = "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.";
+"Coredata_MigrationPleaseWait" = "Kami sedang dalam proses migrasi beberapa data Anda. Mohon tunggu hingga selesai. Jangan keluar atau menutup aplikasi.";
+"CoreData_MigrationError_title" = "Migrasi Gagal";
+"CoreData_MigrationError_generic" = "Terjadi kesalahan yang tidak terduga selama migrasi.";
+"CoreData_MigrationError_timeout" = "Aplikasi dihentikan sementara saat memigrasikan basis data. Silakan mulai ulang aplikasi dan coba lagi.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
@@ -91,6 +94,7 @@
 "login_loggingIn" = "Proses Masuk...";
 "login_connecting" = "Menyambungkan";
 "login_newSession" = "Membuka Sesi";
+"login_closeSession" = "Sesi penutupan...";
 "login_communityParameters" = "Parameter Komunitas";
 "login_serverParameters" = "Parameter Piwigo";
 "login_connectionChanged" = "Koneksi diubah!";
@@ -400,7 +404,7 @@
 
 // Image tags errors
 "tagsAddError_message" = "Failed to create new tag";
-"tagsAddError_title" = "Create Fail";
+"tagsAddError_title" = "Creation Failed";
 
 // Image select
 "selectImages" = "Pilih Gambar";
@@ -607,7 +611,7 @@
 "shareActivityCode_Other" = "Share with other apps";
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
-"shareFailError_title" = "Share Fail";
+"shareFailError_title" = "Share Failed";
 "shareMetadataError_message" = "Cannot strip private metadata";
 "shareFailError_tooLarge" = "Selection too large to share";
 

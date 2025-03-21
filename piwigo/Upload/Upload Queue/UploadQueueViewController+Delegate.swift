@@ -81,7 +81,7 @@ extension UploadQueueViewController: UITableViewDelegate
                                         handler: { action, view, completionHandler in
             let savingContext = upload.managedObjectContext
             savingContext?.delete(upload)
-            try? savingContext?.save()
+            savingContext?.saveIfNeeded()
             UploadManager.shared.backgroundQueue.async {
                 UploadManager.shared.resumeFailedUpload(withID: upload.localIdentifier)
                 UploadManager.shared.findNextImageToUpload()

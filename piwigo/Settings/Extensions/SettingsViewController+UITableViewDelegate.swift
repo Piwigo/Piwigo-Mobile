@@ -19,12 +19,12 @@ extension SettingsViewController: UITableViewDelegate
         case .server:
             title = String(format: "%@ %@",
                            NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                           NetworkVars.pwgVersion)
-            if (NetworkVars.serverProtocol == "http://") {
+                           NetworkVars.shared.pwgVersion)
+            if (NetworkVars.shared.serverProtocol == "http://") {
                 title += "\n"
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-            if NetworkVars.pwgVersion.compare(NetworkVars.pwgRecentVersion, options: .numeric) == .orderedAscending {
+            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
                 if !title.contains("\n") { title += "\n" }
                 if !text.isEmpty { text += " — " }
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
@@ -112,10 +112,10 @@ extension SettingsViewController: UITableViewDelegate
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
                 4  /* Upload Photo Size */,
@@ -184,11 +184,11 @@ extension SettingsViewController: UITableViewDelegate
         var footer = ""
         switch activeSection(section) {
         case .logout:
-            if NetworkVars.serverFileTypes.isEmpty == false {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if NetworkVars.shared.serverFileTypes.isEmpty == false {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case .about:
-            footer = NetworkVars.pwgStatistics
+            footer = NetworkVars.shared.pwgStatistics
         default:
             footer = ""
         }
@@ -271,28 +271,28 @@ extension SettingsViewController: UITableViewDelegate
         case .imageUpload /* Default upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
-            row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+            row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
                 privacyVC.delegate = self
-                privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
+                privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 4 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
                 guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
                 uploadPhotoSizeVC.delegate = self
-                uploadPhotoSizeVC.photoMaxSize = UploadVars.photoMaxSize
+                uploadPhotoSizeVC.photoMaxSize = UploadVars.shared.photoMaxSize
                 navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
             case 5 /* Upload Video Size */:
                 let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
                 guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController else { return }
                 uploadVideoSizeVC.delegate = self
-                uploadVideoSizeVC.videoMaxSize = UploadVars.videoMaxSize
+                uploadVideoSizeVC.videoMaxSize = UploadVars.shared.videoMaxSize
                 navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
             case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
@@ -441,7 +441,7 @@ extension SettingsViewController: UITableViewDelegate
                     // Compile ticket number from current date
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyyMMddHHmm"
-                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.language) as Locale
+                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.shared.language) as Locale
                     let date = Date()
                     let ticketDate = dateFormatter.string(from: date)
 

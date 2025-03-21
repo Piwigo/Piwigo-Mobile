@@ -53,8 +53,8 @@ extension UIImage {
             // Search for regions of interest
             do {
                 try requestHandler.perform([attentionRequest, objectnessRequest])
-            } catch let error as NSError {
-                debugPrint("Failed to perform image request: \(error)")
+            } catch let error {
+                debugPrint("Failed to perform image request: \(error.localizedDescription)")
                 return nil
             }
             

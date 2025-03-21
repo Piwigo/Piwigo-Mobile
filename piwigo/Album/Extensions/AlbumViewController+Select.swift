@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// MARK: Buttons
 extension AlbumViewController
 {
     // MARK: - Cancel Buttons
@@ -73,6 +74,7 @@ extension AlbumViewController
 }
 
 
+// MARK: - Menus
 @available(iOS 14, *)
 extension AlbumViewController
 {
@@ -137,7 +139,7 @@ extension AlbumViewController
         hideButtons()
         
         // Activate Images Selection mode
-        isSelect = true
+        inSelectionMode = true
         
         // Disable interaction with category cells and scroll to first image cell if needed
         var numberOfImageCells = 0
@@ -171,7 +173,7 @@ extension AlbumViewController
     
     @objc func cancelSelect() {
         // Disable Images Selection mode
-        isSelect = false
+        inSelectionMode = false
         
         // Update navigation bar and toolbar
         initBarsInPreviewMode()
@@ -224,9 +226,27 @@ extension AlbumViewController
         }
     }
     
+    func selectImage(_ imageData: Image, isFavorite: Bool) {
+        self.selectedImageIDs.insert(imageData.pwgID)
+        if isFavorite {
+            selectedFavoriteIDs.insert(imageData.pwgID)
+        }
+        if imageData.isVideo {
+            selectedVideosIDs.insert(imageData.pwgID)
+        }
+    }
+
+    func deselectImages(withIDs imageIDs: Set<Int64>) {
+        self.selectedImageIDs.subtract(imageIDs)
+        self.selectedVideosIDs.subtract(imageIDs)
+        self.selectedFavoriteIDs.subtract(imageIDs)
+    }
+
     func updateSelectButton(ofSection section: Int) -> SelectButtonState {
-        // No selector for guests
-        if NetworkVars.userStatus == .guest { return .none}
+        // No selector for users not allowed to share images or manage favorites
+        if (user.canDownloadImages() || hasFavorites || user.hasUploadRights(forCatID: categoryId)) == false {
+            return .none
+        }
 
         // Album section?
         if #available(iOS 13.0, *) {
@@ -300,44 +320,34 @@ extension AlbumViewController
 
         // Prepare variable for HUD and attribute action
         switch action {
-        case .edit         /* Edit images parameters */,
-             .delete       /* Distinguish orphanes and ask for confirmation */,
-             .share        /* Check Photo Library access rights */,
-             .copyImages   /* Copy images to album */,
-             .moveImages   /* Move images to album */:
+        case .edit              /* Edit images parameters */,
+             .delete            /* Distinguish orphanes and ask for confirmation */,
+             .share             /* Check Photo Library access rights */:
             
-            // Remove images from which we already have complete data
-            var imageIDsToRetrieve = imageIDs
-            let selectedImages = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
-            for imageID in imageIDs {
-                guard let selectedImage = selectedImages.first(where: {$0.pwgID == imageID})
-                else { continue }
-                if selectedImage.fileSize != Int64.zero {
-                    imageIDsToRetrieve.remove(imageID)
-                }
-            }
+            // Identify images with incomplete data, retrieve missing data and perform wanted action
+            prepareDataRetrieval(ofImagesWithIDs: imageIDs, beforeAction: action, contextually: contextually)
             
-            // Should we retrieve data of some images?
-            if imageIDsToRetrieve.isEmpty {
+        case .copyImages        /* Copy images to album to select */,
+             .moveImages        /* Move images to album to select */:
+            
+            // Add category ID to list of recently used albums
+            let userInfo = ["categoryId": albumData.pwgID]
+            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+            
+            // Complete image data is not necessary for Piwigo server version +14.x
+            if NetworkVars.shared.usesSetCategory {
+                // Select album and copy images into that album
                 performAction(action, withImageIDs: imageIDs, contextually: contextually)
             } else {
-                // Display HUD
-                navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                              inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
-                
-                // Retrieve image data if needed
-                PwgSession.checkSession(ofUser: user) {  [self] in
-                    retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
-                                 beforeAction: action, contextually: contextually)
-                } failure: { [self] error in
-                    retrieveImageDataError(error, contextually: contextually)
-                }
+                // Identify images with incomplete data, retrieve missing data and perform wanted action
+                prepareDataRetrieval(ofImagesWithIDs: imageIDs, beforeAction: action, contextually: contextually)
             }
             
-        case .favorite         /* Favorite photos   */,
-             .unfavorite       /* Unfavorite photos */:
+        case .favorite          /* Favorite photos   */,
+             .unfavorite        /* Unfavorite photos */:
+            
             // Display HUD
-            let title = imageIDs.count > 1 ? 
+            let title = imageIDs.count > 1 ?
                 NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…") :
                 NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…")
             navigationController?.showHUD(withTitle: title, inMode: imageIDs.count > 1 ? .determinate : .indeterminate)
@@ -345,8 +355,9 @@ extension AlbumViewController
             // Add or remove image from favorites
             performAction(action, withImageIDs: imageIDs, contextually: contextually)
             
-        case .rotateImagesLeft      /* Rotate photos 90° to left */,
-             .rotateImagesRight     /* Rotate photos 90° to right */:
+        case .rotateImagesLeft  /* Rotate photos 90° to left */,
+             .rotateImagesRight /* Rotate photos 90° to right */:
+            
             // Display HUD
             let title = imageIDs.count > 1 ?
                 NSLocalizedString("rotateSeveralImageHUD_rotating", comment: "Rotating Photos…") :
@@ -392,6 +403,37 @@ extension AlbumViewController
         }
     }
 
+    private func prepareDataRetrieval(ofImagesWithIDs imageIDs: Set<Int64>,
+                                      beforeAction action: pwgImageAction, contextually: Bool) {
+        // Remove images from which we already have complete data
+        var imageIDsToRetrieve = imageIDs
+        let selectedImages = (images.fetchedObjects ?? []).filter({imageIDs.contains($0.pwgID)})
+        for imageID in imageIDs {
+            guard let selectedImage = selectedImages.first(where: {$0.pwgID == imageID})
+            else { continue }
+            if selectedImage.fileSize != Int64.zero {
+                imageIDsToRetrieve.remove(imageID)
+            }
+        }
+        
+        // Should we retrieve data of some images?
+        if imageIDsToRetrieve.isEmpty {
+            performAction(action, withImageIDs: imageIDs, contextually: contextually)
+        } else {
+            // Display HUD
+            navigationController?.showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                          inMode: imageIDsToRetrieve.count > 1 ? .determinate : .indeterminate)
+            
+            // Retrieve image data if needed
+            PwgSession.checkSession(ofUser: user) {  [self] in
+                retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
+                             beforeAction: action, contextually: contextually)
+            } failure: { [self] error in
+                retrieveImageDataError(error, contextually: contextually)
+            }
+        }
+    }
+    
     private func retrieveData(ofImagesWithID someIDs: Set<Int64>, among imageIDs: Set<Int64>,
                               beforeAction action:pwgImageAction, contextually: Bool) {
         // Get image ID if any
@@ -429,12 +471,11 @@ extension AlbumViewController
         }
     }
     
-    private func retrieveImageDataError(_ error: NSError, contextually: Bool) {
+    private func retrieveImageDataError(_ error: Error, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed] .contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -442,8 +483,7 @@ extension AlbumViewController
             // Report error
             let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
             let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
-            dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [self] in
+            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)
@@ -461,7 +501,7 @@ extension AlbumViewController: UIGestureRecognizerDelegate
 {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         // Will examine touchs only in select mode
-        if isSelect {
+        if inSelectionMode {
             return true
         }
         return false
@@ -493,29 +533,21 @@ extension AlbumViewController: UIGestureRecognizerDelegate
         {
             // Get cell at touch position
             if let imageCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-               let imageID = imageCell.imageData?.pwgID
+               let imageData = imageCell.imageData
             {
                 // Update the selection if not already done
-                if touchedImageIDs.contains(imageID) { return }
+                if touchedImageIDs.contains(imageData.pwgID) { return }
                 
                 // Store that the user touched this cell during this gesture
-                touchedImageIDs.append(imageID)
+                touchedImageIDs.append(imageData.pwgID)
                 
                 // Update the selection state
-                if !selectedImageIDs.contains(imageID) {
-                    selectedImageIDs.insert(imageID)
+                if !selectedImageIDs.contains(imageData.pwgID) {
+                    selectImage(imageData, isFavorite: imageCell.isFavorite)
                     imageCell.isSelection = true
-                    if imageCell.isFavorite {
-                        selectedFavoriteIDs.insert(imageID)
-                    }
-                    if imageCell.imageData.isVideo {
-                        selectedVideosIDs.insert(imageID)
-                    }
                 } else {
                     imageCell.isSelection = false
-                    selectedImageIDs.remove(imageID)
-                    selectedFavoriteIDs.remove(imageID)
-                    selectedVideosIDs.remove(imageID)
+                    deselectImages(withIDs: Set([imageData.pwgID]))
                 }
                 
                 // Update the navigation bar

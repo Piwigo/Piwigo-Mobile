@@ -68,7 +68,7 @@ extension UploadManager {
         do { try FileManager.default.setAttributes(attrs, ofItemAtPath: fileURL.path) } catch { }
         
         // Determine MD5 checksum of image file to upload
-        let error: NSError?
+        let error: Error?
         (upload.md5Sum, error) = fileURL.MD5checksum()
         debugPrint("\(dbg()) MD5: \(String(describing: upload.md5Sum))")
         if error != nil {
@@ -83,8 +83,7 @@ extension UploadManager {
             guard let uti = UTType(filenameExtension: fileExt),
                   let mimeType = uti.preferredMIMEType
             else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(UploadError.missingAsset)
                 return
             }
             upload.mimeType = mimeType
@@ -93,8 +92,7 @@ extension UploadManager {
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue(),
                   let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String?
             else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(UploadError.missingAsset)
                 return
             }
             upload.mimeType = mimeType

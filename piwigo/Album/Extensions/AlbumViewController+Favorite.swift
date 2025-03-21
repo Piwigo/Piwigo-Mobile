@@ -15,10 +15,7 @@ extension AlbumViewController
     // MARK: Favorite Button
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        if NetworkVars.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending {
-            return nil
-        }
-        if NetworkVars.userStatus == .guest {
+        if hasFavorites == false {
             return nil
         }
         
@@ -39,7 +36,7 @@ extension AlbumViewController
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
-//            bckgContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Close HUD with success
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -59,9 +56,7 @@ extension AlbumViewController
             // Forget this image
             remainingIDs.removeFirst()
             if contextually == false {
-                selectedImageIDs.remove(imageID)
-                selectedFavoriteIDs.remove(imageID)
-                selectedVideosIDs.remove(imageID)
+                deselectImages(withIDs: Set([imageID]))
             }
 
             // Update HUD
@@ -85,16 +80,21 @@ extension AlbumViewController
                         favAlbum.addToImages(imageData)
                         // Update favorites album data
                         self.albumProvider.updateAlbums(addingImages: 1, toAlbum: favAlbum)
-                        // Save changes
-                        try? mainContext.save()
+                    }
+                    
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if self.hasFavorites {
+                        let visibleCells = self.collectionView?.visibleCells ?? []
+                        let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                        if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {
+                            cell.isFavorite = true
+                        }
                     }
                     
                     // Next image
                     remainingIDs.remove(imageID)
                     if contextually == false {
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
+                        deselectImages(withIDs: Set([imageID]))
                     }
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
@@ -106,12 +106,11 @@ extension AlbumViewController
         }
     }
     
-    private func favoriteError(_ error: NSError, contextually: Bool) {
+    private func favoriteError(_ error: Error, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -119,8 +118,7 @@ extension AlbumViewController
             // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [self] in
+            navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)
@@ -142,7 +140,7 @@ extension AlbumViewController
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
             // Save changes
-//            bckgContext.saveIfNeeded()
+            mainContext.saveIfNeeded()
             // Close HUD with success
             navigationController?.updateHUDwithSuccess() { [self] in
                 navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
@@ -162,9 +160,7 @@ extension AlbumViewController
             // Deselect this image if needed
             remainingIDs.remove(imageID)
             if contextually == false {
-                selectedImageIDs.remove(imageID)
-                selectedFavoriteIDs.remove(imageID)
-                selectedVideosIDs.remove(imageID)
+                deselectImages(withIDs: Set([imageID]))
             }
 
             // Update HUD
@@ -188,16 +184,21 @@ extension AlbumViewController
                         favAlbum.removeFromImages(imageData)
                         // Update favorites album data
                         self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: favAlbum)
-                        // Save changes
-                        try? mainContext.save()
+                    }
+                    
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if self.hasFavorites {
+                        let visibleCells = self.collectionView?.visibleCells ?? []
+                        let imageCells = visibleCells.compactMap({$0 as? ImageCollectionViewCell})
+                        if let cell = imageCells.first(where: { $0.imageData.pwgID == imageID}) {
+                            cell.isFavorite = false
+                        }
                     }
                     
                     // Next image
                     remainingIDs.removeFirst()
                     if contextually == false {
-                        selectedImageIDs.remove(imageID)
-                        selectedFavoriteIDs.remove(imageID)
-                        selectedVideosIDs.remove(imageID)
+                        deselectImages(withIDs: Set([imageID]))
                     }
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
@@ -209,12 +210,11 @@ extension AlbumViewController
         }
     }
     
-    private func unfavoriteError(_ error: NSError, contextually: Bool) {
+    private func unfavoriteError(_ error: Error, contextually: Bool) {
         DispatchQueue.main.async { [self] in
             // Session logout required?
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                .contains(pwgError) {
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -222,8 +222,7 @@ extension AlbumViewController
             // Report error
             let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
             let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message,
-                               errorMessage: error.localizedDescription) { [self] in
+            navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
                 navigationController?.hideHUD() { [self] in
                     if contextually {
                         setEnableStateOfButtons(true)

@@ -98,7 +98,7 @@ extension UploadManager {
         }
         
         self.backgroundQueue.async {
-            self.uploadProvider.bckgContext.saveIfNeeded()
+            self.uploadBckgContext.saveIfNeeded()
             self.didEndPreparation()
         }
     }

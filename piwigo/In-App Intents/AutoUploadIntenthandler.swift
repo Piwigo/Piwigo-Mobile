@@ -34,7 +34,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         debugPrint("••> In-app intent starting...")
 
         // Is auto-uploading enabled?
-        if !UploadVars.isAutoUploadActive {
+        if !UploadVars.shared.isAutoUploadActive {
             let errorMsg = NSLocalizedString("AutoUploadError_Disabled",
                                              comment: "Auto-uploading is disabled in the app settings.")
             completion(AutoUploadIntentResponse.failure(error: errorMsg))
@@ -42,11 +42,11 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
         
         // Check access to Photo Library album
-        let collectionID = UploadVars.autoUploadAlbumId
+        let collectionID = UploadVars.shared.autoUploadAlbumId
         guard collectionID.isEmpty == false,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album -> Reset album ID
-            UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album
+            UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             
             // Delete remaining upload requests
             UploadManager.shared.backgroundQueue.async {
@@ -60,10 +60,10 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
 
         // Check existence of Piwigo album
-        let categoryId = UploadVars.autoUploadCategoryId
+        let categoryId = UploadVars.shared.autoUploadCategoryId
         guard categoryId != Int32.min else {
             // Cannot access Piwigo album -> Reset album ID
-            UploadVars.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
+            UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests
             UploadManager.shared.backgroundQueue.async {

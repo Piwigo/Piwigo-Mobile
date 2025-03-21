@@ -12,7 +12,7 @@ import Foundation
 public extension PwgSession {
     
     func getMethods(completion: @escaping () -> Void,
-                    failure: @escaping (NSError) -> Void) {
+                    failure: @escaping (Error) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Retrieve methods.")
         }
@@ -24,35 +24,37 @@ public extension PwgSession {
             do {
                 // Decode the JSON into codable type ReflectionGetMethodListJSON.
                 let decoder = JSONDecoder()
-                let methodsJSON = try decoder.decode(ReflectionGetMethodListJSON.self, from: jsonData)
+                let pwgData = try decoder.decode(ReflectionGetMethodListJSON.self, from: jsonData)
                 
                 // Piwigo error?
-                if methodsJSON.errorCode != 0 {
-                    let error = self.localizedError(for: methodsJSON.errorCode,
-                                                    errorMessage: methodsJSON.errorMessage)
-                    failure(error as NSError)
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
                     return
                 }
                 
-                // Check if the Community extension is installed and active (> 2.9a)
-                NetworkVars.usesCommunityPluginV29 = methodsJSON.data.contains("community.session.getStatus")
+                // Check if the Community extension is installed and active (since Piwigo 2.9a)
+                NetworkVars.shared.usesCommunityPluginV29 = pwgData.data.contains("community.session.getStatus")
                 
-                // Check if the pwg.images.uploadAsync method is available
-                NetworkVars.usesUploadAsync = methodsJSON.data.contains("pwg.images.uploadAsync")
+                // Check if the pwg.images.uploadAsync method is available (since Piwigo 11)
+                NetworkVars.shared.usesUploadAsync = pwgData.data.contains("pwg.images.uploadAsync")
                 
-                // Check if the pwg.categories.calculateOrphans method is available
-                NetworkVars.usesCalcOrphans = methodsJSON.data.contains("pwg.categories.calculateOrphans")
+                // Check if the pwg.categories.calculateOrphans method is available (since Piwigo 12)
+                NetworkVars.shared.usesCalcOrphans = pwgData.data.contains("pwg.categories.calculateOrphans")
+                
+                // Check if the pwg.images.setCategory method is available (since Piwigo 14)
+                NetworkVars.shared.usesSetCategory = pwgData.data.contains("pwg.images.setCategory")
                 
                 if #available(iOSApplicationExtension 14.0, *) {
-                    PwgSession.logger.notice("Has Community plugin: \(NetworkVars.usesCommunityPluginV29, privacy: .public)")
-                    PwgSession.logger.notice("Has uploadAsync method: \(NetworkVars.usesUploadAsync, privacy: .public)")
-                    PwgSession.logger.notice("Has calculateOrphans method: \(NetworkVars.usesCalcOrphans, privacy: .public)")
+                    PwgSession.logger.notice("Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)")
+                    PwgSession.logger.notice("uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)")
+                    PwgSession.logger.notice("calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)")
+                    PwgSession.logger.notice("setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)")
                 }
                 completion()
             }
             catch {
                 // Data cannot be digested
-                let error = error as NSError
                 failure(error)
             }
         } failure: { error in

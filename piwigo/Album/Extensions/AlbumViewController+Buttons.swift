@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import piwigoKit
+import uploadKit
 
 extension AlbumViewController
 {
@@ -76,7 +77,7 @@ extension AlbumViewController
                         showHomeAlbumButtonIfNeeded()
                     } else {
                         // Show UploadQueue button if needed
-                        let nberOfUploads = UIApplication.shared.applicationIconBadgeNumber
+                        let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
                         let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
                         NotificationCenter.default.post(name: .pwgLeftUploads,
                                                         object: nil, userInfo: userInfo)
@@ -391,7 +392,7 @@ extension AlbumViewController
 
         // Only presented in the root or default album
         if nberOfUploads > 0 {
-            if (!NetworkVars.isConnectedToWiFi() && UploadVars.wifiOnlyUploading) ||
+            if (!NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
                 nberOfUploadsLabel.text = "⚠️"
             } else {

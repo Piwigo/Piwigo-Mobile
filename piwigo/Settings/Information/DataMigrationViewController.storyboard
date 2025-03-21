@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_72" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,11 +14,11 @@
             <objects>
                 <viewController storyboardIdentifier="DataMigrationViewController" modalTransitionStyle="crossDissolve" useStoryboardIdentifierAsRestorationIdentifier="YES" id="01J-lp-oVM" userLabel="View Controller" customClass="DataMigrationViewController" customModule="piwigo" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleAspectFill" preservesSuperviewLayoutMargins="YES" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <rect key="frame" x="0.0" y="0.0" width="440" height="956"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoText" translatesAutoresizingMaskIntoConstraints="NO" id="tRi-ye-f0P">
-                                <rect key="frame" x="80" y="99" width="270" height="67"/>
+                                <rect key="frame" x="80" y="102" width="280" height="69.666666666666686"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="300" id="bvu-Oo-zZh"/>
                                     <constraint firstAttribute="width" secondItem="tRi-ye-f0P" secondAttribute="height" multiplier="981:244" id="dJY-ra-u7y"/>
@@ -44,8 +44,21 @@
                                     </mask>
                                 </variation>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Migration in progress..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kHR-tM-JMa">
+                                <rect key="frame" x="110" y="479.66666666666669" width="220" height="25"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="21"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CiE-H2-A7h">
+                                <rect key="frame" x="72" y="520.66666666666663" width="296" height="4"/>
+                                <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </progressView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We are currently migrating some of your data. Please wait until it is complete. Do not kill the application." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXF-wk-KFP">
-                                <rect key="frame" x="39" y="448" width="352" height="61"/>
+                                <rect key="frame" x="44" y="544.66666666666663" width="352" height="61"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -56,42 +69,85 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Migration in progress..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kHR-tM-JMa">
-                                <rect key="frame" x="105" y="382.66666666666669" width="220" height="25.333333333333314"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
-                                </accessibility>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="21"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="piwigo.org" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Owz-oH-9TO">
-                                <rect key="frame" x="189.66666666666666" y="883" width="51" height="12"/>
+                                <rect key="frame" x="194.66666666666669" y="907" width="50.999999999999972" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="Msh-RB-rTZ">
+                                <rect key="frame" x="201.66666666666666" y="410.66666666666669" width="37" height="37"/>
+                            </activityIndicatorView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Ofv-cX-acU">
+                                <rect key="frame" x="302" y="230" width="20" height="20"/>
+                            </activityIndicatorView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="xZU-bs-2ae">
+                                <rect key="frame" x="634" y="230" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1cY-dd-xU8"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="bottom" secondItem="Owz-oH-9TO" secondAttribute="bottom" constant="3" id="1Km-tK-OBM"/>
+                            <constraint firstItem="kHR-tM-JMa" firstAttribute="centerY" secondItem="1cY-dd-xU8" secondAttribute="centerY" id="2Mw-uu-cqp"/>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" secondItem="tRi-ye-f0P" secondAttribute="trailing" constant="80" id="4Gk-NX-elf"/>
+                            <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="kHR-tM-JMa" secondAttribute="trailing" constant="20" id="858-vS-FUZ"/>
                             <constraint firstItem="1cY-dd-xU8" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="dXF-wk-KFP" secondAttribute="trailing" constant="20" id="9Jn-gm-Ieg"/>
                             <constraint firstItem="Owz-oH-9TO" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="9WW-j0-MVr"/>
+                            <constraint firstItem="CiE-H2-A7h" firstAttribute="width" secondItem="dXF-wk-KFP" secondAttribute="width" constant="-56" id="AP4-YO-163"/>
                             <constraint firstItem="dXF-wk-KFP" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="BHT-20-ryR"/>
+                            <constraint firstItem="Msh-RB-rTZ" firstAttribute="bottom" secondItem="kHR-tM-JMa" secondAttribute="top" constant="-32" id="FwC-D5-vgX"/>
                             <constraint firstItem="dXF-wk-KFP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="20" id="GnZ-3w-2Tg"/>
+                            <constraint firstItem="xZU-bs-2ae" firstAttribute="centerY" secondItem="CiE-H2-A7h" secondAttribute="centerY" id="P0t-0C-Px5"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="leading" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="80" id="R6W-s0-Fh5"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="Tcr-7U-hfi"/>
+                            <constraint firstItem="Msh-RB-rTZ" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="Wh6-Rb-g7t"/>
+                            <constraint firstItem="dXF-wk-KFP" firstAttribute="leading" secondItem="Ofv-cX-acU" secondAttribute="leading" id="aS3-Vi-xGr"/>
+                            <constraint firstItem="kHR-tM-JMa" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="bDc-g3-cvM"/>
                             <constraint firstItem="tRi-ye-f0P" firstAttribute="top" secondItem="1cY-dd-xU8" secondAttribute="top" constant="40" id="c7l-Dq-xIR"/>
-                            <constraint firstItem="dXF-wk-KFP" firstAttribute="centerY" secondItem="1cY-dd-xU8" secondAttribute="centerY" id="hsD-gT-T0M"/>
+                            <constraint firstItem="xZU-bs-2ae" firstAttribute="trailing" secondItem="dXF-wk-KFP" secondAttribute="trailing" id="fM5-cV-0MC"/>
+                            <constraint firstItem="Ofv-cX-acU" firstAttribute="centerY" secondItem="CiE-H2-A7h" secondAttribute="centerY" id="kmJ-rB-V1p"/>
                             <constraint firstItem="kHR-tM-JMa" firstAttribute="bottom" secondItem="dXF-wk-KFP" secondAttribute="top" constant="-40" id="pZc-tl-PQl"/>
-                            <constraint firstItem="kHR-tM-JMa" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="qA8-JJ-MVq"/>
+                            <constraint firstItem="kHR-tM-JMa" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="1cY-dd-xU8" secondAttribute="leading" constant="20" id="qA8-JJ-MVq"/>
+                            <constraint firstItem="CiE-H2-A7h" firstAttribute="centerX" secondItem="1cY-dd-xU8" secondAttribute="centerX" id="up5-9I-jSq"/>
+                            <constraint firstItem="CiE-H2-A7h" firstAttribute="bottom" secondItem="dXF-wk-KFP" secondAttribute="top" constant="-20" id="vWL-aY-lM2"/>
                         </constraints>
                         <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="Msh-RB-rTZ"/>
+                                <exclude reference="Ofv-cX-acU"/>
+                                <exclude reference="xZU-bs-2ae"/>
+                            </mask>
                             <mask key="constraints">
+                                <exclude reference="kmJ-rB-V1p"/>
                                 <exclude reference="4Gk-NX-elf"/>
                                 <exclude reference="R6W-s0-Fh5"/>
+                                <exclude reference="Wh6-Rb-g7t"/>
+                                <exclude reference="FwC-D5-vgX"/>
+                                <exclude reference="aS3-Vi-xGr"/>
+                                <exclude reference="fM5-cV-0MC"/>
+                                <exclude reference="P0t-0C-Px5"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="subviews">
+                                <include reference="Ofv-cX-acU"/>
+                                <include reference="xZU-bs-2ae"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="kmJ-rB-V1p"/>
+                                <include reference="aS3-Vi-xGr"/>
+                                <include reference="fM5-cV-0MC"/>
+                                <include reference="P0t-0C-Px5"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular">
+                            <mask key="subviews">
+                                <include reference="Msh-RB-rTZ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="Wh6-Rb-g7t"/>
+                                <include reference="FwC-D5-vgX"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -106,11 +162,12 @@
                         <outlet property="piwigoLogo" destination="tRi-ye-f0P" id="apX-Hx-rkh"/>
                         <outlet property="piwigoUrlLabel" destination="Owz-oH-9TO" id="h0y-n9-oE0"/>
                         <outlet property="pleaseWaitLabel" destination="dXF-wk-KFP" id="ah2-9i-yML"/>
+                        <outlet property="progressView" destination="CiE-H2-A7h" id="r1A-It-6SO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="50.625" y="373.75"/>
+            <point key="canvasLocation" x="48.591549295774648" y="371.25"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
