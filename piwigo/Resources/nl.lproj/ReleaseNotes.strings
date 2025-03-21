@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.0_text" = "Versie 3.3\n\n- Kopieert en verplaatst een selectie foto's veel sneller\n- Beter beheer van databasemigratie\n- Corrigeert het beheer van rechten voor het delen van foto's en video's\n- Lost bugs op en verbetert de interface";
+"v3.3.1_text" = "Versie 3.3.1\n\n• Opties voor automatisch afspelen en loopen van video toegevoegd\n• Lost bugs op en verbetert de interface";
+
+"v3.3.0_text" = "Versie 3.3\n\n• Kopieert en verplaatst een selectie foto's veel sneller\n• Beter beheer van databasemigratie\n• Corrigeert het beheer van rechten voor het delen van foto's en video's\n• Lost bugs op en verbetert de interface";
 
 "v3.2.5_text" = "Versie 3.2.5\n17 februari 2025\n\n• Kleine foutjes hersteld en verbetering van de interface";
 
