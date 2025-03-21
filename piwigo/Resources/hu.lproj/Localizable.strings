@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "A Piwigo szerver érvénytelen JSON objektummal válaszolt.";
 "PiwigoServer_emptyJSONobject" = "Üres JSON objektum érkezett a Piwigo szervertől.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Figyelem";
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Nem sikerült létrehozni az új feltöltésobjektumot.";
 "CoreDataFetch_UploadMissingAsset" = "Fotó letöltése sikertelen.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Bejelentkezés";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Sikertelen kijelentkezés";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Fotóbeállítási hiba";
 "categoryImageSetError_message" = "Hiba történt a fotó beállításakor";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Fotó";
 "singleImageCount" = "%@ fotó";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Túl nagy választék a megosztáshoz";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Fotókönyvtár";
 "localAlbums_accessible" = "Elérhető fotók";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Biztos törölni szeretnéd a feltöltött fotókat a Fotók appból? A törölt fotók és videók további 30 napig elérhetőek az iOS Fotók app Nemrég törölt menüpontja alatt.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Szerver";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Teljes felbontás";
 
 // Settings — Images
-"settingsHeader_images" = "Fotók";
-
 "defaultThumbnailFile" = "Fájl";
 "defaultThumbnailFile>320px" = "Bélyegkép";
 "defaultThumbnailFile>414px" = "Fotók bélyegképe";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Nagyon nagy";
 "imageSizeXXLarge" = "Hatalmas";
 "imageSizexFullRes" = "Teljes felbontás";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Automatikus lejátszás";
+"settings_videoLoop" = "Videók hurokban";
 
 // Settings — Upload
 "settingsHeader_upload" = "Feltöltési beállítások";

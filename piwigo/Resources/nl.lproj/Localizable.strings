@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "De Piwigo-server heeft geen geldig JSON-object teruggegeven.";
 "PiwigoServer_emptyJSONobject" = "Piwigo-server geeft een leeg JSON object terug.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Waarschuwing";
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Het maken van een nieuw upload-object is mislukt.";
 "CoreDataFetch_UploadMissingAsset" = "Fout bij het ophalen van de foto.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Inloggen";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Afmelden is mislukt";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Foto-instelling-fout";
 "categoryImageSetError_message" = "Instellen albumfoto mislukt";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Foto";
 "singleImageCount" = "%@ foto";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Selectie te groot om te delen";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Fotobibliotheek";
 "localAlbums_accessible" = "Toegankelijke foto's";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Volledige resolutie";
 
 // Settings — Images
-"settingsHeader_images" = "Foto's";
-
 "defaultThumbnailFile" = "Bestand";
 "defaultThumbnailFile>320px" = "Miniatuur bestand";
 "defaultThumbnailFile>414px" = "Miniatuurafbeelding bestand";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Extra groot";
 "imageSizeXXLarge" = "Enorm";
 "imageSizexFullRes" = "Volledige resolutie";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Automatisch afspelen";
+"settings_videoLoop" = "Video's in lus";
 
 // Settings — Upload
 "settingsHeader_upload" = "Standaard upload-instellingen";

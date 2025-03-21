@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Der Piwigo-Server hat kein gültiges JSON-Objekt zurückgegeben.";
 "PiwigoServer_emptyJSONobject" = "Der Piwigo Server hat ein leeres JSON-Objekt zurückgegeben.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Warnung";
 "CoreDataStore_WarningMessage" = "Ein schwerwiegender Anwendungsfehler trat auf, während Piwigo versuchte, den Daten-Cache zu lesen. Daher wurde ein neuer Cache angelegt.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Fehler beim Erstellen eines neuen Upload-Objekts.";
 "CoreDataFetch_UploadMissingAsset" = "Foto konnte nicht abgerufen werden.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Anmelden";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Abmelden fehlgeschlagen";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ Album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Fehler beim setzen des Miniaturfotos";
 "categoryImageSetError_message" = "Setzen des Miniaturfotos für das Album fehlgeschlagen";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Foto";
 "singleImageCount" = "%@ Foto";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Auswahl zu umfangreich, um geteilt zu werden";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Foto-Bibliothek";
 "localAlbums_accessible" = "Zugängliche Fotos";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Möchten Sie die hochgeladenen Fotos oder Videos aus der Kamerarolle löschen? Die gelöschten Fotos oder Videos sind noch 30 Tage lang im iOS-Fotopapierkorb verfügbar.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Volle Auflösung";
 
 // Settings — Images
-"settingsHeader_images" = "Fotos";
-
 "defaultThumbnailFile" = "Datei";
 "defaultThumbnailFile>320px" = "Miniaturfotogröße";
 "defaultThumbnailFile>414px" = "Miniaturfoto Datei";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Extra Groß";
 "imageSizeXXLarge" = "Riesig";
 "imageSizexFullRes" = "Volle Auflösung";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Automatische Wiedergabe";
+"settings_videoLoop" = "Videos in Schleife";
 
 // Settings — Upload
 "settingsHeader_upload" = "Standard-Upload-Einstellungen";

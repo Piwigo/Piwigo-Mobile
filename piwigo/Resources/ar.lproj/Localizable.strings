@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -44,10 +44,11 @@
 
 "PiwigoServer_wrongJSONobject" = "تعذر استدراج كائن JSON الذي أرسله خادم Piwigo.";
 "PiwigoServer_invalidJSONobject" = "خادم Piwigo لم يعيد كائن JSON صالح.";
-"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
+"PiwigoServer_emptyJSONobject" = "قام خادم Piwigo بإعادة كائن JSON فارغ.";
+
 
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "تحذير";
 "CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
 "CoreDataFetch_UploadMissingAsset" = "فشل في استعادة الصورة.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "تسجيل الدخول";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "فشل في تسجيل الخروج";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "خطأ في تعيين الصورة";
 "categoryImageSetError_message" = "أخفق تعيين صورة الألبوم";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "صورة";
 "singleImageCount" = "%@ photo";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Photo Library";
 "localAlbums_accessible" = "Accessible Photos";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "خادم Piwigo";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "عرض كامل";
 
 // Settings — Images
-"settingsHeader_images" = "الصور";
-
 "defaultThumbnailFile" = "الملف";
 "defaultThumbnailFile>320px" = "ملف الصورة المصغرة";
 "defaultThumbnailFile>414px" = "صورة مصغرة صورة الملف";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "كبير جدًا";
 "imageSizeXXLarge" = "ضخم";
 "imageSizexFullRes" = "عرض كامل";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Auto-Play";
+"settings_videoLoop" = "Loop Videos";
 
 // Settings — Upload
 "settingsHeader_upload" = "إعدادات التحميل الافتراضية";

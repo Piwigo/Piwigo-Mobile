@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Piwigo-servern returnerade inte ett giltigt JSON-objekt.";
 "PiwigoServer_emptyJSONobject" = "Piwigo-servern returnerade ett tomt JSON-objekt.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Varning";
 "CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Det gick inte att skapa ett nytt uppladdningsobjekt.";
 "CoreDataFetch_UploadMissingAsset" = "Kunde inte hämta foto.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Logga in";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Utloggning misslyckades";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Fel vid skapande av miniatyrbild";
 "categoryImageSetError_message" = "Kunde inte sätta miniatyrbild för albumet";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Bild";
 "singleImageCount" = "%@ foto";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Urvalet är för stort för att dela";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Bildbibliotek";
 "localAlbums_accessible" = "Tillgängliga foton";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Vill du ta bort uppladdade foton eller videor från kamerarullen? De raderade bilderna eller videoklippen kommer fortfarande att finnas tillgängliga i iOS Bilder papperskorgen i 30 dagar.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Full upplösning";
 
 // Settings — Images
-"settingsHeader_images" = "Bilder";
-
 "defaultThumbnailFile" = "Fil";
 "defaultThumbnailFile>320px" = "Miniatyr-fil";
 "defaultThumbnailFile>414px" = "Miniatyrfil med bilden";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Extra stor";
 "imageSizeXXLarge" = "Enorm";
 "imageSizexFullRes" = "Full upplösning";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Automatisk uppspelning";
+"settings_videoLoop" = "Videor i loop";
 
 // Settings — Upload
 "settingsHeader_upload" = "Förinställn. uppladdning";

@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Le serveur Piwigo n'a pas renvoyé un objet JSON valide.";
 "PiwigoServer_emptyJSONobject" = "Le serveur Piwigo a retourné un fichier JSON vide.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Avertissement";
 "CoreDataStore_WarningMessage" = "Une erreur sérieuse s'est produite pendant que Piwigo tentait de lire le cache de données. Un nouveau cache a donc été créé.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Impossible de créer un nouvel objet Upload.";
 "CoreDataFetch_UploadMissingAsset" = "Impossible de récupérer les photos.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Connexion";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Echec de la déconnexion";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Echec d'affectation";
 "categoryImageSetError_message" = "Impossible de changer la photo de l’album";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Photo";
 "singleImageCount" = "%@ photo";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Sélection trop volumineuse pour être partagée";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Bibliothèque de photos";
 "localAlbums_accessible" = "Photos accessibles";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Voulez-vous supprimer de la pellicule les photos ou vidéos transférées? Les photos ou vidéos supprimées resteront disponibles dans la corbeille de l'app Photos pendant 30 jours.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Serveur Piwigo";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Haute résolution";
 
 // Settings — Images
-"settingsHeader_images" = "Photos";
-
 "defaultThumbnailFile" = "Fichier";
 "defaultThumbnailFile>320px" = "Fichier de vignette";
 "defaultThumbnailFile>414px" = "Fichier de vignette des photos";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Très grand";
 "imageSizeXXLarge" = "Énorme";
 "imageSizexFullRes" = "Haute résolution";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Lecture automatique";
+"settings_videoLoop" = "Vidéos en boucle";
 
 // Settings — Upload
 "settingsHeader_upload" = "Transferts";
