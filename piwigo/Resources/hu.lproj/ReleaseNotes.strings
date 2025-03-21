@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.0_text" = "3.3 verzió\n\n• Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n• Kisebb hibajavítások és fejlesztések a felületen";
+"v3.3.0_text" = "3.3 verzió\n\n- Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n- Az adatbázis-migráció jobb kezelése\n- Javítja a fényképek és videók megosztási jogainak kezelését\n- Hibák javítása és a kezelőfelület javítása";
 
 "v3.2.5_text" = "3.2.5-es verzió\n2025 Február 17\n\n• Kisebb hibajavítások és fejlesztések a felületen";
 
