@@ -110,7 +110,7 @@ extension SettingsViewController: UITableViewDelegate
                 result = false
             }
         
-        // MARK: - Videos
+        // MARK: Videos
         case .videos /* Videos */:
             switch indexPath.row {
             default:
@@ -276,13 +276,13 @@ extension SettingsViewController: UITableViewDelegate
                 break
             }
 
-        // MARK: - Videos
+        // MARK: Videos
         case .videos :
             switch indexPath.row {
             default:
                 break
             }
-            
+        
         // MARK: Upload Settings
         case .imageUpload /* Default upload Settings */:
             var row = indexPath.row

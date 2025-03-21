@@ -720,6 +720,7 @@
 
 // Settings — Videos
 "settings_videoAutoPlay" = "Auto-Play";
+"settings_videoLoop" = "Loop Videos";
 
 // Settings — Upload
 "settingsHeader_upload" = "Default Upload Settings";

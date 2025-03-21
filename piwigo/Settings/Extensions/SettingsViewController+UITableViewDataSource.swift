@@ -57,7 +57,7 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
             nberOfRows += showOptions ? 1 : 0
         case .videos:
-            nberOfRows = 1
+            nberOfRows = 2
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
@@ -380,6 +380,21 @@ extension SettingsViewController: UITableViewDataSource
                 }
                 cell.accessibilityIdentifier = "switchAutoPlayOnDevice"
                 tableViewCell = cell
+
+            case 1:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_videoLoop", comment: "Loop Videos"))
+                
+                // Switch status
+                cell.cellSwitch.setOn(VideoVars.shared.loopVideosOnDevice, animated: true)
+                cell.cellSwitch.accessibilityIdentifier = "switchLoopVideosOnDevice"
+                cell.cellSwitchBlock = { switchState in
+                    VideoVars.shared.loopVideosOnDevice = switchState
+                }
+                cell.accessibilityIdentifier = "switchLoopVideosOnDevice"
+                tableViewCell = cell
+
             default:
                 break
             }

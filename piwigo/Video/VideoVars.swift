@@ -32,7 +32,10 @@ class VideoVars: NSObject {
     /// - Remembers auto-play option on device
     @UserDefault("autoPlayOnDevice", defaultValue: true)
     var autoPlayOnDevice: Bool
-    
+    /// - Remembers loop videos option on device
+    @UserDefault("loopVideosOnDevice", defaultValue: false)
+    var loopVideosOnDevice: Bool
+
     // MARK: - Vars in UserDefaults / App Group
     // Image variables stored in UserDefaults / App Group
     /// - None
