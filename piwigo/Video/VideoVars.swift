@@ -29,7 +29,9 @@ class VideoVars: NSObject {
     /// - Remembers last selected video player mute option
     @UserDefault("isMuted", defaultValue: false)
     var isMuted: Bool
-
+    /// - Remembers auto-play option on device
+    @UserDefault("autoPlayOnDevice", defaultValue: true)
+    var autoPlayOnDevice: Bool
     
     // MARK: - Vars in UserDefaults / App Group
     // Image variables stored in UserDefaults / App Group

@@ -7,7 +7,7 @@
  */
 
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 "tabBar_albums" = "Albums";
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Piwigo server did not return a valid JSON object.";
 "PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Warning";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
 "CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Login";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Logout Failed";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Photo Set Error";
 "categoryImageSetError_message" = "Failed to set the album photo";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Photo";
 "singleImageCount" = "%@ photo";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Photo Library";
 "localAlbums_accessible" = "Accessible Photos";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Full Resolution";
 
 // Settings — Images
-"settingsHeader_images" = "Photos";
-
 "defaultThumbnailFile" = "File";
 "defaultThumbnailFile>320px" = "Thumbnail File";
 "defaultThumbnailFile>414px" = "Photos Thumbnail File";
@@ -717,6 +717,9 @@
 "imageSizeXLarge" = "Extra Large";
 "imageSizeXXLarge" = "Huge";
 "imageSizexFullRes" = "Full Resolution";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Auto-Play";
 
 // Settings — Upload
 "settingsHeader_upload" = "Default Upload Settings";

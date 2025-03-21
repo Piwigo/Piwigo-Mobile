@@ -20,6 +20,7 @@ enum SettingsSection : Int {
     case logout
     case albums
     case images
+    case videos
     case imageUpload
     case privacy
     case appearance
