@@ -8,6 +8,5 @@
 
 import Foundation
 
-// MARK: - pwg.tags.getImages
 /// Fetches and parses CategoriesGetImagesJSON data — See pwg.categories.getImages.swift
 public let pwgTagsGetImages = "format=json&method=pwg.tags.getImages"
