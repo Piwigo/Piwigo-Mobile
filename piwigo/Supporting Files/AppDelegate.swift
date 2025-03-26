@@ -72,11 +72,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ValueTransformer.setValueTransformer(ResolutionValueTransformer(), forName: .resolutionToDataTransformer)
 
         // Register launch handlers for tasks if using iOS 13+
+        /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
         if #available(iOS 13.0, *) {
-            // Don't init UploadManager when registering bckg tasks
-            // because a database migration might be called in parallel
-            registerBgTasks()
+            let migrator = DataMigrator()
+            if migrator.requiresMigration() == false {
+                debugPrint("••> No migration needed ► Registering background tasks")
+                registerBgTasks()
+            }
         }
 
         // What follows depends on iOS version
