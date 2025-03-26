@@ -631,13 +631,17 @@ class AlbumViewController: UIViewController
         super.viewWillDisappear(animated)
         
         if #available(iOS 15, *) {
-            // Keep title
+            // Keep title if smaller than 10 characters if width <= 440 points
+            if view.bounds.size.width <= 440, title?.count ?? 0 > 10 {
+                // i.e. smaller than iPhone 16 Pro Max screen width
+                title = nil
+            }
         } else {
             // Do not show album title in backButtonItem of child view to provide enough space for image title
             // See https://iosref.com/res
             if view.bounds.size.width <= 440 {
                 // i.e. smaller than iPhone 16 Pro Max screen width
-                title = ""
+                title = nil
             }
         }
         
