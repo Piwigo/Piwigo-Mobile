@@ -71,15 +71,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ValueTransformer.setValueTransformer(RelativeURLValueTransformer(), forName: .relativeUrlToDataTransformer)
         ValueTransformer.setValueTransformer(ResolutionValueTransformer(), forName: .resolutionToDataTransformer)
 
+        // If a migration is planned:
+        // - disable Core Data usage
+        // - postpone background tasks
+        // until the migration is done.
+        let migrator = DataMigrator()
+        AppVars.shared.isMigrationRunning = migrator.requiresMigration()
+        
         // Register launch handlers for tasks if using iOS 13+
         /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
         if #available(iOS 13.0, *) {
-            let migrator = DataMigrator()
-            if migrator.requiresMigration() == false {
-                debugPrint("••> No migration needed ► Registering background tasks")
-                registerBgTasks()
-            }
+            registerBgTasks()
         }
 
         // What follows depends on iOS version
@@ -92,8 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window = UIWindow(frame: UIScreen.main.bounds)
 
             // Check if a migration is necessary
-            let migrator = DataMigrator()
-            if migrator.requiresMigration() {
+            if AppVars.shared.isMigrationRunning {
                 // Tell user to wait until migration is completed and launch the migration
                 loadMigrationView(in: window, startMigrationWith: migrator)
             } else {
@@ -402,16 +404,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @available(iOS 13.0, *)
     private func handleNextUpload(task: BGProcessingTask) {
-        // Don't call UploadManager as it might happen during database migration
-        // Schedule the next upload if needed
+        // Schedule the next uploads if needed
         if UploadVars.shared.nberOfUploadsToComplete > 0 {
             debugPrint("    > Schedule next uploads.")
             scheduleNextUpload()
         }
 
+        // Don't upload images now if a migration is planned
+        if AppVars.shared.isMigrationRunning {
+            debugPrint("    > Background upload task rescheduled because a migration is ongoing.")
+            task.setTaskCompleted(success: true)
+            return
+        }
+        
         // iOS may launch the task when the app is active (since iOS 18)
         if AppVars.shared.applicationIsActive {
-            debugPrint("••> Background upload task halted because the app is active.")
+            debugPrint("    > Background upload task halted because the app is active.")
             task.setTaskCompleted(success: true)
             return
         }

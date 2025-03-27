@@ -112,6 +112,6 @@ class AppVars: NSObject {
     /// - To prevent background tasks from running when the app is active
     var applicationIsActive: Bool = false
     
-    /// - Remember that a database migration is running to prevent a crash when the app is going to background.
+    /// - To prevent Core Data usage until the database migration is finished.
     var isMigrationRunning: Bool = false
 }
