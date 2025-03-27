@@ -50,6 +50,7 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 1
         case .albums:
             nberOfRows = 4
+            // Present album description option before iOS 14.0
             nberOfRows += showOptions ? 1 : 0
         case .images:
             // Present default image sort option only when Piwigo server version < 14.0
@@ -223,14 +224,12 @@ extension SettingsViewController: UITableViewDataSource
                                minValue: 0.0, maxValue: Float(CacheVars.shared.recentPeriodList.count - 1),
                                prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
                 cell.cellSliderBlock = { newValue in
-                    // Update settings
+                    // Update settings in cache
+                    // Server settings will be updated when the view will disappear
                     let index = Int(newValue)
                     if index >= 0, index < CacheVars.shared.recentPeriodList.count {
                         CacheVars.shared.recentPeriodIndex = index
                     }
-                    
-                    // Reload root/default album
-                    self.settingsDelegate?.didChangeRecentPeriod()
                 }
                 cell.accessibilityIdentifier = "recentPeriod"
                 tableViewCell = cell

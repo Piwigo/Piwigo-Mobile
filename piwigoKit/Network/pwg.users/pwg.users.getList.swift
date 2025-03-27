@@ -15,7 +15,7 @@ public struct UsersGetListJSON: Decodable {
 
     public var status: String?
     public var paging: PageData?
-    public var users = [UsersGetList]()
+    public var users = [UsersGetInfo]()
     public var totalCount: Int?
     public var errorCode = 0
     public var errorMessage = ""
@@ -55,7 +55,7 @@ public struct UsersGetListJSON: Decodable {
                 paging = try resultContainer.decode(PageData.self, forKey: .paging)
                 
                 // Images data
-                users = try resultContainer.decode([UsersGetList].self, forKey: .users)
+                users = try resultContainer.decode([UsersGetInfo].self, forKey: .users)
             }
             catch {
                 // Returns an empty array => No user
@@ -86,7 +86,7 @@ public struct UsersGetListJSON: Decodable {
     }
 }
 
-public struct UsersGetList: Decodable
+public struct UsersGetInfo: Decodable
 {
     public let id: Int16?                           // 1
     public let userName: String?                    // "Eddy"
