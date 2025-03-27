@@ -312,13 +312,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if AppVars.shared.isMigrationRunning == false {
             // Save changes in the app's managed object context
             mainContext.saveIfNeeded()
-            
-            // Schedule background tasks after cancelling pending onces
-            BGTaskScheduler.shared.cancelAllTaskRequests()
-            if NetworkVars.shared.usesUploadAsync {
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.scheduleNextUpload()
-            }
+        }
+
+        // Schedule background tasks after cancelling pending onces
+        BGTaskScheduler.shared.cancelAllTaskRequests()
+        if NetworkVars.shared.usesUploadAsync {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.scheduleNextUpload()
         }
 
         // Clean up /tmp directory

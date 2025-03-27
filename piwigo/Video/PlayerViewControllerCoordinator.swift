@@ -228,7 +228,7 @@ class PlayerViewControllerCoordinator: NSObject {
                             parent.videoSize = playerViewController.videoBounds.size
                             parent.configVideoViews()
                             parent.videoControls.config(currentTime: currentTime, duration: video.duration)
-                            playerViewController.player?.rate = 1
+                            playerViewController.player?.rate = VideoVars.shared.autoPlayOnDevice ? 1 : 0
                         } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
                             parent.config(currentTime: currentTime, duration: video.duration)
                             playerViewController.player?.rate = 1
@@ -256,7 +256,7 @@ class PlayerViewControllerCoordinator: NSObject {
                                 parent.videoSize = playerViewController.videoBounds.size
                                 parent.configVideoViews()
                                 parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
-                                playerViewController.player?.rate = 1
+                                playerViewController.player?.rate = VideoVars.shared.autoPlayOnDevice ? 1 : 0
                             } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
                                 parent.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
                                 playerViewController.player?.rate = 1
@@ -341,11 +341,13 @@ class PlayerViewControllerCoordinator: NSObject {
               let playerItem = notification?.object as? AVPlayerItem
         else  { return }
 
-        // User did watch video until the end -> replay it
-        DispatchQueue.main.async { [self] in
-            self.playOrReplay()
+        // User did watch video until the end -> replay it?
+        if VideoVars.shared.loopVideosOnDevice {
+            DispatchQueue.main.async { [self] in
+                self.playOrReplay()
+            }
         }
-
+        
         // Store the video in cache if possible
         if let urlAsset = playerItem.asset as? AVURLAsset, urlAsset.url == video.pwgURL,
            let videoAsset = playerItem.asset.copy() as? AVAsset, videoAsset.isExportable {

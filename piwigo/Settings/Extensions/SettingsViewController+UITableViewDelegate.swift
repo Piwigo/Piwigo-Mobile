@@ -32,7 +32,9 @@ extension SettingsViewController: UITableViewDelegate
         case .albums:
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
         case .images:
-            title = NSLocalizedString("settingsHeader_images", comment: "Images")
+            title = NSLocalizedString("severalImages", comment: "Images")
+        case .videos:
+            title = NSLocalizedString("severalVideos", comment: "Videos")
         case .imageUpload:
             title = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
         case .appearance:
@@ -83,7 +85,7 @@ extension SettingsViewController: UITableViewDelegate
         case .logout /* Logout Button */:
             result = true
             
-            // MARK: Albums
+        // MARK: Albums
         case .albums /* Albums */:
             var row = indexPath.row
             row += (!showOptions && (row > 1)) ? 1 : 0
@@ -94,7 +96,7 @@ extension SettingsViewController: UITableViewDelegate
                 result = false
             }
             
-            // MARK: Images
+        // MARK: Images
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
@@ -107,8 +109,15 @@ extension SettingsViewController: UITableViewDelegate
             default:
                 result = false
             }
+        
+        // MARK: Videos
+        case .videos /* Videos */:
+            switch indexPath.row {
+            default:
+                result = false
+            }
             
-            // MARK: Upload Settings
+        // MARK: Upload Settings
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
@@ -267,6 +276,13 @@ extension SettingsViewController: UITableViewDelegate
                 break
             }
 
+        // MARK: Videos
+        case .videos :
+            switch indexPath.row {
+            default:
+                break
+            }
+        
         // MARK: Upload Settings
         case .imageUpload /* Default upload Settings */:
             var row = indexPath.row

@@ -596,6 +596,24 @@ class AlbumViewController: UIViewController
         
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] _ in
+            // Reset the title of the parent albums
+            let children = navigationController?.children ?? []
+            children.forEach { child in
+                if let parentAlbumVC = child as? AlbumViewController,
+                   parentAlbumVC.categoryId != Int32.zero {
+                    // Keep title smaller than 10 characters when width <= 440 points
+                    // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
+                    // See also viewWillDisappear()
+                    if view.bounds.size.width <= 440, title?.count ?? 0 > 10 {
+                        // Will reset back button item
+                        parentAlbumVC.navigationItem.title = nil
+                    } else {
+                        // Will display the parent album name in the back button
+                        parentAlbumVC.navigationItem.title = parentAlbumVC.albumData.name
+                    }
+                }
+            }
+            
             // Reload collection with appropriate cell sizes
             collectionView?.reloadData()
 
@@ -630,15 +648,12 @@ class AlbumViewController: UIViewController
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if #available(iOS 15, *) {
-            // Keep title
-        } else {
-            // Do not show album title in backButtonItem of child view to provide enough space for image title
-            // See https://iosref.com/res
-            if view.bounds.size.width <= 430 {
-                // i.e. smaller than iPhone 14 Pro Max screen width
-                title = ""
-            }
+        // Keep title smaller than 10 characters when width <= 440 points
+        // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
+        // See also viewWillTransition()
+        if view.bounds.size.width <= 440, title?.count ?? 0 > 10 {
+            // Will reset back button item
+            title = nil
         }
         
         // Cancel remaining tasks

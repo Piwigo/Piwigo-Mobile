@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.0_text" = "Version 3.3\n\n- Copie et déplace une sélection de photos beaucoup plus rapidement\n- Améliore la gestion de la migration de la base de données\n- Corrige la gestion des droits de partage des photos et des vidéos\n- Corrige des bugs et améliore l'interface";
+"v3.3.1_text" = "Version 3.3.1\n\n• Ajoute des options de lecture automatique et de lecture en boucle des vidéos\n• Corrige des bugs et améliore l'interface";
+
+"v3.3.0_text" = "Version 3.3\n26 mars 2025\n\n• Copie et déplace une sélection de photos beaucoup plus rapidement\n• Améliore la gestion de la migration de la base de données\n• Corrige la gestion des droits de partage des photos et des vidéos\n• Corrige des bugs et améliore l'interface";
 
 "v3.2.5_text" = "Version 3.2.5\n17 février 2025\n\n• Corrections de bugs mineurs et amélioration de l'interface";
 

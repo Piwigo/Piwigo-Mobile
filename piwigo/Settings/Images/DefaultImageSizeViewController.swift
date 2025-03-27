@@ -29,7 +29,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("settingsHeader_images", comment: "Images")
+        title = NSLocalizedString("severalImages", comment: "Images")
 
         // Set colors, fonts, etc.
         applyColorPalette()

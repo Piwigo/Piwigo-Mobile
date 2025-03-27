@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Serwer Piwigo nie zwrócił poprawnego obiektu JSON.";
 "PiwigoServer_emptyJSONobject" = "Serwer Piwigo zwrócił pusty obiekt JSON.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Ostrzeżenie";
 "CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Nie udało się utworzyć nowego obiektu prześlij.";
 "CoreDataFetch_UploadMissingAsset" = "Nie udało się pobrać zdjęcia.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Zaloguj";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Wylogowanie nie powiodło się";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Błąd ustawiania zdjęcia";
 "categoryImageSetError_message" = "Nie można ustawić zdjęcia albumu";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Zdjęcie";
 "singleImageCount" = "%@ zdjęcie";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Wybór zbyt duży, aby go udostępnić";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Biblioteka zdjęć";
 "localAlbums_accessible" = "Dostępne zdjęcia";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Czy chcesz usunąć przesłane zdjęcia lub filmy z rolki aparatu? Usunięte zdjęcia lub filmy będą nadal dostępne w koszu zdjęć iOS przez 30 dni.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Serwer Piwigo";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Pełna rozdzielczość";
 
 // Settings — Images
-"settingsHeader_images" = "Zdjęcia";
-
 "defaultThumbnailFile" = "Plik";
 "defaultThumbnailFile>320px" = "Plik miniatury";
 "defaultThumbnailFile>414px" = "Plik miniatury zdjęcia";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Bardzo duże";
 "imageSizeXXLarge" = "Ogromne";
 "imageSizexFullRes" = "Pełna rozdzielczość";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Automatyczne odtwarzanie";
+"settings_videoLoop" = "Filmy w pętli";
 
 // Settings — Upload
 "settingsHeader_upload" = "Domyślne ustawienia przesyłania";

@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Piwigo-serveren returnerede ikke et gyldigt JSON- objekt.";
 "PiwigoServer_emptyJSONobject" = "Piwigo server returnerede et tomt JSON objekt.";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Advarsel";
 "CoreDataStore_WarningMessage" = "En alvorlig applikationsfejl opstod under Piwigo forsøgte at læse data-cachen. En ny cache er derfor blevet oprettet.";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "Kunne ikke oprette et nyt Upload objekt.";
 "CoreDataFetch_UploadMissingAsset" = "Kunne ikke hente foto.";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "Log ind";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "Logout Mislykkedes";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "Billedsæt fejl";
 "categoryImageSetError_message" = "Kunne ikke opdatere miniaturebillede for albumet";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "Billede";
 "singleImageCount" = "%@ billede";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "Udvalget er for stort til at dele";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Billedarkiv";
 "localAlbums_accessible" = "Tilgængelige billeder";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "Ønsker du at slette de uploadede fotos eller videoer fra kamerarullen? De slettede billeder eller videoer vil stadig være tilgængelige i iOS-billeder papirkurven i 30 dage.";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "Fuld Opløsning";
 
 // Settings — Images
-"settingsHeader_images" = "Billeder";
-
 "defaultThumbnailFile" = "Fil";
 "defaultThumbnailFile>320px" = "Miniature fil";
 "defaultThumbnailFile>414px" = "Miniature billedfil";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "Ekstra Stor";
 "imageSizeXXLarge" = "Kæmpe";
 "imageSizexFullRes" = "Fuld Opløsning";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "Automatisk afspilning";
+"settings_videoLoop" = "Videoer i loop";
 
 // Settings — Upload
 "settingsHeader_upload" = "Standardindstillinger for Upload";

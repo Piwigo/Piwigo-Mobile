@@ -26,7 +26,7 @@ extension SettingsViewController: UITableViewDataSource
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var rawSection = section
-        if !hasUploadRights(), rawSection > SettingsSection.images.rawValue {
+        if !hasUploadRights(), rawSection > SettingsSection.videos.rawValue {
             rawSection += 1
         }
         guard let activeSection = SettingsSection(rawValue: rawSection)
@@ -50,12 +50,15 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 1
         case .albums:
             nberOfRows = 4
+            // Present album description option before iOS 14.0
             nberOfRows += showOptions ? 1 : 0
         case .images:
             // Present default image sort option only when Piwigo server version < 14.0
             // Present image title option before iOS 14.0
             nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
             nberOfRows += showOptions ? 1 : 0
+        case .videos:
+            nberOfRows = 2
         case .imageUpload:
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
@@ -221,14 +224,12 @@ extension SettingsViewController: UITableViewDataSource
                                minValue: 0.0, maxValue: Float(CacheVars.shared.recentPeriodList.count - 1),
                                prefix: "", suffix: NSLocalizedString("recentPeriod_days", comment: "%@ days"))
                 cell.cellSliderBlock = { newValue in
-                    // Update settings
+                    // Update settings in cache
+                    // Server settings will be updated when the view will disappear
                     let index = Int(newValue)
                     if index >= 0, index < CacheVars.shared.recentPeriodList.count {
                         CacheVars.shared.recentPeriodIndex = index
                     }
-                    
-                    // Reload root/default album
-                    self.settingsDelegate?.didChangeRecentPeriod()
                 }
                 cell.accessibilityIdentifier = "recentPeriod"
                 tableViewCell = cell
@@ -362,6 +363,41 @@ extension SettingsViewController: UITableViewDataSource
                 break
             }
         
+        // MARK: Videos
+        case .videos /* Videos */:
+            switch indexPath.row {
+            case 0:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_videoAutoPlay", comment: "Auto-Play"))
+                
+                // Switch status
+                cell.cellSwitch.setOn(VideoVars.shared.autoPlayOnDevice, animated: true)
+                cell.cellSwitch.accessibilityIdentifier = "switchAutoPlayOnDevice"
+                cell.cellSwitchBlock = { switchState in
+                    VideoVars.shared.autoPlayOnDevice = switchState
+                }
+                cell.accessibilityIdentifier = "switchAutoPlayOnDevice"
+                tableViewCell = cell
+
+            case 1:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                else { preconditionFailure("Could not load SwitchTableViewCell") }
+                cell.configure(with: NSLocalizedString("settings_videoLoop", comment: "Loop Videos"))
+                
+                // Switch status
+                cell.cellSwitch.setOn(VideoVars.shared.loopVideosOnDevice, animated: true)
+                cell.cellSwitch.accessibilityIdentifier = "switchLoopVideosOnDevice"
+                cell.cellSwitchBlock = { switchState in
+                    VideoVars.shared.loopVideosOnDevice = switchState
+                }
+                cell.accessibilityIdentifier = "switchLoopVideosOnDevice"
+                tableViewCell = cell
+
+            default:
+                break
+            }
+
         // MARK: Upload Settings
         case .imageUpload /* Default Upload Settings */:
             var row = indexPath.row

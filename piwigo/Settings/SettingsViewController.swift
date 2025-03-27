@@ -20,6 +20,7 @@ enum SettingsSection : Int {
     case logout
     case albums
     case images
+    case videos
     case imageUpload
     case privacy
     case appearance
@@ -52,6 +53,9 @@ class SettingsViewController: UIViewController {
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
+    
+    // Remember current user's recent period index
+    private var oldRecentPeriodIndex = CacheVars.shared.recentPeriodIndex
     
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
@@ -129,11 +133,14 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Launch tasks in the background
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
-            // Calculate cache sizes in the background
-            guard let server = self.user.server else {
-                assert(self.user.server != nil, "••> User not provided!")
+        // Launch operations in parallel in the background
+        var operations = [BlockOperation]()
+        operations.append(BlockOperation { [self] in
+            // Calculate cache sizes
+            guard let server = self.user.server,
+                  server.isFault == false
+            else {
+                debugPrint("!!! User not provided !!!!")
                 return
             }
             var sizes = self.getThumbnailSizes()
@@ -146,22 +153,50 @@ class SettingsViewController: UIViewController {
                 self.uploadCacheSize = server.getUploadCount()
                 + " | " + UploadManager.shared.getUploadsDirectorySize()
             }
-            
-            // Update server statistics if possible
-            if user.hasAdminRights {
+        })
+        
+        // Retrieve data from server
+        if user.hasAdminRights {
+            operations.append(BlockOperation { [self] in
                 // Check session before collecting server statistics
                 PwgSession.checkSession(ofUser: self.user) {
                     // Collect stats from server and store them in cache
                     PwgSession.shared.getInfos()
+                    // Collect recentPeriod chosen by user
+                    PwgSession.getUsersInfo(forUserName: self.user.username) { usersData in
+                        // Is the retrieved recent period different?
+                        guard let nberOfDays = usersData.recentPeriod?.intValue,
+                              let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
+                              index != self.oldRecentPeriodIndex
+                        else { return }
+
+                        // Update current index and reload corresponding cell
+                        DispatchQueue.main.async { [self] in
+                            self.user.id = usersData.id ?? Int16.zero
+                            self.user.managedObjectContext?.saveIfNeeded()
+                            self.oldRecentPeriodIndex = index
+                            CacheVars.shared.recentPeriodIndex = index
+                            let indexPath = IndexPath(row: 3, section: SettingsSection.albums.rawValue)
+                            if let cell = self.settingsTableView.cellForRow(at: indexPath) as? SliderTableViewCell {
+                                cell.updateDisplayedValue(Float(index))
+                            }
+                        }
+                    } failure: {
+                        // No error report
+                    }
                 } failure: { _ in
                     /// - Network communication errors
                     /// - Returned JSON data is empty
                     /// - Cannot decode data returned by Piwigo server
-                    /// -> nothing presented in the footer
+                    /// -> no error report
                 }
-            }
+            })
         }
-        
+        let queue: OperationQueue = OperationQueue()
+        queue.maxConcurrentOperationCount = .max
+        queue.qualityOfService = .userInitiated
+        queue.addOperations(operations, waitUntilFinished: false)
+                
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
         
@@ -332,6 +367,26 @@ class SettingsViewController: UIViewController {
         
         // Update upload counter in case user cleared the cache
         UploadManager.shared.updateNberOfUploadsToComplete()
+        
+        // Did the user change the recent period?
+        let recentPeriodIndex = CacheVars.shared.recentPeriodIndex
+        if hasUploadRights(), oldRecentPeriodIndex != recentPeriodIndex {
+            // Update recent period on Piwigo server
+            DispatchQueue.global(qos: .background).async { [self] in
+                PwgSession.checkSession(ofUser: user) {
+                    let periodInDays = CacheVars.shared.recentPeriodList[recentPeriodIndex]
+                    PwgSession.setRecentPeriod(periodInDays, forUserWithID: self.user.id) { success in
+                        // No reporting
+                    } failure: { error in
+                        // No reporting
+                    }
+                } failure: { error in
+                    // No reporting
+                }
+            }
+            // Reload root/default album
+            self.settingsDelegate?.didChangeRecentPeriod()
+        }
     }
     
     deinit {

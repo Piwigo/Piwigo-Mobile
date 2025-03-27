@@ -13,6 +13,7 @@ public enum UserError: Error {
     case emptyUsername
     case unknownUserStatus
     case creationError
+    case wrongDataFormat
 }
 
 extension UserError: LocalizedError {
@@ -27,6 +28,9 @@ extension UserError: LocalizedError {
         case .creationError:
             return NSLocalizedString("CoreData_UserCreateFailed",
                                      comment: "Failed to create a new User object.")
+        case .wrongDataFormat:
+            return NSLocalizedString("CoreDataFetch_DigestError",
+                                     comment: "Could not digest the fetched data.")
         }
     }
 }

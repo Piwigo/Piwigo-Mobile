@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// ==> GENERIC
+// MARK: - GENERIC
 // ===========================================================================
 // Tab bar
 
@@ -46,8 +46,9 @@
 "PiwigoServer_invalidJSONobject" = "Piwigo伺服器回傳了無效的JSON物件。";
 "PiwigoServer_emptyJSONobject" = "Piwigo回傳了空的JSON物件。";
 
+
 // ===========================================================================
-// ==> CORE DATA
+// MARK: - CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "在讀取快取時發生了一個嚴重的程式錯誤。因此重新建立了新的快取。";
@@ -83,8 +84,9 @@
 "CoreDataFetch_UploadCreateFailed" = "新上傳物件建立失敗。";
 "CoreDataFetch_UploadMissingAsset" = "獲取照片失敗。";
 
+
 // ===========================================================================
-// ==> LOGIN / LOGOUT
+// MARK: - LOGIN / LOGOUT
 // ===========================================================================
 // Login
 "login" = "登入";
@@ -141,8 +143,9 @@
 // Logout — Errors
 "logoutFail_title" = "登出失敗";
 
+
 // ===========================================================================
-// ==> ALBUMS
+// MARK: - ALBUMS
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@個相簿";
@@ -313,9 +316,8 @@
 "categoryImageSetError_title" = "照片設定錯誤";
 "categoryImageSetError_message" = "無法設定相簿照片";
 
-
 // ===========================================================================
-// ==> IMAGES
+// MARK: - IMAGES
 // ===========================================================================
 "singleImage" = "照片";
 "singleImageCount" = "%@張照片";
@@ -616,7 +618,7 @@
 "shareFailError_tooLarge" = "選擇太多，無法分享";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "照片圖庫";
 "localAlbums_accessible" = "可存取的照片";
@@ -635,7 +637,7 @@
 "localImages_deleteMessage" = "你想要從相機膠捲刪除已上傳的照片及影片嗎? 被刪除的照片及影片會在照片應用程式的「近期刪除」保存30天。";
 
 // ===========================================================================
-// ==> SETTINGS
+// MARK: - SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo伺服器";
@@ -676,8 +678,6 @@
 "thumbnailSizexFullRes" = "完整解析度";
 
 // Settings — Images
-"settingsHeader_images" = "照片";
-
 "defaultThumbnailFile" = "檔案";
 "defaultThumbnailFile>320px" = "縮圖檔案";
 "defaultThumbnailFile>414px" = "照片縮圖檔案";
@@ -717,6 +717,10 @@
 "imageSizeXLarge" = "特大";
 "imageSizeXXLarge" = "最大";
 "imageSizexFullRes" = "完整解析度";
+
+// Settings — Videos
+"settings_videoAutoPlay" = "自動播放";
+"settings_videoLoop" = "循環影片";
 
 // Settings — Upload
 "settingsHeader_upload" = "預設上傳設定";

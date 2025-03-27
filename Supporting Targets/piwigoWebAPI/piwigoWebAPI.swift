@@ -677,6 +677,30 @@ class piwigoWebAPI: XCTestCase {
 
     
     // MARK: - pwg.users…
+    func testPwgUsersGetList() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.users.getList", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(UsersGetListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.paging?.perPage, 100)
+        XCTAssertEqual(result.paging?.count, 8)
+        XCTAssertEqual(result.users.first?.userName, "Eddy")
+        XCTAssertEqual(result.users.first?.showNberOfComments?.boolValue, false)
+        XCTAssertEqual(result.users.last?.lastVisitFromHistory?.boolValue, false)
+    }
+    
     func testPwgUsersFavoritesGetList() {
         
         // Case of a successful request

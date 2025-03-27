@@ -252,7 +252,9 @@ extension UploadManager: NSFetchedResultsControllerDelegate {
         case .insert:
             // Check whether this upload request can be launched in the foreground
             if isExecutingBackgroundUploadTask == false {
-                findNextImageToUpload()
+                backgroundQueue.async {
+                    self.findNextImageToUpload()
+                }
             }
             // Update number of uploads to complete
             updateNberOfUploadsToComplete()

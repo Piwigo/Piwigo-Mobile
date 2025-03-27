@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.0_text" = "Version 3.3\n\n• Copies and moves a selection of photos much more quickly\n• Improved management of database migration\n• Corrects photo and video sharing rights management\n• Fixes bugs and improves the interface";
+"v3.3.1_text" = "Version 3.3.1\n\n• Adds video auto-play and loop options\n• Fixes bugs and improves the interface";
+
+"v3.3.0_text" = "Version 3.3\nMarch 26, 2025\n\n• Copies and moves a selection of photos much more quickly\n• Improved management of database migration\n• Corrects photo and video sharing rights management\n• Fixes bugs and improves the interface";
 
 "v3.2.5_text" = "Version 3.2.5\nFebruary 17, 2025\n\n• Minor bug fixes and improvements of the interface";
 

@@ -331,9 +331,15 @@ extension AlbumViewController
     }
     
     func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool, progress: Float = 0) {
+        // Is this view visible?
+        if self.view.window == nil { return }
+        
         // Title view
         if categoryId == 0 {
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            if #available(iOS 13.0, *) {
+                self.view?.window?.windowScene?.title = title
+            }
             return
         } else {
             title = albumData.name
