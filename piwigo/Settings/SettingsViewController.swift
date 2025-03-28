@@ -435,9 +435,9 @@ class SettingsViewController: UIViewController {
             }
         }
         
-        // Inform user if the AutoUploadViewController is not presented
-        children.forEach { if $0 is AutoUploadViewController { return } }
-        if let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
+        // Inform user if Settings are presented
+        if view.window != nil,
+           let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }
         }
