@@ -15,7 +15,7 @@ protocol SelectPrivacyDelegate: NSObjectProtocol {
     func didSelectPrivacyLevel(_ privacy: pwgPrivacy)
 }
 
-class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SelectPrivacyViewController: UIViewController {
     
     weak var delegate: SelectPrivacyDelegate?
 
@@ -33,7 +33,6 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
 
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -83,8 +82,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super .viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super .viewDidDisappear(animated)
 
         // Update cell of parent view
         delegate?.didSelectPrivacyLevel(privacy)
@@ -94,35 +93,15 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-    
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("privacyLevel", comment: "Privacy Level"))
-        let text = NSLocalizedString("settings_defaultPrivacy>414px", comment: "Please select who will be able to see images")
-        return (title, text)
-    }
+}
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
-    
+// MARK: - UITableViewDataSource Methods
+extension SelectPrivacyViewController: UITableViewDataSource
+{
     // MARK: - UITableView - Rows
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgPrivacy.allCases.count - 1
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -145,10 +124,36 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         return cell
     }
+}
 
-    
-    // MARK: - UITableViewDelegate Methods
-    
+
+// MARK: - UITableViewDelegate Methods
+extension SelectPrivacyViewController: UITableViewDelegate
+{
+    // MARK: - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("privacyLevel", comment: "Privacy Level"))
+        let text = NSLocalizedString("settings_defaultPrivacy>414px", comment: "Please select who will be able to see images")
+        return (title, text)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+
+
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44.0
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Deselect row
         tableView.deselectRow(at: indexPath, animated: true)
@@ -170,7 +175,6 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
 
 // MARK: - Utilities
-
 private func getPrivacyLevel(forRow row: Int) -> pwgPrivacy {
     var privacyLevel: pwgPrivacy
     switch row {
