@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.1_text" = "3.3.1 verzió\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása";
+"v3.3.2_text" = "3.3.2 verzió\n\n• Hibajavítások és a kezelőfelület javítása";
+
+"v3.3.1_text" = "3.3.1 verzió\n2025 Március 28\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása";
 
 "v3.3.0_text" = "3.3 verzió\n2025 Március 26\n\n• Sokkal gyorsabban másolja és mozgatja a kiválasztott fényképeket\n• Az adatbázis-migráció jobb kezelése\n• Javítja a fényképek és videók megosztási jogainak kezelését\n• Hibák javítása és a kezelőfelület javítása";
 

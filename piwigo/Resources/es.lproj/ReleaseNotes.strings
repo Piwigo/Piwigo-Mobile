@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.1_text" = "Versión 3.3.1\n\n• Añade opciones de reproducción automática y vídeo en bucle\n• Corrección de errores y mejoras en la interfaz";
+"v3.3.2_text" = "Versión 3.3.2\n\n• Corrección de errores y mejoras en la interfaz";
+
+"v3.3.1_text" = "Versión 3.3.1\n28 de marzo de 2025\n\n• Añade opciones de reproducción automática y vídeo en bucle\n• Corrección de errores y mejoras en la interfaz";
 
 "v3.3.0_text" = "Versión 3.3\n26 de marzo de 2025\n\n• Copia y mueve una selección de fotos mucho más rápido\n• Mejora la gestión de la migración de bases de datos\n• Corrige la gestión de los derechos de uso compartido de fotos y vídeos\n• Corrige errores y mejora la interfaz";
 
