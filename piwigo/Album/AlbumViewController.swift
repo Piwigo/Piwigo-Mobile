@@ -293,9 +293,10 @@ class AlbumViewController: UIViewController
             debugPrint("Error: \(error)")
         }
         
-        // Place search bar in navigation bar of root album
+        // Place search bar in navigation bar of root album, reset fetching album flags
         if categoryId == 0 {
             initSearchBar()
+            AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
         }
         
         // Register palette changes
@@ -772,7 +773,7 @@ class AlbumViewController: UIViewController
     @objc func refresh(_ refreshControl: UIRefreshControl?) {
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
-            debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId)")
+            debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId))")
             return
         }
                 
