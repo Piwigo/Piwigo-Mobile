@@ -178,6 +178,7 @@ extension AlbumViewController
         // Update navigation bar and toolbar
         initBarsInPreviewMode()
         updateBarsInPreviewMode()
+        setTitleViewFromAlbumData()
         updateButtons()
         
         // Enable interaction with album cells and deselect image cells

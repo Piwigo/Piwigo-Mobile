@@ -99,7 +99,7 @@ extension AlbumViewController
             // Show the error
             DispatchQueue.main.async { [self] in
                 // Done fetching album data
-                // ► Remove current album from list of album being fetched
+                // ► Remove current album from list of albums being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
 
                 completion()
@@ -154,7 +154,7 @@ extension AlbumViewController
                                 self.updateBarsInPreviewMode()
                                 if newLastPage > 2 {
                                     let progress = Float(onPage + 1) / Float(newLastPage)
-                                    self.setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
+                                    self.setTitleViewFromAlbumData(progress: progress)
                                 }
                             }
 
@@ -189,10 +189,10 @@ extension AlbumViewController
             }
             
             // Done fetching images
-            // ► Remove non-fetched images from album
-            removeImageWithIDs(imageIDs)
             // ► Remove current album from list of album being fetched
             AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
+            // ► Remove non-fetched images from album
+            removeImageWithIDs(imageIDs)
             // ► Delete orphaned images in the background
             imageProvider.purgeOrphans()
 
@@ -217,7 +217,7 @@ extension AlbumViewController
             // Remember when images were fetched
             self.albumData.dateGetImages = Date().timeIntervalSinceReferenceDate
             // Update titleView
-            self.setTitleViewFromAlbumData(whileUpdating: false)
+            self.setTitleViewFromAlbumData()
             
             // Remove images if necessary
             if let images = self.albumData.images {

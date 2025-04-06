@@ -58,14 +58,19 @@ class AlbumViewController: UIViewController
     }()
     
     // MARK: - Bar Buttons
+    // Keep back button title smaller than 10 characters when width <= 440 points
+    // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
+    let minWidthForDefaultBackButton: CGFloat = 440.0
+    // Bar buttons for root album
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
+    // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
     lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
-    
+    // Bar button for image selection mode
     var selectBarButton: UIBarButtonItem?
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
     
@@ -310,8 +315,7 @@ class AlbumViewController: UIViewController
         noAlbumLabel.textColor = UIColor.piwigoColorHeader()
         
         // Navigation bar title
-        let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)
-        setTitleViewFromAlbumData(whileUpdating: isFetching)
+        setTitleViewFromAlbumData()
         navigationController?.navigationBar.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
         
         // Buttons appearance
@@ -409,9 +413,6 @@ class AlbumViewController: UIViewController
         
         // For testing…
 //        timeCounter = CFAbsoluteTimeGetCurrent()
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
         
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
@@ -421,7 +422,10 @@ class AlbumViewController: UIViewController
         initBarsInPreviewMode()
         initButtons()
         updateButtons()
-        
+
+        // Set colors, fonts, etc. and title view
+        applyColorPalette()
+
         // Register Low Power Mode status
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader),
                                                name: Notification.Name.NSProcessInfoPowerStateDidChange, object: nil)
@@ -597,37 +601,54 @@ class AlbumViewController: UIViewController
         
         // Update the navigation bar on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] _ in
-            // Reset the title of the parent albums
-            let children = navigationController?.children ?? []
-            children.forEach { child in
-                if let parentAlbumVC = child as? AlbumViewController,
-                   parentAlbumVC.categoryId != Int32.zero {
-                    // Keep title smaller than 10 characters when width <= 440 points
-                    // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
-                    // See also viewWillDisappear()
-                    if view.bounds.size.width <= 440, title?.count ?? 0 > 10 {
-                        // Will reset back button item
-                        parentAlbumVC.navigationItem.title = nil
-                    } else {
-                        // Will display the parent album name in the back button
-                        parentAlbumVC.navigationItem.title = parentAlbumVC.albumData.name
-                    }
-                }
-            }
-            
             // Reload collection with appropriate cell sizes
             collectionView?.reloadData()
 
-            // Update buttons
-            if inSelectionMode {
-                initBarsInSelectMode()
-            } else {
+            // Update album view according to its position in the hierarchy
+            let children = (self.navigationController?.viewControllers ?? [])
+                .compactMap({ $0 as? AlbumViewController })
+            let index = children.firstIndex(of: self) ?? -1
+            switch index {
+            case 0: // Root album
+                // Update position of buttons (recalculated after device rotation)
+                addButton.frame = getAddButtonFrame()
+                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+
+            case children.count - 2: // Parent of displayed album
+                // Update position of buttons (recalculated after device rotation)
+                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                
+                // Reset title and back button
+                if #available(iOS 14.0, *) {
+                    setTitleViewFromAlbumData() // with or without update info below the name
+                    navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
+                } else {
+                    // Fallback on earlier versions
+                    if size.width <= minWidthForDefaultBackButton, title?.count ?? 0 > 10 {
+                        // Will reset back button item
+                        title = nil
+                    } else {
+                        setTitleViewFromAlbumData()
+                    }
+                }
+                
+            default: // Other albums including the visible one
                 // Update position of buttons (recalculated after device rotation)
                 addButton.frame = getAddButtonFrame()
                 homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
-                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
                 createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
                 uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                
+                // Reset title and back button
+                setTitleViewFromAlbumData() // with or without update info below the name
+                if #available(iOS 14.0, *) {
+                    navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
+                } else {
+                    // Fallback on earlier versions
+                }
             }
         })
     }
@@ -648,13 +669,17 @@ class AlbumViewController: UIViewController
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        // Keep title smaller than 10 characters when width <= 440 points
-        // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
-        // See also viewWillTransition()
-        if view.bounds.size.width <= 440, title?.count ?? 0 > 10 {
-            // Will reset back button item
-            title = nil
+        debugPrint("••> viewWillDisappear — Album #\(categoryId): \(albumData.name)")
+
+        // Keep title small when the screen width is small
+        if #available(iOS 14.0, *) {
+            // backButtonDisplayMode already set
+        } else {
+            // Fallback on earlier versions
+            if view.bounds.size.width <= minWidthForDefaultBackButton, title?.count ?? 0 > 10 {
+                // Will reset back button item
+                title = nil
+            }
         }
         
         // Cancel remaining tasks
@@ -720,6 +745,7 @@ class AlbumViewController: UIViewController
         // Reset buttons and menus
         initBarsInPreviewMode()
         updateBarsInPreviewMode()
+        setTitleViewFromAlbumData()
     }
     
     func resetPredicatesAndPerformFetch() {
@@ -734,7 +760,7 @@ class AlbumViewController: UIViewController
         AlbumVars.shared.isFetchingAlbumData.insert(categoryId)
         
         // Display "loading" in title view
-        self.setTitleViewFromAlbumData(whileUpdating: true)
+        self.setTitleViewFromAlbumData()
         
         // Display HUD while downloading album data
         if withHUD {
@@ -776,7 +802,7 @@ class AlbumViewController: UIViewController
             debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId))")
             return
         }
-                
+        
         // Check that the root album exists
         // (might have been deleted with a clear of the cache)
         if categoryId == Int32.zero {
@@ -793,7 +819,7 @@ class AlbumViewController: UIViewController
             self.navigationController?.hideHUD { }
 
             // Update title
-            self.setTitleViewFromAlbumData(whileUpdating: false)
+            self.setTitleViewFromAlbumData()
 
             // Update number of images in footer
             self.updateNberOfImagesInFooter()
