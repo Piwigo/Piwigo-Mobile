@@ -238,7 +238,7 @@ class AlbumViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         debugPrint("--------------------------------------------------")
-        debugPrint("••> viewDidLoad in AlbumViewController: Album #\(categoryId)")
+        debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
         
         // Register classes before using them
         collectionView?.isPrefetchingEnabled = true
@@ -404,7 +404,7 @@ class AlbumViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        debugPrint("••> viewWillAppear in AlbumViewController: Album #\(categoryId)")
+        debugPrint("••> viewWillAppear — Album #\(categoryId): \(albumData.name)")
         
         // For testing…
 //        timeCounter = CFAbsoluteTimeGetCurrent()
@@ -442,7 +442,7 @@ class AlbumViewController: UIViewController
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        debugPrint("••> viewDidAppear in AlbumViewController: Album #\(categoryId)")
+        debugPrint("••> viewDidAppear — Album #\(categoryId): \(albumData.name)")
         
         // Speed and memory measurements with iPad Pro 11" in debug mode
         /// Old method —> 0 photo: 527 ms, 24 photos: 583 ms, 3020 photos: 15 226 ms (memory crash after repeating tests)
@@ -678,7 +678,8 @@ class AlbumViewController: UIViewController
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
+        debugPrint("••> viewDidDisappear — Album #\(categoryId): \(albumData.name)")
+
         // Make sure buttons are back to initial state
         didCancelTapAddButton()
     }
