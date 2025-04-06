@@ -142,6 +142,7 @@ extension LocalImagesViewController
         // and update badge and upload button of album navigator
         UploadManager.shared.backgroundQueue.async {
             UploadManager.shared.isPaused = false
+            UploadManager.shared.isExecutingBackgroundUploadTask = false
             UploadManager.shared.findNextImageToUpload()
         }
         
