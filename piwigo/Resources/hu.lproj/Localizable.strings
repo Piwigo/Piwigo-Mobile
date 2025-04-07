@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "Figyelem";
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
 "CoreDataFetch_DigestError" = "Értelmezhetetlen a letöltött adat.";
+"CoreData_MigrationRequired" = "A Piwigo adatainak tartós adatbázisa migrációt igényel. Kérjük, indítsa el az alkalmazást.";
 "CoreData_MigrationProgress" = "Migráció folyamatban...";
 "Coredata_MigrationPleaseWait" = "Jelenleg folyamatban van az adatok egy részének migrálása. Kérjük, várjon a végéig. Ne lépjen ki vagy ne állítsa le az alkalmazást.";
 "CoreData_MigrationError_title" = "A migráció sikertelen";

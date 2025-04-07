@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "Avvertimento";
 "CoreDataStore_WarningMessage" = "Si è verificato un grave errore di applicazione mentre Piwigo ha cercato di leggere la cache dei dati. È stata quindi creata una nuova cache.";
 "CoreDataFetch_DigestError" = "Impossibile digerire i dati recuperati.";
+"CoreData_MigrationRequired" = "Il database persistente dei dati di Piwigo richiede la migrazione. Avviare l'applicazione.";
 "CoreData_MigrationProgress" = "Migrazione in corso...";
 "Coredata_MigrationPleaseWait" = "Stiamo migrando alcuni dei vostri dati. Attendere fino alla fine. Non abbandonate o chiudete l'applicazione.";
 "CoreData_MigrationError_title" = "Migrazione fallita";

@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "Ostrzeżenie";
 "CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
+"CoreData_MigrationRequired" = "Trwała baza danych Piwigo wymaga migracji. Prosimy o uruchomienie aplikacji.";
 "CoreData_MigrationProgress" = "Migracja w toku...";
 "Coredata_MigrationPleaseWait" = "Jesteśmy w trakcie migracji niektórych danych. Poczekaj do końca. Nie zamykaj ani nie wyłączaj aplikacji.";
 "CoreData_MigrationError_title" = "Migracja nie powiodła się";

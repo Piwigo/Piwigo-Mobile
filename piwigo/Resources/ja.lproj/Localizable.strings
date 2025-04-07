@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "注意";
 "CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
 "CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
+"CoreData_MigrationRequired" = "Piwigoデータの永続データベースの移行が必要です。アプリケーションを起動してください。";
 "CoreData_MigrationProgress" = "移行中...";
 "Coredata_MigrationPleaseWait" = "現在、一部のデータを移行中です。最後までお待ちください。アプリケーションは終了しないでください。";
 "CoreData_MigrationError_title" = "マイグレーション失敗";
