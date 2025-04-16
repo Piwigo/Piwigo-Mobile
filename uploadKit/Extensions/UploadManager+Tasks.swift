@@ -41,9 +41,9 @@ extension UploadManager
         self.updateNberOfUploadsToComplete()
 
         // Check current queue
-        debugPrint("\(dbg()) findNextImageToUpload() in", queueName())
-        debugPrint("\(dbg()) \((self.uploads.fetchedObjects ?? []).count) pending and \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
-        debugPrint("\(dbg()) preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("findNextImageToUpload() in \(queueName(), privacy: .public), \((self.uploads.fetchedObjects ?? []).count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
+        }
                 
         // Pause upload manager if:
         /// - app not in the foreground anymore
@@ -277,7 +277,9 @@ extension UploadManager
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads.map({$0.objectID}))
-            debugPrint("\(dbg()) collected \(uploadRequestsToTransfer.count) failed uploads")
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("initialiseBckgTask() collected \(self.uploadRequestsToTransfer.count, privacy: .public) failed uploads")
+            }
         }
         
         // Second, find upload requests ready for transfer
@@ -288,7 +290,9 @@ extension UploadManager
             let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(prepared[..<min(UploadVars.shared.maxNberOfUploadsPerBckgTask,prepared.count)]))
-            debugPrint("\(dbg()) collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count)) prepared uploads")
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("initialiseBckgTask() collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count), privacy: .public) prepared uploads")
+            }
         }
         
         // Finally, get list of upload requests to prepare
@@ -296,7 +300,9 @@ extension UploadManager
         if diff <= 0 { return }
         let requestsToPrepare = (uploads.fetchedObjects ?? [])
             .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly})
-        debugPrint("\(dbg()) collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("initialiseBckgTask() collected \(min(diff, requestsToPrepare.count), privacy: .public) uploads to prepare")
+        }
         let toPrepare = requestsToPrepare.map({$0.objectID})
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
@@ -309,19 +315,20 @@ extension UploadManager
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
-                    guard let objectURI = URL(string: objectURIstr) else {
-                        debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                          let objectURI = URL(string: objectURIstr),
+                          let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
+                    else {
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier) not associated to an upload!")
+                        }
                         continue
                     }
-                    guard let uploadID = uploadBckgContext
-                        .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                        debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
-                        continue
+
+                    // Remembers that this upload request is being dealt with
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
                     }
-                    // Remembers that this upload request is being dealt with
-                    debugPrint("\(dbg()) is uploading: \(uploadID)")
-                    // Remembers that this upload request is being dealt with
                     self.isUploading.insert(uploadID)
                     
                     // Avoids duplicates
@@ -340,19 +347,20 @@ extension UploadManager
                     switch task.state {
                     case .running:
                         // Retrieve upload request properties
-                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
-                        guard let objectURI = URL(string: objectURIstr) else {
-                            debugPrint("\(dbg()) task \(task.taskIdentifier) | no object URI!")
+                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                              let objectURI = URL(string: objectURIstr),
+                              let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
+                        else {
+                            if #available(iOSApplicationExtension 14.0, *) {
+                                UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier) not associated to an upload!")
+                            }
                             continue
                         }
-                        guard let uploadID = uploadBckgContext
-                            .persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                            debugPrint("\(dbg()) task \(task.taskIdentifier) | no objectID!")
-                            continue
+
+                        // Remembers that this upload request is being dealt with
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
                         }
-                        // Remembers that this upload request is being dealt with
-                        debugPrint("\(dbg()) is uploading: \(uploadID)")
-                        // Remembers that this upload request is being dealt with
                         self.isUploading.insert(uploadID)
                         
                         // Avoids duplicates

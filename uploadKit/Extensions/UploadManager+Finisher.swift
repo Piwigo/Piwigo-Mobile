@@ -14,7 +14,9 @@ extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
     func finishTransfer(of upload: Upload) {
-        debugPrint("\(dbg()) finish transfers of \(upload.objectID.uriRepresentation())")
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("Finish transfers of \(upload.objectID.uriRepresentation())")
+        }
 
         // Update upload status
         isFinishing = true
@@ -51,7 +53,9 @@ extension UploadManager {
                     launchTransfer(of: upload)
                 }
             } else {
-                debugPrint("\(dbg()) didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
+                if #available(iOSApplicationExtension 14.0, *) {
+                    UploadManager.logger.notice("Background task stopped (\(self.countOfBytesToUpload, privacy: .public) bytes transferred)")
+                }
             }
         } else if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
@@ -63,7 +67,9 @@ extension UploadManager {
     /// — Called after having uploaded with pwg.images.upload
     /// — pwg.images.upload does not allow to set the image title
     func setImageParameters(for upload: Upload) {
-        debugPrint("\(dbg()) setImageParameters() in", queueName())
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public)")
+        }
         
         // Prepare creation date
         let creationDate = DateUtilities.string(from: upload.creationDate)
@@ -90,7 +96,9 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { [self] jsonData in
-            debugPrint("\(self.dbg()) setImageParameters() in", queueName())
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
+            }
             // Decode the JSON object
             do {
                 // Decode the JSON into codable type ImagesSetInfoJSON.
@@ -134,7 +142,9 @@ extension UploadManager {
      If not, they will be visible after some delay (12 minutes).
      */
     func emptyLounge(for upload: Upload) {
-        debugPrint("\(dbg()) emptyLounge() in", queueName())
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("emptyLounge() in \(queueName(), privacy: .public)")
+        }
         // Empty lounge without reporting potential error
         guard let user = upload.user else {
             // Should never happen
@@ -167,7 +177,9 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 2500) { [self] jsonData in
-            debugPrint("\(self.dbg()) moderateImages() in", queueName())
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("processImages() in \(queueName(), privacy: .public) after calling postRequest")
+            }
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let pwgData = try self.decoder.decode(ImagesUploadCompletedJSON.self, from: jsonData)
@@ -225,7 +237,9 @@ extension UploadManager {
                         inCategory categoryId: Int32,
                         completionHandler: @escaping (Bool, [Int64]) -> Void) -> (Void) {
         // Launch request
-        debugPrint("\(dbg()) moderateImages() in", queueName())
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public)")
+        }
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.shared.pwgToken,
@@ -233,7 +247,9 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { [self] jsonData in
-            debugPrint("\(self.dbg()) moderateImages() in", queueName())
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public) after calling postRequest")
+            }
             do {
                 // Decode the JSON into codable type CommunityUploadCompletedJSON.
                 let pwgData = try self.decoder.decode(CommunityImagesUploadCompletedJSON.self, from: jsonData)

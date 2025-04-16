@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "تحذير";
 "CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
 "CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
+"CoreData_MigrationRequired" = "قاعدة البيانات المستمرة لبيانات Piwigo الخاصة بك تتطلب الهجرة. الرجاء بدء تشغيل التطبيق.";
 "CoreData_MigrationProgress" = "جاري الانتقال ...";
 "Coredata_MigrationPleaseWait" = "نحن بصدد ترحيل بعض بياناتك. يرجى الانتظار حتى النهاية. لا تقم بإنهاء التطبيق أو إيقاف تشغيله.";
 "CoreData_MigrationError_title" = "فشل الترحيل";

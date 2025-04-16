@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "在讀取快取時發生了一個嚴重的程式錯誤。因此重新建立了新的快取。";
 "CoreDataFetch_DigestError" = "無法讀取接收到的資料。";
+"CoreData_MigrationRequired" = "您的 Piwigo 資料的永久資料庫需要遷移。請啟動應用程式。";
 "CoreData_MigrationProgress" = "轉移進行中...";
 "Coredata_MigrationPleaseWait" = "我們正在遷移您的部分資料。請等待至結束。請勿退出或終止應用程式。";
 "CoreData_MigrationError_title" = "遷移失敗";

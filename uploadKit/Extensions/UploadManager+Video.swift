@@ -141,7 +141,6 @@ extension UploadManager {
             // Determine MD5 checksum
             let error: Error?
             (upload.md5Sum, error) = originalFileURL.MD5checksum()
-            debugPrint("\(self.dbg()) MD5: \(String(describing: upload.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: upload, error)
@@ -235,13 +234,13 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                        completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        debugPrint("\(dbg()) enters retrieveVideoAssetFrom in", queueName())
+        if #available(iOSApplicationExtension 14.0, *) {
+            UploadManager.logger.notice("retrieveVideoFrom() in \(queueName(), privacy: .public)")
+        }
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
-        #if DEBUG_UPLOAD
             debugPrint(String(format: "downloading Video — progress %lf", progress))
-        #endif
             // The handler needs to update the user interface => Dispatch to main thread
 //            DispatchQueue.main.async(execute: {
 //                self.iCloudProgress = progress

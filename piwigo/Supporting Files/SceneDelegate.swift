@@ -401,8 +401,7 @@ extension SceneDelegate: AppLockDelegate {
         // Resume upload operations in background queue
         // and update badge and upload button of album navigator
         UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.findNextImageToUpload()
+            UploadManager.shared.resumeAll()
         }
     }
 }

@@ -35,6 +35,7 @@ class ClearCache: NSObject {
             // Back to default album settings
             AlbumVars.shared.defaultCategory = 0
             AlbumVars.shared.recentCategories = "0"
+            AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
             
             // Back to default server properties
             NetworkVars.shared.usesCommunityPluginV29 = false

@@ -56,6 +56,7 @@ extension AlbumViewController: UISearchControllerDelegate
         // Hide buttons and toolbar
         hideButtons()
         initBarsInPreviewMode()
+        setTitleViewFromAlbumData()
         navigationController?.setToolbarHidden(true, animated: true)
     }
     
@@ -93,6 +94,7 @@ extension AlbumViewController: UISearchControllerDelegate
         // Show buttons and navigation bar
         updateButtons()
         initBarsInPreviewMode()
+        setTitleViewFromAlbumData()
     }
     
     private func resetSearchAlbum(withQuery query: String) {

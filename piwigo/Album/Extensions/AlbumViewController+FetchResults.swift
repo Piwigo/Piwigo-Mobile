@@ -108,6 +108,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
         if self.categoryId != 0, self.albumData.nbImages == 0 {
             self.inSelectionMode = false
             self.initBarsInPreviewMode()
+            self.setTitleViewFromAlbumData()
         }
     }
 
@@ -207,6 +208,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     if self.albumData.nbImages == 1 {
                         debugPrint("••> First added image ► enable menu")
                         self.initBarsInPreviewMode()
+                        self.setTitleViewFromAlbumData()
                     }
                 })
             case .delete:
@@ -275,6 +277,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
 //                debugPrint("••> No image ► disable menu")
                 self.inSelectionMode = false
                 self.initBarsInPreviewMode()
+                self.setTitleViewFromAlbumData()
             }
         }
     }

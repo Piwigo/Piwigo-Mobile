@@ -43,18 +43,21 @@ extension UploadManager
                 switch task.state {
                 case .running:
                     // Retrieve upload request properties
-                    guard let objectURIstr = task.originalRequest?
-                        .value(forHTTPHeaderField: pwgHTTPuploadID) else { continue }
-                    guard let objectURI = URL(string: objectURIstr) else {
-                        debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no object URI!")
+                    guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
+                          let objectURI = URL(string: objectURIstr),
+                          let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
+                              .managedObjectID(forURIRepresentation: objectURI)
+                    else {
+                        if #available(iOSApplicationExtension 14.0, *) {
+                            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
+                        }
                         continue
                     }
-                    guard let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
-                        .managedObjectID(forURIRepresentation: objectURI) else {
-                        debugPrint("\(self.dbg()) task \(task.taskIdentifier) | no objectID!")
-                        continue
+                    
+                    // Task associated to an upload
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
                     }
-                    debugPrint("\(self.dbg()) is uploading \(uploadID)")
                     self.isUploading.insert(uploadID)
                     
                 default:
@@ -62,8 +65,11 @@ extension UploadManager
                 }
             }
             
-            debugPrint("\(self.dbg()) \((self.uploads.fetchedObjects ?? []).count) pending upload requests in cache")
-            debugPrint("\(self.dbg()) \((self.completed.fetchedObjects ?? []).count) completed upload requests in cache")
+            // Logs
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("\((self.uploads.fetchedObjects ?? []).count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests in cache.")
+            }
+            
             // Resume operations
             self.resumeOperations()
         }
@@ -84,7 +90,9 @@ extension UploadManager
                 UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                debugPrint("\(dbg()) \(assetsToDelete.count) upload requests should be deleted")
+                if #available(iOSApplicationExtension 14.0, *) {
+                    UploadManager.logger.notice("\(assetsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
+                }
                 deleteAssets(associatedToUploads: assetsToDelete)
             }
         }

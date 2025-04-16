@@ -53,11 +53,12 @@
 "CoreDataStore_WarningTitle" = "Ostrzeżenie";
 "CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
+"CoreData_MigrationRequired" = "Trwała baza danych Piwigo wymaga migracji. Prosimy o uruchomienie aplikacji.";
 "CoreData_MigrationProgress" = "Migracja w toku...";
 "Coredata_MigrationPleaseWait" = "Jesteśmy w trakcie migracji niektórych danych. Poczekaj do końca. Nie zamykaj ani nie wyłączaj aplikacji.";
 "CoreData_MigrationError_title" = "Migracja nie powiodła się";
 "CoreData_MigrationError_generic" = "Podczas migracji wystąpił nieoczekiwany błąd.";
-"CoreData_MigrationError_timeout" = "Aplikacja została zawieszona podczas migracji bazy danych. Uruchom ponownie aplikację i spróbuj ponownie.";
+"CoreData_MigrationError_timeout" = "Aplikacja zawiesiła się podczas migracji bazy danych. Uruchom ponownie aplikację i spróbuj ponownie.";
 
 // User objects
 "CoreDataFetch_UserMissingData" = "Odrzuci konto użytkownika bez prawidłowej nazwy użytkownika.";
@@ -66,7 +67,7 @@
 
 // Album objects
 "CoreDataFetch_AlbumError" = "Błąd pobierania albumów!";
-"CoreDataFetch_AlbumMissingData" = "Znaleziono i będzie usunięty album bez poprawnego identyfikatora lub nazwy.";
+"CoreDataFetch_AlbumMissingData" = "Znaleziono album bez poprawnego identyfikatora lub nazwy i zostanie on usunięty.";
 "CoreDataFetch_AlbumCreateFailed" = "Nie udało się utworzyć nowego obiektu Album.";
 "CoreData_AlbumNotFound" = "Albumu nie ma w stałej pamięci podręcznej.";
 
@@ -130,7 +131,7 @@
 
 "serverVersionOld_title" = "Dostępna aktualizacja serwera";
 "serverVersionOld_message" = "Twoja wersja serwera Piwigo to %@. Poproś administratora o aktualizację.";
-"serverVersionNotCompatible_title" = "Serwera Niekompatybilny";
+"serverVersionNotCompatible_title" = "Wersja serwera nie jest kompatybilna";
 "serverVersionNotCompatible_message" = "Wersja serwera Twojego Piwigo to %@. Piwigo Mobile obsługuje tylko wersję co najmniej %@. Zaktualizuj swój serwer aby korzystać z Piwigo Mobile.";
 
 "sessionStatusError_title" = "Niepowodzenie Uwierzytelniania";
@@ -720,7 +721,7 @@
 
 // Settings — Videos
 "settings_videoAutoPlay" = "Automatyczne odtwarzanie";
-"settings_videoLoop" = "Filmy w pętli";
+"settings_videoLoop" = "Zapętlaj odtwarzanie filmów";
 
 // Settings — Upload
 "settingsHeader_upload" = "Domyślne ustawienia przesyłania";

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.1_text" = "Wersja 3.3.1\n\n• Dodano opcje automatycznego odtwarzania i zapętlania wideo\n• Naprawiono błędy i ulepszono interfejs";
+"v3.3.2_text" = "Wersja 3.3.2\n\n• Naprawiono błędy i ulepszono interfejs";
+
+"v3.3.1_text" = "Wersja 3.3.1\n28 marca 2025\n\n• Dodano opcje automatycznego odtwarzania i zapętlania filmów\n• Naprawiono błędy i ulepszono interfejs";
 
 "v3.3.0_text" = "Wersja 3.3\n26 marca 2025\n\n• Szybsze kopiowanie i przenoszenie wybranych zdjęć\n• Poprawiono zarządzanie migracją bazy danych\n• Poprawiono zarządzanie prawami do udostępniania zdjęć i filmów\n• Naprawiono błędy i ulepszono interfejs";
 

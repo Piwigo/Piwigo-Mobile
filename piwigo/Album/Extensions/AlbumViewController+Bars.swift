@@ -14,10 +14,6 @@ extension AlbumViewController
 {
     // MARK: - Preview Mode
     func initBarsInPreviewMode() {
-        // Set title
-        let isFetching = AlbumVars.shared.isFetchingAlbumData.contains(categoryId)
-        setTitleViewFromAlbumData(whileUpdating: isFetching)
-
         // Left side of navigation bar
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             // Button for accessing settings
@@ -30,6 +26,9 @@ extension AlbumViewController
             // Back button to parent album
             navigationItem.setLeftBarButtonItems([], animated: true)
             navigationItem.hidesBackButton = false
+            if #available(iOS 14.0, *) {
+                navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
+            }
         }
 
         // Right side of navigation bar
@@ -261,7 +260,7 @@ extension AlbumViewController
     }
     
     func updateBarsInSelectMode() {
-        setTitleViewFromAlbumData(whileUpdating: false)
+        setTitleViewFromAlbumData()
         let hasImagesSelected = !selectedImageIDs.isEmpty
         cancelBarButton.isEnabled = true
 
@@ -323,17 +322,10 @@ extension AlbumViewController
         else { return }
 
         // Update title view
-        if progress >= 1.0 {
-            setTitleViewFromAlbumData(whileUpdating: false)
-        } else {
-            setTitleViewFromAlbumData(whileUpdating: true, progress: progress)
-        }
+        setTitleViewFromAlbumData(progress: progress)
     }
     
-    func setTitleViewFromAlbumData(whileUpdating isUpdating: Bool, progress: Float = 0) {
-        // Is this view visible?
-        if self.view.window == nil { return }
-        
+    func setTitleViewFromAlbumData(progress: Float = 0) {
         // Title view
         if categoryId == 0 {
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
@@ -376,7 +368,7 @@ extension AlbumViewController
         var subtitle = ""
         if !(UIDevice.current.userInterfaceIdiom == .phone &&
              UIApplication.shared.statusBarOrientation.isLandscape) {
-            if isUpdating {
+            if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
                     subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
