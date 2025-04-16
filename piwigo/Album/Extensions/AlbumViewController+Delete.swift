@@ -24,7 +24,7 @@ extension AlbumViewController
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .delete, contextually: false)
     }
 
-    func askDeleteConfirmation(forImagesWithID imageIDs: Set<Int64>) {
+    func askDeleteConfirmation(forImagesWithID imageIDs: Set<Int64>, contextually: Bool) {
         // Split orphaned and non-orphaned images
         var toRemove = Set<Image>()
         var toDelete = Set<Image>()
@@ -139,7 +139,13 @@ extension AlbumViewController
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         }
-        alert.popoverPresentationController?.barButtonItem = deleteBarButton
+        if inSelectionMode, contextually == false {
+            alert.popoverPresentationController?.barButtonItem = deleteBarButton
+        } else if let imageID = imageIDs.first,
+                  let visibleCells = collectionView?.visibleCells,
+                  let cell = visibleCells.first(where: { ($0 as? ImageCollectionViewCell)?.imageData.pwgID == imageID}) {
+            alert.popoverPresentationController?.sourceView = cell.contentView
+        }
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()

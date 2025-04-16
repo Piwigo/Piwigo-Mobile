@@ -33,6 +33,15 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         debugPrint("••> !!!!!!!!!!!!!!!!!!!!!!!!!")
         debugPrint("••> In-app intent starting...")
 
+        // If a migration is planned, invite the user to perform the migration.
+        let migrator = DataMigrator()
+        if migrator.requiresMigration() {
+            let errorMsg = NSLocalizedString("CoreData_MigrationRequired",
+                                             comment: "The persistent database of your Piwigo data requires migration. Please launch the application.")
+            completion(AutoUploadIntentResponse.failure(error: errorMsg))
+            return
+        }
+        
         // Is auto-uploading enabled?
         if !UploadVars.shared.isAutoUploadActive {
             let errorMsg = NSLocalizedString("AutoUploadError_Disabled",

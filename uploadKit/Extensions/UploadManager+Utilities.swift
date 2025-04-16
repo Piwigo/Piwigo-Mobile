@@ -70,8 +70,7 @@ extension UploadManager {
         // Determine MD5 checksum of image file to upload
         let error: Error?
         (upload.md5Sum, error) = fileURL.MD5checksum()
-        debugPrint("\(dbg()) MD5: \(String(describing: upload.md5Sum))")
-        if error != nil {
+         if error != nil {
             // Could not determine the MD5 checksum
             failure(error)
             return
@@ -126,7 +125,9 @@ extension UploadManager {
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            debugPrint("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
-            debugPrint("\(dbg()) could not clear the Uploads folder: \(error)")
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("Could not clear the Uploads folder: \(error)")
+            }
         }
 
         // Job done
@@ -137,16 +138,6 @@ extension UploadManager {
     
     public func getUploadsDirectorySize() -> String {
         return ByteCountFormatter.string(fromByteCount: Int64(uploadsDirectory.folderSize), countStyle: .file)
-    }
-    
-    
-    // MARK: - Debug Utilities
-    public func dbg() -> String  {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "'••> 'dd'@'HH:mm:ss |"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter.string(from: Date())
     }
 }
 

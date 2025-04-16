@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.1_text" = "Version 3.3.1\n\n• Lägger till alternativ för automatisk uppspelning och looping av video\n• Fixar buggar och förbättrar gränssnittet";
+"v3.3.2_text" = "Version 3.3.2\n\n• Fixar buggar och förbättrar gränssnittet";
+
+"v3.3.1_text" = "Version 3.3.1\n28 mars 2025\n\n• Lägger till alternativ för automatisk uppspelning och looping av video\n• Fixar buggar och förbättrar gränssnittet";
 
 "v3.3.0_text" = "Version 3.3\n26 mars 2025\n\n• Kopierar och flyttar ett urval av foton mycket snabbare\n• Förbättrad hantering av databasmigrering\n• Korrigerar hanteringen av rättigheter för delning av foton och videor\n• Fixar buggar och förbättrar gränssnittet";
 

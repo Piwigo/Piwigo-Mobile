@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "Peringatan";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreData_MigrationRequired" = "Basis data persisten dari data Piwigo Anda memerlukan migrasi. Silakan luncurkan aplikasi.";
 "CoreData_MigrationProgress" = "Migration in progress...";
 "Coredata_MigrationPleaseWait" = "Kami sedang dalam proses migrasi beberapa data Anda. Mohon tunggu hingga selesai. Jangan keluar atau menutup aplikasi.";
 "CoreData_MigrationError_title" = "Migrasi Gagal";

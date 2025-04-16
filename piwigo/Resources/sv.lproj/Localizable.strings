@@ -53,6 +53,7 @@
 "CoreDataStore_WarningTitle" = "Varning";
 "CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
 "CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
+"CoreData_MigrationRequired" = "Den permanenta databasen med dina Piwigo-data behöver migreras. Vänligen starta applikationen.";
 "CoreData_MigrationProgress" = "Migrering pågår...";
 "Coredata_MigrationPleaseWait" = "Vi håller på att migrera en del av dina data. Vänligen vänta till slutet. Avsluta inte eller döda inte programmet.";
 "CoreData_MigrationError_title" = "Migreringen misslyckades";
