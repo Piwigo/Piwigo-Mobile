@@ -1,5 +1,5 @@
 //
-//  AutoUploadViewController+UITableView.swift
+//  AutoUploadViewController+UITableViewDelegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 02/01/2024.
@@ -16,7 +16,7 @@ extension AutoUploadViewController: UITableViewDelegate
         var title = ""
         switch section {
         case 0:
-            title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
+            title = NSLocalizedString("settings_autoUploadLong", comment: "Auto Upload Photos")
         case 1:
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
         case 2:
