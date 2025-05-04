@@ -1,5 +1,5 @@
 //
-//  ServerTableViewCell.h
+//  TextFieldTableViewCell.h
 //  piwigo
 //
 //  Created by Spencer Baker on 2/2/15.
@@ -11,7 +11,6 @@
 import UIKit
 
 class TextFieldTableViewCell: UITableViewCell {
-
 
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var rightTextField: UITextField!
