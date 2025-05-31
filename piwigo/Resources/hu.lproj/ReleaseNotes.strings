@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.2_text" = "3.3.2 verzió\n\n• Hibajavítások és a kezelőfelület javítása";
+"v3.4.0_text" = "Version 3.4\n\n• Adds options for modifying file names before upload\n• Fixes bugs and improves the interface";
+
+"v3.3.2_text" = "3.3.2 verzió\n2025 Április 14\n\n• Hibajavítások és a kezelőfelület javítása";
 
 "v3.3.1_text" = "3.3.1 verzió\n2025 Március 28\n\n• Videó automatikus lejátszási és looping opciók hozzáadása\n• Hibajavítások és a kezelőfelület javítása";
 

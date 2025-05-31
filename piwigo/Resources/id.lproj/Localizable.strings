@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Peringatan";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "Masuk";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "Gagal untuk menetapkan gambar album";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "Gambar";
 "singleImageCount" = "%@ photo";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Komentar";
 "editImageDetails_dateCreation" = "Creation Date";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Unset";
 "editImageDetails_dateToday" = "Today";
 "editImageDetails_dateMonthInc" = "+1 Month";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Galeri foto";
 "localAlbums_accessible" = "Accessible Photos";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Peladen Piwigo";
 "settingsHeader_notSecure" = "Situs tidak aman!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "Pengaturan Unggah Standar";
 "settings_defaultAuthor" = "Penulis";
-"settings_defaultAuthor>320px" = "Nama Penulis";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Nama Penulis";
 "settings_defaultPrivacy" = "Privasi";
 "settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
 "settings_stripGPSdata" = "Hapus Metadata Pribadi";
-"settings_stripGPSdata>375px" = "Hapus Metadata Pribadi Sebelum Mengunggah";
 "settings_photoResize" = "Ubah Ukuran Sebelum Mengunggah";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Ukuran";
-"settings_placeholderSize" = "Masukkan Ukuran Foto dari 5 - 100";
 "settings_photoCompress" = "Kompresi Sebelum Mengunggah";
-"settings_photoCompress>375px" = "Kompresi Gambar Sebelum Mengunggah";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "Kualitas";
-"settings_placeholderQuality" = "Masukkan Kualitas Gambar antara 50 - 98";
-"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
-"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
-"settings_prefixFilename" = "Prefix Photo Filename";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filename Prefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
-"settings_deleteImage>375px" = "Hapus Gambar Setelah Mengunggah";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Hapus Setelah Mengunggah";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
 "settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";

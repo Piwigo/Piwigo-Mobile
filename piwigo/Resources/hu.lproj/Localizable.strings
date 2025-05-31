@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Figyelem";
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "Bejelentkezés";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "Hiba történt a fotó beállításakor";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "Fotó";
 "singleImageCount" = "%@ fotó";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Leírás";
 "editImageDetails_comments" = "Hozzászólások";
 "editImageDetails_dateCreation" = "Létrehozás dátuma";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Idő nélkül";
 "editImageDetails_dateToday" = "Ma";
 "editImageDetails_dateMonthInc" = "+1 Hónap";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "Túl nagy választék a megosztáshoz";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Fotókönyvtár";
 "localAlbums_accessible" = "Elérhető fotók";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "Biztos törölni szeretnéd a feltöltött fotókat a Fotók appból? A törölt fotók és videók további 30 napig elérhetőek az iOS Fotók app Nemrég törölt menüpontja alatt.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Szerver";
 "settingsHeader_notSecure" = "A website nem biztonságos!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "Feltöltési beállítások";
 "settings_defaultAuthor" = "Készítő";
-"settings_defaultAuthor>320px" = "Készítő neve";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Készítő neve";
 "settings_defaultPrivacy" = "Adatvédelem";
 "settings_defaultPrivacy>414px" = "Kérlek válaszd ki, hogy ki láthatja a fotókat";
 "settings_stripGPSdata" = "Privát metaadatok eltávolítása";
-"settings_stripGPSdata>375px" = "Privát metaadatok eltávolítása feltöltés előtt";
 "settings_photoResize" = "Méretcsökkentés feltöltés előtt";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Méret";
-"settings_placeholderSize" = "Fotó mérete 5-100-as skálán";
 "settings_photoCompress" = "Tömörítés feltöltés előtt";
-"settings_photoCompress>375px" = "Fotó tömörítése feltöltés előtt";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "Minőség";
-"settings_placeholderQuality" = "Minőségcél 50-98-as skálán";
-"settings_prefixFilename>414px" = "Fotó fájlnév előtagozása feltöltés előtt";
-"settings_prefixFilename>375px" = "Fájlnév előtagozása feltöltés előtt";
-"settings_prefixFilename" = "Fájlnév előtagozása";
-"settings_defaultPrefix" = "Előtag";
-"settings_defaultPrefix>320px" = "Fájlnév-előtag";
-"settings_defaultPrefixPlaceholder" = "Előtag";
-"settings_deleteImage>375px" = "Fotó törlése feltöltés után";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Csak Wi-Fi-n";
 "settings_deleteImage" = "Törlés feltöltés után";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Automata feltöltés";
-"settings_autoUpload>414px" = "Fotók automatikus feltöltése";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "Be";
 "settings_autoUploadEnabledInfo" = "A fotók automatikusan feltöltésre kerülnek a Piwigoba.";
 "settings_autoUploadEnabledInfoAll" = "Fotók és videók automatikusan feltöltésre kerülnek a Piwigoba.";

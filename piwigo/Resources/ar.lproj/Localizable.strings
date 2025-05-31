@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "تحذير";
 "CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "تسجيل الدخول";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "أخفق تعيين صورة الألبوم";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "صورة";
 "singleImageCount" = "%@ photo";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Description";
 "editImageDetails_comments" = "تعليقات";
 "editImageDetails_dateCreation" = "Creation Date";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Unset";
 "editImageDetails_dateToday" = "Today";
 "editImageDetails_dateMonthInc" = "+1 Month";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "Selection too large to share";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Photo Library";
 "localAlbums_accessible" = "Accessible Photos";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "خادم Piwigo";
 "settingsHeader_notSecure" = "موقع ويب غير آمنة!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "إعدادات التحميل الافتراضية";
 "settings_defaultAuthor" = "الكاتب";
-"settings_defaultAuthor>320px" = "اسم الكاتب";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "اسم الكاتب";
 "settings_defaultPrivacy" = "الخصوصية";
 "settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
 "settings_stripGPSdata" = "قطاع البيانات الوصفية الخاصة";
-"settings_stripGPSdata>375px" = "جرد البيانات الوصفية الخاصة قبل التحميل";
 "settings_photoResize" = "تغيير الحجم قبل التحميل";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "الحجم";
-"settings_placeholderSize" = "أدخل حجم الصورة من 5 - 100";
 "settings_photoCompress" = "التضغيط قبل التحميل";
-"settings_photoCompress>375px" = "ضغط الصورة قبل التحميل";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "الجودة";
-"settings_placeholderQuality" = "أدخل جودة الصورة من 50 - 98";
-"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
-"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
-"settings_prefixFilename" = "Prefix Photo Filename";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filename Prefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
-"settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "الحذف بعد التحميل";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
 "settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";

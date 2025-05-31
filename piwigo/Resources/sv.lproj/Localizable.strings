@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Varning";
 "CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "Logga in";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "Kunde inte sätta miniatyrbild för albumet";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "Bild";
 "singleImageCount" = "%@ foto";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Beskrivning";
 "editImageDetails_comments" = "Kommentarer";
 "editImageDetails_dateCreation" = "Skapat den";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Obestämt";
 "editImageDetails_dateToday" = "Idag";
 "editImageDetails_dateMonthInc" = "+1 Månad";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "Urvalet är för stort för att dela";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Bildbibliotek";
 "localAlbums_accessible" = "Tillgängliga foton";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "Vill du ta bort uppladdade foton eller videor från kamerarullen? De raderade bilderna eller videoklippen kommer fortfarande att finnas tillgängliga i iOS Bilder papperskorgen i 30 dagar.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
 "settingsHeader_notSecure" = "Hemsidan inte säker!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "Förinställn. uppladdning";
 "settings_defaultAuthor" = "Författare";
-"settings_defaultAuthor>320px" = "Författarnamn";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Författarnamn";
 "settings_defaultPrivacy" = "Behörighet";
 "settings_defaultPrivacy>414px" = "Välj vilka som kommer att kunna se bilder";
 "settings_stripGPSdata" = "Rensa privat Metadata";
-"settings_stripGPSdata>375px" = "Rensa privat Metadata före uppladdning";
 "settings_photoResize" = "Skala om före uppladdning";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Storlek";
-"settings_placeholderSize" = "Ange en bildstorlek mellan 5 - 100";
 "settings_photoCompress" = "Komprimera före uppladdning";
-"settings_photoCompress>375px" = "Komprimera bild före uppladdning";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "Kvalitet";
-"settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
-"settings_prefixFilename>414px" = "Prefix bildfilnamn innan uppladdning";
-"settings_prefixFilename>375px" = "Prefix filnamn innan uppladdning";
-"settings_prefixFilename" = "Prefix bildnamn";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filnamnsprefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
-"settings_deleteImage>375px" = "Radera bild efter uppladdning";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Endast Wi-Fi";
 "settings_deleteImage" = "Radera efter uppladdning";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Automatisk uppladdning";
-"settings_autoUpload>414px" = "Ladda upp foton automatiskt";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "På";
 "settings_autoUploadEnabledInfo" = "Foton laddas automatiskt upp till din Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foton och videor laddas automatiskt upp till din Piwigo.";

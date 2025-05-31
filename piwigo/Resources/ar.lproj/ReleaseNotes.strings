@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v3.4.0_text" = "Version 3.4\n\n• Adds options for modifying file names before upload\n• Fixes bugs and improves the interface";
+
 "v3.3.2_text" = "الإصدار 3.3.2\n\n• إصلاح الأخطاء وتحسين الواجهة";
 
 "v3.3.1_text" = "الإصدار 3.3.1\n\n• يضيف خاصية التشغيل التلقائي للفيديو وخيارات الحلقة\n• إصلاح الأخطاء وتحسين الواجهة";

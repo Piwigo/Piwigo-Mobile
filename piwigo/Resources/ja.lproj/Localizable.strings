@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "注意";
 "CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "ログイン";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ アルバム";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "アルバム写真の設定に失敗しました";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "写真";
 "singleImageCount" = "%@ 写真";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "説明";
 "editImageDetails_comments" = "コメント";
 "editImageDetails_dateCreation" = "作成日";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "解除";
 "editImageDetails_dateToday" = "今日";
 "editImageDetails_dateMonthInc" = "+1 ヶ月";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "共有するには大きすぎるセレクション";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "写真ライブラリ";
 "localAlbums_accessible" = "アクセス可能な写真";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "アップロードした写真や動画をカメラロールから削除しますか？ 削除された写真やビデオは、iOSの写真のゴミ箱で30日間は引き続き利用可能です。";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigoサーバ";
 "settingsHeader_notSecure" = "ウェブサイトは安全ではありません！";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "規定のアップロード設定";
 "settings_defaultAuthor" = "作成者";
-"settings_defaultAuthor>320px" = "作成者名";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "作成者名";
 "settings_defaultPrivacy" = "プライバシー";
 "settings_defaultPrivacy>414px" = "写真を見ることができる人を選択してください";
 "settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
-"settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
 "settings_photoResize" = "アップロードする前にサイズを縮小する";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "サイズ";
-"settings_placeholderSize" = "写真のサイズを 5 - 100 の範囲で入力して下さい";
 "settings_photoCompress" = "アップロードする前に圧縮します";
-"settings_photoCompress>375px" = "アップロードする前に写真を圧縮します";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "画質";
-"settings_placeholderQuality" = "写真の品質を 50 - 98 の範囲で入力してください";
-"settings_prefixFilename>414px" = "アップロードする際にプレフィクスを写真のファイル名に付ける";
-"settings_prefixFilename>375px" = "アップロードする際にファイル名にプレフィクスを付ける";
-"settings_prefixFilename" = "写真のファイル名にプレフィクスを付ける";
-"settings_defaultPrefix" = "プレフィクス";
-"settings_defaultPrefix>320px" = "ファイル名のプレフィクス";
-"settings_defaultPrefixPlaceholder" = "プレフィクス";
-"settings_deleteImage>375px" = "アップロード後に写真を削除します";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Wi-Fiのみ";
 "settings_deleteImage" = "アップロード後に削除します";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "自動アップロード";
-"settings_autoUpload>414px" = "写真を自動アップロード";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
 "settings_autoUploadEnabledInfo" = "写真は自動的にPiwigoにアップロードされます。";
 "settings_autoUploadEnabledInfoAll" = "写真とビデオは自動的にPiwigoにアップロードされます。";

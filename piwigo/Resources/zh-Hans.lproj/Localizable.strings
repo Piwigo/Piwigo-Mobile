@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "登录";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ 相簿";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "无法设置相册封面";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "照片";
 "singleImageCount" = "%@ 张照片";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "描述";
 "editImageDetails_comments" = "评论";
 "editImageDetails_dateCreation" = "创建日期";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "取消设置";
 "editImageDetails_dateToday" = "今天";
 "editImageDetails_dateMonthInc" = "下个月";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "选择太多，无法共享";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "照片库";
 "localAlbums_accessible" = "可访问的照片";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "您想要从相机卷中删除上传的照片或视频吗？ 已删除的照片或视频在被彻底删除前会在 iOS 照片回收站中保留 30 天";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo服务器";
 "settingsHeader_notSecure" = "不安全的连接";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "默认上传设置";
 "settings_defaultAuthor" = "作者";
-"settings_defaultAuthor>320px" = "作者名称";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "作者名称";
 "settings_defaultPrivacy" = "隐私";
 "settings_defaultPrivacy>414px" = "请选择谁可以看到照片";
 "settings_stripGPSdata" = "去除私密元数据";
-"settings_stripGPSdata>375px" = "上传前删除私密元数据";
 "settings_photoResize" = "上传前缩小大小";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "大小";
-"settings_placeholderSize" = "输入5-100之间的照片大小";
 "settings_photoCompress" = "上传前压缩";
-"settings_photoCompress>375px" = "上传照片前压缩";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "质量";
-"settings_placeholderQuality" = "输入照片质量（50~98）";
-"settings_prefixFilename>414px" = "自动为上传的照片文件名增加前缀";
-"settings_prefixFilename>375px" = "自动为上传的文件名增加前缀";
-"settings_prefixFilename" = "照片文件名前缀";
-"settings_defaultPrefix" = "前缀";
-"settings_defaultPrefix>320px" = "文件名前缀";
-"settings_defaultPrefixPlaceholder" = "前缀";
-"settings_deleteImage>375px" = "上传后删除照片";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "仅限Wi-Fi";
 "settings_deleteImage" = "上传后删除照片";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "自动上传";
-"settings_autoUpload>414px" = "自动上传照片";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "打开";
 "settings_autoUploadEnabledInfo" = "照片将被自动上传到您的 Piwigo";
 "settings_autoUploadEnabledInfoAll" = "照片和视频将被自动上传到您的 Piwigo";

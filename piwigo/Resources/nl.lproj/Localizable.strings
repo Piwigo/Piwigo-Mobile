@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Waarschuwing";
 "CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "Inloggen";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "Instellen albumfoto mislukt";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "Foto";
 "singleImageCount" = "%@ foto";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Omschrijving";
 "editImageDetails_comments" = "Opmerkingen";
 "editImageDetails_dateCreation" = "Aanmaakdatum";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Uitzetten";
 "editImageDetails_dateToday" = "Vandaag";
 "editImageDetails_dateMonthInc" = "+1 Maand";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "Selectie te groot om te delen";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Fotobibliotheek";
 "localAlbums_accessible" = "Toegankelijke foto's";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
 "settingsHeader_notSecure" = "Website is niet veilig!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "Standaard upload-instellingen";
 "settings_defaultAuthor" = "Fotograaf";
-"settings_defaultAuthor>320px" = "Naam van de fotograaf";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Naam van de fotograaf";
 "settings_defaultPrivacy" = "Privacy";
 "settings_defaultPrivacy>414px" = "Kies wie de foto's mag zien";
 "settings_stripGPSdata" = "Verwijder privé metadata";
-"settings_stripGPSdata>375px" = "Verwijder privé metadata vóór het uploaden";
 "settings_photoResize" = "Pas grootte aan vóór de upload";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Grootte";
-"settings_placeholderSize" = "Voor een fotoformaat in vanaf 5-100";
 "settings_photoCompress" = "Comprimeer vóór het uploaden";
-"settings_photoCompress>375px" = "Comprimeer de foto vóór het uploaden";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "Kwaliteit";
-"settings_placeholderQuality" = "Voer beeldkwaliteit in tussen 50-98";
-"settings_prefixFilename>414px" = "Voorvoegsel foto bestandsnaam voor het uploaden";
-"settings_prefixFilename>375px" = "Bestandsnaam voorvoegsel voor het uploaden";
-"settings_prefixFilename" = "Naam fotobestand voorvoegsel";
-"settings_defaultPrefix" = "Voorvoegsel";
-"settings_defaultPrefix>320px" = "Bestandsnaam voorvoegsel";
-"settings_defaultPrefixPlaceholder" = "Voorvoegsel";
-"settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Alleen wifi";
 "settings_deleteImage" = "Verwijder na uploaden";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Automatisch uploaden";
-"settings_autoUpload>414px" = "Automatisch foto's uploaden";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "Aan";
 "settings_autoUploadEnabledInfo" = "Foto's worden automatisch ge-upload naar jouw Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foto's en video's worden automatisch geüpload naar jouw Piwigo.";

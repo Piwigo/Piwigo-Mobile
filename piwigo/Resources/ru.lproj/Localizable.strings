@@ -6,7 +6,7 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: - Generic
 // ===========================================================================
 // Tab bar
 
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Внимание";
 "CoreDataStore_WarningMessage" = "Произошла серьезная ошибка приложения при попытке Piwigo прочитать кэш данных. Поэтому был создан новый кэш.";
@@ -87,7 +87,7 @@
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
 // Login
 "login" = "Войти";
@@ -146,7 +146,7 @@
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ альбом";
@@ -318,7 +318,7 @@
 "categoryImageSetError_message" = "Не удалось установить фото альбома";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "Фото";
 "singleImageCount" = "%@ фото";
@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Описание";
 "editImageDetails_comments" = "Комментарии";
 "editImageDetails_dateCreation" = "Дата создания";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Сбросить";
 "editImageDetails_dateToday" = "Сегодня";
 "editImageDetails_dateMonthInc" = "+1 месяц";
@@ -619,7 +620,7 @@
 "shareFailError_tooLarge" = "Выбор слишком велик, чтобы делиться им";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Библиотека фотографий";
 "localAlbums_accessible" = "Доступные фото";
@@ -638,8 +639,20 @@
 "localImages_deleteMessage" = "Вы хотите удалить загруженные фото или видео из ролика фото? Удаленные фото или видео будут по-прежнему доступны в корзине фотографий iOS в течение 30 дней.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Сервер Piwigo";
 "settingsHeader_notSecure" = "Вебсайт не защищен!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "Настройки загрузки по умолчанию";
 "settings_defaultAuthor" = "Автор";
-"settings_defaultAuthor>320px" = "Имя автора";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Имя автора";
 "settings_defaultPrivacy" = "Приватность";
 "settings_defaultPrivacy>414px" = "Пожалуйста, выберите, кто может смотреть фотографий";
 "settings_stripGPSdata" = "Обрезать приватные метаданные";
-"settings_stripGPSdata>375px" = "Удаление личных метаданных перед загрузкой";
 "settings_photoResize" = "Изменить размер перед загрузкой";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Размер";
-"settings_placeholderSize" = "Введите размер фотографии от 5 до 100";
 "settings_photoCompress" = "Сжать перед загрузкой";
-"settings_photoCompress>375px" = "Сжать изображение перед загрузкой";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "Качество";
-"settings_placeholderQuality" = "Введите качество фотографии от 50 до 98";
-"settings_prefixFilename>414px" = "Префикс фото имя файла перед загрузкой";
-"settings_prefixFilename>375px" = "Префикс имени файла перед загрузкой";
-"settings_prefixFilename" = "Префикс имени файла Фото";
-"settings_defaultPrefix" = "Префикс";
-"settings_defaultPrefix>320px" = "Префикс имени файла";
-"settings_defaultPrefixPlaceholder" = "Префикс";
-"settings_deleteImage>375px" = "Удалить фотографию после загрузки";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Только Wi-Fi";
 "settings_deleteImage" = "Удалить после загрузки";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Автозагрузка";
-"settings_autoUpload>414px" = "Автозагрузка изображений";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "Вкл";
 "settings_autoUploadEnabledInfo" = "Изображения будут автоматически загружены в Ваш Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Изображения и видео будут автоматически загружены в Ваш Piwigo.";
