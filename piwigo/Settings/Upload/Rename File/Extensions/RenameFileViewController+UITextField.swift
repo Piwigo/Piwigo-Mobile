@@ -53,7 +53,9 @@ extension RenameFileViewController: UITextFieldDelegate {
             }
             else {
                 // Update action
-                self.prefixActions[indexPath.row - 1].style = textField.text ?? ""
+                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+                let text = PwgSession.utf8mb3String(from: textField.text ?? "")
+                self.prefixActions[indexPath.row - 1].style = text
             }
 
             // Update example, settings and section
@@ -69,7 +71,9 @@ extension RenameFileViewController: UITextFieldDelegate {
             }
             else {
                 // Update action
-                self.replaceActions[indexPath.row - 1].style = textField.text ?? ""
+                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+                let text = PwgSession.utf8mb3String(from: textField.text ?? "")
+                self.replaceActions[indexPath.row - 1].style = text
             }
 
             // Update example, settings and section
@@ -85,7 +89,9 @@ extension RenameFileViewController: UITextFieldDelegate {
             }
             else {
                 // Update action
-                self.suffixActions[indexPath.row - 1].style = textField.text ?? ""
+                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+                let text = PwgSession.utf8mb3String(from: textField.text ?? "")
+                self.suffixActions[indexPath.row - 1].style = text
             }
 
             // Update example, settings and section
