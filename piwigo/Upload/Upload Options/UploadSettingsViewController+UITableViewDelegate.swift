@@ -52,14 +52,16 @@ extension UploadSettingsViewController {
         case 2 /* Upload Photo Size */:
             // Present the Upload Photo Size selector
             let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
-            guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
+            guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController
+            else { preconditionFailure("Could not load UploadPhotoSizeViewController") }
             uploadPhotoSizeVC.delegate = self
             uploadPhotoSizeVC.photoMaxSize = photoMaxSize
             navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
         case 3 /* Upload Video Size */:
             // Present the Upload Photo Size selector
             let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
-            guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController else { return }
+            guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController
+            else { preconditionFailure("Could not load UploadVideoSizeViewController") }
             uploadVideoSizeVC.delegate = self
             uploadVideoSizeVC.videoMaxSize = videoMaxSize
             navigationController?.pushViewController(uploadVideoSizeVC, animated: true)

@@ -88,7 +88,8 @@ extension UploadParametersViewController {
 
             // Create view controller
             let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
-                guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
+            guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
+            else { preconditionFailure("Could not load SelectPrivacyViewController") }
             privacyVC.delegate = self
             privacyVC.privacy = commonPrivacyLevel
             navigationController?.pushViewController(privacyVC, animated: true)
@@ -99,7 +100,8 @@ extension UploadParametersViewController {
 
             // Create view controller
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
-            guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
+            guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
+            else { preconditionFailure("Could not load TagsViewController") }
             tagsVC.delegate = self
             tagsVC.user = user
             tagsVC.setPreselectedTagIds(Set(commonTags.map({$0.tagId})))
