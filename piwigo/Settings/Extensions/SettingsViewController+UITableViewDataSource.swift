@@ -40,6 +40,15 @@ extension SettingsViewController: UITableViewDataSource
         return nberSections
     }
     
+    func isRenameFileAtive() -> Bool {
+        let hasPrefix = UploadVars.shared.prefixFileNameBeforeUpload
+        let hasReplace = UploadVars.shared.replaceFileNameBeforeUpload
+        let hasSuffix = UploadVars.shared.suffixFileNameBeforeUpload
+        let changeCase = UploadVars.shared.changeCaseOfFileExtension
+        return hasPrefix || hasReplace || hasSuffix || changeCase
+    }
+    
+    
     // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = 0
@@ -63,7 +72,6 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 7 + (user.hasAdminRights ? 1 : 0)
             nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
-            nberOfRows += (UploadVars.shared.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.shared.usesUploadAsync ? 1 : 0)
         case .privacy:
             nberOfRows = 3
@@ -404,8 +412,7 @@ extension SettingsViewController: UITableViewDataSource
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
@@ -414,15 +421,14 @@ extension SettingsViewController: UITableViewDataSource
                 var title: String
                 let input: String = UploadVars.shared.defaultAuthor
                 let placeHolder: String = NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name")
-                if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("settings_defaultAuthor>320px", comment: "Author Name")
+                if view.bounds.size.width > 375 {
+                    title = NSLocalizedString("settings_defaultAuthorLong", comment: "Author Name")
                 } else {
                     title = NSLocalizedString("settings_defaultAuthor", comment: "Author")
                 }
                 cell.configure(with: title, input: input, placeHolder: placeHolder)
                 cell.rightTextField.delegate = self
-                cell.rightTextField.tag = ImageUploadSetting.author.rawValue
+                cell.rightTextField.tag = TextFieldTag.author.rawValue
                 cell.accessibilityIdentifier = "defaultAuthorName"
                 tableViewCell = cell
                 
@@ -431,8 +437,7 @@ extension SettingsViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load LabelTableViewCell")}
                 let defaultLevel = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel)!.name
                 // See https://iosref.com/res
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
+                if view.bounds.size.width > 440 {
                     cell.configure(with: NSLocalizedString("privacyLevel", comment: "Privacy Level"), detail: defaultLevel)
                 } else {
                     cell.configure(with: NSLocalizedString("settings_defaultPrivacy", comment: "Privacy"), detail: defaultLevel)
@@ -445,12 +450,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_stripGPSdata>375px", comment: "Strip Private Metadata Before Upload"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
-                }
+                cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
                 cell.cellSwitch.setOn(UploadVars.shared.stripGPSdataOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     UploadVars.shared.stripGPSdataOnUpload = switchState
@@ -461,7 +461,11 @@ extension SettingsViewController: UITableViewDataSource
             case 3 /* Resize Before Upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
+                if view.bounds.size.width > 440 {
+                    cell.configure(with: NSLocalizedString("settings_photoResizeLong", comment: "Downsize Photo"))
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Downsize"))
+                }
                 cell.cellSwitch.setOn(UploadVars.shared.resizeImageOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly
@@ -504,11 +508,10 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Photo Before Upload"))
+                if view.bounds.size.width > 440 {
+                    cell.configure(with: NSLocalizedString("settings_photoCompressLong", comment: "Compress Photo"))
                 } else {
-                    cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
+                    cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress"))
                 }
                 cell.cellSwitch.setOn(UploadVars.shared.compressImageOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -545,59 +548,28 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "compressionRatio"
                 tableViewCell = cell
                 
-            case 8 /* Prefix Filename Before Upload switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell 
-                else { preconditionFailure("Could not load SwitchTableViewCell") }
+            case 8 /* Rename Filename Before Upload */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell") }
+                let title: String
                 // See https://iosref.com/res
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhones 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_prefixFilename>414px", comment: "Prefix Photo Filename Before Upload"))
-                } else if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    cell.configure(with: NSLocalizedString("settings_prefixFilename>375px", comment: "Prefix Filename Before Upload"))
+                if view.bounds.size.width > 440 {
+                    title = NSLocalizedString("settings_renameFileLong", comment: "Rename File")
                 } else {
-                    cell.configure(with: NSLocalizedString("settings_prefixFilename", comment: "Prefix Filename"))
+                    title = NSLocalizedString("settings_renameFile", comment: "Rename")
                 }
-                cell.cellSwitch.setOn(UploadVars.shared.prefixFileNameBeforeUpload, animated: true)
-                cell.cellSwitchBlock = { switchState in
-                    // Number of rows will change accordingly
-                    UploadVars.shared.prefixFileNameBeforeUpload = switchState
-                    // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 5 + (self.user.hasAdminRights ? 1 : 0)
-                                                          + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
-                                                          + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
-                                                   section: SettingsSection.imageUpload.rawValue)
-                    if switchState {
-                        // Insert row in existing table
-                        self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
-                    } else {
-                        // Remove row in existing table
-                        self.settingsTableView?.deleteRows(at: [rowAtIndexPath], with: .automatic)
-                    }
-                }
-                cell.accessibilityIdentifier = "prefixBeforeUpload"
-                tableViewCell = cell
-                
-            case 9 /* Filename prefix? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
-                else { preconditionFailure("Could not load TextFieldTableViewCell") }
-                // See https://iosref.com/res
-                var title: String
-                let input: String = UploadVars.shared.defaultPrefix
-                let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
-                if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = String(format:"… %@", NSLocalizedString("settings_defaultPrefix>320px", comment: "Filename Prefix"))
+                let detail: String
+                if isRenameFileAtive() == true {
+                    detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
                 } else {
-                    title = String(format:"… %@", NSLocalizedString("settings_defaultPrefix", comment: "Prefix"))
+                    detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
                 }
-                cell.configure(with: title, input: input, placeHolder: placeHolder)
-                cell.rightTextField.delegate = self
-                cell.rightTextField.tag = ImageUploadSetting.prefix.rawValue
-                cell.accessibilityIdentifier = "prefixFileName"
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "modifyFilename"
                 tableViewCell = cell
-                
-            case 10 /* Wi-Fi Only? */:
+
+            case 9 /* Wi-Fi Only? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_wifiOnly", comment: "Wi-Fi Only"))
@@ -617,13 +589,12 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "wifiOnly"
                 tableViewCell = cell
 
-            case 11 /* Auto-upload */:
+            case 10 /* Auto-upload */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 let title: String
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload in the Background")
+                if view.bounds.size.width > 440 {
+                    title = NSLocalizedString("settings_autoUploadLong", comment: "Auto Upload Photos")
                 } else {
                     title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
                 }
@@ -638,15 +609,14 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "autoUpload"
                 tableViewCell = cell
 
-            case 12 /* Delete image after upload? */:
+            case 11 /* Delete image after upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_deleteImage>375px", comment: "Delete Image After Upload"))
+                    cell.configure(with: NSLocalizedString("settings_deleteImageLong", comment: "Delete Image After"))
                 } else {
-                    cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))
+                    cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After"))
                 }
                 cell.cellSwitch.setOn(UploadVars.shared.deleteImageAfterUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in

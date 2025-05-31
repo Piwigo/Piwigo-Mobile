@@ -15,7 +15,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-enum SettingsSection : Int {
+enum SettingsSection: Int {
     case server
     case logout
     case albums
@@ -31,11 +31,6 @@ enum SettingsSection : Int {
     case count
 }
 
-enum ImageUploadSetting : Int {
-    case author
-    case prefix
-}
-
 let kHelpUsTitle: String = "Help Us!"
 let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in your language. Could you please help us complete the translation?"
 
@@ -46,6 +41,10 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
 
 class SettingsViewController: UIViewController {
     
+    enum TextFieldTag : Int {
+        case author
+    }
+
     weak var settingsDelegate: ChangedSettingsDelegate?
     
     @IBOutlet var settingsTableView: UITableView!
@@ -129,7 +128,6 @@ class SettingsViewController: UIViewController {
     
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -223,12 +221,6 @@ class SettingsViewController: UIViewController {
         if UploadVars.shared.resizeImageOnUpload,
            UploadVars.shared.photoMaxSize == 0, UploadVars.shared.videoMaxSize == 0 {
             UploadVars.shared.resizeImageOnUpload = false
-        }
-        
-        // Check whether we should show the prefix option
-        if UploadVars.shared.prefixFileNameBeforeUpload,
-           UploadVars.shared.defaultPrefix.isEmpty {
-            UploadVars.shared.prefixFileNameBeforeUpload = false
         }
     }
     

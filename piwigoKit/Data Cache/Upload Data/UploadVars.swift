@@ -8,6 +8,12 @@
 
 import Foundation
 
+// MARK: - File Extension Case
+public enum FileExtCase: Int {
+    case lowercase = 0
+    case uppercase
+}
+
 public class UploadVars: NSObject {
     
     // Singleton
@@ -28,6 +34,15 @@ public class UploadVars: NSObject {
         if let localImagesSort = UserDefaults.dataSuite.object(forKey: "localImagesSort") {
             UserDefaults.dataSuite.removeObject(forKey: "localImagesSort")
             UserDefaults.dataSuite.set(localImagesSort, forKey: "localImagesSortRaw")
+        }
+        if let defaultPrefix = UserDefaults.dataSuite.object(forKey: "defaultPrefix") as? String {
+            UserDefaults.dataSuite.removeObject(forKey: "defaultPrefix")
+            // Add prefix to action list if not empty (as from v3.4)
+            if defaultPrefix.isEmpty == false,
+               let encodedPrefix = defaultPrefix.base64Encoded {
+                let encodedAction = "\(RenameAction.ActionType.addText.rawValue):\(encodedPrefix)"
+                UserDefaults.dataSuite.set(encodedAction + ",", forKey: "prefixFileNameActionList")
+            }
         }
     }
 
@@ -89,13 +104,65 @@ public class UploadVars: NSObject {
     @UserDefault("deleteImageAfterUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var deleteImageAfterUpload: Bool
     
-    /// - Prefix file name before uploading
+    /// - Latest year format chosen by the user
+    @UserDefault("defaultYearFormat", defaultValue: pwgDateFormat.year(format: .yyyy).asString, userDefaults: UserDefaults.dataSuite)
+    public var defaultYearFormat: String
+
+    /// - Latest month format chosen by the user
+    @UserDefault("defaultMonthFormat", defaultValue: pwgDateFormat.month(format: .MM).asString, userDefaults: UserDefaults.dataSuite)
+    public var defaultMonthFormat: String
+
+    /// - Latest day format chosen by the user
+    @UserDefault("defaultDayFormat", defaultValue: pwgDateFormat.day(format: .dd).asString, userDefaults: UserDefaults.dataSuite)
+    public var defaultDayFormat: String
+
+    /// - Latest hour format chosen by the user
+    @UserDefault("defaultHourFormat", defaultValue: pwgTimeFormat.hour(format: .HH).asString, userDefaults: UserDefaults.dataSuite)
+    public var defaultHourFormat: String
+
+    /// - Latest minute format chosen by the user
+    @UserDefault("defaultMinuteFormat", defaultValue: pwgTimeFormat.minute(format: .mm).asString, userDefaults: UserDefaults.dataSuite)
+    public var defaultMinuteFormat: String
+
+    /// - Latest second format chosen by the user
+    @UserDefault("defaultSecondFormat", defaultValue: pwgTimeFormat.second(format: .ss).asString, userDefaults: UserDefaults.dataSuite)
+    public var defaultSecondFormat: String
+
+    /// - Latest counter value chosen by the user
+    @UserDefault("startCounterValue", defaultValue: 1, userDefaults: UserDefaults.dataSuite)
+    public var startCounterValue: Int
+
+    /// - Prefix file name before upload
     @UserDefault("prefixFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var prefixFileNameBeforeUpload: Bool
     
-    /// - Prefix added to file name before uploading
-    @UserDefault("defaultPrefix", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public var defaultPrefix: String
+    /// - Prefix action list in user's selected order
+    @UserDefault("prefixFileNameActionList", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var prefixFileNameActionList: String
+
+    /// - Replace file name before upload
+    @UserDefault("replaceFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var replaceFileNameBeforeUpload: Bool
+    
+    /// - Replace action list in user's selected order
+    @UserDefault("replaceFileNameActionList", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var replaceFileNameActionList: String
+    
+    /// - Suffix file name before upload
+    @UserDefault("suffixFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var suffixFileNameBeforeUpload: Bool
+
+    /// - Suffix action list in user's selected order
+    @UserDefault("suffixFileNameActionList", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var suffixFileNameActionList: String
+    
+    /// - Change case of file extension or not
+    @UserDefault("changeCaseOfFileExtension", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var changeCaseOfFileExtension: Bool
+    
+    /// - Case of the file extension
+    @UserDefault("caseOfFileExtension", defaultValue: FileExtCase.lowercase.rawValue, userDefaults: UserDefaults.dataSuite)
+    public var caseOfFileExtension: Int
 
     /// - Chunk size wanted by the Piwigo server (500 KB by default)
     @UserDefault("uploadChunkSize", defaultValue: 500, userDefaults: UserDefaults.dataSuite)

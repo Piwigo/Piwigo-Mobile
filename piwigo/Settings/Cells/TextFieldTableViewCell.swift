@@ -45,3 +45,17 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.delegate = nil
     }
 }
+
+// Used to retrieve the indexPath of the cell containing rightTextField
+extension UIView {
+    func parentTableViewCell() -> UITableViewCell? {
+        var view = self.superview
+        while view != nil {
+            if let cell = view as? UITableViewCell {
+                return cell
+            }
+            view = view?.superview
+        }
+        return nil
+    }
+}

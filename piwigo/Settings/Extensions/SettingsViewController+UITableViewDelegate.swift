@@ -123,13 +123,13 @@ extension SettingsViewController: UITableViewDelegate
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
                 4  /* Upload Photo Size */,
                 5  /* Upload Video Size */,
-                11 /* Auto upload */:
+                8  /* Rename Filename Before Upload */,
+                10 /* Auto upload */:
                 result = true
             default:
                 result = false
@@ -289,8 +289,7 @@ extension SettingsViewController: UITableViewDelegate
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -310,7 +309,12 @@ extension SettingsViewController: UITableViewDelegate
                 uploadVideoSizeVC.delegate = self
                 uploadVideoSizeVC.videoMaxSize = UploadVars.shared.videoMaxSize
                 navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
-            case 11 /* Auto Upload */:
+            case 8 /* Rename Filename Before Upload */:
+                let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
+                guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController else { return }
+                filenameVC.delegate = self
+                navigationController?.pushViewController(filenameVC, animated: true)
+            case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
                 autoUploadVC.user = user

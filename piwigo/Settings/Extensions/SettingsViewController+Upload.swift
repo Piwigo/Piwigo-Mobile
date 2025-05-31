@@ -102,3 +102,23 @@ extension SettingsViewController: UploadVideoSizeDelegate {
         }
     }
 }
+
+
+// MARK: - MofifyFilenameDelegate Methods
+extension SettingsViewController: MofifyFilenameDelegate {
+    func didChangeModifyFilenameSettings() {
+        let filenameIndexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0)
+                                                 + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
+                                                 + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
+                                          section: SettingsSection.imageUpload.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(filenameIndexPath),
+           let cell = settingsTableView.cellForRow(at: filenameIndexPath) as? LabelTableViewCell {
+            if isRenameFileAtive() == true {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+            } else {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+            }
+//            settingsTableView.reloadRows(at: [filenameIndexPath], with: .automatic)
+        }
+    }
+}

@@ -82,7 +82,7 @@ extension UploadProperties {
             compressImageOnUpload: UploadVars.shared.compressImageOnUpload,
             photoQuality: UploadVars.shared.photoQuality,
             prefixFileNameBeforeUpload: UploadVars.shared.prefixFileNameBeforeUpload,
-            defaultPrefix: UploadVars.shared.defaultPrefix,
+            defaultPrefix: UploadVars.shared.prefixFileNameActionList,
             deleteImageAfterUpload: UploadVars.shared.deleteImageAfterUpload,
             markedForAutoUpload: false)
     }

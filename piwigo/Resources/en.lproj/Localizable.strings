@@ -366,6 +366,7 @@
 "editImageDetails_description" = "Description";
 "editImageDetails_comments" = "Comments";
 "editImageDetails_dateCreation" = "Creation Date";
+"editImageDetails_timeCreation" = "Creation Time";
 "editImageDetails_dateUnset" = "Unset";
 "editImageDetails_dateToday" = "Today";
 "editImageDetails_dateMonthInc" = "+1 Month";
@@ -640,6 +641,18 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
+"Text" = "Text";
+"Year" = "Year";
+"Hour" = "Hour";
+"12-hour" = "12-hour cycle";
+"24-hour" = "24-hour cycle";
+"Minute" = "Minute";
+"Second" = "Second";
+"Abbreviation" = "Abbreviation";
+"FullName" = "Full Name";
+"Separator" = "Separator";
+"Counter" = "Counter";
+
 // Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
 "settingsHeader_notSecure" = "Website Not Secure!";
@@ -726,32 +739,54 @@
 // Settings — Upload
 "settingsHeader_upload" = "Default Upload Settings";
 "settings_defaultAuthor" = "Author";
-"settings_defaultAuthor>320px" = "Author Name";
+"settings_defaultAuthorLong" = "Author Name";
 "settings_defaultAuthorPlaceholder" = "Author Name";
 "settings_defaultPrivacy" = "Privacy";
 "settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
 "settings_stripGPSdata" = "Strip Private Metadata";
-"settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
-"settings_photoResize" = "Downsize Before Upload";
+"settings_photoResize" = "Downsize";
+"settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Size";
-"settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
-"settings_photoCompress" = "Compress Before Upload";
-"settings_photoCompress>375px" = "Compress Photo Before Upload";
+"settings_photoCompress" = "Compress";
+"settings_photoCompressLong" = "Compress Photo";
 "settings_photoQuality" = "Quality";
-"settings_placeholderQuality" = "Enter an Photo Quality from 50 - 98";
-"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
-"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
-"settings_prefixFilename" = "Prefix Photo Filename";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filename Prefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
-"settings_deleteImage>375px" = "Delete Photo After Upload";
+
+"settings_renameFile" = "Rename";
+"settings_renameFileLong" = "Rename File";
+"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
+"settings_addActionMsg" = "Please select the action to add";
+"settings_renameAddBefore" = "Add Before Name";
+"settings_renamePrefix" = "Prefix File Name";
+"settings_prefixPlaceholder" = "Prefix_";
+"settings_renameReplace" = "Replace File Name";
+"settings_renameAddAfter" = "Add After Name";
+"settings_renameSuffix" = "Suffix File Name";
+"settings_suffixPlaceholder" = "_suffix";
+
+"settings_renameDateHeader" = "Please select a date format to include in the file name.";
+"settings_renameTwoDigit" = "2-digit version";
+"settings_renameFourDigit" = "4-digit version";
+
+"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
+"settings_renameFiveDigit" = "5-digit version";
+"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
+"settings_renameCounterStart" = "Current Number";
+"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Digits";
+"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+
+"settings_renameFileExtension" = "File Extension";
+"settings_renameChangeCase" = "Change Case";
+"settings_renameLowercase" = "Lowercase";
+"settings_renameUppercase" = "Uppercase";
+
 "settings_wifiOnly" = "Wi-Fi Only";
-"settings_deleteImage" = "Delete After Upload";
+"settings_deleteImage" = "Delete After";
+"settings_deleteImageLong" = "Delete After Upload";
 
 // Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
 "settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";

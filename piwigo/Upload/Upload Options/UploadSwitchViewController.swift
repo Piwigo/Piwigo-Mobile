@@ -159,7 +159,7 @@ class UploadSwitchViewController: UIViewController {
                 uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
                 uploadParameters["photoQuality"] = settingsCtrl.photoQuality
                 uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixFileNameBeforeUpload
-                uploadParameters["defaultPrefix"] = settingsCtrl.defaultPrefix
+                uploadParameters["defaultPrefix"] = settingsCtrl.prefixActions.encodedString
                 uploadParameters["deleteImageAfterUpload"] = settingsCtrl.deleteImageAfterUpload
             }
         }
