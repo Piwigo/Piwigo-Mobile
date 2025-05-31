@@ -49,6 +49,10 @@
 		AD0B62F12DEB2273001E9684 /* CounterFormatSelectorViewController+UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62F02DEB2273001E9684 /* CounterFormatSelectorViewController+UITextField.swift */; };
 		AD0B62F32DEB2B7F001E9684 /* CounterFormatSelectorViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62F22DEB2B7F001E9684 /* CounterFormatSelectorViewController+Keyboard.swift */; };
 		AD0B62F52DEB3B60001E9684 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62F42DEB3B60001E9684 /* UITextField+Extensions.swift */; };
+		AD0B62F72DEB5837001E9684 /* UploadParametersViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62F62DEB5837001E9684 /* UploadParametersViewController+UITableViewDataSource.swift */; };
+		AD0B62F92DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62F82DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift */; };
+		AD0B62FB2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62FA2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift */; };
+		AD0B62FD2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62FC2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift */; };
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
@@ -738,6 +742,10 @@
 		AD0B62F02DEB2273001E9684 /* CounterFormatSelectorViewController+UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CounterFormatSelectorViewController+UITextField.swift"; sourceTree = "<group>"; };
 		AD0B62F22DEB2B7F001E9684 /* CounterFormatSelectorViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CounterFormatSelectorViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		AD0B62F42DEB3B60001E9684 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
+		AD0B62F62DEB5837001E9684 /* UploadParametersViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
+		AD0B62F82DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
+		AD0B62FA2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITextFieldDelegate.swift"; sourceTree = "<group>"; };
+		AD0B62FC2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITextViewDelegate.swift"; sourceTree = "<group>"; };
 		AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Utilities.swift"; sourceTree = "<group>"; };
 		AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadSessions.swift; sourceTree = "<group>"; };
 		AD0B6ACC268A218F007DEE70 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
@@ -1927,6 +1935,10 @@
 			children = (
 				AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */,
 				ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */,
+				AD0B62F62DEB5837001E9684 /* UploadParametersViewController+UITableViewDataSource.swift */,
+				AD0B62F82DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift */,
+				AD0B62FA2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift */,
+				AD0B62FC2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift */,
 				ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */,
 				AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */,
 			);
@@ -3645,6 +3657,7 @@
 				AD7D415E2B44361E0095A070 /* AutoUploadViewController+UITableViewDelegate.swift in Sources */,
 				ADCD44792D9815A400111138 /* RenameFileViewController+UITextField.swift in Sources */,
 				AD0B62F52DEB3B60001E9684 /* UITextField+Extensions.swift in Sources */,
+				AD0B62F72DEB5837001E9684 /* UploadParametersViewController+UITableViewDataSource.swift in Sources */,
 				ADC1FD9F29E3202500D8ADDC /* PieProgressView.swift in Sources */,
 				AD6A81402DE7A57900F03151 /* TimeFormatSelectorViewController+UITableViewDelegate.swift in Sources */,
 				ADB2E93A2DCBF737000F3F7C /* SeparatorSelectorTableViewCell.swift in Sources */,
@@ -3662,6 +3675,7 @@
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				ADC115E52DCA7CDF000EA45B /* DateFormatSelectorViewController+UITableViewDataSource.swift in Sources */,
 				ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */,
+				AD0B62FB2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift in Sources */,
 				AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */,
 				ADD65C5D2BE77ACC005AC3B8 /* ImageAnimatedTransitioning.swift in Sources */,
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
@@ -3686,6 +3700,7 @@
 				AD7D415C2B4435AC0095A070 /* AutoUploadViewController+Tags.swift in Sources */,
 				ADDB2A682B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift in Sources */,
 				AD4373412B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift in Sources */,
+				AD0B62F92DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift in Sources */,
 				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
 				AD07CABC26DBDC4500BEAEFB /* EditImageTextFieldTableViewCell.swift in Sources */,
 				AD7A0CC22C10FF4A008AB50F /* UIButton+AppTools.swift in Sources */,
@@ -3870,6 +3885,7 @@
 				ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				ADC115E02DC95772000EA45B /* RenameFileViewController+DateFormatSelector.swift in Sources */,
+				AD0B62FD2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift in Sources */,
 				ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */,
 				AD6A0E782C445C750089A25E /* AlbumCollectionViewCell.swift in Sources */,
 				AD9698262BE6661D00520614 /* AlbumViewController+Search.swift in Sources */,
