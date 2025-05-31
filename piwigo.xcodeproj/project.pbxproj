@@ -53,6 +53,8 @@
 		AD0B62F92DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62F82DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift */; };
 		AD0B62FB2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62FA2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift */; };
 		AD0B62FD2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62FC2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift */; };
+		AD0B62FF2DEB5B13001E9684 /* UploadSettingsViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B62FE2DEB5B13001E9684 /* UploadSettingsViewController+UITableViewDataSource.swift */; };
+		AD0B63012DEB5BAA001E9684 /* UploadSettingsViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B63002DEB5BAA001E9684 /* UploadSettingsViewController+UITableViewDelegate.swift */; };
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
@@ -746,6 +748,8 @@
 		AD0B62F82DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
 		AD0B62FA2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITextFieldDelegate.swift"; sourceTree = "<group>"; };
 		AD0B62FC2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadParametersViewController+UITextViewDelegate.swift"; sourceTree = "<group>"; };
+		AD0B62FE2DEB5B13001E9684 /* UploadSettingsViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadSettingsViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
+		AD0B63002DEB5BAA001E9684 /* UploadSettingsViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UploadSettingsViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
 		AD0B6AC8268A2166007DEE70 /* UploadManager+Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UploadManager+Utilities.swift"; sourceTree = "<group>"; };
 		AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadSessions.swift; sourceTree = "<group>"; };
 		AD0B6ACC268A218F007DEE70 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
@@ -1940,6 +1944,8 @@
 				AD0B62FA2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift */,
 				AD0B62FC2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift */,
 				ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */,
+				AD0B62FE2DEB5B13001E9684 /* UploadSettingsViewController+UITableViewDataSource.swift */,
+				AD0B63002DEB5BAA001E9684 /* UploadSettingsViewController+UITableViewDelegate.swift */,
 				AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */,
 			);
 			path = "Upload Options";
@@ -3668,6 +3674,7 @@
 				ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */,
 				ADBE0C292BE9631900F16A50 /* AlbumViewController+Rotate.swift in Sources */,
 				ADACD2992C31BD0900F8790B /* JsonViewController.swift in Sources */,
+				AD0B63012DEB5BAA001E9684 /* UploadSettingsViewController+UITableViewDelegate.swift in Sources */,
 				AD7D41602B4436AB0095A070 /* AutoUploadViewController+UITableViewDataSource.swift in Sources */,
 				AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */,
 				AD816C912C49672B00A0A466 /* AlbumRenaming.swift in Sources */,
@@ -3708,6 +3715,7 @@
 				AD07CABA26DBD82700BEAEFB /* EditImagePrivacyTableViewCell.swift in Sources */,
 				AD9698242BE6548400520614 /* AlbumViewController+Discover.swift in Sources */,
 				ADC592662C0333A2002B6F82 /* ImageHeaderReusableView.swift in Sources */,
+				AD0B62FF2DEB5B13001E9684 /* UploadSettingsViewController+UITableViewDataSource.swift in Sources */,
 				AD6BA0F52BA5C00500755257 /* LocalImagesViewController+HeaderDelegate.swift in Sources */,
 				AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */,
 				ADBE0C2B2BE9635800F16A50 /* AlbumViewController+Share.swift in Sources */,
