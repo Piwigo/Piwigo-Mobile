@@ -158,7 +158,8 @@ class UploadSwitchViewController: UIViewController {
                 uploadParameters["videoMaxSize"] = settingsCtrl.videoMaxSize
                 uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
                 uploadParameters["photoQuality"] = settingsCtrl.photoQuality
-                uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixFileNameBeforeUpload
+                
+                uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixBeforeUpload
                 uploadParameters["defaultPrefix"] = settingsCtrl.prefixActions.encodedString
                 uploadParameters["deleteImageAfterUpload"] = settingsCtrl.deleteImageAfterUpload
             }

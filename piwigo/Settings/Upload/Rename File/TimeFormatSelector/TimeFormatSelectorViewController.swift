@@ -30,9 +30,19 @@ class TimeFormatSelectorViewController: UIViewController {
     @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
     @IBOutlet weak var tableView: UITableView!
     
-    var renameSection: RenameSection!       // To remember which section to update
-    var timeFormats: [pwgTimeFormat] = []   // Should always contain all formats (hour, minute, second and separator)
-    
+    // Actions to be modified or not
+    var startValue: Int = 1
+    var prefixBeforeUpload = false
+    var prefixActions: RenameActionList = []
+    var replaceBeforeUpload = false
+    var replaceActions: RenameActionList = []
+    var suffixBeforeUpload = false
+    var suffixActions: RenameActionList = []
+    var changeCaseBeforeUpload = false
+    var caseOfFileExtension: FileExtCase = .uppercase
+
+    var timeFormats: [pwgTimeFormat] = []       // Should always contain all formats (hour, minute, second and separator)
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -55,9 +65,6 @@ class TimeFormatSelectorViewController: UIViewController {
         headerAttributedString.append(textAttributedString)
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
-        
-        // Example
-        exampleLabel.updateExample()
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -105,13 +112,16 @@ class TimeFormatSelectorViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Update example shown in header
+        updateExample()
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super .viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         // Update cell of parent view
         delegate?.didSelectTimeFormat(timeFormats.asString)
@@ -147,36 +157,29 @@ class TimeFormatSelectorViewController: UIViewController {
 
 
     // MARK: - Time Format Update
-    func updateSettings() {
-        // Update settings
-        switch renameSection {
-        case .prefix:
-            var prefixActions = UploadVars.shared.prefixFileNameActionList.actions
-            if let index = prefixActions.firstIndex(where: { $0.type == .addTime }) {
-                prefixActions[index].style = timeFormats.asString
-                UploadVars.shared.prefixFileNameActionList = prefixActions.encodedString
-            }
-        case .replace:
-            var replaceActions = UploadVars.shared.replaceFileNameActionList.actions
-            if let index = replaceActions.firstIndex(where: { $0.type == .addTime }) {
-                replaceActions[index].style = timeFormats.asString
-                UploadVars.shared.replaceFileNameActionList = replaceActions.encodedString
-            }
-        case .suffix:
-            var suffixActions = UploadVars.shared.suffixFileNameActionList.actions
-            if let index = suffixActions.firstIndex(where: { $0.type == .addTime }) {
-                suffixActions[index].style = timeFormats.asString
-                UploadVars.shared.suffixFileNameActionList = suffixActions.encodedString
-            }
-        default:
-            break
-        }
-        
-        // Update example
-        updateExample()
-    }
-
     func updateExample() {
-        exampleLabel.updateExample()
+        // Look for the time format stored in default settings
+        if let index = prefixActions.firstIndex(where: { $0.type == .addTime }) {
+            var action = prefixActions[index]
+            action.style = timeFormats.asString
+            prefixActions[index] = action
+        }
+        else if let index = replaceActions.firstIndex(where: { $0.type == .addTime }) {
+            var action = replaceActions[index]
+            action.style = timeFormats.asString
+            replaceActions[index] = action
+        }
+        else if let index = suffixActions.firstIndex(where: { $0.type == .addTime }) {
+            var action = suffixActions[index]
+            action.style = timeFormats.asString
+            suffixActions[index] = action
+        }
+
+        // Update example shown in header
+        exampleLabel?.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                    replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                    suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                    changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                    counter: startValue)
     }
 }

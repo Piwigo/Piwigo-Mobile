@@ -110,16 +110,8 @@ extension RenameFileViewController: UITableViewDelegate
                 break
             }
             
-        case .fileExtension:
-            var row = indexPath.row
-            row += (!UploadVars.shared.changeCaseOfFileExtension && (row > 0)) ? 1 : 0
-            switch row {
-            default:
-                break
-            }
-            
         default:
-            return false
+            break
         }
         
         return result
@@ -168,14 +160,6 @@ extension RenameFileViewController: UITableViewDelegate
                 break
             }
             
-        case .fileExtension:
-            var row = indexPath.row
-            row += (!UploadVars.shared.changeCaseOfFileExtension && (row > 0)) ? 1 : 0
-            switch row {
-            default:
-                break
-            }
-            
         default:
             break
         }
@@ -184,8 +168,16 @@ extension RenameFileViewController: UITableViewDelegate
     private func pushDateFormatSelector(for indexPath: IndexPath, withFormatString formatString: String) {
         let dateFormatSB = UIStoryboard(name: "DateFormatSelectorViewController", bundle: nil)
         guard let dateFormatVC = dateFormatSB.instantiateViewController(withIdentifier: "DateFormatSelectorViewController") as? DateFormatSelectorViewController else { return }
+        dateFormatVC.startValue = startValue
+        dateFormatVC.prefixBeforeUpload = prefixBeforeUpload
+        dateFormatVC.prefixActions = prefixActions
+        dateFormatVC.replaceBeforeUpload = replaceBeforeUpload
+        dateFormatVC.replaceActions = replaceActions
+        dateFormatVC.suffixBeforeUpload = suffixBeforeUpload
+        dateFormatVC.suffixActions = suffixActions
+        dateFormatVC.changeCaseBeforeUpload = changeCaseBeforeUpload
+        dateFormatVC.caseOfFileExtension = caseOfFileExtension
         dateFormatVC.delegate = self
-        dateFormatVC.renameSection = RenameSection(rawValue: indexPath.section)
         dateFormatVC.dateFormats = formatString.asPwgDateFormats
         navigationController?.pushViewController(dateFormatVC, animated: true)
     }
@@ -193,8 +185,16 @@ extension RenameFileViewController: UITableViewDelegate
     private func pushTimeFormatSelector(for indexPath: IndexPath, withFormatString formatString: String) {
         let timeFormatSB = UIStoryboard(name: "TimeFormatSelectorViewController", bundle: nil)
         guard let timeFormatVC = timeFormatSB.instantiateViewController(withIdentifier: "TimeFormatSelectorViewController") as? TimeFormatSelectorViewController else { return }
+        timeFormatVC.startValue = startValue
+        timeFormatVC.prefixBeforeUpload = prefixBeforeUpload
+        timeFormatVC.prefixActions = prefixActions
+        timeFormatVC.replaceBeforeUpload = replaceBeforeUpload
+        timeFormatVC.replaceActions = replaceActions
+        timeFormatVC.suffixBeforeUpload = suffixBeforeUpload
+        timeFormatVC.suffixActions = suffixActions
+        timeFormatVC.changeCaseBeforeUpload = changeCaseBeforeUpload
+        timeFormatVC.caseOfFileExtension = caseOfFileExtension
         timeFormatVC.delegate = self
-        timeFormatVC.renameSection = RenameSection(rawValue: indexPath.section)
         timeFormatVC.timeFormats = formatString.asPwgTimeFormats
         navigationController?.pushViewController(timeFormatVC, animated: true)
     }
@@ -202,8 +202,16 @@ extension RenameFileViewController: UITableViewDelegate
     private func pushCounterFormatSelector(for indexPath: IndexPath, withFormatString formatString: String) {
         let counterFormatSB = UIStoryboard(name: "CounterFormatSelectorViewController", bundle: nil)
         guard let counterFormatVC = counterFormatSB.instantiateViewController(withIdentifier: "CounterFormatSelectorViewController") as? CounterFormatSelectorViewController else { return }
+        counterFormatVC.prefixBeforeUpload = prefixBeforeUpload
+        counterFormatVC.prefixActions = prefixActions
+        counterFormatVC.replaceBeforeUpload = replaceBeforeUpload
+        counterFormatVC.replaceActions = replaceActions
+        counterFormatVC.suffixBeforeUpload = suffixBeforeUpload
+        counterFormatVC.suffixActions = suffixActions
+        counterFormatVC.changeCaseBeforeUpload = changeCaseBeforeUpload
+        counterFormatVC.caseOfFileExtension = caseOfFileExtension
         counterFormatVC.delegate = self
-        counterFormatVC.renameSection = RenameSection(rawValue: indexPath.section)
+        counterFormatVC.counterStartValue = UploadVars.shared.counterStartValue
         counterFormatVC.counterFormats = formatString.asPwgCounterFormats
         navigationController?.pushViewController(counterFormatVC, animated: true)
     }
@@ -213,18 +221,15 @@ extension RenameFileViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         switch RenameSection(rawValue: section) {
         case .prefix:
-            if UploadVars.shared.prefixFileNameBeforeUpload,
-               availablePrefixActions().isEmpty == false {
+            if prefixBeforeUpload, availablePrefixActions().isEmpty == false {
                 return 28.0
             }
         case .replace:
-            if UploadVars.shared.replaceFileNameBeforeUpload,
-               availableReplaceActions().isEmpty == false {
+            if replaceBeforeUpload, availableReplaceActions().isEmpty == false {
                 return 28.0
             }
         case .suffix:
-            if UploadVars.shared.suffixFileNameBeforeUpload,
-               availableSuffixActions().isEmpty == false {
+            if suffixBeforeUpload, availableSuffixActions().isEmpty == false {
                 return 28.0
             }
         default:
@@ -236,8 +241,7 @@ extension RenameFileViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch RenameSection(rawValue: section) {
         case .prefix:
-            if UploadVars.shared.prefixFileNameBeforeUpload,
-               availablePrefixActions().isEmpty == false {
+            if prefixBeforeUpload, availablePrefixActions().isEmpty == false {
                 guard let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "addActionFooter") as? AddActionTableViewFooterView
                 else { preconditionFailure("Could not load AddActionTableViewFooterView") }
                 footer.button.addTarget(self, action: #selector(addPrefixAction), for: .touchUpInside)
@@ -245,8 +249,7 @@ extension RenameFileViewController: UITableViewDelegate
             }
             
         case .replace:
-            if UploadVars.shared.replaceFileNameBeforeUpload,
-               availableReplaceActions().isEmpty == false {
+            if replaceBeforeUpload, availableReplaceActions().isEmpty == false {
                 guard let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "addActionFooter") as? AddActionTableViewFooterView
                 else { preconditionFailure("Could not load AddActionTableViewFooterView") }
                 footer.button.addTarget(self, action: #selector(addReplaceAction), for: .touchUpInside)
@@ -254,8 +257,7 @@ extension RenameFileViewController: UITableViewDelegate
             }
             
         case .suffix:
-            if UploadVars.shared.suffixFileNameBeforeUpload,
-               availableSuffixActions().isEmpty == false {
+            if suffixBeforeUpload, availableSuffixActions().isEmpty == false {
                 guard let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "addActionFooter") as? AddActionTableViewFooterView
                 else { preconditionFailure("Could not load AddActionTableViewFooterView") }
                 footer.button.addTarget(self, action: #selector(addSuffixAction), for: .touchUpInside)

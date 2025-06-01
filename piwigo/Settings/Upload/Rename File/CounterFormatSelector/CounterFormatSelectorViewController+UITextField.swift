@@ -26,13 +26,15 @@ extension CounterFormatSelectorViewController: UITextFieldDelegate {
         // Accept only digits
         let hasOnlyDigits = CharacterSet(charactersIn: string).isSubset(of: CharacterSet.decimalDigits)
         if hasOnlyDigits {
+            // Update format
             let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
             if let value = Int(finalString ?? "") {
-                UploadVars.shared.startCounterValue = value
+                counterStartValue = value
             } else {
-                UploadVars.shared.startCounterValue = 1
+                counterStartValue = 1
             }
-            self.updateExample()
+            // Update header
+            updateExample()
             return true
         }
         return false
@@ -40,7 +42,8 @@ extension CounterFormatSelectorViewController: UITextFieldDelegate {
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         if (textField.text ?? "").isEmpty == false {
-            self.updateExample()
+            // Update header
+            updateExample()
             return true
         }
         return false
@@ -54,14 +57,14 @@ extension CounterFormatSelectorViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         // Update settings
         if let value = Int(textField.text ?? "") {
-            UploadVars.shared.startCounterValue = value
+            counterStartValue = value
         } else {
-            UploadVars.shared.startCounterValue = 1
+            counterStartValue = 1
         }
 
-        // Update example
-        self.updateExample()
-        
+        // Update header
+        updateExample()
+
         // Done cell editing
         editedRow = nil
     }

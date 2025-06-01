@@ -214,9 +214,6 @@ class SettingsViewController: UIViewController {
         // Table view identifier
         settingsTableView.accessibilityIdentifier = "settings"
         
-        // Set colors, fonts, etc.
-        applyColorPalette()
-        
         // Check whether we should display the max size options
         if UploadVars.shared.resizeImageOnUpload,
            UploadVars.shared.photoMaxSize == 0, UploadVars.shared.videoMaxSize == 0 {
@@ -266,6 +263,9 @@ class SettingsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
         
         // Set navigation buttons
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)

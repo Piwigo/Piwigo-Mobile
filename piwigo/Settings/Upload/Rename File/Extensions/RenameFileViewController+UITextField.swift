@@ -59,7 +59,7 @@ extension RenameFileViewController: UITextFieldDelegate {
             }
 
             // Update example, settings and section
-            self.updateExample(prefixActions: self.prefixActions)
+            self.updateExample()
             self.updatePrefixSettingsAndSection()
 
         case .replace:
@@ -77,7 +77,7 @@ extension RenameFileViewController: UITextFieldDelegate {
             }
 
             // Update example, settings and section
-            self.updateExample(replaceActions: self.replaceActions)
+            self.updateExample()
             self.updateReplaceSettingsAndSection()
 
         case .suffix:
@@ -95,7 +95,7 @@ extension RenameFileViewController: UITextFieldDelegate {
             }
 
             // Update example, settings and section
-            self.updateExample(suffixActions: self.suffixActions)
+            self.updateExample()
             self.updateSuffixSettingsAndSection()
 
         default:

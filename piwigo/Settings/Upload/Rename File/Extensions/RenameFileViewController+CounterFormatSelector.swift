@@ -12,37 +12,47 @@ import piwigoKit
 
 // MARK: - SetTimeFormatDelegate Methods
 extension RenameFileViewController: SelectCounterFormatDelegate {
-    func didSelectCounterFormat(_ format: String) {
-        // Look for the time format stored in default settings
+    func didSelectCounter(startValue: Int, format: String) {
+        // Update counter starting value
+        self.startValue = startValue
+        
+        // Look for the counter format stored in settings
         if let index = prefixActions.firstIndex(where: { $0.type == .addCounter }) {
-            var action = prefixActions[index]
             // Do nothing if the counter format is unchanged
+            var action = prefixActions[index]
             if action.style == format { return }
+
             // Save new choice
             action.style = format
             prefixActions[index] = action
-            UploadVars.shared.prefixFileNameActionList = prefixActions.encodedString
         }
         else if let index = replaceActions.firstIndex(where: { $0.type == .addCounter }) {
+            // Do nothing if the counter format is unchanged
             var action = replaceActions[index]
-            // Do nothing if the time format is unchanged
             if action.style == format { return }
+
             // Save new choice
             action.style = format
             replaceActions[index] = action
-            UploadVars.shared.replaceFileNameActionList = replaceActions.encodedString
         }
         else if let index = suffixActions.firstIndex(where: { $0.type == .addCounter }) {
+            // Do nothing if the counter format is unchanged
             var action = suffixActions[index]
-            // Do nothing if the time format is unchanged
             if action.style == format { return }
+
             // Save new choice
             action.style = format
             suffixActions[index] = action
-            UploadVars.shared.suffixFileNameActionList = suffixActions.encodedString
         }
 
-        // Refresh settings
-        exampleLabel.updateExample()
+        // Update example shown in header
+        updateExample()
+
+        // Inform parent view
+        delegate?.didChangeRenameFileSettings(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                              replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                              suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                              changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                              startValue: startValue)
     }
 }

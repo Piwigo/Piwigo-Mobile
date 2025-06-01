@@ -66,8 +66,8 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "yearSwitch"
                 tableViewCell = cell
@@ -122,8 +122,8 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "monthSwitch"
                 tableViewCell = cell
@@ -189,8 +189,8 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "daySwitch"
                 tableViewCell = cell
@@ -266,8 +266,8 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: [rowToInsertOrDelete], with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "separatorSwitch"
                 tableViewCell = cell
@@ -277,12 +277,13 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SeparatorSelectorTableViewCell") }
                 cell.configure(with: dateFormats[indexPath.section].asString)
                 cell.cellSeparatorSelectorBlock = { choice in
-                    // Update settings and example
+                    // Update separator option
                     if let index = self.dateFormats.firstIndex(where: {
                         if case .separator( _) = $0 { return true } else { return false } }) {
                         self.dateFormats[index] = .separator(format: choice)
                     }
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "separatorChoice"
                 tableViewCell = cell
@@ -319,7 +320,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
         dateFormats.swapAt(sourceIndexPath.section, destinationIndexPath.section)
         tableView.reloadData()
 
-        // Update settings and example
-        self.updateSettings()
+        // Update header
+        self.updateExample()
     }
 }

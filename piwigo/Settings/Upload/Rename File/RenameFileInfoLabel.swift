@@ -29,12 +29,17 @@ class RenameFileInfoLabel: UILabel {
         return calendar.date(from: components)!
     }()
     
-    func updateExample(prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions,
-                       replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions,
-                       suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions) {
-        var renamed = exampleFileName
-        renamed.rename(withPrefixActions: prefixActions, replaceActions: replaceActions, suffixActions: suffixActions,
-                       date: firstIPhoneAnnouncementDate, counter: UploadVars.shared.startCounterValue)
-        text = exampleFileName + "\r" + "⇩" + "\r" + renamed
+    func updateExample(prefix: Bool, prefixActions: RenameActionList,
+                       replace: Bool, replaceActions: RenameActionList,
+                       suffix: Bool, suffixActions: RenameActionList,
+                       changeCase: Bool, caseOfExtension: FileExtCase,
+                       counter: Int) {
+        var fileName = exampleFileName
+        fileName.renameFile(prefix: prefix, prefixActions: prefixActions,
+                            replace: replace, replaceActions: replaceActions,
+                            suffix: suffix, suffixActions: suffixActions,
+                            changeCaseOfExtension: changeCase, caseOfExtension: caseOfExtension,
+                            date: firstIPhoneAnnouncementDate, counter: counter)
+        text = exampleFileName + "\r" + "⇩" + "\r" + fileName
     }
 }

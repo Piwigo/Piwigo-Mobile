@@ -39,15 +39,7 @@ extension SettingsViewController: UITableViewDataSource
         nberSections -= (hasUploadRights() ? 0 : 1)
         return nberSections
     }
-    
-    func isRenameFileAtive() -> Bool {
-        let hasPrefix = UploadVars.shared.prefixFileNameBeforeUpload
-        let hasReplace = UploadVars.shared.replaceFileNameBeforeUpload
-        let hasSuffix = UploadVars.shared.suffixFileNameBeforeUpload
-        let changeCase = UploadVars.shared.changeCaseOfFileExtension
-        return hasPrefix || hasReplace || hasSuffix || changeCase
-    }
-    
+        
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -559,7 +551,7 @@ extension SettingsViewController: UITableViewDataSource
                     title = NSLocalizedString("settings_renameFile", comment: "Rename")
                 }
                 let detail: String
-                if isRenameFileAtive() == true {
+                if isRenameFileAtiveByDefault == true {
                     detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
                 } else {
                     detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")

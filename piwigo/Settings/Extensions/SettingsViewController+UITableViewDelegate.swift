@@ -313,6 +313,15 @@ extension SettingsViewController: UITableViewDelegate
                 let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
                 guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController else { return }
                 filenameVC.delegate = self
+                filenameVC.startValue = UploadVars.shared.counterStartValue
+                filenameVC.prefixBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+                filenameVC.prefixActions = UploadVars.shared.prefixFileNameActionList.actions
+                filenameVC.replaceBeforeUpload = UploadVars.shared.replaceFileNameBeforeUpload
+                filenameVC.replaceActions = UploadVars.shared.replaceFileNameActionList.actions
+                filenameVC.suffixBeforeUpload = UploadVars.shared.suffixFileNameBeforeUpload
+                filenameVC.suffixActions = UploadVars.shared.suffixFileNameActionList.actions
+                filenameVC.changeCaseBeforeUpload = UploadVars.shared.changeCaseOfFileExtension
+                filenameVC.caseOfFileExtension = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .uppercase
                 navigationController?.pushViewController(filenameVC, animated: true)
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)

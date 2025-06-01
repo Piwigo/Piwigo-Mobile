@@ -11,7 +11,7 @@ import UIKit
 import piwigoKit
 
 protocol SelectCounterFormatDelegate: NSObjectProtocol {
-    func didSelectCounterFormat(_ format: String)
+    func didSelectCounter(startValue: Int, format: String)
 }
 
 class CounterFormatSelectorViewController: UIViewController {
@@ -30,12 +30,23 @@ class CounterFormatSelectorViewController: UIViewController {
     @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
     @IBOutlet weak var tableView: UITableView!
     
-    var renameSection: RenameSection!               // To remember which section to update
+    // Actions to be modified or not
+    var prefixBeforeUpload = false
+    var prefixActions: RenameActionList = []
+    var replaceBeforeUpload = false
+    var replaceActions: RenameActionList = []
+    var suffixBeforeUpload = false
+    var suffixActions: RenameActionList = []
+    var changeCaseBeforeUpload = false
+    var caseOfFileExtension: FileExtCase = .uppercase
+
+    var counterStartValue: Int = 1
     var counterFormats: [pwgCounterFormat] = []     // Should always contain all formats (prefix, digits and suffix)
-    
+
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
-
+    
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,9 +68,6 @@ class CounterFormatSelectorViewController: UIViewController {
         headerAttributedString.append(textAttributedString)
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
-        
-        // Example
-        exampleLabel.updateExample()
         
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -104,16 +112,19 @@ class CounterFormatSelectorViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Update example shown in header
+        updateExample()
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super .viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         // Update cell of parent view
-        delegate?.didSelectCounterFormat(counterFormats.asString)
+        delegate?.didSelectCounter(startValue: counterStartValue, format: counterFormats.asString)
     }
     
     deinit {
@@ -123,36 +134,29 @@ class CounterFormatSelectorViewController: UIViewController {
     
     
     // MARK: - Counter Format Update
-    func updateSettings() {
-        // Update settings
-        switch renameSection {
-        case .prefix:
-            var prefixActions = UploadVars.shared.prefixFileNameActionList.actions
-            if let index = prefixActions.firstIndex(where: { $0.type == .addCounter }) {
-                prefixActions[index].style = counterFormats.asString
-                UploadVars.shared.prefixFileNameActionList = prefixActions.encodedString
-            }
-        case .replace:
-            var replaceActions = UploadVars.shared.replaceFileNameActionList.actions
-            if let index = replaceActions.firstIndex(where: { $0.type == .addCounter }) {
-                replaceActions[index].style = counterFormats.asString
-                UploadVars.shared.replaceFileNameActionList = replaceActions.encodedString
-            }
-        case .suffix:
-            var suffixActions = UploadVars.shared.suffixFileNameActionList.actions
-            if let index = suffixActions.firstIndex(where: { $0.type == .addCounter }) {
-                suffixActions[index].style = counterFormats.asString
-                UploadVars.shared.suffixFileNameActionList = suffixActions.encodedString
-            }
-        default:
-            break
-        }
-        
-        // Update example
-        updateExample()
-    }
-
     func updateExample() {
-        exampleLabel.updateExample()
+        // Look for the counter format stored in default settings
+        if let index = prefixActions.firstIndex(where: { $0.type == .addCounter }) {
+            var action = prefixActions[index]
+            action.style = counterFormats.asString
+            prefixActions[index] = action
+        }
+        else if let index = replaceActions.firstIndex(where: { $0.type == .addCounter }) {
+            var action = replaceActions[index]
+            action.style = counterFormats.asString
+            replaceActions[index] = action
+        }
+        else if let index = suffixActions.firstIndex(where: { $0.type == .addCounter }) {
+            var action = suffixActions[index]
+            action.style = counterFormats.asString
+            suffixActions[index] = action
+        }
+
+        // Update example shown in header
+        exampleLabel?.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                    replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                    suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                    changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                    counter: counterStartValue)
     }
 }

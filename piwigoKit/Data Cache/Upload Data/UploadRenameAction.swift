@@ -8,11 +8,19 @@
 
 import Foundation
 
+public var isRenameFileAtiveByDefault: Bool {
+    let hasPrefix = UploadVars.shared.prefixFileNameBeforeUpload
+    let hasReplace = UploadVars.shared.replaceFileNameBeforeUpload
+    let hasSuffix = UploadVars.shared.suffixFileNameBeforeUpload
+    let changeCase = UploadVars.shared.changeCaseOfFileExtension
+    return hasPrefix || hasReplace || hasSuffix || changeCase
+}
+
 // MARK: Rename Actions
 /* Action types are listed in the ActionType enumeration below where:
     - the type identifies the action meaning, e.g. addText.
     - the Int raw value gives the first case a raw value of 1
-      corresponding to the index used by the tableView(_: cellForRowAt:) method
+      corresponding to the index used by the tableView(_: cellForRowAt:) methods
       to present actions after the intial row allowing to enable/disable a series.
 
    Actions are identified by their type and the style which is a string defining
@@ -151,11 +159,12 @@ public extension String {
     }
     
     // Renames self by applying actions
-    mutating func rename(withPrefixActions prefixActions: RenameActionList,
-                         replaceActions: RenameActionList,
-                         suffixActions: RenameActionList,
-                         albumName: String = NSLocalizedString("categorySelection_title", comment: "Album"),
-                         date: Date, counter: Int) {
+    mutating func renameFile(prefix: Bool, prefixActions: RenameActionList,
+                             replace: Bool, replaceActions: RenameActionList,
+                             suffix: Bool, suffixActions: RenameActionList,
+                             changeCaseOfExtension: Bool, caseOfExtension: FileExtCase,
+                             albumName: String = NSLocalizedString("categorySelection_title", comment: "Album"),
+                             date: Date, counter: Int) {
         // Extract name and extension
         var fileName: String = ""
         var fileExt: String = ""
@@ -167,7 +176,7 @@ public extension String {
         }
         
         // Replace file name
-        if UploadVars.shared.replaceFileNameBeforeUpload {
+        if replace {
             fileName = ""
             for action in replaceActions {
                 switch action.type {
@@ -193,7 +202,7 @@ public extension String {
         }
         
         // Prefix file name
-        if UploadVars.shared.prefixFileNameBeforeUpload {
+        if prefix {
             for action in prefixActions .reversed() {
                 switch action.type {
                 case .addText:
@@ -218,7 +227,7 @@ public extension String {
         }
         
         // Suffix file name
-        if UploadVars.shared.suffixFileNameBeforeUpload {
+        if suffix {
             for action in suffixActions {
                 switch action.type {
                 case .addText:
@@ -243,14 +252,12 @@ public extension String {
         }
         
         // Change case of extension
-        if UploadVars.shared.changeCaseOfFileExtension {
-            switch UploadVars.shared.caseOfFileExtension {
-            case FileExtCase.lowercase.rawValue:
+        if changeCaseOfExtension {
+            switch caseOfExtension {
+            case .lowercase:
                 fileName += fileExt.lowercased()
-            case FileExtCase.uppercase.rawValue:
+            case .uppercase:
                 fileName += fileExt.uppercased()
-            default:
-                break
             }
         } else {
             fileName += fileExt

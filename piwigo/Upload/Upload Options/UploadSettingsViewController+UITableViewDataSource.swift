@@ -141,7 +141,7 @@ extension UploadSettingsViewController {
                 title = NSLocalizedString("settings_renameFile", comment: "Rename")
             }
             let detail: String
-            if isRenameFileAtive() == true {
+            if prefixBeforeUpload || replaceBeforeUpload || suffixBeforeUpload || changeCaseBeforeUpload {
                 detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
             } else {
                 detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")

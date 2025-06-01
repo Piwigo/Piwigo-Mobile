@@ -42,7 +42,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             else { preconditionFailure("Could not load TextFieldTableViewCell") }
             
             let title = NSLocalizedString("settings_renameCounterStart", comment: "Current Number")
-            cell.configure(with: title, input: String(UploadVars.shared.startCounterValue), placeHolder: "1")
+            cell.configure(with: title, input: String(counterStartValue), placeHolder: "1")
             cell.accessibilityIdentifier = "startCounterValue"
             cell.rightTextField.delegate = self
             tableViewCell = cell
@@ -70,8 +70,8 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: [rowToInsertOrDelete], with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "prefixSwitch"
                 tableViewCell = cell
@@ -82,9 +82,10 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             
                 cell.configure(with: counterFormats[indexPath.section - 1].asString)
                 cell.cellPrefixSelectorBlock = { choice in
-                    // Update settings and example
+                    // Update prefix
                     self.counterFormats[indexPath.section - 1] = .prefix(format: choice)
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "prefixChoice"
                 tableViewCell = cell
@@ -110,11 +111,12 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             let maxValue: Float = Float(pwgCounterFormat.Digits.allCases.last!.rawValue.count)
             cell.configure(with: title, value: value, increment: 1, minValue: minValue, maxValue: maxValue, prefix: "", suffix: "")
             cell.cellSliderBlock = { newValue in
-                // Update settings and example
+                // Update format
                 if let choice = pwgCounterFormat.Digits(rawValue: String(repeating: "0", count: Int(newValue))) {
                     self.counterFormats[indexPath.section - 1] = .digits(format: choice)
                 }
-                self.updateSettings()
+                // Update header
+                self.updateExample()
             }
             cell.accessibilityIdentifier = "digitsSlider"
             tableViewCell = cell
@@ -142,8 +144,8 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: [rowToInsertOrDelete], with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "suffixSwitch"
                 tableViewCell = cell
@@ -153,9 +155,10 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load CounterSuffixSelectorTableViewCell")}
                 cell.configure(with: counterFormats[indexPath.section - 1].asString)
                 cell.cellSuffixSelectorBlock = { choice in
-                    // Update settings and example
+                    // Update suffix
                     self.counterFormats[indexPath.section - 1] = .suffix(format: choice)
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "suffixChoice"
                 tableViewCell = cell

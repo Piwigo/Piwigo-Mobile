@@ -84,7 +84,7 @@ extension TimeFormatSelectorViewController: UITableViewDelegate
             break
         }
         
-        // Update settings and example
-        updateSettings()
+        // Update header
+        updateExample()
     }
 }

@@ -12,7 +12,11 @@ import piwigoKit
 import uploadKit
 
 protocol MofifyFilenameDelegate: NSObjectProtocol {
-    func didChangeModifyFilenameSettings()
+    func didChangeRenameFileSettings(prefix: Bool, prefixActions: RenameActionList,
+                                     replace: Bool, replaceActions: RenameActionList,
+                                     suffix: Bool, suffixActions: RenameActionList,
+                                     changeCase: Bool, caseOfExtension: FileExtCase,
+                                     startValue: Int)
 }
 
 enum RenameSection: Int {
@@ -27,10 +31,16 @@ class RenameFileViewController: UIViewController {
     
     weak var delegate: MofifyFilenameDelegate?
     
-    // Default action lists
-    lazy var prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions
-    lazy var replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions
-    lazy var suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions
+    // Default actions
+    var startValue: Int = UploadVars.shared.counterStartValue
+    var prefixBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+    var prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions
+    var replaceBeforeUpload = UploadVars.shared.replaceFileNameBeforeUpload
+    var replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions
+    var suffixBeforeUpload = UploadVars.shared.suffixFileNameBeforeUpload
+    var suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions
+    var changeCaseBeforeUpload: Bool = UploadVars.shared.changeCaseOfFileExtension
+    var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .uppercase
     
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
@@ -62,9 +72,6 @@ class RenameFileViewController: UIViewController {
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
 
-        // Example
-        exampleLabel.updateExample()
-        
         // Enable/disable drag and delete interactions
         navigationItem.rightBarButtonItem = editButtonItem
 
@@ -111,6 +118,9 @@ class RenameFileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Update example shown in header
+        updateExample()
+        
         // Set colors, fonts, etc.
         applyColorPalette()
         
@@ -141,12 +151,12 @@ class RenameFileViewController: UIViewController {
                 if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
                     cell.cellSwitch.isHidden = editing
                     cell.isUserInteractionEnabled = !editing
-                    if editing == false, cell.cellSwitch.isOn != UploadVars.shared.prefixFileNameBeforeUpload {
-                        cell.cellSwitch.setOn(UploadVars.shared.prefixFileNameBeforeUpload, animated: false)
+                    if editing == false, cell.cellSwitch.isOn != prefixBeforeUpload {
+                        cell.cellSwitch.setOn(prefixBeforeUpload, animated: false)
                     }
                 }
                 // Collect indexPaths of action to show/hide if needed
-                if UploadVars.shared.prefixFileNameBeforeUpload == false {
+                if prefixBeforeUpload == false {
                     for (index, _) in prefixActions.enumerated() {
                         rowsToInsertOrDelete.append(IndexPath(row: index + 1, section: section))
                     }
@@ -156,12 +166,12 @@ class RenameFileViewController: UIViewController {
                 if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
                     cell.cellSwitch.isHidden = editing
                     cell.isUserInteractionEnabled = !editing
-                    if editing == false, cell.cellSwitch.isOn != UploadVars.shared.replaceFileNameBeforeUpload {
-                        cell.cellSwitch.setOn(UploadVars.shared.replaceFileNameBeforeUpload, animated: false)
+                    if editing == false, cell.cellSwitch.isOn != replaceBeforeUpload {
+                        cell.cellSwitch.setOn(replaceBeforeUpload, animated: false)
                     }
                 }
                 // Collect indexPaths of action to show/hide if needed
-                if UploadVars.shared.replaceFileNameBeforeUpload == false {
+                if replaceBeforeUpload == false {
                     for (index, _) in replaceActions.enumerated() {
                         rowsToInsertOrDelete.append(IndexPath(row: index + 1, section: section))
                     }
@@ -171,12 +181,12 @@ class RenameFileViewController: UIViewController {
                 if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
                     cell.cellSwitch.isHidden = editing
                     cell.isUserInteractionEnabled = !editing
-                    if editing == false, cell.cellSwitch.isOn != UploadVars.shared.suffixFileNameBeforeUpload {
-                        cell.cellSwitch.setOn(UploadVars.shared.suffixFileNameBeforeUpload, animated: false)
+                    if editing == false, cell.cellSwitch.isOn != suffixBeforeUpload {
+                        cell.cellSwitch.setOn(suffixBeforeUpload, animated: false)
                     }
                 }
                 // Collect indexPaths of action to show/hide if needed
-                if UploadVars.shared.suffixFileNameBeforeUpload == false {
+                if suffixBeforeUpload == false {
                     for (index, _) in suffixActions.enumerated() {
                         rowsToInsertOrDelete.append(IndexPath(row: index + 1, section: section))
                     }
@@ -213,13 +223,13 @@ class RenameFileViewController: UIViewController {
             if let footerView = self.tableView?.footerView(forSection: section) as? AddActionTableViewFooterView {
                 switch RenameSection(rawValue: section) {
                 case .prefix:
-                    footerView.setEnabled(editing == false && UploadVars.shared.prefixFileNameBeforeUpload
+                    footerView.setEnabled(editing == false && prefixBeforeUpload
                                           && availablePrefixActions().isEmpty == false)
                 case .replace:
-                    footerView.setEnabled(editing == false && UploadVars.shared.replaceFileNameBeforeUpload
+                    footerView.setEnabled(editing == false && replaceBeforeUpload
                                           && availableReplaceActions().isEmpty == false)
                 case .suffix:
-                    footerView.setEnabled(editing == false && UploadVars.shared.suffixFileNameBeforeUpload
+                    footerView.setEnabled(editing == false && suffixBeforeUpload
                                           && availableSuffixActions().isEmpty == false)
                 default:
                     break
@@ -228,11 +238,15 @@ class RenameFileViewController: UIViewController {
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super .viewDidDisappear(animated)
         
-        // Update cell of parent view
-        delegate?.didChangeModifyFilenameSettings()
+        // Inform parent view
+        delegate?.didChangeRenameFileSettings(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                              replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                              suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                              changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                              startValue: startValue)
     }
     
     deinit {
@@ -248,10 +262,12 @@ class RenameFileViewController: UIViewController {
         return allActions.subtracting(usedActions)
     }
 
-    func updateExample(prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions,
-                       replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions,
-                       suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions) {
-        exampleLabel?.updateExample(prefixActions: prefixActions, replaceActions: replaceActions, suffixActions: suffixActions)
+    func updateExample() {
+        exampleLabel?.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                    replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                    suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                    changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                    counter: startValue)
     }
     
 
@@ -289,7 +305,7 @@ class RenameFileViewController: UIViewController {
                 self.tableView?.insertRows(at: [indexPath], with: .automatic)
                 
                 // Update example, settings and section
-                self.updateExample(prefixActions: self.prefixActions)
+                self.updateExample()
                 self.updatePrefixSettingsAndSection()
             }))
         }
@@ -326,8 +342,7 @@ class RenameFileViewController: UIViewController {
 
         if self.prefixActions.isEmpty {
             // Update settings
-            UploadVars.shared.prefixFileNameActionList = ""
-            UploadVars.shared.prefixFileNameBeforeUpload = false
+            prefixBeforeUpload = false
             
             // Disable Add Before Name
             if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
@@ -340,9 +355,7 @@ class RenameFileViewController: UIViewController {
             }
         } else {
             // Update settings
-            debugPrint(self.prefixActions.encodedString)
-            UploadVars.shared.prefixFileNameBeforeUpload = true
-            UploadVars.shared.prefixFileNameActionList = self.prefixActions.encodedString
+            prefixBeforeUpload = true
             
             // Enable Add Before Name
             if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
@@ -391,7 +404,7 @@ class RenameFileViewController: UIViewController {
                 self.tableView?.insertRows(at: [indexPath], with: .automatic)
                 
                 // Update example, settings and section
-                self.updateExample(replaceActions: self.replaceActions)
+                self.updateExample()
                 self.updateReplaceSettingsAndSection()
             }))
         }
@@ -428,8 +441,7 @@ class RenameFileViewController: UIViewController {
 
         if self.replaceActions.isEmpty {
             // Update settings
-            UploadVars.shared.replaceFileNameActionList = ""
-            UploadVars.shared.replaceFileNameBeforeUpload = false
+            replaceBeforeUpload = false
 
             // Disable Replace Name
             if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
@@ -442,9 +454,7 @@ class RenameFileViewController: UIViewController {
             }
         } else {
             // Update settings
-            debugPrint(self.replaceActions.encodedString)
-            UploadVars.shared.replaceFileNameBeforeUpload = true
-            UploadVars.shared.replaceFileNameActionList = self.replaceActions.encodedString
+            replaceBeforeUpload = true
 
             // Enable Replace Name
             if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
@@ -492,7 +502,7 @@ class RenameFileViewController: UIViewController {
                 self.tableView?.insertRows(at: [indexPath], with: .automatic)
                 
                 // Update example, settings and section
-                self.updateExample(suffixActions: self.suffixActions)
+                self.updateExample()
                 self.updateSuffixSettingsAndSection()
             }))
         }
@@ -529,8 +539,7 @@ class RenameFileViewController: UIViewController {
 
         if self.suffixActions.isEmpty {
             // Update settings
-            UploadVars.shared.suffixFileNameActionList = ""
-            UploadVars.shared.suffixFileNameBeforeUpload = false
+            suffixBeforeUpload = false
             
             // Disable Add After Name
             if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {
@@ -543,9 +552,7 @@ class RenameFileViewController: UIViewController {
             }
         } else {
             // Update settings
-            debugPrint(self.suffixActions.encodedString)
-            UploadVars.shared.suffixFileNameBeforeUpload = true
-            UploadVars.shared.suffixFileNameActionList = self.suffixActions.encodedString
+            suffixBeforeUpload = true
             
             // Enable Add After Name
             if let cell = tableView?.cellForRow(at: indexPath) as? SwitchTableViewCell {

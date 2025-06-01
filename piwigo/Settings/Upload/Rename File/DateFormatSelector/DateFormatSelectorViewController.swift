@@ -30,11 +30,21 @@ class DateFormatSelectorViewController: UIViewController {
     @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
     @IBOutlet weak var tableView: UITableView!
     
+    // Actions to be modified or not
+    var startValue: Int = 1
+    var prefixBeforeUpload = false
+    var prefixActions: RenameActionList = []
+    var replaceBeforeUpload = false
+    var replaceActions: RenameActionList = []
+    var suffixBeforeUpload = false
+    var suffixActions: RenameActionList = []
+    var changeCaseBeforeUpload = false
+    var caseOfFileExtension: FileExtCase = .uppercase
+
     var dateSections: [DateSection] = []    // To order date fomats as user wishes
-    var renameSection: RenameSection!       // To remember which section to update
     var dateFormats: [pwgDateFormat] = []   // Should always contain all formats (year, month, day and separator)
     var isDragEnabled: Bool = false
-    
+
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -57,9 +67,6 @@ class DateFormatSelectorViewController: UIViewController {
         headerAttributedString.append(textAttributedString)
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
-
-        // Example
-        exampleLabel.updateExample()
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -123,13 +130,16 @@ class DateFormatSelectorViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Update example shown in header
+        updateExample()
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super .viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         // Update cell of parent view
         delegate?.didSelectDateFormat(dateFormats.asString)
@@ -163,41 +173,32 @@ class DateFormatSelectorViewController: UIViewController {
         return indexPathsOfOptions
     }
 
-
-    // MARK: - Date Format Update
-    func updateSettings() {
-        // Update settings
-        switch renameSection {
-        case .prefix:
-            var prefixActions = UploadVars.shared.prefixFileNameActionList.actions
-            if let index = prefixActions.firstIndex(where: { $0.type == .addDate }) {
-                prefixActions[index].style = dateFormats.asString
-                UploadVars.shared.prefixFileNameActionList = prefixActions.encodedString
-            }
-        case .replace:
-            var replaceActions = UploadVars.shared.replaceFileNameActionList.actions
-            if let index = replaceActions.firstIndex(where: { $0.type == .addDate }) {
-                replaceActions[index].style = dateFormats.asString
-                UploadVars.shared.replaceFileNameActionList = replaceActions.encodedString
-            }
-        case .suffix:
-            var suffixActions = UploadVars.shared.suffixFileNameActionList.actions
-            if let index = suffixActions.firstIndex(where: { $0.type == .addDate }) {
-                suffixActions[index].style = dateFormats.asString
-                UploadVars.shared.suffixFileNameActionList = suffixActions.encodedString
-            }
-        default:
-            break
-        }
-        
-        // Update example
-        updateExample()
-    }
-    
     func updateExample() {
-        exampleLabel.updateExample()
+        // Look for the date format stored in default settings
+        if let index = prefixActions.firstIndex(where: { $0.type == .addDate }) {
+            var action = prefixActions[index]
+            action.style = dateFormats.asString
+            prefixActions[index] = action
+        }
+        else if let index = replaceActions.firstIndex(where: { $0.type == .addDate }) {
+            var action = replaceActions[index]
+            action.style = dateFormats.asString
+            replaceActions[index] = action
+        }
+        else if let index = suffixActions.firstIndex(where: { $0.type == .addDate }) {
+            var action = suffixActions[index]
+            action.style = dateFormats.asString
+            suffixActions[index] = action
+        }
+
+        // Update example shown in header
+        exampleLabel?.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                    replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                    suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                    changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                    counter: startValue)
     }
-    
+
     
     // MARK: - Year/Month/Day Reordering
     override func setEditing(_ editing: Bool, animated: Bool) {

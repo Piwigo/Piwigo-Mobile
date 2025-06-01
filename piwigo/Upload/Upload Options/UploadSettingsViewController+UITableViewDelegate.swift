@@ -65,6 +65,22 @@ extension UploadSettingsViewController {
             uploadVideoSizeVC.delegate = self
             uploadVideoSizeVC.videoMaxSize = videoMaxSize
             navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
+        case 6 /* Rename Filename Before Upload */:
+            // Present the Rename File selector
+            let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
+            guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController
+            else { preconditionFailure("Could not load RenameFileViewController") }
+            filenameVC.delegate = self
+            filenameVC.startValue = startValue
+            filenameVC.prefixBeforeUpload = prefixBeforeUpload
+            filenameVC.prefixActions = prefixActions
+            filenameVC.replaceBeforeUpload = replaceBeforeUpload
+            filenameVC.replaceActions = replaceActions
+            filenameVC.suffixBeforeUpload = suffixBeforeUpload
+            filenameVC.suffixActions = suffixActions
+            filenameVC.changeCaseBeforeUpload = changeCaseBeforeUpload
+            filenameVC.caseOfFileExtension = caseOfFileExtension
+            navigationController?.pushViewController(filenameVC, animated: true)
         default:
             break
         }

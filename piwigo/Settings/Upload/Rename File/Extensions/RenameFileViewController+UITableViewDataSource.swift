@@ -86,18 +86,18 @@ extension RenameFileViewController: UITableViewDataSource
     
     // MARK: - Actions
     func numberOfSections(in tableView: UITableView) -> Int {
-        return RenameSection.count.rawValue - (self.isEditing ? 1 : 0)
+        return RenameSection.count.rawValue - (tableView.isEditing ? 1 : 0)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = 0
         switch RenameSection(rawValue: section) {
         case .prefix:
-            nberOfRows = 1 + (tableView.isEditing || UploadVars.shared.prefixFileNameBeforeUpload ? prefixActions.count : 0)
+            nberOfRows = 1 + (tableView.isEditing || prefixBeforeUpload ? prefixActions.count : 0)
         case .replace:
-            nberOfRows = 1 + (tableView.isEditing || UploadVars.shared.replaceFileNameBeforeUpload ? replaceActions.count : 0)
+            nberOfRows = 1 + (tableView.isEditing || replaceBeforeUpload ? replaceActions.count : 0)
         case .suffix:
-            nberOfRows = 1 + (tableView.isEditing || UploadVars.shared.suffixFileNameBeforeUpload ? suffixActions.count : 0)
+            nberOfRows = 1 + (tableView.isEditing || suffixBeforeUpload ? suffixActions.count : 0)
         case .fileExtension:
             nberOfRows = 1 + (UploadVars.shared.changeCaseOfFileExtension ? 1 : 0)
         default:
@@ -118,10 +118,10 @@ extension RenameFileViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renamePrefix", comment: "Prefix File Name"))
-                cell.cellSwitch.setOn(UploadVars.shared.prefixFileNameBeforeUpload, animated: true)
+                cell.cellSwitch.setOn(prefixBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable prefix actions
-                    UploadVars.shared.prefixFileNameBeforeUpload = switchState
+                    self.prefixBeforeUpload = switchState
                     
                     // Get rows that should be added/removed
                     var rowsToInsertOrDelete: [IndexPath] = []
@@ -134,14 +134,14 @@ extension RenameFileViewController: UITableViewDataSource
                         if rowsToInsertOrDelete.isEmpty {
                             self.suggestToAddPrefixAction()
                         } else {
-                            self.updateExample(prefixActions: self.prefixActions)
+                            self.updateExample()
                             self.tableView?.insertRows(at: rowsToInsertOrDelete, with: .automatic)
                             if let footerView = self.tableView?.footerView(forSection: RenameSection.prefix.rawValue) as? AddActionTableViewFooterView {
                                 footerView.setEnabled(self.availablePrefixActions().isEmpty == false)
                             }
                         }
                     } else {
-                        self.updateExample(prefixActions: self.prefixActions)
+                        self.updateExample()
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                         if let footerView = self.tableView?.footerView(forSection: RenameSection.prefix.rawValue) as? AddActionTableViewFooterView {
                             footerView.setEnabled(false)
@@ -179,10 +179,10 @@ extension RenameFileViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameReplace", comment: "Replace File Name"))
-                cell.cellSwitch.setOn(UploadVars.shared.replaceFileNameBeforeUpload, animated: true)
+                cell.cellSwitch.setOn(replaceBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable replace actions
-                    UploadVars.shared.replaceFileNameBeforeUpload = switchState
+                    self.replaceBeforeUpload = switchState
                     
                     // Get rows that should be added/removed
                     var rowsToInsertOrDelete: [IndexPath] = []
@@ -195,14 +195,14 @@ extension RenameFileViewController: UITableViewDataSource
                         if rowsToInsertOrDelete.isEmpty {
                             self.suggestToAddReplaceAction()
                         } else {
-                            self.updateExample(replaceActions: self.replaceActions)
+                            self.updateExample()
                             self.tableView?.insertRows(at: rowsToInsertOrDelete, with: .automatic)
                             if let footerView = self.tableView?.footerView(forSection: RenameSection.replace.rawValue) as? AddActionTableViewFooterView {
                                 footerView.setEnabled(self.availableReplaceActions().isEmpty == false)
                             }
                         }
                     } else {
-                        self.updateExample(replaceActions: self.replaceActions)
+                        self.updateExample()
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                         if let footerView = self.tableView?.footerView(forSection: RenameSection.replace.rawValue) as? AddActionTableViewFooterView {
                             footerView.setEnabled(false)
@@ -239,10 +239,10 @@ extension RenameFileViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameSuffix", comment: "Suffix File Name"))
-                cell.cellSwitch.setOn(UploadVars.shared.suffixFileNameBeforeUpload, animated: true)
+                cell.cellSwitch.setOn(suffixBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Enable/disable suffix actions
-                    UploadVars.shared.suffixFileNameBeforeUpload = switchState
+                    self.suffixBeforeUpload = switchState
                     
                     // Get rows that should be added/removed
                     var rowsToInsertOrDelete: [IndexPath] = []
@@ -255,14 +255,14 @@ extension RenameFileViewController: UITableViewDataSource
                         if rowsToInsertOrDelete.isEmpty {
                             self.suggestToAddSuffixAction()
                         } else {
-                            self.updateExample(suffixActions: self.suffixActions)
+                            self.updateExample()
                             self.tableView?.insertRows(at: rowsToInsertOrDelete, with: .automatic)
                             if let footerView = self.tableView?.footerView(forSection: RenameSection.suffix.rawValue) as? AddActionTableViewFooterView {
                                 footerView.setEnabled(self.availableReplaceActions().isEmpty == false)
                             }
                         }
                     } else {
-                        self.updateExample(suffixActions: self.suffixActions)
+                        self.updateExample()
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                         if let footerView = self.tableView?.footerView(forSection: RenameSection.suffix.rawValue) as? AddActionTableViewFooterView {
                             footerView.setEnabled(false)
@@ -343,14 +343,12 @@ extension RenameFileViewController: UITableViewDataSource
     
     // MARK: - Action Deletion
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        var result = false
-        switch RenameSection(rawValue: indexPath.section) {
-        case .prefix, .replace, .suffix:
-            result = indexPath.row > 0
-        default:
-            break
-        }
-        return result
+        guard tableView.isEditing,
+              let section = RenameSection(rawValue: indexPath.section),
+              [.prefix, .replace, .suffix].contains(section),
+              indexPath.row > 0
+        else { return false }
+        return true
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -363,7 +361,7 @@ extension RenameFileViewController: UITableViewDataSource
             
             // Update example, settings and section
             self.updatePrefixSettingsAndSection()
-            self.updateExample(prefixActions: self.prefixActions)
+            self.updateExample()
 
         case .replace:
             // Remove action and corresponding row
@@ -372,7 +370,7 @@ extension RenameFileViewController: UITableViewDataSource
             
             // Update example, settings and section
             self.updateReplaceSettingsAndSection()
-            self.updateExample(replaceActions: self.replaceActions)
+            self.updateExample()
 
         case .suffix:
             // Remove action and corresponding row
@@ -381,7 +379,7 @@ extension RenameFileViewController: UITableViewDataSource
             
             // Update example, settings and section
             self.updateSuffixSettingsAndSection()
-            self.updateExample(suffixActions: self.suffixActions)
+            self.updateExample()
 
         default:
             break
@@ -391,18 +389,12 @@ extension RenameFileViewController: UITableViewDataSource
     
     // MARK: - Actions Reordering
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Drag mode enabled?
-        if tableView.isEditing == false { return false }
-        
-        // Prevent fileExtension section from being moved
-        var result = false
-        switch RenameSection(rawValue: indexPath.section) {
-        case .prefix, .replace, .suffix:
-            result = indexPath.row > 0
-        default:
-            break
-        }
-        return result
+        guard tableView.isEditing,
+              let section = RenameSection(rawValue: indexPath.section),
+              [.prefix, .replace, .suffix].contains(section),
+              indexPath.row > 0
+        else { return false }
+        return true
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
@@ -414,62 +406,56 @@ extension RenameFileViewController: UITableViewDataSource
         case (.prefix, .prefix):
             prefixActions.swapAt(sourceIndexPath.row - 1, destinationIndexPath.row - 1)
             updatePrefixSettingsAndSection()
-            updateExample(prefixActions: prefixActions)
 
         case (.prefix, .replace):
             replaceActions.insert(prefixActions[sourceIndexPath.row - 1], at: destinationIndexPath.row - 1)
             prefixActions.remove(at: sourceIndexPath.row - 1)
             updatePrefixSettingsAndSection()
             updateReplaceSettingsAndSection()
-            updateExample(prefixActions: prefixActions, replaceActions: replaceActions)
 
         case (.prefix, .suffix):
             suffixActions.insert(prefixActions[sourceIndexPath.row - 1], at: destinationIndexPath.row - 1)
             prefixActions.remove(at: sourceIndexPath.row - 1)
             updatePrefixSettingsAndSection()
             updateSuffixSettingsAndSection()
-            updateExample(prefixActions: prefixActions, suffixActions: suffixActions)
 
         case (.replace, .prefix):
             prefixActions.insert(replaceActions[sourceIndexPath.row - 1], at: destinationIndexPath.row - 1)
             replaceActions.remove(at: sourceIndexPath.row - 1)
             updatePrefixSettingsAndSection()
             updateReplaceSettingsAndSection()
-            updateExample(prefixActions: prefixActions, replaceActions: replaceActions)
 
         case (.replace, .replace):
             replaceActions.swapAt(sourceIndexPath.row - 1, destinationIndexPath.row - 1)
             updateReplaceSettingsAndSection()
-            updateExample(replaceActions: replaceActions)
 
         case (.replace, .suffix):
             suffixActions.insert(replaceActions[sourceIndexPath.row - 1], at: destinationIndexPath.row - 1)
             replaceActions.remove(at: sourceIndexPath.row - 1)
             updateReplaceSettingsAndSection()
             updateSuffixSettingsAndSection()
-            updateExample(replaceActions: replaceActions, suffixActions: suffixActions)
 
         case (.suffix, .prefix):
             prefixActions.insert(suffixActions[sourceIndexPath.row - 1], at: destinationIndexPath.row - 1)
             suffixActions.remove(at: sourceIndexPath.row - 1)
             updatePrefixSettingsAndSection()
             updateSuffixSettingsAndSection()
-            updateExample(prefixActions: prefixActions, suffixActions: suffixActions)
 
         case (.suffix, .replace):
             replaceActions.insert(suffixActions[sourceIndexPath.row - 1], at: destinationIndexPath.row - 1)
             suffixActions.remove(at: sourceIndexPath.row - 1)
             updateReplaceSettingsAndSection()
             updateSuffixSettingsAndSection()
-            updateExample(replaceActions: replaceActions, suffixActions: suffixActions)
 
         case (.suffix, .suffix):
             suffixActions.swapAt(sourceIndexPath.row - 1, destinationIndexPath.row - 1)
             updateSuffixSettingsAndSection()
-            updateExample(suffixActions: suffixActions)
 
         default:
             break
         }
+        
+        // Update example shown in header
+        updateExample()
     }
 }

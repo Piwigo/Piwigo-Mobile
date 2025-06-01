@@ -65,8 +65,8 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "hourSwitch"
                 tableViewCell = cell
@@ -121,8 +121,8 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "minuteSwitch"
                 tableViewCell = cell
@@ -166,8 +166,8 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: rowsToInsertOrDelete, with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "secondSwitch"
                 tableViewCell = cell
@@ -221,8 +221,8 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                         // Hide options
                         self.tableView?.deleteRows(at: [rowToInsertOrDelete], with: .automatic)
                     }
-                    // Update settings and example
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "separatorSwitch"
                 tableViewCell = cell
@@ -232,12 +232,13 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SeparatorSelectorTableViewCell") }
                 cell.configure(with: timeFormats[indexPath.section].asString)
                 cell.cellSeparatorSelectorBlock = { choice in
-                    // Update settings and example
+                    // Update separator
                     if let index = self.timeFormats.firstIndex(where: {
                         if case .separator( _) = $0 { return true } else { return false } }) {
                         self.timeFormats[index] = .separator(format: choice)
                     }
-                    self.updateSettings()
+                    // Update header
+                    self.updateExample()
                 }
                 cell.accessibilityIdentifier = "separatorChoice"
                 tableViewCell = cell

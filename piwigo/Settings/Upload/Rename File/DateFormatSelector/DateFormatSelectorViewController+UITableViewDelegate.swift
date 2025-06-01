@@ -161,7 +161,7 @@ extension DateFormatSelectorViewController: UITableViewDelegate
             break
         }
         
-        // Update settings and example
-        updateSettings()
+        // Update example
+        updateExample()
     }
 }

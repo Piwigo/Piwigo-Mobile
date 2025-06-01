@@ -128,9 +128,9 @@ public class UploadVars: NSObject {
     @UserDefault("defaultSecondFormat", defaultValue: pwgTimeFormat.second(format: .ss).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultSecondFormat: String
 
-    /// - Latest counter value chosen by the user
-    @UserDefault("startCounterValue", defaultValue: 1, userDefaults: UserDefaults.dataSuite)
-    public var startCounterValue: Int
+    /// - Latest counter start value chosen by the user
+    @UserDefault("counterStartValue", defaultValue: 1, userDefaults: UserDefaults.dataSuite)
+    public var counterStartValue: Int
 
     /// - Prefix file name before upload
     @UserDefault("prefixFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
@@ -161,7 +161,7 @@ public class UploadVars: NSObject {
     public var changeCaseOfFileExtension: Bool
     
     /// - Case of the file extension
-    @UserDefault("caseOfFileExtension", defaultValue: FileExtCase.lowercase.rawValue, userDefaults: UserDefaults.dataSuite)
+    @UserDefault("caseOfFileExtension", defaultValue: FileExtCase.uppercase.rawValue, userDefaults: UserDefaults.dataSuite)
     public var caseOfFileExtension: Int
 
     /// - Chunk size wanted by the Piwigo server (500 KB by default)
