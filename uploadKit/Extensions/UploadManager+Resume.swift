@@ -21,7 +21,7 @@ extension UploadManager
         isExecutingBackgroundUploadTask = false
         isUploading = Set<NSManagedObjectID>()
         
-        // Reset predicates in casse user switched to another Piwigo
+        // Reset predicates in case user switched to another Piwigo
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
                          "userName"   : NetworkVars.shared.username]
         uploads.fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
