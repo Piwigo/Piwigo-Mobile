@@ -487,7 +487,7 @@
 		ADC1FD9F29E3202500D8ADDC /* PieProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */; };
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
-		ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */; };
+		ADC339FD26A7ECF000173F8A /* AutoUploadIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntentHandler.swift */; };
 		ADC592662C0333A2002B6F82 /* ImageHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC592652C0333A2002B6F82 /* ImageHeaderReusableView.swift */; };
 		ADC592682C0333B0002B6F82 /* ImageHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC592672C0333B0002B6F82 /* ImageHeaderReusableView.xib */; };
 		ADC5926A2C036BD9002B6F82 /* ImageOldHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC592692C036BD9002B6F82 /* ImageOldHeaderReusableView.xib */; };
