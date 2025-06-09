@@ -6,15 +6,15 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - Generic
+// MARK: Generic
 // ===========================================================================
-// Tab bar
+// MARK: -- Tab bar
 
 "tabBar_albums" = "アルバム";
 "tabBar_upload" = "アップロード";
 "tabBar_preferences" = "設定";
 
-// Alert buttons
+// MARK: -- Alert buttons
 "alertOkButton" = "OK";
 "alertDismissButton" = "却下";
 "alertYesButton" = "はい";
@@ -26,16 +26,16 @@
 "alertNextButton" = "次の写真";
 "alertTryButton" = "試す";
 
-// HUD views
+// MARK: -- HUD views
 "loadingHUD_label" = "読み込み中…";
 "completeHUD_label" = "完了";
 "errorHUD_label" = "エラー！";
 
-// Upload rights
+// MARK: -- Upload rights
 "uploadRights_title" = "アップロードする権限が必要です";
 "uploadRights_message" = "写真や動画をアップロードするには、アップロード権限が必要です。";
 
-// Errors
+// MARK: -- Errors
 "internetErrorGeneral_title" = "接続エラー";
 "internetErrorGeneral_broken" = "申し訳ありませんが、通信が途切れました。再度ログインしてください。";
 "internetCancellingConnection_button" = "接続を中止しています...";
@@ -60,28 +60,28 @@
 "CoreData_MigrationError_generic" = "移行中に予期しないエラーが発生しました。";
 "CoreData_MigrationError_timeout" = "データベースの移行中にアプリが停止しました。アプリを再起動して再試行してください。";
 
-// User objects
+// MARK: -- User objects
 "CoreDataFetch_UserMissingData" = "有効なユーザー名がないユーザーアカウントは破棄されます。";
 "CoreDataFetch_UserUnknownStatus" = "Community拡張パラメータを取得できませんでした。\nもう一度ログインしてください。";
 "CoreData_UserCreateFailed" = "新しいUserオブジェクトの作成に失敗しました。";
 
-// Album objects
+// MARK: -- Album objects
 "CoreDataFetch_AlbumError" = "アルバムエラーを取得しました！";
 "CoreDataFetch_AlbumMissingData" = "有効なIDまたは名前がないアルバムを見つけて破棄します。";
 "CoreDataFetch_AlbumCreateFailed" = "新しいアルバムオブジェクトの作成に失敗しました。";
 "CoreData_AlbumNotFound" = "アルバムが永続キャッシュにありません。";
 
-// Image objects
+// MARK: -- Image objects
 "CoreDataFetch_ImageError" = "写真/動画を取得するエラー！";
 "CoreDataFetch_ImageMissingData" = "有効なIDまたはURLが見つかり、写真/ビデオを破棄します。";
 "CoreDataFetch_ImageCreateFailed" = "新しい画像オブジェクトの作成に失敗しました。";
 
-// Tag objects
+// MARK: -- Tag objects
 "CoreDataFetch_TagError" = "タグ取得エラー！";
 "CoreDataFetch_TagMissingData" = "有効なコードや名前のないタグを見つけて捨てる。";
 "CoreDataFetch_TagCreateFailed" = "新しいタグオブジェクトの作成に失敗しました。";
 
-// Upload objects
+// MARK: -- Upload objects
 "CoreDataFetch_UploadCreateFailed" = "新しいアップロードオブジェクトの作成に失敗しました。";
 "CoreDataFetch_UploadMissingAsset" = "写真の取得に失敗しました。";
 
@@ -89,7 +89,7 @@
 // ===========================================================================
 // MARK: - Login / Logout
 // ===========================================================================
-// Login
+// MARK: -- Login
 "login" = "ログイン";
 "login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "ユーザ名 (オプション)";
@@ -110,7 +110,7 @@
 "loginHTTPSfailed_title" = "安全な接続に失敗しました";
 "loginHTTPSfailed_message" = "Piwigoは安全な接続を確立できません。安全でない接続の確立を試みますか？";
 
-// Login — Errors
+// MARK: -- Login — Errors
 "serverURLerror_title" = "URLが間違っています";
 "serverURLerror_message" = "Piwigoウェブサーバのアドレスを訂正して下さい";
 "serverMethodsError_title" = "不明なメソッド";
@@ -137,24 +137,25 @@
 "sessionStatusError_title" = "認証に失敗しました";
 "sessionStatusError_message" = "サーバーでの認証に失敗しました。もう一度ログインしてください。";
 
-// Logout
+// MARK: -- Logout
 "logoutConfirmation_title" = "ログアウト";
 "logoutConfirmation_message" = "本当にログアウトしますか？";
 
-// Logout — Errors
+// MARK: -- Logout — Errors
 "logoutFail_title" = "ログアウトに失敗しました";
 
 
 // ===========================================================================
 // MARK: - Albums
 // ===========================================================================
-// Generic
+// MARK: -- Generic
+"albumID" = "Album ID";
 "singleAlbumCount" = "%@ アルバム";
 "severalAlbumsCount" = "%@ アルバム";
 "singleSubAlbumCount" = "%@ サブアルバム";
 "severalSubAlbumsCount" = "%@ サブアルバム";
 
-// Albums view
+// MARK: -- Albums view
 "categoryUpdating" = "更新中…";
 "categoryUpdatedOn" = "%@ に更新";
 "categoryUpdatedAt" = "%@ に更新";
@@ -167,7 +168,7 @@
 "categoryImageList_favorite" = "お気に入りに追加";
 "categoryImageList_unfavorite" = "お気に入りから削除する";
 
-// Albums "Discover"
+// MARK: -- Albums "Discover"
 "categoryDiscover_title" = "探す";
 "categoryDiscoverTagged_title" = "タグ付き";
 "categoryDiscoverVisits_title" = "最多アクセス";
@@ -176,7 +177,7 @@
 "categoryDiscoverRecent_title" = "最近の写真";
 "categoryDiscoverFavorites_title" = "お気に入り";
 
-// Albums sort
+// MARK: -- Albums sort
 "categorySort_sort" = "画像を並べ替える...";
 "categorySort_default" = "デフォルト";
 "categorySort_name" = "写真のタイトル";
@@ -210,7 +211,7 @@
 "categoryView_group" = "グループ画像の…";
 "categoryView_show" = "見せる…";
 
-// Album selection
+// MARK: -- Album selection
 "categorySelection_title" = "アルバム";
 "categorySelection_titleSub" = "サブアルバム";
 "categorySelection_root" = "ルートアルバム";
@@ -219,7 +220,7 @@
 "categorySelectionHUD_label" = "アルバムのデータを取得しています...";
 "categorySelection_allAlbums" = "すべてのアルバム";
 
-// Album upload
+// MARK: -- Album upload
 "categoryUpload_noSubAlbum" = "写真をアップロードするサブアルバムがありません";
 "categoryUpload_chooseAlbum" = "写真をアップロードするアルバムを選択します";
 "categoryUpload_LocalAlbums" = "ローカルアルバム";
@@ -234,12 +235,12 @@
 "categoryUpload_otherAlbums" = "その他のアルバム";
 "categoryUpload_pasteboard" = "クリップボード";
 
-// Default album
+// MARK: -- Default album
 "setDefaultCategory_select" = "新しいアルバムになるアルバムまたはサブアルバムを選択してください。";
 "setDefaultCategory_title" = "既定のアルバム";
 "setDefaultCategory_message" = "アルバム「%@」を規定のアルバムに設定してよろしいですか？";
 
-// Album create
+// MARK: -- Album create
 "createNewAlbum_title" = "新規アルバム";
 "createNewAlbum_message" = "このアルバムの名称を入力してください：";
 "createNewAlbum_placeholder" = "アルバムの名称";
@@ -247,34 +248,34 @@
 "createNewAlbumDescription_noDescription" = "説明がありません";
 "createNewAlbumHUD_label" = "アルバム作成中...";
 
-// Album create — Errors
+// MARK: -- Album create — Errors
 "createAlbumError_title" = "アルバム作成エラー";
 "createAlbumError_message" = "新規アルバムの作成に失敗しました";
 
-// Album options (swipe actions)
+// MARK: -- Album options (swipe actions)
 "categoryCellOption_addPhotos" = "写真を追加";
 "categoryCellOption_rename" = "アルバム名の変更";
 "categoryCellOption_move" = "アルバムの移動";
 "categoryCellOption_delete" = "アルバム削除";
 
-// Album rename
+// MARK: -- Album rename
 "renameCategory_title" = "アルバムの名称を変更";
 "renameCategory_message" = "このアルバムの新しい名称を入力してください";
 "renameCategory_button" = "名称の変更";
 "renameCategoryHUD_label" = "アルバムの名称を変更中...";
 
-// Album rename — Errors
+// MARK: -- Album rename — Errors
 "renameCategoyError_title" = "名称の変更に失敗しました";
 "renameCategoyError_message" = "アルバム名称の変更に失敗しました";
 
-// Album refresh representative
+// MARK: -- Album refresh representative
 "refreshCategoryHUD_label" = "代表画像を更新しています...";
 
-// Album refresh representative — Errors
+// MARK: -- Album refresh representative — Errors
 "refreshCategoyError_title" = "失敗を更新します";
 "refreshCategoyError_message" = "アルバム代表画像の更新に失敗しました";
 
-// Album delete
+// MARK: -- Album delete
 "deleteCategory_title" = "アルバムを削除します";
 "deleteCategory_message" = "アルバム「%@」と%@個の写真すべてを本当に削除しますか？";
 "deleteCategory_empty" = "空のアルバムを削除します";
@@ -288,23 +289,23 @@
 "deleteCategoryConfirm_deleteButton" = "削除";
 "deleteCategoryHUD_label" = "アルバムを削除中...";
 
-// Album delete — errors
+// MARK: -- Album delete — errors
 "deleteCategoryMatchError_title" = "数が一致しません";
 "deleteCategoryMatchError_message" = "入力した写真の数は、カテゴリ内の写真の数と一致しません。もしこのアルバムを削除するなら、もう一度挑戦して下さい。";
 "deleteCategoryError_title" = "削除に失敗しました";
 "deleteCategoryError_message" = "アルバムの削除に失敗しました";
 
-// Album move
+// MARK: -- Album move
 "moveCategory" = "アルバムを移動します";
 "moveCategory_select" = "アルバムを移動するにはアルバムまたはサブアルバムを選択してください \"%@\" へ。";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
-// Album move — Errors
+// MARK: -- Album move — Errors
 "moveCategoryError_title" = "移動に失敗しました";
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
-// Album set photo thumbnail
+// MARK: -- Album set photo thumbnail
 "categorySelection_setThumbnail" = "写真「%@」をサムネイルとして使用するアルバムを選択してください。";
 "categorySelection_current" = "この写真のためのアルバムを選択します";
 "categorySelection_one" = "この写真を含むアルバムを1つ選択して下さい";
@@ -313,7 +314,7 @@
 "categoryImageSet_message" = "この写真をアルバム「%@」に設定してよろしいですか？";
 "categoryImageSetHUD_updating" = "アルバムのサムネイルを更新中...";
 
-// Album set photo thumbnail — Errors
+// MARK: -- Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "写真設定エラー";
 "categoryImageSetError_message" = "アルバム写真の設定に失敗しました";
 
@@ -337,11 +338,11 @@
 "Week" = "週";
 "Month" = "月";
 
-// Errors
+// MARK: -- Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
 "albumPhotoError_message" = "アルバム写真の取得に失敗しました (アルバム内の写真が破損している？)";
 
-// Image sort
+// MARK: -- Image sort
 "sortBy" = "並び順";
 "imageSortTitle" = "写真を並べ換える";
 "imageSortMessage" = "写真の並び順を選択してください";
@@ -349,14 +350,14 @@
 "imageSelectingHUD" = "写真を選択中…";
 "imageDeselectingHUD" = "写真の選択を解除中…";
 
-// Image options (actions)
+// MARK: -- Image options (actions)
 "imageOptions_title" = "写真オプション";
 "imageOptions_edit" = "編集";
 "imageOptions_properties" = "プロパティを変更";
 "imageOptions_download" = "ダウンロード";
 "imageOptions_setAlbumImage" = "アルバムの画像に設定します";
 
-// Image details
+// MARK: -- Image details
 "imageDetailsView_title" = "プロパティ";
 "editImageDetails_title" = "題名";
 "editImageDetails_titlePlaceholder" = "題名";
@@ -376,14 +377,14 @@
 "editImageDetailsHUD_updatingSingle" = "写真を更新しています...";
 "editImageDetailsHUD_updatingPlural" = "写真を更新しています...";
 
-// Image details — Errors
+// MARK: -- Image details — Errors
 "editImageDetailsError_title" = "更新に失敗しました";
 "editImageDetailsError_message" = "サーバーに変更内容を更新できませんでした。もう一度やり直しますか？";
 "imageDetailsFetchError_title" = "写真詳細の取得に失敗しました";
 "imageDetailsFetchError_message" = "写真データの取得に失敗しました。";
 "imageDetailsFetchError_continueMessage" = "写真データの取得に失敗しました。続行しますか？";
 
-// Image privacy levels
+// MARK: -- Image privacy levels
 "privacyLevel" = "プライバシーのレベル";
 "privacyLevel_admin" = "管理者";
 "privacyLevel_adminFamily" = "管理者、家族";
@@ -391,7 +392,7 @@
 "privacyLevel_adminsFamilyFriendsContacts" = "管理者、家族、友人、連絡先";
 "privacyLevel_everybody" = "誰でも";
 
-// Image tags
+// MARK: -- Image tags
 "none" = "なし";
 "tag" = "タグ";
 "tags" = "タグ";
@@ -406,44 +407,44 @@
 "tagsAdd_placeholder" = "新規タグ";
 "tagsAddHUD_label" = "タグを作成する...";
 
-// Image tags errors
+// MARK: -- Image tags errors
 "tagsAddError_message" = "新規タグの作成に失敗しました";
 "tagsAddError_title" = "作成に失敗";
 
-// Image select
+// MARK: -- Image select
 "selectImages" = "写真を選択します";
 "selectImageSelected" = "1写真が選択されています";
 "selectImagesSelected" = "%@枚の写真が選択されています";
 "selectAll" = "すべて";
 
-// Image rename (filename)
+// MARK: -- Image rename (filename)
 "renameImage_title" = "元のファイル";
 "renameImage_message" = "この写真の新しいファイル名を入力してください";
 "renameImageHUD_label" = "ファイルの名前を変更しています…";
 
-// Image rename — Errors
+// MARK: -- Image rename — Errors
 "renameImageError_message" = "写真ファイルの名前変更に失敗しました";
 
-// Image in favorites
+// MARK: -- Image in favorites
 "imageFavorites_title" = "お気に入り";
 
-// Image in favorites — Error
+// MARK: -- Image in favorites — Error
 "imageFavoritesAddError_message" = "お気に入りにこの写真を追加できませんでした。";
 "imageFavoritesRemoveError_message" = "お気に入りからこの写真を削除できませんでした。";
 
-// Image rotate
+// MARK: -- Image rotate
 "rotateImage_rotate" = "90°回転します…";
 "rotateImage_left" = "反時計回りに";
 "rotateImage_right" = "時計回りに表示";
 "rotateSingleImageHUD_rotating" = "写真を回転します…";
 "rotateSeveralImageHUD_rotating" = "写真を回転しています…";
 
-// Image rotate — Errors
+// MARK: -- Image rotate — Errors
 "rotateImageFail_title" = "回転失敗";
 "rotateImageFail_plugin" = "rotateImageプラグインが有効化されていません。";
 "rotateImageFail_message" = "画像を回転できませんでした";
 
-// Image delete
+// MARK: -- Image delete
 "deleteImage_delete" = "削除";
 "deleteImageProgress_title" = "%@%% の削除が済みました";
 
@@ -461,11 +462,11 @@
 "deleteSeveralImages_title" = "%@枚の写真を削除";
 "deleteSeveralImages_message" = "選択した%@枚の写真を本当に削除しますか？この操作は元に戻せません。";
 
-// Image delete — Errors
+// MARK: -- Image delete — Errors
 "deleteImageFail_title" = "削除に失敗しました";
 "deleteImageFail_message" = "写真が削除できませんでした\n%@";
 
-// Image download
+// MARK: -- Image download
 "downloadSingleImage_title" = "写真をダウンロードします";
 "downloadSingleImage_confirmation" = "選択した写真をダウンロードしますか？";
 "downloadSeveralImages_title" = "%@枚の写真をダウンロードします";
@@ -475,7 +476,7 @@
 "downloadingImages" = "写真をダウンロード中";
 "downloadingVideo" = "動画をダウンロード中";
 
-// Image download — Errors
+// MARK: -- Image download — Errors
 "downloadImageFail_title" = "ダウンロードに失敗しました";
 "downloadImageFail_message" = "写真のダウンロードに失敗しました！\n%@";
 "downloadVideoFail_message" = "動画のダウンロードに失敗しました！\n%@";
@@ -487,7 +488,7 @@
 "videoSaveError_title" = "動画の保存に失敗しました";
 "videoSaveError_message" = "動画の保存に失敗しました。エラー：%@";
 
-// Image move
+// MARK: -- Image move
 "moveImage_title" = "アルバムに移動する";
 "moveSingleImage_selectAlbum" = "写真 \"%@ \" を移動したいアルバムを選択してください。";
 "moveSeveralImages_selectAlbum" = "写真をコピーしたいアルバムを選択してください。";
@@ -496,12 +497,12 @@
 "moveSingleImageHUD_moving" = "写真を移動しています...";
 "moveSeveralImagesHUD_moving" = "写真を移動しています...";
 
-// Image move — Errors
+// MARK: -- Image move — Errors
 "moveImageError_title" = "移動に失敗しました";
 "moveSingleImageError_message" = "写真の移動に失敗しました。";
 "moveSeveralImagesError_message" = "写真の移動に失敗しました";
 
-// Image copy
+// MARK: -- Image copy
 "copyImage_title" = "アルバムにコピーする";
 "copySingleImage_selectAlbum" = "写真 \"%@ \" をコピーしたいアルバムを選択してください。";
 "copySeveralImages_selectAlbum" = "写真をコピーしたいアルバムを選択してください。";
@@ -510,12 +511,12 @@
 "copySingleImageHUD_copying" = "写真をコピーしています...";
 "copySeveralImagesHUD_copying" = "写真をコピーしています...";
 
-// Image copy — Errors
+// MARK: -- Image copy — Errors
 "copyImageError_title" = "コピーに失敗しました";
 "copySingleImageError_message" = "写真のコピーに失敗しました";
 "copySeveralImagesError_message" = "写真のコピーに失敗しました";
 
-// Images upload
+// MARK: -- Images upload
 "imageUploadHeader" = "デバイスの写真やビデオをアップロードするアルバムまたはサブアルバムを選択してください。";
 "imageUploadHeaderTitle_images" = "写真のパラメータ";
 "imageUploadHeaderText_images" = "写真/動画の選択に適用するパラメータを設定してください";
@@ -547,7 +548,7 @@
 "imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";
 "imageUploadCompleted_message>1" = "写真／動画が、Piwigoサーバにアップロードされました。";
 
-// Image upload — Errors
+// MARK: -- Image upload — Errors
 "uploadError_title" = "アップロードエラー";
 "uploadError_message" = "写真をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
@@ -574,7 +575,7 @@
 "videoUploadError_unknown" = "申し訳ありませんが、動画のアップロードはMP4変換中に原因不明のエラーのため失敗しました。エラー：%@";
 "videoUploadCancelled_message" = "動画のアップロードは取り消されました。";
 
-// Image share
+// MARK: -- Image share
 "shareImageMetadata_Title" = "メタデータを共有する";
 "shareImageMetadata_subTitle1" = "プライベートなメタデータを持つ写真を共有するアクション";
 "shareImageMetadata_subTitle2" = "プライベートなメタデータを持たない写真を共有するアクション";
@@ -625,15 +626,15 @@
 "localAlbums" = "写真ライブラリ";
 "localAlbums_accessible" = "アクセス可能な写真";
 
-// Local albums — Access not Authorized
+// MARK: -- Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "アクセスなし";
 "localAlbums_photosNiltitle" = "写真読み出しの問題";
 "localAlbums_photosNnil_msg" = "ローカル写真ライブラリの読み出しに問題があります";
 
-// Local albums — Tell user to change settings, how
+// MARK: -- Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "ローカル写真ライブラリを開けませんでした。設定アプリのプライバシー、写真を開いてPiwigoにアクセスを許可してください。";
 
-// Local images — Explain
+// MARK: -- Local images — Explain
 "localImages_reUploadTitle" = "再アップロード";
 "localImages_deleteTitle" = "カメラロールから削除する";
 "localImages_deleteMessage" = "アップロードした写真や動画をカメラロールから削除しますか？ 削除された写真やビデオは、iOSの写真のゴミ箱で30日間は引き続き利用可能です。";
@@ -653,7 +654,7 @@
 "Separator" = "Separator";
 "Counter" = "Counter";
 
-// Settings — Piwigo Server
+// MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigoサーバ";
 "settingsHeader_notSecure" = "ウェブサイトは安全ではありません！";
 "settings_server" = "アドレス";
@@ -662,11 +663,11 @@
 "settings_logout" = "ログアウト";
 "settingsFooter_formats" = "サーバは次のファイル種類を受け付けます";
 
-// Settings — Unused
+// MARK: -- Settings — Unused
 "settingsHeader_general" = "一般設定";
 "settingsHeader_thumbnails" = "サムネイル";
 
-// Settings — Albums
+// MARK: -- Settings — Albums
 "defaultImageSort" = "並び順";
 "defaultImageSort>320px" = "既定の並び順";
 "defaultImageSort>414px" = "写真の既定並び順";
@@ -691,7 +692,7 @@
 "thumbnailSizeXXLarge" = "XXL 最大";
 "thumbnailSizexFullRes" = "フル解像度";
 
-// Settings — Images
+// MARK: -- Settings — Images
 "defaultThumbnailFile" = "ファイル";
 "defaultThumbnailFile>320px" = "サムネイルファイル";
 "defaultThumbnailFile>414px" = "サムネイル写真ファイル";
@@ -732,11 +733,11 @@
 "imageSizeXXLarge" = "XXL 最大";
 "imageSizexFullRes" = "フル解像度";
 
-// Settings — Videos
+// MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "自動再生";
 "settings_videoLoop" = "ビデオのループ再生";
 
-// Settings — Upload
+// MARK: -- Settings — Upload
 "settingsHeader_upload" = "規定のアップロード設定";
 "settings_defaultAuthor" = "作成者";
 "settings_defaultAuthorLong" = "Author Name";
@@ -771,7 +772,8 @@
 "settings_renameFiveDigit" = "5-digit version";
 "settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
 "settings_renameCounterStart" = "Current Number";
-"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
+"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
 "settings_renameCounterDigits" = "Digits";
 "settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
 
@@ -784,7 +786,7 @@
 "settings_deleteImage" = "アップロード後に削除します";
 "settings_deleteImageLong" = "Delete After Upload";
 
-// Settings — Auto-Upload
+// MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "自動アップロード";
 "settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
@@ -801,7 +803,7 @@
 "AutoUploadError_Disabled" = "アプリの設定で自動アップロードオプションが無効になっています。";
 "AutoUploadError_Failed" = "複数の転送に失敗し、アップロードキューが保留になっています。アプリで確認してください。";
 
-// Settings — Upload Photo Size
+// MARK: -- Settings — Upload Photo Size
 "UploadPhotoSize_title" = "最大写真サイズ";
 "UploadPhotoSize_header" = "アップロードする写真の最大サイズを選択してください。";
 "UploadPhotoSize_resolution" = "内蔵カメラの最大解像度:";
@@ -811,7 +813,7 @@
 "UploadPhotoSize_original" = "ダウンサイジングなし";
 "UploadRequests_cache" = "アップロード";
 
-// Settings — Privacy
+// MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "プライバシー";
 "settings_appLock" = "アプリロック";
 "settings_appLockEnter" = "パスコードを入力";
@@ -842,7 +844,7 @@
 "settings_clearClipboard5minUnit" = "5分後";
 "settings_clearClipboardNever" = "一度もない";
 
-// Settings — Cache
+// MARK: -- Settings — Cache
 "settingsHeader_cache" = "キャッシュ";
 "settings_database" = "データ";
 "settings_cacheClear" = "キャッシュをクリア";
@@ -850,7 +852,7 @@
 "settings_cacheClearAll" = "すべてを削除する";
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";
 
-// Settings — Appearance
+// MARK: -- Settings — Appearance
 "settingsHeader_appearance" = "外観";
 "settingsHeader_colorPalette" = "カラーパレット";
 "settings_lightColor" = "明るい";
@@ -859,7 +861,7 @@
 "settings_brightness" = "明度";
 "settings_brightnessHelp" = "環境光が暗い場合、自動オプションは暗いカラーパレットを使用して写真を暗い背景から目立たせます。";
 
-// Settings - Administration
+// MARK: -- Settings - Administration
 "singleUserCount" = "%@ ユーザー";
 "severalUsersCount" = "%@ ユーザー";
 "singleGroupCount" = "%@ グループ";
@@ -867,7 +869,7 @@
 "singleCommentCount" = "%@ 件のコメント";
 "severalCommentsCount" = "%@ 件のコメント";
 
-// Settings — Information
+// MARK: -- Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "情報";
 "settings_twitter" = "@piwigo";
@@ -882,7 +884,7 @@
 "settings_acknowledgements" = "謝辞";
 "settings_privacy" = "プライバシーポリシー";
 
-// Settings — Help
+// MARK: -- Settings — Help
 "help01_header" = "複数選択";
 "help01_text" = "指を左から右(または右から左) にスライドさせてから下などします。";
 "help02_header" = "バックグラウンドアップロード中";
@@ -903,12 +905,12 @@
 "help08_text" = "戻るボタンを長押しすると、アルバムのリストが表示されます。";
 "help08_text2" = "選択した親アルバムをタップしてジャンプします。";
 
-// Settings - Logs
+// MARK: -- Settings - Logs
 "settingsHeader_troubleshoot" = "トラブルシューティング";
 "settings_logs" = "ログ";
 "settings_JSONinvalid" = "無効なサーバー応答";
 
-// What's New in Piwigo
+// MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
 "whatsNew_title1" = "グループ写真";
 "whatsNew_desc1" = "日、週、または月で。";

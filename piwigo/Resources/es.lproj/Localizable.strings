@@ -6,15 +6,15 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - Generic
+// MARK: Generic
 // ===========================================================================
-// Tab bar
+// MARK: -- Tab bar
 
 "tabBar_albums" = "Álbumes";
 "tabBar_upload" = "Subir";
 "tabBar_preferences" = "Ajustes";
 
-// Alert buttons
+// MARK: -- Alert buttons
 "alertOkButton" = "Aceptar";
 "alertDismissButton" = "Descartar";
 "alertYesButton" = "Sí";
@@ -26,16 +26,16 @@
 "alertNextButton" = "Siguiente foto";
 "alertTryButton" = "Intentar";
 
-// HUD views
+// MARK: -- HUD views
 "loadingHUD_label" = "Cargando…";
 "completeHUD_label" = "Completado";
 "errorHUD_label" = "Error";
 
-// Upload rights
+// MARK: -- Upload rights
 "uploadRights_title" = "Se necesitan derechos de subida";
 "uploadRights_message" = "Debes tener derechos de subida para poder subir fotos o vídeos.";
 
-// Errors
+// MARK: -- Errors
 "internetErrorGeneral_title" = "Error de conexión";
 "internetErrorGeneral_broken" = "Lo sentimos, la comunicación se ha interrumpido. Intenta iniciar sesión de nuevo.";
 "internetCancellingConnection_button" = "Cancelando Conexión…";
@@ -60,28 +60,28 @@
 "CoreData_MigrationError_generic" = "Se ha producido un error inesperado durante la migración.";
 "CoreData_MigrationError_timeout" = "La aplicación se ha suspendido durante la migración de la base de datos. Reinicie la aplicación e inténtelo de nuevo.";
 
-// User objects
+// MARK: -- User objects
 "CoreDataFetch_UserMissingData" = "Descartará una cuenta de usuario que no tenga un nombre de usuario válido.";
 "CoreDataFetch_UserUnknownStatus" = "No se han podido obtener los parámetros de la extensión de Community. Prueba a iniciar sesión otra vez.";
 "CoreData_UserCreateFailed" = "No se ha podido crear un nuevo objeto de Usuario.";
 
-// Album objects
+// MARK: -- Album objects
 "CoreDataFetch_AlbumError" = "¡Error al recuperar los álbumes!";
 "CoreDataFetch_AlbumMissingData" = "Se ha encontrado y se descartará un álbum que no tiene un ID o nombre válido.";
 "CoreDataFetch_AlbumCreateFailed" = "No se ha podido crear un nuevo objeto de Álbum.";
 "CoreData_AlbumNotFound" = "El álbum no está en la caché persistente.";
 
-// Image objects
+// MARK: -- Image objects
 "CoreDataFetch_ImageError" = "¡Error al obtener fotos/vídeos!";
 "CoreDataFetch_ImageMissingData" = "Se ha encontrado y se descartará una foto o vídeo que no tiene un ID o URL válido.";
 "CoreDataFetch_ImageCreateFailed" = "No se ha podido crear un nuevo objeto de Imagen.";
 
-// Tag objects
+// MARK: -- Tag objects
 "CoreDataFetch_TagError" = "¡Error al recuperar las etiquetas!";
 "CoreDataFetch_TagMissingData" = "Se ha encontrado y se descartará una etiqueta que no tiene un código o nombre válido.";
 "CoreDataFetch_TagCreateFailed" = "No se ha podido crear un nuevo objeto de Etiqueta.";
 
-// Upload objects
+// MARK: -- Upload objects
 "CoreDataFetch_UploadCreateFailed" = "No se ha podido crear un nuevo objeto de carga.";
 "CoreDataFetch_UploadMissingAsset" = "Error al recuperar la foto.";
 
@@ -89,7 +89,7 @@
 // ===========================================================================
 // MARK: - Login / Logout
 // ===========================================================================
-// Login
+// MARK: -- Login
 "login" = "Iniciar sesión";
 "login_serverPlaceholder" = "ejemplo.com";
 "login_userPlaceholder" = "Nombre de usuario (opcional)";
@@ -110,7 +110,7 @@
 "loginHTTPSfailed_title" = "Ha fallado la conexión segura";
 "loginHTTPSfailed_message" = "Piwigo no puede establecer una conexión segura. ¿Quieres intentar establecer una conexión no segura?";
 
-// Login — Errors
+// MARK: -- Login — Errors
 "serverURLerror_title" = "URL incorrecto";
 "serverURLerror_message" = "Corrige la dirección del servidor web de Piwigo.";
 "serverMethodsError_title" = "Métodos desconocidos";
@@ -137,24 +137,25 @@
 "sessionStatusError_title" = "Error de autenticación";
 "sessionStatusError_message" = "No se ha podido autenticar con el servidor. Prueba a iniciar sesión otra vez.";
 
-// Logout
+// MARK: -- Logout
 "logoutConfirmation_title" = "Cerrar sesión";
 "logoutConfirmation_message" = "¿Estás seguro de que deseas cerrar la sesión?";
 
-// Logout — Errors
+// MARK: -- Logout — Errors
 "logoutFail_title" = "No se ha podido cerrar la sesión";
 
 
 // ===========================================================================
 // MARK: - Albums
 // ===========================================================================
-// Generic
+// MARK: -- Generic
+"albumID" = "Album ID";
 "singleAlbumCount" = "%@ álbum";
 "severalAlbumsCount" = "%@ álbumes";
 "singleSubAlbumCount" = "%@ subálbum";
 "severalSubAlbumsCount" = "%@ subálbumes";
 
-// Albums view
+// MARK: -- Albums view
 "categoryUpdating" = "Actualizando…";
 "categoryUpdatedOn" = "Actualizado el %@";
 "categoryUpdatedAt" = "Actualizado a las %@";
@@ -167,7 +168,7 @@
 "categoryImageList_favorite" = "Favorito";
 "categoryImageList_unfavorite" = "No favorito";
 
-// Albums "Discover"
+// MARK: -- Albums "Discover"
 "categoryDiscover_title" = "Descubre";
 "categoryDiscoverTagged_title" = "Etiquetados";
 "categoryDiscoverVisits_title" = "Lo más visto";
@@ -176,7 +177,7 @@
 "categoryDiscoverRecent_title" = "Fotos recientes";
 "categoryDiscoverFavorites_title" = "Tus favoritos";
 
-// Albums sort
+// MARK: -- Albums sort
 "categorySort_sort" = "Ordenar imágenes por…";
 "categorySort_default" = "Por defecto";
 "categorySort_name" = "Título de la foto";
@@ -210,7 +211,7 @@
 "categoryView_group" = "Agrupar imágenes por…";
 "categoryView_show" = "Mostrar…";
 
-// Album selection
+// MARK: -- Album selection
 "categorySelection_title" = "Álbum";
 "categorySelection_titleSub" = "Sub-álbumes";
 "categorySelection_root" = "Álbum raíz";
@@ -219,7 +220,7 @@
 "categorySelectionHUD_label" = "Recuperando datos de álbumes…";
 "categorySelection_allAlbums" = "Todos los álbumes";
 
-// Album upload
+// MARK: -- Album upload
 "categoryUpload_noSubAlbum" = "No hay ningún sub-álbum al que subir fotos";
 "categoryUpload_chooseAlbum" = "Selecciona un sub-álbum al que subir fotos";
 "categoryUpload_LocalAlbums" = "Álbumes locales";
@@ -234,12 +235,12 @@
 "categoryUpload_otherAlbums" = "Otros álbumes";
 "categoryUpload_pasteboard" = "Portapapeles";
 
-// Default album
+// MARK: -- Default album
 "setDefaultCategory_select" = "Seleccione un álbum o sub-álbum que se convertirá en el nuevo álbum raíz.";
 "setDefaultCategory_title" = "Álbum por defecto";
 "setDefaultCategory_message" = "¿Estás seguro de que deseas definir el álbum \"%@\" como álbum por defecto?";
 
-// Album create
+// MARK: -- Album create
 "createNewAlbum_title" = "Nuevo álbum";
 "createNewAlbum_message" = "Introduce un nombre para este álbum:";
 "createNewAlbum_placeholder" = "Nombre del álbum";
@@ -247,34 +248,34 @@
 "createNewAlbumDescription_noDescription" = "sin descripción";
 "createNewAlbumHUD_label" = "Creando álbum…";
 
-// Album create — Errors
+// MARK: -- Album create — Errors
 "createAlbumError_title" = "Error al crear el álbum";
 "createAlbumError_message" = "No se ha podido crear un álbum nuevo";
 
-// Album options (swipe actions)
+// MARK: -- Album options (swipe actions)
 "categoryCellOption_addPhotos" = "Añadir fotos";
 "categoryCellOption_rename" = "Renombrar álbum";
 "categoryCellOption_move" = "Mover álbum";
 "categoryCellOption_delete" = "Eliminar álbum";
 
-// Album rename
+// MARK: -- Album rename
 "renameCategory_title" = "Renombrar álbum";
 "renameCategory_message" = "Introduce un nuevo nombre para este álbum";
 "renameCategory_button" = "Renombrar";
 "renameCategoryHUD_label" = "Renombrando álbum…";
 
-// Album rename — Errors
+// MARK: -- Album rename — Errors
 "renameCategoyError_title" = "Error al renombrar";
 "renameCategoyError_message" = "Error al renombrar tu álbum";
 
-// Album refresh representative
+// MARK: -- Album refresh representative
 "refreshCategoryHUD_label" = "Actualizando el Representante…";
 
-// Album refresh representative — Errors
+// MARK: -- Album refresh representative — Errors
 "refreshCategoyError_title" = "Ha fallado la actualización";
 "refreshCategoyError_message" = "No se ha podido actualizar el representante de tu álbum";
 
-// Album delete
+// MARK: -- Album delete
 "deleteCategory_title" = "ELIMINAR ÁLBUM";
 "deleteCategory_message" = "¿ESTÁS SEGURO DE QUE DESEAS ELIMINAR EL ÁLBUM \"%@\" Y LAS %@ FOTOS QUE CONTIENE?";
 "deleteCategory_empty" = "Eliminar álbum vacío";
@@ -288,23 +289,23 @@
 "deleteCategoryConfirm_deleteButton" = "ELIMINAR";
 "deleteCategoryHUD_label" = "Eliminando álbum…";
 
-// Album delete — errors
+// MARK: -- Album delete — errors
 "deleteCategoryMatchError_title" = "El número no coincide";
 "deleteCategoryMatchError_message" = "El número de fotos que has indicado no coincide con el número de fotos de la categoría. Prueba otra vez si deseas suprimir este álbum";
 "deleteCategoryError_title" = "Error al eliminar";
 "deleteCategoryError_message" = "No se ha podido suprimir tu álbum";
 
-// Album move
+// MARK: -- Album move
 "moveCategory" = "Mover álbum";
 "moveCategory_select" = "Seleccione un álbum o sub-álbum al que mover el álbum \"%@\".";
 "moveCategory_message" = "¿Estás seguro de que deseas mover el álbum \"%@\" al álbum \"%@\"?";
 "moveCategoryHUD_moving" = "Moviendo álbum…";
 
-// Album move — Errors
+// MARK: -- Album move — Errors
 "moveCategoryError_title" = "Movimiento fallido";
 "moveCategoryError_message" = "No se ha podido mover tu álbum";
 
-// Album set photo thumbnail
+// MARK: -- Album set photo thumbnail
 "categorySelection_setThumbnail" = "Seleccione el álbum que utilizará la foto \"%@\" como miniatura.";
 "categorySelection_current" = "Selecciona el álbum actual para esta foto";
 "categorySelection_one" = "Selecciona uno de los álbumes que contienen esta foto";
@@ -313,7 +314,7 @@
 "categoryImageSet_message" = "¿Estás seguro de que deseas aplicar esta foto al álbum \"%@\"?";
 "categoryImageSetHUD_updating" = "Actualizando la miniatura del álbum…";
 
-// Album set photo thumbnail — Errors
+// MARK: -- Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Error en el conjunto de fotos";
 "categoryImageSetError_message" = "No se ha podido definir la foto del álbum";
 
@@ -337,11 +338,11 @@
 "Week" = "Semana";
 "Month" = "Mes";
 
-// Errors
+// MARK: -- Errors
 "albumPhotoError_title" = "Error al obtener las fotos del álbum";
 "albumPhotoError_message" = "Error al obtener las fotos del álbum (¿foto dañada en tu álbum?)";
 
-// Image sort
+// MARK: -- Image sort
 "sortBy" = "Ordenar por";
 "imageSortTitle" = "Ordenar fotos";
 "imageSortMessage" = "Selecciona cómo deseas ordenar las fotos";
@@ -349,14 +350,14 @@
 "imageSelectingHUD" = "Seleccionando fotos…";
 "imageDeselectingHUD" = "Deseleccionando fotos…";
 
-// Image options (actions)
+// MARK: -- Image options (actions)
 "imageOptions_title" = "Opciones para la foto";
 "imageOptions_edit" = "Editar";
 "imageOptions_properties" = "Modificar las propiedades";
 "imageOptions_download" = "Descargar";
 "imageOptions_setAlbumImage" = "Definir la miniatura del álbum";
 
-// Image details
+// MARK: -- Image details
 "imageDetailsView_title" = "Propiedades";
 "editImageDetails_title" = "Título";
 "editImageDetails_titlePlaceholder" = "Título de la imagen";
@@ -366,7 +367,7 @@
 "editImageDetails_description" = "Descripción";
 "editImageDetails_comments" = "Comentarios";
 "editImageDetails_dateCreation" = "Fecha de creación";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = "Hora de creación";
 "editImageDetails_dateUnset" = "Sin denifir";
 "editImageDetails_dateToday" = "Hoy";
 "editImageDetails_dateMonthInc" = "+1 Mes";
@@ -376,14 +377,14 @@
 "editImageDetailsHUD_updatingSingle" = "Actualizando la foto…";
 "editImageDetailsHUD_updatingPlural" = "Actualizando las fotos…";
 
-// Image details — Errors
+// MARK: -- Image details — Errors
 "editImageDetailsError_title" = "Error al actualizar";
 "editImageDetailsError_message" = "Error al actualizar los cambios con tu servidor. ¿Volver a intentarlo?";
 "imageDetailsFetchError_title" = "No se han podido recuperar los detalles de la foto";
 "imageDetailsFetchError_message" = "No se han podido recuperar los datos de la foto.";
 "imageDetailsFetchError_continueMessage" = "No se han podido recuperar los datos de la foto. ¿Volver a intentarlo?";
 
-// Image privacy levels
+// MARK: -- Image privacy levels
 "privacyLevel" = "Nivel de privacidad";
 "privacyLevel_admin" = "Administradores";
 "privacyLevel_adminFamily" = "Administradores, Familia";
@@ -391,7 +392,7 @@
 "privacyLevel_adminsFamilyFriendsContacts" = "Administradores, Familia, Amigos, Contactos";
 "privacyLevel_everybody" = "Todos";
 
-// Image tags
+// MARK: -- Image tags
 "none" = "ninguna";
 "tag" = "Etiqueta";
 "tags" = "Etiquetas";
@@ -406,44 +407,44 @@
 "tagsAdd_placeholder" = "Nueva etiqueta";
 "tagsAddHUD_label" = "Creando etiqueta…";
 
-// Image tags errors
+// MARK: -- Image tags errors
 "tagsAddError_message" = "Error al crear nueva etiqueta";
 "tagsAddError_title" = "Error al crear";
 
-// Image select
+// MARK: -- Image select
 "selectImages" = "Seleccionar fotos";
 "selectImageSelected" = "1 foto seleccionada";
 "selectImagesSelected" = "%@ fotos seleccionadas";
 "selectAll" = "Todo";
 
-// Image rename (filename)
+// MARK: -- Image rename (filename)
 "renameImage_title" = "Archivo original";
 "renameImage_message" = "Introduce un nuevo nombre de archivo para esta foto";
 "renameImageHUD_label" = "Renombrando archivo…";
 
-// Image rename — Errors
+// MARK: -- Image rename — Errors
 "renameImageError_message" = "Error al cambiar el nombre del archivo";
 
-// Image in favorites
+// MARK: -- Image in favorites
 "imageFavorites_title" = "Favoritos";
 
-// Image in favorites — Error
+// MARK: -- Image in favorites — Error
 "imageFavoritesAddError_message" = "No se ha podido añadir esta foto a tus favoritos.";
 "imageFavoritesRemoveError_message" = "No se ha podido eliminar esta foto de tus favoritos.";
 
-// Image rotate
+// MARK: -- Image rotate
 "rotateImage_rotate" = "Rotar 90º…";
 "rotateImage_left" = "Sentido antihorario";
 "rotateImage_right" = "Sentido horario";
 "rotateSingleImageHUD_rotating" = "Rotando la foto…";
 "rotateSeveralImageHUD_rotating" = "Rotando las fotos…";
 
-// Image rotate — Errors
+// MARK: -- Image rotate — Errors
 "rotateImageFail_title" = "La rotación ha fallado";
 "rotateImageFail_plugin" = "El plugin RotateImage no está activado.";
 "rotateImageFail_message" = "No se ha podido rotar la imagen";
 
-// Image delete
+// MARK: -- Image delete
 "deleteImage_delete" = "Eliminar";
 "deleteImageProgress_title" = "Eliminando %@%%. Hecho.";
 
@@ -461,11 +462,11 @@
 "deleteSeveralImages_title" = "Eliminar %@ fotos/videos";
 "deleteSeveralImages_message" = "¿Estás seguro que deseas eliminar las %@ fotos/videos seleccionadas? ¡Esto no se puede deshacer!";
 
-// Image delete — Errors
+// MARK: -- Image delete — Errors
 "deleteImageFail_title" = "Error al eliminar";
 "deleteImageFail_message" = "La foto no se ha podido suprimir\n%@";
 
-// Image download
+// MARK: -- Image download
 "downloadSingleImage_title" = "Descargar foto";
 "downloadSingleImage_confirmation" = "¿Está seguro de que deseas descargar la foto seleccionada?";
 "downloadSeveralImages_title" = "Descargar %@ fotos";
@@ -475,7 +476,7 @@
 "downloadingImages" = "Descargando fotos";
 "downloadingVideo" = "Descargando vídeo";
 
-// Image download — Errors
+// MARK: -- Image download — Errors
 "downloadImageFail_title" = "Error al descargar";
 "downloadImageFail_message" = "¡No se ha podido descargar la foto!\n%@";
 "downloadVideoFail_message" = "¡No se ha podido descargar el vídeo!\n%@";
@@ -487,7 +488,7 @@
 "videoSaveError_title" = "Error al guardar el vídeo";
 "videoSaveError_message" = "No se ha podido guardar el vídeo. Error: %@";
 
-// Image move
+// MARK: -- Image move
 "moveImage_title" = "Mover al álbum";
 "moveSingleImage_selectAlbum" = "Seleccione el álbum en el que desea mover la foto \"%@\".";
 "moveSeveralImages_selectAlbum" = "Seleccione el álbum en el que desea copiar las fotos.";
@@ -496,12 +497,12 @@
 "moveSingleImageHUD_moving" = "Moviendo foto…";
 "moveSeveralImagesHUD_moving" = "Moviendo fotos…";
 
-// Image move — Errors
+// MARK: -- Image move — Errors
 "moveImageError_title" = "Movimiento fallido";
 "moveSingleImageError_message" = "Error al mover tu foto";
 "moveSeveralImagesError_message" = "No se han podido mover algunas fotos";
 
-// Image copy
+// MARK: -- Image copy
 "copyImage_title" = "Copiar al álbum";
 "copySingleImage_selectAlbum" = "Seleccione el álbum en el que desea mover la foto \"%@\".";
 "copySeveralImages_selectAlbum" = "Seleccione el álbum en el que desea copiar las fotos.";
@@ -510,12 +511,12 @@
 "copySingleImageHUD_copying" = "Copiando foto…";
 "copySeveralImagesHUD_copying" = "Copiando fotos…";
 
-// Image copy — Errors
+// MARK: -- Image copy — Errors
 "copyImageError_title" = "Error al copiar";
 "copySingleImageError_message" = "Error al copiar tu foto";
 "copySeveralImagesError_message" = "No se han podido copiar algunas fotos";
 
-// Images upload
+// MARK: -- Images upload
 "imageUploadHeader" = "Selecciona el álbum o subálbum desde el que se subirán fotos y vídeos de tu dispositivo.";
 "imageUploadHeaderTitle_images" = "Parámetros de fotos";
 "imageUploadHeaderText_images" = "Establezca los parámetros que aplicar a la selección de fotos/vídeos";
@@ -547,7 +548,7 @@
 "imageUploadCompleted_message" = "foto subida a su servidor Piwigo.";
 "imageUploadCompleted_message>1" = "fotos subidas a su servidor Piwigo.";
 
-// Image upload — Errors
+// MARK: -- Image upload — Errors
 "uploadError_title" = "Error al subir";
 "uploadError_message" = "No se pudo cargar la foto. Error: %@";
 "uploadCancelled_title" = "Carga cancelada";
@@ -574,7 +575,7 @@
 "videoUploadError_unknown" = "Lo sentimos, no se ha podido cargar el vídeo debido a un error desconocido durante la conversión del MP4. Error: %@";
 "videoUploadCancelled_message" = "Se ha cancelado la carga del vídeo.";
 
-// Image share
+// MARK: -- Image share
 "shareImageMetadata_Title" = "Compartir metadatos";
 "shareImageMetadata_subTitle1" = "Acciones compartiendo fotos con metadatos privados";
 "shareImageMetadata_subTitle2" = "Acciones compartiendo fotos sin metadatos privados";
@@ -625,15 +626,15 @@
 "localAlbums" = "Biblioteca de fotografías";
 "localAlbums_accessible" = "Fotos accesibles";
 
-// Local albums — Access not Authorized
+// MARK: -- Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Sin acceso";
 "localAlbums_photosNiltitle" = "Problema al leer las fotos";
 "localAlbums_photosNnil_msg" = "Se ha producido un problema al leer la biblioteca local de fotos.";
 
-// Local albums — Tell user to change settings, how
+// MARK: -- Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "No se puede abrir la biblioteca local de fotos. Por favor, vaya a la aplicación de configuración y habilite el acceso para Piwigo.";
 
-// Local images — Explain
+// MARK: -- Local images — Explain
 "localImages_reUploadTitle" = "Volver a cargar";
 "localImages_deleteTitle" = "Eliminar del carrete de cámara";
 "localImages_deleteMessage" = "¿Desea eliminar las fotos o vídeos subidos del carrete de la cámara? Las fotos o vídeos eliminados seguirán estando disponibles en la papelera de fotos de iOS durante 30 días.";
@@ -641,19 +642,19 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
-"Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
-"Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
-"Separator" = "Separator";
-"Counter" = "Counter";
+"Text" = "Texto";
+"Year" = "Año";
+"Hour" = "Hora";
+"12-hour" = "Ciclo de 12 horas";
+"24-hour" = "Ciclo de 24 horas";
+"Minute" = "Minuto";
+"Second" = "Segundo";
+"Abbreviation" = "Abreviatura";
+"FullName" = "Nombre completo";
+"Separator" = "Separador";
+"Counter" = "Contador";
 
-// Settings — Piwigo Server
+// MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Servidor de Piwigo";
 "settingsHeader_notSecure" = "¡Sitio web no seguro!";
 "settings_server" = "Dirección";
@@ -662,11 +663,11 @@
 "settings_logout" = "Cerrar sesión";
 "settingsFooter_formats" = "El servidor acepta los siguientes tipos de fichero";
 
-// Settings — Unused
+// MARK: -- Settings — Unused
 "settingsHeader_general" = "Configuración general";
 "settingsHeader_thumbnails" = "Miniaturas";
 
-// Settings — Albums
+// MARK: -- Settings — Albums
 "defaultImageSort" = "Ordenar";
 "defaultImageSort>320px" = "Orden por defecto";
 "defaultImageSort>414px" = "Clasificación por defecto de las fotos";
@@ -691,7 +692,7 @@
 "thumbnailSizeXXLarge" = "Enorme";
 "thumbnailSizexFullRes" = "Resolución completa";
 
-// Settings — Images
+// MARK: -- Settings — Images
 "defaultThumbnailFile" = "Archivo";
 "defaultThumbnailFile>320px" = "Archivo de miniatura";
 "defaultThumbnailFile>414px" = "Fichero de miniaturas de fotos";
@@ -732,61 +733,62 @@
 "imageSizeXXLarge" = "Enorme";
 "imageSizexFullRes" = "Resolución completa";
 
-// Settings — Videos
+// MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "Reproducción automática";
 "settings_videoLoop" = "Vídeos en bucle";
 
-// Settings — Upload
+// MARK: -- Settings — Upload
 "settingsHeader_upload" = "Parámetros de carga por defecto";
 "settings_defaultAuthor" = "Autor";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "Nombre del autor";
 "settings_defaultAuthorPlaceholder" = "Nombre del autor";
 "settings_defaultPrivacy" = "Privacidad";
 "settings_defaultPrivacy>414px" = "Selecciona quién podrá ver las fotos";
 "settings_stripGPSdata" = "Eliminar metadatos privados";
 "settings_photoResize" = "Redimensionar antes de subir";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "Reducir foto";
 "settings_photoSize" = "Tamaño";
 "settings_photoCompress" = "Comprimir antes de subir";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "Comprimir foto";
 "settings_photoQuality" = "Calidad";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
-"settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
-"settings_suffixPlaceholder" = "_suffix";
+"settings_renameFile" = "Renombrar";
+"settings_renameFileLong" = "Renombrar archivo";
+"settings_renameFile_info" = "Indique a continuación cómo deben renombrarse los archivos antes de subirlos.";
+"settings_addActionMsg" = "Seleccione qué acción añadir";
+"settings_renameAddBefore" = "Añadir antes del nombre";
+"settings_renamePrefix" = "Añadir prefijo al nombre de archivo";
+"settings_prefixPlaceholder" = "Prefijo_";
+"settings_renameReplace" = "Reemplazar nombre de archivo";
+"settings_renameAddAfter" = "Añadir después del nombre";
+"settings_renameSuffix" = "Añadir sufijo al nombre de archivo";
+"settings_suffixPlaceholder" = "_sufijo";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
+"settings_renameDateHeader" = "Seleccione un formato de fecha para incluir en el nombre de archivo.";
+"settings_renameTwoDigit" = "Versión de 2 dígitos";
+"settings_renameFourDigit" = "Versión de 4 dígitos";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Current Number";
-"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "Seleccione un formato de hora para incluir en el nombre de archivo.";
+"settings_renameFiveDigit" = "Versión de 5 dígitos";
+"settings_renameCounterHeader" = "Seleccione un formato de contador para incluir en el nombre de archivo.";
+"settings_renameCounterStart" = "Número Actual";
+"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
+"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
+"settings_renameCounterDigits" = "Dígitos";
+"settings_renameCounterDigitsFooter" = "Cuando el contador necesite más dígitos de los especificados, el número de dígitos se incrementará automáticamente.";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "Extension del archivo";
+"settings_renameChangeCase" = "Cambiar mayúsculas y minúsculas";
+"settings_renameLowercase" = "Minúsculas";
+"settings_renameUppercase" = "Mayúsculas";
 
 "settings_wifiOnly" = "Sólo Wi-Fi";
 "settings_deleteImage" = "Eliminar después de subir";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "Eliminar después de subir";
 
-// Settings — Auto-Upload
+// MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Subida Automática";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Subida automática de fotos";
 "settings_autoUploadEnabled" = "Activado";
 "settings_autoUploadEnabledInfo" = "Las fotos se subirán automáticamente a tu Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Las fotos y vídeos se subirán automáticamente a tu Piwigo.";
@@ -801,7 +803,7 @@
 "AutoUploadError_Disabled" = "La opción de carga automática está desactivada en los ajustes de la aplicación.";
 "AutoUploadError_Failed" = "Varias transferencias fallaron y la cola de subida está en espera. Por favor, comprueba en la aplicación.";
 
-// Settings — Upload Photo Size
+// MARK: -- Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Tamaño máximo de foto";
 "UploadPhotoSize_header" = "Por favor, seleccione el tamaño máximo de las fotos que se subirán.";
 "UploadPhotoSize_resolution" = "Resolución máxima de las cámaras incorporadas:";
@@ -811,7 +813,7 @@
 "UploadPhotoSize_original" = "Sin reducción";
 "UploadRequests_cache" = "Subidas";
 
-// Settings — Privacy
+// MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "Privacidad";
 "settings_appLock" = "Bloqueo App";
 "settings_appLockEnter" = "Introducir contraseña";
@@ -842,7 +844,7 @@
 "settings_clearClipboard5minUnit" = "Después de 5 min";
 "settings_clearClipboardNever" = "Nunca";
 
-// Settings — Cache
+// MARK: -- Settings — Cache
 "settingsHeader_cache" = "Memoria caché";
 "settings_database" = "Datos";
 "settings_cacheClear" = "Limpiar caché";
@@ -850,7 +852,7 @@
 "settings_cacheClearAll" = "Limpiar todo";
 "settings_cacheClearMsg" = "¿Estás seguro de querer borrar la caché de fotos? Esto hará que los álbumes y las fotos tarden un tiempo en volver a cargarse.";
 
-// Settings — Appearance
+// MARK: -- Settings — Appearance
 "settingsHeader_appearance" = "Apariencia";
 "settingsHeader_colorPalette" = "Paleta de colores";
 "settings_lightColor" = "Claro";
@@ -859,7 +861,7 @@
 "settings_brightness" = "Brillo";
 "settings_brightnessHelp" = "En ambientes poco iluminados, la opción Automático utiliza una paleta de colores más oscura para hacer que las fotos destaquen contra los fondos más oscuros.";
 
-// Settings - Administration
+// MARK: -- Settings - Administration
 "singleUserCount" = "%@ usuario";
 "severalUsersCount" = "%@ usuarios";
 "singleGroupCount" = "%@ grupo";
@@ -867,7 +869,7 @@
 "singleCommentCount" = "%@ comentario";
 "severalCommentsCount" = "%@ comentarios";
 
-// Settings — Information
+// MARK: -- Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Información";
 "settings_twitter" = "@piwigo";
@@ -882,7 +884,7 @@
 "settings_acknowledgements" = "Agradecimientos";
 "settings_privacy" = "Política de privacidad";
 
-// Settings — Help
+// MARK: -- Settings — Help
 "help01_header" = "Selección Múltiple";
 "help01_text" = "Desliza el dedo de izquierda a derecha (o de derecha a izquierda) luego abajo, etc.";
 "help02_header" = "Subiendo en \nsegundo plano";
@@ -903,12 +905,12 @@
 "help08_text" = "Pulsación larga en el botón atrás para mostrar la lista de álbumes padre.";
 "help08_text2" = "Toca el álbum padre de tu elección para volver a él.";
 
-// Settings - Logs
+// MARK: -- Settings - Logs
 "settingsHeader_troubleshoot" = "Resolución de problemas";
 "settings_logs" = "Registros";
 "settings_JSONinvalid" = "Respuestas del servidor no válidas";
 
-// What's New in Piwigo
+// MARK: -- What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
 "whatsNew_title1" = "Agrupar fotos";
 "whatsNew_desc1" = "Por día, semana o mes.";

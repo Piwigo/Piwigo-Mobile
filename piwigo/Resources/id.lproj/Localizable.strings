@@ -6,15 +6,15 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - Generic
+// MARK: Generic
 // ===========================================================================
-// Tab bar
+// MARK: -- Tab bar
 
 "tabBar_albums" = "Album";
 "tabBar_upload" = "Unggah";
 "tabBar_preferences" = "Pengaturan";
 
-// Alert buttons
+// MARK: -- Alert buttons
 "alertOkButton" = "Oke";
 "alertDismissButton" = "Abaikan";
 "alertYesButton" = "Ya";
@@ -26,16 +26,16 @@
 "alertNextButton" = "Gambar Berikutnya";
 "alertTryButton" = "Mencoba";
 
-// HUD views
+// MARK: -- HUD views
 "loadingHUD_label" = "Memuat…";
 "completeHUD_label" = "Selesai";
 "errorHUD_label" = "Kesalahan";
 
-// Upload rights
+// MARK: -- Upload rights
 "uploadRights_title" = "Hak Unggah Diperlukan";
 "uploadRights_message" = "Anda harus memiliki hak unggah untuk dapat mengunggah gambar atau video.";
 
-// Errors
+// MARK: -- Errors
 "internetErrorGeneral_title" = "Galat Koneksi";
 "internetErrorGeneral_broken" = "Maaf, komunikasi terputus. Coba masuk lagi.";
 "internetCancellingConnection_button" = "Membatalkan Koneksi…";
@@ -60,28 +60,28 @@
 "CoreData_MigrationError_generic" = "Terjadi kesalahan yang tidak terduga selama migrasi.";
 "CoreData_MigrationError_timeout" = "Aplikasi dihentikan sementara saat memigrasikan basis data. Silakan mulai ulang aplikasi dan coba lagi.";
 
-// User objects
+// MARK: -- User objects
 "CoreDataFetch_UserMissingData" = "Will discard a user account missing a valid username.";
 "CoreDataFetch_UserUnknownStatus" = "Failed to get Community extension parameters.\nTry logging in again.";
 "CoreData_UserCreateFailed" = "Failed to create a new User object.";
 
-// Album objects
+// MARK: -- Album objects
 "CoreDataFetch_AlbumError" = "Fetch albums error!";
 "CoreDataFetch_AlbumMissingData" = "Found and will discard an album missing a valid ID or name.";
 "CoreDataFetch_AlbumCreateFailed" = "Failed to create a new Album object.";
 "CoreData_AlbumNotFound" = "Album not in persistent cache.";
 
-// Image objects
+// MARK: -- Image objects
 "CoreDataFetch_ImageError" = "Fetch photos/videos error!";
 "CoreDataFetch_ImageMissingData" = "Found and will discard a photo/video missing a valid ID or URL.";
 "CoreDataFetch_ImageCreateFailed" = "Failed to create a new Image object.";
 
-// Tag objects
+// MARK: -- Tag objects
 "CoreDataFetch_TagError" = "Fetch tags error!";
 "CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
 "CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
 
-// Upload objects
+// MARK: -- Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
 "CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
@@ -89,7 +89,7 @@
 // ===========================================================================
 // MARK: - Login / Logout
 // ===========================================================================
-// Login
+// MARK: -- Login
 "login" = "Masuk";
 "login_serverPlaceholder" = "contoh.com";
 "login_userPlaceholder" = "Nama pengguna (opsional)";
@@ -110,7 +110,7 @@
 "loginHTTPSfailed_title" = "Secure Connection Failed";
 "loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
 
-// Login — Errors
+// MARK: -- Login — Errors
 "serverURLerror_title" = "URL salah";
 "serverURLerror_message" = "Silakan perbaiki alamat server web Piwigo.";
 "serverMethodsError_title" = "Metode Tidak Diketahui";
@@ -137,24 +137,25 @@
 "sessionStatusError_title" = "Pengesahan Gagal";
 "sessionStatusError_message" = "Gagal untuk pengesahan pada peladen. Coba masuk lagi.";
 
-// Logout
+// MARK: -- Logout
 "logoutConfirmation_title" = "Keluar";
 "logoutConfirmation_message" = "Anda yakin ingin keluar?";
 
-// Logout — Errors
+// MARK: -- Logout — Errors
 "logoutFail_title" = "Gagal Keluar";
 
 
 // ===========================================================================
 // MARK: - Albums
 // ===========================================================================
-// Generic
+// MARK: -- Generic
+"albumID" = "Album ID";
 "singleAlbumCount" = "%@ album";
 "severalAlbumsCount" = "%@ albums";
 "singleSubAlbumCount" = "%@ sub-album";
 "severalSubAlbumsCount" = "%@ sub-albums";
 
-// Albums view
+// MARK: -- Albums view
 "categoryUpdating" = "Updating…";
 "categoryUpdatedOn" = "Updated on %@";
 "categoryUpdatedAt" = "Updated at %@";
@@ -167,7 +168,7 @@
 "categoryImageList_favorite" = "Favorite";
 "categoryImageList_unfavorite" = "Unfavorite";
 
-// Albums "Discover"
+// MARK: -- Albums "Discover"
 "categoryDiscover_title" = "Discover";
 "categoryDiscoverTagged_title" = "Tagged";
 "categoryDiscoverVisits_title" = "Most visited";
@@ -176,7 +177,7 @@
 "categoryDiscoverRecent_title" = "Recent photos";
 "categoryDiscoverFavorites_title" = "Your favorites";
 
-// Albums sort
+// MARK: -- Albums sort
 "categorySort_sort" = "Sort Images By…";
 "categorySort_default" = "Default";
 "categorySort_name" = "Photo Title";
@@ -210,7 +211,7 @@
 "categoryView_group" = "Group Images By…";
 "categoryView_show" = "Show…";
 
-// Album selection
+// MARK: -- Album selection
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sub-album";
 "categorySelection_root" = "Akar Album";
@@ -219,7 +220,7 @@
 "categorySelectionHUD_label" = "Mengambil Data album…";
 "categorySelection_allAlbums" = "All Albums";
 
-// Album upload
+// MARK: -- Album upload
 "categoryUpload_noSubAlbum" = "Ada ada sub album untuk meng-upload gambar ke";
 "categoryUpload_chooseAlbum" = "Pilih album untuk mengunggah gambar";
 "categoryUpload_LocalAlbums" = "Album lokal";
@@ -234,12 +235,12 @@
 "categoryUpload_otherAlbums" = "Other Albums";
 "categoryUpload_pasteboard" = "Clipboard";
 
-// Default album
+// MARK: -- Default album
 "setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
 "setDefaultCategory_message" = "Apakah Anda yakin Anda ingin mengatur album \"%@\" sebagai default album?";
 
-// Album create
+// MARK: -- Album create
 "createNewAlbum_title" = "Album Baru";
 "createNewAlbum_message" = "Masukkan nama untuk album ini:";
 "createNewAlbum_placeholder" = "Nama Album";
@@ -247,34 +248,34 @@
 "createNewAlbumDescription_noDescription" = "Tidak ada Deskripsi";
 "createNewAlbumHUD_label" = "Membuat Album…";
 
-// Album create — Errors
+// MARK: -- Album create — Errors
 "createAlbumError_title" = "Galat Membuat Album";
 "createAlbumError_message" = "Gagal untuk membuat album baru";
 
-// Album options (swipe actions)
+// MARK: -- Album options (swipe actions)
 "categoryCellOption_addPhotos" = "Add Photos";
 "categoryCellOption_rename" = "Ganti Nama";
 "categoryCellOption_move" = "Pindah";
 "categoryCellOption_delete" = "Hapus";
 
-// Album rename
+// MARK: -- Album rename
 "renameCategory_title" = "Ganti Nama Album";
 "renameCategory_message" = "Masukkan nama baru untuk album ini";
 "renameCategory_button" = "Ganti Nama";
 "renameCategoryHUD_label" = "Mengganti Nama Album…";
 
-// Album rename — Errors
+// MARK: -- Album rename — Errors
 "renameCategoyError_title" = "Gagal Mengganti Nama";
 "renameCategoyError_message" = "Gagal untuk mengganti nama album Anda";
 
-// Album refresh representative
+// MARK: -- Album refresh representative
 "refreshCategoryHUD_label" = "Perwakilan menyegarkan…";
 
-// Album refresh representative — Errors
+// MARK: -- Album refresh representative — Errors
 "refreshCategoyError_title" = "Gagal memuat ulang";
 "refreshCategoyError_message" = "Gagal untuk me-refresh perwakilan album Anda";
 
-// Album delete
+// MARK: -- Album delete
 "deleteCategory_title" = "HAPUS ALBUM";
 "deleteCategory_message" = "ANDA YAKIN INGIN MENGHAPUS ALBUM \"%@\" DAN SEMUA %@ GAMBAR?";
 "deleteCategory_empty" = "Hapus Album kosong";
@@ -288,23 +289,23 @@
 "deleteCategoryConfirm_deleteButton" = "HAPUS";
 "deleteCategoryHUD_label" = "Menghapus Album…";
 
-// Album delete — errors
+// MARK: -- Album delete — errors
 "deleteCategoryMatchError_title" = "Nomor Tidak Sesuai";
 "deleteCategoryMatchError_message" = "Jumlah gambar yang Anda masukkan tidak sesuai dengan jumlah gambar dalam album. Silakan coba lagi jika Anda ingin menghapus album ini";
 "deleteCategoryError_title" = "Gagal Menghapus";
 "deleteCategoryError_message" = "Gagal menghapus album Anda";
 
-// Album move
+// MARK: -- Album move
 "moveCategory" = "Pindahkan Album";
 "moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "Anda yakin ingin memindahkan \"%@\" ke dalam album \"%@\"?";
 "moveCategoryHUD_moving" = "Memindahkan Album…";
 
-// Album move — Errors
+// MARK: -- Album move — Errors
 "moveCategoryError_title" = "Gagal Memindahkan";
 "moveCategoryError_message" = "Gagal untuk memindahkan album Anda";
 
-// Album set photo thumbnail
+// MARK: -- Album set photo thumbnail
 "categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "Pilih album saat ini untuk gambar ini";
 "categorySelection_one" = "Pilih album yang didalamnya terdapat gambar ini";
@@ -313,7 +314,7 @@
 "categoryImageSet_message" = "Anda yakin ingin membuat gambar ini sebagai gambar untuk album \"%@\"?";
 "categoryImageSetHUD_updating" = "Memperbarui Gambar Mini Album…";
 
-// Album set photo thumbnail — Errors
+// MARK: -- Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Penetapan Gambar Galat";
 "categoryImageSetError_message" = "Gagal untuk menetapkan gambar album";
 
@@ -337,11 +338,11 @@
 "Week" = "Week";
 "Month" = "Month";
 
-// Errors
+// MARK: -- Errors
 "albumPhotoError_title" = "Galat dalam Mendapatkan Foto Album";
 "albumPhotoError_message" = "Gagal untuk mendapatkan foto album (gambar rusak dalam album Anda?)";
 
-// Image sort
+// MARK: -- Image sort
 "sortBy" = "Sortir Berdasarkan";
 "imageSortTitle" = "Pilah Gambar";
 "imageSortMessage" = "Silakan pilih bagaimana Anda ingin memilah gambar";
@@ -349,14 +350,14 @@
 "imageSelectingHUD" = "Selecting Photos…";
 "imageDeselectingHUD" = "Deselecting Photos…";
 
-// Image options (actions)
+// MARK: -- Image options (actions)
 "imageOptions_title" = "Pilihan Gambar";
 "imageOptions_edit" = "Sunting";
 "imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "Unduh";
 "imageOptions_setAlbumImage" = "Tetapkan sebagai Gambar Album";
 
-// Image details
+// MARK: -- Image details
 "imageDetailsView_title" = "Properti";
 "editImageDetails_title" = "Judul:";
 "editImageDetails_titlePlaceholder" = "Judul";
@@ -376,14 +377,14 @@
 "editImageDetailsHUD_updatingSingle" = "Memperbarui foto…";
 "editImageDetailsHUD_updatingPlural" = "Memperbarui foto…";
 
-// Image details — Errors
+// MARK: -- Image details — Errors
 "editImageDetailsError_title" = "Gagal untuk Memperbarui";
 "editImageDetailsError_message" = "Gagal untuk memperbarui perubahan dengan peladen Anda. Coba lagi?";
 "imageDetailsFetchError_title" = "Galat dalam Pengambilan Detai Gambar";
 "imageDetailsFetchError_message" = "Fetching the photo data failed.";
 "imageDetailsFetchError_continueMessage" = "Pengambilan data gambar gagal. Lanjutkan?";
 
-// Image privacy levels
+// MARK: -- Image privacy levels
 "privacyLevel" = "Level Privasi";
 "privacyLevel_admin" = "Admin";
 "privacyLevel_adminFamily" = "Admin, Keluarga";
@@ -391,7 +392,7 @@
 "privacyLevel_adminsFamilyFriendsContacts" = "Admin, Keluarga, Teman, Kontak";
 "privacyLevel_everybody" = "Semua orang";
 
-// Image tags
+// MARK: -- Image tags
 "none" = "tidak ada";
 "tag" = "Tag";
 "tags" = "Tag";
@@ -406,44 +407,44 @@
 "tagsAdd_placeholder" = "New tag";
 "tagsAddHUD_label" = "Creating Tag…";
 
-// Image tags errors
+// MARK: -- Image tags errors
 "tagsAddError_message" = "Failed to create new tag";
 "tagsAddError_title" = "Creation Failed";
 
-// Image select
+// MARK: -- Image select
 "selectImages" = "Pilih Gambar";
 "selectImageSelected" = "1 gambar yang dipilih";
 "selectImagesSelected" = "%@ gambar yang dipilih";
 "selectAll" = "Semua";
 
-// Image rename (filename)
+// MARK: -- Image rename (filename)
 "renameImage_title" = "Original File";
 "renameImage_message" = "Enter a new file name for this photo";
 "renameImageHUD_label" = "Renaming File…";
 
-// Image rename — Errors
+// MARK: -- Image rename — Errors
 "renameImageError_message" = "Failed to rename photo file";
 
-// Image in favorites
+// MARK: -- Image in favorites
 "imageFavorites_title" = "Favorites";
 
-// Image in favorites — Error
+// MARK: -- Image in favorites — Error
 "imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
 "imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
-// Image rotate
+// MARK: -- Image rotate
 "rotateImage_rotate" = "Rotate 90°…";
 "rotateImage_left" = "Counterclockwise";
 "rotateImage_right" = "Clockwise";
 "rotateSingleImageHUD_rotating" = "Rotating Photo…";
 "rotateSeveralImageHUD_rotating" = "Rotating Photos…";
 
-// Image rotate — Errors
+// MARK: -- Image rotate — Errors
 "rotateImageFail_title" = "Rotation Failed";
 "rotateImageFail_plugin" = "The rotateImage plugin is not activated.";
 "rotateImageFail_message" = "Image could not be rotated";
 
-// Image delete
+// MARK: -- Image delete
 "deleteImage_delete" = "Hapus";
 "deleteImageProgress_title" = "Menghapus %@%% Selesai";
 
@@ -461,11 +462,11 @@
 "deleteSeveralImages_title" = "Hapus Gambar";
 "deleteSeveralImages_message" = "Anda yakin ingin menghapus gambar %@ yang dipilih? Ini tidak dapat dibatalkan!";
 
-// Image delete — Errors
+// MARK: -- Image delete — Errors
 "deleteImageFail_title" = "Gagal Menghapus";
 "deleteImageFail_message" = "Gambar tidak dapat dihapus\n%@";
 
-// Image download
+// MARK: -- Image download
 "downloadSingleImage_title" = "Unduh Gambar";
 "downloadSingleImage_confirmation" = "Yakin ingin mengunduh gambar yang dipilih?";
 "downloadSeveralImages_title" = "Unduh %@ Gambar";
@@ -475,7 +476,7 @@
 "downloadingImages" = "Mengunduh Gambar";
 "downloadingVideo" = "Downloading Video";
 
-// Image download — Errors
+// MARK: -- Image download — Errors
 "downloadImageFail_title" = "Gagal Mengunduh";
 "downloadImageFail_message" = "Gagal untuk mengunduh gambar!\n%@";
 "downloadVideoFail_message" = "Gagal untuk mengunduh video!\n%@";
@@ -487,7 +488,7 @@
 "videoSaveError_title" = "Gagal Menyimpan Video";
 "videoSaveError_message" = "Gagal untuk menyimpan video. Galat: %@";
 
-// Image move
+// MARK: -- Image move
 "moveImage_title" = "Pindah ke Album";
 "moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
 "moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
@@ -496,12 +497,12 @@
 "moveSingleImageHUD_moving" = "Memindahkan…";
 "moveSeveralImagesHUD_moving" = "Memindahkan…";
 
-// Image move — Errors
+// MARK: -- Image move — Errors
 "moveImageError_title" = "Gagal Memindahkan";
 "moveSingleImageError_message" = "Gagal memindahkan gambar anda";
 "moveSeveralImagesError_message" = "Failed to move some photos";
 
-// Image copy
+// MARK: -- Image copy
 "copyImage_title" = "Salin ke Album";
 "copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
 "copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
@@ -510,12 +511,12 @@
 "copySingleImageHUD_copying" = "Menyalin Gambar…";
 "copySeveralImagesHUD_copying" = "Menyalin Gambar…";
 
-// Image copy — Errors
+// MARK: -- Image copy — Errors
 "copyImageError_title" = "Gagal menyalin";
 "copySingleImageError_message" = "Gagal menyalin gambar anda";
 "copySeveralImagesError_message" = "Failed to copy some photos";
 
-// Images upload
+// MARK: -- Images upload
 "imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "Photos Parameters";
 "imageUploadHeaderText_images" = "Please set the parameters to apply to the selection of photos/videos";
@@ -547,7 +548,7 @@
 "imageUploadCompleted_message" = "gambar/video telah duinggah ke peladen Piwigo Anda.";
 "imageUploadCompleted_message>1" = "gambar/video telah diunggah ke peladen Piwigo Anda.";
 
-// Image upload — Errors
+// MARK: -- Image upload — Errors
 "uploadError_title" = "Galat dalam Mengunggah";
 "uploadError_message" = "Tidak dapat mengunggah gambar Anda. Galat: %@";
 "uploadCancelled_title" = "Mengunggah Dibatalkan";
@@ -574,7 +575,7 @@
 "videoUploadError_unknown" = "Maaf, pengunggahan video telah gagal karena kesalahan yang tidak diketahui selama konversi MP4. Galat: %@";
 "videoUploadCancelled_message" = "Pengunggahan video telah dibatalkan.";
 
-// Image share
+// MARK: -- Image share
 "shareImageMetadata_Title" = "Share Metadata";
 "shareImageMetadata_subTitle1" = "Actions sharing photos with private metadata";
 "shareImageMetadata_subTitle2" = "Actions sharing photos without private metadata";
@@ -625,15 +626,15 @@
 "localAlbums" = "Galeri foto";
 "localAlbums_accessible" = "Accessible Photos";
 
-// Local albums — Access not Authorized
+// MARK: -- Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Akses Ditolak";
 "localAlbums_photosNiltitle" = "Masalah dalam Membaca Foto";
 "localAlbums_photosNnil_msg" = "Ada masalah dalam membaca pustaka lokal foto Anda.";
 
-// Local albums — Tell user to change settings, how
+// MARK: -- Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Tidak dapat membuka pustaka lokal foto. Silakan masuk ke Pengaturan aplikasi dan izinkan akses untuk Piwigo.";
 
-// Local images — Explain
+// MARK: -- Local images — Explain
 "localImages_reUploadTitle" = "Re-upload";
 "localImages_deleteTitle" = "Remove from Camera Roll";
 "localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
@@ -653,7 +654,7 @@
 "Separator" = "Separator";
 "Counter" = "Counter";
 
-// Settings — Piwigo Server
+// MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Peladen Piwigo";
 "settingsHeader_notSecure" = "Situs tidak aman!";
 "settings_server" = "Alamat";
@@ -662,11 +663,11 @@
 "settings_logout" = "Keluar";
 "settingsFooter_formats" = "Server menerima jenis file berikut";
 
-// Settings — Unused
+// MARK: -- Settings — Unused
 "settingsHeader_general" = "Pengaturan Umum";
 "settingsHeader_thumbnails" = "Gambar Mini";
 
-// Settings — Albums
+// MARK: -- Settings — Albums
 "defaultImageSort" = "Sortir";
 "defaultImageSort>320px" = "Sortir Standar";
 "defaultImageSort>414px" = "Sortir Standar untuk Gambar";
@@ -691,7 +692,7 @@
 "thumbnailSizeXXLarge" = "Besar";
 "thumbnailSizexFullRes" = "Resolusi Penuh";
 
-// Settings — Images
+// MARK: -- Settings — Images
 "defaultThumbnailFile" = "Berkas";
 "defaultThumbnailFile>320px" = "File Gambar Kecil";
 "defaultThumbnailFile>414px" = "File Gambar Thumbnail";
@@ -732,11 +733,11 @@
 "imageSizeXXLarge" = "Besar Sekali";
 "imageSizexFullRes" = "Resolusi Penuh";
 
-// Settings — Videos
+// MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "Pemutaran otomatis";
 "settings_videoLoop" = "Video dalam lingkaran";
 
-// Settings — Upload
+// MARK: -- Settings — Upload
 "settingsHeader_upload" = "Pengaturan Unggah Standar";
 "settings_defaultAuthor" = "Penulis";
 "settings_defaultAuthorLong" = "Author Name";
@@ -771,7 +772,8 @@
 "settings_renameFiveDigit" = "5-digit version";
 "settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
 "settings_renameCounterStart" = "Current Number";
-"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
+"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
 "settings_renameCounterDigits" = "Digits";
 "settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
 
@@ -784,7 +786,7 @@
 "settings_deleteImage" = "Hapus Setelah Mengunggah";
 "settings_deleteImageLong" = "Delete After Upload";
 
-// Settings — Auto-Upload
+// MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
 "settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
@@ -801,7 +803,7 @@
 "AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
 "AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
 
-// Settings — Upload Photo Size
+// MARK: -- Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Max Photo Size";
 "UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
 "UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
@@ -811,7 +813,7 @@
 "UploadPhotoSize_original" = "No Downsizing";
 "UploadRequests_cache" = "Uploads";
 
-// Settings — Privacy
+// MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
 "settings_appLock" = "App Lock";
 "settings_appLockEnter" = "Enter Passcode";
@@ -842,7 +844,7 @@
 "settings_clearClipboard5minUnit" = "After 5 min";
 "settings_clearClipboardNever" = "Never";
 
-// Settings — Cache
+// MARK: -- Settings — Cache
 "settingsHeader_cache" = "Cache";
 "settings_database" = "Data";
 "settings_cacheClear" = "Bersihkan Cache";
@@ -850,7 +852,7 @@
 "settings_cacheClearAll" = "Clear All";
 "settings_cacheClearMsg" = "Apakah anda ingin membersihkan cache gambar? Hal ini membuat album dan gambar memerlukan waktu untuk memuat lagi.";
 
-// Settings — Appearance
+// MARK: -- Settings — Appearance
 "settingsHeader_appearance" = "Appearance";
 "settingsHeader_colorPalette" = "Color Palette";
 "settings_lightColor" = "Light";
@@ -859,7 +861,7 @@
 "settings_brightness" = "Kecerahan";
 "settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
-// Settings - Administration
+// MARK: -- Settings - Administration
 "singleUserCount" = "%@ user";
 "severalUsersCount" = "%@ users";
 "singleGroupCount" = "%@ group";
@@ -867,7 +869,7 @@
 "singleCommentCount" = "%@ comment";
 "severalCommentsCount" = "%@ comments";
 
-// Settings — Information
+// MARK: -- Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Informasi";
 "settings_twitter" = "@piwigo";
@@ -882,7 +884,7 @@
 "settings_acknowledgements" = "Ucapan Terima Kasih";
 "settings_privacy" = "Kebijakan Privasi";
 
-// Settings — Help
+// MARK: -- Settings — Help
 "help01_header" = "Multiple Selection";
 "help01_text" = "Slide your finger from left to right (or right to left) then down, etc.";
 "help02_header" = "Background Uploading";
@@ -903,12 +905,12 @@
 "help08_text" = "Long-press on the back button to display the list of parent albums.";
 "help08_text2" = "Tap the parent album of your choice to jump back to it.";
 
-// Settings - Logs
+// MARK: -- Settings - Logs
 "settingsHeader_troubleshoot" = "Troubleshooting";
 "settings_logs" = "Logs";
 "settings_JSONinvalid" = "Invalid Server Responses";
 
-// What's New in Piwigo
+// MARK: -- What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
 "whatsNew_title1" = "Group Photos";
 "whatsNew_desc1" = "By day, week or month.";

@@ -6,15 +6,15 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - Generic
+// MARK: Generic
 // ===========================================================================
-// Tab bar
+// MARK: -- Tab bar
 
 "tabBar_albums" = "Albums";
 "tabBar_upload" = "Uploaden";
 "tabBar_preferences" = "Instellingen";
 
-// Alert buttons
+// MARK: -- Alert buttons
 "alertOkButton" = "Ok";
 "alertDismissButton" = "Sluiten";
 "alertYesButton" = "Ja";
@@ -26,16 +26,16 @@
 "alertNextButton" = "Volgende foto";
 "alertTryButton" = "Probeer";
 
-// HUD views
+// MARK: -- HUD views
 "loadingHUD_label" = "Bezig met laden…";
 "completeHUD_label" = "Klaar";
 "errorHUD_label" = "Fout";
 
-// Upload rights
+// MARK: -- Upload rights
 "uploadRights_title" = "Upload-rechten nodig";
 "uploadRights_message" = "Je moet uploadrechten hebben om foto's en video's te kunnen uploaden.";
 
-// Errors
+// MARK: -- Errors
 "internetErrorGeneral_title" = "Verbindingsfout";
 "internetErrorGeneral_broken" = "Sorry, de verbinding is verbroken. Probeer opnieuw in te loggen.";
 "internetCancellingConnection_button" = "Verbinding afgebroken…";
@@ -60,28 +60,28 @@
 "CoreData_MigrationError_generic" = "Er is een onverwachte fout opgetreden tijdens de migratie.";
 "CoreData_MigrationError_timeout" = "De app werd opgeschort tijdens het migreren van de database. Start de app opnieuw op en probeer het opnieuw.";
 
-// User objects
+// MARK: -- User objects
 "CoreDataFetch_UserMissingData" = "Verwijdert een gebruikersaccount en mist een geldige gebruikersnaam.";
 "CoreDataFetch_UserUnknownStatus" = "Fout bij het ophalen van de Community extensie parameters. Probeer opnieuw in te loggen.";
 "CoreData_UserCreateFailed" = "Het maken van een nieuw gebruikersobject is mislukt.";
 
-// Album objects
+// MARK: -- Album objects
 "CoreDataFetch_AlbumError" = "Albums fout ophalen!";
 "CoreDataFetch_AlbumMissingData" = "Gevonden en zullen een album verwijderen dat een geldige ID of naam ontbeert.";
 "CoreDataFetch_AlbumCreateFailed" = "Het maken van een nieuw Album object is mislukt.";
 "CoreData_AlbumNotFound" = "Album niet in persistente cache.";
 
-// Image objects
+// MARK: -- Image objects
 "CoreDataFetch_ImageError" = "Fout bij het ophalen van foto's/video's!";
 "CoreDataFetch_ImageMissingData" = "Een foto/video die geen geldige ID of URL mist en zal worden verwijderd.";
 "CoreDataFetch_ImageCreateFailed" = "Nieuw object afbeelding maken mislukt.";
 
-// Tag objects
+// MARK: -- Tag objects
 "CoreDataFetch_TagError" = "Fout bij het ophalen van tags!";
 "CoreDataFetch_TagMissingData" = "Een tag zonder geldige code of naam gevonden welke verwijderd zal worden.";
 "CoreDataFetch_TagCreateFailed" = "Aanmaken van nieuw label-object is mislukt.";
 
-// Upload objects
+// MARK: -- Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Het maken van een nieuw upload-object is mislukt.";
 "CoreDataFetch_UploadMissingAsset" = "Fout bij het ophalen van de foto.";
 
@@ -89,7 +89,7 @@
 // ===========================================================================
 // MARK: - Login / Logout
 // ===========================================================================
-// Login
+// MARK: -- Login
 "login" = "Inloggen";
 "login_serverPlaceholder" = "voorbeeld.com";
 "login_userPlaceholder" = "Gebruikersnaam (optioneel)";
@@ -110,7 +110,7 @@
 "loginHTTPSfailed_title" = "Beveiligde verbinding mislukt";
 "loginHTTPSfailed_message" = "Piwigo kan geen beveiligde verbinding tot stand brengen. Wil je proberen een onveilige verbinding te maken?";
 
-// Login — Errors
+// MARK: -- Login — Errors
 "serverURLerror_title" = "Onjuiste URL";
 "serverURLerror_message" = "Corrigeer s. v. p. het adres van de server van Piwigo.";
 "serverMethodsError_title" = "Onbekende methoden";
@@ -137,24 +137,25 @@
 "sessionStatusError_title" = "Authenticatie is mislukt";
 "sessionStatusError_message" = "Kan niet worden geverifieerd door de server. Probeer opnieuw aan te melden.";
 
-// Logout
+// MARK: -- Logout
 "logoutConfirmation_title" = "Afmelden";
 "logoutConfirmation_message" = "Weet je zeker dat je je wilt afmelden?";
 
-// Logout — Errors
+// MARK: -- Logout — Errors
 "logoutFail_title" = "Afmelden is mislukt";
 
 
 // ===========================================================================
 // MARK: - Albums
 // ===========================================================================
-// Generic
+// MARK: -- Generic
+"albumID" = "Album ID";
 "singleAlbumCount" = "%@ album";
 "severalAlbumsCount" = "%@ albums";
 "singleSubAlbumCount" = "%@ sub-album";
 "severalSubAlbumsCount" = "%@ sub-albums";
 
-// Albums view
+// MARK: -- Albums view
 "categoryUpdating" = "Bijwerken…";
 "categoryUpdatedOn" = "Bijgewerkt op %@";
 "categoryUpdatedAt" = "Bijgewerkt op %@";
@@ -167,7 +168,7 @@
 "categoryImageList_favorite" = "Favoriet";
 "categoryImageList_unfavorite" = "Niet favoriet";
 
-// Albums "Discover"
+// MARK: -- Albums "Discover"
 "categoryDiscover_title" = "Ontdek";
 "categoryDiscoverTagged_title" = "Gelabeld";
 "categoryDiscoverVisits_title" = "Meest bezocht";
@@ -176,7 +177,7 @@
 "categoryDiscoverRecent_title" = "Recente foto's";
 "categoryDiscoverFavorites_title" = "Jouw favorieten";
 
-// Albums sort
+// MARK: -- Albums sort
 "categorySort_sort" = "Sorteer afbeeldingen op…";
 "categorySort_default" = "Standaard";
 "categorySort_name" = "Fototitel";
@@ -210,7 +211,7 @@
 "categoryView_group" = "Afbeeldingen groeperen op…";
 "categoryView_show" = "Tonen…";
 
-// Album selection
+// MARK: -- Album selection
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sub-album";
 "categorySelection_root" = "Root-album";
@@ -219,7 +220,7 @@
 "categorySelectionHUD_label" = "Terugvinden van album-gegevens…";
 "categorySelection_allAlbums" = "Alle albums";
 
-// Album upload
+// MARK: -- Album upload
 "categoryUpload_noSubAlbum" = "Er is geen sub-album om foto's naar up te loaden";
 "categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
 "categoryUpload_LocalAlbums" = "Lokale albums";
@@ -234,12 +235,12 @@
 "categoryUpload_otherAlbums" = "Andere albums";
 "categoryUpload_pasteboard" = "Klembord";
 
-// Default album
+// MARK: -- Default album
 "setDefaultCategory_select" = "Selecteer een album of sub-album dat het nieuwe root album zal worden.";
 "setDefaultCategory_title" = "Standaard album";
 "setDefaultCategory_message" = "Weet je zeker dat je het album \"%@\" als standaard album wilt instellen?";
 
-// Album create
+// MARK: -- Album create
 "createNewAlbum_title" = "Nieuw album";
 "createNewAlbum_message" = "Voer een naam in voor dit album:";
 "createNewAlbum_placeholder" = "Albumnaam";
@@ -247,34 +248,34 @@
 "createNewAlbumDescription_noDescription" = "geen omschrijving";
 "createNewAlbumHUD_label" = "Bezig album te maken…";
 
-// Album create — Errors
+// MARK: -- Album create — Errors
 "createAlbumError_title" = "Fout bij het maken van een nieuw album";
 "createAlbumError_message" = "Het aanmaken van een album is mislukt";
 
-// Album options (swipe actions)
+// MARK: -- Album options (swipe actions)
 "categoryCellOption_addPhotos" = "Foto's toevoegen";
 "categoryCellOption_rename" = "Album hernoemen";
 "categoryCellOption_move" = "Album verplaatsen";
 "categoryCellOption_delete" = "Album verwijderen";
 
-// Album rename
+// MARK: -- Album rename
 "renameCategory_title" = "Albumnaam wijzigen";
 "renameCategory_message" = "Voer een nieuwe naam voor dit album in";
 "renameCategory_button" = "Naam wijzigen";
 "renameCategoryHUD_label" = "Bezig albumnaam te wijzigen…";
 
-// Album rename — Errors
+// MARK: -- Album rename — Errors
 "renameCategoyError_title" = "Naam wijzigen is mislukt";
 "renameCategoyError_message" = "Naam wijzigen van jouw album is mislukt";
 
-// Album refresh representative
+// MARK: -- Album refresh representative
 "refreshCategoryHUD_label" = "Vernieuwen huidige…";
 
-// Album refresh representative — Errors
+// MARK: -- Album refresh representative — Errors
 "refreshCategoyError_title" = "Vernieuwing mislukt";
 "refreshCategoyError_message" = "Vernieuwing van jouw representatieve album niet gelukt";
 
-// Album delete
+// MARK: -- Album delete
 "deleteCategory_title" = "ALBUM VERWIJDEREN";
 "deleteCategory_message" = "WEET JE ZEKER DAT JE HET ALBUM \"%@\" EN ALLE %@ FOTO'S WILT VERWIJDEREN?";
 "deleteCategory_empty" = "Verwijder leeg album";
@@ -288,23 +289,23 @@
 "deleteCategoryConfirm_deleteButton" = "VERWIJDEREN";
 "deleteCategoryHUD_label" = "Bezig album te verwijderen…";
 
-// Album delete — errors
+// MARK: -- Album delete — errors
 "deleteCategoryMatchError_title" = "Aantal komt niet overeen";
 "deleteCategoryMatchError_message" = "Het aantal foto's dat je hebt opgegeven, komt niet overeen met het aantal foto's in de categorie. Probeer opnieuw als je dit album wilt verwijderen";
 "deleteCategoryError_title" = "Verwijderen is mislukt";
 "deleteCategoryError_message" = "Fout bij het verwijderen van jouw album";
 
-// Album move
+// MARK: -- Album move
 "moveCategory" = "Album verplaatsen";
 "moveCategory_select" = "Selecteer een album of sub-album om te verplaatsen naar %@\".";
 "moveCategory_message" = "Weet je zeker dat je \"%@\" wilt verplaatsen naar album \"%@\"?";
 "moveCategoryHUD_moving" = "Bezig album te verplaatsen…";
 
-// Album move — Errors
+// MARK: -- Album move — Errors
 "moveCategoryError_title" = "Verplaatsen is mislukt";
 "moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
 
-// Album set photo thumbnail
+// MARK: -- Album set photo thumbnail
 "categorySelection_setThumbnail" = "Selecteer het album dat de foto \"%@\" als miniatuur zal gebruiken.";
 "categorySelection_current" = "Selecteer voor deze foto het huidig album";
 "categorySelection_one" = "Selecteer één van de albums met deze afbeelding";
@@ -313,7 +314,7 @@
 "categoryImageSet_message" = "Weet je zeker dat je deze foto wilt gebruiken voor album \"%@\"?";
 "categoryImageSetHUD_updating" = "Bijwerken album-miniatuur…";
 
-// Album set photo thumbnail — Errors
+// MARK: -- Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Foto-instelling-fout";
 "categoryImageSetError_message" = "Instellen albumfoto mislukt";
 
@@ -337,11 +338,11 @@
 "Week" = "Week";
 "Month" = "Maand";
 
-// Errors
+// MARK: -- Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";
 "albumPhotoError_message" = "Ophalen van albumfoto's is mislukt (corrupte afbeelding in jouw album?)";
 
-// Image sort
+// MARK: -- Image sort
 "sortBy" = "Sorteren op";
 "imageSortTitle" = "Sorteer foto's";
 "imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
@@ -349,14 +350,14 @@
 "imageSelectingHUD" = "Foto's selecteren…";
 "imageDeselectingHUD" = "Foto's deselecteren…";
 
-// Image options (actions)
+// MARK: -- Image options (actions)
 "imageOptions_title" = "Foto-opties";
 "imageOptions_edit" = "Bewerken";
 "imageOptions_properties" = "Eigenschappen wijzigen";
 "imageOptions_download" = "Downloaden";
 "imageOptions_setAlbumImage" = "Instellen als albumfoto";
 
-// Image details
+// MARK: -- Image details
 "imageDetailsView_title" = "Eigenschappen";
 "editImageDetails_title" = "Titel";
 "editImageDetails_titlePlaceholder" = "Foto titel";
@@ -376,14 +377,14 @@
 "editImageDetailsHUD_updatingSingle" = "Foto bijwerken…";
 "editImageDetailsHUD_updatingPlural" = "Foto's bijwerken…";
 
-// Image details — Errors
+// MARK: -- Image details — Errors
 "editImageDetailsError_title" = "Bijwerken is mislukt";
 "editImageDetailsError_message" = "Bijwerken van jouw wijzigingen met jouw server is mislukt. Opnieuw proberen?";
 "imageDetailsFetchError_title" = "Ophalen van de foto-eigenschappen is mislukt";
 "imageDetailsFetchError_message" = "Ophalen van foto-data is mislukt.";
 "imageDetailsFetchError_continueMessage" = "Ophalen van fotodata is mislukt. Doorgaan?";
 
-// Image privacy levels
+// MARK: -- Image privacy levels
 "privacyLevel" = "Privacyniveau";
 "privacyLevel_admin" = "Admins";
 "privacyLevel_adminFamily" = "Admins, familie";
@@ -391,7 +392,7 @@
 "privacyLevel_adminsFamilyFriendsContacts" = "Admins, familie, vrienden, contacten";
 "privacyLevel_everybody" = "Iedereen";
 
-// Image tags
+// MARK: -- Image tags
 "none" = "niets";
 "tag" = "Label";
 "tags" = "Labels";
@@ -406,44 +407,44 @@
 "tagsAdd_placeholder" = "Nieuw label";
 "tagsAddHUD_label" = "Label maken…";
 
-// Image tags errors
+// MARK: -- Image tags errors
 "tagsAddError_message" = "Niet gelukt om nieuw label aan te maken";
 "tagsAddError_title" = "Aanmaken mislukt";
 
-// Image select
+// MARK: -- Image select
 "selectImages" = "Selecteer foto's";
 "selectImageSelected" = "1 foto geselecteerd";
 "selectImagesSelected" = "%@ foto's geselecteerd";
 "selectAll" = "Allemaal";
 
-// Image rename (filename)
+// MARK: -- Image rename (filename)
 "renameImage_title" = "Origineel bestand";
 "renameImage_message" = "Voer een nieuwe bestandsnaam in voor deze afbeelding";
 "renameImageHUD_label" = "Bestand hernoemen…";
 
-// Image rename — Errors
+// MARK: -- Image rename — Errors
 "renameImageError_message" = "Kan afbeeldingbestand niet hernoemen";
 
-// Image in favorites
+// MARK: -- Image in favorites
 "imageFavorites_title" = "Favorieten";
 
-// Image in favorites — Error
+// MARK: -- Image in favorites — Error
 "imageFavoritesAddError_message" = "Foto kan niet toegevoegd worden aan favorieten.";
 "imageFavoritesRemoveError_message" = "Fout bij het verwijderen van deze foto uit je favorieten.";
 
-// Image rotate
+// MARK: -- Image rotate
 "rotateImage_rotate" = "90° draaien…";
 "rotateImage_left" = "Tegen de klok in";
 "rotateImage_right" = "Met de klok mee";
 "rotateSingleImageHUD_rotating" = "Roterende foto…";
 "rotateSeveralImageHUD_rotating" = "Foto's roteren…";
 
-// Image rotate — Errors
+// MARK: -- Image rotate — Errors
 "rotateImageFail_title" = "Rotatie mislukt";
 "rotateImageFail_plugin" = "De rotateImage plugin is niet geactiveerd.";
 "rotateImageFail_message" = "Afbeelding kon niet worden gedraaid";
 
-// Image delete
+// MARK: -- Image delete
 "deleteImage_delete" = "Verwijderen";
 "deleteImageProgress_title" = "Verwijderen van %@%% voltooid";
 
@@ -461,11 +462,11 @@
 "deleteSeveralImages_title" = "Verwijder %@ foto's/video's";
 "deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's/video's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 
-// Image delete — Errors
+// MARK: -- Image delete — Errors
 "deleteImageFail_title" = "Verwijderen is mislukt";
 "deleteImageFail_message" = "Foto kon niet worden verwijderd.\n%@";
 
-// Image download
+// MARK: -- Image download
 "downloadSingleImage_title" = "Download foto";
 "downloadSingleImage_confirmation" = "Weet je zeker dat je deze foto wilt downloaden?";
 "downloadSeveralImages_title" = "Download %@ foto's";
@@ -475,7 +476,7 @@
 "downloadingImages" = "Foto's downloaden";
 "downloadingVideo" = "Video downloaden";
 
-// Image download — Errors
+// MARK: -- Image download — Errors
 "downloadImageFail_title" = "Download mislukt";
 "downloadImageFail_message" = "Downloaden foto is mislukt!\n%@";
 "downloadVideoFail_message" = "Downloaden video is mislukt!\n%@";
@@ -487,7 +488,7 @@
 "videoSaveError_title" = "Opslaan video is mislukt";
 "videoSaveError_message" = "Opslaan video is mislukt. Fout: %@";
 
-// Image move
+// MARK: -- Image move
 "moveImage_title" = "Verplaats naar album";
 "moveSingleImage_selectAlbum" = "Selecteer het album waarin u de foto wilt verplaatsen %@\".";
 "moveSeveralImages_selectAlbum" = "Selecteer het album waarin u de foto's wilt kopiëren.";
@@ -496,12 +497,12 @@
 "moveSingleImageHUD_moving" = "Verplaatsen van foto…";
 "moveSeveralImagesHUD_moving" = "Foto's verplaatsen…";
 
-// Image move — Errors
+// MARK: -- Image move — Errors
 "moveImageError_title" = "Verplaatsingsfout";
 "moveSingleImageError_message" = "Je foto verplaatsen is niet gelukt";
 "moveSeveralImagesError_message" = "Sommige foto's verplaatsen is mislukt";
 
-// Image copy
+// MARK: -- Image copy
 "copyImage_title" = "Kopieer naar album";
 "copySingleImage_selectAlbum" = "Selecteer het album waarin je de foto %@ wilt kopiëren.";
 "copySeveralImages_selectAlbum" = "Selecteer het album waarin je de foto's wilt kopiëren.";
@@ -510,12 +511,12 @@
 "copySingleImageHUD_copying" = "Kopiëren van foto…";
 "copySeveralImagesHUD_copying" = "Foto's aan het kopiëren…";
 
-// Image copy — Errors
+// MARK: -- Image copy — Errors
 "copyImageError_title" = "Kopiëren niet gelukt";
 "copySingleImageError_message" = "Je foto kopiëren is niet gelukt";
 "copySeveralImagesError_message" = "Kopiëren van foto's is mislukt";
 
-// Images upload
+// MARK: -- Images upload
 "imageUploadHeader" = "Selecteer a.u.b het album of sub-album van welke foto's en video's van jouw apparaat worden ge-upload.";
 "imageUploadHeaderTitle_images" = "Foto's parameters";
 "imageUploadHeaderText_images" = "Stel de parameters in om toe te passen op de selectie van fotos/video's";
@@ -547,7 +548,7 @@
 "imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
 "imageUploadCompleted_message>1" = "afbeeldingen/video's geüpload naar uw server Piwigo.";
 
-// Image upload — Errors
+// MARK: -- Image upload — Errors
 "uploadError_title" = "Upload-fout";
 "uploadError_message" = "Kon je foto niet uploaden. Fout: %@";
 "uploadCancelled_title" = "Uploaden afgebroken";
@@ -574,7 +575,7 @@
 "videoUploadError_unknown" = "Sorry, het uploaden van de video is mislukt vanwege een onbekende fout tijdens de MP4-conversie. Fout: %@";
 "videoUploadCancelled_message" = "De upload van de video is afgebroken.";
 
-// Image share
+// MARK: -- Image share
 "shareImageMetadata_Title" = "Deel metadata";
 "shareImageMetadata_subTitle1" = "Handelingen met gedeelde foto's met persoonlijke metada";
 "shareImageMetadata_subTitle2" = "Handelingen met gedeelde foto's zonder persoonlijke metada";
@@ -625,15 +626,15 @@
 "localAlbums" = "Fotobibliotheek";
 "localAlbums_accessible" = "Toegankelijke foto's";
 
-// Local albums — Access not Authorized
+// MARK: -- Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Geen toegang";
 "localAlbums_photosNiltitle" = "Probleem bij het inlezen van foto's";
 "localAlbums_photosNnil_msg" = "Probleem bij het inlezen van jouw lokale fotobibliotheek.";
 
-// Local albums — Tell user to change settings, how
+// MARK: -- Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
 
-// Local images — Explain
+// MARK: -- Local images — Explain
 "localImages_reUploadTitle" = "Opnieuw uploaden";
 "localImages_deleteTitle" = "Verwijderen uit filmrol";
 "localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
@@ -653,7 +654,7 @@
 "Separator" = "Separator";
 "Counter" = "Counter";
 
-// Settings — Piwigo Server
+// MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
 "settingsHeader_notSecure" = "Website is niet veilig!";
 "settings_server" = "Adres";
@@ -662,11 +663,11 @@
 "settings_logout" = "Afmelden";
 "settingsFooter_formats" = "De server accepteert de volgende bestanden";
 
-// Settings — Unused
+// MARK: -- Settings — Unused
 "settingsHeader_general" = "Algemene instellingen";
 "settingsHeader_thumbnails" = "Miniaturen";
 
-// Settings — Albums
+// MARK: -- Settings — Albums
 "defaultImageSort" = "Sorteren";
 "defaultImageSort>320px" = "Standaard sorteervolgorde";
 "defaultImageSort>414px" = "Standaardsorteervolgorde van foto's";
@@ -691,7 +692,7 @@
 "thumbnailSizeXXLarge" = "Enorm";
 "thumbnailSizexFullRes" = "Volledige resolutie";
 
-// Settings — Images
+// MARK: -- Settings — Images
 "defaultThumbnailFile" = "Bestand";
 "defaultThumbnailFile>320px" = "Miniatuur bestand";
 "defaultThumbnailFile>414px" = "Miniatuurafbeelding bestand";
@@ -732,11 +733,11 @@
 "imageSizeXXLarge" = "Enorm";
 "imageSizexFullRes" = "Volledige resolutie";
 
-// Settings — Videos
+// MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "Automatisch afspelen";
 "settings_videoLoop" = "Video's in lus";
 
-// Settings — Upload
+// MARK: -- Settings — Upload
 "settingsHeader_upload" = "Standaard upload-instellingen";
 "settings_defaultAuthor" = "Fotograaf";
 "settings_defaultAuthorLong" = "Author Name";
@@ -771,7 +772,8 @@
 "settings_renameFiveDigit" = "5-digit version";
 "settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
 "settings_renameCounterStart" = "Current Number";
-"settings_renameCounterStartFooter" = "The counter is saved and incremented by one for each file processed.";
+"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
+"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
 "settings_renameCounterDigits" = "Digits";
 "settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
 
@@ -784,7 +786,7 @@
 "settings_deleteImage" = "Verwijder na uploaden";
 "settings_deleteImageLong" = "Delete After Upload";
 
-// Settings — Auto-Upload
+// MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Automatisch uploaden";
 "settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "Aan";
@@ -801,7 +803,7 @@
 "AutoUploadError_Disabled" = "De auto-upload-optie is uitgeschakeld in de app instellingen.";
 "AutoUploadError_Failed" = "Meerdere overdrachten zijn mislukt en de wachtrij voor upload is in de app geblokkeerd. Controleer de app.";
 
-// Settings — Upload Photo Size
+// MARK: -- Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Max. fotogrootte";
 "UploadPhotoSize_header" = "Selecteer de maximale grootte van de foto's die zullen worden geüpload.";
 "UploadPhotoSize_resolution" = "Maximale resolutie voor ingebouwde camera's:";
@@ -811,7 +813,7 @@
 "UploadPhotoSize_original" = "Niet verkleinen";
 "UploadRequests_cache" = "Uploads";
 
-// Settings — Privacy
+// MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "Privacy";
 "settings_appLock" = "App Lock";
 "settings_appLockEnter" = "Voer wachtwoord in";
@@ -842,7 +844,7 @@
 "settings_clearClipboard5minUnit" = "Na 5 min.";
 "settings_clearClipboardNever" = "Nooit";
 
-// Settings — Cache
+// MARK: -- Settings — Cache
 "settingsHeader_cache" = "Cachegeheugen";
 "settings_database" = "Gegevens";
 "settings_cacheClear" = "Cache wissen";
@@ -850,7 +852,7 @@
 "settings_cacheClearAll" = "Alles wissen";
 "settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt verwijderen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 
-// Settings — Appearance
+// MARK: -- Settings — Appearance
 "settingsHeader_appearance" = "Uiterlijk";
 "settingsHeader_colorPalette" = "Kleurenpalet";
 "settings_lightColor" = "Licht";
@@ -859,7 +861,7 @@
 "settings_brightness" = "Helderheid";
 "settings_brightnessHelp" = "Bij een lage helderheid zal de automatische optie gebruik maken van een donker kleurenpalet zodat foto's duidelijker zichtbaar zijn.";
 
-// Settings - Administration
+// MARK: -- Settings - Administration
 "singleUserCount" = "%@ gebruiker";
 "severalUsersCount" = "%@ gebruikers";
 "singleGroupCount" = "%@ groep";
@@ -867,7 +869,7 @@
 "singleCommentCount" = "%@ reactie";
 "severalCommentsCount" = "%@ reacties";
 
-// Settings — Information
+// MARK: -- Settings — Information
 "settings_appName" = "Piwigo Mobiel";
 "settingsHeader_about" = "Informatie";
 "settings_twitter" = "@piwigo";
@@ -882,7 +884,7 @@
 "settings_acknowledgements" = "Dank";
 "settings_privacy" = "Privacybeleid";
 
-// Settings — Help
+// MARK: -- Settings — Help
 "help01_header" = "Meerdere selecties";
 "help01_text" = "Schuif je vinger van links naar rechts (of van rechts naar links) dan naar beneden, enz.";
 "help02_header" = "Achtergrond Uploaden";
@@ -903,12 +905,12 @@
 "help08_text" = "Druk lang op de terugknop om de lijst van bovenliggende albums weer te geven.";
 "help08_text2" = "Tik op het bovenliggende album van je keuze om er naar terug te springen.";
 
-// Settings - Logs
+// MARK: -- Settings - Logs
 "settingsHeader_troubleshoot" = "Probleemoplossen";
 "settings_logs" = "Logboeken";
 "settings_JSONinvalid" = "Ongeldige serverreacties";
 
-// What's New in Piwigo
+// MARK: -- What's New in Piwigo
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
 "whatsNew_title1" = "Groep foto's";
 "whatsNew_desc1" = "Per dag, week of maand.";
