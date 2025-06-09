@@ -19,8 +19,14 @@ enum pwgImageAction {
     case rotateImagesLeft, rotateImagesRight
 }
 
+protocol AlbumViewControllerDelegate: NSObjectProtocol {
+    func didSelectCurrentCounter(value: Int64)
+}
+
 class AlbumViewController: UIViewController
 {
+    weak var albumDelegate: AlbumViewControllerDelegate?
+
     @IBOutlet weak var noAlbumLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     

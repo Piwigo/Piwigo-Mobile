@@ -42,7 +42,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             else { preconditionFailure("Could not load TextFieldTableViewCell") }
             
             let title = NSLocalizedString("settings_renameCounterStart", comment: "Current Number")
-            cell.configure(with: title, input: String(counterStartValue), placeHolder: "1")
+            cell.configure(with: title, input: String(currentCounter), placeHolder: "1")
             cell.accessibilityIdentifier = "startCounterValue"
             cell.rightTextField.delegate = self
             tableViewCell = cell

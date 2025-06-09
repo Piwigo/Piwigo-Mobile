@@ -110,9 +110,9 @@ extension SettingsViewController: MofifyFilenameDelegate {
                                      replace: Bool, replaceActions: RenameActionList,
                                      suffix: Bool, suffixActions: RenameActionList,
                                      changeCase: Bool, caseOfExtension: FileExtCase,
-                                     startValue: Int) {
+                                     currentCounter: Int64) {
         // Save default settings
-        UploadVars.shared.counterStartValue = startValue
+        UploadVars.shared.categoryCounterInit = currentCounter
         UploadVars.shared.prefixFileNameBeforeUpload = prefix
         UploadVars.shared.prefixFileNameActionList = prefixActions.encodedString
         UploadVars.shared.replaceFileNameBeforeUpload = replace

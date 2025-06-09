@@ -21,19 +21,32 @@ class UploadSettingsViewController: UITableViewController {
     lazy var compressImageOnUpload = UploadVars.shared.compressImageOnUpload
     lazy var photoQuality: Int16 = UploadVars.shared.photoQuality
     
-    lazy var startValue: Int = UploadVars.shared.counterStartValue
-    lazy var prefixBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+    lazy var prefixBeforeUpload: Bool = UploadVars.shared.prefixFileNameBeforeUpload
     lazy var prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions
-    lazy var replaceBeforeUpload = UploadVars.shared.replaceFileNameBeforeUpload
+    lazy var replaceBeforeUpload: Bool = UploadVars.shared.replaceFileNameBeforeUpload
     lazy var replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions
-    lazy var suffixBeforeUpload = UploadVars.shared.suffixFileNameBeforeUpload
+    lazy var suffixBeforeUpload: Bool = UploadVars.shared.suffixFileNameBeforeUpload
     lazy var suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions
     lazy var changeCaseBeforeUpload: Bool = UploadVars.shared.changeCaseOfFileExtension
-    lazy var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .uppercase
+    lazy var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
 
-    var canDeleteImages = false
-    var deleteImageAfterUpload = false
-    
+    lazy var categoryId: Int32? = {
+        // Will be used to add the album ID to the file name
+        return (parent as? UploadSwitchViewController)?.categoryId
+    }()
+    lazy var currentCounter: Int64 = {
+        // Will display the current counter value
+        return (parent as? UploadSwitchViewController)?.categoryCurrentCounter ?? UploadVars.shared.categoryCounterInit
+    }()
+    lazy var canDeleteImages: Bool = {
+        // Will propose the option to delete the image after upload
+        return (parent as? UploadSwitchViewController)?.canDeleteImages ?? false
+    }()
+    lazy var deleteImageAfterUpload: Bool = {
+        // Can we propose to delete images after upload?
+        return canDeleteImages ? UploadVars.shared.deleteImageAfterUpload : false
+    }()
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -62,14 +75,6 @@ class UploadSettingsViewController: UITableViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-        
-        // Can we propose to delete images after upload?
-        if let switchVC = parent as? UploadSwitchViewController {
-            canDeleteImages = switchVC.canDeleteImages
-            if canDeleteImages {
-                deleteImageAfterUpload = UploadVars.shared.deleteImageAfterUpload
-            }
-        }
     }
 
     deinit {
@@ -144,9 +149,9 @@ extension UploadSettingsViewController: MofifyFilenameDelegate {
                                      replace: Bool, replaceActions: RenameActionList,
                                      suffix: Bool, suffixActions: RenameActionList,
                                      changeCase: Bool, caseOfExtension: FileExtCase,
-                                     startValue: Int) {
+                                     currentCounter: Int64) {
         // Save settings
-        self.startValue = startValue
+        self.currentCounter = currentCounter
         self.prefixBeforeUpload = prefix
         self.prefixActions = prefixActions
         self.replaceBeforeUpload = replace

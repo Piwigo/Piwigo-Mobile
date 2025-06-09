@@ -24,20 +24,7 @@ extension CounterFormatSelectorViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Accept only digits
-        let hasOnlyDigits = CharacterSet(charactersIn: string).isSubset(of: CharacterSet.decimalDigits)
-        if hasOnlyDigits {
-            // Update format
-            let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-            if let value = Int(finalString ?? "") {
-                counterStartValue = value
-            } else {
-                counterStartValue = 1
-            }
-            // Update header
-            updateExample()
-            return true
-        }
-        return false
+        return CharacterSet(charactersIn: string).isSubset(of: CharacterSet.decimalDigits)
     }
     
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
@@ -56,10 +43,8 @@ extension CounterFormatSelectorViewController: UITextFieldDelegate {
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         // Update settings
-        if let value = Int(textField.text ?? "") {
-            counterStartValue = value
-        } else {
-            counterStartValue = 1
+        if let value = Int64(textField.text ?? ""), value >= 0 {
+            currentCounter = value
         }
 
         // Update header

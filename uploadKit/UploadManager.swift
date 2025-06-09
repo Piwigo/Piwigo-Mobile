@@ -15,12 +15,12 @@ import MobileCoreServices
 import piwigoKit
 
 public class UploadManager: NSObject {
-
+    
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
     @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManager.self))
-
+    
     // Singleton
     public static let shared = UploadManager()
     
@@ -60,7 +60,7 @@ public class UploadManager: NSObject {
             return ["mov","mpg","mpeg","mpeg2","mp4","avi"]
         }
     }()
-
+    
     // For producing filename suffixes
     lazy var chunkFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
@@ -68,16 +68,16 @@ public class UploadManager: NSObject {
         numberFormatter.minimumIntegerDigits = 5
         return numberFormatter
     }()
-
+    
     // Constants used to manage foreground tasks
     let maxNberPreparedUploads = 10             // Maximum number of images prepared in advance
     let maxNberOfTransfers = 1                  // Maximum number of transfers executed in parallel
     public let maxNberOfFailedUploads = 5       // Stop transfers after 5 failures
-
+    
     // Constants used to manage background tasks
     public let maxCountOfBytesToUpload = 100 * 1024 * 1024  // Up to 100 MB transferred in a series
     public let maxNberOfAutoUploadsPerCheck = 500           // i.e. do not add more than 500 requests at a time
-
+    
     
     // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
@@ -97,13 +97,13 @@ public class UploadManager: NSObject {
     var isUploading = Set<NSManagedObjectID>()              // IDs of queued transfers
     var isFinishing = false                                 // Finish transfer one image at once
     var isDeleting = Set<NSManagedObjectID>()               // IDs of uploads to be deleted
-
+    
     public var isExecutingBackgroundUploadTask = false      // True if called by the background task
     public var countOfBytesPrepared = UInt64(0)             // Total amount of bytes of prepared files
     public var countOfBytesToUpload = 0                     // Total amount of bytes to be sent
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
     public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
-
+    
     /// Background queue in which uploads are managed
     public let backgroundQueue: DispatchQueue = {
         return DispatchQueue(label: "org.piwigo.uploadBckgQueue", qos: .background)
@@ -138,23 +138,23 @@ public class UploadManager: NSObject {
         catch {
             debugPrint("••> Could not fetch pending uploads: \(error)")
         }
-
+        
         // Register auto-upload disabler
         NotificationCenter.default.addObserver(self, selector: #selector(stopAutoUploader(_:)),
                                                name: Notification.Name.pwgDisableAutoUpload, object: nil)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
     
-
+    
     // MARK: - Core Data Providers
     lazy var userProvider: UserProvider = {
         return UserProvider.shared
     }()
-
+    
     lazy var albumProvider: AlbumProvider = {
         return AlbumProvider.shared
     }()
@@ -162,21 +162,21 @@ public class UploadManager: NSObject {
     lazy var imageProvider: ImageProvider = {
         return ImageProvider.shared
     }()
-
+    
     lazy var tagProvider: TagProvider = {
         return TagProvider.shared
     }()
-
+    
     public lazy var uploadProvider: UploadProvider = {
         return UploadProvider.shared
     }()
-
-
+    
+    
     // MARK: - Core Data Object Context
     lazy var uploadBckgContext: NSManagedObjectContext = {
         return uploadProvider.bckgContext
     }()
-
+    
     
     // MARK: - Core Data Source
     private lazy var sortDescriptors: [NSSortDescriptor] = {
@@ -204,14 +204,14 @@ public class UploadManager: NSObject {
     private lazy var fetchPendingRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         fetchRequest.sortDescriptors = sortDescriptors
-
+        
         // Retrieves only non-completed upload requests
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
                          "userName"   : NetworkVars.shared.username]
         fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
-
+    
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchPendingRequest,
                                                  managedObjectContext: self.uploadBckgContext,
@@ -220,7 +220,7 @@ public class UploadManager: NSObject {
         uploads.delegate = self
         return uploads
     }()
-
+    
     lazy var completedPredicate: NSPredicate = {
         var andPredicates = accountPredicates
         let states: [pwgUploadState] = [.finished, .moderated]
@@ -231,14 +231,14 @@ public class UploadManager: NSObject {
     private lazy var fetchCompletedRequest: NSFetchRequest = {
         let fetchRequest = Upload.fetchRequest()
         fetchRequest.sortDescriptors = sortDescriptors
-
+        
         // Retrieves only completed upload requests
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
                          "userName"   : NetworkVars.shared.username]
         fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
-
+    
     public lazy var completed: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchCompletedRequest,
                                                  managedObjectContext: self.uploadBckgContext,

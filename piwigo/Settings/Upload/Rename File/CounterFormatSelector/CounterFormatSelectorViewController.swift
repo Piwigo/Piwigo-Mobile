@@ -11,7 +11,7 @@ import UIKit
 import piwigoKit
 
 protocol SelectCounterFormatDelegate: NSObjectProtocol {
-    func didSelectCounter(startValue: Int, format: String)
+    func didSelectCounter(currentCounter: Int64, format: String)
 }
 
 class CounterFormatSelectorViewController: UIViewController {
@@ -40,7 +40,10 @@ class CounterFormatSelectorViewController: UIViewController {
     var changeCaseBeforeUpload = false
     var caseOfFileExtension: FileExtCase = .uppercase
 
-    var counterStartValue: Int = 1
+    // Used to display the album ID (unset by SettingsViewController)
+    var categoryId: Int32 = 69
+
+    var currentCounter: Int64 = UploadVars.shared.categoryCounterInit
     var counterFormats: [pwgCounterFormat] = []     // Should always contain all formats (prefix, digits and suffix)
 
     // Tell which cell triggered the keyboard appearance
@@ -124,7 +127,7 @@ class CounterFormatSelectorViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         // Update cell of parent view
-        delegate?.didSelectCounter(startValue: counterStartValue, format: counterFormats.asString)
+        delegate?.didSelectCounter(currentCounter: currentCounter, format: counterFormats.asString)
     }
     
     deinit {
@@ -157,6 +160,6 @@ class CounterFormatSelectorViewController: UIViewController {
                                     replace: replaceBeforeUpload, replaceActions: replaceActions,
                                     suffix: suffixBeforeUpload, suffixActions: suffixActions,
                                     changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                    counter: counterStartValue)
+                                    categoryId: categoryId, counter: currentCounter)
     }
 }

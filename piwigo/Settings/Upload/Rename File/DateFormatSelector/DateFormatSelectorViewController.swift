@@ -31,7 +31,7 @@ class DateFormatSelectorViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     // Actions to be modified or not
-    var startValue: Int = 1
+    var currentCounter: Int64 = .min
     var prefixBeforeUpload = false
     var prefixActions: RenameActionList = []
     var replaceBeforeUpload = false
@@ -39,7 +39,10 @@ class DateFormatSelectorViewController: UIViewController {
     var suffixBeforeUpload = false
     var suffixActions: RenameActionList = []
     var changeCaseBeforeUpload = false
-    var caseOfFileExtension: FileExtCase = .uppercase
+    var caseOfFileExtension: FileExtCase = .keep
+
+    // Used to display the album ID (unset by SettingsViewController)
+    var categoryId: Int32 = 69
 
     var dateSections: [DateSection] = []    // To order date fomats as user wishes
     var dateFormats: [pwgDateFormat] = []   // Should always contain all formats (year, month, day and separator)
@@ -196,7 +199,7 @@ class DateFormatSelectorViewController: UIViewController {
                                     replace: replaceBeforeUpload, replaceActions: replaceActions,
                                     suffix: suffixBeforeUpload, suffixActions: suffixActions,
                                     changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                    counter: startValue)
+                                    categoryId: categoryId, counter: currentCounter)
     }
 
     

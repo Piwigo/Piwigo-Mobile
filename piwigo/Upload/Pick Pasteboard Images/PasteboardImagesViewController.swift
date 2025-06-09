@@ -57,6 +57,8 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
     // MARK: - Variables and Cached Values
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
+    var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
+    weak var albumDelegate: AlbumViewControllerDelegate?
     var reUploadAllowed = false
 
     let pendingOperations = PendingOperations()     // Operations in queue for preparing files and cache
@@ -525,20 +527,22 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
-        if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
-            uploadSwitchVC.delegate = self
-            uploadSwitchVC.user = user
-            uploadSwitchVC.canDeleteImages = false
+        guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+        else { preconditionFailure("Could not load UploadSwitchViewController") }
+        
+        uploadSwitchVC.delegate = self
+        uploadSwitchVC.user = user
+        uploadSwitchVC.canDeleteImages = false
+        uploadSwitchVC.categoryCurrentCounter = categoryCurrentCounter
 
-            // Push Edit view embedded in navigation controller
-            let navController = UINavigationController(rootViewController: uploadSwitchVC)
-            navController.modalPresentationStyle = .popover
-            navController.modalTransitionStyle = .coverVertical
-            navController.popoverPresentationController?.sourceView = localImagesCollection
-            navController.popoverPresentationController?.barButtonItem = uploadBarButton
-            navController.popoverPresentationController?.permittedArrowDirections = .up
-            navigationController?.present(navController, animated: true)
-        }
+        // Push Edit view embedded in navigation controller
+        let navController = UINavigationController(rootViewController: uploadSwitchVC)
+        navController.modalPresentationStyle = .popover
+        navController.modalTransitionStyle = .coverVertical
+        navController.popoverPresentationController?.sourceView = localImagesCollection
+        navController.popoverPresentationController?.barButtonItem = uploadBarButton
+        navController.popoverPresentationController?.permittedArrowDirections = .up
+        navigationController?.present(navController, animated: true)
     }
 }
 

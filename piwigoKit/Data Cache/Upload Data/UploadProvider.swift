@@ -177,6 +177,40 @@ public class UploadProvider: NSObject {
     }
     
     
+    // MARK: - Get md5sum of Upload Requests
+    /**
+        Called by UploadPhotosHandler
+        Return the md5sum of the upload requests in cache in the main thread
+     */
+    public func getAllMd5sum() -> [String] {
+        // Retrieve all existing uploads
+        // Create a fetch request for the Upload entity sorted by localIdentifier
+        let fetchRequest = Upload.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.localIdentifier), ascending: true)]
+        
+        // Select upload requests:
+        /// — for the current server and user only
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: bckgContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        let cachedUploads = controller.fetchedObjects ?? []
+        return cachedUploads.map(\.md5Sum)
+    }
+    
+    
     // MARK: - Clear Upload Requests
     /**
         Return number of upload requests stored in cache

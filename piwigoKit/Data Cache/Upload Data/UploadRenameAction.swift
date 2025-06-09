@@ -26,7 +26,7 @@ public var isRenameFileAtiveByDefault: Bool {
    Actions are identified by their type and the style which is a string defining
    the way an action is performed:
     - addText: adds the string provided by the user, e.g. "prefix-"
-    - addAlbum: adds the album name to which photos are uploaded
+    - addAlbum: adds the album ID to which photos are uploaded
     - addDate: adds the creation date in the wanted format, e.g. "YYYY-MM-DD"
     - addTime: adds the creation time in the wanted format, e.g. "HH-mm-ss"
     - addCounter: adds a number in the wanted fomat, e.g. "(0000)"
@@ -61,7 +61,7 @@ public struct RenameAction: Hashable {
             case .addText:
                 return NSLocalizedString("Text", comment: "Text")
             case .addAlbum:
-                return NSLocalizedString("createNewAlbum_placeholder", comment: "Album Name")
+                return NSLocalizedString("albumID", comment: "Album ID")
             case .addDate:
                 return NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date")
             case .addTime:
@@ -85,7 +85,7 @@ public struct RenameAction: Hashable {
         case .addText:
             self.style = style ?? ""
         case .addAlbum:
-            self.style = NSLocalizedString("categorySelection_title", comment: "Album")
+            self.style = String(Int32(666))
         case .addDate:
             let dateFormats: [pwgDateFormat] = [.year(format: .yyyy), .separator(format: .dash),
                                                 .month(format: .MM), .separator(format: .dash),
@@ -159,12 +159,9 @@ public extension String {
     }
     
     // Renames self by applying actions
-    mutating func renameFile(prefix: Bool, prefixActions: RenameActionList,
-                             replace: Bool, replaceActions: RenameActionList,
-                             suffix: Bool, suffixActions: RenameActionList,
-                             changeCaseOfExtension: Bool, caseOfExtension: FileExtCase,
-                             albumName: String = NSLocalizedString("categorySelection_title", comment: "Album"),
-                             date: Date, counter: Int) {
+    mutating func renameFile(prefixActions: RenameActionList, replaceActions: RenameActionList,
+                             suffixActions: RenameActionList, caseOfExtension: FileExtCase,
+                             albumID: Int32, date: Date, counter: Int64) {
         // Extract name and extension
         var fileName: String = ""
         var fileExt: String = ""
@@ -176,14 +173,14 @@ public extension String {
         }
         
         // Replace file name
-        if replace {
+        if replaceActions.isEmpty == false {
             fileName = ""
             for action in replaceActions {
                 switch action.type {
                 case .addText:
                     fileName += action.style
                 case .addAlbum:
-                    fileName += albumName
+                    fileName += String(albumID)
                 case .addDate:
                     let formatter: DateFormatter = DateUtilities.pwgDateFormatter
                     formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
@@ -202,68 +199,63 @@ public extension String {
         }
         
         // Prefix file name
-        if prefix {
-            for action in prefixActions .reversed() {
-                switch action.type {
-                case .addText:
-                    fileName = "\(action.style)\(fileName)"
-                case .addAlbum:
-                    fileName = "\(albumName)\(fileName)"
-                case .addDate:
-                    let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
-                    fileName = "\(formatter.string(from: date))\(fileName)"
-                case .addTime:
-                    let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
-                    fileName = "\(formatter.string(from: date))\(fileName)"
-                case .addCounter:
-                    let formatter: NumberFormatter = NumberFormatter()
-                    formatter.numberStyle = .none
-                    formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
-                    fileName = "\(formatter.string(from: NSNumber(value: counter)) ?? "")\(fileName)"
-                }
+        for action in prefixActions .reversed() {
+            switch action.type {
+            case .addText:
+                fileName = "\(action.style)\(fileName)"
+            case .addAlbum:
+                fileName = "\(String(albumID))\(fileName)"
+            case .addDate:
+                let formatter: DateFormatter = DateUtilities.pwgDateFormatter
+                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                fileName = "\(formatter.string(from: date))\(fileName)"
+            case .addTime:
+                let formatter: DateFormatter = DateUtilities.pwgDateFormatter
+                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                fileName = "\(formatter.string(from: date))\(fileName)"
+            case .addCounter:
+                let formatter: NumberFormatter = NumberFormatter()
+                formatter.numberStyle = .none
+                formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                fileName = "\(formatter.string(from: NSNumber(value: counter)) ?? "")\(fileName)"
             }
         }
         
         // Suffix file name
-        if suffix {
-            for action in suffixActions {
-                switch action.type {
-                case .addText:
-                    fileName = "\(fileName)\(action.style)"
-                case .addAlbum:
-                    fileName = "\(fileName)\(albumName)"
-                case .addDate:
-                    let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
-                    fileName = "\(fileName)\(formatter.string(from: date))"
-                case .addTime:
-                    let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
-                    fileName = "\(fileName)\(formatter.string(from: date))"
-                case .addCounter:
-                    let formatter: NumberFormatter = NumberFormatter()
-                    formatter.numberStyle = .none
-                    formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
-                    fileName = "\(fileName)\(formatter.string(from: NSNumber(value: counter)) ?? "")"
-                }
+        for action in suffixActions {
+            switch action.type {
+            case .addText:
+                fileName = "\(fileName)\(action.style)"
+            case .addAlbum:
+                fileName = "\(fileName)\(String(albumID))"
+            case .addDate:
+                let formatter: DateFormatter = DateUtilities.pwgDateFormatter
+                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                fileName = "\(fileName)\(formatter.string(from: date))"
+            case .addTime:
+                let formatter: DateFormatter = DateUtilities.pwgDateFormatter
+                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                fileName = "\(fileName)\(formatter.string(from: date))"
+            case .addCounter:
+                let formatter: NumberFormatter = NumberFormatter()
+                formatter.numberStyle = .none
+                formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                fileName = "\(fileName)\(formatter.string(from: NSNumber(value: counter)) ?? "")"
             }
         }
         
         // Change case of extension
-        if changeCaseOfExtension {
-            switch caseOfExtension {
-            case .lowercase:
-                fileName += fileExt.lowercased()
-            case .uppercase:
-                fileName += fileExt.uppercased()
-            }
-        } else {
+        switch caseOfExtension {
+        case .keep:
             fileName += fileExt
+        case .lowercase:
+            fileName += fileExt.lowercased()
+        case .uppercase:
+            fileName += fileExt.uppercased()
         }
         
-        self = fileName
+        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+        self = PwgSession.utf8mb3String(from: fileName)
     }
     
     /// Assuming the current string is base64 encoded, this property returns a String

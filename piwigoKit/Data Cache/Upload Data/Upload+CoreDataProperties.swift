@@ -20,9 +20,12 @@ extension Upload {
     @NSManaged public var comment: String
     @NSManaged public var compressImageOnUpload: Bool
     @NSManaged public var creationDate: TimeInterval
-    @NSManaged public var defaultPrefix: String
     @NSManaged public var deleteImageAfterUpload: Bool
     @NSManaged public var fileName: String
+    @NSManaged public var fileNameExtensionCase: Int16
+    @NSManaged public var fileNamePrefixEncodedActions: String
+    @NSManaged public var fileNameReplaceEncodedActions: String
+    @NSManaged public var fileNameSuffixEncodedActions: String
     @NSManaged public var imageId: Int64
     @NSManaged public var imageName: String
     @NSManaged public var isVideo: Bool
@@ -32,7 +35,6 @@ extension Upload {
     @NSManaged public var photoQuality: Int16
     @NSManaged public var photoMaxSize: Int16
     @NSManaged public var videoMaxSize: Int16
-    @NSManaged public var prefixFileNameBeforeUpload: Bool
     @NSManaged public var privacyLevel: Int16
     @NSManaged public var requestDate: TimeInterval
     @NSManaged public var requestError: String

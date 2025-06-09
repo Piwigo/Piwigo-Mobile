@@ -27,7 +27,11 @@ extension CounterFormatSelectorViewController: UITableViewDelegate {
         var text: String = ""
         switch CounterSection(rawValue: section) {
         case .start:
-            text = NSLocalizedString("settings_renameCounterStartFooter", comment: "The counter is saved and incremented by one for each file processed.")
+            if parent?.parent is SettingsViewController {
+                text = NSLocalizedString("settings_renameCounterStartFooter", comment: "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.")
+            } else {
+                text = NSLocalizedString("settings_renameCounterCurrentFooter", comment: "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.")
+            }
         case .prefix:
             break
         case .digits:

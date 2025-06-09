@@ -9,8 +9,11 @@
 import Foundation
 
 // MARK: - File Extension Case
-public enum FileExtCase: Int {
-    case lowercase = 0
+// The raw value is stored in the Core Data persistent store.
+// A zero value is adopted in the persistent store when the case should not be changed.
+public enum FileExtCase: Int16 {
+    case keep = -1
+    case lowercase
     case uppercase
 }
 
@@ -37,8 +40,9 @@ public class UploadVars: NSObject {
         }
         if let defaultPrefix = UserDefaults.dataSuite.object(forKey: "defaultPrefix") as? String {
             UserDefaults.dataSuite.removeObject(forKey: "defaultPrefix")
-            // Add prefix to action list if not empty (as from v3.4)
-            if defaultPrefix.isEmpty == false,
+            // Add prefix to action list if not empty and enabled (as from v3.4)
+            if let prefixFileNameBeforeUpload = UserDefaults.dataSuite.object(forKey: "prefixFileNameBeforeUpload") as? Bool,
+               prefixFileNameBeforeUpload, defaultPrefix.isEmpty == false,
                let encodedPrefix = defaultPrefix.base64Encoded {
                 let encodedAction = "\(RenameAction.ActionType.addText.rawValue):\(encodedPrefix)"
                 UserDefaults.dataSuite.set(encodedAction + ",", forKey: "prefixFileNameActionList")
@@ -128,9 +132,9 @@ public class UploadVars: NSObject {
     @UserDefault("defaultSecondFormat", defaultValue: pwgTimeFormat.second(format: .ss).asString, userDefaults: UserDefaults.dataSuite)
     public var defaultSecondFormat: String
 
-    /// - Latest counter start value chosen by the user
-    @UserDefault("counterStartValue", defaultValue: 1, userDefaults: UserDefaults.dataSuite)
-    public var counterStartValue: Int
+    /// - First counter value used by each album to name uploaded files
+    @UserDefault("categoryCounterInit", defaultValue: Int64(1), userDefaults: UserDefaults.dataSuite)
+    public var categoryCounterInit: Int64
 
     /// - Prefix file name before upload
     @UserDefault("prefixFileNameBeforeUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
@@ -161,8 +165,8 @@ public class UploadVars: NSObject {
     public var changeCaseOfFileExtension: Bool
     
     /// - Case of the file extension
-    @UserDefault("caseOfFileExtension", defaultValue: FileExtCase.uppercase.rawValue, userDefaults: UserDefaults.dataSuite)
-    public var caseOfFileExtension: Int
+    @UserDefault("caseOfFileExtension", defaultValue: FileExtCase.keep.rawValue, userDefaults: UserDefaults.dataSuite)
+    public var caseOfFileExtension: Int16
 
     /// - Chunk size wanted by the Piwigo server (500 KB by default)
     @UserDefault("uploadChunkSize", defaultValue: 500, userDefaults: UserDefaults.dataSuite)

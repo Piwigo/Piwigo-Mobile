@@ -50,6 +50,6 @@ extension RenameFileViewController: SelectTimeFormatDelegate {
                                               replace: replaceBeforeUpload, replaceActions: replaceActions,
                                               suffix: suffixBeforeUpload, suffixActions: suffixActions,
                                               changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                              startValue: startValue)
+                                              currentCounter: currentCounter)
     }
 }

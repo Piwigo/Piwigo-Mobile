@@ -27,15 +27,9 @@ class UploadSwitchViewController: UIViewController {
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
-    private var _canDeleteImages = false
-    var canDeleteImages: Bool {
-        get {
-            _canDeleteImages
-        }
-        set(canDeleteImages) {
-            _canDeleteImages = canDeleteImages
-        }
-    }
+    var categoryId: Int32 = AlbumVars.shared.defaultCategory
+    var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
+    var canDeleteImages = false
     
 
     // MARK: - Core Data Objects
@@ -137,7 +131,7 @@ class UploadSwitchViewController: UIViewController {
 
         // Retrieve custom image parameters and upload settings from child views
         var imageParameters = [String:Any](minimumCapacity: 5)
-        var uploadParameters = [String:Any](minimumCapacity: 9)
+        var uploadParameters = [String:Any](minimumCapacity: 12)
         children.forEach { (child) in
             
             // Image parameters
@@ -158,9 +152,27 @@ class UploadSwitchViewController: UIViewController {
                 uploadParameters["videoMaxSize"] = settingsCtrl.videoMaxSize
                 uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
                 uploadParameters["photoQuality"] = settingsCtrl.photoQuality
-                
-                uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixBeforeUpload
-                uploadParameters["defaultPrefix"] = settingsCtrl.prefixActions.encodedString
+                uploadParameters["currentCounter"] = settingsCtrl.currentCounter
+                if settingsCtrl.prefixBeforeUpload {
+                    uploadParameters["prefixActions"] = settingsCtrl.prefixActions
+                } else {
+                    uploadParameters["prefixActions"] = []
+                }
+                if settingsCtrl.replaceBeforeUpload {
+                    uploadParameters["replaceActions"] = settingsCtrl.replaceActions
+                } else {
+                    uploadParameters["replaceActions"] = []
+                }
+                if settingsCtrl.suffixBeforeUpload {
+                    uploadParameters["suffixActions"] = settingsCtrl.suffixActions
+                } else {
+                    uploadParameters["suffixActions"] = []
+                }
+                if settingsCtrl.changeCaseBeforeUpload {
+                    uploadParameters["caseOfFileExtension"] = settingsCtrl.caseOfFileExtension
+                } else {
+                    uploadParameters["caseOfFileExtension"] = FileExtCase.keep
+                }
                 uploadParameters["deleteImageAfterUpload"] = settingsCtrl.deleteImageAfterUpload
             }
         }

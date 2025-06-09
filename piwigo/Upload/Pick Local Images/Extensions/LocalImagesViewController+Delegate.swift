@@ -256,29 +256,32 @@ extension LocalImagesViewController: UICollectionViewDelegate
             
             // Show upload parameter views
             let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
-            if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
-                uploadSwitchVC.delegate = self
-                uploadSwitchVC.user = self.user
+            guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+            else { preconditionFailure("Could not load UploadSwitchViewController") }
+            
+            uploadSwitchVC.delegate = self
+            uploadSwitchVC.user = self.user
+            uploadSwitchVC.categoryId = self.categoryId
+            uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
 
-                // Will we propose to delete images after upload?
-                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [cell.localIdentifier], 
-                                                        options: nil).firstObject {
-                    // Only local images can be deleted
-                    if imageAsset.sourceType != .typeCloudShared {
-                        // Will allow user to delete images after upload
-                        uploadSwitchVC.canDeleteImages = true
-                    }
+            // Will we propose to delete images after upload?
+            if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [cell.localIdentifier],
+                                                    options: nil).firstObject {
+                // Only local images can be deleted
+                if imageAsset.sourceType != .typeCloudShared {
+                    // Will allow user to delete images after upload
+                    uploadSwitchVC.canDeleteImages = true
                 }
-                
-                // Push Edit view embedded in navigation controller
-                let navController = UINavigationController(rootViewController: uploadSwitchVC)
-                navController.modalPresentationStyle = .popover
-                navController.modalTransitionStyle = .coverVertical
-                navController.popoverPresentationController?.sourceView = self.localImagesCollection
-                navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
-                navController.popoverPresentationController?.permittedArrowDirections = .up
-                self.navigationController?.present(navController, animated: true)
             }
+            
+            // Push Edit view embedded in navigation controller
+            let navController = UINavigationController(rootViewController: uploadSwitchVC)
+            navController.modalPresentationStyle = .popover
+            navController.modalTransitionStyle = .coverVertical
+            navController.popoverPresentationController?.sourceView = self.localImagesCollection
+            navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
+            navController.popoverPresentationController?.permittedArrowDirections = .up
+            self.navigationController?.present(navController, animated: true)
         }
     }
 

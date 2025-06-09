@@ -168,7 +168,7 @@ extension RenameFileViewController: UITableViewDelegate
     private func pushDateFormatSelector(for indexPath: IndexPath, withFormatString formatString: String) {
         let dateFormatSB = UIStoryboard(name: "DateFormatSelectorViewController", bundle: nil)
         guard let dateFormatVC = dateFormatSB.instantiateViewController(withIdentifier: "DateFormatSelectorViewController") as? DateFormatSelectorViewController else { return }
-        dateFormatVC.startValue = startValue
+        dateFormatVC.currentCounter = currentCounter
         dateFormatVC.prefixBeforeUpload = prefixBeforeUpload
         dateFormatVC.prefixActions = prefixActions
         dateFormatVC.replaceBeforeUpload = replaceBeforeUpload
@@ -177,6 +177,7 @@ extension RenameFileViewController: UITableViewDelegate
         dateFormatVC.suffixActions = suffixActions
         dateFormatVC.changeCaseBeforeUpload = changeCaseBeforeUpload
         dateFormatVC.caseOfFileExtension = caseOfFileExtension
+        dateFormatVC.categoryId = categoryId
         dateFormatVC.delegate = self
         dateFormatVC.dateFormats = formatString.asPwgDateFormats
         navigationController?.pushViewController(dateFormatVC, animated: true)
@@ -185,7 +186,7 @@ extension RenameFileViewController: UITableViewDelegate
     private func pushTimeFormatSelector(for indexPath: IndexPath, withFormatString formatString: String) {
         let timeFormatSB = UIStoryboard(name: "TimeFormatSelectorViewController", bundle: nil)
         guard let timeFormatVC = timeFormatSB.instantiateViewController(withIdentifier: "TimeFormatSelectorViewController") as? TimeFormatSelectorViewController else { return }
-        timeFormatVC.startValue = startValue
+        timeFormatVC.currentCounter = currentCounter
         timeFormatVC.prefixBeforeUpload = prefixBeforeUpload
         timeFormatVC.prefixActions = prefixActions
         timeFormatVC.replaceBeforeUpload = replaceBeforeUpload
@@ -194,6 +195,7 @@ extension RenameFileViewController: UITableViewDelegate
         timeFormatVC.suffixActions = suffixActions
         timeFormatVC.changeCaseBeforeUpload = changeCaseBeforeUpload
         timeFormatVC.caseOfFileExtension = caseOfFileExtension
+        timeFormatVC.categoryId = categoryId
         timeFormatVC.delegate = self
         timeFormatVC.timeFormats = formatString.asPwgTimeFormats
         navigationController?.pushViewController(timeFormatVC, animated: true)
@@ -210,8 +212,9 @@ extension RenameFileViewController: UITableViewDelegate
         counterFormatVC.suffixActions = suffixActions
         counterFormatVC.changeCaseBeforeUpload = changeCaseBeforeUpload
         counterFormatVC.caseOfFileExtension = caseOfFileExtension
+        counterFormatVC.categoryId = categoryId
         counterFormatVC.delegate = self
-        counterFormatVC.counterStartValue = UploadVars.shared.counterStartValue
+        counterFormatVC.currentCounter = currentCounter
         counterFormatVC.counterFormats = formatString.asPwgCounterFormats
         navigationController?.pushViewController(counterFormatVC, animated: true)
     }

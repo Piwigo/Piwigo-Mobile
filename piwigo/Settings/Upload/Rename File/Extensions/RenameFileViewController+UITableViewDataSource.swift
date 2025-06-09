@@ -43,7 +43,7 @@ extension RenameFileViewController: UITableViewDataSource
         return cell
     }
     
-    private func addAlbumNameCellForRow(at indexPath: IndexPath) -> LabelTableViewCell {
+    private func addAlbumIDCellForRow(at indexPath: IndexPath) -> LabelTableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
         
@@ -156,7 +156,7 @@ extension RenameFileViewController: UITableViewDataSource
                 tableViewCell = addTextCellForRow(at: indexPath)
                 
             case RenameAction.ActionType.addAlbum.rawValue /* Dummy album name */:
-                tableViewCell = addAlbumNameCellForRow(at: indexPath)
+                tableViewCell = addAlbumIDCellForRow(at: indexPath)
                 
             case RenameAction.ActionType.addDate.rawValue /* Dummy creation date */:
                 tableViewCell = addDateCellForRow(at: indexPath)
@@ -216,7 +216,7 @@ extension RenameFileViewController: UITableViewDataSource
                 tableViewCell = addTextCellForRow(at: indexPath)
                 
             case RenameAction.ActionType.addAlbum.rawValue /* Dummy album name */:
-                tableViewCell = addAlbumNameCellForRow(at: indexPath)
+                tableViewCell = addAlbumIDCellForRow(at: indexPath)
                 
             case RenameAction.ActionType.addDate.rawValue /* Dummy creation date */:
                 tableViewCell = addDateCellForRow(at: indexPath)
@@ -276,7 +276,7 @@ extension RenameFileViewController: UITableViewDataSource
                 tableViewCell = addTextCellForRow(at: indexPath)
                 
             case RenameAction.ActionType.addAlbum.rawValue /* Dummy album name */:
-                tableViewCell = addAlbumNameCellForRow(at: indexPath)
+                tableViewCell = addAlbumIDCellForRow(at: indexPath)
                 
             case RenameAction.ActionType.addDate.rawValue /* Dummy creation date */:
                 tableViewCell = addDateCellForRow(at: indexPath)
@@ -298,10 +298,10 @@ extension RenameFileViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameChangeCase", comment: "Change Case"))
-                cell.cellSwitch.setOn(UploadVars.shared.changeCaseOfFileExtension, animated: true)
+                cell.cellSwitch.setOn(changeCaseBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly
-                    UploadVars.shared.changeCaseOfFileExtension = switchState
+                    self.changeCaseBeforeUpload = switchState
                     // Position of the row that should be added/removed
                     let rowAtIndexPath = IndexPath(row: 1, section: RenameSection.fileExtension.rawValue)
                     if switchState {
@@ -321,8 +321,11 @@ extension RenameFileViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "CaseSelectorTableViewCell", for: indexPath) as? CaseSelectorTableViewCell
                 else { preconditionFailure("Could not load CaseSelectorTableViewCell") }
                 
-                cell.configure(with: UploadVars.shared.caseOfFileExtension)
-                cell.cellCaseSelectorBlock = {
+                cell.configure(with: caseOfFileExtension)
+                cell.cellCaseSelectorBlock = { newCaseType in
+                    // Update case type
+                    self.caseOfFileExtension = newCaseType
+                    
                     // Update example shown in Info section
                     self.updateExample()
                 }

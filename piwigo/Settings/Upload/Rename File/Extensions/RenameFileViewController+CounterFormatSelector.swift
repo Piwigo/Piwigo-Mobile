@@ -12,9 +12,9 @@ import piwigoKit
 
 // MARK: - SetTimeFormatDelegate Methods
 extension RenameFileViewController: SelectCounterFormatDelegate {
-    func didSelectCounter(startValue: Int, format: String) {
+    func didSelectCounter(currentCounter: Int64, format: String) {
         // Update counter starting value
-        self.startValue = startValue
+        self.currentCounter = currentCounter
         
         // Look for the counter format stored in settings
         if let index = prefixActions.firstIndex(where: { $0.type == .addCounter }) {
@@ -53,6 +53,6 @@ extension RenameFileViewController: SelectCounterFormatDelegate {
                                               replace: replaceBeforeUpload, replaceActions: replaceActions,
                                               suffix: suffixBeforeUpload, suffixActions: suffixActions,
                                               changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                              startValue: startValue)
+                                              currentCounter: currentCounter)
     }
 }

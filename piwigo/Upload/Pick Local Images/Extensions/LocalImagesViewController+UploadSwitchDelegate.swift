@@ -38,6 +38,23 @@ extension LocalImagesViewController: UploadSwitchDelegate
                     updatedRequest.comment = comment
                 }
                 
+                // Image file name
+                if let currentCounter = uploadParameters["currentCounter"] as? Int64 {
+                    albumDelegate?.didSelectCurrentCounter(value: currentCounter)
+                }
+                if let prefixActions = uploadParameters["prefixActions"] as? RenameActionList {
+                    updatedRequest.fileNamePrefixEncodedActions = prefixActions.encodedString
+                }
+                if let replaceActions = uploadParameters["replaceActions"] as? RenameActionList {
+                    updatedRequest.fileNameReplaceEncodedActions = replaceActions.encodedString
+                }
+                if let suffixActions = uploadParameters["suffixActions"] as? RenameActionList {
+                    updatedRequest.fileNameSuffixEncodedActions = suffixActions.encodedString
+                }
+                if let caseOfFileExtension = uploadParameters["caseOfFileExtension"] as? FileExtCase {
+                    updatedRequest.fileNameExtensionCase = caseOfFileExtension.rawValue
+                }
+
                 // Upload settings
                 if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
                     updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
@@ -61,12 +78,6 @@ extension LocalImagesViewController: UploadSwitchDelegate
                 }
                 if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
                     updatedRequest.photoQuality = photoQuality
-                }
-                if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
-                    updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
-                }
-                if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
-                    updatedRequest.defaultPrefix = defaultPrefix
                 }
                 if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
                     updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload

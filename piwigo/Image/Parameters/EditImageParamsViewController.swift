@@ -449,7 +449,7 @@ class EditImageParamsViewController: UIViewController
                             }
                             // Add image to album of tagged images if it exists
                             let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
-                            if let albumData = self.albumProvider.getAlbum(withId: catID) {
+                            if let albumData = self.albumProvider.getAlbum(ofUser: user, withId: catID) {
                                 imageData.addToAlbums(albumData)
                                 
                                 // Update albums

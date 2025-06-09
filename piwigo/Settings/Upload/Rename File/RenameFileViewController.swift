@@ -16,7 +16,7 @@ protocol MofifyFilenameDelegate: NSObjectProtocol {
                                      replace: Bool, replaceActions: RenameActionList,
                                      suffix: Bool, suffixActions: RenameActionList,
                                      changeCase: Bool, caseOfExtension: FileExtCase,
-                                     startValue: Int)
+                                     currentCounter: Int64)
 }
 
 enum RenameSection: Int {
@@ -32,20 +32,22 @@ class RenameFileViewController: UIViewController {
     weak var delegate: MofifyFilenameDelegate?
     
     // Default actions
-    var startValue: Int = UploadVars.shared.counterStartValue
-    var prefixBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+    var currentCounter: Int64 = UploadVars.shared.categoryCounterInit
+    var prefixBeforeUpload: Bool = UploadVars.shared.prefixFileNameBeforeUpload
     var prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions
-    var replaceBeforeUpload = UploadVars.shared.replaceFileNameBeforeUpload
+    var replaceBeforeUpload: Bool = UploadVars.shared.replaceFileNameBeforeUpload
     var replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions
-    var suffixBeforeUpload = UploadVars.shared.suffixFileNameBeforeUpload
+    var suffixBeforeUpload: Bool = UploadVars.shared.suffixFileNameBeforeUpload
     var suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions
     var changeCaseBeforeUpload: Bool = UploadVars.shared.changeCaseOfFileExtension
-    var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .uppercase
+    var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
     
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
     @IBOutlet weak var tableView: UITableView!
     
+    // Used to display the album ID (unset by SettingsViewController)
+    var categoryId: Int32 = 69
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     
@@ -246,7 +248,7 @@ class RenameFileViewController: UIViewController {
                                               replace: replaceBeforeUpload, replaceActions: replaceActions,
                                               suffix: suffixBeforeUpload, suffixActions: suffixActions,
                                               changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                              startValue: startValue)
+                                              currentCounter: currentCounter)
     }
     
     deinit {
@@ -267,7 +269,7 @@ class RenameFileViewController: UIViewController {
                                     replace: replaceBeforeUpload, replaceActions: replaceActions,
                                     suffix: suffixBeforeUpload, suffixActions: suffixActions,
                                     changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                    counter: startValue)
+                                    categoryId: categoryId, counter: currentCounter)
     }
     
 

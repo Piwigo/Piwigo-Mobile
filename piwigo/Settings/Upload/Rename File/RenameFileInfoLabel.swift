@@ -17,7 +17,7 @@ class RenameFileInfoLabel: UILabel {
     let exampleFileName: String = "IMG_0023.HEIC"
     
     // Date when Steve Jobs first announced the iPhone
-    let firstIPhoneAnnouncementDate: Date = {
+    let iPhoneAnnouncementDate: Date = {
         var components = DateComponents()
         components.year = 2007
         components.month = 01
@@ -33,13 +33,13 @@ class RenameFileInfoLabel: UILabel {
                        replace: Bool, replaceActions: RenameActionList,
                        suffix: Bool, suffixActions: RenameActionList,
                        changeCase: Bool, caseOfExtension: FileExtCase,
-                       counter: Int) {
+                       categoryId: Int32, counter: Int64) {
         var fileName = exampleFileName
-        fileName.renameFile(prefix: prefix, prefixActions: prefixActions,
-                            replace: replace, replaceActions: replaceActions,
-                            suffix: suffix, suffixActions: suffixActions,
-                            changeCaseOfExtension: changeCase, caseOfExtension: caseOfExtension,
-                            date: firstIPhoneAnnouncementDate, counter: counter)
+        fileName.renameFile(prefixActions: prefix ? prefixActions : [],
+                            replaceActions: replace ? replaceActions : [],
+                            suffixActions: suffix ? suffixActions : [],
+                            caseOfExtension: changeCase ? caseOfExtension : .keep,
+                            albumID: categoryId, date: iPhoneAnnouncementDate, counter: counter)
         text = exampleFileName + "\r" + "⇩" + "\r" + fileName
     }
 }
