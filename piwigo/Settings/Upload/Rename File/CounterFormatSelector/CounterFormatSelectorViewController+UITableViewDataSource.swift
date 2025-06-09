@@ -41,7 +41,12 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
             else { preconditionFailure("Could not load TextFieldTableViewCell") }
             
-            let title = NSLocalizedString("settings_renameCounterStart", comment: "Current Number")
+            var title = ""
+            if parent?.parent is SettingsViewController {
+                title = NSLocalizedString("settings_renameCounterCurrent", comment: "Starts From")
+            } else {
+                title = NSLocalizedString("settings_renameCounterStart", comment: "Current Value")
+            }
             cell.configure(with: title, input: String(currentCounter), placeHolder: "1")
             cell.accessibilityIdentifier = "startCounterValue"
             cell.rightTextField.delegate = self

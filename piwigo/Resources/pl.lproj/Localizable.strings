@@ -771,7 +771,8 @@
 "settings_renameTimeHeader" = "Proszę wybrać format czasu do dołączenia do nazwy pliku.";
 "settings_renameFiveDigit" = "Wersja 5-cyfrowa";
 "settings_renameCounterHeader" = "Proszę wybrać format licznika do dołączenia do nazwy pliku.";
-"settings_renameCounterStart" = "Numer bieżący";
+"settings_renameCounterStart" = "Starts From";
+"settings_renameCounterCurrent" = "Current Value";
 "settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
 "settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
 "settings_renameCounterDigits" = "Cyfr";

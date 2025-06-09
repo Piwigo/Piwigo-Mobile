@@ -771,7 +771,8 @@
 "settings_renameTimeHeader" = "Seleccione un formato de hora para incluir en el nombre de archivo.";
 "settings_renameFiveDigit" = "Versión de 5 dígitos";
 "settings_renameCounterHeader" = "Seleccione un formato de contador para incluir en el nombre de archivo.";
-"settings_renameCounterStart" = "Número Actual";
+"settings_renameCounterStart" = "Starts From";
+"settings_renameCounterCurrent" = "Current Value";
 "settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
 "settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
 "settings_renameCounterDigits" = "Dígitos";
