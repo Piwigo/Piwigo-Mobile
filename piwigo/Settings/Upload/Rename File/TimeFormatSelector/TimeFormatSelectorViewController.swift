@@ -31,7 +31,7 @@ class TimeFormatSelectorViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     // Actions to be modified or not
-    var currentCounter: Int64 = .min
+    var currentCounter: Int64 = UploadVars.shared.categoryCounterInit
     var prefixBeforeUpload = false
     var prefixActions: RenameActionList = []
     var replaceBeforeUpload = false
