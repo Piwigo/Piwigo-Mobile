@@ -71,6 +71,7 @@ extension UploadSettingsViewController {
             guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController
             else { preconditionFailure("Could not load RenameFileViewController") }
             filenameVC.delegate = self
+            filenameVC.categoryId = categoryId ?? 66
             filenameVC.currentCounter = currentCounter
             filenameVC.prefixBeforeUpload = prefixBeforeUpload
             filenameVC.prefixActions = prefixActions

@@ -47,7 +47,7 @@ class RenameFileViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     // Used to display the album ID (unset by SettingsViewController)
-    var categoryId: Int32 = 69
+    var categoryId: Int32 = 66
     // Tell which cell triggered the keyboard appearance
     var editedRow: IndexPath?
     

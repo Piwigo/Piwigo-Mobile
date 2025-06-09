@@ -47,7 +47,13 @@ extension RenameFileViewController: UITableViewDataSource
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
         
-        cell.configure(with: NSLocalizedString("albumID", comment: "Album ID"), detail: "")
+        var detail = ""
+        if parent is SettingsViewController {
+            detail = ""
+        } else {
+            detail = String(self.categoryId)
+        }
+        cell.configure(with: NSLocalizedString("albumID", comment: "Album ID"), detail: detail)
         cell.accessoryType = .none
         cell.accessibilityIdentifier = "addAlbumID"
         return cell
