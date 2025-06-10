@@ -144,7 +144,7 @@ extension UploadManager
             self.didEndPreparation()
             return
         }
-        var fileName = fileURL.lastPathComponent
+        let fileName = fileURL.lastPathComponent
 
         // Launch preparation job if file format accepted by Piwigo server
         let fileExt = fileURL.pathExtension.lowercased()

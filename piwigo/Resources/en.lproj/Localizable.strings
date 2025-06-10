@@ -915,6 +915,6 @@
 "whatsNew_title" = "What's New in Piwigo";
 "whatsNew_title1" = "Group Photos";
 "whatsNew_desc1" = "By day, week or month.";
-"whatsNew_title2" = "Rotate Photos";
-"whatsNew_desc2" = "Fix orientation issues (requires the rotateImage plugin).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Continue";

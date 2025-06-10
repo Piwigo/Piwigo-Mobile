@@ -41,13 +41,13 @@ class WhatsNewViewController: UIViewController {
         
         // What's new — 2nd annoucement
         if #available(iOS 13.0, *) {
-            secondNewsImage.image = UIImage(systemName: "rotate.right")
+            secondNewsImage.image = UIImage(systemName: "character.cursor.ibeam")
         } else {
             // Fallback on ealier version
-            secondNewsImage.image = UIImage(named: "whatsNew2")
+            secondNewsImage.image = UIImage(named: "text.cursor")
         }
-        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Rotate Photos")
-        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Fix orientation issues.")
+        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Rename Files")
+        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "before upload with creation date, counter, album ID, text…")
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)

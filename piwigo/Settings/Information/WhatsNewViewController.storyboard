@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_72" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <accessibilityOverrides boldText="YES"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,11 +16,11 @@
             <objects>
                 <viewController storyboardIdentifier="WhatsNewViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="WhatsNewViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="What's New in Piwigo" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULD-Bw-142">
-                                <rect key="frame" x="60" y="89" width="310" height="76.666666666666686"/>
+                                <rect key="frame" x="60" y="148" width="273" height="76.666666666666686"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="nqv-aO-SQq">
                                         <variation key="heightClass=compact-widthClass=regular" constant="400"/>
@@ -45,10 +45,10 @@
                                 </variation>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Lbm-xL-FQe">
-                                <rect key="frame" x="40" y="416" width="350" height="125.33333333333337"/>
+                                <rect key="frame" x="40" y="378.33333333333331" width="313" height="145.66666666666669"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="waY-KD-pQs">
-                                        <rect key="frame" x="0.0" y="0.0" width="350" height="42.666666666666664"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="313" height="42.666666666666664"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ofx-vJ-Gvf">
                                                 <rect key="frame" x="0.0" y="0.0" width="40" height="42.666666666666664"/>
@@ -60,10 +60,10 @@
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                             </imageView>
                                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="jUo-i2-eB3">
-                                                <rect key="frame" x="60" y="0.0" width="290" height="42.666666666666664"/>
+                                                <rect key="frame" x="60" y="0.0" width="253" height="42.666666666666664"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Group Photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6CT-Fq-rLJ">
-                                                        <rect key="frame" x="0.0" y="0.0" width="290" height="20.333333333333332"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="253" height="20.333333333333332"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -75,7 +75,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="by day, week or month." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-U7-rmr">
-                                                        <rect key="frame" x="0.0" y="22.333333333333314" width="290" height="20.333333333333329"/>
+                                                        <rect key="frame" x="0.0" y="22.333333333333371" width="253" height="20.333333333333329"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -91,22 +91,22 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qAs-yp-B32">
-                                        <rect key="frame" x="0.0" y="82.666666666666686" width="350" height="42.666666666666657"/>
+                                        <rect key="frame" x="0.0" y="82.666666666666686" width="313" height="63"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFA-Xb-eXV">
-                                                <rect key="frame" x="-2.6666666666666679" y="-5.6666666666666679" width="42.666666666666671" height="50.666666666666671"/>
+                                                <rect key="frame" x="0.0" y="-3.3333333333333357" width="40" height="69.666666666666686"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="rK1-QG-eNb"/>
                                                 </constraints>
-                                                <imageReference key="image" image="rotate.right" catalog="system" symbolScale="large"/>
+                                                <imageReference key="image" image="character.cursor.ibeam" catalog="system" symbolScale="large"/>
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                             </imageView>
                                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="yMr-f9-CrM">
-                                                <rect key="frame" x="60" y="0.0" width="290" height="42.666666666666664"/>
+                                                <rect key="frame" x="60" y="0.0" width="253" height="63"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rotate Photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
-                                                        <rect key="frame" x="0.0" y="0.0" width="290" height="20.333333333333332"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rename Files" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
+                                                        <rect key="frame" x="0.0" y="0.0" width="253" height="20.333333333333332"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -117,8 +117,10 @@
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                                         </variation>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fix orientation issues." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
-                                                        <rect key="frame" x="0.0" y="22.333333333333314" width="290" height="20.333333333333329"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
+                                                        <rect key="frame" x="0.0" y="22.333333333333311" width="253" height="40.666666666666657"/>
+                                                        <string key="text">before upload with creation date,
+counter, album ID, text…</string>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -140,7 +142,7 @@
                                 <variation key="heightClass=regular-widthClass=regular" spacing="80"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GMb-yE-rVt">
-                                <rect key="frame" x="40" y="816" width="350" height="52"/>
+                                <rect key="frame" x="40" y="702" width="313" height="52"/>
                                 <color key="backgroundColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="NBm-PU-q4o">
@@ -275,8 +277,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="character.cursor.ibeam" catalog="system" width="128" height="119"/>
         <image name="imageDay" width="25.333333969116211" height="23"/>
-        <image name="rotate.right" catalog="system" width="117" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
