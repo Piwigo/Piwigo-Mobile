@@ -915,6 +915,6 @@
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
 "whatsNew_title1" = "Csoportképek";
 "whatsNew_desc1" = "Nap, hét vagy hónap szerint.";
-"whatsNew_title2" = "Fényképek elforgatása";
-"whatsNew_desc2" = "Javítsa ki a tájolási problémákat (a rotateImage beépülő modul szükséges).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Folytatás";

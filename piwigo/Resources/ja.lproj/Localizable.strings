@@ -915,6 +915,6 @@
 "whatsNew_title" = "Piwigoの新機能";
 "whatsNew_title1" = "グループ写真";
 "whatsNew_desc1" = "日、週、または月で。";
-"whatsNew_title2" = "写真を回転";
-"whatsNew_desc2" = "方向の問題を修正（rotateImageプラグインが必要）";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "続ける";

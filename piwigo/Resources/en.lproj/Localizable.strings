@@ -171,11 +171,11 @@
 // MARK: -- Albums "Discover"
 "categoryDiscover_title" = "Discover";
 "categoryDiscoverTagged_title" = "Tagged";
-"categoryDiscoverVisits_title" = "Most visited";
+"categoryDiscoverVisits_title" = "Most Visited";
 "categoryDiscoverVisits_legend" = "hits";
-"categoryDiscoverBest_title" = "Best rated";
-"categoryDiscoverRecent_title" = "Recent photos";
-"categoryDiscoverFavorites_title" = "Your favorites";
+"categoryDiscoverBest_title" = "Best Rated";
+"categoryDiscoverRecent_title" = "Recent Photos";
+"categoryDiscoverFavorites_title" = "Your Favorites";
 
 // MARK: -- Albums sort
 "categorySort_sort" = "Sort Images By…";

@@ -915,6 +915,6 @@
 "whatsNew_title" = "Piwigo有什么新功能";
 "whatsNew_title1" = "群组照片";
 "whatsNew_desc1" = "按日、周或月份。";
-"whatsNew_title2" = "旋转照片";
-"whatsNew_desc2" = "修复方向问题 (需要 rotateImage 插件)。";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "继续储值";

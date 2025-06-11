@@ -915,6 +915,6 @@
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
 "whatsNew_title1" = "Groep foto's";
 "whatsNew_desc1" = "Per dag, week of maand.";
-"whatsNew_title2" = "Foto's roteren";
-"whatsNew_desc2" = "Repareer oriëntatie problemen (vereist de rotateImage plugin).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Doorgaan";

@@ -149,7 +149,7 @@
 // MARK: - Albums
 // ===========================================================================
 // MARK: -- Generic
-"albumID" = "Album ID";
+"albumID" = "ID del álbum";
 "singleAlbumCount" = "%@ álbum";
 "severalAlbumsCount" = "%@ álbumes";
 "singleSubAlbumCount" = "%@ subálbum";
@@ -771,10 +771,10 @@
 "settings_renameTimeHeader" = "Seleccione un formato de hora para incluir en el nombre de archivo.";
 "settings_renameFiveDigit" = "Versión de 5 dígitos";
 "settings_renameCounterHeader" = "Seleccione un formato de contador para incluir en el nombre de archivo.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
+"settings_renameCounterStart" = "Empieza desde";
+"settings_renameCounterCurrent" = "Valor actual";
+"settings_renameCounterStartFooter" = "Para cada álbum el contador se inicializará con este valor, que luego se incrementará en uno por cada archivo procesado.";
+"settings_renameCounterCurrentFooter" = "La siguiente serie de subidas comenzará con este valor de contador, que luego se incrementará en uno por cada archivo procesado.";
 "settings_renameCounterDigits" = "Dígitos";
 "settings_renameCounterDigitsFooter" = "Cuando el contador necesite más dígitos de los especificados, el número de dígitos se incrementará automáticamente.";
 
@@ -915,6 +915,6 @@
 "whatsNew_title" = "Novedades de Piwigo";
 "whatsNew_title1" = "Agrupar fotos";
 "whatsNew_desc1" = "Por día, semana o mes.";
-"whatsNew_title2" = "Rotar fotos";
-"whatsNew_desc2" = "Solucionar problemas de orientación.";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Continuar";

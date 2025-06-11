@@ -915,6 +915,6 @@
 "whatsNew_title" = "Novità di Piwigo";
 "whatsNew_title1" = "Foto di gruppo";
 "whatsNew_desc1" = "Da giorno, settimana o mese.";
-"whatsNew_title2" = "Ruota foto";
-"whatsNew_desc2" = "Risolvi i problemi di orientamento (richiede il plug-in rotateImage).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Continua";

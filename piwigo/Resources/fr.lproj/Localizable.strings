@@ -915,6 +915,6 @@
 "whatsNew_title" = "Nouveautés de Piwigo";
 "whatsNew_title1" = "Regrouper les photos";
 "whatsNew_desc1" = "Par jour, par semaine ou par mois.";
-"whatsNew_title2" = "Faire pivoter les photos";
-"whatsNew_desc2" = "Corriger les problèmes d'orientation (nécessite le plugin rotateImage).";
+"whatsNew_title2" = "Renommer les Fichier";
+"whatsNew_desc2" = "avant le téléchargement avec la date de création, le compteur, l'ID de l'album, le texte…";
 "whatsNew_continue" = "Continuer";

@@ -915,6 +915,6 @@
 "whatsNew_title" = "Что нового в Piwigo";
 "whatsNew_title1" = "Групповые фото";
 "whatsNew_desc1" = "По дням или месяцам.";
-"whatsNew_title2" = "Повернуть фото";
-"whatsNew_desc2" = "Исправлены проблемы ориентации (требуется плагин rotateImage).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Продолжить";

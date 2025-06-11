@@ -915,6 +915,6 @@
 "whatsNew_title" = "Co nowego w Piwigo";
 "whatsNew_title1" = "Grupuj zdjęcia";
 "whatsNew_desc1" = "Według dnia, tygodnia lub miesiąca.";
-"whatsNew_title2" = "Obróć zdjęcia";
-"whatsNew_desc2" = "Napraw problemy z orientacją (wymaga wtyczki rotateImage plugin).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Kontynuuj";

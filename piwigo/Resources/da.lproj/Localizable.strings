@@ -915,6 +915,6 @@
 "whatsNew_title" = "Hvad er nyt i Piwigo";
 "whatsNew_title1" = "Gruppe Fotos";
 "whatsNew_desc1" = "Efter dag, uge eller måned.";
-"whatsNew_title2" = "Rotér Fotos";
-"whatsNew_desc2" = "Løs orienteringsproblemer (kræver rotateImage pluginet).";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Fortsæt";
