@@ -125,15 +125,21 @@ public class Image: NSManagedObject {
             if newPostedInterval != datePosted {
                 datePosted = newPostedInterval
             }
-        } else if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID, privacy: .public) from '\(imageData.datePosted ?? "nil", privacy: .public)'")
+        } else {
+            datePosted = DateUtilities.unknownDateInterval
+            if #available(iOSApplicationExtension 14.0, *) {
+                Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID, privacy: .public) from '\(imageData.datePosted ?? "nil", privacy: .public)'")
+            }
         }
         if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated) {
             if newCreatedInterval != dateCreated {
                 dateCreated = newCreatedInterval
             }
-        } else if #available(iOSApplicationExtension 14.0, *) {
-            Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID, privacy: .public) from '\(imageData.dateCreated ?? "nil", privacy: .public)'")
+        } else {
+            dateCreated = DateUtilities.unknownDateInterval
+            if #available(iOSApplicationExtension 14.0, *) {
+                Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID, privacy: .public) from '\(imageData.dateCreated ?? "nil", privacy: .public)'")
+            }
         }
         
         // Author

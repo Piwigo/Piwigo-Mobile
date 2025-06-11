@@ -105,7 +105,7 @@ public class Album: NSManagedObject {
                 dateLast = newTimeInterval
             }
         } else {
-            dateLast = Date.distantPast.timeIntervalSinceReferenceDate
+            dateLast = DateUtilities.unknownDateInterval
         }
 
         // This album belongs to the provided user
