@@ -469,6 +469,7 @@ extension SettingsViewController: UITableViewDelegate
                 if MFMailComposeViewController.canSendMail() {
                     let composeVC = MFMailComposeViewController()
                     composeVC.mailComposeDelegate = self
+                    composeVC.view.tintColor = .piwigoColorOrange()
 
                     // Configure the fields of the interface.
                     composeVC.setToRecipients([
