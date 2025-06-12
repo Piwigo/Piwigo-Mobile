@@ -339,7 +339,7 @@ extension UIDevice {
     }
     
     
-    // MARK: - Device names
+    // MARK: - Cellular Devices
     var hasCellular: Bool {
         switch identifier {
             
