@@ -667,13 +667,3 @@ class LoginViewController: UIViewController {
         super.init(coder: aDecoder)
     }
 }
-
-
-// MARK: - MFMailComposeViewController Delegate
-extension LoginViewController: MFMailComposeViewControllerDelegate
-{
-    func mailComposeController(_ controller: MFMailComposeViewController,
-                               didFinishWith result: MFMailComposeResult, error: Error?) {
-        dismiss(animated: true)
-    }
-}
