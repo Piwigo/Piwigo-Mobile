@@ -339,6 +339,209 @@ extension UIDevice {
     }
     
     
+    // MARK: - Device names
+    var hasCellular: Bool {
+        switch identifier {
+            
+        // MARK: iPad
+        case "iPad1,1":
+            return true
+        case "iPad2,1":
+            return false
+        case "iPad2,2":
+            return true
+        case "iPad2,3":
+            return true
+        case "iPad2,4":
+            return false
+        case "iPad2,5":
+            return false
+        case "iPad2,6":
+            return true
+        case "iPad2,7":
+            return true
+        case "iPad3,1":
+            return false
+        case "iPad3,2", "iPad3,3":
+            return true
+        case "iPad3,4":
+            return false
+        case "iPad3,5", "iPad3,6":
+            return true
+        case "iPad4,1":
+            return false
+        case "iPad4,2":
+            return true
+        case "iPad4,4":
+            return false
+        case "iPad4,5":
+            return true
+        case "iPad4,7":
+            return false
+        case "iPad4,8":
+            return true
+        case "iPad5,1":
+            return false
+        case "iPad5,2":
+            return true
+        case "iPad5,3":
+            return false
+        case "iPad5,4":
+            return true
+        case "iPad6,3":
+            return false
+        case "iPad6,4":
+            return true
+        case "iPad6,7":
+            return false
+        case "iPad6,8":
+            return true
+        case "iPad6,11":
+            return false
+        case "iPad6,12":
+            return true
+        case "iPad7,1":
+            return false
+        case "iPad7,2":
+            return true
+        case "iPad7,3":
+            return false
+        case "iPad7,4":
+            return true
+        case "iPad7,5":
+            return false
+        case "iPad7,6":
+            return true
+        case "iPad7,11":
+            return false
+        case "iPad7,12":
+            return true
+        case "iPad8,1":
+            return false
+        case "iPad8,2":
+            return false
+        case "iPad8,3":
+            return true
+        case "iPad8,4":
+            return true
+        case "iPad8,5", "iPad8,6":
+            return false
+        case "iPad8,7", "iPad8,8":
+            return true
+        case "iPad8,9":
+            return false
+        case "iPad8,10":
+            return true
+        case "iPad8,11":
+            return false
+        case "iPad8,12":
+            return true
+        case "iPad11,1":
+            return false
+        case "iPad11,2":
+            return true
+        case "iPad11,3":
+            return false
+        case "iPad11,4":
+            return true
+        case "iPad11,6":
+            return false
+        case "iPad11,7":
+            return true
+        case "iPad12,1":
+            return false
+        case "iPad12,2":
+            return true
+        case "iPad13,1":
+            return false
+        case "iPad13,2":
+            return true
+        case "iPad13,4", "iPad13,5":
+            return false
+        case "iPad13,6", "iPad13,7":
+            return true
+        case "iPad13,8", "iPad13,9":
+            return false
+        case "iPad13,10", "iPad13,11":
+            return true
+        case "iPad13,16":
+            return false
+        case "iPad13,17":
+            return true
+        case "iPad13,18":
+            return false
+        case "iPad13,19":
+            return true
+        case "iPad14,1":
+            return false
+        case "iPad14,2":
+            return true
+        case "iPad14,3":
+            return false
+        case "iPad14,4":
+            return true
+        case "iPad14,5":
+            return false
+        case "iPad14,6":
+            return true
+        case "iPad14,8":
+            return false
+        case "iPad14,9":
+            return true
+        case "iPad14,10":
+            return false
+        case "iPad14,11":
+            return true
+        case "iPad15,3":
+            return false
+        case "iPad15,4":
+            return true
+        case "iPad15,5":
+            return false
+        case "iPad15,6":
+            return true
+        case "iPad15,7":
+            return false
+        case "iPad15,8":
+            return true
+        case "iPad16,1":
+            return false
+        case "iPad16,2":
+            return true
+        case "iPad16,3":
+            return false
+        case "iPad16,4":
+            return true
+        case "iPad16,5":
+            return false
+        case "iPad16,6":
+            return true
+        
+        // MARK: iPod
+        case "iPod1,1":
+            return false
+        case "iPod2,1":
+            return false
+        case "iPod3,1":
+            return false
+        case "iPod4,1":
+            return false
+        case "iPod5,1":
+            return false
+        case "iPod7,1":
+            return false
+        case "iPod9,1":
+            return false
+            
+        // MARK: Simulator
+        case "i386", "x86_64":
+            return false
+        default:
+            return true
+        }
+    }
+    
+    
     // MARK: - Photo Resolutions
     var modelPhotoResolution: String {
         switch identifier {
