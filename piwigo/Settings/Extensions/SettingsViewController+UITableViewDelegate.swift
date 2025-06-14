@@ -123,6 +123,7 @@ extension SettingsViewController: UITableViewDelegate
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
             row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
@@ -294,6 +295,7 @@ extension SettingsViewController: UITableViewDelegate
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
             row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
