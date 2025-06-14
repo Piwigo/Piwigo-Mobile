@@ -23,6 +23,7 @@ extension Server {
     @NSManaged public var path: String
     @NSManaged public var albums: Set<Album>?
     @NSManaged public var users: Set<User>?
+    @NSManaged public var groups: Set<UserGroup>?
     @NSManaged public var images: Set<Image>?
     @NSManaged public var tags: Set<Tag>?
 
@@ -93,5 +94,22 @@ extension Server {
 
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: Set<Tag>)
+
+}
+
+// MARK: Generated accessors for groups
+extension Server {
+
+    @objc(addGroupsObject:)
+    @NSManaged public func addToGroups(_ value: UserGroup)
+
+    @objc(removeGroupsObject:)
+    @NSManaged public func removeFromGroups(_ value: UserGroup)
+
+    @objc(addGroups:)
+    @NSManaged public func addToGroups(_ values: Set<UserGroup>)
+
+    @objc(removeGroups:)
+    @NSManaged public func removeFromGroups(_ values: Set<UserGroup>)
 
 }

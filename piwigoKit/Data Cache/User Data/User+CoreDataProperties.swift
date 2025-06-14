@@ -19,10 +19,14 @@ extension User {
 
     @NSManaged public var id: Int16
     @NSManaged public var username: String
+    @NSManaged public var email: String
     @NSManaged public var status: String
+    @NSManaged public var recentPeriod: Int16
+    @NSManaged public var registrationDate: TimeInterval
     @NSManaged public var lastUsed: TimeInterval
     @NSManaged public var name: String
     @NSManaged public var server: Server?
+    @NSManaged public var groups: Set<UserGroup>?
     @NSManaged public var albums: Set<Album>?
     @NSManaged public var uploadRights: String
     @NSManaged public var downloadRights: Bool
@@ -79,5 +83,22 @@ extension User {
 
     @objc(removeImages:)
     @NSManaged public func removeFromImages(_ values: Set<Image>)
+
+}
+
+// MARK: Generated accessors for groups
+extension User {
+
+    @objc(addGroupsObject:)
+    @NSManaged public func addToGroups(_ value: UserGroup)
+
+    @objc(removeGroupsObject:)
+    @NSManaged public func removeFromGroups(_ value: UserGroup)
+
+    @objc(addGroups:)
+    @NSManaged public func addToGroups(_ values: Set<UserGroup>)
+
+    @objc(removeGroups:)
+    @NSManaged public func removeFromGroups(_ values: Set<UserGroup>)
 
 }

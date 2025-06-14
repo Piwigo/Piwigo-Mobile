@@ -492,7 +492,13 @@ private extension DataMigrationVersion {
                     }
                     return .version0F
                 }
-                return .version0H
+                else if appVersion.compare("3.4", options: .numeric) == .orderedAscending {
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        DataMigrator.logger.error("\(logPrefix) 3.4")
+                    }
+                    return .version0H
+                }
+                return .version0J
             }
         }
         return compatibleVersion
