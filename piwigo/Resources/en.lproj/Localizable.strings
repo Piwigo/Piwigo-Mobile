@@ -914,7 +914,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
 "whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_desc1" = "Auto-play and loop options";
 "whatsNew_title2" = "Rename Files";
 "whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Continue";

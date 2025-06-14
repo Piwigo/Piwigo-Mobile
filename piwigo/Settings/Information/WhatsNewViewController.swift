@@ -30,24 +30,25 @@ class WhatsNewViewController: UIViewController {
         titleLabel.text = NSLocalizedString("whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
-//        if #available(iOS 14.0, *) {
-//            firstNewsImage.image = UIImage(systemName: "server.rack")
-//        } else {
+        if #available(iOS 13.0, *) {
+            firstNewsImage.image = UIImage(systemName: "play.rectangle")
+        } else {
             // Fallback on ealier version
-            firstNewsImage.image = UIImage(named: "imageDay")
-//        }
-        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "Group Photos")
-        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "By day, week or month.")
+            firstNewsImage.image = UIImage(named: "video")
+        }
+//        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "Group Photos")
+        firstNewsTitle.text = NSLocalizedString("singleVideo", comment: "Video")
+        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Auto-play and loop options")
         
         // What's new — 2nd annoucement
-        if #available(iOS 13.0, *) {
+        if #available(iOS 14.5, *) {
             secondNewsImage.image = UIImage(systemName: "character.cursor.ibeam")
         } else {
             // Fallback on ealier version
             secondNewsImage.image = UIImage(named: "text.cursor")
         }
         secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Rename Files")
-        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "before upload with creation date, counter, album ID, text…")
+        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Before uploading with creation date, counter, album ID, text…")
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)
