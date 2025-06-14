@@ -58,41 +58,46 @@ class WhatsNewViewController: UIViewController {
     }
     
     override func updateViewConstraints() {
-        // Distance to top introduced in iOS 13 for modal controllers
-        let TOP_CARD_DISTANCE: CGFloat = 40.0
-
-        // Calculate width
-        let width = titleLabel.frame.width + 120.0
-        
-        // Calculate height of everything inside that view
-        var height: CGFloat = 50.0
-        height += titleLabel.frame.height
-        height += 80.0
-        stackView.subviews.forEach { subView in
-            height += subView.frame.height
-        }
-        height += 80.0
-        height += continueButton.frame.height
-        height += 30.0
-        
-        // Change size view size
-        view.frame.size.width = min(view.bounds.width, width)
-        view.frame.size.height = min(view.bounds.height, height)
-        
-        // Reposition the view (if not it will be near the top)
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            view.frame.origin.x = max(0, (UIScreen.main.bounds.width - width) / 2.0)
-            view.frame.origin.y = max(0, UIScreen.main.bounds.height - height - TOP_CARD_DISTANCE)
-        }
-        
-        // Apply corner radius only to top corners
-        let mask = CAShapeLayer()
-        let path = UIBezierPath(roundedRect: view.bounds, cornerRadius: 40.0)
-        mask.path = path.cgPath
         if #available(iOS 13.0, *) {
+            // Distance to top introduced in iOS 13 for modal controllers
+            var TOP_CARD_DISTANCE: CGFloat = 40.0
+            if #available(iOS 16.0, *) {
+                TOP_CARD_DISTANCE += view.safeAreaInsets.bottom
+            }
+            
+            // Calculate width
+            var width = titleLabel.frame.width + 120.0
+            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+            if UIDevice.current.userInterfaceIdiom == .phone, orientation == .portrait {
+                width = view.bounds.width
+            }
+            view.frame.size.width = min(view.bounds.width, width)
+
+            // Calculate height of everything inside that view
+            var height: CGFloat = 50.0
+            height += titleLabel.frame.height
+            height += 80.0
+            stackView.subviews.forEach { subView in
+                height += subView.frame.height
+            }
+            height += 80.0
+            height += continueButton.frame.height
+            height += 30.0
+            view.frame.size.height = min(view.bounds.height, height)
+            
+            // Reposition the view (if not it will be near the top)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                view.frame.origin.x = max(0, (UIScreen.main.bounds.width - width) / 2.0)
+                view.frame.origin.y = max(0, UIScreen.main.bounds.height - height - TOP_CARD_DISTANCE)
+            }
+            
+            // Apply corner radius only to top corners
+            let mask = CAShapeLayer()
+            let path = UIBezierPath(roundedRect: view.bounds, cornerRadius: 40.0)
+            mask.path = path.cgPath
             mask.cornerCurve = .continuous
+            view.layer.mask = mask
         }
-        view.layer.mask = mask
         
         // Update constraints
         super.updateViewConstraints()
@@ -124,8 +129,7 @@ class WhatsNewViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        coordinator.animate(alongsideTransition: { _ in
-        }, completion: nil)
+        self.dismiss(animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

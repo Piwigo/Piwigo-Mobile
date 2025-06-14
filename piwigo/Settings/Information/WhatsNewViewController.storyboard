@@ -94,7 +94,7 @@
                                         <rect key="frame" x="0.0" y="82.666666666666686" width="313" height="63"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFA-Xb-eXV">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="62.999999999999993"/>
+                                                <rect key="frame" x="0.0" y="-3.3333333333333357" width="40" height="69.666666666666686"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="rK1-QG-eNb"/>
