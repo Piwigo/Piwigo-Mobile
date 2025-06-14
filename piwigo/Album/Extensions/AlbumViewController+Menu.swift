@@ -882,7 +882,7 @@ extension AlbumViewController
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: UIAction.Identifier("org.piwigo.images.show.descriptions"),
                               handler: { [self] action in
-            // Show or hide album descriptions
+            // Show or hide album descriptions of visible views
             AlbumVars.shared.displayAlbumDescriptions = !isActive
             (navigationController?.viewControllers ?? []).forEach({ viewController in
                 if let albumVC = viewController as? AlbumViewController {

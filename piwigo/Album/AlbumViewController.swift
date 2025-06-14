@@ -428,7 +428,19 @@ class AlbumViewController: UIViewController
         initBarsInPreviewMode()
         initButtons()
         updateButtons()
-
+        
+        // Should we reload the collection view?
+        switch AlbumVars.shared.displayAlbumDescriptions {
+        case true:
+            if collectionView.visibleCells.first is AlbumCollectionViewCell {
+                collectionView?.reloadData()
+            }
+        case false:
+            if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
+                collectionView?.reloadData()
+            }
+        }
+        
         // Set colors, fonts, etc. and title view
         applyColorPalette()
 
