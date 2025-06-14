@@ -153,7 +153,7 @@ extension SettingsViewController: UITableViewDataSource
                     // i.e. larger than iPhone SE, 11 Pro screen width
                     title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
                 } else {
-                    title = NSLocalizedString("defaultThumbnailFile", comment: "File")
+                    title = NSLocalizedString("defaultThumbnailFile", comment: "Thumbnail")
                 }
                 let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 cell.configure(with: title, detail: albumImageSize.name)
@@ -276,7 +276,7 @@ extension SettingsViewController: UITableViewDataSource
                     // i.e. larger than iPhone 5 screen width
                     title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
                 } else {
-                    title = NSLocalizedString("defaultThumbnailFile", comment: "File")
+                    title = NSLocalizedString("defaultThumbnailFile", comment: "Thumbnail")
                 }
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 cell.configure(with: title, detail: thumbnailSize.name)
@@ -444,7 +444,11 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
-                cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
+                if view.bounds.size.width > 440 {
+                    cell.configure(with: NSLocalizedString("settings_stripGPSdataLong", comment: "Strip Private Metadata"))
+                } else {
+                    cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Metadata"))
+                }
                 cell.cellSwitch.setOn(UploadVars.shared.stripGPSdataOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     UploadVars.shared.stripGPSdataOnUpload = switchState

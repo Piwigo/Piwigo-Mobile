@@ -54,7 +54,7 @@
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 "CoreData_MigrationRequired" = "Basis data persisten dari data Piwigo Anda memerlukan migrasi. Silakan luncurkan aplikasi.";
-"CoreData_MigrationProgress" = "Migration in progress...";
+"CoreData_MigrationProgress" = "Migration in Progress...";
 "Coredata_MigrationPleaseWait" = "Kami sedang dalam proses migrasi beberapa data Anda. Mohon tunggu hingga selesai. Jangan keluar atau menutup aplikasi.";
 "CoreData_MigrationError_title" = "Migrasi Gagal";
 "CoreData_MigrationError_generic" = "Terjadi kesalahan yang tidak terduga selama migrasi.";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Resolusi Penuh";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Berkas";
+"defaultThumbnailFile" = "Thumbnail";
 "defaultThumbnailFile>320px" = "File Gambar Kecil";
 "defaultThumbnailFile>414px" = "File Gambar Thumbnail";
 "defaultThumbnailSize" = "Ukuran";
@@ -744,7 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "Nama Penulis";
 "settings_defaultPrivacy" = "Privasi";
 "settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
-"settings_stripGPSdata" = "Hapus Metadata Pribadi";
+"settings_stripGPSdata" = "Strip Metadata";
+"settings_stripGPSdataLong" = "Strip Private Metadata";
 "settings_photoResize" = "Ubah Ukuran Sebelum Mengunggah";
 "settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "Ukuran";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
 "whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_desc1" = "Auto-play and loop options";
 "whatsNew_title2" = "Rename Files";
 "whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Continue";

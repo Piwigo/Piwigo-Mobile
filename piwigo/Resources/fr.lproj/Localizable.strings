@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Haute résolution";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Fichier";
+"defaultThumbnailFile" = "Vignette";
 "defaultThumbnailFile>320px" = "Fichier de vignette";
 "defaultThumbnailFile>414px" = "Fichier de vignette des photos";
 "defaultThumbnailSize" = "Taille";
@@ -719,7 +719,7 @@
 "defaultSize_disabled" = " (désactivée sur le serveur)";
 "defaultSizeFooter" = "Les tailles grisées ne sont pas conseillées ou indisponibles sur le serveur Piwigo.";
 
-"settings_shareGPSdata" = "Partager métadonnées privées";
+"settings_shareGPSdata" = "Partager métadonnées";
 "settings_shareGPSdata>375px" = "Partager avec des métadonnées privées";
 
 "imageSizeSquare" = "Carré";
@@ -744,11 +744,12 @@
 "settings_defaultAuthorPlaceholder" = "Nom de l'auteur";
 "settings_defaultPrivacy" = "Qui voit ?";
 "settings_defaultPrivacy>414px" = "Veuillez sélectionner qui pourra visualiser les photos";
-"settings_stripGPSdata" = "Suppr. métadonnées privées";
-"settings_photoResize" = "Réduire avant transfert";
+"settings_stripGPSdata" = "Suppr. métadonnées";
+"settings_stripGPSdataLong" = "Suppr. métadonnées privées";
+"settings_photoResize" = "Réduire";
 "settings_photoResizeLong" = "Réduire la photo";
 "settings_photoSize" = "Taille";
-"settings_photoCompress" = "Compresser avant transfert";
+"settings_photoCompress" = "Compresser";
 "settings_photoCompressLong" = "Compresser la photo";
 "settings_photoQuality" = "Qualité";
 
@@ -816,7 +817,7 @@
 
 // MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "Confidentialité";
-"settings_appLock" = "Verrouillage de l'app";
+"settings_appLock" = "Verrouillage";
 "settings_appLockEnter" = "Entrez le code d'accès";
 "settings_appLockVerify" = "Vérifier le code d'accès";
 "settings_appLockModify" = "Modifier le code d'accès";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Nouveautés de Piwigo";
 "whatsNew_title1" = "Regrouper les photos";
-"whatsNew_desc1" = "Par jour, par semaine ou par mois.";
-"whatsNew_title2" = "Renommer les Fichier";
+"whatsNew_desc1" = "Options de lecture automatique et de lecture en boucle";
+"whatsNew_title2" = "Renommer les fichiers";
 "whatsNew_desc2" = "avant le téléchargement avec la date de création, le compteur, l'ID de l'album, le texte…";
 "whatsNew_continue" = "Continuer";

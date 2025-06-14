@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "フル解像度";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "ファイル";
+"defaultThumbnailFile" = "Thumbnail";
 "defaultThumbnailFile>320px" = "サムネイルファイル";
 "defaultThumbnailFile>414px" = "サムネイル写真ファイル";
 "defaultThumbnailSize" = "サイズ";
@@ -744,7 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "作成者名";
 "settings_defaultPrivacy" = "プライバシー";
 "settings_defaultPrivacy>414px" = "写真を見ることができる人を選択してください";
-"settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
+"settings_stripGPSdata" = "Strip Metadata";
+"settings_stripGPSdataLong" = "Strip Private Metadata";
 "settings_photoResize" = "アップロードする前にサイズを縮小する";
 "settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "サイズ";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
 "whatsNew_title1" = "グループ写真";
-"whatsNew_desc1" = "日、週、または月で。";
+"whatsNew_desc1" = "Auto-play and loop options";
 "whatsNew_title2" = "Rename Files";
 "whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "続ける";

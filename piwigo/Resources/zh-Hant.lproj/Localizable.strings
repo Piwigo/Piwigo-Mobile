@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "完整解析度";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "檔案";
+"defaultThumbnailFile" = "Thumbnail";
 "defaultThumbnailFile>320px" = "縮圖檔案";
 "defaultThumbnailFile>414px" = "照片縮圖檔案";
 "defaultThumbnailSize" = "大小";
@@ -744,7 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "作者名稱";
 "settings_defaultPrivacy" = "隱私";
 "settings_defaultPrivacy>414px" = "請選擇誰可以看到這些照片";
-"settings_stripGPSdata" = "移除私密中繼資料";
+"settings_stripGPSdata" = "Strip Metadata";
+"settings_stripGPSdataLong" = "Strip Private Metadata";
 "settings_photoResize" = "在上傳前縮小大小";
 "settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "尺寸";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
 "whatsNew_title1" = "集體照";
-"whatsNew_desc1" = "按天、週或月。";
+"whatsNew_desc1" = "Auto-play and loop options";
 "whatsNew_title2" = "Rename Files";
 "whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "繼續";

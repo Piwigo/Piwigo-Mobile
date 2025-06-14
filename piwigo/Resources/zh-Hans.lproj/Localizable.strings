@@ -97,7 +97,7 @@
 "login_loggingIn" = "登录中……";
 "login_connecting" = "连接中";
 "login_newSession" = "打开会话";
-"login_closeSession" = "闭幕会议...";
+"login_closeSession" = "关闭会话";
 "login_communityParameters" = "社区参数";
 "login_serverParameters" = "Piwigo参数";
 "login_connectionChanged" = "连接已更改！";
@@ -149,7 +149,7 @@
 // MARK: - Albums
 // ===========================================================================
 // MARK: -- Generic
-"albumID" = "Album ID";
+"albumID" = "相册ID";
 "singleAlbumCount" = "%@ 相簿";
 "severalAlbumsCount" = "%@ 张专辑";
 "singleSubAlbumCount" = "%@子相簿";
@@ -367,7 +367,7 @@
 "editImageDetails_description" = "描述";
 "editImageDetails_comments" = "评论";
 "editImageDetails_dateCreation" = "创建日期";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = "创建时间";
 "editImageDetails_dateUnset" = "取消设置";
 "editImageDetails_dateToday" = "今天";
 "editImageDetails_dateMonthInc" = "下个月";
@@ -642,17 +642,17 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
-"Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
-"Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
-"Separator" = "Separator";
-"Counter" = "Counter";
+"Text" = "文本";
+"Year" = "年";
+"Hour" = "小时";
+"12-hour" = "12小时周期";
+"24-hour" = "24小时周期";
+"Minute" = "分钟";
+"Second" = "秒";
+"Abbreviation" = "缩写";
+"FullName" = "全名";
+"Separator" = "分隔符";
+"Counter" = "计数器";
 
 // MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo服务器";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "完整分辨率";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "文件";
+"defaultThumbnailFile" = "Thumbnail";
 "defaultThumbnailFile>320px" = "缩略图文件";
 "defaultThumbnailFile>414px" = "照片缩略图文件";
 "defaultThumbnailSize" = "大小";
@@ -740,56 +740,57 @@
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "默认上传设置";
 "settings_defaultAuthor" = "作者";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "作者姓名";
 "settings_defaultAuthorPlaceholder" = "作者名称";
 "settings_defaultPrivacy" = "隐私";
 "settings_defaultPrivacy>414px" = "请选择谁可以看到照片";
-"settings_stripGPSdata" = "去除私密元数据";
+"settings_stripGPSdata" = "Strip Metadata";
+"settings_stripGPSdataLong" = "Strip Private Metadata";
 "settings_photoResize" = "上传前缩小大小";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "下载照片";
 "settings_photoSize" = "大小";
 "settings_photoCompress" = "上传前压缩";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "压缩照片";
 "settings_photoQuality" = "质量";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
-"settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
-"settings_suffixPlaceholder" = "_suffix";
+"settings_renameFile" = "重命名";
+"settings_renameFileLong" = "重命名文件";
+"settings_renameFile_info" = "请在下面说明上传前如何重命名文件。";
+"settings_addActionMsg" = "请选择要添加的操作";
+"settings_renameAddBefore" = "在名字前添加";
+"settings_renamePrefix" = "前缀文件名";
+"settings_prefixPlaceholder" = "前缀_";
+"settings_renameReplace" = "替换文件名";
+"settings_renameAddAfter" = "在名字后添加";
+"settings_renameSuffix" = "后缀文件名";
+"settings_suffixPlaceholder" = "_后缀";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
+"settings_renameDateHeader" = "请选择要包含在文件名中的日期格式。";
+"settings_renameTwoDigit" = "2位数版本";
+"settings_renameFourDigit" = "4位数版本";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "请选择要包含在文件名中的时间格式。";
+"settings_renameFiveDigit" = "5位数版本";
+"settings_renameCounterHeader" = "请选择一个计数器格式以包含在文件名中。";
+"settings_renameCounterStart" = "开始于";
+"settings_renameCounterCurrent" = "当前值";
+"settings_renameCounterStartFooter" = "对于每个相册，计数器将以此值初始化，然后为每个处理的文件增加一个。";
+"settings_renameCounterCurrentFooter" = "接下来的上传系列将以此计数器开始，这些计数器将在每个处理的文件中递增。";
+"settings_renameCounterDigits" = "位数";
+"settings_renameCounterDigitsFooter" = "当计数器需要比指定的数字更多时，数字的数量会自动增加。";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "文件扩展名";
+"settings_renameChangeCase" = "更改大小写";
+"settings_renameLowercase" = "小写";
+"settings_renameUppercase" = "大写";
 
 "settings_wifiOnly" = "仅限Wi-Fi";
 "settings_deleteImage" = "上传后删除照片";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "上传后删除";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "自动上传";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "自动上传照片";
 "settings_autoUploadEnabled" = "打开";
 "settings_autoUploadEnabledInfo" = "照片将被自动上传到您的 Piwigo";
 "settings_autoUploadEnabledInfoAll" = "照片和视频将被自动上传到您的 Piwigo";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
 "whatsNew_title1" = "群组照片";
-"whatsNew_desc1" = "按日、周或月份。";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Auto-play and loop options";
+"whatsNew_title2" = "重命名文件";
+"whatsNew_desc2" = "上传创建日期前，计数器，相册ID，文本…";
 "whatsNew_continue" = "继续储值";

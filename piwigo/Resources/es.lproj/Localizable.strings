@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Resolución completa";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Archivo";
+"defaultThumbnailFile" = "Miniatura";
 "defaultThumbnailFile>320px" = "Archivo de miniatura";
 "defaultThumbnailFile>414px" = "Fichero de miniaturas de fotos";
 "defaultThumbnailSize" = "Tamaño";
@@ -744,7 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "Nombre del autor";
 "settings_defaultPrivacy" = "Privacidad";
 "settings_defaultPrivacy>414px" = "Selecciona quién podrá ver las fotos";
-"settings_stripGPSdata" = "Eliminar metadatos privados";
+"settings_stripGPSdata" = "Eliminar metadatos";
+"settings_stripGPSdataLong" = "Eliminar metadatos privados";
 "settings_photoResize" = "Redimensionar antes de subir";
 "settings_photoResizeLong" = "Reducir foto";
 "settings_photoSize" = "Tamaño";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Novedades de Piwigo";
 "whatsNew_title1" = "Agrupar fotos";
-"whatsNew_desc1" = "Por día, semana o mes.";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Opciones de reproducción automática y bucle";
+"whatsNew_title2" = "Renombrar archivos";
+"whatsNew_desc2" = "antes de subir con fecha de creación, contador, ID del álbum, texto…";
 "whatsNew_continue" = "Continuar";

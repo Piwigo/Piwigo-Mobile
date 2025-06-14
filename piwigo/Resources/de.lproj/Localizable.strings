@@ -149,7 +149,7 @@
 // MARK: - Albums
 // ===========================================================================
 // MARK: -- Generic
-"albumID" = "Album ID";
+"albumID" = "Album-ID";
 "singleAlbumCount" = "%@ Album";
 "severalAlbumsCount" = "%@ Alben";
 "singleSubAlbumCount" = "%@ Unter-Album";
@@ -367,7 +367,7 @@
 "editImageDetails_description" = "Beschreibung";
 "editImageDetails_comments" = "Kommentare";
 "editImageDetails_dateCreation" = "Aufnahmedatum";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = "Erstellungszeit";
 "editImageDetails_dateUnset" = "Zurücksetzen";
 "editImageDetails_dateToday" = "Heute";
 "editImageDetails_dateMonthInc" = "+1 Monat";
@@ -643,16 +643,16 @@
 // MARK: - Settings
 // ===========================================================================
 "Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
+"Year" = "Jahr";
+"Hour" = "Stunde";
+"12-hour" = "12-Stunden-Zyklus";
+"24-hour" = "24-Stunden-Zyklus";
 "Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
-"Separator" = "Separator";
-"Counter" = "Counter";
+"Second" = "Sekunde";
+"Abbreviation" = "Abkürzung";
+"FullName" = "Vollständiger Name";
+"Separator" = "Trennzeichen";
+"Counter" = "Zähler";
 
 // MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Volle Auflösung";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Datei";
+"defaultThumbnailFile" = "Vorschaubild";
 "defaultThumbnailFile>320px" = "Miniaturfotogröße";
 "defaultThumbnailFile>414px" = "Miniaturfoto Datei";
 "defaultThumbnailSize" = "Größe";
@@ -740,56 +740,57 @@
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "Standard-Upload-Einstellungen";
 "settings_defaultAuthor" = "Autor";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "Autorenname";
 "settings_defaultAuthorPlaceholder" = "Autorname";
 "settings_defaultPrivacy" = "Sicherheitsstufe";
 "settings_defaultPrivacy>414px" = "Bitte wählen Sie, wer in der Lage sein soll, Fotos zu sehen";
-"settings_stripGPSdata" = "Private Metadaten entfernen";
-"settings_photoResize" = "Vor dem Hochladen Größe verkleinern";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_stripGPSdata" = "Metadaten entfernen";
+"settings_stripGPSdataLong" = "Private Metadaten entfernen";
+"settings_photoResize" = "Verkleinern";
+"settings_photoResizeLong" = "Foto verkleinern";
 "settings_photoSize" = "Größe";
-"settings_photoCompress" = "Vor dem Hochladen komprimieren";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompress" = "Komprimieren";
+"settings_photoCompressLong" = "Foto komprimieren";
 "settings_photoQuality" = "Qualität";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
-"settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
+"settings_renameFile" = "Umbenennen";
+"settings_renameFileLong" = "Datei umbenennen";
+"settings_renameFile_info" = "Bitte geben Sie unten an, wie Dateien vor dem Hochladen umbenannt werden sollen.";
+"settings_addActionMsg" = "Bitte wählen Sie die Aktion zum Hinzufügen";
+"settings_renameAddBefore" = "Hinzufügen vor dem Namen";
+"settings_renamePrefix" = "Präfix Dateiname";
+"settings_prefixPlaceholder" = "Präfix_";
+"settings_renameReplace" = "Dateiname ersetzen";
+"settings_renameAddAfter" = "Hinzufügen nach dem Namen";
+"settings_renameSuffix" = "Suffix Dateiname";
 "settings_suffixPlaceholder" = "_suffix";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
+"settings_renameDateHeader" = "Bitte wählen Sie ein Datumsformat aus, das in den Dateinamen aufgenommen werden soll.";
+"settings_renameTwoDigit" = "2-stellige Version";
+"settings_renameFourDigit" = "4-stellige Version";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "Bitte wählen Sie ein Zeitformat aus, das in den Dateinamen aufgenommen werden soll.";
+"settings_renameFiveDigit" = "5-stellige Version";
+"settings_renameCounterHeader" = "Bitte wählen Sie ein Zählerformat aus, das in den Dateinamen aufgenommen werden soll.";
+"settings_renameCounterStart" = "Beginn ab";
+"settings_renameCounterCurrent" = "Aktueller Wert";
+"settings_renameCounterStartFooter" = "Für jedes Album wird der Zähler mit diesem Wert initialisiert, der dann für jede verarbeitete Datei um einen erhöht wird.";
+"settings_renameCounterCurrentFooter" = "Die nächste Upload-Reihe beginnt mit diesem Zählerwert, der dann für jede Datei um einen erhöht wird.";
+"settings_renameCounterDigits" = "Nachkommastellen";
+"settings_renameCounterDigitsFooter" = "Wenn der Zähler mehr Ziffern als angegeben benötigt, wird die Anzahl der Ziffern automatisch erhöht.";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "Dateiendungen";
+"settings_renameChangeCase" = "Groß-/Kleinschreibung ändern";
+"settings_renameLowercase" = "Kleinschreibung";
+"settings_renameUppercase" = "Großschreibung";
 
 "settings_wifiOnly" = "Nur WLAN";
-"settings_deleteImage" = "Nach dem Hochladen löschen";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImage" = "Löschen nach";
+"settings_deleteImageLong" = "Nach dem Hochladen löschen";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Automatisches Hochladen";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Fotos automatisch hochladen";
 "settings_autoUploadEnabled" = "An";
 "settings_autoUploadEnabledInfo" = "Fotos werden automatisch zu Ihrem Piwigo hochgeladen.";
 "settings_autoUploadEnabledInfoAll" = "Fotos und Videos werden automatisch auf Ihr Piwigo hochgeladen.";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Was ist neu in Piwigo";
 "whatsNew_title1" = "Fotos gruppieren";
-"whatsNew_desc1" = "Nach Tag, Woche oder Monat.";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Automatische Wiedergabe und Schleifen";
+"whatsNew_title2" = "Datei umbenennen";
+"whatsNew_desc2" = "vor dem Hochladen mit Erstellungsdatum, Zähler, Album-ID, Text…";
 "whatsNew_continue" = "Fortsetzen";

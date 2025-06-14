@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "عرض كامل";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "الملف";
+"defaultThumbnailFile" = "Thumbnail";
 "defaultThumbnailFile>320px" = "ملف الصورة المصغرة";
 "defaultThumbnailFile>414px" = "صورة مصغرة صورة الملف";
 "defaultThumbnailSize" = "‮الحجم";
@@ -744,7 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "اسم الكاتب";
 "settings_defaultPrivacy" = "الخصوصية";
 "settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
-"settings_stripGPSdata" = "قطاع البيانات الوصفية الخاصة";
+"settings_stripGPSdata" = "Strip Metadata";
+"settings_stripGPSdataLong" = "Strip Private Metadata";
 "settings_photoResize" = "تغيير الحجم قبل التحميل";
 "settings_photoResizeLong" = "Downsize Photo";
 "settings_photoSize" = "الحجم";
@@ -914,7 +915,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "What's New in Piwigo";
 "whatsNew_title1" = "Group Photos";
-"whatsNew_desc1" = "By day, week or month.";
+"whatsNew_desc1" = "Auto-play and loop options";
 "whatsNew_title2" = "Rename Files";
 "whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Continue";
