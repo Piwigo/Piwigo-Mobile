@@ -745,6 +745,33 @@ class piwigoWebAPI: XCTestCase {
     }
 
     
+    // MARK: - pwg.groups…
+    func testPwgGroupsGetList() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.groups.getList", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(GroupsGetListJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.paging?.perPage, 100)
+        XCTAssertEqual(result.paging?.count, 3)
+        XCTAssertEqual(result.groups.first?.name, "Group")
+        XCTAssertEqual(result.groups.first?.isDefault?.boolValue, false)
+        XCTAssertEqual(result.groups.first?.nbUsers?.intValue, 2)
+        XCTAssertEqual(result.groups.last?.lastModified, "2025-02-16 17:39:07")
+    }
+    
+
     // MARK: - reflection.…
     func testReflectionGetMethodListDecoding() {
         // Case of a successful request

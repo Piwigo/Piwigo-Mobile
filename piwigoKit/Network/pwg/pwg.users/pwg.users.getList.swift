@@ -49,7 +49,7 @@ public struct UsersGetListJSON: Decodable {
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
 //            dump(resultContainer)
             
-            // Decodes paging and image data from the data and store them in the array
+            // Decodes paging and user data from the data and store them in the array
             do {
                 // Paging data
                 paging = try resultContainer.decode(PageData.self, forKey: .paging)
@@ -90,7 +90,7 @@ public struct UsersGetInfo: Decodable
 {
     public let id: Int16?                           // 1
     public let userName: String?                    // "Eddy"
-    public let email: String?                       // "admin@lelievre-berna.net"
+    public let email: String?                       // "admin@piwigo.org"
     public let userStatus: String?                  // "webmaster"
     public var privacyLevel: String?                // "8"
     public let language: String?                    // "en_UK"

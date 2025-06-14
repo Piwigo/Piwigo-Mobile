@@ -15,7 +15,7 @@ public extension PwgSession {
                              completion: @escaping (UsersGetInfo) -> Void,
                              failure: @escaping () -> Void) {
         
-        // Prepare parameters for retrieving image/video infos
+        // Prepare parameters for retrieving user infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "display"  : "all"]
         // Collect stats from server
@@ -55,6 +55,7 @@ public extension PwgSession {
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
             /// -> nothing presented in the footer
+            failure()
         }
     }
     
