@@ -45,7 +45,7 @@ class WhatsNewViewController: UIViewController {
             secondNewsImage.image = UIImage(systemName: "character.cursor.ibeam")
         } else {
             // Fallback on ealier version
-            secondNewsImage.image = UIImage(named: "text.cursor")
+            secondNewsImage.image = UIImage(named: "character.cursor.ibeam")
         }
         secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Rename Files")
         secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Before uploading with creation date, counter, album ID, text…")
