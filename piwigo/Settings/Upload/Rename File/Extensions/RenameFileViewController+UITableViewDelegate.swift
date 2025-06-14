@@ -247,7 +247,7 @@ extension RenameFileViewController: UITableViewDelegate
             if prefixBeforeUpload, availablePrefixActions().isEmpty == false {
                 guard let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "addActionFooter") as? AddActionTableViewFooterView
                 else { preconditionFailure("Could not load AddActionTableViewFooterView") }
-                footer.button.addTarget(self, action: #selector(addPrefixAction), for: .touchUpInside)
+                footer.button.addTarget(self, action: #selector(suggestToAddPrefixAction), for: .touchUpInside)
                 return footer
             }
             
@@ -255,7 +255,7 @@ extension RenameFileViewController: UITableViewDelegate
             if replaceBeforeUpload, availableReplaceActions().isEmpty == false {
                 guard let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "addActionFooter") as? AddActionTableViewFooterView
                 else { preconditionFailure("Could not load AddActionTableViewFooterView") }
-                footer.button.addTarget(self, action: #selector(addReplaceAction), for: .touchUpInside)
+                footer.button.addTarget(self, action: #selector(suggestToAddReplaceAction), for: .touchUpInside)
                 return footer
             }
             
@@ -263,7 +263,7 @@ extension RenameFileViewController: UITableViewDelegate
             if suffixBeforeUpload, availableSuffixActions().isEmpty == false {
                 guard let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "addActionFooter") as? AddActionTableViewFooterView
                 else { preconditionFailure("Could not load AddActionTableViewFooterView") }
-                footer.button.addTarget(self, action: #selector(addSuffixAction), for: .touchUpInside)
+                footer.button.addTarget(self, action: #selector(suggestToAddSuffixAction), for: .touchUpInside)
                 return footer
             }
             
@@ -271,17 +271,5 @@ extension RenameFileViewController: UITableViewDelegate
             break
         }
         return nil
-    }
-    
-    @objc func addPrefixAction() {
-        suggestToAddPrefixAction()
-    }
-    
-    @objc func addReplaceAction() {
-        suggestToAddReplaceAction()
-    }
-    
-    @objc func addSuffixAction() {
-        suggestToAddSuffixAction()
     }
 }

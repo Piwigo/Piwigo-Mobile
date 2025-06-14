@@ -289,12 +289,13 @@ class RenameFileViewController: UIViewController {
         return Array(remainingActions).sorted()
     }
 
-    func suggestToAddPrefixAction() {
+    @objc func suggestToAddPrefixAction() {
         // Can we suggest more actions?
         let availableActionTypes = availablePrefixActions()
         if availableActionTypes.isEmpty { return }
         
         // Create alert
+        let section = RenameSection.prefix.rawValue
         let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
@@ -303,7 +304,7 @@ class RenameFileViewController: UIViewController {
                 guard let self = self else { return }
                 // Add action and corresponding row
                 self.prefixActions.append(RenameAction(type: actionType))
-                let indexPath = IndexPath(row: self.prefixActions.count, section: RenameSection.prefix.rawValue)
+                let indexPath = IndexPath(row: self.prefixActions.count, section: section)
                 self.tableView?.insertRows(at: [indexPath], with: .automatic)
                 
                 // Update example, settings and section
@@ -318,10 +319,6 @@ class RenameFileViewController: UIViewController {
             self.updatePrefixSettingsAndSection()
         }))
         
-        // Determine position of cell in table view
-        let rowAtIndexPath = IndexPath(row: 0, section: RenameSection.prefix.rawValue)
-        let rectOfCellInTableView = tableView?.rectForRow(at: rowAtIndexPath)
-
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
@@ -331,7 +328,7 @@ class RenameFileViewController: UIViewController {
         }
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
+        alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()
@@ -388,12 +385,13 @@ class RenameFileViewController: UIViewController {
         return Array(remainingActions).sorted()
     }
 
-    func suggestToAddReplaceAction() {
+    @objc func suggestToAddReplaceAction() {
         // Can we suggest more actions?
         let availableActionTypes = availableReplaceActions()
         if availableActionTypes.isEmpty { return }
         
         // Create alert
+        let section = RenameSection.replace.rawValue
         let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
@@ -402,7 +400,7 @@ class RenameFileViewController: UIViewController {
                 guard let self = self else { return }
                 // Add action and corresponding row
                 self.replaceActions.append(RenameAction(type: actionType))
-                let indexPath = IndexPath(row: self.replaceActions.count, section: RenameSection.replace.rawValue)
+                let indexPath = IndexPath(row: self.replaceActions.count, section: section)
                 self.tableView?.insertRows(at: [indexPath], with: .automatic)
                 
                 // Update example, settings and section
@@ -417,10 +415,6 @@ class RenameFileViewController: UIViewController {
             self.updateReplaceSettingsAndSection()
         }))
         
-        // Determine position of cell in table view
-        let rowAtIndexPath = IndexPath(row: 0, section: RenameSection.replace.rawValue)
-        let rectOfCellInTableView = tableView?.rectForRow(at: rowAtIndexPath)
-
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
@@ -430,7 +424,7 @@ class RenameFileViewController: UIViewController {
         }
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
+        alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()
@@ -486,12 +480,13 @@ class RenameFileViewController: UIViewController {
         return Array(remainingActions).sorted()
     }
 
-    func suggestToAddSuffixAction() {
+    @objc func suggestToAddSuffixAction() {
         // Can we suggest more actions?
         let availableActionTypes = availableSuffixActions()
         if availableActionTypes.isEmpty { return }
 
         // Create alert
+        let section = RenameSection.suffix.rawValue
         let alert = UIAlertController(title: "", message: NSLocalizedString("settings_addActionMsg", comment: "Please select the action to add"), preferredStyle: .actionSheet)
         
         // Loop over all unused actions
@@ -500,7 +495,7 @@ class RenameFileViewController: UIViewController {
                 guard let self = self else { return }
                 // Add action and corresponding row
                 self.suffixActions.append(RenameAction(type: actionType))
-                let indexPath = IndexPath(row: self.suffixActions.count, section: RenameSection.suffix.rawValue)
+                let indexPath = IndexPath(row: self.suffixActions.count, section: section)
                 self.tableView?.insertRows(at: [indexPath], with: .automatic)
                 
                 // Update example, settings and section
@@ -515,10 +510,6 @@ class RenameFileViewController: UIViewController {
             self.updateSuffixSettingsAndSection()
         }))
         
-        // Determine position of cell in table view
-        let rowAtIndexPath = IndexPath(row: 0, section: RenameSection.suffix.rawValue)
-        let rectOfCellInTableView = tableView?.rectForRow(at: rowAtIndexPath)
-
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
@@ -528,7 +519,7 @@ class RenameFileViewController: UIViewController {
         }
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
+        alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()
