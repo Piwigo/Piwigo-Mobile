@@ -17,11 +17,11 @@ extension User {
         return NSFetchRequest<User>(entityName: "User")
     }
 
-    @NSManaged public var lastUsed: TimeInterval
     @NSManaged public var id: Int16
-    @NSManaged public var name: String
     @NSManaged public var username: String
     @NSManaged public var status: String
+    @NSManaged public var lastUsed: TimeInterval
+    @NSManaged public var name: String
     @NSManaged public var server: Server?
     @NSManaged public var albums: Set<Album>?
     @NSManaged public var uploadRights: String
