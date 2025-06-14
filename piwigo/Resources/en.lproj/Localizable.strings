@@ -54,7 +54,7 @@
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 "CoreData_MigrationRequired" = "The persistent database of your Piwigo data requires migration. Please launch the application.";
-"CoreData_MigrationProgress" = "Migration in progress...";
+"CoreData_MigrationProgress" = "Migration in Progress...";
 "Coredata_MigrationPleaseWait" = "We are in the process of migrating some of your data. Please wait until the end. Do not quit or kill the application.";
 "CoreData_MigrationError_title" = "Migration Failed";
 "CoreData_MigrationError_generic" = "An unexpected error occurred during the migration.";
