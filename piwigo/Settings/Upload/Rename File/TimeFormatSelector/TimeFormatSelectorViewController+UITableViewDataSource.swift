@@ -86,7 +86,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("24-hour cycle", comment: "24-hour cycle"), detail: "")
+                cell.configure(with: NSLocalizedString("24-hour", comment: "24-hour cycle"), detail: "")
                 let isSelected = timeFormats[indexPath.section] == .hour(format: .HH)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected

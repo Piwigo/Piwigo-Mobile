@@ -210,7 +210,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("Day of Year", comment: "Day of Year"), detail: "")
+                cell.configure(with: NSLocalizedString("settings_renameDayOfYear", comment: "Day of Year"), detail: "")
                 let isSelected = dateFormats[indexPath.section] == .day(format: .ddd)
                 cell.accessoryType = isSelected ? .checkmark : .none
                 cell.isUserInteractionEnabled = !isSelected

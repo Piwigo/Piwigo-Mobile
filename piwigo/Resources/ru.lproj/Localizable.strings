@@ -768,6 +768,7 @@
 "settings_renameDateHeader" = "Please select a date format to include in the file name.";
 "settings_renameTwoDigit" = "2-digit version";
 "settings_renameFourDigit" = "4-digit version";
+"settings_renameDayOfYear" = "Day of Year";
 
 "settings_renameTimeHeader" = "Please select a time format to include in the file name.";
 "settings_renameFiveDigit" = "5-digit version";

@@ -768,6 +768,7 @@
 "settings_renameDateHeader" = "请选择要包含在文件名中的日期格式。";
 "settings_renameTwoDigit" = "2位数版本";
 "settings_renameFourDigit" = "4位数版本";
+"settings_renameDayOfYear" = "Day of Year";
 
 "settings_renameTimeHeader" = "请选择要包含在文件名中的时间格式。";
 "settings_renameFiveDigit" = "5位数版本";

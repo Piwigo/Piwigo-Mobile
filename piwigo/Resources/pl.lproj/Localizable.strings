@@ -768,6 +768,7 @@
 "settings_renameDateHeader" = "Proszę wybrać format daty do dołączenia do nazwy pliku.";
 "settings_renameTwoDigit" = "Wersja 2-cyfrowa";
 "settings_renameFourDigit" = "Wersja 4-cyfrowa";
+"settings_renameDayOfYear" = "Day of Year";
 
 "settings_renameTimeHeader" = "Proszę wybrać format czasu do dołączenia do nazwy pliku.";
 "settings_renameFiveDigit" = "Wersja 5-cyfrowa";
