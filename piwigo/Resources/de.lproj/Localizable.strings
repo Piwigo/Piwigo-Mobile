@@ -768,7 +768,7 @@
 "settings_renameDateHeader" = "Bitte wählen Sie ein Datumsformat aus, das in den Dateinamen aufgenommen werden soll.";
 "settings_renameTwoDigit" = "2-stellige Version";
 "settings_renameFourDigit" = "4-stellige Version";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDayOfYear" = "Tag des Jahres";
 
 "settings_renameTimeHeader" = "Bitte wählen Sie ein Zeitformat aus, das in den Dateinamen aufgenommen werden soll.";
 "settings_renameFiveDigit" = "5-stellige Version";
