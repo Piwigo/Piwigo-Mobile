@@ -105,7 +105,7 @@ extension RenameFileViewController: UITableViewDataSource
         case .suffix:
             nberOfRows = 1 + (tableView.isEditing || suffixBeforeUpload ? suffixActions.count : 0)
         case .fileExtension:
-            nberOfRows = 1 + (UploadVars.shared.changeCaseOfFileExtension ? 1 : 0)
+            nberOfRows = 1 + (changeCaseBeforeUpload ? 1 : 0)
         default:
             preconditionFailure("Unknown section \(section)")
         }
