@@ -327,6 +327,7 @@
 		AD7D131D2DFDD0ED00EEE90D /* MappingModel_0H_to_0J.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD7D131C2DFDD0ED00EEE90D /* MappingModel_0H_to_0J.xcmappingmodel */; };
 		AD7D131F2DFDD3B300EEE90D /* UploadToUploadMigrationPolicy_0H_to_0J.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D131E2DFDD3B300EEE90D /* UploadToUploadMigrationPolicy_0H_to_0J.swift */; };
 		AD7D13212DFDE20D00EEE90D /* GroupToGroupMigrationPolicy_Copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D13202DFDE20D00EEE90D /* GroupToGroupMigrationPolicy_Copy.swift */; };
+		AD7D13242DFDE51C00EEE90D /* MappingModel_0I_to_0J.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD7D13232DFDE51C00EEE90D /* MappingModel_0I_to_0J.xcmappingmodel */; };
 		AD7D41582B4435260095A070 /* AutoUploadViewController+UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D41572B4435260095A070 /* AutoUploadViewController+UITextView.swift */; };
 		AD7D415A2B44359D0095A070 /* AutoUploadViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */; };
 		AD7D415C2B4435AC0095A070 /* AutoUploadViewController+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */; };
@@ -1034,6 +1035,7 @@
 		AD7D131C2DFDD0ED00EEE90D /* MappingModel_0H_to_0J.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0H_to_0J.xcmappingmodel; sourceTree = "<group>"; };
 		AD7D131E2DFDD3B300EEE90D /* UploadToUploadMigrationPolicy_0H_to_0J.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UploadToUploadMigrationPolicy_0H_to_0J.swift; path = "piwigoKit/Data Cache/Migration Tools/Mapping Model 0H to 0J/UploadToUploadMigrationPolicy_0H_to_0J.swift"; sourceTree = SOURCE_ROOT; };
 		AD7D13202DFDE20D00EEE90D /* GroupToGroupMigrationPolicy_Copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupToGroupMigrationPolicy_Copy.swift; sourceTree = "<group>"; };
+		AD7D13232DFDE51C00EEE90D /* MappingModel_0I_to_0J.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0I_to_0J.xcmappingmodel; sourceTree = "<group>"; };
 		AD7D41572B4435260095A070 /* AutoUploadViewController+UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+UITextView.swift"; sourceTree = "<group>"; };
 		AD7D41592B44359D0095A070 /* AutoUploadViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+Albums.swift"; sourceTree = "<group>"; };
 		AD7D415B2B4435AC0095A070 /* AutoUploadViewController+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoUploadViewController+Tags.swift"; sourceTree = "<group>"; };
@@ -1691,6 +1693,7 @@
 				ADB007E22D7DEB2F004A84A7 /* Mapping Model 0F to 0H */,
 				ADB007E02D7DE4F2004A84A7 /* Mapping Model 0G to 0H */,
 				AD0B63022DEC76D8001E9684 /* Mapping Model 0H to 0I */,
+				AD7D13222DFDE4EB00EEE90D /* Mapping Model 0I to 0J */,
 				AD7D13152DFDC63100EEE90D /* Mapping Model 0H to 0J */,
 			);
 			path = "Migration Tools";
@@ -2058,6 +2061,14 @@
 				AD7D13192DFDCC9B00EEE90D /* UserGroup+CoreDataProperties.swift */,
 			);
 			path = "Group Data";
+			sourceTree = "<group>";
+		};
+		AD7D13222DFDE4EB00EEE90D /* Mapping Model 0I to 0J */ = {
+			isa = PBXGroup;
+			children = (
+				AD7D13232DFDE51C00EEE90D /* MappingModel_0I_to_0J.xcmappingmodel */,
+			);
+			path = "Mapping Model 0I to 0J";
 			sourceTree = "<group>";
 		};
 		AD7D41552B4434E70095A070 /* Extensions */ = {
@@ -3577,6 +3588,7 @@
 				AD25CA78286B90E200D574C7 /* DataMigrationStep.swift in Sources */,
 				ADC0B91D2D85C6D3002436FE /* DataMigrationError.swift in Sources */,
 				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
+				AD7D13242DFDE51C00EEE90D /* MappingModel_0I_to_0J.xcmappingmodel in Sources */,
 				AD7D13082DFDB42E00EEE90D /* pwg.groups.getList.swift in Sources */,
 				AD5FB3852D94A82B00802895 /* PwgSession+Users.swift in Sources */,
 				AD5CB9172D84941F00A0D2B2 /* NSEntityMigrationPolicy+AppTools.swift in Sources */,
