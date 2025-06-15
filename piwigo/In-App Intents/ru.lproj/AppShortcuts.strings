@@ -5,6 +5,7 @@
   Created by Eddy Lelièvre-Berna on 15/06/2025.
   Copyright © 2025 Piwigo.org. All rights reserved.
 */
+"Upload my photos to ${applicationName}" = "Upload my photos to ${applicationName}";
 "Auto-upload photos with ${applicationName}" = "\"Автоматически загружать фотографии с помощью ${applicationName}\"";
 "Auto-upload my photos with ${applicationName}" = "\"Автоматически загружать мои фотографии с помощью ${applicationName}\"";
 "Upload photos with ${applicationName}" = "\"Загружать фотографии с помощью ${applicationName}\"";
