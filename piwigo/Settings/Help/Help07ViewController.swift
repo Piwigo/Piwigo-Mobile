@@ -70,8 +70,8 @@ class Help07ViewController: UIViewController {
         imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize, for: .album)
         
         // Set bottom image view
-        guard let botImageUrl = Bundle.main.url(forResource: "help02-bot", withExtension: "png") else {
-            fatalError("!!! Could not find help02-bot image !!!")
+        guard let botImageUrl = Bundle.main.url(forResource: "help07-bot", withExtension: "png") else {
+            fatalError("!!! Could not find help07-bot image !!!")
         }
         imageViewBot.layoutIfNeeded() // Ensure imageView is in its final size.
         scale = max(imageViewBot.traitCollection.displayScale, 1.0)
