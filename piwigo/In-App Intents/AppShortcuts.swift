@@ -30,11 +30,12 @@ class AppShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut]
     {
         AppShortcut(intent: AutoUpload(), phrases: [
-            "Auto-upload photos with \(.applicationName)",
-            "Auto-upload my photos with \(.applicationName)",
             "Upload photos with \(.applicationName)",
+            "Upload my photos to \(.applicationName)",
             "Upload my photos with \(.applicationName)",
-            "Upload my latest photos with \(.applicationName)"
+            "Upload my latest photos with \(.applicationName)",
+            "Auto-upload photos with \(.applicationName)",
+            "Auto-upload my photos with \(.applicationName)"
         ],
         shortTitle: "Auto-Upload Photos",
         systemImageName: "photo.stack")
