@@ -456,7 +456,7 @@
 		ADB007F72D7DFC31004A84A7 /* AlbumToAlbumMigrationPolicy_Copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007F62D7DFC31004A84A7 /* AlbumToAlbumMigrationPolicy_Copy.swift */; };
 		ADB007F92D7E037A004A84A7 /* ImageToImageMigrationPolicy_Copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007F82D7E037A004A84A7 /* ImageToImageMigrationPolicy_Copy.swift */; };
 		ADB007FB2D7E048A004A84A7 /* AlbumToAlbumMigrationPolicy_0F_to_0H.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007FA2D7E048A004A84A7 /* AlbumToAlbumMigrationPolicy_0F_to_0H.swift */; };
-		ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* PwgSessionErrors.swift */; };
+		ADB274732676480D0002DD09 /* PwgSessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* PwgSessionError.swift */; };
 		ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB27474267661980002DD09 /* ParseXMLData.swift */; };
 		ADB2C3D3291D9967009542FB /* pwg.categories.calculateOrphans.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */; };
 		ADB2C3D5291D9D4D009542FB /* pwg.categories.calculateOrphans.json in Resources */ = {isa = PBXBuildFile; fileRef = ADB2C3D4291D9D4D009542FB /* pwg.categories.calculateOrphans.json */; };
@@ -1243,7 +1243,7 @@
 		ADB007F62D7DFC31004A84A7 /* AlbumToAlbumMigrationPolicy_Copy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumToAlbumMigrationPolicy_Copy.swift; sourceTree = "<group>"; };
 		ADB007F82D7E037A004A84A7 /* ImageToImageMigrationPolicy_Copy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageToImageMigrationPolicy_Copy.swift; sourceTree = "<group>"; };
 		ADB007FA2D7E048A004A84A7 /* AlbumToAlbumMigrationPolicy_0F_to_0H.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumToAlbumMigrationPolicy_0F_to_0H.swift; sourceTree = "<group>"; };
-		ADB274722676480D0002DD09 /* PwgSessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSessionErrors.swift; sourceTree = "<group>"; };
+		ADB274722676480D0002DD09 /* PwgSessionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSessionError.swift; sourceTree = "<group>"; };
 		ADB27474267661980002DD09 /* ParseXMLData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseXMLData.swift; sourceTree = "<group>"; };
 		ADB2C3D2291D9967009542FB /* pwg.categories.calculateOrphans.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.calculateOrphans.swift; sourceTree = "<group>"; };
 		ADB2C3D4291D9D4D009542FB /* pwg.categories.calculateOrphans.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.calculateOrphans.json; sourceTree = "<group>"; };
@@ -1810,7 +1810,7 @@
 				AD659805297D98BB002A61D8 /* ImageDownload.swift */,
 				ADE250D826708DF600285978 /* KeychainUtilities.swift */,
 				ADE250D4266FE99A00285978 /* PwgSession.swift */,
-				ADB274722676480D0002DD09 /* PwgSessionErrors.swift */,
+				ADB274722676480D0002DD09 /* PwgSessionError.swift */,
 				ADB27474267661980002DD09 /* ParseXMLData.swift */,
 				AD06B6EB2BEBEFD400C5F078 /* Extensions */,
 				AD9A1BE324E03AAF00D22C86 /* community */,
@@ -3631,7 +3631,7 @@
 				ADE250D72670016900285978 /* PwgSession+Utilities.swift in Sources */,
 				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
 				ADE250D5266FE99A00285978 /* PwgSession.swift in Sources */,
-				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				ADB274732676480D0002DD09 /* PwgSessionError.swift in Sources */,
 				AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */,
 				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
 				AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */,
