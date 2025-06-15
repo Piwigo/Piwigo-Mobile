@@ -36,17 +36,13 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         // If a migration is planned, invite the user to perform the migration.
         let migrator = DataMigrator()
         if migrator.requiresMigration() {
-            let errorMsg = NSLocalizedString("CoreData_MigrationRequired",
-                                             comment: "The persistent database of your Piwigo data requires migration. Please launch the application.")
-            completion(AutoUploadIntentResponse.failure(error: errorMsg))
+            completion(AutoUploadIntentResponse.failure(error: AutoUploadError.migrationRequired.localizedDescription))
             return
         }
         
         // Is auto-uploading enabled?
         if !UploadVars.shared.isAutoUploadActive {
-            let errorMsg = NSLocalizedString("AutoUploadError_Disabled",
-                                             comment: "Auto-uploading is disabled in the app settings.")
-            completion(AutoUploadIntentResponse.failure(error: errorMsg))
+            completion(AutoUploadIntentResponse.failure(error: AutoUploadError.autoUploadDisabled.localizedDescription))
             return
         }
         
@@ -63,8 +59,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             }
             
             // Inform user
-            let message = String(format: "%@: %@", NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
-            completion(AutoUploadIntentResponse.failure(error: message))
+            completion(AutoUploadIntentResponse.failure(error: AutoUploadError.invalidSource.localizedDescription))
             return
         }
 
@@ -80,8 +75,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             }
 
             // Inform user
-            let message = String(format: "%@: %@", NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
-            completion(AutoUploadIntentResponse.failure(error: message))
+            completion(AutoUploadIntentResponse.failure(error: AutoUploadError.invalidDestination.localizedDescription))
             return
         }
         

@@ -1,0 +1,12 @@
+/* 
+  AppShortcuts.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 15/06/2025.
+  Copyright © 2025 Piwigo.org. All rights reserved.
+*/
+"Auto-upload photos with ${applicationName}" = "使用 ${applicationName} 自动上传照片";
+"Auto-upload my photos with ${applicationName}" = "使用 ${applicationName} 自动上传我的照片";
+"Upload photos with ${applicationName}" = "使用 ${applicationName} 上传照片";
+"Upload my photos with ${applicationName}" = "使用 ${applicationName} 上传我的照片";
+"Upload my latest photos with ${applicationName}" = "使用 ${applicationName} 上传我的最新照片";

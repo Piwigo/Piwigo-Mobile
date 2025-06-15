@@ -1,0 +1,70 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld photos added" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photo added to the upload queue."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photos added to the upload queue."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "AutoUploadDescription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appends recent photos to the background upload queue following Auto-Upload settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute les photos récentes à la file d'attente de téléversement en arrière-plan conformément aux paramètres de téléversement automatique."
+          }
+        }
+      }
+    },
+    "AutoUploadTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto-Upload Photos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléversement automatique des photos"
+          }
+        }
+      }
+    },
+    "No photo added" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No photo added to the upload queue."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

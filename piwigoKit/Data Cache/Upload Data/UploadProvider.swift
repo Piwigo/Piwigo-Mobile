@@ -75,7 +75,39 @@ public class UploadProvider: NSObject {
         }
         completionHandler(nil)
     }
-    
+
+    @available(iOS 13.0, *)
+    public func importUploads(from uploadRequest: [UploadProperties]) async throws -> Int {
+        
+        guard uploadRequest.isEmpty == false
+        else { return 0 }
+        
+        // Process records in batches to avoid a high memory footprint.
+        let batchSize = 256
+        let count = uploadRequest.count
+        
+        // Determine the total number of batches.
+        var numBatches = count / batchSize
+        numBatches += count % batchSize > 0 ? 1 : 0
+        
+        for batchNumber in 0 ..< numBatches {
+            
+            // Determine the range for this batch.
+            let batchStart = batchNumber * batchSize
+            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
+            let range = batchStart..<batchEnd
+            
+            // Create a batch for this range from the decoded JSON.
+            let uploadsBatch = Array(uploadRequest[range])
+            
+            // Stop the import if this batch is unsuccessful.
+            if !importOneBatch(uploadsBatch) {
+                return batchNumber * batchSize
+            }
+        }
+        return count
+    }
+
     /**
      Adds or updates one batch of upload requests, creating managed objects from the new data,
      and saving them to the persistent store, on a private queue. After saving,
