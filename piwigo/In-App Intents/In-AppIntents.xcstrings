@@ -20,6 +20,24 @@
               }
             }
           }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photo ajoutée à la file d’attente des transferts."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photos ajoutées à la file d’attente des transferts."
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -28,13 +46,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appends recent photos to the background upload queue following Auto-Upload settings."
+            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute les photos récentes à la file d'attente de téléversement en arrière-plan conformément aux paramètres de téléversement automatique."
+            "value" : "Ajoute des photos récentes à la file d'attente suivant les paramètres de transferts automatique."
           }
         }
       }
@@ -50,7 +68,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Téléversement automatique des photos"
+            "value" : "Transfert automatiquement des photos"
           }
         }
       }
@@ -61,6 +79,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No photo added to the upload queue."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune photo ajoutée à la file d’attente des transferts."
           }
         }
       }
