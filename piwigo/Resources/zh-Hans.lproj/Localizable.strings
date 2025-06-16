@@ -54,7 +54,7 @@
 "CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
 "CoreDataFetch_DigestError" = "无法解析获取到的数据";
 "CoreData_MigrationRequired" = "Piwigo 数据的持久数据库需要迁移。请启动应用程序。";
-"CoreData_MigrationProgress" = "正在进行迁移.....";
+"CoreData_MigrationProgress" = "正在进行迁移...";
 "Coredata_MigrationPleaseWait" = "我们正在迁移您的部分数据。请等待结束。请勿退出或杀死应用程序。";
 "CoreData_MigrationError_title" = "迁移失败";
 "CoreData_MigrationError_generic" = "迁移过程中发生意外错误。";
@@ -97,7 +97,7 @@
 "login_loggingIn" = "登录中……";
 "login_connecting" = "连接中";
 "login_newSession" = "打开会话";
-"login_closeSession" = "关闭会话";
+"login_closeSession" = "关闭会话...";
 "login_communityParameters" = "社区参数";
 "login_serverParameters" = "Piwigo参数";
 "login_connectionChanged" = "连接已更改！";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "完整分辨率";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Thumbnail";
+"defaultThumbnailFile" = "缩略图";
 "defaultThumbnailFile>320px" = "缩略图文件";
 "defaultThumbnailFile>414px" = "照片缩略图文件";
 "defaultThumbnailSize" = "大小";
@@ -744,8 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "作者名称";
 "settings_defaultPrivacy" = "隐私";
 "settings_defaultPrivacy>414px" = "请选择谁可以看到照片";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "删除元数据";
+"settings_stripGPSdataLong" = "删除私密元数据";
 "settings_photoResize" = "上传前缩小大小";
 "settings_photoResizeLong" = "下载照片";
 "settings_photoSize" = "大小";
@@ -768,7 +768,7 @@
 "settings_renameDateHeader" = "请选择要包含在文件名中的日期格式。";
 "settings_renameTwoDigit" = "2位数版本";
 "settings_renameFourDigit" = "4位数版本";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDayOfYear" = "某年的某一日";
 
 "settings_renameTimeHeader" = "请选择要包含在文件名中的时间格式。";
 "settings_renameFiveDigit" = "5位数版本";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigo有什么新功能";
 "whatsNew_title1" = "群组照片";
-"whatsNew_desc1" = "Auto-play and loop options";
+"whatsNew_desc1" = "自动播放和循环选项";
 "whatsNew_title2" = "重命名文件";
 "whatsNew_desc2" = "上传创建日期前，计数器，相册ID，文本…";
 "whatsNew_continue" = "继续储值";

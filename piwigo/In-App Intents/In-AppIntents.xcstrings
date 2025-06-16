@@ -68,14 +68,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld Foto zur Upload-Warteschlange hinzugefügt."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld Fotos zur Upload-Warteschlange hinzugefügt."
                 }
               }
             }
@@ -110,8 +110,8 @@
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld fotos añadidas a la cola de subida."
                 }
               }
             }
@@ -374,8 +374,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld 照片添加到上传队列。"
                 }
               }
             }
@@ -411,8 +411,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Fügt die neuesten Fotos gemäß den Einstellungen für das automatische Hochladen an die Warteschlange für das Hochladen im Hintergrund an."
           }
         },
         "en" : {
@@ -423,8 +423,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Añade fotos recientes a la cola de subida de acuerdo con la configuración de las subidas automáticas."
           }
         },
         "fr" : {
@@ -507,8 +507,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "按照自动上传设置将最近的照片添加到后台上传队列中。"
           }
         },
         "zh-Hant" : {
@@ -535,8 +535,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Automatischen Hochladen von Fotos"
           }
         },
         "en" : {
@@ -547,8 +547,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Subida automática de fotos"
           }
         },
         "fr" : {
@@ -631,8 +631,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "自动上传照片"
           }
         },
         "zh-Hant" : {
@@ -659,8 +659,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Kein Foto zur Upload-Warteschlange hinzugefügt."
           }
         },
         "en" : {
@@ -671,8 +671,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "No se ha añadido ninguna foto a la cola de subida."
           }
         },
         "fr" : {
@@ -755,8 +755,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "上传队列中没有添加照片。"
           }
         },
         "zh-Hant" : {
