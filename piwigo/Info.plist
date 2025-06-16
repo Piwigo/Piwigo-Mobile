@@ -25,7 +25,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>622</string>
+	<string>623</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>
