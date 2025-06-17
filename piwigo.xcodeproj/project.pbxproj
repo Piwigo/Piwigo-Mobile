@@ -61,6 +61,8 @@
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
 		AD0F70222946262D008F1394 /* SettingsViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */; };
 		AD0F7024294629BD008F1394 /* SettingsViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */; };
+		AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */; };
+		AD0FE4BD2E01DEDD002395CF /* help09.png in Resources */ = {isa = PBXBuildFile; fileRef = AD0FE4BC2E01DEDD002395CF /* help09.png */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD11AC4C273B17A100433038 /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD11AC4B273B17A100433038 /* help01.png */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
@@ -782,6 +784,8 @@
 		AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Albums.swift"; sourceTree = "<group>"; };
 		AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Images.swift"; sourceTree = "<group>"; };
+		AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help09ViewController.swift; sourceTree = "<group>"; };
+		AD0FE4BC2E01DEDD002395CF /* help09.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help09.png; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagProvider.swift; sourceTree = "<group>"; };
 		AD11AC4B273B17A100433038 /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = help01.png; path = piwigo/Resources/Images/help01.png; sourceTree = SOURCE_ROOT; };
@@ -2197,6 +2201,7 @@
 				AD3CD639259DE34C000C26ED /* Help06ViewController.swift */,
 				AD8D214926B094DC0008E907 /* Help07ViewController.swift */,
 				AD8A1E7C28846E1300752948 /* Help08ViewController.swift */,
+				AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */,
 				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Help;
@@ -2221,6 +2226,7 @@
 				AD5DA2802DFF412500EFA7A5 /* help07-bot.png */,
 				AD8A1E7F288478FA00752948 /* help08-bot.png */,
 				AD8A1E7E288478FA00752948 /* help08-top.png */,
+				AD0FE4BC2E01DEDD002395CF /* help09.png */,
 				AD96F42F2748601D004C8DFF /* piwigo.png */,
 			);
 			path = Images;
@@ -3377,6 +3383,7 @@
 				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
 				AD3B2C672A2938910001B8B0 /* (null) in Resources */,
 				AD36C07D2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard in Resources */,
+				AD0FE4BD2E01DEDD002395CF /* help09.png in Resources */,
 				AD42568C2ACB584F00D7CCC8 /* VideoControlsView.xib in Resources */,
 				AD7D132C2DFF00FA00EEE90D /* In-AppIntents.xcstrings in Resources */,
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
@@ -3951,6 +3958,7 @@
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				ADBE0C2F2BE967F000F16A50 /* AlbumViewController+DataSource.swift in Sources */,
 				AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */,
+				AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */,
 				ADD65C562BE775F9005AC3B8 /* AlbumViewController+Bars.swift in Sources */,

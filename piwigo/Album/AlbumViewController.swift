@@ -560,9 +560,14 @@ class AlbumViewController: UIViewController
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if nberOfAlbums() > 2, user.hasAdminRights,
-           (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
-            displayHelpPagesWithID.append(3) // i.e. management of albums
+        if nberOfAlbums() > 2, user.hasAdminRights {
+            if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
+                displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
+            }
+            if #available(iOS 13, *),
+               (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
+                displayHelpPagesWithID.append(9) // i.e. management of albums w/o description
+            }
         }
         if albumData.upperIds.count > 3,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {
