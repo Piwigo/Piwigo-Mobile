@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.4.0_text" = "Version 3.4\n\n• Adds options for modifying file names before upload\n• Fixes bugs and improves the interface";
+"v3.4.0_text" = "3.4 verzió\n\n• Fájlnevek feltöltés előtti módosításának lehetőségei\n• Hibajavítások és a kezelőfelület javítása";
 
 "v3.3.2_text" = "3.3.2 verzió\n2025 Április 14\n\n• Hibajavítások és a kezelőfelület javítása";
 

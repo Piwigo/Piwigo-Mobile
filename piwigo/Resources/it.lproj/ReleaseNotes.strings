@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.4.0_text" = "Version 3.4\n\n• Adds options for modifying file names before upload\n• Fixes bugs and improves the interface";
+"v3.4.0_text" = "Versione 3.4\n\n• Aggiunge opzioni per modificare i nomi dei file prima del caricamento\n• Correzione di bug e miglioramento dell'interfaccia";
 
 "v3.3.2_text" = "Versione 3.3.2\n14 aprile 2025\n\n• Corregge i bug e migliora l'interfaccia";
 
