@@ -642,7 +642,7 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
-"Text" = "Text";
+"Text" = "Tekst";
 "Year" = "Rok";
 "Hour" = "Godzina";
 "12-hour" = "Cykl 12-godzinny";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Pełna rozdzielczość";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Thumbnail";
+"defaultThumbnailFile" = "Miniaturka";
 "defaultThumbnailFile>320px" = "Plik miniatury";
 "defaultThumbnailFile>414px" = "Plik miniatury zdjęcia";
 "defaultThumbnailSize" = "Rozmiar";
@@ -744,8 +744,8 @@
 "settings_defaultAuthorPlaceholder" = "Imię Autora";
 "settings_defaultPrivacy" = "Prywatność";
 "settings_defaultPrivacy>414px" = "Wybierz kto będzie mógł zobaczyć zdjęcia";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "Usuń metadane";
+"settings_stripGPSdataLong" = "Usuń prywatne metadane";
 "settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
 "settings_photoResizeLong" = "Pomniejsz zdjęcie";
 "settings_photoSize" = "Rozmiar";
@@ -768,7 +768,7 @@
 "settings_renameDateHeader" = "Proszę wybrać format daty do dołączenia do nazwy pliku.";
 "settings_renameTwoDigit" = "Wersja 2-cyfrowa";
 "settings_renameFourDigit" = "Wersja 4-cyfrowa";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDayOfYear" = "Dzień roku";
 
 "settings_renameTimeHeader" = "Proszę wybrać format czasu do dołączenia do nazwy pliku.";
 "settings_renameFiveDigit" = "Wersja 5-cyfrowa";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Co nowego w Piwigo";
 "whatsNew_title1" = "Grupuj zdjęcia";
-"whatsNew_desc1" = "Auto-play and loop options";
+"whatsNew_desc1" = "Opcje automatycznego odtwarzania i zapętlenia";
 "whatsNew_title2" = "Zmiana nazw plików";
 "whatsNew_desc2" = "przed przesłaniem, wykorzystując datę utworzenia, licznik, identyfikator albumu, tekst…";
 "whatsNew_continue" = "Kontynuuj";
