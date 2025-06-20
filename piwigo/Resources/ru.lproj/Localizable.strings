@@ -149,7 +149,7 @@
 // MARK: - Albums
 // ===========================================================================
 // MARK: -- Generic
-"albumID" = "Album ID";
+"albumID" = "Идентификатор альбома";
 "singleAlbumCount" = "%@ альбом";
 "severalAlbumsCount" = "%@ альбомов";
 "singleSubAlbumCount" = "%@ подальбом";
@@ -367,7 +367,7 @@
 "editImageDetails_description" = "Описание";
 "editImageDetails_comments" = "Комментарии";
 "editImageDetails_dateCreation" = "Дата создания";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = "Время создания";
 "editImageDetails_dateUnset" = "Сбросить";
 "editImageDetails_dateToday" = "Сегодня";
 "editImageDetails_dateMonthInc" = "+1 месяц";
@@ -642,17 +642,17 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
-"Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
-"Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
-"Separator" = "Separator";
-"Counter" = "Counter";
+"Text" = "Текст";
+"Year" = "Год";
+"Hour" = "Час";
+"12-hour" = "12-часовой цикл";
+"24-hour" = "24-часовой цикл";
+"Minute" = "Минута";
+"Second" = "Секунда";
+"Abbreviation" = "Аббревиатура";
+"FullName" = "Полное имя";
+"Separator" = "Разделитель";
+"Counter" = "Счетчик";
 
 // MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Сервер Piwigo";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Полное разрешение";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Thumbnail";
+"defaultThumbnailFile" = "Эскиз";
 "defaultThumbnailFile>320px" = "Файл миниатюры";
 "defaultThumbnailFile>414px" = "Миниатюры файлов изображений";
 "defaultThumbnailSize" = "Размер";
@@ -740,7 +740,7 @@
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "Настройки загрузки по умолчанию";
 "settings_defaultAuthor" = "Автор";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "Имя автора";
 "settings_defaultAuthorPlaceholder" = "Имя автора";
 "settings_defaultPrivacy" = "Приватность";
 "settings_defaultPrivacy>414px" = "Пожалуйста, выберите, кто может смотреть фотографий";

@@ -5,9 +5,9 @@
   Created by Eddy Lelièvre-Berna on 15/06/2025.
   Copyright © 2025 Piwigo.org. All rights reserved.
 */
-"Upload my photos to ${applicationName}" = "Upload my photos to ${applicationName}";
-"Auto-upload photos with ${applicationName}" = "Auto-upload photos with ${applicationName}";
-"Auto-upload my photos with ${applicationName}" = "Auto-upload my photos with ${applicationName}";
-"Upload photos with ${applicationName}" = "Upload photos with ${applicationName}";
-"Upload my photos with ${applicationName}" = "Upload my photos with ${applicationName}";
-"Upload my latest photos with ${applicationName}" = "Upload my latest photos with ${applicationName}";
+"Upload my photos to ${applicationName}" = "私の写真を ${applicationName} にアップロードする";
+"Auto-upload photos with ${applicationName}" = "${applicationName} で写真を自動アップロードする";
+"Auto-upload my photos with ${applicationName}" = "${applicationName} で私の写真を自動アップロードする";
+"Upload photos with ${applicationName}" = "${applicationName} で写真をアップロードする";
+"Upload my photos with ${applicationName}" = "${applicationName} で私の写真をアップロードする";
+"Upload my latest photos with ${applicationName}" = "${applicationName} で最新の写真をアップロードする";

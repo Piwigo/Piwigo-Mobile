@@ -149,7 +149,7 @@
 // MARK: - Albums
 // ===========================================================================
 // MARK: -- Generic
-"albumID" = "Album ID";
+"albumID" = "アルバムID";
 "singleAlbumCount" = "%@ アルバム";
 "severalAlbumsCount" = "%@ アルバム";
 "singleSubAlbumCount" = "%@ サブアルバム";
@@ -367,7 +367,7 @@
 "editImageDetails_description" = "説明";
 "editImageDetails_comments" = "コメント";
 "editImageDetails_dateCreation" = "作成日";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = " 作成時刻";
 "editImageDetails_dateUnset" = "解除";
 "editImageDetails_dateToday" = "今日";
 "editImageDetails_dateMonthInc" = "+1 ヶ月";
@@ -642,17 +642,17 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
-"Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
-"Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
-"Separator" = "Separator";
-"Counter" = "Counter";
+"Text" = "テキスト";
+"Year" = "年";
+"Hour" = "時間";
+"12-hour" = "12時間周期";
+"24-hour" = "24時間周期";
+"Minute" = "分";
+"Second" = "秒";
+"Abbreviation" = "略";
+"FullName" = "フルネーム";
+"Separator" = "セパレーター";
+"Counter" = "カウンター";
 
 // MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigoサーバ";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "フル解像度";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Thumbnail";
+"defaultThumbnailFile" = "サムネイル";
 "defaultThumbnailFile>320px" = "サムネイルファイル";
 "defaultThumbnailFile>414px" = "サムネイル写真ファイル";
 "defaultThumbnailSize" = "サイズ";
@@ -740,7 +740,7 @@
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "規定のアップロード設定";
 "settings_defaultAuthor" = "作成者";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "著者名";
 "settings_defaultAuthorPlaceholder" = "作成者名";
 "settings_defaultPrivacy" = "プライバシー";
 "settings_defaultPrivacy>414px" = "写真を見ることができる人を選択してください";

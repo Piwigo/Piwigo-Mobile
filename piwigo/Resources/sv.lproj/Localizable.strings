@@ -149,7 +149,7 @@
 // MARK: - Albums
 // ===========================================================================
 // MARK: -- Generic
-"albumID" = "Album ID";
+"albumID" = "Album-ID";
 "singleAlbumCount" = "%@ album";
 "severalAlbumsCount" = "%@ album";
 "singleSubAlbumCount" = "%@ underalbum";
@@ -367,7 +367,7 @@
 "editImageDetails_description" = "Beskrivning";
 "editImageDetails_comments" = "Kommentarer";
 "editImageDetails_dateCreation" = "Skapat den";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = "Skapelsetid";
 "editImageDetails_dateUnset" = "Obestämt";
 "editImageDetails_dateToday" = "Idag";
 "editImageDetails_dateMonthInc" = "+1 Månad";
@@ -643,16 +643,16 @@
 // MARK: - Settings
 // ===========================================================================
 "Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
-"Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
+"Year" = "År";
+"Hour" = "Timme";
+"12-hour" = "12-timmarscykel";
+"24-hour" = "24-timmarscykel";
+"Minute" = "Minut";
+"Second" = "Sekund";
+"Abbreviation" = "Förkortning";
+"FullName" = "Fullständigt namn";
 "Separator" = "Separator";
-"Counter" = "Counter";
+"Counter" = "Räknare";
 
 // MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Full upplösning";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Thumbnail";
+"defaultThumbnailFile" = "Miniatyrbild";
 "defaultThumbnailFile>320px" = "Miniatyr-fil";
 "defaultThumbnailFile>414px" = "Miniatyrfil med bilden";
 "defaultThumbnailSize" = "Storlek";
@@ -740,7 +740,7 @@
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "Förinställn. uppladdning";
 "settings_defaultAuthor" = "Författare";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "Författarnamn";
 "settings_defaultAuthorPlaceholder" = "Författarnamn";
 "settings_defaultPrivacy" = "Behörighet";
 "settings_defaultPrivacy>414px" = "Välj vilka som kommer att kunna se bilder";

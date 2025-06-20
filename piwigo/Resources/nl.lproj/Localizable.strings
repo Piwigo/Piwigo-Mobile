@@ -367,7 +367,7 @@
 "editImageDetails_description" = "Omschrijving";
 "editImageDetails_comments" = "Opmerkingen";
 "editImageDetails_dateCreation" = "Aanmaakdatum";
-"editImageDetails_timeCreation" = "Creation Time";
+"editImageDetails_timeCreation" = "Tijd van creatie";
 "editImageDetails_dateUnset" = "Uitzetten";
 "editImageDetails_dateToday" = "Vandaag";
 "editImageDetails_dateMonthInc" = "+1 Maand";
@@ -642,17 +642,17 @@
 // ===========================================================================
 // MARK: - Settings
 // ===========================================================================
-"Text" = "Text";
-"Year" = "Year";
-"Hour" = "Hour";
-"12-hour" = "12-hour cycle";
-"24-hour" = "24-hour cycle";
-"Minute" = "Minute";
-"Second" = "Second";
-"Abbreviation" = "Abbreviation";
-"FullName" = "Full Name";
-"Separator" = "Separator";
-"Counter" = "Counter";
+"Text" = "Tekst";
+"Year" = "Jaar";
+"Hour" = "Uur";
+"12-hour" = "12-uurs cyclus";
+"24-hour" = "24-uurs cyclus";
+"Minute" = "Minuut";
+"Second" = "Seconde";
+"Abbreviation" = "Afkorting";
+"FullName" = "Volledige naam";
+"Separator" = "Scheidingsteken";
+"Counter" = "Teller";
 
 // MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Server";
@@ -693,7 +693,7 @@
 "thumbnailSizexFullRes" = "Volledige resolutie";
 
 // MARK: -- Settings — Images
-"defaultThumbnailFile" = "Thumbnail";
+"defaultThumbnailFile" = "Miniatuur";
 "defaultThumbnailFile>320px" = "Miniatuur bestand";
 "defaultThumbnailFile>414px" = "Miniatuurafbeelding bestand";
 "defaultThumbnailSize" = "Grootte";
@@ -740,7 +740,7 @@
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "Standaard upload-instellingen";
 "settings_defaultAuthor" = "Fotograaf";
-"settings_defaultAuthorLong" = "Author Name";
+"settings_defaultAuthorLong" = "Naam auteur";
 "settings_defaultAuthorPlaceholder" = "Naam van de fotograaf";
 "settings_defaultPrivacy" = "Privacy";
 "settings_defaultPrivacy>414px" = "Kies wie de foto's mag zien";

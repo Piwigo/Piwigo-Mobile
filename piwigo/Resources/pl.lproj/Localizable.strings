@@ -434,8 +434,8 @@
 
 // MARK: -- Image rotate
 "rotateImage_rotate" = "Obróć o 90°…";
-"rotateImage_left" = "Przeciwnie do ruchu wskazówek zegara";
-"rotateImage_right" = "Zgodnie z ruchem wskazówek zegara";
+"rotateImage_left" = "W lewo";
+"rotateImage_right" = "W prawo";
 "rotateSingleImageHUD_rotating" = "Obracanie zdjęcia…";
 "rotateSeveralImageHUD_rotating" = "Obracanie zdjęć…";
 
@@ -735,7 +735,7 @@
 
 // MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "Automatyczne odtwarzanie";
-"settings_videoLoop" = "Zapętlaj odtwarzanie filmów";
+"settings_videoLoop" = "Pętla filmów";
 
 // MARK: -- Settings — Upload
 "settingsHeader_upload" = "Domyślne ustawienia przesyłania";
@@ -746,10 +746,10 @@
 "settings_defaultPrivacy>414px" = "Wybierz kto będzie mógł zobaczyć zdjęcia";
 "settings_stripGPSdata" = "Usuń metadane";
 "settings_stripGPSdataLong" = "Usuń prywatne metadane";
-"settings_photoResize" = "Zmień Rozmiar Przed Przesłaniem";
+"settings_photoResize" = "Pomniejsz";
 "settings_photoResizeLong" = "Pomniejsz zdjęcie";
 "settings_photoSize" = "Rozmiar";
-"settings_photoCompress" = "Skompresuj przed przesłaniem";
+"settings_photoCompress" = "Skompresuj";
 "settings_photoCompressLong" = "Skompresuj zdjęcie";
 "settings_photoQuality" = "Jakość";
 
