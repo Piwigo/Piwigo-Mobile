@@ -75,20 +75,6 @@ class HelpViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        // Reload the page views on orientation change
-        coordinator.animate(alongsideTransition: { [self] _ in
-                        
-            // Reload table view
-            self.pageViewController?.viewControllers?.forEach {
-                $0.view.setNeedsDisplay()
-                $0.view.layoutIfNeeded()
-            }
-        })
-    }
-    
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

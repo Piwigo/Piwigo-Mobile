@@ -332,28 +332,7 @@ class SettingsViewController: UIViewController {
             })
         }
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
         
-        //Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { [self] _ in
-            
-            // On iPad, the Settings section is presented in a centered popover view
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                let mainScreenBounds = UIScreen.main.bounds
-                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
-                                                                        y: mainScreenBounds.midY,
-                                                                        width: 0, height: 0)
-                self.preferredContentSize = CGSize(width: pwgPadSettingsWidth,
-                                                   height: ceil(mainScreenBounds.height * 2 / 3))
-            }
-            
-            // Reload table view
-            self.settingsTableView?.reloadData()
-        })
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         

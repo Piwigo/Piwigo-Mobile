@@ -33,13 +33,17 @@ extension AlbumViewController
         let navController = UINavigationController(rootViewController: settingsVC)
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet
-        let mainScreenBounds = UIScreen.main.bounds
+        
+        // For iPads, adopt a size that fits all orientations
+        let windowBounds = view.window?.bounds ?? .zero
         navController.popoverPresentationController?.sourceRect = CGRect(
-            x: mainScreenBounds.midX, y: mainScreenBounds.midY,
+            x: windowBounds.midX, y: windowBounds.midY,
             width: 0, height: 0)
+        let minHeight = min(windowBounds.width, windowBounds.height)
         navController.preferredContentSize = CGSize(
             width: pwgPadSettingsWidth,
-            height: ceil(mainScreenBounds.size.height * 2 / 3))
+            height: ceil(minHeight * 2 / 3))
+        
         present(navController, animated: true)
     }
 }
