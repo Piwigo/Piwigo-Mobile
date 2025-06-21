@@ -32,7 +32,7 @@ enum SettingsSection: Int {
 }
 
 let kHelpUsTitle: String = "Help Us!"
-let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in your language. Could you please help us complete the translation?"
+let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in your language. Could you please help us complete or improve the translation?"
 
 @objc protocol ChangedSettingsDelegate: NSObjectProtocol {
     func didChangeDefaultAlbum()
@@ -298,20 +298,18 @@ class SettingsViewController: UIViewController {
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
-//        debugPrint("=> langCode: ", String(describing: langCode))
-//        debugPrint(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, AppVars.shared.pwgOneMonth))
         let now: Double = Date().timeIntervalSinceReferenceDate
-        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
-        if (now > dueDate) && (["ar","id","ko","pt-BR","sv","uk"].contains(langCode)) {
+        // Comment the below line and uncomment the next one for debugging
+        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + 3 * AppVars.shared.pwgOneMonth
+//        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
+        if now > dueDate, ["ar","da","hu","id","it","ja","nl","ru","sv"].contains(langCode) {
             // Store date of last translation request
             AppVars.shared.dateOfLastTranslationRequest = now
             
             // Request a translation
             let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
-            
             let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
             })
-            
             let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
                     UIApplication.shared.open(url)
