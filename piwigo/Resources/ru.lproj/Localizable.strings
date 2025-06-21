@@ -744,54 +744,54 @@
 "settings_defaultAuthorPlaceholder" = "Имя автора";
 "settings_defaultPrivacy" = "Приватность";
 "settings_defaultPrivacy>414px" = "Пожалуйста, выберите, кто может смотреть фотографий";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "Снять метаданные";
+"settings_stripGPSdataLong" = "Снять частные метаданные";
 "settings_photoResize" = "Изменить размер перед загрузкой";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "Уменьшить фотографию";
 "settings_photoSize" = "Размер";
 "settings_photoCompress" = "Сжать перед загрузкой";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "Сжать фотографию";
 "settings_photoQuality" = "Качество";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
-"settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
-"settings_suffixPlaceholder" = "_suffix";
+"settings_renameFile" = "Переименовать";
+"settings_renameFileLong" = "Переименовать файл";
+"settings_renameFile_info" = "Укажите ниже, как следует переименовать файлы перед загрузкой.";
+"settings_addActionMsg" = "Пожалуйста, выберите действие, которое необходимо добавить";
+"settings_renameAddBefore" = "Добавить перед именем";
+"settings_renamePrefix" = "Префикс Имя файла";
+"settings_prefixPlaceholder" = "Префикс_";
+"settings_renameReplace" = "Заменить имя файла";
+"settings_renameAddAfter" = "Добавить после имени";
+"settings_renameSuffix" = "Суффикс Имя файла";
+"settings_suffixPlaceholder" = "_суффикс";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDateHeader" = "Выберите формат даты для включения в имя файла.";
+"settings_renameTwoDigit" = "2-значная версия";
+"settings_renameFourDigit" = "4-значная версия";
+"settings_renameDayOfYear" = "День года";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "Пожалуйста, выберите формат времени для включения в имя файла.";
+"settings_renameFiveDigit" = "5-значная версия";
+"settings_renameCounterHeader" = "Пожалуйста, выберите формат счетчика для включения в имя файла.";
+"settings_renameCounterStart" = "Начинается с";
+"settings_renameCounterCurrent" = "Текущее значение";
+"settings_renameCounterStartFooter" = "Для каждого альбома счетчик будет инициализирован этим значением, которое затем будет увеличиваться на единицу для каждого обработанного файла.";
+"settings_renameCounterCurrentFooter" = "Следующая серия загрузок будет начинаться с этого значения счетчика, которое затем будет увеличиваться на единицу для каждого обработанного файла.";
+"settings_renameCounterDigits" = "Цифры";
+"settings_renameCounterDigitsFooter" = "Если счетчику требуется больше цифр, чем указано, количество цифр автоматически увеличивается.";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "Расширение файла";
+"settings_renameChangeCase" = "Изменить регистр";
+"settings_renameLowercase" = "Нижний регистр";
+"settings_renameUppercase" = "Верхний регистр";
 
 "settings_wifiOnly" = "Только Wi-Fi";
 "settings_deleteImage" = "Удалить после загрузки";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "Удалить после загрузки";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Автозагрузка";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Автоматическая загрузка фотографий";
 "settings_autoUploadEnabled" = "Вкл";
 "settings_autoUploadEnabledInfo" = "Изображения будут автоматически загружены в Ваш Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Изображения и видео будут автоматически загружены в Ваш Piwigo.";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Что нового в Piwigo";
 "whatsNew_title1" = "Групповые фото";
-"whatsNew_desc1" = "Auto-play and loop options";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Опции автоматического воспроизведения и зацикливания";
+"whatsNew_title2" = "Переименование файлов";
+"whatsNew_desc2" = "перед загрузкой с указанием даты создания, счетчика, идентификатора альбома, текста…";
 "whatsNew_continue" = "Продолжить";

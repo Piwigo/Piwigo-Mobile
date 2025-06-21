@@ -56,8 +56,8 @@
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld fotos føjet til uploadkøen."
                 }
               }
             }
@@ -104,8 +104,8 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foto añadidas a la cola de subida."
                 }
               },
               "other" : {
@@ -146,8 +146,8 @@
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld fotó hozzáadva a feltöltési sorba."
                 }
               }
             }
@@ -176,8 +176,8 @@
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foto aggiunte alla coda di caricamento."
                 }
               }
             }
@@ -188,8 +188,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld 枚の写真がアップロードキューに追加されました。"
                 }
               }
             }
@@ -200,14 +200,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foto toegevoegd aan de uploadwachtrij."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foto's toegevoegd aan de uploadwachtrij."
                 }
               }
             }
@@ -260,14 +260,14 @@
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld фото добавлено в очередь на загрузку."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "В очередь на загрузку добавлено %lld фотографий."
                 }
               }
             }
@@ -278,14 +278,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foto tillagt i uppladdningskön."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foton har lagts till i uppladdningskön."
                 }
               }
             }
@@ -308,8 +308,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld 張相片已加入上載佇列。"
                 }
               }
             }
@@ -327,8 +327,8 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Tilføjer de seneste fotos til uploadkøen i henhold til indstillingerne for automatisk upload."
           }
         },
         "de" : {
@@ -357,8 +357,8 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Az automatikus feltöltési beállításoknak megfelelően hozzáadja a legutóbbi fényképeket a feltöltési várólistához."
           }
         },
         "id" : {
@@ -369,20 +369,20 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Aggiunge le foto recenti alla coda di caricamento in base alle impostazioni di caricamento automatico."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "自動アップロード設定に従って、アップロードキューに最近の写真を追加します。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Voegt recente foto's toe aan de uploadwachtrij volgens de instellingen voor automatisch uploaden."
           }
         },
         "pl" : {
@@ -393,14 +393,14 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Добавляет последние фотографии в очередь загрузки в соответствии с настройками автозагрузки."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Lägger till de senaste bilderna i uppladdningskön enligt inställningarna för automatisk uppladdning."
           }
         },
         "zh-Hans" : {
@@ -411,8 +411,8 @@
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "根據自動上傳設定將最近的照片附加到上傳列隊中。"
           }
         }
       }
@@ -427,7 +427,7 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Auto-Upload Photos"
           }
         },
@@ -457,8 +457,8 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Fotók automatikus feltöltése"
           }
         },
         "id" : {
@@ -469,19 +469,19 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Caricamento automatico foto"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "写真を自動アップロード"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Auto-Upload Photos"
           }
         },
@@ -493,13 +493,13 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Автозагрузка фотографий"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Auto-Upload Photos"
           }
         },
@@ -511,8 +511,8 @@
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "自動上傳照片"
           }
         }
       }
@@ -527,8 +527,8 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Intet foto føjet til uploadkøen."
           }
         },
         "de" : {
@@ -557,8 +557,8 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Nincs fénykép hozzáadva a feltöltési sorba."
           }
         },
         "id" : {
@@ -569,20 +569,20 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Nessuna foto aggiunta alla coda di caricamento."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "アップロードキューに写真が追加されていません。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Geen foto toegevoegd aan de uploadwachtrij."
           }
         },
         "pl" : {
@@ -593,14 +593,14 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "В очередь на загрузку не добавлено ни одной фотографии."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Inget foto har lagts till i uppladdningskön."
           }
         },
         "zh-Hans" : {
@@ -611,8 +611,8 @@
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "沒有照片加入上傳佇列。"
           }
         }
       }

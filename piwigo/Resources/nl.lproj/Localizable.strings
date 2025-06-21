@@ -744,54 +744,54 @@
 "settings_defaultAuthorPlaceholder" = "Naam van de fotograaf";
 "settings_defaultPrivacy" = "Privacy";
 "settings_defaultPrivacy>414px" = "Kies wie de foto's mag zien";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "Strip metagegevens";
+"settings_stripGPSdataLong" = "Strip privémetagegevens";
 "settings_photoResize" = "Pas grootte aan vóór de upload";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "Foto verkleinen";
 "settings_photoSize" = "Grootte";
 "settings_photoCompress" = "Comprimeer vóór het uploaden";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "Foto comprimeren";
 "settings_photoQuality" = "Kwaliteit";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
-"settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
+"settings_renameFile" = "Hernoemen";
+"settings_renameFileLong" = "Bestand hernoemen";
+"settings_renameFile_info" = "Geef hieronder aan hoe bestanden moeten worden hernoemd voordat ze worden geüpload.";
+"settings_addActionMsg" = "Selecteer de actie die u wilt toevoegen";
+"settings_renameAddBefore" = "Toevoegen vóór naam";
+"settings_renamePrefix" = "Voorvoegsel bestandsnaam";
+"settings_prefixPlaceholder" = "Voorvoegsel_";
+"settings_renameReplace" = "Bestandsnaam vervangen";
+"settings_renameAddAfter" = "Toevoegen na naam";
+"settings_renameSuffix" = "Achtervoegsel bestandsnaam";
 "settings_suffixPlaceholder" = "_suffix";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDateHeader" = "Selecteer een datumnotatie om op te nemen in de bestandsnaam.";
+"settings_renameTwoDigit" = "2-cijferige versie";
+"settings_renameFourDigit" = "4-cijferige versie";
+"settings_renameDayOfYear" = "Dag van het jaar";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "Selecteer een tijdnotatie om op te nemen in de bestandsnaam.";
+"settings_renameFiveDigit" = "5-cijferige versie";
+"settings_renameCounterHeader" = "Selecteer een telleropmaak die u in de bestandsnaam wilt opnemen.";
+"settings_renameCounterStart" = "Begint vanaf";
+"settings_renameCounterCurrent" = "Huidige waarde";
+"settings_renameCounterStartFooter" = "Voor elk album wordt de teller geïnitialiseerd met deze waarde die vervolgens met één wordt verhoogd voor elk verwerkt bestand.";
+"settings_renameCounterCurrentFooter" = "De volgende reeks uploads begint met deze tellerwaarde, die vervolgens voor elk verwerkt bestand met één wordt verhoogd.";
+"settings_renameCounterDigits" = "Cijfers";
+"settings_renameCounterDigitsFooter" = "Wanneer de teller meer cijfers nodig heeft dan opgegeven, wordt het aantal cijfers automatisch verhoogd.";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "Bestandsextensie";
+"settings_renameChangeCase" = "Hoofdletter wijzigen";
+"settings_renameLowercase" = "Kleine letters";
+"settings_renameUppercase" = "Hoofdletters";
 
 "settings_wifiOnly" = "Alleen wifi";
 "settings_deleteImage" = "Verwijder na uploaden";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "Verwijder na uploaden";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Automatisch uploaden";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Automatisch foto's uploaden";
 "settings_autoUploadEnabled" = "Aan";
 "settings_autoUploadEnabledInfo" = "Foto's worden automatisch ge-upload naar jouw Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foto's en video's worden automatisch geüpload naar jouw Piwigo.";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Wat is er nieuw in Piwigo";
 "whatsNew_title1" = "Groep foto's";
-"whatsNew_desc1" = "Auto-play and loop options";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Auto-play en loop opties";
+"whatsNew_title2" = "Hernoem bestanden";
+"whatsNew_desc2" = "voordat het uploaden met aanmaakdatum, teller albumID, tekst…";
 "whatsNew_continue" = "Doorgaan";

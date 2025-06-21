@@ -744,54 +744,54 @@
 "settings_defaultAuthorPlaceholder" = "Forfatternavn";
 "settings_defaultPrivacy" = "Tilladelse";
 "settings_defaultPrivacy>414px" = "Vælg hvem der må kunne se billeder";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "Fjern metadata";
+"settings_stripGPSdataLong" = "Fjern private metadata";
 "settings_photoResize" = "Ændr størrelse før Upload";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "Forminsk foto";
 "settings_photoSize" = "Størrelse";
 "settings_photoCompress" = "Komprimer før Upload";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "Komprimer foto";
 "settings_photoQuality" = "Kvalitet";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
-"settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
-"settings_suffixPlaceholder" = "_suffix";
+"settings_renameFile" = "Omdøb";
+"settings_renameFileLong" = "Omdøb fil";
+"settings_renameFile_info" = "Angiv venligst nedenfor, hvordan filer skal omdøbes, før de uploades.";
+"settings_addActionMsg" = "Vælg venligst den handling, der skal tilføjes";
+"settings_renameAddBefore" = "Tilføj før navn";
+"settings_renamePrefix" = "Præfiks Filnavn";
+"settings_prefixPlaceholder" = "Præfiks_";
+"settings_renameReplace" = "Erstat filnavn";
+"settings_renameAddAfter" = "Tilføj efter navn";
+"settings_renameSuffix" = "Suffiks Filnavn";
+"settings_suffixPlaceholder" = "_suffiks";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDateHeader" = "Vælg et datoformat, der skal indgå i filnavnet.";
+"settings_renameTwoDigit" = "2-cifret version";
+"settings_renameFourDigit" = "4-cifret version";
+"settings_renameDayOfYear" = "Årets dag";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "Vælg et tidsformat, der skal inkluderes i filnavnet.";
+"settings_renameFiveDigit" = "5-cifret version";
+"settings_renameCounterHeader" = "Vælg et tællerformat, der skal inkluderes i filnavnet.";
+"settings_renameCounterStart" = "Starter fra";
+"settings_renameCounterCurrent" = "Nuværende værdi";
+"settings_renameCounterStartFooter" = "For hvert album initialiseres tælleren med denne værdi, som derefter øges med én for hver fil, der behandles.";
+"settings_renameCounterCurrentFooter" = "Den næste serie af uploads starter med denne tællerværdi, som derefter øges med én for hver fil, der behandles.";
+"settings_renameCounterDigits" = "Cifre";
+"settings_renameCounterDigitsFooter" = "Når tælleren har brug for flere cifre end angivet, øges antallet af cifre automatisk.";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "Filendelse";
+"settings_renameChangeCase" = "Skift mellem store og små bogstaver";
+"settings_renameLowercase" = "Små bogstaver";
+"settings_renameUppercase" = "Store bogstaver";
 
 "settings_wifiOnly" = "Kun Wi-Fi";
 "settings_deleteImage" = "Slet efter upload";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "Slet efter upload";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Automatisk upload";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "Auto upload af billeder";
 "settings_autoUploadEnabled" = "Til";
 "settings_autoUploadEnabledInfo" = "Billeder vil automatisk blive uploadet til din Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Billeder og videoer vil automatisk blive uploadet til din Piwigo.";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Hvad er nyt i Piwigo";
 "whatsNew_title1" = "Gruppe Fotos";
-"whatsNew_desc1" = "Auto-play and loop options";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Indstillinger for automatisk afspilning og loop";
+"whatsNew_title2" = "Omdøb Filer";
+"whatsNew_desc2" = "før upload med oprettelsesdato, tæller, album ID, tekst…";
 "whatsNew_continue" = "Fortsæt";

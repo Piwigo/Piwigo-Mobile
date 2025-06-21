@@ -744,54 +744,54 @@
 "settings_defaultAuthorPlaceholder" = "作成者名";
 "settings_defaultPrivacy" = "プライバシー";
 "settings_defaultPrivacy>414px" = "写真を見ることができる人を選択してください";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "ストリップ・メタデータ";
+"settings_stripGPSdataLong" = "ストリップ・プライベート・メタデータ";
 "settings_photoResize" = "アップロードする前にサイズを縮小する";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "写真のサイズダウン";
 "settings_photoSize" = "サイズ";
 "settings_photoCompress" = "アップロードする前に圧縮します";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "写真の圧縮";
 "settings_photoQuality" = "画質";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
+"settings_renameFile" = "名前の変更";
+"settings_renameFileLong" = "ファイル名の変更";
+"settings_renameFile_info" = "アップロードする前にファイル名をどのように変更するかを以下に示してください。";
+"settings_addActionMsg" = "追加するアクションを選択してください";
+"settings_renameAddBefore" = "名前の前に追加";
+"settings_renamePrefix" = "プレフィックスファイル名";
 "settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
+"settings_renameReplace" = "ファイル名を置換";
+"settings_renameAddAfter" = "名前の後に追加";
+"settings_renameSuffix" = "サフィックスファイル名";
 "settings_suffixPlaceholder" = "_suffix";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDateHeader" = "ファイル名に含める日付フォーマットを選択してください。";
+"settings_renameTwoDigit" = "2桁バージョン";
+"settings_renameFourDigit" = "4桁バージョン";
+"settings_renameDayOfYear" = "年月日";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "ファイル名に含める時間フォーマットを選択してください。";
+"settings_renameFiveDigit" = "5桁バージョン";
+"settings_renameCounterHeader" = "ファイル名に含めるカウンターの形式を選択してください。";
+"settings_renameCounterStart" = "現在値";
+"settings_renameCounterCurrent" = "現在値";
+"settings_renameCounterStartFooter" = "各アルバムについて、カウンターはこの値で初期化され、その後、処理された各ファイルごとに1ずつインクリメントされます。";
+"settings_renameCounterCurrentFooter" = "次の一連のアップロードは、このカウンタ値で開始され、処理されるファイルごとに1ずつ増分されます。";
+"settings_renameCounterDigits" = "桁数";
+"settings_renameCounterDigitsFooter" = "カウンタが指定以上の桁数を必要とする場合、桁数は自動的に増加します。";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "ファイル拡張子";
+"settings_renameChangeCase" = "大文字小文字の変更";
+"settings_renameLowercase" = "小文字";
+"settings_renameUppercase" = "大文字";
 
 "settings_wifiOnly" = "Wi-Fiのみ";
 "settings_deleteImage" = "アップロード後に削除します";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "アップロード後に削除します";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "自動アップロード";
-"settings_autoUploadLong" = "Auto Upload Photos";
+"settings_autoUploadLong" = "写真を自動アップロード";
 "settings_autoUploadEnabled" = "On";
 "settings_autoUploadEnabledInfo" = "写真は自動的にPiwigoにアップロードされます。";
 "settings_autoUploadEnabledInfoAll" = "写真とビデオは自動的にPiwigoにアップロードされます。";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigoの新機能";
 "whatsNew_title1" = "グループ写真";
-"whatsNew_desc1" = "Auto-play and loop options";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "自動再生とループオプション";
+"whatsNew_title2" = "ファイル名の変更";
+"whatsNew_desc2" = "作成日、カウンター、アルバムID、テキストでアップロード前に…";
 "whatsNew_continue" = "続ける";

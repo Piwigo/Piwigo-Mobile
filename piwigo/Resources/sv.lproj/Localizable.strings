@@ -744,50 +744,50 @@
 "settings_defaultAuthorPlaceholder" = "Författarnamn";
 "settings_defaultPrivacy" = "Behörighet";
 "settings_defaultPrivacy>414px" = "Välj vilka som kommer att kunna se bilder";
-"settings_stripGPSdata" = "Strip Metadata";
-"settings_stripGPSdataLong" = "Strip Private Metadata";
+"settings_stripGPSdata" = "Avlägsna metadata";
+"settings_stripGPSdataLong" = "Avlägsna privata metadata";
 "settings_photoResize" = "Skala om före uppladdning";
-"settings_photoResizeLong" = "Downsize Photo";
+"settings_photoResizeLong" = "Förminska foto";
 "settings_photoSize" = "Storlek";
 "settings_photoCompress" = "Komprimera före uppladdning";
-"settings_photoCompressLong" = "Compress Photo";
+"settings_photoCompressLong" = "Komprimera foto";
 "settings_photoQuality" = "Kvalitet";
 
-"settings_renameFile" = "Rename";
-"settings_renameFileLong" = "Rename File";
-"settings_renameFile_info" = "Please indicate below how files should be renamed before uploading.";
-"settings_addActionMsg" = "Please select the action to add";
-"settings_renameAddBefore" = "Add Before Name";
-"settings_renamePrefix" = "Prefix File Name";
+"settings_renameFile" = "Byt namn på";
+"settings_renameFileLong" = "Byt namn på fil";
+"settings_renameFile_info" = "Ange nedan hur filerna ska döpas om innan de laddas upp.";
+"settings_addActionMsg" = "Välj den åtgärd du vill lägga till";
+"settings_renameAddBefore" = "Lägg till före namn";
+"settings_renamePrefix" = "Prefix Filnamn";
 "settings_prefixPlaceholder" = "Prefix_";
-"settings_renameReplace" = "Replace File Name";
-"settings_renameAddAfter" = "Add After Name";
-"settings_renameSuffix" = "Suffix File Name";
+"settings_renameReplace" = "Ersätt Filnamn";
+"settings_renameAddAfter" = "Lägg till efter namn";
+"settings_renameSuffix" = "Suffix Filnamn";
 "settings_suffixPlaceholder" = "_suffix";
 
-"settings_renameDateHeader" = "Please select a date format to include in the file name.";
-"settings_renameTwoDigit" = "2-digit version";
-"settings_renameFourDigit" = "4-digit version";
-"settings_renameDayOfYear" = "Day of Year";
+"settings_renameDateHeader" = "Välj ett datumformat som ska inkluderas i filnamnet.";
+"settings_renameTwoDigit" = "2-siffrig version";
+"settings_renameFourDigit" = "4-siffrig version";
+"settings_renameDayOfYear" = "Dag i året";
 
-"settings_renameTimeHeader" = "Please select a time format to include in the file name.";
-"settings_renameFiveDigit" = "5-digit version";
-"settings_renameCounterHeader" = "Please select a counter format to include in the file name.";
-"settings_renameCounterStart" = "Starts From";
-"settings_renameCounterCurrent" = "Current Value";
-"settings_renameCounterStartFooter" = "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed.";
-"settings_renameCounterCurrentFooter" = "The next series of uploads will start with this counter value which will then be incremented by one for each file processed.";
-"settings_renameCounterDigits" = "Digits";
-"settings_renameCounterDigitsFooter" = "When the counter needs more digits than specified, the number of digits is automatically increased.";
+"settings_renameTimeHeader" = "Välj ett tidsformat som ska inkluderas i filnamnet.";
+"settings_renameFiveDigit" = "5-siffrig version";
+"settings_renameCounterHeader" = "Välj ett räknarformat som ska inkluderas i filnamnet.";
+"settings_renameCounterStart" = "Startar från";
+"settings_renameCounterCurrent" = "Aktuellt värde";
+"settings_renameCounterStartFooter" = "För varje album initieras räknaren med detta värde, som sedan ökas med ett för varje fil som bearbetas.";
+"settings_renameCounterCurrentFooter" = "Nästa serie uppladdningar börjar med detta räknarvärde som sedan ökas med ett för varje fil som bearbetas.";
+"settings_renameCounterDigits" = "Siffror";
+"settings_renameCounterDigitsFooter" = "När räknaren behöver fler siffror än vad som anges, ökas antalet siffror automatiskt.";
 
-"settings_renameFileExtension" = "File Extension";
-"settings_renameChangeCase" = "Change Case";
-"settings_renameLowercase" = "Lowercase";
-"settings_renameUppercase" = "Uppercase";
+"settings_renameFileExtension" = "Filändelse";
+"settings_renameChangeCase" = "Ändra versaler";
+"settings_renameLowercase" = "Små bokstäver";
+"settings_renameUppercase" = "Stora bokstäver";
 
 "settings_wifiOnly" = "Endast Wi-Fi";
 "settings_deleteImage" = "Radera efter uppladdning";
-"settings_deleteImageLong" = "Delete After Upload";
+"settings_deleteImageLong" = "Radera efter uppladdning";
 
 // MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Automatisk uppladdning";
@@ -916,7 +916,7 @@
 // MARK: -- What's New in Piwigo
 "whatsNew_title" = "Vad är nytt i Piwigo";
 "whatsNew_title1" = "Gruppera foton";
-"whatsNew_desc1" = "Auto-play and loop options";
-"whatsNew_title2" = "Rename Files";
-"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
+"whatsNew_desc1" = "Auto-play och loopalternativ";
+"whatsNew_title2" = "Byt namn på filer";
+"whatsNew_desc2" = "före uppladdning med skapelsedatum, räknare, album-ID, text…";
 "whatsNew_continue" = "Fortsätt";
