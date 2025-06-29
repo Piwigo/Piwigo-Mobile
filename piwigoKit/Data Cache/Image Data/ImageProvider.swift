@@ -399,7 +399,7 @@ public class ImageProvider: NSObject {
                 if userDidCancelSearch { break }
                 
                 // Check that this image belongs at least to the current album
-                var albums = Set(arrayLiteral: album)
+                var albums: Set<Album> = [album]
                 if let albumIds = imageData.categories?.compactMap({$0.id}),
                    let allAlbums = user.albums?.filter({albumIds.contains($0.pwgID)}) {
                     albums.formUnion(allAlbums)
