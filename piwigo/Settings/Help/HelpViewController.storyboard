@@ -195,7 +195,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
-                                <lineBreakStrategy key="lineBreakStrategy"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-97-rdx">
                                 <rect key="frame" x="0.0" y="435.5" width="320" height="112.5"/>
@@ -230,6 +229,7 @@
                                 </variation>
                             </imageView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="JGQ-B1-zVO"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="2RD-k5-pvP" firstAttribute="trailing" secondItem="DhE-Mp-Wpi" secondAttribute="trailing" id="6eD-3e-dtz"/>
@@ -260,14 +260,6 @@
                             <mask key="constraints">
                                 <exclude reference="ncw-YW-tg8"/>
                                 <exclude reference="nIg-qk-THc"/>
-                                <exclude reference="6eD-3e-dtz"/>
-                                <exclude reference="KyN-NJ-tWf"/>
-                                <exclude reference="kxa-wa-tqU"/>
-                                <exclude reference="g0o-TA-hjQ"/>
-                                <exclude reference="inQ-hw-DSo"/>
-                                <exclude reference="tML-2Z-j9v"/>
-                                <exclude reference="nWe-74-kwG"/>
-                                <exclude reference="JJX-cJ-ZdK"/>
                                 <exclude reference="liH-2q-Nbl"/>
                                 <exclude reference="iFT-H0-oL2"/>
                                 <exclude reference="hqO-dc-YJ6"/>
@@ -276,32 +268,40 @@
                                 <exclude reference="6kg-ZP-pTE"/>
                                 <exclude reference="SdI-eL-onL"/>
                                 <exclude reference="ab5-nw-GIa"/>
+                                <exclude reference="6eD-3e-dtz"/>
+                                <exclude reference="KyN-NJ-tWf"/>
+                                <exclude reference="kxa-wa-tqU"/>
+                                <exclude reference="g0o-TA-hjQ"/>
+                                <exclude reference="inQ-hw-DSo"/>
+                                <exclude reference="tML-2Z-j9v"/>
+                                <exclude reference="nWe-74-kwG"/>
+                                <exclude reference="JJX-cJ-ZdK"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
                             <mask key="constraints">
                                 <include reference="nIg-qk-THc"/>
-                                <include reference="KyN-NJ-tWf"/>
-                                <include reference="kxa-wa-tqU"/>
-                                <include reference="inQ-hw-DSo"/>
-                                <include reference="JJX-cJ-ZdK"/>
                                 <include reference="liH-2q-Nbl"/>
                                 <include reference="iFT-H0-oL2"/>
                                 <include reference="glR-My-tZP"/>
                                 <include reference="NhO-9G-sPw"/>
                                 <include reference="6kg-ZP-pTE"/>
+                                <include reference="KyN-NJ-tWf"/>
+                                <include reference="kxa-wa-tqU"/>
+                                <include reference="inQ-hw-DSo"/>
+                                <include reference="JJX-cJ-ZdK"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
                             <mask key="constraints">
                                 <include reference="ncw-YW-tg8"/>
+                                <include reference="hqO-dc-YJ6"/>
+                                <include reference="SdI-eL-onL"/>
+                                <include reference="ab5-nw-GIa"/>
                                 <include reference="6eD-3e-dtz"/>
                                 <include reference="g0o-TA-hjQ"/>
                                 <include reference="tML-2Z-j9v"/>
                                 <include reference="nWe-74-kwG"/>
-                                <include reference="hqO-dc-YJ6"/>
-                                <include reference="SdI-eL-onL"/>
-                                <include reference="ab5-nw-GIa"/>
                             </mask>
                         </variation>
                     </view>
@@ -511,7 +511,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
-                                <lineBreakStrategy key="lineBreakStrategy"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="UdE-3T-IYd">
                                 <rect key="frame" x="0.0" y="435.5" width="320" height="112.5"/>
@@ -577,14 +576,6 @@
                             <mask key="constraints">
                                 <exclude reference="bja-sD-xHz"/>
                                 <exclude reference="eUe-wf-4jm"/>
-                                <exclude reference="Jdu-VO-0dc"/>
-                                <exclude reference="wOH-2T-i3k"/>
-                                <exclude reference="X6w-bd-4ZI"/>
-                                <exclude reference="MhB-U8-JIq"/>
-                                <exclude reference="nwf-dY-Lyk"/>
-                                <exclude reference="nf5-nW-pua"/>
-                                <exclude reference="Lyd-Vf-YcE"/>
-                                <exclude reference="YGY-12-FmD"/>
                                 <exclude reference="Gju-wb-DDj"/>
                                 <exclude reference="KM4-vl-FI9"/>
                                 <exclude reference="cH8-9t-KPF"/>
@@ -593,32 +584,40 @@
                                 <exclude reference="GJo-r4-D0o"/>
                                 <exclude reference="EJf-J0-bwL"/>
                                 <exclude reference="IEu-q4-BGs"/>
+                                <exclude reference="Jdu-VO-0dc"/>
+                                <exclude reference="wOH-2T-i3k"/>
+                                <exclude reference="X6w-bd-4ZI"/>
+                                <exclude reference="MhB-U8-JIq"/>
+                                <exclude reference="nwf-dY-Lyk"/>
+                                <exclude reference="nf5-nW-pua"/>
+                                <exclude reference="Lyd-Vf-YcE"/>
+                                <exclude reference="YGY-12-FmD"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
                             <mask key="constraints">
                                 <include reference="eUe-wf-4jm"/>
-                                <include reference="wOH-2T-i3k"/>
-                                <include reference="X6w-bd-4ZI"/>
-                                <include reference="nwf-dY-Lyk"/>
-                                <include reference="YGY-12-FmD"/>
                                 <include reference="Gju-wb-DDj"/>
                                 <include reference="KM4-vl-FI9"/>
                                 <include reference="Qh2-Jj-EmF"/>
                                 <include reference="npL-V6-rKD"/>
                                 <include reference="GJo-r4-D0o"/>
+                                <include reference="wOH-2T-i3k"/>
+                                <include reference="X6w-bd-4ZI"/>
+                                <include reference="nwf-dY-Lyk"/>
+                                <include reference="YGY-12-FmD"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
                             <mask key="constraints">
                                 <include reference="bja-sD-xHz"/>
+                                <include reference="cH8-9t-KPF"/>
+                                <include reference="EJf-J0-bwL"/>
+                                <include reference="IEu-q4-BGs"/>
                                 <include reference="Jdu-VO-0dc"/>
                                 <include reference="MhB-U8-JIq"/>
                                 <include reference="nf5-nW-pua"/>
                                 <include reference="Lyd-Vf-YcE"/>
-                                <include reference="cH8-9t-KPF"/>
-                                <include reference="EJf-J0-bwL"/>
-                                <include reference="IEu-q4-BGs"/>
                             </mask>
                         </variation>
                     </view>
@@ -990,7 +989,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
