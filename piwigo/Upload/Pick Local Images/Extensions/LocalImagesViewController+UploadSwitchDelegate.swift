@@ -11,7 +11,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-// MARK: - UploadSwitchDelegate Methods
+// MARK: UploadSwitchDelegate Methods
 extension LocalImagesViewController: UploadSwitchDelegate
 {
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {

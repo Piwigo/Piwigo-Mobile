@@ -96,10 +96,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         guard let state = state else {
             selectedImage?.isHidden = !selected
             darkenView?.isHidden = !selected
-            waitingActivity?.isHidden = true
-            uploadingProgress?.isHidden = true
-            uploadedImage?.isHidden = true
-            failedUploadImage?.isHidden = true
             return
         }
         // Known upload request state
@@ -108,7 +104,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             selectedImage?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
-            waitingActivity?.stopAnimating()
+            waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
             uploadingProgress?.setProgress(0, animated: false)
             uploadedImage?.isHidden = true
@@ -116,8 +112,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         case .uploading:
             selectedImage?.isHidden = true
             darkenView?.isHidden = false
-            waitingActivity?.isHidden = true
-            waitingActivity?.stopAnimating()
+            waitingActivity?.isHidden = false
+            waitingActivity?.startAnimating()
             uploadingProgress?.isHidden = false
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
@@ -133,11 +129,11 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         case .finished, .moderated:
             selectedImage?.isHidden = !selected
             darkenView?.isHidden = false
+            waitingActivity?.isHidden = true
+            waitingActivity?.stopAnimating()
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = false
             failedUploadImage?.isHidden = true
-            waitingActivity?.isHidden = true
-            waitingActivity?.stopAnimating()
         case .preparingFail, .preparingError, .formatError,
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
             selectedImage?.isHidden = true

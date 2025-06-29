@@ -9,7 +9,7 @@
 import UIKit
 import piwigoKit
 
-// MARK: - LocalImagesHeaderDelegate Methods
+// MARK: LocalImagesHeaderDelegate Methods
 extension LocalImagesViewController: LocalImagesHeaderDelegate
 {
     func didSelectImagesOfSection(_ section: Int) {

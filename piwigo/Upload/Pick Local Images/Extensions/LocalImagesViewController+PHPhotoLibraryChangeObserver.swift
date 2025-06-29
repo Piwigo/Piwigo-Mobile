@@ -10,7 +10,7 @@ import Photos
 
 extension LocalImagesViewController: PHPhotoLibraryChangeObserver
 {
-    // MARK: - Changes occured in the Photo library
+    // MARK: Changes occured in the Photo library
     /// Changes are not returned as expected (iOS 14.3 provides objects, not their indexes).
     /// The image selection is therefore updated during the sort.
     func photoLibraryDidChange(_ changeInstance: PHChange) {

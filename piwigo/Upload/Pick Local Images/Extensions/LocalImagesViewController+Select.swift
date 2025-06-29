@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: - Select Images
+// MARK: Select Images
 extension LocalImagesViewController
 {
     @objc func cancelSelect() {

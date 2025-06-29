@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoText" translatesAutoresizingMaskIntoConstraints="NO" id="tRi-ye-f0P">
-                                <rect key="frame" x="80" y="102" width="280" height="69.666666666666686"/>
+                                <rect key="frame" x="80" y="164" width="280" height="69.666666666666686"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="300" id="bvu-Oo-zZh"/>
                                     <constraint firstAttribute="width" secondItem="tRi-ye-f0P" secondAttribute="height" multiplier="981:244" id="dJY-ra-u7y"/>
@@ -45,7 +45,7 @@
                                 </variation>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Migration in progress..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kHR-tM-JMa">
-                                <rect key="frame" x="110" y="479.66666666666669" width="220" height="25"/>
+                                <rect key="frame" x="110" y="493.66666666666669" width="220" height="25.000000000000057"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -54,11 +54,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <progressView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CiE-H2-A7h">
-                                <rect key="frame" x="72" y="520.66666666666663" width="296" height="4"/>
+                                <rect key="frame" x="72" y="534.66666666666663" width="296" height="4"/>
                                 <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </progressView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We are currently migrating some of your data. Please wait until it is complete. Do not kill the application." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXF-wk-KFP">
-                                <rect key="frame" x="44" y="544.66666666666663" width="352" height="61"/>
+                                <rect key="frame" x="44" y="558.66666666666663" width="352" height="61"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
                                 </accessibility>
@@ -70,18 +70,18 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="piwigo.org" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Owz-oH-9TO">
-                                <rect key="frame" x="194.66666666666669" y="907" width="50.999999999999972" height="12"/>
+                                <rect key="frame" x="194.66666666666663" y="873" width="51.000000000000028" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="Msh-RB-rTZ">
-                                <rect key="frame" x="201.66666666666666" y="410.66666666666669" width="37" height="37"/>
+                                <rect key="frame" x="201.66666666666666" y="424.66666666666669" width="37" height="37"/>
                             </activityIndicatorView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Ofv-cX-acU">
-                                <rect key="frame" x="302" y="230" width="20" height="20"/>
+                                <rect key="frame" x="302" y="244" width="20" height="20"/>
                             </activityIndicatorView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="xZU-bs-2ae">
-                                <rect key="frame" x="634" y="230" width="20" height="20"/>
+                                <rect key="frame" x="634" y="244" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1cY-dd-xU8"/>

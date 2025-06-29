@@ -561,7 +561,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate
         case .move:
             assertionFailure("••> LocalImagesViewController: Unexpected move!")
         case .update:
-            debugPrint("••• LocalImagesViewController controller:update...")
+            debugPrint("••> LocalImagesViewController controller:update...")
             // Update upload request and cell
             guard let upload:Upload = anObject as? Upload else { return }
 
