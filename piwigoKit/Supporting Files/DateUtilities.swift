@@ -42,6 +42,22 @@ public class DateUtilities: NSObject {
     // if the converted date is after 00:00:00 UTC on 8 January 1900
     static func timeInterval(from dateStr: String?) -> TimeInterval? {
         // Convert Piwigo string to date
+        debugPrint(#function, ": ", dateStr ?? "", " — ", pwgDateFormatter.dateFormat.debugDescription)
+        // Since Xcode 16.4, the date format "forgets" the time components of the date format.
+        // pwgDateFormatter.dateFormat = Optional(\"yyyy-MM-dd HH:mm:ss\") becomes Optional(\"yyyy-MM-dd\").
+        // Console reports:
+        // _attributes = (__NSDictionaryM *) 4 key/value pairs
+        //      [0]    (null)    "locale" : 0x0000000107e16c00
+        //      [1]    (null)    "timeZone" : 0x000000011cd15580
+        //      [2]    (null)    "formatterBehavior" : Int64(1040)
+        //      [3]    (null)    "dateFormat" : (no summary)
+        // instead of:
+        // _attributes = (__NSDictionaryM *) 4 key/value pairs
+        //      [0]    (null)    "locale" : 0x0000000107e16c00
+        //      [1]    (null)    "timeZone" : 0x000000011cd15580
+        //      [2]    (null)    "formatterBehavior" : Int64(1040)
+        //      [3]    (null)    "dateFormat" : "yyyy-MM-dd HH:mm:ss"
+        pwgDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         guard let pwgDate = pwgDateFormatter.date(from: dateStr ?? "")
         else { return nil }
         
