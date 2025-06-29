@@ -68,7 +68,7 @@ extension UIDevice {
         case "iPhone8,2":
             return "iPhone 6s Plus"
         case "iPhone8,4":
-            return "iPhone SE"
+            return "iPhone SE (1st generation)"
         case "iPhone9,1", "iPhone9,3":
             return "iPhone 7"
         case "iPhone9,2", "iPhone9,4":

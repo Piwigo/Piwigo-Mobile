@@ -1,1 +1,2 @@
-Bug fixes
+• Adds options for modifying file names before upload
+• Fixes bugs and improves the interface

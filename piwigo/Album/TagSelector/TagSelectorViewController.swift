@@ -106,6 +106,7 @@ class TagSelectorViewController: UITableViewController {
         
         // Add button for returning to albums/images
         let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitTagSelect))
+        cancelBarButton.accessibilityIdentifier = "cancelButton"
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
     }
     

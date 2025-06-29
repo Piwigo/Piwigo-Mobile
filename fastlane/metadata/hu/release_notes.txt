@@ -1,1 +1,2 @@
-Hibajavítások
+• Fájlnevek feltöltés előtti módosításának lehetőségei
+• Hibajavítások és a kezelőfelület javítása

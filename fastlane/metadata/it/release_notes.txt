@@ -1,1 +1,2 @@
-Correzioni di bug
+• Aggiunge opzioni per modificare i nomi dei file prima del caricamento
+• Correzione di bug e miglioramento dell'interfaccia
