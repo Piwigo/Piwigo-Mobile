@@ -1,1 +1,2 @@
-Corrección de errores
+• Añade opciones para modificar los nombres de archivos antes de subirlos
+• Corrige errores y mejora la interfaz

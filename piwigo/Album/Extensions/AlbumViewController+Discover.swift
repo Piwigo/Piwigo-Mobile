@@ -87,6 +87,7 @@ extension AlbumViewController
             // Present tag selector
             discoverImagesByTag()
         })
+        action.accessibilityIdentifier = "Tagged"
         return action
     }
     

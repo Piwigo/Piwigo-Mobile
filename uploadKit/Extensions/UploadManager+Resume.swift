@@ -21,7 +21,7 @@ extension UploadManager
         isExecutingBackgroundUploadTask = false
         isUploading = Set<NSManagedObjectID>()
         
-        // Reset predicates in casse user switched to another Piwigo
+        // Reset predicates in case user switched to another Piwigo
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
                          "userName"   : NetworkVars.shared.username]
         uploads.fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
@@ -197,8 +197,12 @@ extension UploadManager
                 // Delete images from the library
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }
-            completionHandler: { _, error in
-                self.deleteUploadsInRightQueue(uploads)
+            completionHandler: { success, error in
+                if success {
+                    self.deleteUploadsInRightQueue(uploads)
+                } else {
+                    self.disableDeleteAfterUpload(uploads)
+                }
             }
         }
     }
@@ -223,6 +227,37 @@ extension UploadManager
                 self.uploadProvider.delete(uploadRequests: uploads) { _ in
                     self.isDeleting = Set()
                 }
+            }
+        }
+    }
+    
+    private func disableDeleteAfterUpload(_ uploads: [Upload]) {
+        // Empty array?
+        if uploads.isEmpty {
+            self.isDeleting = Set()
+            return
+        }
+        
+        // Delete upload requests in appropriate context
+        guard let taskContext = uploads.first?.managedObjectContext
+        else { self.isDeleting = Set(); return }
+        
+        // Update upload requests in appropriate context
+        if taskContext == self.uploadBckgContext {
+            DispatchQueue.global(qos: .background).async {
+                uploads.forEach { upload in
+                    upload.deleteImageAfterUpload = false
+                }
+                taskContext.saveIfNeeded()
+                self.isDeleting = Set()
+            }
+        } else {
+            DispatchQueue.main.async {
+                uploads.forEach { upload in
+                    upload.deleteImageAfterUpload = false
+                }
+                taskContext.saveIfNeeded()
+                self.isDeleting = Set()
             }
         }
     }

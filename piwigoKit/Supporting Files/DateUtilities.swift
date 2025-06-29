@@ -17,14 +17,14 @@ public class DateUtilities: NSObject {
     // A week after unknown date is 00:00:00 UTC on 8 January 1900
     public static let weekAfter = ISO8601DateFormatter().date(from: "1900-01-08T00:00:00Z")!
     public static let weekAfterInterval = weekAfter.timeIntervalSinceReferenceDate
-
+    
     // Dates are provided by Piwigo servers as strings in the local time.
     // We store each date as a TimeInterval since 00:00:00 UTC on 1 January 2001.
     public static var pwgDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
     
@@ -33,11 +33,11 @@ public class DateUtilities: NSObject {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.sss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
     
-
+    
     // Return corresponding time interval since 00:00:00 UTC on 1 January 2001
     // if the converted date is after 00:00:00 UTC on 8 January 1900
     static func timeInterval(from dateStr: String?) -> TimeInterval? {
@@ -66,7 +66,7 @@ public class DateUtilities: NSObject {
     public static func dateFormatter() -> DateFormatter {
         let formatter = DateFormatter()
         formatter.locale = .current
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }
     
@@ -74,7 +74,7 @@ public class DateUtilities: NSObject {
     public static func dateIntervalFormatter() -> DateIntervalFormatter {
         let formatter = DateIntervalFormatter()
         formatter.locale = .current
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }
 }

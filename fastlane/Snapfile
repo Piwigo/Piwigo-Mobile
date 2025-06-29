@@ -30,50 +30,54 @@
 #	bundle update fastlane
 #   fastlane snapshot update
 #
-# To produce snapshots:
-#	bundle exec fastlane snapshot
-#
 # To get a list of available options
 #   bundle exec fastlane action deliver
-# To download App Store Connect metadata
+# To download App Store Connect existing metadata
 #   bundle exec fastlane deliver download_metadata
+# To download App Store Connect existing screenshots
+#   bundle exec fastlane deliver download_screenshots
+# To upload screenshots only
+#   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --skip_metadata --overwrite_screenshots
 # To upload screenshots and metadata
 #   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --overwrite_screenshots
+#
+# To produce snapshots:
+#	bundle exec fastlane snapshot
 #
 # A list of devices you want to take the screenshots from
 # https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
 devices([
-# "iPhone SE (1st generation)",				# 4-inch    iOS 15.5
+# "iPhone SE (1st generation)",				# 4-inch
 # "iPhone SE (3rd generation)",				# 4.7-inch
-# "iPhone 8 Plus",							# 5.5-inch  iOS 16.4
-# "iPhone 14",								# 5.8-inch
+# "iPhone 8 Plus",							# 5.5-inch
+# "iPhone 16e",								# 6.1-inch (was iPhone 14)
 # "iPhone 13 Pro",							# Wiki
-# "iPhone 14 Pro",							# 6.3-inch
+# "iPhone 16 Pro",							# 6.3-inch (was iPhone 14 Pro)
 # "iPhone 14 Plus",							# 6.5-inch
-# "iPhone 15 Pro Max",						# 6.9-inch
-# "iPad Pro (9.7-inch)",					# 9.7-inch  iOS 16.4
+# "iPhone 16 Pro Max",						# 6.9-inch (was iPhone 15 Pro Max)
+# "iPad Pro (9.7-inch)",					# 9.7-inch
 # "iPad Pro (10.5-inch)",					# 10.5-inch
+# "iPad Pro 11-inch (M4)",					# 11-inch (was iPad Pro (11-inch) (4th generation))
 # "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
-"iPad Pro (11-inch) (4th generation)",	# 11-inch
-"iPad Pro (12.9-inch) (6th generation)"	# 13-inch
+"iPad Pro 13-inch (M4)"					# 13-inch (was iPad Pro (12.9-inch) (6th generation))
 ])
 
 # ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
- "en-US",
- "zh-Hans",
- "zh-Hant",
- "da",
- "nl-NL",
- "fr-FR",
- "de-DE",
- "hu",
- "it",
- "ja",
- "pl",
- "ru",
- "es-ES",
- "sv"
+"en-US",
+# "zh-Hans",
+# "zh-Hant",
+"da",
+# "nl-NL",
+# "fr-FR",
+# "de-DE",
+# "hu",
+# "it",
+# "ja",
+# "pl",
+# "ru",
+# "es-ES",
+# "sv"
 ])
 
 # Parameters
@@ -85,9 +89,13 @@ concurrent_simulators(true)
 skip_open_summary(true)
 number_of_retries(0)
 
+
 # Command below fails with iOS +16.1, 17.x, 18.x:
 # override_status_bar(true)
-# So use SimulatorStatusMagic to configure iOS 16+ simulators
+# With Xcode:
+#   xcrun simctl status_bar "iPhone 16e" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#
+# Or use SimulatorStatusMagic to configure iOS 16+ simulators
 # See https://github.com/shinydevelopment/SimulatorStatusMagic
 # iOS 16+: Install the SimulatorStatusMagic app in the simulator
 #          and apply the configuration
@@ -97,7 +105,7 @@ number_of_retries(0)
 # iOS 18+: Compile library with Xcode
 #          Launch the iOS 18+ simulator (piwigo scheme), stop app
 #          Execute: ../SimulatorStatusMagic/build_and_inject.sh booted
-
+#
 # clear_previous_screenshots(true)
 
 # Arguments to pass to the app on launch.

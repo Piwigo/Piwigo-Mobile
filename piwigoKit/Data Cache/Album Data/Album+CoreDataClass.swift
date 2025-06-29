@@ -105,13 +105,20 @@ public class Album: NSManagedObject {
                 dateLast = newTimeInterval
             }
         } else {
-            dateLast = Date.distantPast.timeIntervalSinceReferenceDate
+            dateLast = DateUtilities.unknownDateInterval
         }
 
         // This album belongs to the provided user
         if user == nil,
            let userInContext = self.managedObjectContext?.object(with: userObjectID) as? User {
             user = userInContext
+        }
+        
+        // Adopt the default counter starting value
+        // the first time the abum is stored in persistent cache
+        // (used to name files before upload)
+        if currentCounter < 0 {
+            currentCounter = UploadVars.shared.categoryCounterInit
         }
     }
 }

@@ -35,7 +35,7 @@ class EditImageParamsViewController: UIViewController
     
     var hasDatePicker = false
     var shouldUpdateDateCreated = false
-    var commonDateCreated = Date.distantPast
+    var commonDateCreated = DateUtilities.unknownDate
     var oldCreationDate = Date()
     private var timeOffset = TimeInterval.zero
 
@@ -365,7 +365,11 @@ class EditImageParamsViewController: UIViewController
 
         // Update image creation date?
         if shouldUpdateDateCreated {
-            paramsDict["date_creation"] = DateUtilities.string(from: imageData.dateCreated + timeOffset)
+            if imageData.dateCreated < DateUtilities.weekAfterInterval {
+                paramsDict["date_creation"] = ""
+            } else {
+                paramsDict["date_creation"] = DateUtilities.string(from: imageData.dateCreated + timeOffset)
+            }
         }
 
         // Update image privacy level?
@@ -449,7 +453,7 @@ class EditImageParamsViewController: UIViewController
                             }
                             // Add image to album of tagged images if it exists
                             let catID = pwgSmartAlbum.tagged.rawValue - Int32(tag.tagId)
-                            if let albumData = self.albumProvider.getAlbum(withId: catID) {
+                            if let albumData = self.albumProvider.getAlbum(ofUser: user, withId: catID) {
                                 imageData.addToAlbums(albumData)
                                 
                                 // Update albums

@@ -75,7 +75,39 @@ public class UploadProvider: NSObject {
         }
         completionHandler(nil)
     }
-    
+
+    @available(iOS 13.0, *)
+    public func importUploads(from uploadRequest: [UploadProperties]) async throws -> Int {
+        
+        guard uploadRequest.isEmpty == false
+        else { return 0 }
+        
+        // Process records in batches to avoid a high memory footprint.
+        let batchSize = 256
+        let count = uploadRequest.count
+        
+        // Determine the total number of batches.
+        var numBatches = count / batchSize
+        numBatches += count % batchSize > 0 ? 1 : 0
+        
+        for batchNumber in 0 ..< numBatches {
+            
+            // Determine the range for this batch.
+            let batchStart = batchNumber * batchSize
+            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
+            let range = batchStart..<batchEnd
+            
+            // Create a batch for this range from the decoded JSON.
+            let uploadsBatch = Array(uploadRequest[range])
+            
+            // Stop the import if this batch is unsuccessful.
+            if !importOneBatch(uploadsBatch) {
+                return batchNumber * batchSize
+            }
+        }
+        return count
+    }
+
     /**
      Adds or updates one batch of upload requests, creating managed objects from the new data,
      and saving them to the persistent store, on a private queue. After saving,
@@ -174,6 +206,40 @@ public class UploadProvider: NSObject {
             success = true
         }
         return success
+    }
+    
+    
+    // MARK: - Get md5sum of Upload Requests
+    /**
+        Called by UploadPhotosHandler
+        Return the md5sum of the upload requests in cache in the main thread
+     */
+    public func getAllMd5sum() -> [String] {
+        // Retrieve all existing uploads
+        // Create a fetch request for the Upload entity sorted by localIdentifier
+        let fetchRequest = Upload.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.localIdentifier), ascending: true)]
+        
+        // Select upload requests:
+        /// — for the current server and user only
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: bckgContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        let cachedUploads = controller.fetchedObjects ?? []
+        return cachedUploads.map(\.md5Sum)
     }
     
     

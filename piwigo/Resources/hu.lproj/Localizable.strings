@@ -6,15 +6,15 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: Generic
 // ===========================================================================
-// Tab bar
+// MARK: -- Tab bar
 
 "tabBar_albums" = "Albumok";
 "tabBar_upload" = "Feltöltés";
 "tabBar_preferences" = "Beállítások";
 
-// Alert buttons
+// MARK: -- Alert buttons
 "alertOkButton" = "OK";
 "alertDismissButton" = "Elvetés";
 "alertYesButton" = "Igen";
@@ -26,16 +26,16 @@
 "alertNextButton" = "Következő fotó";
 "alertTryButton" = "Próba";
 
-// HUD views
+// MARK: -- HUD views
 "loadingHUD_label" = "Betöltés…";
 "completeHUD_label" = "Kész";
 "errorHUD_label" = "Hiba";
 
-// Upload rights
+// MARK: -- Upload rights
 "uploadRights_title" = "Feltöltési jogok szükségesek";
 "uploadRights_message" = "Muszály rendelkezned feltöltési jogokkal fotók, vagy videók feltöltéséhez.";
 
-// Errors
+// MARK: -- Errors
 "internetErrorGeneral_title" = "Kapcsolódási Hiba";
 "internetErrorGeneral_broken" = "Elnézést, de a kommunikáció megszakadt. Próbálj meg mégegyszer belépni!";
 "internetCancellingConnection_button" = "Kapcsolat megszakítása…";
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Figyelem";
 "CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
@@ -60,36 +60,36 @@
 "CoreData_MigrationError_generic" = "Váratlan hiba történt az áttelepítés során.";
 "CoreData_MigrationError_timeout" = "Az alkalmazás felfüggesztésre került az adatbázis migrálása közben. Kérjük, indítsa újra az alkalmazást, és próbálja meg újra.";
 
-// User objects
+// MARK: -- User objects
 "CoreDataFetch_UserMissingData" = "Elveti az érvényes felhasználónév nélküli felhasználói fiókokat.";
 "CoreDataFetch_UserUnknownStatus" = "A közösségi bővítmény paraméterei nem elérhetőek. \nKérlek jelentkezz be újra.";
 "CoreData_UserCreateFailed" = "Nem sikerült új felhasználói objektumot létrehozni.";
 
-// Album objects
+// MARK: -- Album objects
 "CoreDataFetch_AlbumError" = "Hiba az albumok lekérdezésében!";
 "CoreDataFetch_AlbumMissingData" = "Megtalálva, és eldobja az érvényes azonosító vagy név nélküli albumokat.";
 "CoreDataFetch_AlbumCreateFailed" = "Nem sikerült új Album objektumot létrehozni.";
 "CoreData_AlbumNotFound" = "Album nincs a tartós gyorsítótárban.";
 
-// Image objects
+// MARK: -- Image objects
 "CoreDataFetch_ImageError" = "Fényképek/videók lekérése hiba!";
 "CoreDataFetch_ImageMissingData" = "Megtalálva, és az érvényes azonosítót vagy URL-t nélkülöző fényképet/videót elveti.";
 "CoreDataFetch_ImageCreateFailed" = "Nem sikerült új Image objektumot létrehozni.";
 
-// Tag objects
+// MARK: -- Tag objects
 "CoreDataFetch_TagError" = "Hiba a címkék letöltésekor!";
 "CoreDataFetch_TagMissingData" = "Kaptunk, és elvetettünk egy címkét, aminek nem volt megfelelő kódja, vagy neve.";
 "CoreDataFetch_TagCreateFailed" = "Nem sikerült létrehozni az új címkeobjektumot.";
 
-// Upload objects
+// MARK: -- Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Nem sikerült létrehozni az új feltöltésobjektumot.";
 "CoreDataFetch_UploadMissingAsset" = "Fotó letöltése sikertelen.";
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
-// Login
+// MARK: -- Login
 "login" = "Bejelentkezés";
 "login_serverPlaceholder" = "https://az.en.piwigom.hu";
 "login_userPlaceholder" = "Felhasználónév (opcionális)";
@@ -110,7 +110,7 @@
 "loginHTTPSfailed_title" = "Biztonságos kapcsolat létrehozása sikertelen";
 "loginHTTPSfailed_message" = "A Piwigo nem tud létrehozni biztonságos kapcsolatot. Szeretnéd, hogy megpróbáljon nem-biztonságos kapcsolatot létrehozni?";
 
-// Login — Errors
+// MARK: -- Login — Errors
 "serverURLerror_title" = "Hibás URL";
 "serverURLerror_message" = "Kérlek javítsd a Piwigo web szerver címét!";
 "serverMethodsError_title" = "Ismeretlen metódusok";
@@ -137,24 +137,25 @@
 "sessionStatusError_title" = "Hitelesítés sikertelen";
 "sessionStatusError_message" = "Nem sikerült bejelentkezni a szerverre. Kérlek próbáld újra!";
 
-// Logout
+// MARK: -- Logout
 "logoutConfirmation_title" = "Kijelentkezés";
 "logoutConfirmation_message" = "Biztos ki akarsz jelentkezni?";
 
-// Logout — Errors
+// MARK: -- Logout — Errors
 "logoutFail_title" = "Sikertelen kijelentkezés";
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
-// Generic
+// MARK: -- Generic
+"albumID" = "Album ID";
 "singleAlbumCount" = "%@ album";
 "severalAlbumsCount" = "%@ album";
 "singleSubAlbumCount" = "%@ alalbum";
 "severalSubAlbumsCount" = "%@ alalbum";
 
-// Albums view
+// MARK: -- Albums view
 "categoryUpdating" = "Frissítés…";
 "categoryUpdatedOn" = "Frissítve %@";
 "categoryUpdatedAt" = "Frissítve %@";
@@ -167,7 +168,7 @@
 "categoryImageList_favorite" = "Kedvenc";
 "categoryImageList_unfavorite" = "Kedvencek";
 
-// Albums "Discover"
+// MARK: -- Albums "Discover"
 "categoryDiscover_title" = "Felfedezés";
 "categoryDiscoverTagged_title" = "Címkézett";
 "categoryDiscoverVisits_title" = "Legtöbbet látogatott";
@@ -176,7 +177,7 @@
 "categoryDiscoverRecent_title" = "Friss fotók";
 "categoryDiscoverFavorites_title" = "Kedvencek";
 
-// Albums sort
+// MARK: -- Albums sort
 "categorySort_sort" = "Képek rendezése…";
 "categorySort_default" = "Alapértelmezett";
 "categorySort_name" = "Kép címe";
@@ -210,7 +211,7 @@
 "categoryView_group" = "Képek csoportosítása…";
 "categoryView_show" = "Előadás…";
 
-// Album selection
+// MARK: -- Album selection
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Alalbumok";
 "categorySelection_root" = "Főalbum";
@@ -219,7 +220,7 @@
 "categorySelectionHUD_label" = "Album adatainak betöltése…";
 "categorySelection_allAlbums" = "Albumok";
 
-// Album upload
+// MARK: -- Album upload
 "categoryUpload_noSubAlbum" = "Nincs alalbum, ahova fotókat lehetne tölteni";
 "categoryUpload_chooseAlbum" = "Választható alalbumok";
 "categoryUpload_LocalAlbums" = "Helyi albumok";
@@ -234,12 +235,12 @@
 "categoryUpload_otherAlbums" = "Egyéb albumok";
 "categoryUpload_pasteboard" = "Vágólap";
 
-// Default album
+// MARK: -- Default album
 "setDefaultCategory_select" = "Válaszd ki az új főalbumot!";
 "setDefaultCategory_title" = "Alapértelmezett Album";
 "setDefaultCategory_message" = "Biztos, hogy a \"%@\" nevű albumot szeretnéd alapértelmezettnek jelölni?";
 
-// Album create
+// MARK: -- Album create
 "createNewAlbum_title" = "Új Album";
 "createNewAlbum_message" = "Adj nevet az albumnak:";
 "createNewAlbum_placeholder" = "Album Neve";
@@ -247,34 +248,34 @@
 "createNewAlbumDescription_noDescription" = "nincs leírás";
 "createNewAlbumHUD_label" = "Album létrehozása…";
 
-// Album create — Errors
+// MARK: -- Album create — Errors
 "createAlbumError_title" = "Hiba az album létrehozásakor";
 "createAlbumError_message" = "Nem sikerült létrehozni az albumot";
 
-// Album options (swipe actions)
+// MARK: -- Album options (swipe actions)
 "categoryCellOption_addPhotos" = "Fényképek hozzáadása";
 "categoryCellOption_rename" = "Album átnevezése";
 "categoryCellOption_move" = "Album áthelyezése";
 "categoryCellOption_delete" = "Album törlése";
 
-// Album rename
+// MARK: -- Album rename
 "renameCategory_title" = "Album átnevezése";
 "renameCategory_message" = "Adj új nevet az albumnak";
 "renameCategory_button" = "Átnevezés";
 "renameCategoryHUD_label" = "Album átnevezése…";
 
-// Album rename — Errors
+// MARK: -- Album rename — Errors
 "renameCategoyError_title" = "Átnevezés sikertelen";
 "renameCategoyError_message" = "Nem sikerült átnevezni az albumot";
 
-// Album refresh representative
+// MARK: -- Album refresh representative
 "refreshCategoryHUD_label" = "Frissítés…";
 
-// Album refresh representative — Errors
+// MARK: -- Album refresh representative — Errors
 "refreshCategoyError_title" = "Sikertelen frissítés";
 "refreshCategoyError_message" = "Nem sikerült frissíteni az albumot";
 
-// Album delete
+// MARK: -- Album delete
 "deleteCategory_title" = "ALBUM TÖRLÉSE";
 "deleteCategory_message" = "BIZTOS VAGY BENNE, HOGY KI AKAROD TÖRÖLNI A(Z) \"%@\" ALBUMOT ÉS AZ ÖSSZES %@DB FOTÓT BENNE?";
 "deleteCategory_empty" = "Üres Album Törlése";
@@ -288,23 +289,23 @@
 "deleteCategoryConfirm_deleteButton" = "TÖRLÉS";
 "deleteCategoryHUD_label" = "Album törlése…";
 
-// Album delete — errors
+// MARK: -- Album delete — errors
 "deleteCategoryMatchError_title" = "A megadott érték helytelen";
 "deleteCategoryMatchError_message" = "A fotók száma nem egyezik az általad megadott értékkel ebben a kategóriában. Kérlek próbáld újra, ha tényleg ki akarod törölni az albumot";
 "deleteCategoryError_title" = "A törlés nem sikerült";
 "deleteCategoryError_message" = "Nem sikerült kitörölni az albumot";
 
-// Album move
+// MARK: -- Album move
 "moveCategory" = "Album mozgatása";
 "moveCategory_select" = "Kérlek válassz egy albumot, vagy alalbumot, ahova \"%@\" albumot áthelyeznéd!";
 "moveCategory_message" = "Biztosan át szeretnéd helyezni \"%@\" albumot \"%@\" albumba?";
 "moveCategoryHUD_moving" = "Album áthelyezése…";
 
-// Album move — Errors
+// MARK: -- Album move — Errors
 "moveCategoryError_title" = "Sikertelen áthelyezés";
 "moveCategoryError_message" = "Nem sikerült áthelyezni az albumot";
 
-// Album set photo thumbnail
+// MARK: -- Album set photo thumbnail
 "categorySelection_setThumbnail" = "Melyik album bélyegképe legyen a \"%@\" fotó?";
 "categorySelection_current" = "Jelenlegi album kiválasztása";
 "categorySelection_one" = "Válassz a további albumok közül, melyek ezt a fotót tartalmazzák";
@@ -313,12 +314,12 @@
 "categoryImageSet_message" = "Biztos alkalmazni akarod azt a fotót a(z) \"%@\" albumra?";
 "categoryImageSetHUD_updating" = "Bélyegkép frissítése…";
 
-// Album set photo thumbnail — Errors
+// MARK: -- Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "Fotóbeállítási hiba";
 "categoryImageSetError_message" = "Hiba történt a fotó beállításakor";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "Fotó";
 "singleImageCount" = "%@ fotó";
@@ -337,11 +338,11 @@
 "Week" = "Hét";
 "Month" = "Hónap";
 
-// Errors
+// MARK: -- Errors
 "albumPhotoError_title" = "Albumfotók letöltése nem sikerült";
 "albumPhotoError_message" = "Nem sikerült letölteni a fotókat az albumból (lehet, hogy hibás fotó van az albumban?)";
 
-// Image sort
+// MARK: -- Image sort
 "sortBy" = "Rendezés";
 "imageSortTitle" = "Fotók rendezése";
 "imageSortMessage" = "Milyen szempont alapján rendezzük a fotókat?";
@@ -349,14 +350,14 @@
 "imageSelectingHUD" = "Fotók kiválasztása…";
 "imageDeselectingHUD" = "Fotók kiválasztásának törlése…";
 
-// Image options (actions)
+// MARK: -- Image options (actions)
 "imageOptions_title" = "Fotó opciók";
 "imageOptions_edit" = "Módosítás";
 "imageOptions_properties" = "Tulajdonságok módosítása";
 "imageOptions_download" = "Letöltés";
 "imageOptions_setAlbumImage" = "Album bélyegkép beállítása";
 
-// Image details
+// MARK: -- Image details
 "imageDetailsView_title" = "Tulajdonságok";
 "editImageDetails_title" = "Cím";
 "editImageDetails_titlePlaceholder" = "Fotó címe";
@@ -366,6 +367,7 @@
 "editImageDetails_description" = "Leírás";
 "editImageDetails_comments" = "Hozzászólások";
 "editImageDetails_dateCreation" = "Létrehozás dátuma";
+"editImageDetails_timeCreation" = "Létrehozás ideje";
 "editImageDetails_dateUnset" = "Idő nélkül";
 "editImageDetails_dateToday" = "Ma";
 "editImageDetails_dateMonthInc" = "+1 Hónap";
@@ -375,14 +377,14 @@
 "editImageDetailsHUD_updatingSingle" = "Fotó módosítása…";
 "editImageDetailsHUD_updatingPlural" = "Fotók módosítása…";
 
-// Image details — Errors
+// MARK: -- Image details — Errors
 "editImageDetailsError_title" = "Sikertelen frissítés";
 "editImageDetailsError_message" = "Nem sikerült menteni a változásokat a szerverre. Megpróbáljuk újra?";
 "imageDetailsFetchError_title" = "A fotó adatai nem letölthetőek";
 "imageDetailsFetchError_message" = "A fényképadatok lekérése sikertelen volt.";
 "imageDetailsFetchError_continueMessage" = "Hiba a fotó adatainak betöltésénél. Tovább?";
 
-// Image privacy levels
+// MARK: -- Image privacy levels
 "privacyLevel" = "Adatvédelem szintje";
 "privacyLevel_admin" = "Adminok";
 "privacyLevel_adminFamily" = "Adminok, Család";
@@ -390,7 +392,7 @@
 "privacyLevel_adminsFamilyFriendsContacts" = "Adminok, Család, Barátok, Ismerősök";
 "privacyLevel_everybody" = "Mindenki";
 
-// Image tags
+// MARK: -- Image tags
 "none" = "semmi";
 "tag" = "Címke";
 "tags" = "Címkék";
@@ -405,44 +407,44 @@
 "tagsAdd_placeholder" = "Új címke";
 "tagsAddHUD_label" = "Címke létrehozása folyamatban…";
 
-// Image tags errors
+// MARK: -- Image tags errors
 "tagsAddError_message" = "Nem sikerült létrehozni a címkét";
 "tagsAddError_title" = "Nem sikerült létrehozni";
 
-// Image select
+// MARK: -- Image select
 "selectImages" = "Fotók kiválasztása";
 "selectImageSelected" = "1 kiválasztott fotó";
 "selectImagesSelected" = "%@ kiválasztott fotó";
 "selectAll" = "Minden kijelölése";
 
-// Image rename (filename)
+// MARK: -- Image rename (filename)
 "renameImage_title" = "Eredeti fájl";
 "renameImage_message" = "Adj új nevet a fotónak";
 "renameImageHUD_label" = "Fájl átnevezése…";
 
-// Image rename — Errors
+// MARK: -- Image rename — Errors
 "renameImageError_message" = "Nem sikerült átnevezni a fájlt";
 
-// Image in favorites
+// MARK: -- Image in favorites
 "imageFavorites_title" = "Kedvencek";
 
-// Image in favorites — Error
+// MARK: -- Image in favorites — Error
 "imageFavoritesAddError_message" = "Nem sikerült felvenni a fotót a kedvencekhez.";
 "imageFavoritesRemoveError_message" = "Nem sikerült eltávolítani a fotót a kedvencekből.";
 
-// Image rotate
+// MARK: -- Image rotate
 "rotateImage_rotate" = "90°-kal elforgatni…";
 "rotateImage_left" = "Balra forgó";
 "rotateImage_right" = "Jobbra forgó";
 "rotateSingleImageHUD_rotating" = "Fénykép elforgatása…";
 "rotateSeveralImageHUD_rotating" = "Fényképek elforgatása…";
 
-// Image rotate — Errors
+// MARK: -- Image rotate — Errors
 "rotateImageFail_title" = "A forgatás nem sikerült";
 "rotateImageFail_plugin" = "A rotateImage beépülő modul nincs aktiválva.";
 "rotateImageFail_message" = "A képet nem lehetett elforgatni";
 
-// Image delete
+// MARK: -- Image delete
 "deleteImage_delete" = "Törlés";
 "deleteImageProgress_title" = "%@%% sikeresen törölve";
 
@@ -460,11 +462,11 @@
 "deleteSeveralImages_title" = "%@ fotó/videók törlése";
 "deleteSeveralImages_message" = "Biztos ki akarod törölni a kiválasztott %@ fotót/videók? Ez végleges törlés!";
 
-// Image delete — Errors
+// MARK: -- Image delete — Errors
 "deleteImageFail_title" = "A törlés nem sikerült";
 "deleteImageFail_message" = "A fotót nem sikerült törölni.";
 
-// Image download
+// MARK: -- Image download
 "downloadSingleImage_title" = "Fotó letöltése";
 "downloadSingleImage_confirmation" = "Biztos le akarod tölteni a kiválasztott fotót?";
 "downloadSeveralImages_title" = "%@ fotó letöltése";
@@ -474,7 +476,7 @@
 "downloadingImages" = "Fotók letöltése";
 "downloadingVideo" = "Videó letöltése";
 
-// Image download — Errors
+// MARK: -- Image download — Errors
 "downloadImageFail_title" = "A letöltés nem sikerült";
 "downloadImageFail_message" = "Nem sikerült letölteni a fotót!\n%@";
 "downloadVideoFail_message" = "Nem sikerült letölteni a videót!\n%@";
@@ -486,7 +488,7 @@
 "videoSaveError_title" = "Videómentés sikertelen";
 "videoSaveError_message" = "A videó mentése nem sikerült. Hiba: %@";
 
-// Image move
+// MARK: -- Image move
 "moveImage_title" = "Albumba mozgatás";
 "moveSingleImage_selectAlbum" = "Melyik albumba kerüljön a \"%@\" fotó?";
 "moveSeveralImages_selectAlbum" = "Melyik albumba másoljuk a fotókat?";
@@ -495,12 +497,12 @@
 "moveSingleImageHUD_moving" = "Fotó áthelyezése…";
 "moveSeveralImagesHUD_moving" = "Fotók áthelyezése…";
 
-// Image move — Errors
+// MARK: -- Image move — Errors
 "moveImageError_title" = "Mozgatási hiba";
 "moveSingleImageError_message" = "Nem sikerült áthelyezni a fotót";
 "moveSeveralImagesError_message" = "Néhány fotót nem sikerült áthelyezni";
 
-// Image copy
+// MARK: -- Image copy
 "copyImage_title" = "Másolás albumba";
 "copySingleImage_selectAlbum" = "Melyik albumba másoljuk a \"%@\" fotót?";
 "copySeveralImages_selectAlbum" = "Melyik albumba másoljuk a fotókat?";
@@ -509,12 +511,12 @@
 "copySingleImageHUD_copying" = "Fotó másolása…";
 "copySeveralImagesHUD_copying" = "Fotók másolása…";
 
-// Image copy — Errors
+// MARK: -- Image copy — Errors
 "copyImageError_title" = "Másolási hiba";
 "copySingleImageError_message" = "A fotó másolása nem sikerült";
 "copySeveralImagesError_message" = "Néhány fotó másolása nem sikerült";
 
-// Images upload
+// MARK: -- Images upload
 "imageUploadHeader" = "Melyik albumból, vagy alalbumból szeretnéd feltölteni a fotókat és videókat?";
 "imageUploadHeaderTitle_images" = "Fotók paraméterei";
 "imageUploadHeaderText_images" = "Kérlek állítsd be a kiválasztott fotókra/videókra alkalmazandó paramétereket!";
@@ -546,7 +548,7 @@
 "imageUploadCompleted_message" = "fotó feltöltve a Piwigo szerveredre.";
 "imageUploadCompleted_message>1" = "fotók feltöltve a Piwigo szerveredre.";
 
-// Image upload — Errors
+// MARK: -- Image upload — Errors
 "uploadError_title" = "Feltöltési hiba";
 "uploadError_message" = "Nem sikerült feltölteni a fotót. Hiba: %@";
 "uploadCancelled_title" = "Feltöltés megszakítva";
@@ -573,7 +575,7 @@
 "videoUploadError_unknown" = "Ismeretlen hiba a videó feltöltése utáni MP4-re konvertálás során. Hiba: %@";
 "videoUploadCancelled_message" = "A videó feltöltése megszakadt.";
 
-// Image share
+// MARK: -- Image share
 "shareImageMetadata_Title" = "Metaadatok megosztása";
 "shareImageMetadata_subTitle1" = "Lehetőségek fotók megsztására privát metaadatokkal";
 "shareImageMetadata_subTitle2" = "Lehetőségek fotók megosztására minden metaadattal";
@@ -619,28 +621,40 @@
 "shareFailError_tooLarge" = "Túl nagy választék a megosztáshoz";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "Fotókönyvtár";
 "localAlbums_accessible" = "Elérhető fotók";
 
-// Local albums — Access not Authorized
+// MARK: -- Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Nincs hozzáférés";
 "localAlbums_photosNiltitle" = "Hiba a fotók beolvasásakor";
 "localAlbums_photosNnil_msg" = "Hiba történt a fotókönyvtár beolvasásakor.";
 
-// Local albums — Tell user to change settings, how
+// MARK: -- Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Nem sikerült megnyitni a helyi fotókönyvtárat. Kérlek nézd meg, hogy a Beállításokban van-e a Piwigo appnak hozzáférése a fotókhoz!";
 
-// Local images — Explain
+// MARK: -- Local images — Explain
 "localImages_reUploadTitle" = "Újra feltöltés";
 "localImages_deleteTitle" = "Eltávolítás a Fotók appból";
 "localImages_deleteMessage" = "Biztos törölni szeretnéd a feltöltött fotókat a Fotók appból? A törölt fotók és videók további 30 napig elérhetőek az iOS Fotók app Nemrég törölt menüpontja alatt.";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
-// Settings — Piwigo Server
+"Text" = "Szöveg";
+"Year" = "Év";
+"Hour" = "Óra";
+"12-hour" = "12 órás ciklus";
+"24-hour" = "24 órás ciklus";
+"Minute" = "Perc";
+"Second" = "Másodperc";
+"Abbreviation" = "Rövidítés";
+"FullName" = "Teljes név";
+"Separator" = "Választójel";
+"Counter" = "Számláló";
+
+// MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo Szerver";
 "settingsHeader_notSecure" = "A website nem biztonságos!";
 "settings_server" = "Szerver URL";
@@ -649,11 +663,11 @@
 "settings_logout" = "Kijelentkezés";
 "settingsFooter_formats" = "A szerver a következő fájlformátumokat fogadja el";
 
-// Settings — Unused
+// MARK: -- Settings — Unused
 "settingsHeader_general" = "Általános beállítások";
 "settingsHeader_thumbnails" = "Bélyegképek";
 
-// Settings — Albums
+// MARK: -- Settings — Albums
 "defaultImageSort" = "Rendezés";
 "defaultImageSort>320px" = "Rendezés";
 "defaultImageSort>414px" = "Fotók alapértelmezett rendezése";
@@ -678,8 +692,8 @@
 "thumbnailSizeXXLarge" = "Hatalmas";
 "thumbnailSizexFullRes" = "Teljes felbontás";
 
-// Settings — Images
-"defaultThumbnailFile" = "Fájl";
+// MARK: -- Settings — Images
+"defaultThumbnailFile" = "Miniatűr";
 "defaultThumbnailFile>320px" = "Bélyegkép";
 "defaultThumbnailFile>414px" = "Fotók bélyegképe";
 "defaultThumbnailSize" = "Méret";
@@ -719,39 +733,65 @@
 "imageSizeXXLarge" = "Hatalmas";
 "imageSizexFullRes" = "Teljes felbontás";
 
-// Settings — Videos
+// MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "Automatikus lejátszás";
 "settings_videoLoop" = "Videók hurokban";
 
-// Settings — Upload
+// MARK: -- Settings — Upload
 "settingsHeader_upload" = "Feltöltési beállítások";
 "settings_defaultAuthor" = "Készítő";
-"settings_defaultAuthor>320px" = "Készítő neve";
+"settings_defaultAuthorLong" = "Szerző neve";
 "settings_defaultAuthorPlaceholder" = "Készítő neve";
 "settings_defaultPrivacy" = "Adatvédelem";
 "settings_defaultPrivacy>414px" = "Kérlek válaszd ki, hogy ki láthatja a fotókat";
-"settings_stripGPSdata" = "Privát metaadatok eltávolítása";
-"settings_stripGPSdata>375px" = "Privát metaadatok eltávolítása feltöltés előtt";
+"settings_stripGPSdata" = "Metaadatok eltávolítása";
+"settings_stripGPSdataLong" = "Privát metaadatok eltávolítása";
 "settings_photoResize" = "Méretcsökkentés feltöltés előtt";
+"settings_photoResizeLong" = "Fénykép kicsinyítése";
 "settings_photoSize" = "Méret";
-"settings_placeholderSize" = "Fotó mérete 5-100-as skálán";
 "settings_photoCompress" = "Tömörítés feltöltés előtt";
-"settings_photoCompress>375px" = "Fotó tömörítése feltöltés előtt";
+"settings_photoCompressLong" = "Fénykép tömörítése";
 "settings_photoQuality" = "Minőség";
-"settings_placeholderQuality" = "Minőségcél 50-98-as skálán";
-"settings_prefixFilename>414px" = "Fotó fájlnév előtagozása feltöltés előtt";
-"settings_prefixFilename>375px" = "Fájlnév előtagozása feltöltés előtt";
-"settings_prefixFilename" = "Fájlnév előtagozása";
-"settings_defaultPrefix" = "Előtag";
-"settings_defaultPrefix>320px" = "Fájlnév-előtag";
-"settings_defaultPrefixPlaceholder" = "Előtag";
-"settings_deleteImage>375px" = "Fotó törlése feltöltés után";
+
+"settings_renameFile" = "Átnevezés";
+"settings_renameFileLong" = "Fájl átnevezése";
+"settings_renameFile_info" = "Kérjük, adja meg alább, hogy a fájlokat feltöltés előtt hogyan kell átnevezni.";
+"settings_addActionMsg" = "Kérjük, válassza ki a hozzáadni kívánt műveletet";
+"settings_renameAddBefore" = "Név előtt hozzáadni";
+"settings_renamePrefix" = "A fájlnév előtagja";
+"settings_prefixPlaceholder" = "Előtag_";
+"settings_renameReplace" = "A fájlnév cseréje";
+"settings_renameAddAfter" = "Név után hozzáadni";
+"settings_renameSuffix" = "Utótag fájlnév";
+"settings_suffixPlaceholder" = "_utótag";
+
+"settings_renameDateHeader" = "Kérjük, válassza ki a fájlnévben feltüntetendő dátumformátumot.";
+"settings_renameTwoDigit" = "2 számjegyű változat";
+"settings_renameFourDigit" = "4 számjegyű változat";
+"settings_renameDayOfYear" = "Év napja";
+
+"settings_renameTimeHeader" = "Kérjük, válassza ki a fájlnévben feltüntetendő időformátumot.";
+"settings_renameFiveDigit" = "5 számjegyű verzió";
+"settings_renameCounterHeader" = "Kérjük, válasszon ki egy számláló formátumot, amelyet a fájlnévben szerepeltetni kell.";
+"settings_renameCounterStart" = "Kezdődik";
+"settings_renameCounterCurrent" = "Aktuális érték";
+"settings_renameCounterStartFooter" = "Minden album esetében a számlálót ezzel az értékkel inicializáljuk, amely aztán minden egyes feldolgozott fájlnál eggyel növekszik.";
+"settings_renameCounterCurrentFooter" = "A következő feltöltéssorozat ezzel a számlálóértékkel kezdődik, amely aztán minden egyes feldolgozott fájlnál eggyel növekszik.";
+"settings_renameCounterDigits" = "Számjegyek";
+"settings_renameCounterDigitsFooter" = "Ha a számlálónak a megadottnál több számjegyre van szüksége, a számjegyek száma automatikusan megnő.";
+
+"settings_renameFileExtension" = "Fájl kiterjesztés";
+"settings_renameChangeCase" = "Nagybetűváltás";
+"settings_renameLowercase" = "Kisbetű";
+"settings_renameUppercase" = "Nagybetű";
+
 "settings_wifiOnly" = "Csak Wi-Fi-n";
 "settings_deleteImage" = "Törlés feltöltés után";
+"settings_deleteImageLong" = "Delete After Upload";
 
-// Settings — Auto-Upload
+// MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "Automata feltöltés";
-"settings_autoUpload>414px" = "Fotók automatikus feltöltése";
+"settings_autoUploadLong" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "Be";
 "settings_autoUploadEnabledInfo" = "A fotók automatikusan feltöltésre kerülnek a Piwigoba.";
 "settings_autoUploadEnabledInfoAll" = "Fotók és videók automatikusan feltöltésre kerülnek a Piwigoba.";
@@ -766,7 +806,7 @@
 "AutoUploadError_Disabled" = "Az automatikus feltöltés ki van kapcsolva a beállításokban.";
 "AutoUploadError_Failed" = "Több feltöltési kísérlet sikertelen volt, így a feltöltési sor felfüggesztésre került. Részletek az appban.";
 
-// Settings — Upload Photo Size
+// MARK: -- Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Max fotóméret";
 "UploadPhotoSize_header" = "Mekkora legyen a legnagyobb fotó, ami feltöltésre kerül?";
 "UploadPhotoSize_resolution" = "A beépített kamera maximum felbontása:";
@@ -776,7 +816,7 @@
 "UploadPhotoSize_original" = "Méretcsökkentés nélkül";
 "UploadRequests_cache" = "Feltöltések";
 
-// Settings — Privacy
+// MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "Adatvédelem";
 "settings_appLock" = "App Lock";
 "settings_appLockEnter" = "Írja be a jelszót";
@@ -807,7 +847,7 @@
 "settings_clearClipboard5minUnit" = "5 perc múlva";
 "settings_clearClipboardNever" = "Soha";
 
-// Settings — Cache
+// MARK: -- Settings — Cache
 "settingsHeader_cache" = "Gyorsítótár";
 "settings_database" = "Adat";
 "settings_cacheClear" = "Gyorsítótár törlése";
@@ -815,7 +855,7 @@
 "settings_cacheClearAll" = "Minden elem törlése";
 "settings_cacheClearMsg" = "Biztosan ki akarod törölni a fotók gyorsítótárát? Ettől átmenetileg lassabb lesz az albumok és fotók betöltése.";
 
-// Settings — Appearance
+// MARK: -- Settings — Appearance
 "settingsHeader_appearance" = "Megjelenés";
 "settingsHeader_colorPalette" = "Színpaletta";
 "settings_lightColor" = "Világos";
@@ -824,7 +864,7 @@
 "settings_brightness" = "Fényerő";
 "settings_brightnessHelp" = "Az automata opció használatával sötétebb színpaletta kerül alkalmazásra, amennyiben kevés a környezetből érkező fény. Így a fotók élénkebbnek tűnnek a sötétebb hátterek miatt.";
 
-// Settings - Administration
+// MARK: -- Settings - Administration
 "singleUserCount" = "%@ felhasználó";
 "severalUsersCount" = "%@ felhasználó";
 "singleGroupCount" = "%@ csoport";
@@ -832,7 +872,7 @@
 "singleCommentCount" = "%@ megjegyzés";
 "severalCommentsCount" = "%@ megjegyzés";
 
-// Settings — Information
+// MARK: -- Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Információ";
 "settings_twitter" = "@piwigo";
@@ -847,7 +887,7 @@
 "settings_acknowledgements" = "Köszönetnyilvánítás";
 "settings_privacy" = "Adatvédelmi Szabályzat";
 
-// Settings — Help
+// MARK: -- Settings — Help
 "help01_header" = "Több elem kiválasztása";
 "help01_text" = "Húzd az ujjad balról jobbra (vagy jobbról balra), aztán le, stb.";
 "help02_header" = "Háttérfeltöltés";
@@ -868,15 +908,15 @@
 "help08_text" = "Nyomja meg hosszan a vissza gombot a szülői albumok listájának megjelenítéséhez.";
 "help08_text2" = "Érintse meg a kiválasztott szülőalbumot, ha vissza szeretne ugrani hozzá.";
 
-// Settings - Logs
+// MARK: -- Settings - Logs
 "settingsHeader_troubleshoot" = "Hibaelhárítás";
 "settings_logs" = "Naplók";
 "settings_JSONinvalid" = "Érvénytelen szerverválaszok";
 
-// What's New in Piwigo
+// MARK: -- What's New in Piwigo
 "whatsNew_title" = "Újdonságok a Piwigo-ban";
 "whatsNew_title1" = "Csoportképek";
-"whatsNew_desc1" = "Nap, hét vagy hónap szerint.";
-"whatsNew_title2" = "Fényképek elforgatása";
-"whatsNew_desc2" = "Javítsa ki a tájolási problémákat (a rotateImage beépülő modul szükséges).";
+"whatsNew_desc1" = "Auto-play and loop options";
+"whatsNew_title2" = "Rename Files";
+"whatsNew_desc2" = "before upload with creation date, counter, album ID, text…";
 "whatsNew_continue" = "Folytatás";

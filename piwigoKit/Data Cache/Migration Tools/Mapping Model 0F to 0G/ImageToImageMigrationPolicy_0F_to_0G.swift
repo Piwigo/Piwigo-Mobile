@@ -69,7 +69,7 @@ class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                             DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         }
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                        throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
+                        throw NSError(domain: imageErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
@@ -78,7 +78,7 @@ class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                     DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 }
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
-                throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
+                throw NSError(domain: imageErrorDomain, code: 0, userInfo: userInfo)
             }
         }
 

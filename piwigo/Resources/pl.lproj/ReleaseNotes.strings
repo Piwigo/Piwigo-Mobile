@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.2_text" = "Wersja 3.3.2\n\n• Naprawiono błędy i ulepszono interfejs";
+"v3.4.0_text" = "Wersja 3.4\n\n• Dodaje opcje modyfikowania nazw plików przed przesłaniem\n• Poprawki błędów i usprawnienia interfejsu";
+
+"v3.3.2_text" = "Wersja 3.3.2\n14 kwietnia 2025\n\n• Naprawiono błędy i ulepszono interfejs";
 
 "v3.3.1_text" = "Wersja 3.3.1\n28 marca 2025\n\n• Dodano opcje automatycznego odtwarzania i zapętlania filmów\n• Naprawiono błędy i ulepszono interfejs";
 

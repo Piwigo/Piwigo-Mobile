@@ -8,6 +8,7 @@
 
 import UIKit
 
+// MARK: Keyboard Management
 extension SettingsViewController
 {
     @objc func onKeyboardWillShow(_ notification: NSNotification) {

@@ -42,6 +42,8 @@ extension AlbumViewController
         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController
         else { preconditionFailure("Cloud not load LocalAlbumsViewController") }
         localAlbumsVC.categoryId = categoryId
+        localAlbumsVC.categoryCurrentCounter = albumData.currentCounter
+        localAlbumsVC.albumDelegate = self
         localAlbumsVC.user = user
         let navController = UINavigationController(rootViewController: localAlbumsVC)
         navController.modalTransitionStyle = .coverVertical
@@ -58,5 +60,13 @@ extension AlbumViewController
         navController.modalTransitionStyle = .coverVertical
         navController.modalPresentationStyle = .formSheet
         present(navController, animated: true)
+    }
+}
+
+
+extension AlbumViewController: AlbumViewControllerDelegate {
+    func didSelectCurrentCounter(value: Int64) {
+        albumData.currentCounter = value
+        mainContext.saveIfNeeded()
     }
 }

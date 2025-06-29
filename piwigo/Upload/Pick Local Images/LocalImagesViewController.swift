@@ -83,6 +83,8 @@ class LocalImagesViewController: UIViewController
 
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
+    var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
+    weak var albumDelegate: AlbumViewControllerDelegate?
     var imageCollectionId: String = String()
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
@@ -847,29 +849,32 @@ class LocalImagesViewController: UIViewController
         
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
-        if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
-            uploadSwitchVC.delegate = self
-            uploadSwitchVC.user = user
+        guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+        else { preconditionFailure("could not load UploadSwitchViewController") }
+        
+        uploadSwitchVC.delegate = self
+        uploadSwitchVC.user = user
+        uploadSwitchVC.categoryId = categoryId
+        uploadSwitchVC.categoryCurrentCounter = categoryCurrentCounter
 
-            // Will we propose to delete images after upload?
-            if let firstLocalID = uploadRequests.first?.localIdentifier {
-                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalID], options: nil).firstObject {
-                    // Only local images can be deleted
-                    if imageAsset.sourceType != .typeCloudShared {
-                        // Will allow user to delete images after upload
-                        uploadSwitchVC.canDeleteImages = true
-                    }
+        // Will we propose to delete images after upload?
+        if let firstLocalID = uploadRequests.first?.localIdentifier {
+            if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalID], options: nil).firstObject {
+                // Only local images can be deleted
+                if imageAsset.sourceType != .typeCloudShared {
+                    // Will allow user to delete images after upload
+                    uploadSwitchVC.canDeleteImages = true
                 }
             }
-            
-            // Push Edit view embedded in navigation controller
-            let navController = UINavigationController(rootViewController: uploadSwitchVC)
-            navController.modalPresentationStyle = .popover
-            navController.modalTransitionStyle = .coverVertical
-            navController.popoverPresentationController?.sourceView = localImagesCollection
-            navController.popoverPresentationController?.barButtonItem = uploadBarButton
-            navController.popoverPresentationController?.permittedArrowDirections = .up
-            navigationController?.present(navController, animated: true)
         }
+        
+        // Push Edit view embedded in navigation controller
+        let navController = UINavigationController(rootViewController: uploadSwitchVC)
+        navController.modalPresentationStyle = .popover
+        navController.modalTransitionStyle = .coverVertical
+        navController.popoverPresentationController?.sourceView = localImagesCollection
+        navController.popoverPresentationController?.barButtonItem = uploadBarButton
+        navController.popoverPresentationController?.permittedArrowDirections = .up
+        navigationController?.present(navController, animated: true)
     }
 }

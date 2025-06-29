@@ -26,7 +26,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet var localAlbumsTableView: UITableView!
     
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
-
+    var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
+    weak var albumDelegate: AlbumViewControllerDelegate?
+    
     // Actions to perform after selection
     private enum pwgAlbumSelectAction : Int {
         case none
@@ -560,6 +562,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
             guard let pasteboardImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
             pasteboardImagesVC.categoryId = categoryId
+            pasteboardImagesVC.categoryCurrentCounter = categoryCurrentCounter
+            pasteboardImagesVC.albumDelegate = albumDelegate
             pasteboardImagesVC.user = user
             navigationController?.pushViewController(pasteboardImagesVC, animated: true)
             return
@@ -603,6 +607,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
             guard let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController else { return }
             localImagesVC.categoryId = categoryId
+            localImagesVC.categoryCurrentCounter = categoryCurrentCounter
+            localImagesVC.albumDelegate = albumDelegate
             localImagesVC.imageCollectionId = albumID
             localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)

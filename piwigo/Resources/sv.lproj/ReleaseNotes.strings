@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.2_text" = "Version 3.3.2\n\n• Fixar buggar och förbättrar gränssnittet";
+"v3.4.0_text" = "Version 3.4\n\n• Lägger till alternativ för att ändra filnamn före uppladdning\n• Fixar buggar och förbättrar gränssnittet";
+
+"v3.3.2_text" = "Version 3.3.2\n14 april 2025\n\n• Fixar buggar och förbättrar gränssnittet";
 
 "v3.3.1_text" = "Version 3.3.1\n28 mars 2025\n\n• Lägger till alternativ för automatisk uppspelning och looping av video\n• Fixar buggar och förbättrar gränssnittet";
 
@@ -130,7 +132,7 @@
 
 "v2.3.4_text" = "Version 2.3.4\n1 maj 2019\n\n• Förbättrad albumpresentation på iPad (och iPhone)\n• Mindre buggfixar och förbättring av gränssnittet";
 
-"v2.3.3_text" = "Version 2.3.3\n10 april 2018\n\n• Mindre buggfixar och förbättring av gränssnittet";
+"v2.3.3_text" = "Version 2.3.3\n10 april 2019\n\n• Mindre buggfixar och förbättring av gränssnittet";
 
 "v2.3.2_text" = "Version 2.3.2\n27 mars 2019\n\n• Lokala bilder presenteras i en tidslinjevisning dag före uppladdning\n• Mindre buggfixar och förbättring av gränssnittet";
 

@@ -20,13 +20,9 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
     }()
     
 
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    lazy var uploadsProvider: UploadProvider = {
-        let provider : UploadProvider = UploadManager.shared.uploadProvider
+    // MARK: - Core Data Providers
+    lazy var uploadProvider: UploadProvider = {
+        let provider = UploadProvider.shared
         return provider
     }()
 
@@ -66,10 +62,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // We collect the list of images in the upload queue
         // so that we can check which ones are already in the upload queue.
-        var uploadsInQueue = [String?]()
-        if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {
-            uploadsInQueue = uploads.map {$0.md5Sum}
-        }
+        var uploadsInQueue: [String] = uploadProvider.getAllMd5sum()
 
         // Get date of action for preparing identifier
         let dateFormatter = DateFormatter()
@@ -136,7 +129,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         }
 
         // Add selected images to upload queue
-        uploadsProvider.importUploads(from: selectedImages) { error in
+        uploadProvider.importUploads(from: selectedImages) { error in
             // Show an alert if there was an error.
             guard let error = error else {
                 // Create the operation queue

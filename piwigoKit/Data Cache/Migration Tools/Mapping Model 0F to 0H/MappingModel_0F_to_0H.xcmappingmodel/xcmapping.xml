@@ -10,7 +10,7 @@
             <plist version="1.0">
                 <dict>
                     <key>NSPersistenceFrameworkVersion</key>
-                    <integer>1419</integer>
+                    <integer>1447</integer>
                     <key>NSStoreModelVersionChecksumKey</key>
                     <string>bMpud663vz0bXQE24C6Rh4MvJ5jVnzsD2sI3njZkKbc=</string>
                     <key>NSStoreModelVersionHashes</key>
@@ -387,6 +387,9 @@ D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwTFFUkbnVsbNMNDg8QERJfEA9OU0NvbnN0YW50VmFs
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z110"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z176">
+        <attribute name="valueexpressiondata" type="binary">YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8Q
+D05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwTFFUkbnVsbNMNDg8QERJfEA9OU0NvbnN0YW50VmFsdWVfEBBOU0V4cHJlc3Npb25UeXBlViRjbGFzc4ACEACAA1DSFRYXGFokY2xhc3NuYW1lWCRjbGFzc2VzXxAZTlNDb25zdGFudFZhbHVlRXhwcmVzc2lvbqMXGRpcTlNFeHByZXNzaW9uWE5TT2JqZWN0CBEaJCkyN0lMUVNYXmV3ipGTlZeYnaixzdHeAAAAAAAAAQEAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAOc=
+</attribute>
         <attribute name="name" type="string">downloadUrl</attribute>
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z188"></relationship>
     </object>

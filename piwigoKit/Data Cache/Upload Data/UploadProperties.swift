@@ -23,6 +23,10 @@ public struct UploadProperties
 
     public var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
     public var fileName: String                    // "IMG123.JPG"
+    public var fileNameExtensionCase: Int16        // See FileExtCase enum
+    public var fileNamePrefixEncodedActions: String
+    public var fileNameReplaceEncodedActions: String
+    public var fileNameSuffixEncodedActions: String
     public var mimeType: String                    // "image/png"
     public var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
     public var isVideo: Bool                       // true/false
@@ -40,8 +44,6 @@ public struct UploadProperties
     public var videoMaxSize: Int16
     public var compressImageOnUpload: Bool
     public var photoQuality: Int16
-    public var prefixFileNameBeforeUpload: Bool
-    public var defaultPrefix: String
     public var deleteImageAfterUpload: Bool
     public var markedForAutoUpload: Bool
 }
@@ -49,6 +51,13 @@ public struct UploadProperties
 extension UploadProperties {
     // Create new upload from localIdentifier and category
     public init(localIdentifier: String, category: Int32) {
+        // Change case of file name extension?
+        var fileNameExtensionCase: Int16 = 0
+        if UploadVars.shared.changeCaseOfFileExtension {
+            fileNameExtensionCase = UploadVars.shared.caseOfFileExtension
+        }
+        
+        // Initialisation
         self.init(localIdentifier: localIdentifier,
             // Category ID of the album to upload to
             category: category,
@@ -62,7 +71,12 @@ extension UploadProperties {
             requestState: .waiting, requestError: "",
             
             // Photo creation date and filename
-            creationDate: Date().timeIntervalSinceReferenceDate, fileName: "",
+            creationDate: Date().timeIntervalSinceReferenceDate,
+            fileName: "",
+            fileNameExtensionCase: fileNameExtensionCase,
+            fileNamePrefixEncodedActions: UploadVars.shared.prefixFileNameActionList,
+            fileNameReplaceEncodedActions: UploadVars.shared.replaceFileNameActionList,
+            fileNameSuffixEncodedActions: UploadVars.shared.suffixFileNameActionList,
             mimeType: "", md5Sum: "", isVideo: false,
             
             // Photo author name defaults to name entered in Settings
@@ -81,8 +95,6 @@ extension UploadProperties {
             videoMaxSize: UploadVars.shared.videoMaxSize,
             compressImageOnUpload: UploadVars.shared.compressImageOnUpload,
             photoQuality: UploadVars.shared.photoQuality,
-            prefixFileNameBeforeUpload: UploadVars.shared.prefixFileNameBeforeUpload,
-            defaultPrefix: UploadVars.shared.defaultPrefix,
             deleteImageAfterUpload: UploadVars.shared.deleteImageAfterUpload,
             markedForAutoUpload: false)
     }

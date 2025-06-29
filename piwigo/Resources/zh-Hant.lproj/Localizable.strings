@@ -6,15 +6,15 @@
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
 // ===========================================================================
-// MARK: - GENERIC
+// MARK: Generic
 // ===========================================================================
-// Tab bar
+// MARK: -- Tab bar
 
 "tabBar_albums" = "相簿";
 "tabBar_upload" = "上傳";
 "tabBar_preferences" = "設定";
 
-// Alert buttons
+// MARK: -- Alert buttons
 "alertOkButton" = "好";
 "alertDismissButton" = "關閉";
 "alertYesButton" = "是";
@@ -26,16 +26,16 @@
 "alertNextButton" = "下一張照片";
 "alertTryButton" = "嘗試";
 
-// HUD views
+// MARK: -- HUD views
 "loadingHUD_label" = "讀取中...";
 "completeHUD_label" = "完成";
 "errorHUD_label" = "錯誤";
 
-// Upload rights
+// MARK: -- Upload rights
 "uploadRights_title" = "需要上傳權限";
 "uploadRights_message" = "你需要有上傳權限才能上傳照片或影片。";
 
-// Errors
+// MARK: -- Errors
 "internetErrorGeneral_title" = "連線錯誤";
 "internetErrorGeneral_broken" = "抱歉，連線失敗。請再試一次。";
 "internetCancellingConnection_button" = "正在取消連線...";
@@ -48,7 +48,7 @@
 
 
 // ===========================================================================
-// MARK: - CORE DATA
+// MARK: - Core Data
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "警告";
 "CoreDataStore_WarningMessage" = "在讀取快取時發生了一個嚴重的程式錯誤。因此重新建立了新的快取。";
@@ -60,36 +60,36 @@
 "CoreData_MigrationError_generic" = "遷移過程中發生了意外錯誤。";
 "CoreData_MigrationError_timeout" = "應用程式在遷移資料庫時暫停。請重新啟動應用程式並重試。";
 
-// User objects
+// MARK: -- User objects
 "CoreDataFetch_UserMissingData" = "會拋棄無效使用者名稱的帳號。";
 "CoreDataFetch_UserUnknownStatus" = "無法獲得社群插件參數。\n請嘗試重新登入。";
 "CoreData_UserCreateFailed" = "無法建立新的用戶物件。";
 
-// Album objects
+// MARK: -- Album objects
 "CoreDataFetch_AlbumError" = "讀取相簿失敗!";
 "CoreDataFetch_AlbumMissingData" = "已找到並將會刪除一個帶有無效ID或名稱的相簿。";
 "CoreDataFetch_AlbumCreateFailed" = "新相簿建立失敗。";
 "CoreData_AlbumNotFound" = "相簿不在永久快取中。";
 
-// Image objects
+// MARK: -- Image objects
 "CoreDataFetch_ImageError" = "取得照片/影片失敗!";
 "CoreDataFetch_ImageMissingData" = "已找到並將會刪除一個帶有無效ID或連結的照片/影片。";
 "CoreDataFetch_ImageCreateFailed" = "新圖片建立失敗。";
 
-// Tag objects
+// MARK: -- Tag objects
 "CoreDataFetch_TagError" = "讀取標籤失敗!";
 "CoreDataFetch_TagMissingData" = "已找到並將會刪除一個帶有無效代號或名稱的標籤。";
 "CoreDataFetch_TagCreateFailed" = "新標籤建立失敗。";
 
-// Upload objects
+// MARK: -- Upload objects
 "CoreDataFetch_UploadCreateFailed" = "新上傳物件建立失敗。";
 "CoreDataFetch_UploadMissingAsset" = "獲取照片失敗。";
 
 
 // ===========================================================================
-// MARK: - LOGIN / LOGOUT
+// MARK: - Login / Logout
 // ===========================================================================
-// Login
+// MARK: -- Login
 "login" = "登入";
 "login_serverPlaceholder" = "example.com";
 "login_userPlaceholder" = "帳號 (選填)";
@@ -110,7 +110,7 @@
 "loginHTTPSfailed_title" = "安全連線失敗";
 "loginHTTPSfailed_message" = "Piwigo無法建立安全連線。你要試試看非安全連線嗎?";
 
-// Login — Errors
+// MARK: -- Login — Errors
 "serverURLerror_title" = "不正確的網址";
 "serverURLerror_message" = "請更正Piwigo的伺服器網址。";
 "serverMethodsError_title" = "未知方法";
@@ -137,24 +137,25 @@
 "sessionStatusError_title" = "認證失敗";
 "sessionStatusError_message" = "與伺服器認證失敗。請嘗試重新登入。";
 
-// Logout
+// MARK: -- Logout
 "logoutConfirmation_title" = "登出";
 "logoutConfirmation_message" = "你確定要登出嗎?";
 
-// Logout — Errors
+// MARK: -- Logout — Errors
 "logoutFail_title" = "登出失敗";
 
 
 // ===========================================================================
-// MARK: - ALBUMS
+// MARK: - Albums
 // ===========================================================================
-// Generic
+// MARK: -- Generic
+"albumID" = "相簿 ID";
 "singleAlbumCount" = "%@個相簿";
 "severalAlbumsCount" = "%@個相簿";
 "singleSubAlbumCount" = "%@個子相簿";
 "severalSubAlbumsCount" = "%@個子相簿";
 
-// Albums view
+// MARK: -- Albums view
 "categoryUpdating" = "更新中...";
 "categoryUpdatedOn" = "更新於 %@";
 "categoryUpdatedAt" = "更新於 %@";
@@ -167,7 +168,7 @@
 "categoryImageList_favorite" = "加入我的最愛";
 "categoryImageList_unfavorite" = "從我的最愛移除";
 
-// Albums "Discover"
+// MARK: -- Albums "Discover"
 "categoryDiscover_title" = "探索";
 "categoryDiscoverTagged_title" = "已標籤";
 "categoryDiscoverVisits_title" = "最多觀看";
@@ -176,7 +177,7 @@
 "categoryDiscoverRecent_title" = "近期照片";
 "categoryDiscoverFavorites_title" = "你的最愛";
 
-// Albums sort
+// MARK: -- Albums sort
 "categorySort_sort" = "排序圖片依...";
 "categorySort_default" = "預設";
 "categorySort_name" = "圖片標題";
@@ -210,7 +211,7 @@
 "categoryView_group" = "圖像分組依據...";
 "categoryView_show" = "展示…";
 
-// Album selection
+// MARK: -- Album selection
 "categorySelection_title" = "相簿";
 "categorySelection_titleSub" = "子相簿";
 "categorySelection_root" = "根相簿";
@@ -219,7 +220,7 @@
 "categorySelectionHUD_label" = "正在讀取相簿資料...";
 "categorySelection_allAlbums" = "所有相簿";
 
-// Album upload
+// MARK: -- Album upload
 "categoryUpload_noSubAlbum" = "沒有子相簿可以上傳照片";
 "categoryUpload_chooseAlbum" = "選取一個子相簿以上傳照片";
 "categoryUpload_LocalAlbums" = "本機相簿";
@@ -234,12 +235,12 @@
 "categoryUpload_otherAlbums" = "其他相簿";
 "categoryUpload_pasteboard" = "剪貼簿";
 
-// Default album
+// MARK: -- Default album
 "setDefaultCategory_select" = "請選擇一個相簿或子相簿來做為新的根相簿。";
 "setDefaultCategory_title" = "預設相簿";
 "setDefaultCategory_message" = "你確定要把相簿\"%@\"設為預設相簿嗎?";
 
-// Album create
+// MARK: -- Album create
 "createNewAlbum_title" = "新相簿";
 "createNewAlbum_message" = "為此相簿命名:";
 "createNewAlbum_placeholder" = "相簿名稱";
@@ -247,34 +248,34 @@
 "createNewAlbumDescription_noDescription" = "沒有描述";
 "createNewAlbumHUD_label" = "建立相簿中...";
 
-// Album create — Errors
+// MARK: -- Album create — Errors
 "createAlbumError_title" = "建立相簿錯誤";
 "createAlbumError_message" = "無法建立新相簿";
 
-// Album options (swipe actions)
+// MARK: -- Album options (swipe actions)
 "categoryCellOption_addPhotos" = "新增相片";
 "categoryCellOption_rename" = "重新命名相簿";
 "categoryCellOption_move" = "移動相簿";
 "categoryCellOption_delete" = "刪除相簿";
 
-// Album rename
+// MARK: -- Album rename
 "renameCategory_title" = "重新命名相簿";
 "renameCategory_message" = "為此相簿取新的名稱:";
 "renameCategory_button" = "重新命名";
 "renameCategoryHUD_label" = "重新命名相簿中...";
 
-// Album rename — Errors
+// MARK: -- Album rename — Errors
 "renameCategoyError_title" = "重新命名失敗";
 "renameCategoyError_message" = "無法重新命名你的相簿";
 
-// Album refresh representative
+// MARK: -- Album refresh representative
 "refreshCategoryHUD_label" = "重新整理代表照片中...";
 
-// Album refresh representative — Errors
+// MARK: -- Album refresh representative — Errors
 "refreshCategoyError_title" = "重新整理失敗";
 "refreshCategoyError_message" = "無法重新整理代表圖片";
 
-// Album delete
+// MARK: -- Album delete
 "deleteCategory_title" = "【刪除相簿】";
 "deleteCategory_message" = "你真的確定你要刪掉相簿\"%@\"跟其中的\"%@\"張照片嗎?";
 "deleteCategory_empty" = "刪除空相簿";
@@ -288,23 +289,23 @@
 "deleteCategoryConfirm_deleteButton" = "【刪除】";
 "deleteCategoryHUD_label" = "刪除相簿中...";
 
-// Album delete — errors
+// MARK: -- Album delete — errors
 "deleteCategoryMatchError_title" = "數字不匹配";
 "deleteCategoryMatchError_message" = "你輸入的照片數量與實際數量不一。如果真的要刪除這個相簿請再試一次。";
 "deleteCategoryError_title" = "刪除失敗";
 "deleteCategoryError_message" = "無法刪除您的相簿";
 
-// Album move
+// MARK: -- Album move
 "moveCategory" = "移動相簿";
 "moveCategory_select" = "請選擇要將相簿\"%@\"移動到哪個相簿或子相簿。";
 "moveCategory_message" = "你確定要移動相簿\"%@\"至相簿\"%@\"嗎?";
 "moveCategoryHUD_moving" = "正在移動相簿...";
 
-// Album move — Errors
+// MARK: -- Album move — Errors
 "moveCategoryError_title" = "移動失敗";
 "moveCategoryError_message" = "移動相簿失敗";
 
-// Album set photo thumbnail
+// MARK: -- Album set photo thumbnail
 "categorySelection_setThumbnail" = "請選擇要將照片\"%@\"作為封面的相簿。";
 "categorySelection_current" = "為這張照片選取目前的相簿";
 "categorySelection_one" = "選取其中一個包含此照片的相簿";
@@ -313,12 +314,12 @@
 "categoryImageSet_message" = "確定要將照片設定於相簿\"%@\"嗎?";
 "categoryImageSetHUD_updating" = "正在更新相簿封面...";
 
-// Album set photo thumbnail — Errors
+// MARK: -- Album set photo thumbnail — Errors
 "categoryImageSetError_title" = "照片設定錯誤";
 "categoryImageSetError_message" = "無法設定相簿照片";
 
 // ===========================================================================
-// MARK: - IMAGES
+// MARK: - Images
 // ===========================================================================
 "singleImage" = "照片";
 "singleImageCount" = "%@張照片";
@@ -337,11 +338,11 @@
 "Week" = "星期";
 "Month" = "月";
 
-// Errors
+// MARK: -- Errors
 "albumPhotoError_title" = "取得相簿照片錯誤";
 "albumPhotoError_message" = "無法取得相簿的照片 (相簿圖片毀損?)";
 
-// Image sort
+// MARK: -- Image sort
 "sortBy" = "排序依";
 "imageSortTitle" = "排序照片";
 "imageSortMessage" = "請選擇你想要如何排序照片";
@@ -349,14 +350,14 @@
 "imageSelectingHUD" = "正在選取照片...";
 "imageDeselectingHUD" = "正在取消選取照片...";
 
-// Image options (actions)
+// MARK: -- Image options (actions)
 "imageOptions_title" = "照片選項";
 "imageOptions_edit" = "編輯";
 "imageOptions_properties" = "更改內容";
 "imageOptions_download" = "下載";
 "imageOptions_setAlbumImage" = "設為相簿封面";
 
-// Image details
+// MARK: -- Image details
 "imageDetailsView_title" = "內容";
 "editImageDetails_title" = "標題";
 "editImageDetails_titlePlaceholder" = "照片標題";
@@ -366,6 +367,7 @@
 "editImageDetails_description" = "描述";
 "editImageDetails_comments" = "留言";
 "editImageDetails_dateCreation" = "建立日期";
+"editImageDetails_timeCreation" = "建立時間";
 "editImageDetails_dateUnset" = "取消設定";
 "editImageDetails_dateToday" = "今天";
 "editImageDetails_dateMonthInc" = "+1個月";
@@ -375,14 +377,14 @@
 "editImageDetailsHUD_updatingSingle" = "更新照片中...";
 "editImageDetailsHUD_updatingPlural" = "更新照片中...";
 
-// Image details — Errors
+// MARK: -- Image details — Errors
 "editImageDetailsError_title" = "更新失敗";
 "editImageDetailsError_message" = "無法更新您的變更。";
 "imageDetailsFetchError_title" = "照片資訊獲取失敗";
 "imageDetailsFetchError_message" = "無法成功獲取照片的詳細資料。";
 "imageDetailsFetchError_continueMessage" = "無法成功獲取照片的詳細資料。要繼續嗎?";
 
-// Image privacy levels
+// MARK: -- Image privacy levels
 "privacyLevel" = "隱私層級";
 "privacyLevel_admin" = "管理員";
 "privacyLevel_adminFamily" = "管理員，家人";
@@ -390,7 +392,7 @@
 "privacyLevel_adminsFamilyFriendsContacts" = "管理員，家人，朋友，聯絡人";
 "privacyLevel_everybody" = "所有人";
 
-// Image tags
+// MARK: -- Image tags
 "none" = "無";
 "tag" = "標籤";
 "tags" = "標籤";
@@ -405,44 +407,44 @@
 "tagsAdd_placeholder" = "新的標籤";
 "tagsAddHUD_label" = "正在建立標籤...";
 
-// Image tags errors
+// MARK: -- Image tags errors
 "tagsAddError_message" = "建立新標籤失敗";
 "tagsAddError_title" = "建立失敗";
 
-// Image select
+// MARK: -- Image select
 "selectImages" = "選擇照片";
 "selectImageSelected" = "選擇了1張照片";
 "selectImagesSelected" = "選擇了%@張照片";
 "selectAll" = "全選";
 
-// Image rename (filename)
+// MARK: -- Image rename (filename)
 "renameImage_title" = "原始檔案";
 "renameImage_message" = "為此照片取新的名稱:";
 "renameImageHUD_label" = "正在重新命名檔案...";
 
-// Image rename — Errors
+// MARK: -- Image rename — Errors
 "renameImageError_message" = "重新命名照片失敗";
 
-// Image in favorites
+// MARK: -- Image in favorites
 "imageFavorites_title" = "最愛";
 
-// Image in favorites — Error
+// MARK: -- Image in favorites — Error
 "imageFavoritesAddError_message" = "無法將此照片設為最愛。";
 "imageFavoritesRemoveError_message" = "無法從最愛移除此照片。";
 
-// Image rotate
+// MARK: -- Image rotate
 "rotateImage_rotate" = "旋轉90°…";
 "rotateImage_left" = "逆時針";
 "rotateImage_right" = "順時針";
 "rotateSingleImageHUD_rotating" = "正在旋轉圖片...";
 "rotateSeveralImageHUD_rotating" = "正在旋轉多張圖片...";
 
-// Image rotate — Errors
+// MARK: -- Image rotate — Errors
 "rotateImageFail_title" = "旋轉失敗";
 "rotateImageFail_plugin" = "“rotateImage”外掛程式未啟用。";
 "rotateImageFail_message" = "圖片無法被旋轉";
 
-// Image delete
+// MARK: -- Image delete
 "deleteImage_delete" = "刪除";
 "deleteImageProgress_title" = "已經刪除%@%%";
 
@@ -460,11 +462,11 @@
 "deleteSeveralImages_title" = "刪除%@張照片";
 "deleteSeveralImages_message" = "你確定要刪除選取的%@張照片嗎? 此動作無法還原!";
 
-// Image delete — Errors
+// MARK: -- Image delete — Errors
 "deleteImageFail_title" = "刪除失敗";
 "deleteImageFail_message" = "照片無法刪除。";
 
-// Image download
+// MARK: -- Image download
 "downloadSingleImage_title" = "下載照片";
 "downloadSingleImage_confirmation" = "你確定要下載選擇的照片嗎?";
 "downloadSeveralImages_title" = "下載%@張照片";
@@ -474,7 +476,7 @@
 "downloadingImages" = "正在下載照片";
 "downloadingVideo" = "正在下載影片";
 
-// Image download — Errors
+// MARK: -- Image download — Errors
 "downloadImageFail_title" = "下載失敗";
 "downloadImageFail_message" = "下載照片失敗!\n%@";
 "downloadVideoFail_message" = "下載影片失敗!\n%@";
@@ -486,7 +488,7 @@
 "videoSaveError_title" = "儲存影片失敗";
 "videoSaveError_message" = "儲存影片失敗。錯誤: %@";
 
-// Image move
+// MARK: -- Image move
 "moveImage_title" = "移動至相簿";
 "moveSingleImage_selectAlbum" = "請選擇要移動照片\"%@\"到哪個相簿。";
 "moveSeveralImages_selectAlbum" = "請選擇要移動照片到哪個相簿。";
@@ -495,12 +497,12 @@
 "moveSingleImageHUD_moving" = "正在移動照片...";
 "moveSeveralImagesHUD_moving" = "正在移動照片...";
 
-// Image move — Errors
+// MARK: -- Image move — Errors
 "moveImageError_title" = "移動失敗";
 "moveSingleImageError_message" = "移動照片失敗";
 "moveSeveralImagesError_message" = "移動照片失敗";
 
-// Image copy
+// MARK: -- Image copy
 "copyImage_title" = "複製至相簿";
 "copySingleImage_selectAlbum" = "請選擇要複製照片\"%@\"到哪個相簿。";
 "copySeveralImages_selectAlbum" = "請選擇要複製照片到哪個相簿。";
@@ -509,12 +511,12 @@
 "copySingleImageHUD_copying" = "正在複製照片…";
 "copySeveralImagesHUD_copying" = "正在複製照片…";
 
-// Image copy — Errors
+// MARK: -- Image copy — Errors
 "copyImageError_title" = "複製失敗";
 "copySingleImageError_message" = "複製照片失敗";
 "copySeveralImagesError_message" = "複製照片失敗";
 
-// Images upload
+// MARK: -- Images upload
 "imageUploadHeader" = "請選擇要上傳照片及影片至哪個相簿或子相簿。";
 "imageUploadHeaderTitle_images" = "照片參數";
 "imageUploadHeaderText_images" = "請設定所選擇的照片/影片的參數";
@@ -546,7 +548,7 @@
 "imageUploadCompleted_message" = "張照片已上傳到您的Piwigo伺服器。";
 "imageUploadCompleted_message>1" = "張照片已上傳到您的Piwigo伺服器。";
 
-// Image upload — Errors
+// MARK: -- Image upload — Errors
 "uploadError_title" = "上傳錯誤";
 "uploadError_message" = "無法上傳您的照片。錯誤: %@";
 "uploadCancelled_title" = "上傳已取消";
@@ -573,7 +575,7 @@
 "videoUploadError_unknown" = "抱歉，上傳的影片因為未知的MP4轉換錯誤而失敗。錯誤: %@";
 "videoUploadCancelled_message" = "影片上傳已取消。";
 
-// Image share
+// MARK: -- Image share
 "shareImageMetadata_Title" = "分享中繼資料";
 "shareImageMetadata_subTitle1" = "分享照片時包含中繼資料";
 "shareImageMetadata_subTitle2" = "分享照片時不包含中繼資料";
@@ -619,28 +621,40 @@
 "shareFailError_tooLarge" = "選擇太多，無法分享";
 
 // ===========================================================================
-// MARK: - LOCAL ALBUMS & IMAGES / Photo Library
+// MARK: - Photo Library
 // ===========================================================================
 "localAlbums" = "照片圖庫";
 "localAlbums_accessible" = "可存取的照片";
 
-// Local albums — Access not Authorized
+// MARK: -- Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "無存取權限";
 "localAlbums_photosNiltitle" = "讀取照片發生問題";
 "localAlbums_photosNnil_msg" = "讀取本機照片圖庫時發生問題。";
 
-// Local albums — Tell user to change settings, how
+// MARK: -- Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "無法讀取本機照片圖庫。請至設定中開啟Piwigo的存取權限。";
 
-// Local images — Explain
+// MARK: -- Local images — Explain
 "localImages_reUploadTitle" = "重新上傳";
 "localImages_deleteTitle" = "從相機膠卷中移除";
 "localImages_deleteMessage" = "你想要從相機膠捲刪除已上傳的照片及影片嗎? 被刪除的照片及影片會在照片應用程式的「近期刪除」保存30天。";
 
 // ===========================================================================
-// MARK: - SETTINGS
+// MARK: - Settings
 // ===========================================================================
-// Settings — Piwigo Server
+"Text" = "文字";
+"Year" = "年份";
+"Hour" = "小時";
+"12-hour" = "12 小時週期";
+"24-hour" = "24 小時週期";
+"Minute" = "分鐘";
+"Second" = "秒";
+"Abbreviation" = "縮寫";
+"FullName" = "全名";
+"Separator" = "分隔符";
+"Counter" = "計數器";
+
+// MARK: -- Settings — Piwigo Server
 "settingsHeader_server" = "Piwigo伺服器";
 "settingsHeader_notSecure" = "不安全的連接!";
 "settings_server" = "伺服器地址";
@@ -649,11 +663,11 @@
 "settings_logout" = "登出";
 "settingsFooter_formats" = "這個伺服器支援以下檔案格式";
 
-// Settings — Unused
+// MARK: -- Settings — Unused
 "settingsHeader_general" = "一般設定";
 "settingsHeader_thumbnails" = "縮圖";
 
-// Settings — Albums
+// MARK: -- Settings — Albums
 "defaultImageSort" = "排序";
 "defaultImageSort>320px" = "預設排序";
 "defaultImageSort>414px" = "照片的預設排序";
@@ -678,8 +692,8 @@
 "thumbnailSizeXXLarge" = "最大";
 "thumbnailSizexFullRes" = "完整解析度";
 
-// Settings — Images
-"defaultThumbnailFile" = "檔案";
+// MARK: -- Settings — Images
+"defaultThumbnailFile" = "縮圖";
 "defaultThumbnailFile>320px" = "縮圖檔案";
 "defaultThumbnailFile>414px" = "照片縮圖檔案";
 "defaultThumbnailSize" = "大小";
@@ -719,39 +733,65 @@
 "imageSizeXXLarge" = "最大";
 "imageSizexFullRes" = "完整解析度";
 
-// Settings — Videos
+// MARK: -- Settings — Videos
 "settings_videoAutoPlay" = "自動播放";
 "settings_videoLoop" = "循環影片";
 
-// Settings — Upload
+// MARK: -- Settings — Upload
 "settingsHeader_upload" = "預設上傳設定";
 "settings_defaultAuthor" = "作者";
-"settings_defaultAuthor>320px" = "作者名稱";
+"settings_defaultAuthorLong" = "作者姓名";
 "settings_defaultAuthorPlaceholder" = "作者名稱";
 "settings_defaultPrivacy" = "隱私";
 "settings_defaultPrivacy>414px" = "請選擇誰可以看到這些照片";
-"settings_stripGPSdata" = "移除私密中繼資料";
-"settings_stripGPSdata>375px" = "在上傳前移除私密中繼資料";
+"settings_stripGPSdata" = "剝離元資料";
+"settings_stripGPSdataLong" = "剝離私人元資料";
 "settings_photoResize" = "在上傳前縮小大小";
+"settings_photoResizeLong" = "縮小照片";
 "settings_photoSize" = "尺寸";
-"settings_placeholderSize" = "輸入5-100之間的照片尺寸";
 "settings_photoCompress" = "上傳前壓縮";
-"settings_photoCompress>375px" = "上傳照片前壓縮";
+"settings_photoCompressLong" = "壓縮照片";
 "settings_photoQuality" = "品質";
-"settings_placeholderQuality" = "輸入50-98之間的照片品質";
-"settings_prefixFilename>414px" = "上傳前將照片的檔名增加前綴";
-"settings_prefixFilename>375px" = "上傳前將文件名稱增加前綴";
-"settings_prefixFilename" = "照片檔名前綴";
-"settings_defaultPrefix" = "前綴";
-"settings_defaultPrefix>320px" = "檔名前綴";
-"settings_defaultPrefixPlaceholder" = "前綴";
-"settings_deleteImage>375px" = "上傳後刪除圖片";
+
+"settings_renameFile" = "重新命名";
+"settings_renameFileLong" = "重新命名檔案";
+"settings_renameFile_info" = "請在下方註明上傳前應如何重新命名檔案。";
+"settings_addActionMsg" = "請選擇要新增的動作";
+"settings_renameAddBefore" = "在名稱之前增加";
+"settings_renamePrefix" = "前綴 檔案名稱";
+"settings_prefixPlaceholder" = "前綴_";
+"settings_renameReplace" = "取代檔案名稱";
+"settings_renameAddAfter" = "在名稱之後增加";
+"settings_renameSuffix" = "後綴 檔案名稱";
+"settings_suffixPlaceholder" = "_後綴";
+
+"settings_renameDateHeader" = "請選擇要包含在檔案名稱中的日期格式。";
+"settings_renameTwoDigit" = "2 位數版本";
+"settings_renameFourDigit" = "4 位數版本";
+"settings_renameDayOfYear" = "年月日";
+
+"settings_renameTimeHeader" = "請選擇要包含在檔案名稱中的時間格式。";
+"settings_renameFiveDigit" = "5 位數版本";
+"settings_renameCounterHeader" = "請選擇要包含在檔案名稱中的計數器格式。";
+"settings_renameCounterStart" = "從";
+"settings_renameCounterCurrent" = "目前值開始";
+"settings_renameCounterStartFooter" = "對於每張相簿，計數器將以此值初始化，然後，每處理一個檔案，計數器就會遞增一次。";
+"settings_renameCounterCurrentFooter" = "下一系列上傳將從此計數器值開始，然後每處理一個檔案，此計數器值將遞增 1。";
+"settings_renameCounterDigits" = "數字";
+"settings_renameCounterDigitsFooter" = "當計數器需要的位數比指定的多時，位數會自動增加。";
+
+"settings_renameFileExtension" = "檔案副檔名";
+"settings_renameChangeCase" = "變更大小寫";
+"settings_renameLowercase" = "小寫";
+"settings_renameUppercase" = "大寫";
+
 "settings_wifiOnly" = "僅限使用Wi-Fi";
 "settings_deleteImage" = "上傳後刪除";
+"settings_deleteImageLong" = "上傳後刪除";
 
-// Settings — Auto-Upload
+// MARK: -- Settings — Auto-Upload
 "settings_autoUpload" = "自動上傳";
-"settings_autoUpload>414px" = "自動上傳照片";
+"settings_autoUploadLong" = "自動上傳照片";
 "settings_autoUploadEnabled" = "開啟";
 "settings_autoUploadEnabledInfo" = "照片會自動上傳至您的Piwigo伺服器。";
 "settings_autoUploadEnabledInfoAll" = "照片及影片會自動上傳至您的Piwigo伺服器。";
@@ -766,7 +806,7 @@
 "AutoUploadError_Disabled" = "自動上傳功能可以在應用程式的設定中關閉。";
 "AutoUploadError_Failed" = "數個傳輸錯誤導致上傳隊列已暫停。請進入程式檢查。";
 
-// Settings — Upload Photo Size
+// MARK: -- Settings — Upload Photo Size
 "UploadPhotoSize_title" = "最大照片大小";
 "UploadPhotoSize_header" = "請選擇照片上傳的最大尺寸。";
 "UploadPhotoSize_resolution" = "內建相機最大解析度:";
@@ -776,7 +816,7 @@
 "UploadPhotoSize_original" = "不縮小";
 "UploadRequests_cache" = "已上傳";
 
-// Settings — Privacy
+// MARK: -- Settings — Privacy
 "settingsHeader_privacy" = "隱私";
 "settings_appLock" = "程式鎖";
 "settings_appLockEnter" = "輸入密碼";
@@ -807,7 +847,7 @@
 "settings_clearClipboard5minUnit" = "5分鐘後";
 "settings_clearClipboardNever" = "永不";
 
-// Settings — Cache
+// MARK: -- Settings — Cache
 "settingsHeader_cache" = "快取";
 "settings_database" = "資料";
 "settings_cacheClear" = "清理快取";
@@ -815,7 +855,7 @@
 "settings_cacheClearAll" = "全部清除";
 "settings_cacheClearMsg" = "你確定要清理照片快取嗎? 這樣相簿跟照片會需要花一段時間重新讀取。";
 
-// Settings — Appearance
+// MARK: -- Settings — Appearance
 "settingsHeader_appearance" = "外觀";
 "settingsHeader_colorPalette" = "調色盤";
 "settings_lightColor" = "亮色";
@@ -824,7 +864,7 @@
 "settings_brightness" = "亮度";
 "settings_brightnessHelp" = "在低光源時，「自動」會用更暗的色系使照片在更暗的背景中凸出。";
 
-// Settings - Administration
+// MARK: -- Settings - Administration
 "singleUserCount" = "%@個用戶";
 "severalUsersCount" = "%@個用戶";
 "singleGroupCount" = "%@個群組";
@@ -832,7 +872,7 @@
 "singleCommentCount" = "%@個留言";
 "severalCommentsCount" = "%@個留言";
 
-// Settings — Information
+// MARK: -- Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "資訊";
 "settings_twitter" = "@piwigo";
@@ -847,7 +887,7 @@
 "settings_acknowledgements" = "致謝";
 "settings_privacy" = "隱私權政策";
 
-// Settings — Help
+// MARK: -- Settings — Help
 "help01_header" = "多重選取";
 "help01_text" = "將您的手指從左向右(或從右向左) 滑動，然後向下滑動。";
 "help02_header" = "背景上傳";
@@ -868,15 +908,15 @@
 "help08_text" = "長按返回按鈕來顯示母相簿列表。";
 "help08_text2" = "點擊您選擇的母相簿以跳回它。";
 
-// Settings - Logs
+// MARK: -- Settings - Logs
 "settingsHeader_troubleshoot" = "故障排除";
 "settings_logs" = "紀錄";
 "settings_JSONinvalid" = "無效的伺服器回應";
 
-// What's New in Piwigo
+// MARK: -- What's New in Piwigo
 "whatsNew_title" = "Piwigo的新功能";
 "whatsNew_title1" = "集體照";
-"whatsNew_desc1" = "按天、週或月。";
-"whatsNew_title2" = "旋轉照片";
-"whatsNew_desc2" = "修復方向問題（需要“rotateImage”插件）。";
+"whatsNew_desc1" = "自動播放和循環選項";
+"whatsNew_title2" = "重新命名檔案";
+"whatsNew_desc2" = "上傳前有建立日期、計數器、相簿 ID、文字…";
 "whatsNew_continue" = "繼續";

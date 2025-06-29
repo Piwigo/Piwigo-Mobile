@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 // MARK: -  EditImageDatePickerDelegate Methods
 extension EditImageParamsViewController: EditImageDatePickerDelegate
@@ -22,7 +23,7 @@ extension EditImageParamsViewController: EditImageDatePickerDelegate
     }
 
     func didUnsetImageCreationDate() {
-        commonDateCreated = .distantPast
+        commonDateCreated = DateUtilities.unknownDate
         shouldUpdateDateCreated = true
 
         // Close date picker

@@ -15,7 +15,7 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-enum SettingsSection : Int {
+enum SettingsSection: Int {
     case server
     case logout
     case albums
@@ -31,13 +31,8 @@ enum SettingsSection : Int {
     case count
 }
 
-enum ImageUploadSetting : Int {
-    case author
-    case prefix
-}
-
 let kHelpUsTitle: String = "Help Us!"
-let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in your language. Could you please help us complete the translation?"
+let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in your language. Could you please help us complete or improve the translation?"
 
 @objc protocol ChangedSettingsDelegate: NSObjectProtocol {
     func didChangeDefaultAlbum()
@@ -46,6 +41,10 @@ let kHelpUsTranslatePiwigo: String = "Piwigo is only partially translated in you
 
 class SettingsViewController: UIViewController {
     
+    enum TextFieldTag : Int {
+        case author
+    }
+
     weak var settingsDelegate: ChangedSettingsDelegate?
     
     @IBOutlet var settingsTableView: UITableView!
@@ -129,7 +128,6 @@ class SettingsViewController: UIViewController {
     
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -216,19 +214,10 @@ class SettingsViewController: UIViewController {
         // Table view identifier
         settingsTableView.accessibilityIdentifier = "settings"
         
-        // Set colors, fonts, etc.
-        applyColorPalette()
-        
         // Check whether we should display the max size options
         if UploadVars.shared.resizeImageOnUpload,
            UploadVars.shared.photoMaxSize == 0, UploadVars.shared.videoMaxSize == 0 {
             UploadVars.shared.resizeImageOnUpload = false
-        }
-        
-        // Check whether we should show the prefix option
-        if UploadVars.shared.prefixFileNameBeforeUpload,
-           UploadVars.shared.defaultPrefix.isEmpty {
-            UploadVars.shared.prefixFileNameBeforeUpload = false
         }
     }
     
@@ -275,6 +264,9 @@ class SettingsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Set colors, fonts, etc.
+        applyColorPalette()
+        
         // Set navigation buttons
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         navigationItem.setRightBarButtonItems([helpBarButton].compactMap { $0 }, animated: true)
@@ -306,20 +298,18 @@ class SettingsViewController: UIViewController {
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
-//        debugPrint("=> langCode: ", String(describing: langCode))
-//        debugPrint(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate,         AppVars.shared.dateOfLastTranslationRequest, AppVars.shared.pwgOneMonth))
         let now: Double = Date().timeIntervalSinceReferenceDate
-        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.pwgOneMonth
-        if (now > dueDate) && (["ar","id","ko","pt-BR","sv","uk"].contains(langCode)) {
+        // Comment the below line and uncomment the next one for debugging
+        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + 3 * AppVars.shared.pwgOneMonth
+//        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
+        if now > dueDate, ["ar","da","hu","id","it","ja","nl","ru","sv"].contains(langCode) {
             // Store date of last translation request
             AppVars.shared.dateOfLastTranslationRequest = now
             
             // Request a translation
             let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
-            
             let cancelAction = UIAlertAction(title: NSLocalizedString("alertNoButton", comment: "No"), style: .destructive, handler: { action in
             })
-            
             let defaultAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
                 if let url = URL(string: "https://crowdin.com/project/piwigo-mobile") {
                     UIApplication.shared.open(url)
@@ -340,28 +330,7 @@ class SettingsViewController: UIViewController {
             })
         }
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
         
-        //Reload the tableview on orientation change, to match the new width of the table.
-        coordinator.animate(alongsideTransition: { [self] _ in
-            
-            // On iPad, the Settings section is presented in a centered popover view
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                let mainScreenBounds = UIScreen.main.bounds
-                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
-                                                                        y: mainScreenBounds.midY,
-                                                                        width: 0, height: 0)
-                self.preferredContentSize = CGSize(width: pwgPadSettingsWidth,
-                                                   height: ceil(mainScreenBounds.height * 2 / 3))
-            }
-            
-            // Reload table view
-            self.settingsTableView?.reloadData()
-        })
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -406,11 +375,15 @@ class SettingsViewController: UIViewController {
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
             if #available(iOS 14, *) {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3]
+                if NetworkVars.shared.usesUploadAsync {
+                    helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
+                } else {
+                    helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
+                }
             } else if #available(iOS 13, *) {
-                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3]
+                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3,9]
             } else {
-                helpVC.displayHelpPagesWithID = [1,5,6,4,1]
+                helpVC.displayHelpPagesWithID = [1,5,6,4,3]
             }
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
@@ -435,9 +408,9 @@ class SettingsViewController: UIViewController {
             }
         }
         
-        // Inform user if the AutoUploadViewController is not presented
-        children.forEach { if $0 is AutoUploadViewController { return } }
-        if let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
+        // Inform user if Settings are presented
+        if view.window != nil,
+           let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }
         }

@@ -1,1 +1,2 @@
-Fehlerbehebungen
+• Hinzufügen von Optionen zum Ändern von Dateinamen vor dem Hochladen
+• Behebung von Fehlern und Verbesserung der Benutzeroberfläche

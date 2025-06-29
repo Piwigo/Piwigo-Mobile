@@ -10,22 +10,44 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
+class UploadSettingsViewController: UITableViewController {
     
     @IBOutlet var settingsTableView: UITableView!
     
-    var stripGPSdataOnUpload = UploadVars.shared.stripGPSdataOnUpload
-    var resizeImageOnUpload = UploadVars.shared.resizeImageOnUpload
-    var photoMaxSize: Int16 = UploadVars.shared.photoMaxSize
-    var videoMaxSize: Int16 = UploadVars.shared.videoMaxSize
-    var compressImageOnUpload = UploadVars.shared.compressImageOnUpload
-    var photoQuality: Int16 = UploadVars.shared.photoQuality
-    var prefixFileNameBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
-    var defaultPrefix = UploadVars.shared.defaultPrefix
-    private var shouldUpdateDefaultPrefix = false
-    private var canDeleteImages = false
-    var deleteImageAfterUpload = false
+    lazy var stripGPSdataOnUpload = UploadVars.shared.stripGPSdataOnUpload
+    lazy var resizeImageOnUpload = UploadVars.shared.resizeImageOnUpload
+    lazy var photoMaxSize: Int16 = UploadVars.shared.photoMaxSize
+    lazy var videoMaxSize: Int16 = UploadVars.shared.videoMaxSize
+    lazy var compressImageOnUpload = UploadVars.shared.compressImageOnUpload
+    lazy var photoQuality: Int16 = UploadVars.shared.photoQuality
+    
+    lazy var prefixBeforeUpload: Bool = UploadVars.shared.prefixFileNameBeforeUpload
+    lazy var prefixActions: RenameActionList = UploadVars.shared.prefixFileNameActionList.actions
+    lazy var replaceBeforeUpload: Bool = UploadVars.shared.replaceFileNameBeforeUpload
+    lazy var replaceActions: RenameActionList = UploadVars.shared.replaceFileNameActionList.actions
+    lazy var suffixBeforeUpload: Bool = UploadVars.shared.suffixFileNameBeforeUpload
+    lazy var suffixActions: RenameActionList = UploadVars.shared.suffixFileNameActionList.actions
+    lazy var changeCaseBeforeUpload: Bool = UploadVars.shared.changeCaseOfFileExtension
+    lazy var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
 
+    lazy var categoryId: Int32? = {
+        // Will be used to add the album ID to the file name
+        return (parent as? UploadSwitchViewController)?.categoryId
+    }()
+    lazy var currentCounter: Int64 = {
+        // Will display the current counter value
+        return (parent as? UploadSwitchViewController)?.categoryCurrentCounter ?? UploadVars.shared.categoryCounterInit
+    }()
+    lazy var canDeleteImages: Bool = {
+        // Will propose the option to delete the image after upload
+        return (parent as? UploadSwitchViewController)?.canDeleteImages ?? false
+    }()
+    lazy var deleteImageAfterUpload: Bool = {
+        // Can we propose to delete images after upload?
+        return canDeleteImages ? UploadVars.shared.deleteImageAfterUpload : false
+    }()
+
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,343 +75,11 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-        
-        // Can we propose to delete images after upload?
-        if let switchVC = parent as? UploadSwitchViewController {
-            canDeleteImages = switchVC.canDeleteImages
-            if canDeleteImages {
-                deleteImageAfterUpload = UploadVars.shared.deleteImageAfterUpload
-            }
-        }
     }
 
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
-    }
-
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("imageUploadHeaderTitle_upload", comment: "Upload Settings"))
-        let text = NSLocalizedString("imageUploadHeaderText_upload", comment: "Please set the upload parameters to apply to the selection of photos/videos")
-        return (title, text)
-    }
-
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.0
-    }
-
-    
-    // MARK: - UITableView - Rows
-    /// Remark: a UIView is added at the bottom of the table view in the storyboard
-    /// to eliminate extra separators below the cells.
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 + (resizeImageOnUpload ? 2 : 0)
-                 + (compressImageOnUpload ? 1 : 0)
-                 + (prefixFileNameBeforeUpload ? 1 : 0)
-                 + (canDeleteImages ? 1 : 0)
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var tableViewCell = UITableViewCell()
-        var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
-        row += (!compressImageOnUpload && (row > 4)) ? 1 : 0
-        row += (!prefixFileNameBeforeUpload && (row > 6)) ? 1 : 0
-        switch row {
-        case 0 /* Strip private Metadata? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            // See https://iosref.com/res
-            if view.bounds.size.width > 430 {
-                // i.e. larger than iPhones 14 Pro Max screen width
-                cell.configure(with: NSLocalizedString("settings_stripGPSdata>375px", comment: "Strip Private Metadata Before Upload"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
-            }
-            cell.cellSwitch.setOn(stripGPSdataOnUpload, animated: true)
-            cell.cellSwitchBlock = { switchState in
-                self.stripGPSdataOnUpload = switchState
-            }
-            cell.accessibilityIdentifier = "stripMetadataBeforeUpload"
-            tableViewCell = cell
-            
-        case 1 /* Resize Before Upload? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
-            cell.cellSwitch.setOn(resizeImageOnUpload, animated: true)
-            cell.cellSwitchBlock = { switchState in
-                // Number of rows will change accordingly
-                self.resizeImageOnUpload = switchState
-                // Position of the row that should be added/removed
-                let photoAtIndexPath = IndexPath(row: 2, section: 0)
-                let videoAtIndexPath = IndexPath(row: 3, section: 0)
-                if switchState {
-                    // Insert row in existing table
-                    self.settingsTableView?.insertRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
-                } else {
-                    // Remove row in existing table
-                    self.settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
-                }
-            }
-            cell.accessibilityIdentifier = "resizeBeforeUpload"
-            tableViewCell = cell
-            
-        case 2 /* Upload Photo Max Size */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-            else { preconditionFailure("Could not load a LabelTableViewCell!") }
-            cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
-                           detail: pwgPhotoMaxSizes(rawValue: photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name)
-            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-            cell.accessibilityIdentifier = "uploadPhotoSize"
-            tableViewCell = cell
-
-        case 3 /* Upload Max Video Size */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-            else { preconditionFailure("Could not load a LabelTableViewCell!") }
-            cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
-                           detail: pwgVideoMaxSizes(rawValue: videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name)
-            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-            cell.accessibilityIdentifier = "defaultUploadVideoSize"
-            tableViewCell = cell
-            
-        case 4 /* Compress before Upload? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            // See https://iosref.com/res
-            if view.bounds.size.width > 430 {
-                // i.e. larger than iPhones 14 Pro Max screen width
-                cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Image Before Upload"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
-            }
-            cell.cellSwitch.setOn(compressImageOnUpload, animated: true)
-            cell.cellSwitchBlock = { switchState in
-                // Number of rows will change accordingly
-                self.compressImageOnUpload = switchState
-                // Position of the row that should be added/removed
-                let rowAtIndexPath = IndexPath(row: 3 + (self.resizeImageOnUpload ? 2 : 0), section: 0)
-                if switchState {
-                    // Insert row in existing table
-                    self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
-                } else {
-                    // Remove row in existing table
-                    self.settingsTableView?.deleteRows(at: [rowAtIndexPath], with: .automatic)
-                }
-            }
-            cell.accessibilityIdentifier = "compressBeforeUpload"
-            tableViewCell = cell
-            
-        case 5 /* Image Quality slider */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
-            else { preconditionFailure("Could not load a SliderTableViewCell!") }
-            // Slider value
-            let value = Float(photoQuality)
-
-            // Slider configuration
-            let title = String(format: "… %@", NSLocalizedString("settings_photoQuality", comment: "Quality"))
-            cell.configure(with: title, value: value, increment: 1, minValue: 50, maxValue: 98, prefix: "", suffix: "%")
-            cell.cellSliderBlock = { newValue in
-                // Update settings
-                self.photoQuality = Int16(newValue)
-            }
-            cell.accessibilityIdentifier = "compressionRatio"
-            tableViewCell = cell
-            
-        case 6 /* Prefix Filename Before Upload switch */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            // See https://iosref.com/res
-            if view.bounds.size.width > 430 {
-                // i.e. larger than iPhones 14 Pro Max screen width
-                cell.configure(with: NSLocalizedString("settings_prefixFilename>414px", comment: "Prefix Photo Filename Before Upload"))
-            } else if view.bounds.size.width > 375 {
-                // i.e. larger than iPhones 6,7 screen width
-                cell.configure(with: NSLocalizedString("settings_prefixFilename>375px", comment: "Prefix Filename Before Upload"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_prefixFilename", comment: "Prefix Filename"))
-            }
-            cell.cellSwitch.setOn(prefixFileNameBeforeUpload, animated: true)
-            cell.cellSwitchBlock = { switchState in
-                // Number of rows will change accordingly
-                self.prefixFileNameBeforeUpload = switchState
-                // Position of the row that should be added/removed
-                let rowAtIndexPath = IndexPath(row: 4 + (self.resizeImageOnUpload ? 2 : 0)
-                                                      + (self.compressImageOnUpload ? 1 : 0),section: 0)
-                if switchState {
-                    // Insert row in existing table
-                    self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
-                } else {
-                    // Remove row in existing table
-                    self.settingsTableView?.deleteRows(at: [rowAtIndexPath], with: .automatic)
-                }
-            }
-            cell.accessibilityIdentifier = "prefixBeforeUpload"
-            tableViewCell = cell
-            
-        case 7 /* Filename prefix? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
-            else { preconditionFailure("Could not load a TextFieldTableViewCell!") }
-            // See https://iosref.com/res
-            var title: String
-            let input: String = defaultPrefix
-            let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
-            if view.bounds.size.width > 320 {
-                // i.e. larger than iPhone 5 screen width
-                title = String(format:"… %@", NSLocalizedString("settings_defaultPrefix>320px", comment: "Filename Prefix"))
-            } else {
-                title = String(format:"… %@", NSLocalizedString("settings_defaultPrefix", comment: "Prefix"))
-            }
-            cell.configure(with: title, input: input, placeHolder: placeHolder)
-            cell.rightTextField.delegate = self
-            cell.rightTextField.tag = ImageUploadSetting.prefix.rawValue
-            cell.rightTextField.textColor = shouldUpdateDefaultPrefix ? .piwigoColorOrange() : .piwigoColorRightLabel()
-            cell.accessibilityIdentifier = "prefixFileName"
-            tableViewCell = cell
-            
-        case 8 /* Delete image after upload? */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            // See https://iosref.com/res
-            if view.bounds.size.width > 430 {
-                // i.e. larger than iPhones 14 Pro Max screen width
-                cell.configure(with: NSLocalizedString("settings_deleteImage>375px", comment: "Delete Image After Upload"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))
-            }
-            cell.cellSwitch.setOn(deleteImageAfterUpload, animated: true)
-            cell.cellSwitchBlock = { switchState in
-                self.deleteImageAfterUpload = switchState
-            }
-            cell.accessibilityIdentifier = "deleteAfterUpload"
-            tableViewCell = cell
-            
-        default:
-            break
-        }
-    
-    tableViewCell.isAccessibilityElement = true
-    return tableViewCell
-    }
-
-    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
-        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
-        row += (!prefixFileNameBeforeUpload && (row > 5)) ? 1 : 0
-        switch row {
-        case 2 /* Upload Photo Size */,
-             3 /* Upload Video Size */:
-            return true
-        default:
-            return false
-        }
-    }
-
-
-    // MARK: - UITableViewDelegate Methods
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
-        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
-        row += (!prefixFileNameBeforeUpload && (row > 5)) ? 1 : 0
-        switch row {
-        case 2 /* Upload Photo Size */:
-            // Present the Upload Photo Size selector
-            let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
-            guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
-            uploadPhotoSizeVC.delegate = self
-            uploadPhotoSizeVC.photoMaxSize = photoMaxSize
-            navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
-        case 3 /* Upload Video Size */:
-            // Present the Upload Photo Size selector
-            let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
-            guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController else { return }
-            uploadVideoSizeVC.delegate = self
-            uploadVideoSizeVC.videoMaxSize = videoMaxSize
-            navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
-        default:
-            break
-        }
-    }
-
-
-    // MARK: - UITextFieldDelegate Methods
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        switch ImageUploadSetting(rawValue: textField.tag) {
-        case .prefix:
-            shouldUpdateDefaultPrefix = true
-        default:
-            break
-        }
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        let newString = PwgSession.utf8mb3String(from: string)
-        guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: newString) else {
-            return true
-        }
-        switch ImageUploadSetting(rawValue: textField.tag) {
-        case .prefix:
-            defaultPrefix = finalString
-        default:
-            break
-        }
-        return true
-    }
-
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        switch ImageUploadSetting(rawValue: textField.tag) {
-        case .prefix:
-            defaultPrefix = ""
-        default:
-            break
-        }
-        return true
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        settingsTableView?.endEditing(true)
-        return true
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        switch ImageUploadSetting(rawValue: textField.tag) {
-        case .prefix:
-            // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-            defaultPrefix = PwgSession.utf8mb3String(from: textField.text)
-            if defaultPrefix == UploadVars.shared.defaultPrefix {
-                shouldUpdateDefaultPrefix = false
-            }
-
-            // Update cell
-            let indexPath = IndexPath(row: 3 + (resizeImageOnUpload ? 1 : 0)
-                                             + (compressImageOnUpload ? 1 : 0)
-                                             + (prefixFileNameBeforeUpload ? 1 : 0),
-                                      section: 0)
-            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
-        default:
-            break
-        }
     }
 }
 
@@ -449,6 +139,39 @@ extension UploadSettingsViewController: UploadVideoSizeDelegate {
             // Refresh flag
             let indexPath = IndexPath(row: 1, section: 0)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+}
+
+// MARK: - MofifyFilenameDelegate Methods
+extension UploadSettingsViewController: MofifyFilenameDelegate {
+    func didChangeRenameFileSettings(prefix: Bool, prefixActions: RenameActionList,
+                                     replace: Bool, replaceActions: RenameActionList,
+                                     suffix: Bool, suffixActions: RenameActionList,
+                                     changeCase: Bool, caseOfExtension: FileExtCase,
+                                     currentCounter: Int64) {
+        // Save settings
+        self.currentCounter = currentCounter
+        self.prefixBeforeUpload = prefix
+        self.prefixActions = prefixActions
+        self.replaceBeforeUpload = replace
+        self.replaceActions = replaceActions
+        self.suffixBeforeUpload = suffix
+        self.suffixActions = suffixActions
+        self.changeCaseBeforeUpload = changeCase
+        self.caseOfFileExtension = caseOfExtension
+        
+        // Update cell
+        let indexPath = IndexPath(row: 3 + (resizeImageOnUpload ? 1 : 0)
+                                         + (compressImageOnUpload ? 1 : 0),
+                                  section: 0)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            if prefix || replace || suffix || changeCase {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+            } else {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+            }
         }
     }
 }

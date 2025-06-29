@@ -1,1 +1,2 @@
-Buggfixar
+• Lägger till alternativ för att ändra filnamn före uppladdning
+• Fixar buggar och förbättrar gränssnittet

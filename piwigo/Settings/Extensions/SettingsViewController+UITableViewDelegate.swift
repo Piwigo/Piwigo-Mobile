@@ -123,13 +123,14 @@ extension SettingsViewController: UITableViewDelegate
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
                 4  /* Upload Photo Size */,
                 5  /* Upload Video Size */,
-                11 /* Auto upload */:
+                8  /* Rename Filename Before Upload */,
+                10 /* Auto upload */:
                 result = true
             default:
                 result = false
@@ -235,7 +236,8 @@ extension SettingsViewController: UITableViewDelegate
             switch row {
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+                else { preconditionFailure("Could not load SelectCategoryViewController") }
                 categoryVC.user = user
                 if categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
                                        for: .setDefaultAlbum) {
@@ -244,7 +246,8 @@ extension SettingsViewController: UITableViewDelegate
                 }
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultAlbumThumbnailSizeViewController", bundle: nil)
-                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
+                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController
+                else { preconditionFailure("Could not load DefaultAlbumThumbnailSizeViewController") }
                 defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             default:
@@ -259,17 +262,20 @@ extension SettingsViewController: UITableViewDelegate
             switch row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController
+                else { preconditionFailure("Could not load CategorySortViewController") }
                 categoryVC.sortDelegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultImageThumbnailSizeViewController", bundle: nil)
-                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController else { return }
+                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController
+                else { preconditionFailure("Could not load DefaultImageThumbnailSizeViewController") }
                 defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 4 /* Image file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
-                guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
+                guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController
+                else { preconditionFailure("Could not load DefaultImageSizeViewController") }
                 defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             default:
@@ -289,30 +295,49 @@ extension SettingsViewController: UITableViewDelegate
             row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
             row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
             row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
-            row += (!NetworkVars.shared.usesUploadAsync && (row > 10)) ? 1 : 0
+            row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
-                guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
+                guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
+                else { preconditionFailure("Could not load SelectPrivacyViewController") }
                 privacyVC.delegate = self
                 privacyVC.privacy = pwgPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 4 /* Upload Photo Size */:
                 let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
-                guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
+                guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController
+                else { preconditionFailure("Could not load UploadPhotoSizeViewController") }
                 uploadPhotoSizeVC.delegate = self
                 uploadPhotoSizeVC.photoMaxSize = UploadVars.shared.photoMaxSize
                 navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
             case 5 /* Upload Video Size */:
                 let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
-                guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController else { return }
+                guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController
+                else { preconditionFailure("Could not load UploadVideoSizeViewController") }
                 uploadVideoSizeVC.delegate = self
                 uploadVideoSizeVC.videoMaxSize = UploadVars.shared.videoMaxSize
                 navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
-            case 11 /* Auto Upload */:
+            case 8 /* Rename Filename Before Upload */:
+                let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
+                guard let filenameVC = filenameSB.instantiateViewController(withIdentifier: "RenameFileViewController") as? RenameFileViewController
+                else { preconditionFailure("Could not load RenameFileViewController") }
+                filenameVC.delegate = self
+                filenameVC.currentCounter = UploadVars.shared.categoryCounterInit
+                filenameVC.prefixBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+                filenameVC.prefixActions = UploadVars.shared.prefixFileNameActionList.actions
+                filenameVC.replaceBeforeUpload = UploadVars.shared.replaceFileNameBeforeUpload
+                filenameVC.replaceActions = UploadVars.shared.replaceFileNameActionList.actions
+                filenameVC.suffixBeforeUpload = UploadVars.shared.suffixFileNameBeforeUpload
+                filenameVC.suffixActions = UploadVars.shared.suffixFileNameActionList.actions
+                filenameVC.changeCaseBeforeUpload = UploadVars.shared.changeCaseOfFileExtension
+                filenameVC.caseOfFileExtension = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
+                navigationController?.pushViewController(filenameVC, animated: true)
+            case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
-                guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
+                guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController
+                else { preconditionFailure("Could not load AutoUploadViewController") }
                 autoUploadVC.user = user
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
@@ -325,18 +350,21 @@ extension SettingsViewController: UITableViewDelegate
             case 0 /* Clear cache */:
                 // Display numpad for setting up a passcode
                 let appLockSB = UIStoryboard(name: "LockOptionsViewController", bundle: nil)
-                guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "LockOptionsViewController") as? LockOptionsViewController else { return }
+                guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "LockOptionsViewController") as? LockOptionsViewController
+                else { preconditionFailure("Could not load LockOptionsViewController") }
                 appLockVC.delegate = self
                 navigationController?.pushViewController(appLockVC, animated: true)
             case 1 /* Clear Clipboard */:
                 // Display list of delays
                 let delaySB = UIStoryboard(name: "ClearClipboardViewController", bundle: nil)
-                guard let delayVC = delaySB.instantiateViewController(withIdentifier: "ClearClipboardViewController") as? ClearClipboardViewController else { return }
+                guard let delayVC = delaySB.instantiateViewController(withIdentifier: "ClearClipboardViewController") as? ClearClipboardViewController
+                else { preconditionFailure("Could not load ClearClipboardViewController") }
                 delayVC.delegate = self
                 navigationController?.pushViewController(delayVC, animated: true)
             case 2 /* Share image metadata options */:
                 let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController
+                else { preconditionFailure("Could not load ShareMetadataViewController") }
                 navigationController?.pushViewController(metadataOptionsVC, animated: true)
 
             default:
@@ -347,11 +375,13 @@ extension SettingsViewController: UITableViewDelegate
         case .appearance /* Appearance */:
             if #available(iOS 13.0, *) {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else { return }
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController
+                else { preconditionFailure("Could not load ColorPaletteViewController") }
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             } else {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewControllerOld", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld else { return }
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld
+                else { preconditionFailure("Could not load ColorPaletteViewControllerOld") }
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             }
 
@@ -400,22 +430,19 @@ extension SettingsViewController: UITableViewDelegate
                 }
             case 3 /* Open Release Notes page */:
                 let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
-                let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
-                if let releaseNotesVC = releaseNotesVC {
-                    navigationController?.pushViewController(releaseNotesVC, animated: true)
-                }
+                guard let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
+                else { preconditionFailure("Could not load ReleaseNotesViewController") }
+                navigationController?.pushViewController(releaseNotesVC, animated: true)
             case 4 /* Open Acknowledgements page */:
                 let aboutSB = UIStoryboard(name: "AboutViewController", bundle: nil)
-                let aboutVC = aboutSB.instantiateViewController(withIdentifier: "AboutViewController") as? AboutViewController
-                if let aboutVC = aboutVC {
-                    navigationController?.pushViewController(aboutVC, animated: true)
-                }
+                guard let aboutVC = aboutSB.instantiateViewController(withIdentifier: "AboutViewController") as? AboutViewController
+                else { preconditionFailure("Could not load AboutViewController") }
+                navigationController?.pushViewController(aboutVC, animated: true)
             case 5 /* Open Privacy Policy page */:
                 let privacyPolicySB = UIStoryboard(name: "PrivacyPolicyViewController", bundle: nil)
-                let privacyPolicyVC = privacyPolicySB.instantiateViewController(withIdentifier: "PrivacyPolicyViewController") as? PrivacyPolicyViewController
-                if let privacyPolicyVC = privacyPolicyVC {
-                    navigationController?.pushViewController(privacyPolicyVC, animated: true)
-                }
+                guard let privacyPolicyVC = privacyPolicySB.instantiateViewController(withIdentifier: "PrivacyPolicyViewController") as? PrivacyPolicyViewController
+                else { preconditionFailure("Could not load PrivacyPolicyViewController") }
+                navigationController?.pushViewController(privacyPolicyVC, animated: true)
             default:
                 break
             }
@@ -444,6 +471,7 @@ extension SettingsViewController: UITableViewDelegate
                 if MFMailComposeViewController.canSendMail() {
                     let composeVC = MFMailComposeViewController()
                     composeVC.mailComposeDelegate = self
+                    composeVC.view.tintColor = .piwigoColorOrange()
 
                     // Configure the fields of the interface.
                     composeVC.setToRecipients([

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.2_text" = "Version 3.3.2\n\n• Corrige les bugs et améliore l'interface";
+"v3.4.0_text" = "Version 3.4\n\n• Ajoute des options pour modifier les noms de fichiers avant transfert\n• Corrige des bugs et améliore l'interface";
+
+"v3.3.2_text" = "Version 3.3.2\n14 avril 2025\n\n• Corrige des bugs et améliore l'interface";
 
 "v3.3.1_text" = "Version 3.3.1\n28 mars 2025\n\n• Ajoute des options de lecture automatique et de lecture en boucle des vidéos\n• Corrige des bugs et améliore l'interface";
 

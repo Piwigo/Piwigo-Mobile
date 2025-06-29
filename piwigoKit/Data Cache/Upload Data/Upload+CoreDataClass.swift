@@ -68,6 +68,18 @@ public class Upload: NSManagedObject {
         if fileName != uploadProperties.fileName {
             fileName = uploadProperties.fileName
         }
+        if fileNameExtensionCase != uploadProperties.fileNameExtensionCase {
+            fileNameExtensionCase = uploadProperties.fileNameExtensionCase
+        }
+        if fileNamePrefixEncodedActions != uploadProperties.fileNamePrefixEncodedActions {
+            fileNamePrefixEncodedActions = uploadProperties.fileNamePrefixEncodedActions
+        }
+        if fileNameReplaceEncodedActions != uploadProperties.fileNameReplaceEncodedActions {
+            fileNameReplaceEncodedActions = uploadProperties.fileNameReplaceEncodedActions
+        }
+        if fileNameSuffixEncodedActions != uploadProperties.fileNameSuffixEncodedActions {
+            fileNameSuffixEncodedActions = uploadProperties.fileNameSuffixEncodedActions
+        }
         if mimeType != uploadProperties.mimeType {
             mimeType = uploadProperties.mimeType
         }
@@ -131,12 +143,6 @@ public class Upload: NSManagedObject {
         }
         if photoQuality != uploadProperties.photoQuality {
             photoQuality = Int16(uploadProperties.photoQuality)
-        }
-        if prefixFileNameBeforeUpload != uploadProperties.prefixFileNameBeforeUpload {
-            prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
-        }
-        if defaultPrefix != uploadProperties.defaultPrefix {
-            defaultPrefix = uploadProperties.defaultPrefix
         }
         if deleteImageAfterUpload != uploadProperties.deleteImageAfterUpload {
             deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
@@ -217,27 +223,37 @@ extension Upload {
     public func getProperties() -> UploadProperties {
         let tags = self.tags?.compactMap({$0}) ?? []
         let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        return UploadProperties(localIdentifier: self.localIdentifier,
+        return UploadProperties(
+            localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: self.category,
+            
             // Server parameters
             serverPath: self.user?.server?.path ?? NetworkVars.shared.serverPath,
             serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.shared.serverFileTypes,
+            
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
+
             // Photo creation date and filename
-            creationDate: self.creationDate, fileName: self.fileName,
+            creationDate: self.creationDate,
+            fileName: self.fileName,
+            fileNameExtensionCase: self.fileNameExtensionCase,
+            fileNamePrefixEncodedActions: self.fileNamePrefixEncodedActions,
+            fileNameReplaceEncodedActions: self.fileNameReplaceEncodedActions,
+            fileNameSuffixEncodedActions: self.fileNameSuffixEncodedActions,
             mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
+            
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
             tagIds: newTagIds, imageId: self.imageId,
+            
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,
             photoMaxSize: self.photoMaxSize, videoMaxSize:self.videoMaxSize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
-            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload,
             markedForAutoUpload: self.markedForAutoUpload)
     }
@@ -245,27 +261,38 @@ extension Upload {
     public func getProperties(with state: pwgUploadState, error: String) -> UploadProperties {
         let tags = self.tags?.compactMap({$0}) ?? []
         let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
-        return UploadProperties(localIdentifier: self.localIdentifier,
+        return UploadProperties(
+            localIdentifier: self.localIdentifier,
+            
             // Category ID of the album to upload to
             category: self.category,
+            
             // Server parameters
             serverPath: self.user?.server?.path ?? NetworkVars.shared.serverPath,
             serverFileTypes: self.user?.server?.fileTypes ?? NetworkVars.shared.serverFileTypes,
+            
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: state, requestError: error,
+            
             // Photo creation date and filename
-            creationDate: self.creationDate, fileName: self.fileName,
+            creationDate: self.creationDate,
+            fileName: self.fileName,
+            fileNameExtensionCase: self.fileNameExtensionCase,
+            fileNamePrefixEncodedActions: self.fileNamePrefixEncodedActions,
+            fileNameReplaceEncodedActions: self.fileNameReplaceEncodedActions,
+            fileNameSuffixEncodedActions: self.fileNameSuffixEncodedActions,
             mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
+            
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
             tagIds: newTagIds, imageId: self.imageId,
+            
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
             resizeImageOnUpload: self.resizeImageOnUpload,
             photoMaxSize: self.photoMaxSize, videoMaxSize: self.videoMaxSize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
-            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload,
             markedForAutoUpload: self.markedForAutoUpload)
     }

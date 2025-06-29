@@ -232,20 +232,23 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
             
             // Show upload parameter views
             let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
-            if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
-                uploadSwitchVC.delegate = self
-                uploadSwitchVC.user = self.user
-                uploadSwitchVC.canDeleteImages = false
-                
-                // Push Edit view embedded in navigation controller
-                let navController = UINavigationController(rootViewController: uploadSwitchVC)
-                navController.modalPresentationStyle = .popover
-                navController.modalTransitionStyle = .coverVertical
-                navController.popoverPresentationController?.sourceView = self.localImagesCollection
-                navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
-                navController.popoverPresentationController?.permittedArrowDirections = .up
-                self.navigationController?.present(navController, animated: true)
-            }
+            guard let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController
+            else { preconditionFailure("Could not load UploadSwitchViewController") }
+            
+            uploadSwitchVC.delegate = self
+            uploadSwitchVC.user = self.user
+            uploadSwitchVC.categoryId = self.categoryId
+            uploadSwitchVC.categoryCurrentCounter = self.categoryCurrentCounter
+            uploadSwitchVC.canDeleteImages = false
+            
+            // Push Edit view embedded in navigation controller
+            let navController = UINavigationController(rootViewController: uploadSwitchVC)
+            navController.modalPresentationStyle = .popover
+            navController.modalTransitionStyle = .coverVertical
+            navController.popoverPresentationController?.sourceView = self.localImagesCollection
+            navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
+            navController.popoverPresentationController?.permittedArrowDirections = .up
+            self.navigationController?.present(navController, animated: true)
         }
     }
 }

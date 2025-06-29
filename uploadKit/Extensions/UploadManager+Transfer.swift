@@ -350,8 +350,7 @@ extension UploadManager {
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
-              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum)
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
         else {
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("Could not extract HTTP header fields !!!!!!")
@@ -441,8 +440,11 @@ extension UploadManager {
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk), let chunk = Int(chunkStr),
-              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPmd5sum) else {
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks), let chunks = Int(chunksStr)
+        else {
+            if #available(iOSApplicationExtension 14.0, *) {
+                UploadManager.logger.notice("Could not extract HTTP header fields !!!!!!")
+            }
             return
         }
         

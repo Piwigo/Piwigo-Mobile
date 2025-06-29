@@ -37,10 +37,13 @@ extension EditImageParamsViewController: UITextFieldDelegate
 
             // The common date can be distant past (i.e. unset)
             // or before "1900-01-08 00:00:00" i.e. a week after unknown date
-            let refDate = DateUtilities.weekAfterInterval
-            if commonDateCreated.timeIntervalSinceReferenceDate < refDate {
-                // Define date as today
-                commonDateCreated = Date()
+            if commonDateCreated < DateUtilities.weekAfter {
+                // Define date as today in UTC
+                let currentDate = Date()
+                var calendar = Calendar.current
+                let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: currentDate)
+                calendar.timeZone = TimeZone(abbreviation: "UTC")!
+                commonDateCreated = calendar.date(from: components)!
                 shouldUpdateDateCreated = true
 
                 // Update creation date

@@ -1,5 +1,5 @@
 //
-//  ServerTableViewCell.h
+//  TextFieldTableViewCell.h
 //  piwigo
 //
 //  Created by Spencer Baker on 2/2/15.
@@ -11,7 +11,6 @@
 import UIKit
 
 class TextFieldTableViewCell: UITableViewCell {
-
 
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var rightTextField: UITextField!
@@ -44,5 +43,19 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.text = ""
         rightTextField.tag = -1
         rightTextField.delegate = nil
+    }
+}
+
+// Used to retrieve the indexPath of the cell containing rightTextField
+extension UIView {
+    func parentTableViewCell() -> UITableViewCell? {
+        var view = self.superview
+        while view != nil {
+            if let cell = view as? UITableViewCell {
+                return cell
+            }
+            view = view?.superview
+        }
+        return nil
     }
 }

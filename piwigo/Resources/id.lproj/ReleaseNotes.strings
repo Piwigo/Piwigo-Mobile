@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.2_text" = "Version 3.3.2\n\n• Fixes bugs and improves the interface";
+"v3.4.0_text" = "Version 3.4\n\n• Adds options for modifying file names before upload\n• Fixes bugs and improves the interface";
+
+"v3.3.2_text" = "Version 3.3.2\nApril 14, 2025\n\n• Fixes bugs and improves the interface";
 
 "v3.3.1_text" = "Versi 3.3.1\n\n• Menambahkan opsi pemutaran otomatis dan pengulangan video\n• Memperbaiki bug dan meningkatkan antarmuka";
 

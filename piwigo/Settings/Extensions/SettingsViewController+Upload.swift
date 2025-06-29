@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MessageUI
 import piwigoKit
 import uploadKit
 
@@ -99,6 +100,42 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             let indexPath = IndexPath(row: photoAtIndexPath.row - 1,
                                       section: SettingsSection.imageUpload.rawValue)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+}
+
+
+// MARK: - MofifyFilenameDelegate Methods
+extension SettingsViewController: MofifyFilenameDelegate {
+    func didChangeRenameFileSettings(prefix: Bool, prefixActions: RenameActionList,
+                                     replace: Bool, replaceActions: RenameActionList,
+                                     suffix: Bool, suffixActions: RenameActionList,
+                                     changeCase: Bool, caseOfExtension: FileExtCase,
+                                     currentCounter: Int64) {
+        // Save default settings
+        UploadVars.shared.categoryCounterInit = currentCounter
+        UploadVars.shared.prefixFileNameBeforeUpload = prefix
+        UploadVars.shared.prefixFileNameActionList = prefixActions.encodedString
+        UploadVars.shared.replaceFileNameBeforeUpload = replace
+        UploadVars.shared.replaceFileNameActionList = replaceActions.encodedString
+        UploadVars.shared.suffixFileNameBeforeUpload = suffix
+        UploadVars.shared.suffixFileNameActionList = suffixActions.encodedString
+        UploadVars.shared.changeCaseOfFileExtension = changeCase
+        UploadVars.shared.caseOfFileExtension = caseOfExtension.rawValue
+        
+        // Update cell
+        let indexPath = IndexPath(row: 4 + (user.hasAdminRights ? 1 : 0)
+                                         + (UploadVars.shared.resizeImageOnUpload ? 2 : 0)
+                                         + (UIDevice.current.hasCellular ? 1 : 0)
+                                         + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
+                                  section: SettingsSection.imageUpload.rawValue)
+        if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
+           let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            if isRenameFileAtiveByDefault == true {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+            } else {
+                cell.detailLabel.text = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ class AutoUploadViewController: UIViewController {
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
         guard let context: NSManagedObjectContext = user?.managedObjectContext else {
-            fatalError("!!! Missing Managed Object Context !!!")
+            preconditionFailure("!!! Missing Managed Object Context !!!")
         }
         return context
     }()
@@ -57,7 +57,6 @@ class AutoUploadViewController: UIViewController {
 
 
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -154,7 +153,8 @@ class AutoUploadViewController: UIViewController {
         autoUploadTableView?.reloadSections(IndexSet(integer: 0), with: .automatic)
         
         // Inform user if an error was reported
-        if let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
+        if view.window != nil,
+           let title = notification.userInfo?["title"] as? String, title.isEmpty == false,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }
         }

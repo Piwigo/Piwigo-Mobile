@@ -15,7 +15,7 @@ protocol UploadVideoSizeDelegate: NSObjectProtocol {
     func didSelectUploadVideoSize(_ imageSize: Int16)
 }
 
-class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class UploadVideoSizeViewController: UIViewController {
 
     weak var delegate: UploadVideoSizeDelegate?
     
@@ -37,14 +37,10 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
 
     @objc func applyColorPalette() {
@@ -82,6 +78,9 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -98,35 +97,15 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
+}
 
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("UploadVideoSize_title", comment: "Max Video Size"))
-        let text = NSLocalizedString("UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
-        return (title, text)
-    }
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
-    
+// MARK: - UITableViewDataSource Methods
+extension UploadVideoSizeViewController: UITableViewDataSource
+{
     // MARK: - UITableView - Rows
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgVideoMaxSizes.allCases.count
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -149,10 +128,50 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
         return cell
     }
+}
+
+
+// MARK: - UITableViewDelegate Methods
+extension UploadVideoSizeViewController: UITableViewDelegate
+{
+    // MARK: - UITableView - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("UploadVideoSize_title", comment: "Max Video Size"))
+        let text = NSLocalizedString("UploadVideoSize_header", comment: "Please select the maximum size of the videos which will be uploaded.")
+        return (title, text)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+
+    
+    // MARK: - UITableView - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44.0
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        // Did the user change of max photo size?
+        if indexPath.row == videoMaxSize { return }
+
+        // Update default size
+        tableView.cellForRow(at: IndexPath(row: Int(videoMaxSize), section: 0))?.accessoryType = .none
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        videoMaxSize = Int16(indexPath.row)
+    }
 
     
     // MARK: - UITableView - Footer
-
     private func getContentOfFooter() -> String {
         let resolution = UIDevice.current.modelVideoCapabilities
         if resolution.isEmpty { return "" }
@@ -167,20 +186,5 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = getContentOfFooter()
         return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
-    }
-
-    
-    // MARK: - UITableViewDelegate Methods
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        // Did the user change of max photo size?
-        if indexPath.row == videoMaxSize { return }
-
-        // Update default size
-        tableView.cellForRow(at: IndexPath(row: Int(videoMaxSize), section: 0))?.accessoryType = .none
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        videoMaxSize = Int16(indexPath.row)
     }
 }

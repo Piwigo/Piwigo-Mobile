@@ -1,0 +1,27 @@
+{
+    "stat": "ok",
+    "result": {
+        "username": "Eddy",
+        "status": "webmaster",
+        "theme": "modus",
+        "language": "en_GB",
+        "pwg_token": "pwg_token",
+        "charset": "utf-8",
+        "current_datetime": "2023-11-25 16:24:21",
+        "version": "14.0.0RC1",
+        "save_visits": true,
+        "available_sizes": [
+            "square",
+            "thumb",
+            "2small",
+            "xsmall",
+            "small",
+            "medium",
+            "large",
+            "xlarge",
+            "xxlarge"
+        ],
+        "upload_file_types": "jpg,jpeg,png,gif,webp,tif,tiff,mp4,m4v,mpg,ogg,ogv,webm,webmv,heic",
+        "upload_form_chunk_size": 1024
+    }
+}

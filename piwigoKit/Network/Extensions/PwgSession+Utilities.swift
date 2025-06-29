@@ -119,8 +119,10 @@ extension PwgSession {
                         // Session now opened
                         getPiwigoConfig {
                             // Update date of accesss to the server by guest
-                            user?.setLastUsedToNow()
-                            user?.status = NetworkVars.shared.userStatus.rawValue
+                            DispatchQueue.main.async {
+                                user?.setLastUsedToNow()
+                                user?.status = NetworkVars.shared.userStatus.rawValue
+                            }
                             NetworkVars.shared.applicationShouldRelogin = false
                             PwgSession.shared.wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
                             completion()
@@ -135,8 +137,10 @@ extension PwgSession {
                             // Session now opened
                             getPiwigoConfig {
                                 // Update date of accesss to the server by user
-                                user?.setLastUsedToNow()
-                                user?.status = NetworkVars.shared.userStatus.rawValue
+                                DispatchQueue.main.async {
+                                    user?.setLastUsedToNow()
+                                    user?.status = NetworkVars.shared.userStatus.rawValue
+                                }
                                 NetworkVars.shared.applicationShouldRelogin = false
                                 PwgSession.shared.wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
                                 completion()
@@ -157,7 +161,9 @@ extension PwgSession {
                     failure(error)
                 }
             } else {
-                user?.setLastUsedToNow()
+                DispatchQueue.main.async {
+                    user?.setLastUsedToNow()
+                }
                 completion()
             }
         } failure: { error in

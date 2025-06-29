@@ -29,7 +29,7 @@ class Help05ViewController: UIViewController {
         let legendBotAttributedString = NSMutableAttributedString(string: "")
 
         // Title of legend above images
-        let titleString = NSLocalizedString("help05_header", comment: "Upload Photos") + "\n"
+        let titleString = NSLocalizedString("help05_header", comment: "Uploading Photos") + "\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         let titleRange = NSRange(location: 0, length: titleString.count)
         titleAttributedString.addAttribute(.font, value: titleFont, range: titleRange)

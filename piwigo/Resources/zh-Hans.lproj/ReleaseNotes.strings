@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v3.3.2_text" = "版本 3.3.2\n\n• 修正错误并改进界面";
+"v3.4.0_text" = "版本 3.4\n\n• 添加上传前修改文件名的选项\n• 修正错误并改进界面";
+
+"v3.3.2_text" = "版本 3.3.2\n2025年4月14日\n\n• 修正错误并改进界面";
 
 "v3.3.1_text" = "版本 3.3.1\n2025年3月28日\n\n• 添加视频自动播放和循环播放选项\n• 修正错误并改进界面";
 
@@ -18,7 +20,7 @@
 
 "v3.2.3_text" = "版本 3.2.3\n2024年10月17日\n\n• 错误修复";
 
-"v3.2.2_text" = "版本 3.2.2\n2024年9月12日\n\n• 添加删除存储在设备中的照片/视频选项\n• 修正错误";
+"v3.2.2_text" = "Version 3.2.2\nSeptember 12, 2024\n\n• Adds an option to delete selections of photos/videos stored in the device\n• Bug fixes";
 
 "v3.2.1_text" = "版本 3.2.1\n2024年7月29日\n\n• 添加显示带或不带描述的相册的选项\n• 错误修复";
 

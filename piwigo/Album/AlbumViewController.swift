@@ -19,8 +19,14 @@ enum pwgImageAction {
     case rotateImagesLeft, rotateImagesRight
 }
 
+protocol AlbumViewControllerDelegate: NSObjectProtocol {
+    func didSelectCurrentCounter(value: Int64)
+}
+
 class AlbumViewController: UIViewController
 {
+    weak var albumDelegate: AlbumViewControllerDelegate?
+
     @IBOutlet weak var noAlbumLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -422,7 +428,19 @@ class AlbumViewController: UIViewController
         initBarsInPreviewMode()
         initButtons()
         updateButtons()
-
+        
+        // Should we reload the collection view?
+        switch AlbumVars.shared.displayAlbumDescriptions {
+        case true:
+            if collectionView.visibleCells.first is AlbumCollectionViewCell {
+                collectionView?.reloadData()
+            }
+        case false:
+            if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
+                collectionView?.reloadData()
+            }
+        }
+        
         // Set colors, fonts, etc. and title view
         applyColorPalette()
 
@@ -500,9 +518,9 @@ class AlbumViewController: UIViewController
         
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
-        //        AppVars.shared.didShowWhatsNewAppVersion = "3.0.2"
+//        AppVars.shared.didShowWhatsNewAppVersion = "3.2"
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            if AppVars.shared.didShowWhatsNewAppVersion.compare("3.2", options: .numeric) == .orderedAscending,
+            if AppVars.shared.didShowWhatsNewAppVersion.compare("3.4", options: .numeric) == .orderedAscending,
                appVersionString.compare(AppVars.shared.didShowWhatsNewAppVersion, options: .numeric) == .orderedDescending {
                 // Display What's New in Piwigo
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
@@ -542,9 +560,14 @@ class AlbumViewController: UIViewController
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000001) == 0 {
             displayHelpPagesWithID.append(1) // i.e. multiple selection of images
         }
-        if nberOfAlbums() > 2, user.hasAdminRights,
-           (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
-            displayHelpPagesWithID.append(3) // i.e. management of albums
+        if nberOfAlbums() > 2, user.hasAdminRights {
+            if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
+                displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
+            }
+            if #available(iOS 13, *),
+               (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
+                displayHelpPagesWithID.append(9) // i.e. management of albums w/o description
+            }
         }
         if albumData.upperIds.count > 3,
            (AppVars.shared.didWatchHelpViews & 0b00000000_10000000) == 0 {

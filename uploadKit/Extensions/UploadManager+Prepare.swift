@@ -44,6 +44,50 @@ extension UploadManager
         }
     }
     
+    private func renamedFile(for upload: Upload) -> String {
+        // Anything to do?
+        var fileName = upload.fileName
+        if upload.fileNamePrefixEncodedActions.isEmpty,
+           upload.fileNameReplaceEncodedActions.isEmpty,
+           upload.fileNameSuffixEncodedActions.isEmpty,
+           FileExtCase(rawValue: upload.fileNameExtensionCase) == .keep {
+            // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+            return PwgSession.utf8mb3String(from: fileName)
+        }
+        
+        // Get album current counter value
+        var currentCounter = UploadVars.shared.categoryCounterInit
+        if let album = albumProvider.getAlbum(ofUser: upload.user, withId: upload.category) {
+            // Album available ► Get current counter
+            if album.isFault {
+                // The album is not fired yet.
+                album.willAccessValue(forKey: nil)
+                album.didAccessValue(forKey: nil)
+            }
+            currentCounter = album.currentCounter
+
+            // Increment album counter
+            album.currentCounter += 1
+        }
+        
+        // Rename the file
+        let prefixActions = upload.fileNamePrefixEncodedActions.actions
+        let replaceActions = upload.fileNameReplaceEncodedActions.actions
+        let suffixActions = upload.fileNameSuffixEncodedActions.actions
+        let caseOfExtension = FileExtCase(rawValue: upload.fileNameExtensionCase) ?? .keep
+        let creationDate = Date(timeIntervalSinceReferenceDate: upload.creationDate)
+        fileName.renameFile(prefixActions: prefixActions,
+                            replaceActions: replaceActions,
+                            suffixActions: suffixActions,
+                            caseOfExtension: caseOfExtension,
+                            albumID: upload.category,
+                            date: creationDate,
+                            counter: currentCounter)
+                
+        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+        return fileName
+    }
+    
     private func prepareImageFromIntent(for upload: Upload) {
         // Determine non-empty unique file name and extension from identifier
         var files = [URL]()
@@ -66,16 +110,8 @@ extension UploadManager
             return
         }
         
-        // Add prefix if requested by user
-        var fileName = upload.fileName
-        if upload.prefixFileNameBeforeUpload {
-            if !fileName.hasPrefix(upload.defaultPrefix) {
-                fileName = upload.defaultPrefix + fileName
-            }
-        }
-        
-        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        upload.fileName = PwgSession.utf8mb3String(from: fileName)
+        // Rename file if requested by user
+        upload.fileName = renamedFile(for: upload)
 
         // Launch preparation job (limited to stripping metadata)
         if fileURL.lastPathComponent.contains("img") {
@@ -108,7 +144,7 @@ extension UploadManager
             self.didEndPreparation()
             return
         }
-        var fileName = fileURL.lastPathComponent
+        let fileName = fileURL.lastPathComponent
 
         // Launch preparation job if file format accepted by Piwigo server
         let fileExt = fileURL.pathExtension.lowercased()
@@ -121,16 +157,11 @@ extension UploadManager
             /// - adding the file extension
             if let prefixRange = fileName.range(of: kClipboardPrefix),
                let suffixRange = fileName.range(of: kImageSuffix) {
-                fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
+                upload.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
 
-            // Add prefix if requested by user
-            if upload.prefixFileNameBeforeUpload {
-                if !fileName.hasPrefix(upload.defaultPrefix) {
-                    fileName = upload.defaultPrefix + fileName
-                }
-            }
-            upload.fileName = fileName
+            // Rename file if requested by user
+            upload.fileName = renamedFile(for: upload)
 
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
@@ -168,16 +199,11 @@ extension UploadManager
             /// - adding the file extension
             if let prefixRange = fileName.range(of: kClipboardPrefix),
                let suffixRange = fileName.range(of: kMovieSuffix) {
-                fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
+                upload.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
 
-            // Add prefix if requested by user
-            if upload.prefixFileNameBeforeUpload {
-                if !fileName.hasPrefix(upload.defaultPrefix) {
-                    fileName = upload.defaultPrefix + fileName
-                }
-            }
-            upload.fileName = fileName
+            // Rename file if requested by user
+            upload.fileName = renamedFile(for: upload)
 
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
@@ -299,16 +325,11 @@ extension UploadManager
     }
     
     private func dispatchAsset(_ originalAsset:PHAsset, atURL uploadFileURL:URL, for upload: Upload) {
-        // Append prefix provided by user if requested
-        let fileName = upload.fileName
-        if upload.prefixFileNameBeforeUpload {
-            if !fileName.hasPrefix(upload.defaultPrefix) {
-                upload.fileName = upload.defaultPrefix + fileName
-            }
-        }
-        
+        // Rename file if requested by user
+        upload.fileName = renamedFile(for: upload)
+
         // Launch preparation job if file format accepted by Piwigo server
-        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
+        let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
         switch originalAsset.mediaType {
         case .image:
             upload.isVideo = false
