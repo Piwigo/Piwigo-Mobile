@@ -34042,7 +34042,8 @@
             "value" : "example.com"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "login_userPlaceholder" : {
       "comment" : "Username (optional)",
@@ -46644,7 +46645,8 @@
             "value" : "Face ID"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_biometricsFaceIDinfo" : {
       "comment" : "Use Face ID…",
@@ -46846,7 +46848,8 @@
             "value" : "Optic ID"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_biometricsOpticIDinfo" : {
       "comment" : "Use Optic ID…",
@@ -47149,7 +47152,8 @@
             "value" : "Touch ID"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_biometricsTouchIDinfo" : {
       "comment" : "Use Touch ID…",
@@ -56138,7 +56142,8 @@
             "value" : "@piwigo"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_twitterURL" : {
       "comment" : "https://twitter.com/piwigo",
@@ -56239,7 +56244,8 @@
             "value" : "https://twitter.com/piwigo"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "settings_username" : {
       "comment" : "Username",
