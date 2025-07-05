@@ -38,6 +38,7 @@ class SettingsUtilities: NSObject {
     static func getAppVersion() -> String {
         let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        return "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
+        let versionTitle = NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version")
+        return "— \(versionTitle) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
     }
 }
