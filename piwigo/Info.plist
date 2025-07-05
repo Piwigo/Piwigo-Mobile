@@ -4,50 +4,14 @@
 <dict>
 	<key>AppIdentifierPrefix</key>
 	<string>$(AppIdentifierPrefix)</string>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>org.piwigo.uploadManager</string>
-	</array>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleDisplayName</key>
-	<string>Piwigo</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>Piwigo</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleVersion</key>
-	<string>626</string>
-	<key>INIntentsSupported</key>
-	<array>
-		<string>AutoUploadIntent</string>
-	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Use Face ID instead of a passcode to access your albums.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Piwigo uses the local network to access your Piwigo server.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
-	<key>NSSiriUsageDescription</key>
-	<string>so that Piwigo will be able to upload images with Siri.</string>
-	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -79,13 +43,49 @@
 			</array>
 		</dict>
 	</dict>
+	<key>CFBundleDisplayName</key>
+	<string>Piwigo</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleName</key>
+	<string>Piwigo</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>626</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>AutoUploadIntent</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>org.piwigo.uploadManager</string>
+	</array>
+	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID instead of a passcode to access your albums.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Piwigo uses the local network to access your Piwigo server.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>so that Piwigo will be able to upload images with Siri.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 		<string>processing</string>
 	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
