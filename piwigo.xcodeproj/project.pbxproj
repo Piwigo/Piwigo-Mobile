@@ -445,6 +445,7 @@
 		ADACD2992C31BD0900F8790B /* JsonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD2982C31BD0900F8790B /* JsonViewController.swift */; };
 		ADACD29D2C34852800F8790B /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADACD29C2C34852800F8790B /* LogsViewController.swift */; };
 		ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */; };
+		ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */; };
 		ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */; };
 		ADB007DA2D7C8627004A84A7 /* MappingModel_0G_to_0H.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADB007D92D7C8627004A84A7 /* MappingModel_0G_to_0H.xcmappingmodel */; };
 		ADB007DC2D7C8682004A84A7 /* MappingModel_0F_to_0H.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADB007DB2D7C8682004A84A7 /* MappingModel_0F_to_0H.xcmappingmodel */; };
@@ -496,7 +497,6 @@
 		ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
-		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC0B91D2D85C6D3002436FE /* DataMigrationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC0B91C2D85C6D3002436FE /* DataMigrationError.swift */; };
 		ADC115DC2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC115DB2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard */; };
 		ADC115DE2DC91E69000EA45B /* DateFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC115DD2DC91E69000EA45B /* DateFormatSelectorViewController.swift */; };
@@ -747,7 +747,6 @@
 		AD07CAC326DD701600BEAEFB /* EditImageThumbTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageThumbTableViewCell.swift; sourceTree = "<group>"; };
 		AD0822711FA06B090005AA12 /* sv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD0822721FA06B090005AA12 /* sv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/About.strings; sourceTree = "<group>"; };
-		AD0822751FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD084E462659A27100159FE1 /* piwigoKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = piwigoKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDetailViewController.swift; sourceTree = "<group>"; };
 		AD09E3022A92A05C00D8E134 /* SettingsViewController+Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Privacy.swift"; sourceTree = "<group>"; };
@@ -966,7 +965,6 @@
 		AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageHeaderView.swift; sourceTree = "<group>"; };
 		AD591A391F9116F9008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
-		AD591A3D1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD594C1D2A2CA725009874D5 /* MappingModel_09_to_0C.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_09_to_0C.xcmappingmodel; sourceTree = "<group>"; };
 		AD594C1F2A2CA7B1009874D5 /* TagToTagMigrationPolicy_09_to_0C.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagToTagMigrationPolicy_09_to_0C.swift; sourceTree = "<group>"; };
 		AD594C212A2CA8AC009874D5 /* UploadToUploadMigrationPolicy_09_to_0C.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicy_09_to_0C.swift; sourceTree = "<group>"; };
@@ -988,7 +986,6 @@
 		AD5FB3842D94A82B00802895 /* PwgSession+Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Users.swift"; sourceTree = "<group>"; };
 		AD5FB3A22D96A49400802895 /* RenameFileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileViewController.swift; sourceTree = "<group>"; };
 		AD5FB3A42D96A4AB00802895 /* RenameFileViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RenameFileViewController.storyboard; sourceTree = "<group>"; };
-		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpViewController.storyboard; sourceTree = "<group>"; };
 		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		AD64ED2B27946C2500687793 /* AlbumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTableViewCell.swift; sourceTree = "<group>"; };
@@ -1082,14 +1079,11 @@
 		AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPrivacyViewController.swift; sourceTree = "<group>"; };
 		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
-		AD8338631FE677970072104F /* id */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD84525F1FEC70740035047B /* ar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8452601FEC70740035047B /* ar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/About.strings; sourceTree = "<group>"; };
-		AD8452631FEC70750035047B /* ar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageDatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		AD8549311FE98CE200155BA1 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8549321FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/About.strings; sourceTree = "<group>"; };
-		AD8549351FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD86576F284CF4EB00C06EF4 /* community.categories.getList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = community.categories.getList.json; sourceTree = "<group>"; };
 		AD865771284CF67E00C06EF4 /* community.categories.getList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = community.categories.getList.swift; path = piwigoKit/Network/community/community.categories.getList.swift; sourceTree = SOURCE_ROOT; };
 		AD865774284D060400C06EF4 /* pwg.categories.getList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = pwg.categories.getList.json; path = "Supporting Targets/piwigoWebAPI/pwg/pwg.categories/pwg.categories.getList.json"; sourceTree = SOURCE_ROOT; };
@@ -1178,7 +1172,6 @@
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		ADA6F18A21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADA6F18B21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/About.strings; sourceTree = "<group>"; };
-		ADA6F18E21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = piwigo/Info.plist; sourceTree = SOURCE_ROOT; };
 		ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
@@ -1195,20 +1188,17 @@
 		ADACD29C2C34852800F8790B /* LogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogsViewController.swift; sourceTree = "<group>"; };
 		ADAE3C312E191F8B00E1D634 /* AppStore.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppStore.xcstrings; sourceTree = "<group>"; };
 		ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = ReleaseNotes.xcstrings; sourceTree = "<group>"; };
+		ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		ADAF3B7023DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADAF3B7123DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/About.strings; sourceTree = "<group>"; };
-		ADAF3B7423DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADAF3B7523DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADAF3B7623DDAC55007B0ABA /* ru */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADAF3B7723DDAC55007B0ABA /* ru */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/About.strings; sourceTree = "<group>"; };
-		ADAF3B7A23DDAC55007B0ABA /* ru */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADAF3B7B23DDAC55007B0ABA /* ru */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADAF3B7C23DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		ADAF3B7D23DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/About.strings"; sourceTree = "<group>"; };
-		ADAF3B8023DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		ADAF3B8123DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADAF64A729B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/About.strings"; sourceTree = "<group>"; };
-		ADAF64A929B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		ADAF64AA29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		ADAF64AB29B3AEE2005F3501 /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
 		ADB007D62D7B0A5F004A84A7 /* ImageViewController+Bars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Bars.swift"; sourceTree = "<group>"; };
@@ -1265,9 +1255,6 @@
 		ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0B_to_0C.xcmappingmodel; sourceTree = "<group>"; };
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
 		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
-		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC0B91C2D85C6D3002436FE /* DataMigrationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationError.swift; sourceTree = "<group>"; };
 		ADC115DB2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DateFormatSelectorViewController.storyboard; sourceTree = "<group>"; };
 		ADC115DD2DC91E69000EA45B /* DateFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatSelectorViewController.swift; sourceTree = "<group>"; };
@@ -1293,7 +1280,6 @@
 		ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagesFooterReusableView.swift; sourceTree = "<group>"; };
 		ADCA95CD26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		ADCA95CF26B3434300F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/About.strings; sourceTree = "<group>"; };
-		ADCA95D126B3434400F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADCA95D226B3434400F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADCA95D326B3434400F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		ADCC996425B452670034CB4A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
@@ -1411,7 +1397,6 @@
 		ADF3AE5D280336B6009F5931 /* ClearClipboardViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ClearClipboardViewController.storyboard; sourceTree = "<group>"; };
 		ADF3B30F207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADF3B310207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/About.strings; sourceTree = "<group>"; };
-		ADF3B313207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADF3EC0B2516515500379E53 /* Device+Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Device+Model.swift"; sourceTree = "<group>"; };
 		ADF6264626B9ED410085A299 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = "<group>"; };
 		ADF6264826B9ED4A0085A299 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -1753,7 +1738,7 @@
 			children = (
 				AD6B2E781F0930CE0040EAD9 /* About.strings */,
 				ADAE3C312E191F8B00E1D634 /* AppStore.xcstrings */,
-				ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */,
+				ADAE3C352E1932F200E1D634 /* InfoPlist.xcstrings */,
 				AD6B2E751F0930B40040EAD9 /* Localizable.strings */,
 				AD3203662184738F00BAD372 /* PrivacyPolicy.strings */,
 				ADAE3C332E19215200E1D634 /* ReleaseNotes.xcstrings */,
@@ -3409,8 +3394,8 @@
 				AD8A1E80288478FA00752948 /* help08-top.png in Resources */,
 				ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */,
 				AD8A1E81288478FA00752948 /* help08-bot.png in Resources */,
+				ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
-				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
 				AD96981E2BE6408600520614 /* AlbumViewController.storyboard in Resources */,
@@ -4202,29 +4187,6 @@
 				AD8D213A26ACC1740008E907 /* id */,
 			);
 			name = InAppIntents.intentdefinition;
-			sourceTree = "<group>";
-		};
-		ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AD5FCE2122EC629D00F37B1E /* en */,
-				ADAF3B8023DDAC6D007B0ABA /* zh-Hans */,
-				ADAF64A929B3AEE2005F3501 /* zh-Hant */,
-				ADC06AE31F40B2BB0081B4FA /* da */,
-				AD8549351FE98CE300155BA1 /* nl */,
-				ADC06AE21F40B1ED0081B4FA /* fr */,
-				AD591A3D1F9116FA008D02B6 /* de */,
-				ADCA95D126B3434400F27123 /* hu */,
-				ADA6F18E21CA924D006C9DD5 /* it */,
-				ADF3B313207F1EEE0082C384 /* ja */,
-				ADC06AE41F40B2BC0081B4FA /* pl */,
-				ADAF3B7A23DDAC55007B0ABA /* ru */,
-				ADAF3B7423DDAC2F007B0ABA /* es */,
-				AD0822751FA06B0A0005AA12 /* sv */,
-				AD8452631FEC70750035047B /* ar */,
-				AD8338631FE677970072104F /* id */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
