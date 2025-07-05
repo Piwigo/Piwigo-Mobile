@@ -2,6 +2,98 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@"
+          }
+        }
+      },
       "shouldTranslate" : false
     },
     "12-hour" : {
@@ -51,7 +143,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "12-hour cycle"
           }
         },
@@ -152,7 +244,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "24-hour cycle"
           }
         },
@@ -247,7 +339,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Abbreviation"
           }
         },
@@ -348,7 +440,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Album ID"
           }
         },
@@ -884,13 +976,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OK"
+            "value" : "ОК"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OK"
+            "value" : "Ok"
           }
         },
         "zh-Hans" : {
@@ -1156,7 +1248,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "All Photos"
           }
         },
@@ -1257,7 +1349,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : " & more"
           }
         },
@@ -1660,7 +1752,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "The Auto-Upload option is disabled in the app settings."
           }
         },
@@ -1761,7 +1853,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Several transfers failed and the upload queue is on hold. Please check in the app."
           }
         },
@@ -1862,7 +1954,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Add Photos"
           }
         },
@@ -2266,7 +2358,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Discover"
           }
         },
@@ -2367,7 +2459,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Best Rated"
           }
         },
@@ -2468,7 +2560,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Your Favorites"
           }
         },
@@ -2569,7 +2661,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Recent Photos"
           }
         },
@@ -2670,7 +2762,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Tagged"
           }
         },
@@ -2771,7 +2863,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "hits"
           }
         },
@@ -2872,7 +2964,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Most Visited"
           }
         },
@@ -2973,7 +3065,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Deselect"
           }
         },
@@ -3074,7 +3166,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Favorite"
           }
         },
@@ -3377,7 +3469,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share"
           }
         },
@@ -3478,7 +3570,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Unfavorite"
           }
         },
@@ -3680,7 +3772,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Album Thumbnail"
           }
         },
@@ -4286,7 +4378,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "All Albums"
           }
         },
@@ -4750,7 +4842,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Root"
+            "value" : "ألبوم راسين"
           }
         },
         "da" : {
@@ -4791,7 +4883,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Root"
           }
         },
@@ -4822,7 +4914,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Root"
+            "value" : "Корень"
           }
         },
         "sv" : {
@@ -4892,7 +4984,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the album which will use the photo \"%@\" as a thumbnail."
           }
         },
@@ -4993,7 +5085,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Album"
           }
         },
@@ -5296,7 +5388,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Date Created"
           }
         },
@@ -5599,7 +5691,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Date Posted"
           }
         },
@@ -5902,7 +5994,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Default"
           }
         },
@@ -6003,7 +6095,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "File Name"
           }
         },
@@ -6306,7 +6398,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Identifier"
           }
         },
@@ -6407,7 +6499,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Identifier, 1 → 9"
           }
         },
@@ -6508,7 +6600,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Identifier, 9 → 1"
           }
         },
@@ -6811,7 +6903,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Photo Title"
           }
         },
@@ -7114,7 +7206,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Random Order"
           }
         },
@@ -7215,7 +7307,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Randomly"
           }
         },
@@ -7316,7 +7408,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rating Score"
           }
         },
@@ -7417,7 +7509,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rating Score, low → high"
           }
         },
@@ -7518,7 +7610,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rating Score, high → low"
           }
         },
@@ -7619,7 +7711,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Sort Images By…"
           }
         },
@@ -7821,7 +7913,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Visits"
           }
         },
@@ -7922,7 +8014,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Visits, low → high"
           }
         },
@@ -8023,7 +8115,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Visits, high → low"
           }
         },
@@ -8124,7 +8216,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Updated at %@"
           }
         },
@@ -8225,7 +8317,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Updated just now"
           }
         },
@@ -8326,7 +8418,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Updated on %@"
           }
         },
@@ -8427,7 +8519,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Updating…"
           }
         },
@@ -9033,7 +9125,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Media Types"
           }
         },
@@ -9236,7 +9328,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Other Albums"
           }
         },
@@ -9337,7 +9429,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clipboard"
           }
         },
@@ -9438,7 +9530,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Shared Albums"
           }
         },
@@ -9539,7 +9631,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "iPhoto Albums"
           }
         },
@@ -9640,7 +9732,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "iPhoto Events"
           }
         },
@@ -9741,7 +9833,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "iPhoto Faces"
           }
         },
@@ -9842,7 +9934,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Group Images By…"
           }
         },
@@ -9943,7 +10035,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "View Options"
           }
         },
@@ -10044,7 +10136,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Show…"
           }
         },
@@ -10549,7 +10641,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please, select the album in which you wish to copy the photos."
           }
         },
@@ -10650,7 +10742,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to copy some photos"
           }
         },
@@ -10953,7 +11045,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please, select the album in which you wish to copy the photo \"%@\"."
           }
         },
@@ -11256,7 +11348,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Album not in persistent cache."
           }
         },
@@ -11761,7 +11853,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Migration in Progress..."
           }
         },
@@ -11963,7 +12055,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to create a new User object."
           }
         },
@@ -12064,7 +12156,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to create a new Album object."
           }
         },
@@ -12165,7 +12257,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Fetch albums error!"
           }
         },
@@ -12266,7 +12358,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Found and will discard an album missing a valid ID or name."
           }
         },
@@ -12367,7 +12459,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Could not digest the fetched data."
           }
         },
@@ -12468,7 +12560,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to create a new Image object."
           }
         },
@@ -12570,7 +12662,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Fetch photos/videos error!"
           }
         },
@@ -12671,7 +12763,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Found and will discard a photo/video missing a valid ID or URL."
           }
         },
@@ -12772,7 +12864,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to create a new Tag object."
           }
         },
@@ -12874,7 +12966,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Fetch tags error!"
           }
         },
@@ -12975,7 +13067,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Found and will discard a tag missing a valid code or name."
           }
         },
@@ -13076,7 +13168,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to create a new Upload object."
           }
         },
@@ -13177,7 +13269,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to retrieve photo."
           }
         },
@@ -13279,7 +13371,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Will discard a user account missing a valid username."
           }
         },
@@ -13380,7 +13472,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to get Community extension parameters.\nTry logging in again."
           }
         },
@@ -13481,7 +13573,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created."
           }
         },
@@ -13677,7 +13769,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Counter"
           }
         },
@@ -14580,7 +14672,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Date"
           }
         },
@@ -14675,7 +14767,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Day"
           }
         },
@@ -14776,7 +14868,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Albums Thumbnail File"
           }
         },
@@ -14877,7 +14969,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select an album thumbnail size"
           }
         },
@@ -15786,7 +15878,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Number"
           }
         },
@@ -15887,7 +15979,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Number/Row"
           }
         },
@@ -15988,7 +16080,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Number per Row"
           }
         },
@@ -16594,7 +16686,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Thumbnail"
           }
         },
@@ -17200,7 +17292,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select a photo thumbnail size"
           }
         },
@@ -19955,7 +20047,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Are you sure you want to delete this video? This cannot be undone!"
           }
         },
@@ -20157,7 +20249,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Deleting Video…"
           }
         },
@@ -20662,7 +20754,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Downloading Video"
           }
         },
@@ -21572,7 +21664,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Creation Date"
           }
         },
@@ -21673,7 +21765,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "-1 Month"
           }
         },
@@ -21774,7 +21866,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "+1 Month"
           }
         },
@@ -21875,7 +21967,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Today"
           }
         },
@@ -21976,7 +22068,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Unset"
           }
         },
@@ -22077,7 +22169,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "-1 Year"
           }
         },
@@ -22178,7 +22270,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "+1 Year"
           }
         },
@@ -22279,7 +22371,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Description"
           }
         },
@@ -22582,7 +22674,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Creation Time"
           }
         },
@@ -23390,7 +23482,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Full Name"
           }
         },
@@ -23491,7 +23583,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Multiple Selection"
           }
         },
@@ -23592,7 +23684,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Slide your finger from left to right (or right to left) then down, etc."
           }
         },
@@ -23693,7 +23785,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Background Uploading"
           }
         },
@@ -23794,7 +23886,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Select photos/videos, set parameters and tap Upload."
           }
         },
@@ -23895,7 +23987,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Plug the device to its charger and let iOS launch the uploads whenever appropriate."
           }
         },
@@ -23996,7 +24088,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "(requires the uploadAsync extension or Piwigo 11)"
           }
         },
@@ -24097,7 +24189,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Administrators"
           }
         },
@@ -24198,7 +24290,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Create, delete, move and rename albums."
           }
         },
@@ -24299,7 +24391,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Uploaded photos removed from the camera roll remain available in the iOS Photos trash for 30 days."
           }
         },
@@ -24400,7 +24492,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Uploading Photos"
           }
         },
@@ -24501,7 +24593,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Once upload requests are submitted, you can browse albums, submit other requests or leave the app."
           }
         },
@@ -24602,7 +24694,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Tap the grey button presented in the root album to manage uploads."
           }
         },
@@ -24703,7 +24795,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Upload Management"
           }
         },
@@ -24804,7 +24896,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Monitor, cancel and resume upload requests globally or individually."
           }
         },
@@ -24905,7 +24997,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Auto-Uploading"
           }
         },
@@ -25006,7 +25098,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Select source and destination albums in Piwigo, create automations in Shortcuts."
           }
         },
@@ -25107,7 +25199,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Parent Albums"
           }
         },
@@ -25208,7 +25300,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Long-press on the back button to display the list of parent albums."
           }
         },
@@ -25309,7 +25401,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Tap the parent album of your choice to jump back to it."
           }
         },
@@ -25404,7 +25496,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Hour"
           }
         },
@@ -25505,7 +25597,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Deselecting Photos…"
           }
         },
@@ -25707,7 +25799,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Fetching the photo data failed."
           }
         },
@@ -26010,7 +26102,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Favorites"
           }
         },
@@ -26111,7 +26203,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to add this photo to your favorites."
           }
         },
@@ -26212,7 +26304,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to remove this photo from your favorites."
           }
         },
@@ -26515,7 +26607,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Modify Properties"
           }
         },
@@ -27021,7 +27113,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Selecting Photos…"
           }
         },
@@ -28132,7 +28224,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Sorting Photos…"
           }
         },
@@ -28435,7 +28527,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clear %@ Completed Uploads"
           }
         },
@@ -28536,7 +28628,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clear Completed Upload"
           }
         },
@@ -28637,7 +28729,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clear %@ Failed Uploads"
           }
         },
@@ -28738,7 +28830,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clear Failed Upload"
           }
         },
@@ -29428,7 +29520,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tags:"
+            "value" : "Etiquetas:"
           }
         },
         "fr" : {
@@ -29748,7 +29840,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "File format not accepted by Piwigo server."
           }
         },
@@ -30152,7 +30244,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the album or sub-album from which photos and videos of your device will be uploaded."
           }
         },
@@ -30253,7 +30345,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please set the parameters to apply to the selection of photos/videos"
           }
         },
@@ -30354,7 +30446,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please set the upload parameters to apply to the selection of photos/videos"
           }
         },
@@ -30455,7 +30547,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Photos Parameters"
           }
         },
@@ -30556,7 +30648,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Upload Settings"
           }
         },
@@ -30758,7 +30850,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Resume %@ Uploads"
           }
         },
@@ -30859,7 +30951,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Resume Upload"
           }
         },
@@ -30960,7 +31052,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Finishing..."
           }
         },
@@ -31061,7 +31153,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Ready for upload..."
           }
         },
@@ -31162,7 +31254,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Preparing..."
           }
         },
@@ -31263,7 +31355,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Uploaded"
           }
         },
@@ -31465,7 +31557,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Waiting..."
           }
         },
@@ -32273,7 +32365,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Accessible Photos"
           }
         },
@@ -32778,7 +32870,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days."
           }
         },
@@ -32879,7 +32971,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Remove from Camera Roll"
           }
         },
@@ -32980,7 +33072,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Re-upload"
           }
         },
@@ -33954,14 +34046,14 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "example.com"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "example.com"
+            "value" : "beispiel.de"
           }
         },
         "en" : {
@@ -34002,7 +34094,7 @@
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "example.com"
           }
         },
@@ -34020,7 +34112,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "example.com"
           }
         },
@@ -34032,13 +34124,13 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "example.com"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "example.com"
           }
         }
@@ -34193,7 +34285,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"
           }
         },
@@ -34294,7 +34386,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Connection Not Private"
           }
         },
@@ -34698,7 +34790,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Would you like to reset your password from the web interface?"
           }
         },
@@ -35203,7 +35295,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?"
           }
         },
@@ -35304,7 +35396,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Secure Connection Failed"
           }
         },
@@ -35809,7 +35901,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Recent"
           }
         },
@@ -35910,7 +36002,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Recent Albums"
           }
         },
@@ -36011,7 +36103,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Number of Recent Albums"
           }
         },
@@ -36106,7 +36198,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Minute"
           }
         },
@@ -36201,7 +36293,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Month"
           }
         },
@@ -36504,7 +36596,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select an album or sub-album to move album \"%@\" into."
           }
         },
@@ -37211,7 +37303,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please, select the album in which you wish to copy the photos."
           }
         },
@@ -37312,7 +37404,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to move some photos"
           }
         },
@@ -37615,7 +37707,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please, select the album in which you wish to move the photo \"%@\"."
           }
         },
@@ -38073,7 +38165,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "None"
+            "value" : "لا شيء"
           }
         },
         "da" : {
@@ -38108,7 +38200,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "None"
           }
         },
@@ -38164,9 +38256,93 @@
     },
     "Piwigo" : {
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Piwigo"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
             "value" : "Piwigo"
           }
         }
@@ -38220,7 +38396,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Piwigo server did return an empty JSON object."
           }
         },
@@ -38321,7 +38497,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Piwigo server did not return a valid JSON object."
           }
         },
@@ -38422,7 +38598,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Could not digest JSON object returned by Piwigo server."
           }
         },
@@ -38595,7 +38771,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Admins"
+            "value" : "Administratoren"
           }
         },
         "en" : {
@@ -38613,7 +38789,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Admins"
+            "value" : "Administrateurs"
           }
         },
         "hu" : {
@@ -39230,7 +39406,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ days"
           }
         },
@@ -39331,7 +39507,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Recent Period"
           }
         },
@@ -39737,7 +39913,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Removing Photos/Videos…"
           }
         },
@@ -40040,7 +40216,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Removing Video…"
           }
         },
@@ -40747,7 +40923,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Enter a new file name for this photo"
           }
         },
@@ -40848,7 +41024,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Original File"
           }
         },
@@ -40949,7 +41125,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to rename photo file"
           }
         },
@@ -41050,7 +41226,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Renaming File…"
           }
         },
@@ -41151,7 +41327,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Counterclockwise"
           }
         },
@@ -41252,7 +41428,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clockwise"
           }
         },
@@ -41353,7 +41529,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rotate 90°…"
           }
         },
@@ -41454,7 +41630,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Image could not be rotated"
           }
         },
@@ -41555,7 +41731,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "The rotateImage plugin is not activated."
           }
         },
@@ -41656,7 +41832,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rotation Failed"
           }
         },
@@ -41757,7 +41933,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rotating Photos…"
           }
         },
@@ -41858,7 +42034,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rotating Photo…"
           }
         },
@@ -41953,7 +42129,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Second"
           }
         },
@@ -42452,7 +42628,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Separator"
           }
         },
@@ -42489,7 +42665,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separator"
+            "value" : "Avgränsare"
           }
         },
         "zh-Hans" : {
@@ -43765,7 +43941,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Your Piwigo server version is %@. Please ask the administrator to update it."
           }
         },
@@ -43866,7 +44042,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Server Update Available"
           }
         },
@@ -44270,7 +44446,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select an album or sub-album which will become the new root album."
           }
         },
@@ -44371,7 +44547,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Default Album"
           }
         },
@@ -44573,7 +44749,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the action to add"
           }
         },
@@ -44674,7 +44850,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "App Lock"
           }
         },
@@ -44775,7 +44951,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Enter Passcode"
           }
         },
@@ -44876,7 +45052,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "With App Lock, a device-specific code is required to access the app. If you loose this code, you will have to reinstall the app."
           }
         },
@@ -44977,7 +45153,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Modify Passcode"
           }
         },
@@ -45078,7 +45254,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Verify Passcode"
           }
         },
@@ -45162,7 +45338,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo Mobile"
+            "value" : "Piwigo Móvil"
           }
         },
         "fr" : {
@@ -45179,7 +45355,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Piwigo Mobile"
           }
         },
@@ -45210,25 +45386,25 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo Mobile"
+            "value" : "Мобильный Piwigo"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo Mobile"
+            "value" : "Piwigo Mobil"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo Mobile"
+            "value" : "Piwigo 手机"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo Mobile"
+            "value" : "Piwigo 手機"
           }
         }
       }
@@ -45280,7 +45456,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Auto Upload"
           }
         },
@@ -45381,7 +45557,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Destination"
           }
         },
@@ -45482,7 +45658,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the album or sub-album into which photos and videos will be auto-uploaded."
           }
         },
@@ -45583,7 +45759,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Invalid destination album"
           }
         },
@@ -45684,7 +45860,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Off"
           }
         },
@@ -45697,7 +45873,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Off"
+            "value" : "オフ"
           }
         },
         "nl" : {
@@ -45785,7 +45961,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Photos will not be automatically uploaded to your Piwigo."
           }
         },
@@ -45886,7 +46062,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "On"
           }
         },
@@ -45899,7 +46075,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On"
+            "value" : "オン"
           }
         },
         "nl" : {
@@ -45987,7 +46163,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Photos will be automatically uploaded to your Piwigo."
           }
         },
@@ -46088,7 +46264,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Photos and videos will be automatically uploaded to your Piwigo."
           }
         },
@@ -46184,19 +46360,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto Upload Photos"
+            "value" : "Fotók automatikus feltöltése"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Auto Upload Photos"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto Upload Photos"
+            "value" : "Caricamento Automatico Delle Foto"
           }
         },
         "ja" : {
@@ -46226,7 +46402,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto Upload Photos"
+            "value" : "Ladda upp foton automatiskt"
           }
         },
         "zh-Hans" : {
@@ -46290,7 +46466,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Source"
           }
         },
@@ -46391,7 +46567,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."
           }
         },
@@ -46492,7 +46668,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Invalid source album"
           }
         },
@@ -46557,7 +46733,7 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
@@ -46575,7 +46751,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
@@ -46587,25 +46763,25 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
@@ -46617,31 +46793,31 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Face ID"
           }
         }
@@ -46695,7 +46871,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Use Face ID as an alternative to your App Lock passcode."
           }
         },
@@ -46778,7 +46954,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
@@ -46790,61 +46966,61 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Optic ID"
           }
         }
@@ -46898,7 +47074,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Use Optic ID as an alternative to your App Lock passcode."
           }
         },
@@ -46999,7 +47175,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Access your Piwigo albums"
           }
         },
@@ -47064,7 +47240,7 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
@@ -47094,25 +47270,25 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
@@ -47124,31 +47300,31 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Touch ID"
           }
         }
@@ -47202,7 +47378,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Use Touch ID as an alternative to your App Lock passcode."
           }
         },
@@ -47404,7 +47580,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds."
           }
         },
@@ -47606,7 +47782,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clear All"
           }
         },
@@ -47909,7 +48085,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Clear Clipboard"
           }
         },
@@ -48010,7 +48186,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 1 minute"
           }
         },
@@ -48111,7 +48287,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 1 min"
           }
         },
@@ -48212,7 +48388,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 2 minutes"
           }
         },
@@ -48313,7 +48489,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 2 min"
           }
         },
@@ -48414,7 +48590,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 5 minutes"
           }
         },
@@ -48515,7 +48691,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 5 min"
           }
         },
@@ -48616,7 +48792,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 10 seconds"
           }
         },
@@ -48717,7 +48893,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 10 s"
           }
         },
@@ -48818,7 +48994,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 30 seconds"
           }
         },
@@ -48919,7 +49095,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "After 30 s"
           }
         },
@@ -49020,7 +49196,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the delay after which the clipboard will be cleared."
           }
         },
@@ -49121,7 +49297,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Never"
           }
         },
@@ -49323,7 +49499,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Dark"
           }
         },
@@ -49424,7 +49600,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Data"
           }
         },
@@ -49626,7 +49802,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Author Name"
           }
         },
@@ -49929,7 +50105,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select who will be able to see photos"
           }
         },
@@ -50126,19 +50302,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete After Upload"
+            "value" : "Törlés feltöltés után"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Delete After Upload"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete After Upload"
+            "value" : "Elimina dopo il caricamento"
           }
         },
         "ja" : {
@@ -50232,7 +50408,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Album Descriptions"
           }
         },
@@ -50333,7 +50509,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Display Album Descriptions"
           }
         },
@@ -50434,7 +50610,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Image Titles"
           }
         },
@@ -50535,7 +50711,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Display Image Titles"
           }
         },
@@ -50737,7 +50913,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Invalid Server Responses"
           }
         },
@@ -50838,7 +51014,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Light"
           }
         },
@@ -51040,7 +51216,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Logs"
           }
         },
@@ -51242,7 +51418,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "The passcode is separate from your Piwigo account password."
           }
         },
@@ -51444,7 +51620,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Compress Photo"
           }
         },
@@ -51747,7 +51923,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Downsize Photo"
           }
         },
@@ -51962,7 +52138,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prefix"
+            "value" : "プレフィクス"
           }
         },
         "nl" : {
@@ -52252,7 +52428,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "http://piwigo.org/forum"
           }
         },
@@ -52555,7 +52731,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Add After Name"
           }
         },
@@ -52656,7 +52832,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Add Before Name"
           }
         },
@@ -52757,7 +52933,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Change Case"
           }
         },
@@ -52858,7 +53034,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Current Value"
           }
         },
@@ -52959,7 +53135,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "The next series of uploads will start with this counter value which will then be incremented by one for each file processed."
           }
         },
@@ -53060,7 +53236,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Digits"
           }
         },
@@ -53161,7 +53337,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "When the counter needs more digits than specified, the number of digits is automatically increased."
           }
         },
@@ -53262,7 +53438,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select a counter format to include in the file name."
           }
         },
@@ -53363,7 +53539,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Starts From"
           }
         },
@@ -53464,7 +53640,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "For each album, the counter will be initialised with this value which will then be incremented by one for each file processed."
           }
         },
@@ -53565,7 +53741,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select a date format to include in the file name."
           }
         },
@@ -53666,7 +53842,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Day of Year"
           }
         },
@@ -53767,7 +53943,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rename"
           }
         },
@@ -53868,7 +54044,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please indicate below how files should be renamed before uploading."
           }
         },
@@ -53969,7 +54145,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "File Extension"
           }
         },
@@ -54070,7 +54246,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rename File"
           }
         },
@@ -54171,7 +54347,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "5-digit version"
           }
         },
@@ -54272,7 +54448,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "4-digit version"
           }
         },
@@ -54373,7 +54549,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Lowercase"
           }
         },
@@ -54474,7 +54650,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Prefix File Name"
           }
         },
@@ -54575,7 +54751,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Replace File Name"
           }
         },
@@ -54676,7 +54852,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Suffix File Name"
           }
         },
@@ -54777,7 +54953,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select a time format to include in the file name."
           }
         },
@@ -54878,7 +55054,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "2-digit version"
           }
         },
@@ -54979,7 +55155,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Uppercase"
           }
         },
@@ -55181,7 +55357,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share Private Metadata"
           }
         },
@@ -55282,7 +55458,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share with Private Metadata"
           }
         },
@@ -55383,7 +55559,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Strip Metadata"
           }
         },
@@ -55484,7 +55660,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Strip Private Metadata"
           }
         },
@@ -55888,7 +56064,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Automatic"
           }
         },
@@ -56054,7 +56230,7 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
@@ -56072,7 +56248,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
@@ -56084,61 +56260,61 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "@piwigo"
           }
         }
@@ -56156,7 +56332,7 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
@@ -56174,7 +56350,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
@@ -56186,61 +56362,61 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "https://twitter.com/piwigo"
           }
         }
@@ -56597,7 +56773,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Wi-Fi Only"
           }
         },
@@ -56900,7 +57076,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Appearance"
           }
         },
@@ -57001,7 +57177,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Cache"
           }
         },
@@ -57102,7 +57278,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Color Palette"
           }
         },
@@ -57406,7 +57582,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Privacy"
           }
         },
@@ -57514,7 +57690,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo Server"
+            "value" : "Server Piwigo"
           }
         },
         "ja" : {
@@ -57709,7 +57885,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Troubleshooting"
           }
         },
@@ -57911,7 +58087,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ albums"
           }
         },
@@ -58012,7 +58188,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ comments"
           }
         },
@@ -58113,7 +58289,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ groups"
           }
         },
@@ -58315,7 +58491,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ photos"
           }
         },
@@ -58416,7 +58592,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ sub-albums"
           }
         },
@@ -58517,7 +58693,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ tags"
           }
         },
@@ -58618,7 +58794,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ users"
           }
         },
@@ -58719,7 +58895,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Videos"
           }
         },
@@ -58820,7 +58996,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Transfer with AirDrop"
           }
         },
@@ -58921,7 +59097,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Transfer photos with AirDrop"
           }
         },
@@ -59022,7 +59198,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Assign to Contact"
           }
         },
@@ -59123,7 +59299,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Assign photo to Contact"
           }
         },
@@ -59224,7 +59400,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Save to Camera Roll"
           }
         },
@@ -59325,7 +59501,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Save photos to Camera Roll"
           }
         },
@@ -59426,7 +59602,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Copy to Clipboard"
           }
         },
@@ -59527,7 +59703,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Copy photos to Clipboard"
           }
         },
@@ -59628,7 +59804,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Facebook"
           }
         },
@@ -59729,7 +59905,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to Facebook"
           }
         },
@@ -59830,7 +60006,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Flickr"
           }
         },
@@ -59931,7 +60107,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to Flickr"
           }
         },
@@ -60032,7 +60208,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Instagram"
           }
         },
@@ -60133,7 +60309,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to Instagram"
           }
         },
@@ -60234,7 +60410,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post by Email"
           }
         },
@@ -60335,7 +60511,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos by Email"
           }
         },
@@ -60436,7 +60612,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post with Message"
           }
         },
@@ -60537,7 +60713,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos with the Message app"
           }
         },
@@ -60638,7 +60814,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post with Messenger"
           }
         },
@@ -60739,7 +60915,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos with the Messenger app"
           }
         },
@@ -60840,7 +61016,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share with other apps"
           }
         },
@@ -60941,7 +61117,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share photos with other apps"
           }
         },
@@ -61042,7 +61218,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post with Signal"
           }
         },
@@ -61143,7 +61319,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos with the Signal app"
           }
         },
@@ -61244,7 +61420,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Snapchat"
           }
         },
@@ -61345,7 +61521,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to Snapchat app"
           }
         },
@@ -61446,7 +61622,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to TencentWeibo"
           }
         },
@@ -61547,7 +61723,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to TencentWeibo"
           }
         },
@@ -61648,7 +61824,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Twitter"
           }
         },
@@ -61749,7 +61925,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to Twitter"
           }
         },
@@ -61850,7 +62026,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Vimeo"
           }
         },
@@ -61951,7 +62127,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post videos to Vimeo"
           }
         },
@@ -62052,7 +62228,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post to Weibo"
           }
         },
@@ -62153,7 +62329,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos to Weibo"
           }
         },
@@ -62254,7 +62430,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post with WhatsApp"
           }
         },
@@ -62355,7 +62531,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Post photos with the WhatsApp app"
           }
         },
@@ -62456,7 +62632,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share Failed"
           }
         },
@@ -62557,7 +62733,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Selection too large to share"
           }
         },
@@ -62658,7 +62834,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Actions sharing photos with private metadata"
           }
         },
@@ -62759,7 +62935,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Actions sharing photos without private metadata"
           }
         },
@@ -62860,7 +63036,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Share Metadata"
           }
         },
@@ -62961,7 +63137,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Cannot strip private metadata"
           }
         },
@@ -63062,7 +63238,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ album"
           }
         },
@@ -63163,7 +63339,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Audio"
           }
         },
@@ -63188,7 +63364,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Audio"
+            "value" : "Dźwięk"
           }
         },
         "ru" : {
@@ -63264,7 +63440,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ comment"
           }
         },
@@ -63365,7 +63541,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ group"
           }
         },
@@ -63567,7 +63743,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ photo"
           }
         },
@@ -63668,7 +63844,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ sub-album"
           }
         },
@@ -63769,7 +63945,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ tag"
           }
         },
@@ -63871,7 +64047,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@ user"
           }
         },
@@ -63972,7 +64148,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Video"
           }
         },
@@ -64478,7 +64654,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Tag"
           }
         },
@@ -64680,7 +64856,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Enter a name for this new tag"
           }
         },
@@ -64781,7 +64957,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "New tag"
           }
         },
@@ -64882,7 +65058,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Add Tag"
           }
         },
@@ -64983,7 +65159,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Failed to create new tag"
           }
         },
@@ -65084,7 +65260,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Creation Failed"
           }
         },
@@ -65185,7 +65361,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Creating Tag…"
           }
         },
@@ -65387,7 +65563,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Not Selected"
           }
         },
@@ -65684,7 +65860,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Text"
           }
         },
@@ -66499,7 +66675,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra Small"
+            "value" : "Molto Piccolo"
           }
         },
         "ja" : {
@@ -67099,7 +67275,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Low Power Mode enabled"
           }
         },
@@ -67200,7 +67376,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "No Internet Connection"
           }
         },
@@ -67301,7 +67477,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "No Wi-Fi Connection"
           }
         },
@@ -67402,7 +67578,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the maximum size of the photos which will be uploaded."
           }
         },
@@ -67503,7 +67679,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "No Downsizing"
           }
         },
@@ -67604,7 +67780,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Built-in cameras maximum resolution:"
           }
         },
@@ -67705,7 +67881,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Max Photo Size"
           }
         },
@@ -67806,7 +67982,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Uploads"
           }
         },
@@ -68110,7 +68286,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Impossible Uploads"
           }
         },
@@ -68211,7 +68387,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Upload Queue"
           }
         },
@@ -68312,7 +68488,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Resumable Uploads"
           }
         },
@@ -68413,7 +68589,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Please select the maximum size of the videos which will be uploaded."
           }
         },
@@ -68514,7 +68690,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Built-in cameras maximum specifications:"
           }
         },
@@ -68615,7 +68791,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Max Video Size"
           }
         },
@@ -69518,7 +69694,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Week"
           }
         },
@@ -69619,7 +69795,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Continue"
           }
         },
@@ -69715,19 +69891,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-play and loop options"
+            "value" : "Automatikus lejátszás és loop beállítások"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Auto-play and loop options"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-play and loop options"
+            "value" : "Opzioni di riproduzione automatica e ciclo"
           }
         },
         "ja" : {
@@ -69816,19 +69992,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "before upload with creation date, counter, album ID, text…"
+            "value" : "feltöltés előtt a létrehozás dátumával, számlálóval, album azonosítóval, szöveggel..."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "before upload with creation date, counter, album ID, text…"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "before upload with creation date, counter, album ID, text…"
+            "value" : "prima di caricare con data di creazione, contatore, ID album, testo…"
           }
         },
         "ja" : {
@@ -69922,7 +70098,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "What's New in Piwigo"
           }
         },
@@ -70023,7 +70199,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Group Photos"
           }
         },
@@ -70119,19 +70295,19 @@
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename Files"
+            "value" : "Fájlok átnevezése"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Rename Files"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename Files"
+            "value" : "Rinomina File"
           }
         },
         "ja" : {
@@ -70219,7 +70395,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Year"
           }
         },

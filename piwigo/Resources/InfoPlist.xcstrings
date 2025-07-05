@@ -357,8 +357,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piwigo menggunakan jaringan lokal untuk mengakses server Piwigo Anda."
+            "state" : "new",
+            "value" : "Piwigo uses the local network to access your Piwigo server."
           }
         },
         "it" : {
@@ -459,7 +459,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sehingga dapat menyimpan foto di aplikasi Foto dan mengunggah foto ke Piwigo Anda."
+            "value" : "Piwigo menggunakan jaringan lokal untuk mengakses server Piwigo Anda."
           }
         },
         "it" : {
@@ -560,8 +560,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "sehingga Piwigo akan dapat mengunggah gambar dengan Siri."
+            "state" : "new",
+            "value" : "so that Piwigo will be able to upload images with Siri."
           }
         },
         "it" : {

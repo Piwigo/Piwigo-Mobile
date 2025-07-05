@@ -8,38 +8,38 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld صور مضافة إلى قائمة انتظار التحميل."
+                  "state" : "new",
+                  "value" : "%lld photos added to the upload queue."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld صور مضافة إلى قائمة انتظار التحميل."
+                  "state" : "new",
+                  "value" : "%lld photos added to the upload queue."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "1 صورة مضافة إلى قائمة انتظار التحميل."
+                  "state" : "new",
+                  "value" : "%lld photo added to the upload queue."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld  صور مضافة إلى قائمة انتظار التحميل."
+                  "state" : "new",
+                  "value" : "%lld photos added to the upload queue."
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld صور مضافة إلى قائمة انتظار التحميل."
+                  "state" : "new",
+                  "value" : "%lld photos added to the upload queue."
                 }
               },
               "zero" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "لم تتم إضافة أي صورة إلى قائمة انتظار الرفع."
+                  "state" : "new",
+                  "value" : "%lld photos added to the upload queue."
                 }
               }
             }
@@ -59,12 +59,6 @@
                   "state" : "translated",
                   "value" : "%lld fotos føjet til uploadkøen."
                 }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Intet foto føjet til uploadkøen."
-                }
               }
             }
           }
@@ -82,12 +76,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld Fotos zur Upload-Warteschlange hinzugefügt."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Kein Foto zur Upload-Warteschlange hinzugefügt."
                 }
               }
             }
@@ -107,12 +95,6 @@
                   "state" : "translated",
                   "value" : "%lld photos added to the upload queue."
                 }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "No photo added to the upload queue."
-                }
               }
             }
           }
@@ -130,12 +112,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld fotos añadidas a la cola de subida."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "No se ha añadido ninguna foto a la cola de subida."
                 }
               }
             }
@@ -155,12 +131,6 @@
                   "state" : "translated",
                   "value" : "%lld photos ajoutées à la file d’attente des transferts."
                 }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Aucune photo ajoutée à la file d’attente des transferts."
-                }
               }
             }
           }
@@ -171,19 +141,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "1 fénykép került a feltöltési sorba."
+                  "value" : "%lld fotó került a feltöltési sorba."
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld fotó hozzáadva a feltöltési sorba."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Nincs fénykép hozzáadva a feltöltési sorba."
+                  "value" : "%lld fotó került a feltöltési sorba."
                 }
               }
             }
@@ -194,14 +158,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld foto ditambahkan ke antrean unggahan."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Tidak ada foto yang ditambahkan ke antrean unggah."
+                  "state" : "new",
+                  "value" : "%lld photos added to the upload queue."
                 }
               }
             }
@@ -213,19 +171,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "1 foto aggiunta alla coda di caricamento."
+                  "value" : "%lld foto aggiunta alla coda di caricamento."
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld foto aggiunte alla coda di caricamento."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Nessuna foto aggiunta alla coda di caricamento."
                 }
               }
             }
@@ -238,12 +190,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld 枚の写真がアップロードキューに追加されました。"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "アップロードキューに写真が追加されていません。"
                 }
               }
             }
@@ -263,12 +209,6 @@
                   "state" : "translated",
                   "value" : "%lld foto's toegevoegd aan de uploadwachtrij."
                 }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Geen foto toegevoegd aan de uploadwachtrij."
-                }
               }
             }
           }
@@ -291,19 +231,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Jedno zdjęcie dodane do kolejki przesyłania."
+                  "value" : "%lld zdjęcie dodane do kolejki przesyłania."
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld zdjęć dodanych do kolejki przesyłania."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Nie dodano zdjęć do kolejki przesyłania."
                 }
               }
             }
@@ -334,12 +268,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "В очередь на загрузку добавлено %lld фотографий."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "В очередь на загрузку не добавлено ни одной фотографии."
                 }
               }
             }
@@ -359,12 +287,6 @@
                   "state" : "translated",
                   "value" : "%lld foton har lagts till i uppladdningskön."
                 }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Inget foto har lagts till i uppladdningskön."
-                }
               }
             }
           }
@@ -376,12 +298,6 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld 照片添加到上传队列。"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "上传队列中未添加照片。"
                 }
               }
             }
@@ -395,214 +311,8 @@
                   "state" : "translated",
                   "value" : "%lld 張相片已加入上載佇列。"
                 }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "沒有照片加入上傳佇列。"
-                }
               }
             }
-          }
-        }
-      }
-    },
-    "Auto-Upload" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التحميل التلقائي"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-Upload"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatischen Hochladen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-Upload"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carga automática"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transfert automatique"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatikus feltöltés"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unggah Otomatis"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamento automatico"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動アップロード"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatisch uploaden"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatyczne przesyłanie"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Автозагрузка"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-Upload"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动上传"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動上傳"
-          }
-        }
-      }
-    },
-    "Auto-Upload Photos" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التحميل التلقائي للصور"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-Upload af fotos"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fotos automatisch hochladen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-Upload Photos"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Autocargar fotos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transfert automatique des photos"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automata feltöltés"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamento Automatico Foto"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamento Automatico Foto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "写真を自動アップロード"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Foto's automatisch uploaden"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatyczne przesyłanie zdjęć"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Автозагрузка изображений"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ladda upp foton automatiskt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动上传照片"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動上傳照片"
           }
         }
       }
@@ -611,8 +321,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "إلحاق الصور الحديثة بقائمة انتظار التحميل وفقاً لإعدادات التحميل التلقائي."
+            "state" : "new",
+            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
           }
         },
         "da" : {
@@ -653,8 +363,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menambahkan foto terbaru ke antrean unggah menurut pengaturan unggah otomatis."
+            "state" : "new",
+            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
           }
         },
         "it" : {
@@ -711,14 +421,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "التحميل التلقائي للصور"
+            "state" : "new",
+            "value" : "Auto-Upload Photos"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-Upload Photos"
+            "value" : "Auto-Upload Fotos"
           }
         },
         "de" : {
@@ -753,8 +463,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unggah Otomatis Foto"
+            "state" : "new",
+            "value" : "Auto-Upload Photos"
           }
         },
         "it" : {
@@ -803,6 +513,106 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動上傳照片"
+          }
+        }
+      }
+    },
+    "No photo added" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "No photo added to the upload queue."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet foto føjet til uploadkøen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Foto zur Upload-Warteschlange hinzugefügt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No photo added to the upload queue."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha añadido ninguna foto a la cola de subida."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune photo ajoutée à la file d’attente des transferts."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nincs fénykép hozzáadva a feltöltési sorba."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "No photo added to the upload queue."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna foto aggiunta alla coda di caricamento."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップロードキューに写真が追加されていません。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen foto toegevoegd aan de uploadwachtrij."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie dodano zdjęć do kolejki przesyłania."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В очередь на загрузку не добавлено ни одной фотографии."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget foto har lagts till i uppladdningskön."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上传队列中没有添加照片。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有照片加入上傳佇列。"
           }
         }
       }
