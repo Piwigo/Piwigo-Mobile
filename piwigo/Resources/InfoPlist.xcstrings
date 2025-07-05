@@ -101,7 +101,8 @@
             "value" : "Piwigo"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "CFBundleName" : {
       "comment" : "Bundle name",
@@ -203,7 +204,8 @@
             "value" : "Piwigo"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "NSFaceIDUsageDescription" : {
       "comment" : "Privacy - Face ID Usage Description",
@@ -355,8 +357,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Piwigo uses the local network to access your Piwigo server."
+            "state" : "translated",
+            "value" : "Piwigo menggunakan jaringan lokal untuk mengakses server Piwigo Anda."
           }
         },
         "it" : {
@@ -457,7 +459,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo menggunakan jaringan lokal untuk mengakses server Piwigo Anda."
+            "value" : "sehingga dapat menyimpan foto di aplikasi Foto dan mengunggah foto ke Piwigo Anda."
           }
         },
         "it" : {
@@ -558,8 +560,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "so that Piwigo will be able to upload images with Siri."
+            "state" : "translated",
+            "value" : "sehingga Piwigo akan dapat mengunggah gambar dengan Siri."
           }
         },
         "it" : {

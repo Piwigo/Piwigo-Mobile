@@ -37,7 +37,7 @@ class AppShortcuts: AppShortcutsProvider {
             "Auto-upload photos with \(.applicationName)",
             "Auto-upload my photos with \(.applicationName)"
         ],
-        shortTitle: "Auto-Upload Photos",
+        shortTitle: LocalizedStringResource("Auto-Upload Photos", table: "In-AppIntents"),
         systemImageName: "photo.stack")
     }
 }

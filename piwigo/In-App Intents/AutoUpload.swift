@@ -22,7 +22,10 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
 
     /// An intent can optionally provide a localized description that the Shortcuts app displays.
     static var description = IntentDescription(LocalizedStringResource("AutoUploadDescription", table: "In-AppIntents"),
-                                               categoryName: "Photos", searchKeywords: ["Auto-Upload", "Photos", "Piwigo"])
+                                               categoryName:
+                                                LocalizedStringResource("severalImages"), searchKeywords: [
+                                                LocalizedStringResource("Auto-Upload", table: "In-AppIntents"),
+                                                LocalizedStringResource("severalImages"), "Piwigo"])
     
     /// Tell the system to not bring the app to the foreground when the intent runs.
     static let openAppWhenRun: Bool = false
@@ -161,14 +164,12 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
 }
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-fileprivate extension IntentDialog {
+fileprivate extension IntentDialog
+{
     static func responseSuccess(photos: Int) -> Self {
-        if photos == 0 {
-            .init(LocalizedStringResource("No photo added", table: "In-AppIntents"))
-        } else {
-            .init(LocalizedStringResource("\(photos) photos added", table: "In-AppIntents"))
-        }
+        .init(LocalizedStringResource("\(photos) photos added", table: "In-AppIntents"))
     }
+    
     static func responseFailure(error: AutoUploadError) -> Self {
         "\(error.localizedDescription)"
     }

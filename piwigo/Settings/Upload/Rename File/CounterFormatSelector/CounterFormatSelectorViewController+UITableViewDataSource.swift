@@ -58,7 +58,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("Prefix", comment: "Prefix"))
+                cell.configure(with: NSLocalizedString("settings_prefix", comment: "Prefix"))
                 cell.cellSwitch.setOn(counterFormats[indexPath.section - 1] != .prefix(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPath of option to display or hide
@@ -132,7 +132,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
-                cell.configure(with: NSLocalizedString("Suffix", comment: "Suffix"))
+                cell.configure(with: NSLocalizedString("settings_suffix", comment: "Suffix"))
                 cell.cellSwitch.setOn(counterFormats[indexPath.section - 1] != .suffix(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Get indexPath of option to display or hide

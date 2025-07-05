@@ -157,9 +157,9 @@ extension UploadSettingsViewController {
             // See https://iosref.com/res
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhones 14 Pro Max screen width
-                cell.configure(with: NSLocalizedString("settings_deleteImage>375px", comment: "Delete Image After Upload"))
+                cell.configure(with: NSLocalizedString("settings_deleteImageLong", comment: "Delete Image After Upload"))
             } else {
-                cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))
+                cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After"))
             }
             cell.cellSwitch.setOn(deleteImageAfterUpload, animated: true)
             cell.cellSwitchBlock = { switchState in

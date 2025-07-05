@@ -37,7 +37,7 @@ class AlbumDeletion: NSObject
     {
         let alert = UIAlertController(
             title: NSLocalizedString("deleteCategory_title", comment: "DELETE ALBUM"),
-            message: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), albumData.name, NSNumber(value: albumData.totalNbImages)),
+            message: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), albumData.name, albumData.totalNbImages),
             preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(
@@ -89,7 +89,7 @@ class AlbumDeletion: NSObject
             }
             else if nbOrphans != 0 {
                 let orphanImagesAction = UIAlertAction(
-                    title: self.nbOrphans > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %@ Orphans"), NSNumber(value: self.nbOrphans)) : NSLocalizedString("deleteCategory_singleOrphanedImage", comment: "Delete Orphan"),
+                    title: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %lld Orphans"), self.nbOrphans),
                     style: .destructive,
                     handler: { [self] action in
                         confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
@@ -99,7 +99,7 @@ class AlbumDeletion: NSObject
             }
             
             let allImagesAction = UIAlertAction(
-                title: albumData.totalNbImages > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Images"), NSNumber(value: albumData.totalNbImages)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
+                title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
                 style: .destructive,
                 handler: { [self] action in
                     confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,

@@ -2632,8 +2632,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.2\nMarch 27, 2019\n\n• Local photos presented in a timeline view by day before upload\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.2\n27 مارس 2019\n\n• عرض الصور المحلية في عرض الجدول الزمني حسب اليوم قبل التحميل\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -2733,8 +2733,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.3\nApril 10, 2019\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.3.3\n10 أبريل 2019\n\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -2834,8 +2834,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.4\nMay 1, 2019\n\n• Improved albums presentation on iPad (and iPhone)\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.4\n1 مايو 2019\n\n• تحسين عرض الألبومات على iPad (وiPhone)\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -2935,8 +2935,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.5\nJune 6, 2019\n\n• Fix a crash which sometimes happens when editing the server address after logout"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.5\n6 يونيو 2019\n\n• إصلاح التعطل الذي يحدث أحيانًا عند تحرير عنوان الخادم بعد تسجيل الخروج"
           }
         },
         "da" : {
@@ -3036,8 +3036,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4\nJuly 15, 2019\n\n• Adds a search tool (requires iOS 11 or later)\n• Adds photo sorting by rating score\n• Faster download of album thumbnails (requires Piwigo 2.8 or later)\n• Titles of uploaded photos do not default to filenames anymore\n• Fixes impossibility to remove tags\n• Fixes inaccurate photo data in some circumstances"
+            "state" : "translated",
+            "value" : "الإصدار 2.4\n15 يوليو 2019\n\n• يضيف أداة بحث (يتطلب iOS 11 أو أحدث)\n• يضيف فرز الصور حسب درجة التقييم\n• تنزيل أسرع للصور المصغرة للألبوم (يتطلب Piwigo 2.8 أو أحدث)\n• لم تعد عناوين الصور التي تم تحميلها افتراضيًا إلى أسماء الملفات بعد الآن\n• إصلاح استحالة إزالة العلامات\n• إصلاح بيانات الصور غير الدقيقة في بعض الظروف"
           }
         },
         "da" : {
@@ -3137,8 +3137,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.1\nAugust 10, 2019\n\n• Adds \"Tags\", \"Most visited\", \"Best rated\" and \"Recent photos\" albums\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.1\n10 أغسطس 2019\n\n• إضافة ألبومات \"العلامات\" و\"الأكثر زيارة\" و\"الأفضل تقييمًا\" و\"الصور الحديثة\"\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -3238,8 +3238,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.2\nSeptember 3, 2019\n\n• Adds ability to create tags (admin users only)\n• Adds ability to change size of album thumbnails\n• Adds Retina display management\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.2\n3 سبتمبر 2019\n\n• يضيف إمكانية إنشاء وسوم (للمستخدمين الإداريين فقط)\n• يضيف إمكانية تغيير حجم الصور المصغرة للألبوم\n• يضيف إدارة عرض شبكية العين\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -3339,8 +3339,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.3\nSeptember 25, 2019\n\n• iOS 13 compatibility\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.3\n25 سبتمبر 2019\n\n• التوافق مع iOS 13\n• إصلاحات أخطاء طفيفة وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -3440,8 +3440,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.4\nOctober 1, 2019\n\n• Fix video upload issues on some servers\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.4.4\n1 أكتوبر 2019\n\n• إصلاح مشكلات تحميل الفيديو على بعض الخوادم\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -3541,8 +3541,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.5\nNovember 6, 2019\n\n• Displays your favorite photos (requires Piwigo 2.10 or later)\n• Option for presenting photos sorted manually\n• Allows Community users to create albums (with appropriate rights)\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.5\n6 نوفمبر 2019\n\n• عرض صورك المفضلة (يتطلب Piwigo 2.10 أو أحدث)\n• خيار عرض الصور مرتبة يدويًا\n• السماح لمستخدمي المجتمع بإنشاء ألبومات (مع الحقوق المناسبة)\n• إصلاحات أخطاء طفيفة وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -3642,8 +3642,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.6\nJanuary 18, 2020\n\n• Edit properties of a selection of photos\n• Change creation date of a photo or video\n• Option for prefixing file names before upload\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.6\n18 يناير 2020\n\n• تحرير خصائص مجموعة مختارة من الصور\n• تغيير تاريخ إنشاء صورة أو فيديو\n• خيار لبادئة أسماء الملفات قبل التحميل\n• إصلاحات أخطاء طفيفة وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -3743,8 +3743,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.7\nJanuary 30, 2020\n\n• Chinese Simplified, Russian and Spanish translations\n• Fixes a video playback issue on some servers"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.7\n30 يناير 2020\n\n• الترجمات الصينية المبسطة والروسية والإسبانية\n• إصلاح مشكلة في تشغيل الفيديو على بعض الخوادم"
           }
         },
         "da" : {
@@ -3844,8 +3844,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.8\nMarch 25, 2020\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\n - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.8\n25 مارس 2020\n\n• يحذرك Piwigo عندما:\n - موقع ويب لديه شهادة غير صالحة,\n - قبل إنشاء اتصال غير آمن\n• تحسين إدارة ذاكرة التخزين المؤقت\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -3945,8 +3945,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5\nAugust 27, 2020\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update."
+            "state" : "translated",
+            "value" : "الإصدار 2.5\n27 أغسطس 2020\n\n• تسجيل طلبات التحميل\n• تحميل الصور/مقاطع الفيديو عند الإمكان\n• خيار \"Wi-Fi فقط\" للتحميل\n• لا يوجد تحميل عندما يكون في وضع الطاقة المنخفضة\n• وصول أسرع بكثير إلى مكتبة الصور\n• إصلاحات أخطاء طفيفة وتحسينات للواجهة\n• تحديث الكود\n\nالتحميل في الخلفية سيكون متاحاً بعد تحديث الخادم"
           }
         },
         "da" : {
@@ -3987,8 +3987,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5\nAugust 27, 2020\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update."
+            "state" : "translated",
+            "value" : "Versi 2.5\n27 Agustus 2020\n\n• Mencatat permintaan pengunggahan\n• Mengunggah foto/video jika memungkinkan\n• Opsi \"Hanya Wi-Fi\" untuk unggahan\n• Tidak ada unggahan saat dalam Mode Daya Rendah\n• Akses yang jauh lebih cepat ke Perpustakaan Foto\n• Perbaikan bug kecil dan peningkatan antarmuka\n• Modernisasi kode\n\nPengunggahan latar belakang akan tersedia setelah pembaruan server."
           }
         },
         "it" : {
@@ -4046,8 +4046,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.1\nSeptember 10, 2020\n\n• New option for presenting the photos and videos in random order\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.1\n10 سبتمبر 2020\n\n• خيار جديد لعرض الصور ومقاطع الفيديو بترتيب عشوائي\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -4088,8 +4088,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.1\nSeptember 10, 2020\n\n• New option for presenting the photos and videos in random order\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.5.1\n10 September 2020\n\n• Opsi baru untuk menampilkan foto dan video dalam urutan acak\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -4147,8 +4147,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.2\nDecember 3, 2020\n\n• Background uploading (requires the uploadAsync extension or Piwigo 11 or later)\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.2\n3 ديسمبر 2020\n\n• التحميل في الخلفية (يتطلب ملحق uploadAsync أو Piwigo 11 أو أحدث)\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -4189,8 +4189,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.2\nDecember 3, 2020\n\n• Background uploading (requires the uploadAsync extension or Piwigo 11 or later)\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.5.2\n3 Desember 2020\n\n• Pengunggahan latar belakang (membutuhkan ekstensi uploadAsync atau Piwigo 11 atau yang lebih baru)\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -4248,8 +4248,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.3\nDecember 21, 2020\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.3\n21 ديسمبر 2020\n\n• التحكم في الصور ومقاطع الفيديو التي يمكن لـ Piwigo الوصول إليها\n• نصائح وحيل لاستغلال التطبيق بشكل أفضل\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -4290,8 +4290,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.3\nDecember 21, 2020\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 2.5.3\n21 Desember 2020\n\n• Mengontrol foto dan video mana yang dapat diakses Piwigo\n• Kiat dan trik untuk memanfaatkan aplikasi dengan lebih baik\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -4349,8 +4349,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.4\nJanuary 2, 2021\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.4\n2 يناير 2021\n\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -4391,8 +4391,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.4\nJanuary 2, 2021\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.5.4\n2 Januari 2021\n\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -4450,8 +4450,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6\nMarch 3, 2021\n\n• Paste/upload photos and videos from clipboard\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.6\n3 مارس 2021\n\n• لصق/رفع الصور ومقاطع الفيديو من الحافظة\n• إصلاح مشكلة التوافق مع Piwigo 11\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -4492,8 +4492,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6\nMarch 3, 2021\n\n• Paste/upload photos and videos from clipboard\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.6\n3 Maret 2021\n\n• Menempel/mengunggah foto dan video dari papan klip\n• Memperbaiki masalah kompatibilitas dengan Piwigo 11\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -4551,8 +4551,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6.1\nMarch 19, 2021\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.6.1\n19 مارس 2021\n\n• إصلاح إسناد العلامات إلى مجموعة مختارة من الصور\n• إعادة تصميم إعدادات المظهر\n• تحسين موثوقية التحميل في الخلفية\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -4593,8 +4593,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6.1\nMarch 19, 2021\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.6.1\n19 Maret 2021\n\n• Memperbaiki atribusi tag ke pilihan foto\n• Pengaturan Penampilan yang didesain ulang\n• Meningkatkan keandalan pengunggahan latar belakang\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -4652,8 +4652,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6.2\nMay 3, 2021\n\n• Allows some Community users to create tags\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.6.2\n3 مايو 2021\n\n• يسمح لبعض مستخدمي المجتمع بإنشاء وسوم\n• يُصلح مشكلة التوافق مع Piwigo 11\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة\n• تحديث الكود"
           }
         },
         "da" : {
@@ -4694,8 +4694,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6.2\nMay 3, 2021\n\n• Allows some Community users to create tags\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.6.2\n3 Mei 2021\n\n• Mengizinkan beberapa pengguna Komunitas untuk membuat tag\n• Memperbaiki masalah kompatibilitas dengan Piwigo 11\n• Perbaikan bug kecil dan peningkatan antarmuka\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -4753,8 +4753,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6.3\nMay 11, 2021\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.6.3\n11 مايو 2021\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -4854,8 +4854,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.6.4\nMay 18, 2021\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.6.4\n18 مايو 2021\n\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -4955,8 +4955,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.7\nAugust 12, 2021\n\n• Auto upload photos and videos\n• Improved photo and video downsizing options\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.7\n12 أغسطس 2021\n\n• تحميل الصور ومقاطع الفيديو تلقائيًا\n• تحسين خيارات تصغير حجم الصور والفيديو\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة\n• تحديث الكود"
           }
         },
         "da" : {
@@ -4997,8 +4997,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.7\nAugust 12, 2021\n\n• Auto upload photos and videos\n• Improved photo and video downsizing options\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.7\n12 Agustus 2021\n\n• Unggah foto dan video secara otomatis\n• Opsi perampingan foto dan video yang ditingkatkan\n• Perbaikan bug kecil dan peningkatan antarmuka\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -5157,8 +5157,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.7.2\nSeptember 20, 2021\n\n• iOS 15 compatibility\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.7.2\n20 سبتمبر 2021\n\n• التوافق مع iOS 15\n• إصلاحات أخطاء طفيفة وتحسينات للواجهة\n• تحديث الكود"
           }
         },
         "da" : {
@@ -5199,8 +5199,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.7.2\nSeptember 20, 2021\n\n• iOS 15 compatibility\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.7.2\n20 September 2021\n\n• Kompatibilitas iOS 15\n• Perbaikan bug kecil dan peningkatan antarmuka\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -5258,8 +5258,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.8\nOctober 23, 2021\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.8\n23 أكتوبر 2021\n\n• إضافة وإزالة الصور ومقاطع الفيديو من مفضلاتك\n• إصلاحات طفيفة للأخطاء وتحسينات للواجهة"
           }
         },
         "da" : {
@@ -5300,8 +5300,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.8\nOctober 23, 2021\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.8\n23 Oktober 2021\n\n• Menambah dan menghapus foto dan video dari favorit Anda\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -5359,8 +5359,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.8.1\nNovember 9, 2021\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.8.1\n9 نوفمبر 2021\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -5401,8 +5401,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.8.1\nNovember 9, 2021\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 2.8.1\n9 November 2021\n\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -5460,8 +5460,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.8.2\nNovember 26, 2021\n\n• Enables Community users to upload in the background and auto-upload photos and videos\n• Fixes a compatibility issue with Piwigo 12\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.8.2\n26 نوفمبر 2021\n\n• تمكين مستخدمي المجتمع من التحميل في الخلفية والتحميل التلقائي للصور ومقاطع الفيديو\n• إصلاح مشكلة التوافق مع Piwigo 12\n• إصلاحات طفيفة للأخطاء وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -5502,8 +5502,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.8.2\nNovember 26, 2021\n\n• Enables Community users to upload in the background and auto-upload photos and videos\n• Fixes a compatibility issue with Piwigo 12\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.8.2\n26 November 2021\n\n• Memungkinkan pengguna Komunitas untuk mengunggah di latar belakang dan mengunggah foto dan video secara otomatis\n• Memperbaiki masalah kompatibilitas dengan Piwigo 12\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -5561,8 +5561,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9\nJanuary 9, 2022\n\n• Displays photo/video descriptions in preview mode\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.9\n9 يناير 2022\n\n• عرض أوصاف الصور/الفيديو في وضع المعاينة\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -5603,8 +5603,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9\nJanuary 9, 2022\n\n• Displays photo/video descriptions in preview mode\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.9\n9 Januari 2022\n\n• Menampilkan deskripsi foto/video dalam mode pratinjau\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -5662,8 +5662,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.1\nJanuary 20, 2022\n\n• Highlights albums updated recently\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.9.1\n20 يناير 2022\n\n• أبرز الألبومات التي تم تحديثها مؤخرًا\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -5763,8 +5763,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.2\nJanuary 24, 2022\n\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.9.2\n24 يناير 2022\n\n• إصلاحات الأخطاء\n• تحديث الكود"
           }
         },
         "da" : {
@@ -5805,8 +5805,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.2\nJanuary 24, 2022\n\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.9.2\n24 Januari 2022\n\n• Perbaikan bug\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -5864,8 +5864,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.3\nFebruary 11, 2022\n\n• Double tap to zoom in and out photos\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.9.3\n11 فبراير 2022\n\n• النقر المزدوج لتكبير وتصغير الصور\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة\n• تحديث الكود"
           }
         },
         "da" : {
@@ -5906,8 +5906,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.3\nFebruary 11, 2022\n\n• Double tap to zoom in and out photos\n• Minor bug fixes and improvements of the interface\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.9.3\n11 Februari 2022\n\n• Ketuk dua kali untuk memperbesar dan memperkecil foto\n• Perbaikan bug kecil dan peningkatan antarmuka\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -5965,8 +5965,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.4\nFebruary 23, 2022\n\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.9.4\n23 فبراير 2022\n\n• إصلاحات الأخطاء\n• تحديث الكود"
           }
         },
         "da" : {
@@ -6007,8 +6007,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.4\nFebruary 23, 2022\n\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.9.4\n23 Februari 2022\n\n• Perbaikan bug\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -6066,8 +6066,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.5\nMarch 7, 2022\n\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.9.5\n7 مارس 2022\n\n• إصلاحات الأخطاء\n• تحديث الكود"
           }
         },
         "da" : {
@@ -6108,8 +6108,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.9.5\nMarch 7, 2022\n\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.9.5\n7 Maret 2022\n\n• Perbaikan bug\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -6167,8 +6167,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.10\nMay 20, 2022\n\n• Adds App Lock, a feature for hiding your albums behind Face ID, Touch ID and a passcode\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "الإصدار 2.10\n20 مايو 2022\n\n• يضيف ميزة ”قفل التطبيق“، وهي ميزة لإخفاء ألبوماتك خلف معرف الوجه ومعرف اللمس ورمز المرور\n• إصلاح الأخطاء\n• تحديث الكود"
           }
         },
         "da" : {
@@ -6209,8 +6209,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.10\nMay 20, 2022\n\n• Adds App Lock, a feature for hiding your albums behind Face ID, Touch ID and a passcode\n• Bug fixes\n• Code modernization"
+            "state" : "translated",
+            "value" : "Versi 2.10\n20 Mei 2022\n\n• Menambah Kunci Aplikasi, ciri untuk menyembunyikan album anda di belakang Face ID, Touch ID dan kod pas\n• Perbaikan bug\n• Modernisasi kode"
           }
         },
         "it" : {
@@ -6268,8 +6268,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.11\nJune 11, 2022\n\n• Adds an option for re-uploading photos and videos\n• Code modernization\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.11\n11 يونيو 2022\n\n• يضيف خيارًا لإعادة تحميل الصور ومقاطع الفيديو\n• تحديث الكود\n• إصلاح الأخطاء"
           }
         },
         "da" : {
@@ -6310,8 +6310,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.11\nJune 11, 2022\n\n• Adds an option for re-uploading photos and videos\n• Code modernization\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 2.11\n11 Juni 2022\n\n• Menambahkan opsi untuk mengunggah ulang foto dan video\n• Modernisasi kode\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -6470,8 +6470,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.11.2\nJune 21, 2022\n\n• Fixes a compatibility issue with the Community plugin"
+            "state" : "translated",
+            "value" : "الإصدار 2.11.2\n21 يونيو 2022\n\n• يعمل على إصلاح مشكلة التوافق مع إضافة المجتمع"
           }
         },
         "da" : {
@@ -6512,8 +6512,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.11.2\nJune 21, 2022\n\n• Fixes a compatibility issue with the Community plugin"
+            "state" : "translated",
+            "value" : "Versi 2.11.2\n21 Juni 2022\n\n• Memperbaiki masalah kompatibilitas dengan plugin Komunitas"
           }
         },
         "it" : {
@@ -6571,8 +6571,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12\nJuly 3, 2022\n\n• Select a tag faster with the search bar\n• Code modernization\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.12\n3 يوليو 2022\n\n• حدد علامة بشكل أسرع باستخدام شريط البحث\n• تحديث الرمز\n• إصلاح الأخطاء"
           }
         },
         "da" : {
@@ -6613,8 +6613,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12\nJuly 3, 2022\n\n• Select a tag faster with the search bar\n• Code modernization\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 2.12\n3 Juli 2022\n\n• Pilih tag lebih cepat dengan bilah pencarian\n• Modernisasi kode\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -6672,8 +6672,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.1\nJuly 10, 2022\n\n• Fixes a crash occurring on iOS 9-13 when changing tags allocated to photos"
+            "state" : "translated",
+            "value" : "الإصدار 2.12.1\n10 يوليو 2022\n\n• إصلاح تعطل يحدث على نظام التشغيل iOS 9-13 عند تغيير العلامات المخصصة للصور"
           }
         },
         "da" : {
@@ -6714,8 +6714,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.1\nJuly 10, 2022\n\n• Fixes a crash occurring on iOS 9-13 when changing tags allocated to photos"
+            "state" : "translated",
+            "value" : "Versi 2.12.1\n10 Juli 2022\n\n• Memperbaiki kerusakan yang terjadi di iOS 9-13 saat mengubah tag yang dialokasikan ke foto"
           }
         },
         "it" : {
@@ -6773,8 +6773,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.2\nAugust 2, 2022\n\n• Fixes a crash occurring on iOS 9-12 when displaying the upload request queue\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.12.2\n2 أغسطس 2022\n\n• إصلاح تعطل يحدث على نظام التشغيل iOS 9-12 عند عرض قائمة انتظار طلبات التحميل\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -6815,8 +6815,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.2\nAugust 2, 2022\n\n• Fixes a crash occurring on iOS 9-12 when displaying the upload request queue\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "Versi 2.12.2\n2 Agustus 2022\n\n• Memperbaiki kerusakan yang terjadi di iOS 9-12 saat menampilkan antrean permintaan unggah\n• Perbaikan bug kecil dan peningkatan antarmuka"
           }
         },
         "it" : {
@@ -6874,8 +6874,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.3\nAugust 7, 2022\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.12.3\n7 أغسطس 2022\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -7177,8 +7177,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.6\nNovember 21, 2022\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.12.6\n21 نوفمبر 2022\n- إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -7219,8 +7219,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.6\nNovember 21, 2022\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 2.12.6\n21 November 2022\n\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7278,8 +7278,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.7\nDecember 19, 2022\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.12.7\n19 ديسمبر 2022\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -7320,8 +7320,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.12.7\nDecember 19, 2022\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 2.12.7\n19 Desember 2022\n\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7379,8 +7379,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.0\nJune 27, 2023\n\n• Cache management fully rewritten to improve the user experience and bring offline browsing\n• Fixes some translations"
+            "state" : "translated",
+            "value" : "الإصدار 3.0\n27 يونيو 2023\n\n• تمت إعادة كتابة إدارة ذاكرة التخزين المؤقت بالكامل لتحسين تجربة المستخدم وإتاحة التصفح دون اتصال بالإنترنت\n• إصلاح بعض الترجمات"
           }
         },
         "da" : {
@@ -7421,8 +7421,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.0\nJune 27, 2023\n\n• Cache management fully rewritten to improve the user experience and bring offline browsing\n• Fixes some translations"
+            "state" : "translated",
+            "value" : "Versi 3.0\n27 Juni 2023\n\n• Manajemen cache sepenuhnya ditulis ulang untuk meningkatkan pengalaman pengguna dan menghadirkan penjelajahan offline\n• Memperbaiki beberapa terjemahan"
           }
         },
         "it" : {
@@ -7480,8 +7480,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.0.1\nJuly 2, 2023\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 3.0.1\n2 يوليو 2023\n\n• إصلاحات أخطاء طفيفة وتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -7581,8 +7581,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.0.2\nJuly 15, 2023\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 3.0.2\n15 يوليو 2023\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -7724,8 +7724,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.1\nNovember 20, 2023\n\n• Swipe down or pinch the image to return to the album when viewing individual photos or videos\n• Watch a video stored on your Piwigo while you use other apps.\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 3.1\n20 November 2023\n\n• Geser ke bawah atau cubit gambar untuk kembali ke album saat melihat foto atau video satu per satu\n• Menonton video yang disimpan di Piwigo saat Anda menggunakan aplikasi lain.\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7825,8 +7825,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.1.1\nDecember 1, 2023\n\n• Updates server statistics (requires Piwigo 14)\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 3.1.1\n1 Desember 2023\n\n• Memperbarui statistik server (membutuhkan Piwigo 14)\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7926,8 +7926,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.1.2\nFebruary 1, 2024\n\n• Requests Piwigo server update if necessary\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 3.1.2\n1 Februari 2024\n\n• Meminta pembaruan server Piwigo jika perlu\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -7985,8 +7985,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.1.3\nFebruary 11, 2024\n\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 3.1.3\n11 فبراير 2024\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -8086,8 +8086,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.1.4\nFebruary 27, 2024\n\n• Fixes a crash occurring on iOS 12"
+            "state" : "translated",
+            "value" : "الإصدار 3.1.4\n27 فبراير 2024\n\n• إصلاح عطل يحدث في نظام التشغيل iOS 12"
           }
         },
         "da" : {
@@ -8128,8 +8128,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.1.4\nFebruary 27, 2024\n\n• Fixes a crash occurring on iOS 12"
+            "state" : "translated",
+            "value" : "Versi 3.1.4\n27 Februari 2024\n\n• Memperbaiki kerusakan yang terjadi pada iOS 12"
           }
         },
         "it" : {
@@ -8187,8 +8187,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.2\nJuly 14, 2024\n\n• Adopts album photo sorting options\n• Adds on-the-fly photo sorting options\n• Adds rotation of uploaded photos (requires the rotateImage plugin)\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 3.2\n14 يوليو 2024\n\n• يعتمد خيارات فرز صور الألبوم\n• يُضيف خيارات فرز الصور أثناء التنقل\n- يضيف تدوير الصور التي تم تحميلها (يتطلب ملحق RotateImage)\n• إصلاح الأخطاء"
           }
         },
         "da" : {
@@ -8229,8 +8229,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.2\nJuly 14, 2024\n\n• Adopts album photo sorting options\n• Adds on-the-fly photo sorting options\n• Adds rotation of uploaded photos (requires the rotateImage plugin)\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 3.2\n14 Juli 2024\n\n• Mengadopsi opsi penyortiran foto album\n• Menambahkan opsi penyortiran foto dengan cepat\n• Menambahkan rotasi foto yang diunggah (membutuhkan plugin rotateImage)\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -8330,8 +8330,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.2.1\nJuly 29, 2024\n\n• Adds an option to display albums with or without descriptions\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 3.2.1\n29 Juli 2024\n\n• Menambahkan opsi untuk menampilkan album dengan atau tanpa deskripsi\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -8431,8 +8431,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.2.2\nSeptember 12, 2024\n\n• Adds an option to delete selections of photos/videos stored in the device\n• Bug fixes"
+            "state" : "translated",
+            "value" : "Versi 3.2.2\n12 September 2024\n\n• Menambahkan opsi untuk menghapus pilihan foto/video yang tersimpan di perangkat\n• Perbaikan bug"
           }
         },
         "it" : {
@@ -8491,7 +8491,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 3.2.3\n17 أكتوبر 2024\n\n- إصلاحات الأخطاء"
+            "value" : "الإصدار 3.2.3\n17 أكتوبر 2024\n\n• إصلاحات الأخطاء"
           }
         },
         "da" : {
@@ -8634,7 +8634,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 3.2.4\n\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Versi 3.2.4\n18 Januari 2025\n\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -8735,7 +8735,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 3.2.5\n\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Versi 3.2.5\n17 Februari 2025\n\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
@@ -8794,7 +8794,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 3.3\n26 مارس 2025\n\n- نسخ مجموعة مختارة من الصور ونقلها بسرعة أكبر بكثير\n- تحسين إدارة ترحيل قاعدة البيانات\n- تصحيح إدارة حقوق مشاركة الصور والفيديو\n- إصلاح الأخطاء وتحسين الواجهة"
+            "value" : "الإصدار 3.3\n26 مارس 2025\n\n• نسخ مجموعة مختارة من الصور ونقلها بسرعة أكبر بكثير\n• تحسين إدارة ترحيل قاعدة البيانات\n• تصحيح إدارة حقوق مشاركة الصور والفيديو\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
@@ -9037,8 +9037,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.3.2\nApril 14, 2025\n\n• Fixes bugs and improves the interface"
+            "state" : "translated",
+            "value" : "Versi 3.3.2\n14 April 2025\n\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
@@ -9138,8 +9138,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 3.4\nJune 30, 2025\n\n• Adds options for modifying file names before upload\n• Fixes bugs and improves the interface"
+            "state" : "translated",
+            "value" : "Versi 3.4\n30 Juni 2025\n\n• Menambahkan opsi untuk memodifikasi nama file sebelum diunggah\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
