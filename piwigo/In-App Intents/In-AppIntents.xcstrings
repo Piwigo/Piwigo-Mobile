@@ -9,37 +9,37 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "value" : ""
                 }
               },
               "many" : {
                 "stringUnit" : {
                   "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "value" : ""
                 }
               },
               "one" : {
                 "stringUnit" : {
                   "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "value" : ""
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "value" : ""
                 }
               },
               "two" : {
                 "stringUnit" : {
                   "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "value" : ""
                 }
               },
               "zero" : {
                 "stringUnit" : {
                   "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "value" : ""
                 }
               }
             }
@@ -50,7 +50,7 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : "%lld photo added to the upload queue."
                 }
               },
@@ -140,7 +140,7 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : "%lld photo added to the upload queue."
                 }
               },
@@ -158,7 +158,7 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : "%lld photos added to the upload queue."
                 }
               }
@@ -170,7 +170,7 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : "%lld photo added to the upload queue."
                 }
               },
@@ -218,13 +218,13 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : "%lld photos added to the upload queue."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
+                  "state" : "translated",
                   "value" : "%lld photos added to the upload queue."
                 }
               },
@@ -248,20 +248,20 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "В очередь на загрузку добавлено %lld фотографий."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "В очередь на загрузку добавлено %lld фотографий."
                 }
               },
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld фото добавлено в очередь на загрузку."
+                  "value" : "В очередь на загрузку добавлено %lld фотографий."
                 }
               },
               "other" : {
@@ -319,12 +319,6 @@
     },
     "AutoUploadDescription" : {
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
-          }
-        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -363,7 +357,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Appends recent photos to the upload queue according to auto-upload settings."
           }
         },
@@ -419,12 +413,6 @@
     },
     "AutoUploadTitle" : {
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
-          }
-        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -463,7 +451,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Auto-Upload Photos"
           }
         },
@@ -519,12 +507,6 @@
     },
     "No photo added" : {
       "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
-          }
-        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
@@ -563,7 +545,7 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "No photo added to the upload queue."
           }
         },
