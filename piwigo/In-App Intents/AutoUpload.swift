@@ -167,7 +167,11 @@ struct AutoUpload: AppIntent, CustomIntentMigratedAppIntent { //}, PredictableIn
 fileprivate extension IntentDialog
 {
     static func responseSuccess(photos: Int) -> Self {
-        .init(LocalizedStringResource("\(photos) photos added", table: "In-AppIntents"))
+        if photos == 0 {
+            .init(LocalizedStringResource("No photo added", table: "In-AppIntents"))
+        } else {
+            .init(LocalizedStringResource("\(photos) photos added", table: "In-AppIntents"))
+        }
     }
     
     static func responseFailure(error: AutoUploadError) -> Self {

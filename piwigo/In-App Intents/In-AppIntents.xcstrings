@@ -8,38 +8,32 @@
             "plural" : {
               "few" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل."
                 }
               },
               "many" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل."
                 }
               },
               "one" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photo added to the upload queue."
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل."
                 }
               },
               "two" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل."
                 }
               }
             }
@@ -317,12 +311,200 @@
         }
       }
     },
+    "Auto-Upload" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحميل التلقائي"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisk upload"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisches Hochladen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carga automática"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transferts automatiques"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automata feltöltés"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Auto-Upload"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento Automatico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動アップロード"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisch uploaden"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatyczne przesyłanie"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автозагрузка"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisk uppladdning"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动上传"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動上傳"
+          }
+        }
+      }
+    },
+    "Auto-Upload Photos" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحميل التلقائي للصور"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto upload af billeder"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos automatisch hochladen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autocargar fotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfert automatique des photos"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automata feltöltés"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Auto-Upload Photos"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caricamento Automatico Foto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を自動アップロード"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto's automatisch uploaden"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatyczne przesyłanie zdjęć"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автозагрузка изображений"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda upp foton automatiskt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动上传照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動上傳照片"
+          }
+        }
+      }
+    },
     "AutoUploadDescription" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "إلحاق الصور الأخيرة إلى قائمة انتظار التحميل وفقًا لإعدادات التحميل التلقائي."
           }
         },
         "da" : {
@@ -421,8 +603,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "التحميل التلقائي للصور"
           }
         },
         "da" : {
@@ -521,8 +703,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "لا توجد صورة تضاف إلى قائمة انتظار التحميل."
           }
         },
         "da" : {
