@@ -1836,7 +1836,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varias transferencias fallaron y la cola de subida está en espera. Por favor, comprueba en la aplicación."
+            "value" : "Varias transferencias fallaron y la cola de subida está en espera. Por favor, compruebe en la aplicación."
           }
         },
         "fr" : {
@@ -2341,7 +2341,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Descubre"
+            "value" : "Descubra"
           }
         },
         "fr" : {
@@ -8704,7 +8704,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selecciona un álbum de iCloud del cuál obtener fotos de"
+            "value" : "Selecciona un álbum de iCloud del que obtener fotos"
           }
         },
         "fr" : {

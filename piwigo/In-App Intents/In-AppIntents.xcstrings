@@ -35,6 +35,12 @@
                   "state" : "translated",
                   "value" : "أضيفت صورة %lld إلى قائمة انتظار التحميل."
                 }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "لا توجد صورة تضاف إلى قائمة انتظار التحميل."
+                }
               }
             }
           }
