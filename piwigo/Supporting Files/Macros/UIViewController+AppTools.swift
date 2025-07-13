@@ -110,6 +110,7 @@ extension UIViewController {
 
     
     // MARK: - Dismiss Alert Views
+    @MainActor
     func dismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                             completion: @escaping () -> Void) {
         // Prepare message
@@ -127,6 +128,7 @@ extension UIViewController {
                                 actions: [dismissAction])
     }
 
+    @MainActor
     func cancelDismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                                   cancel: @escaping () -> Void, dismiss: @escaping () -> Void) {
         // Prepare message
@@ -146,6 +148,7 @@ extension UIViewController {
                                 actions: [cancelAction, dismissAction])
     }
 
+    @MainActor
     func dismissRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                                  dismiss: @escaping () -> Void, retry: @escaping () -> Void) {
         // Prepare message
@@ -165,6 +168,7 @@ extension UIViewController {
                                 actions: [dismissAction, retryAction])
     }
 
+    @MainActor
     func cancelDismissRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                         cancel: @escaping () -> Void, dismiss: @escaping () -> Void, retry: @escaping () -> Void) {
         // Prepare message
@@ -186,6 +190,7 @@ extension UIViewController {
                                 actions: [cancelAction, dismissAction, retryAction])
     }
 
+    @MainActor
     func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
         DispatchQueue.main.async {
             // Create alert view controller
