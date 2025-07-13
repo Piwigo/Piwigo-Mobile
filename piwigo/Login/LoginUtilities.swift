@@ -19,6 +19,7 @@ enum pwgLoginContext {
 class LoginUtilities: NSObject {
     
     // MARK: - Login Business
+    @MainActor
     static func checkAvailableSizes() {
         // Check that the actual default album thumbnail size is available
         // and select the next available size in case of unavailability
@@ -471,6 +472,7 @@ class LoginUtilities: NSObject {
         }
     }
     
+    @MainActor
     static func getHttpCredentialsAlert(textFieldDelegate: UITextFieldDelegate?,
                                         username: String, password: String,
                                         cancelAction: @escaping ((UIAlertAction) -> Void),
