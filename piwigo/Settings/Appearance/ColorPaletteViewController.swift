@@ -22,6 +22,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

@@ -119,6 +119,7 @@ class AppLockViewController: UIViewController {
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Navigation bar (if any)
         let attributes = [

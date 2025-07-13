@@ -229,6 +229,7 @@ class LocalImagesViewController: UIViewController
         actionBarButton.accessibilityIdentifier = "Action"
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = .piwigoColorBackground()

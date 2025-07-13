@@ -189,6 +189,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = .piwigoColorBackground()

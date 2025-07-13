@@ -199,6 +199,7 @@ class UploadQueueViewController: UIViewController {
         queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Set colors, fonts, etc.
         applyColorPaletteToInitialViews()

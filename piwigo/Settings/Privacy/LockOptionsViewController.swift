@@ -37,6 +37,7 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
         contextErrorMsg = error?.localizedDescription ?? ""
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

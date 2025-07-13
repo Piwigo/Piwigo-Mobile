@@ -100,6 +100,7 @@ class LoginViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

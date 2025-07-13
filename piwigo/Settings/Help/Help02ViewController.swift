@@ -97,6 +97,7 @@ class Help02ViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

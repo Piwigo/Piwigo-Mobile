@@ -55,6 +55,7 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         shiftPicker.reloadAllComponents()
     }

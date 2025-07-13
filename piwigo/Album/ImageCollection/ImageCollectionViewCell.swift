@@ -92,6 +92,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
     }
         
+    @MainActor
     func applyColorPalette() {
         bottomLayer?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.7)
         nameLabel?.textColor = UIColor.piwigoColorLeftLabel()

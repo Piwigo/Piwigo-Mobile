@@ -98,6 +98,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         }
     }
 
+    @MainActor
     func applyColorPalette() {
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()

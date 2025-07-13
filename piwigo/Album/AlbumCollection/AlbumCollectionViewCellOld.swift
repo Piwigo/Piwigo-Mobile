@@ -59,8 +59,8 @@ class AlbumCollectionViewCellOld: UICollectionViewCell
         contentView.addConstraints(NSLayoutConstraint.constraintFillSize(tableView)!)
     }
 
-    @objc
-    func applyColorPalette() {
+    @MainActor
+    @objc func applyColorPalette() {
         tableView?.reloadData()
     }
 

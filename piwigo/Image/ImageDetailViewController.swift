@@ -57,6 +57,7 @@ class ImageDetailViewController: UIViewController
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Update description view colors if necessary
         descContainer.applyColorPalette()

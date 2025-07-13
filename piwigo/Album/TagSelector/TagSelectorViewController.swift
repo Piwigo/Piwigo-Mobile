@@ -126,6 +126,7 @@ class TagSelectorViewController: UITableViewController {
         }
     }
     
+    @MainActor
     @objc private func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

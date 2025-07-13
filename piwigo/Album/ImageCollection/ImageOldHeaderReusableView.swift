@@ -94,6 +94,7 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         selectButton.setTitle(forState: selectState)
     }
     
+    @MainActor
     func applyColorPalette() {
         backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
         mainLabel.textColor = .piwigoColorLeftLabel()

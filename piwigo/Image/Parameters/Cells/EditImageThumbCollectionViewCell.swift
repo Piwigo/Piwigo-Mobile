@@ -57,6 +57,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background
         imageThumbnailView.backgroundColor = .piwigoColorBackground()

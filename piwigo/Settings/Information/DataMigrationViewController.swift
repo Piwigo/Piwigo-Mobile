@@ -33,6 +33,7 @@ class DataMigrationViewController: UIViewController {
         pleaseWaitLabel.text = NSLocalizedString("Coredata_MigrationPleaseWait", comment: "We are currently migrating some of your data. Please wait until it is complete. Do not kill the application.")
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

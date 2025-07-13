@@ -44,6 +44,7 @@ class UploadParametersViewController: UITableViewController {
         paramsTableView.accessibilityIdentifier = "Parameters"
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = .piwigoColorBackground()

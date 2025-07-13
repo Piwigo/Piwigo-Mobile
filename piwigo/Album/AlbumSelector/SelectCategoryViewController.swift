@@ -321,8 +321,8 @@ class SelectCategoryViewController: UIViewController {
         }
     }
 
-    @objc
-    func applyColorPalette() {
+    @MainActor
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
 

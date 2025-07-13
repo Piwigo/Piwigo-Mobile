@@ -48,6 +48,7 @@ class TroubleshootingViewController: UIViewController {
         getLogsAndJSONData()
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

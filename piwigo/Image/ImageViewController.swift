@@ -135,6 +135,7 @@ class ImageViewController: UIViewController {
                                                name: Notification.Name.pwgVideoMutedOrNot, object: nil)
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Set background color according to navigation bar visibility
         if navigationController?.isNavigationBarHidden ?? false {

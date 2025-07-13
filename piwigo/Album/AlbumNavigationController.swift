@@ -37,7 +37,8 @@ class AlbumNavigationController: UINavigationController
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
-    @objc func applyColorPalette() {
+    @MainActor
+   @objc func applyColorPalette() {
         // Navigation bar appearance
         view.backgroundColor = UIColor.piwigoColorBackground()
         navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default

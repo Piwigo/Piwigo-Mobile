@@ -131,6 +131,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

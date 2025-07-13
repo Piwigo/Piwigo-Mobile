@@ -39,6 +39,7 @@ class SelectPrivacyViewController: UIViewController {
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

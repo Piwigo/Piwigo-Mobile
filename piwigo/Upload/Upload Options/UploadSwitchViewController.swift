@@ -66,6 +66,7 @@ class UploadSwitchViewController: UIViewController {
         parametersView.translatesAutoresizingMaskIntoConstraints = false
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = .piwigoColorBackground()

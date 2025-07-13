@@ -116,6 +116,7 @@ class PiwigoHUD: UIView
         }
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         backgroundColor = UIColor(white: 0, alpha: 0.5)
         view?.backgroundColor = .piwigoColorBackground()

@@ -103,6 +103,7 @@ class WhatsNewViewController: UIViewController {
         super.updateViewConstraints()
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

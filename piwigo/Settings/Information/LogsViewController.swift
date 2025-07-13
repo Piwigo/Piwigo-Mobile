@@ -49,6 +49,7 @@ class LogsViewController: UIViewController {
         messages?.attributedText = attributedMsg
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
