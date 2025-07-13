@@ -364,42 +364,40 @@ extension AlbumViewController: UICollectionViewDataSource
         return legend
     }
     
+    @MainActor
     func updateNberOfImagesInFooter() {
-        // Update number of images in footer
-        DispatchQueue.main.async { [self] in
-            // Determine index path
-            var indexPath: IndexPath?
-            if categoryId == Int32.zero {
-                // Number of images in footer of album collection
-                if #available(iOS 13.0, *) {
-                    let snapShot = self.diffableDataSource.snapshot()
-                    if let section = snapShot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
-                        indexPath = IndexPath(item: 0, section: section)
-                    }
-                } else {
-                    // Fallback on earlier versions
-                    indexPath = IndexPath(item: 0, section: 0)
+        // Determine index path
+        var indexPath: IndexPath?
+        if categoryId == Int32.zero {
+            // Number of images in footer of album collection
+            if #available(iOS 13.0, *) {
+                let snapShot = self.diffableDataSource.snapshot()
+                if let section = snapShot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+                    indexPath = IndexPath(item: 0, section: section)
                 }
+            } else {
+                // Fallback on earlier versions
+                indexPath = IndexPath(item: 0, section: 0)
             }
-            else {
-                // Number of images in footer of image collection
-                if #available(iOS 13.0, *) {
-                    let snapShot = self.diffableDataSource.snapshot()
-                    if let sectionID = snapShot.sectionIdentifiers.last,
-                       let section = snapShot.indexOfSection(sectionID) {
-                        indexPath = IndexPath(item: 0, section: section)
-                    }
-                } else {
-                    // Fallback on earlier versions
-                    indexPath = IndexPath(item: 0, section: (images.sections?.count ?? 0))
+        }
+        else {
+            // Number of images in footer of image collection
+            if #available(iOS 13.0, *) {
+                let snapShot = self.diffableDataSource.snapshot()
+                if let sectionID = snapShot.sectionIdentifiers.last,
+                   let section = snapShot.indexOfSection(sectionID) {
+                    indexPath = IndexPath(item: 0, section: section)
                 }
+            } else {
+                // Fallback on earlier versions
+                indexPath = IndexPath(item: 0, section: (images.sections?.count ?? 0))
             }
-            
-            // Update footer if needed
-            guard let indexPath = indexPath else { return }
-            if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
-                footer.nberImagesLabel?.text = getImageCount()
-            }
+        }
+        
+        // Update footer if needed
+        guard let indexPath = indexPath else { return }
+        if let footer = collectionView?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: indexPath) as? ImageFooterReusableView {
+            footer.nberImagesLabel?.text = getImageCount()
         }
     }
     
