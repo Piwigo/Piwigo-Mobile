@@ -147,6 +147,7 @@ extension SelectCategoryViewController
     
     // MARK: - Move Images Methods
     /// For calling Piwigo server in version 2.10 to 13.x
+    @MainActor
     func moveImages(toAlbum albumData: Album) {
         // Add category ID to list of recently used albums
         let userInfo = ["categoryId": albumData.pwgID]
@@ -161,12 +162,16 @@ extension SelectCategoryViewController
         // Move next image to seleted album
         moveImage(imageData, toCategory: albumData) { [self] in
             // Next image…
-            self.inputImages.remove(imageData)
-            self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
-            self.moveImages(toAlbum: albumData)
+            DispatchQueue.main.async { [self] in
+                self.inputImages.remove(imageData)
+                self.updateHUD(withProgress: 1.0 - Float(self.inputImages.count) / Float(self.nberOfImages))
+                self.moveImages(toAlbum: albumData)
+            }
         }
         onFailure: { [self] error in
-            self.didFailWithError(error)
+            DispatchQueue.main.async { [self] in
+                self.didFailWithError(error)
+            }
         }
     }
     
@@ -221,6 +226,7 @@ extension SelectCategoryViewController
     }
     
     /// For calling Piwigo server in version +14.0
+    @MainActor
     func dissociateImages(fromAlbum albumData: Album) {
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
@@ -237,13 +243,18 @@ extension SelectCategoryViewController
                     self.didMoveImagesWithSuccess()
                 }
             } failure: { [self] error in
-                self.didFailWithError(error)
+                DispatchQueue.main.async { [self] in
+                    self.didFailWithError(error)
+                }
             }
         } failure: { [self] error in
-            self.didFailWithError(error)
+            DispatchQueue.main.async { [self] in
+                self.didFailWithError(error)
+            }
         }
     }
     
+    @MainActor
     private func didMoveImagesWithSuccess() {
         // Close HUD
         updateHUDwithSuccess() { [self] in
