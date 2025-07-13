@@ -33,6 +33,7 @@ class AlbumDeletion: NSObject
         return provider
     }()
 
+    @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         let alert = UIAlertController(
@@ -123,6 +124,7 @@ class AlbumDeletion: NSObject
         }
     }
     
+    @MainActor
     private func confirmAlbumDeletion(withNumberOfImages number: Int64,
                                       deletionMode: pwgAlbumDeletionMode,
                                       completion: @escaping (Bool) -> Void) {
@@ -174,6 +176,7 @@ class AlbumDeletion: NSObject
         }
     }
     
+    @MainActor
     private func checkDeletion(withNumberOfImages number: Int, deletionMode: pwgAlbumDeletionMode,
                                completion: @escaping (Bool) -> Void) {
         // Check provided number of images

@@ -34,6 +34,7 @@ class AlbumRenaming: NSObject
         case albumName = 1000, albumDescription
     }
 
+    @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         renameAlert = UIAlertController(
@@ -113,6 +114,7 @@ class AlbumRenaming: NSObject
         }
     }
     
+    @MainActor
     private func renameAlbum(withName albumName: String?, comment albumComment: String?,
                              completion: @escaping (Bool) -> Void) {
         guard let albumName = albumName,
