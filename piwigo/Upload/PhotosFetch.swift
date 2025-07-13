@@ -41,12 +41,8 @@ class PhotosFetch: NSObject {
                         default:
                             // Inform user that he/she cannot access the Photo library
                             if viewController != nil {
-                                if Thread.isMainThread {
+                                DispatchQueue.main.async {
                                     self.showPhotosLibraryAccessRestricted(in: viewController)
-                                } else {
-                                    DispatchQueue.main.async {
-                                        self.showPhotosLibraryAccessRestricted(in: viewController)
-                                    }
                                 }
                             }
                             doWithoutAccess()
@@ -60,12 +56,8 @@ class PhotosFetch: NSObject {
                         default:
                             // Invite user to provide access to the Photo library
                             if viewController != nil {
-                                if Thread.isMainThread {
+                                DispatchQueue.main.async {
                                     self.requestPhotoLibraryAccess(in: viewController)
-                                } else {
-                                    DispatchQueue.main.async {
-                                        self.requestPhotoLibraryAccess(in: viewController)
-                                    }
                                 }
                             }
                         }
@@ -89,12 +81,8 @@ class PhotosFetch: NSObject {
             default:
                 // Inform user that he/she cannot access the Photo library
                 if viewController != nil {
-                    if Thread.isMainThread {
-                        showPhotosLibraryAccessRestricted(in: viewController)
-                    } else {
-                        DispatchQueue.main.async {
-                            self.showPhotosLibraryAccessRestricted(in: viewController)
-                        }
+                    DispatchQueue.main.async {
+                        self.showPhotosLibraryAccessRestricted(in: viewController)
                     }
                 }
                 doWithoutAccess()
@@ -108,12 +96,8 @@ class PhotosFetch: NSObject {
             default:
                 // Invite user to provide access to the Photo library
                 if viewController != nil {
-                    if Thread.isMainThread {
-                        requestPhotoLibraryAccess(in: viewController)
-                    } else {
-                        DispatchQueue.main.async {
-                            self.requestPhotoLibraryAccess(in: viewController)
-                        }
+                    DispatchQueue.main.async {
+                        self.requestPhotoLibraryAccess(in: viewController)
                     }
                 }
             }
@@ -147,12 +131,8 @@ class PhotosFetch: NSObject {
                         case .restricted:
                             // Inform user that he/she cannot access the Photo library
                             if viewController != nil {
-                                if Thread.isMainThread {
+                                DispatchQueue.main.async {
                                     self.showPhotosLibraryAccessRestricted(in: viewController)
-                                } else {
-                                    DispatchQueue.main.async {
-                                        self.showPhotosLibraryAccessRestricted(in: viewController)
-                                    }
                                 }
                             }
                             // Exceute next steps
@@ -160,12 +140,8 @@ class PhotosFetch: NSObject {
                         case .denied:
                             // Invite user to provide access to the Photo library
                             if viewController != nil {
-                                if Thread.isMainThread {
+                                DispatchQueue.main.async {
                                     self.requestPhotoLibraryAccess(in: viewController)
-                                } else {
-                                    DispatchQueue.main.async {
-                                        self.requestPhotoLibraryAccess(in: viewController)
-                                    }
                                 }
                             }
                             // Exceute next steps
@@ -184,12 +160,8 @@ class PhotosFetch: NSObject {
             case .restricted:
                 // Inform user that he/she cannot access the Photo library
                 if viewController != nil {
-                    if Thread.isMainThread {
-                        showPhotosLibraryAccessRestricted(in: viewController)
-                    } else {
-                        DispatchQueue.main.async {
-                            self.showPhotosLibraryAccessRestricted(in: viewController)
-                        }
+                    DispatchQueue.main.async {
+                        self.showPhotosLibraryAccessRestricted(in: viewController)
                     }
                 }
                 // Exceute next steps
@@ -197,12 +169,8 @@ class PhotosFetch: NSObject {
             case .denied:
                 // Invite user to provide access to the Photo library
                 if viewController != nil {
-                    if Thread.isMainThread {
-                        requestPhotoLibraryAccess(in: viewController)
-                    } else {
-                        DispatchQueue.main.async {
-                            self.requestPhotoLibraryAccess(in: viewController)
-                        }
+                    DispatchQueue.main.async {
+                        self.requestPhotoLibraryAccess(in: viewController)
                     }
                 }
                 // Exceute next steps
@@ -219,6 +187,7 @@ class PhotosFetch: NSObject {
         }
     }
 
+    @MainActor
     func requestPhotoLibraryAccess(in viewController: UIViewController?) {
         // Invite user to provide access to photos
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
@@ -237,6 +206,7 @@ class PhotosFetch: NSObject {
                                 actions: [cancelAction, prefsAction])
     }
 
+    @MainActor
     func showPhotosLibraryAccessRestricted(in viewController: UIViewController?) {
         viewController?.dismissPiwigoError(withTitle: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), completion: {})
     }
