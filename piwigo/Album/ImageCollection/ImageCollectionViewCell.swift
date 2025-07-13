@@ -153,10 +153,14 @@ class ImageCollectionViewCell: UICollectionViewCell {
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .image)
 
                 // Set image
-                self.configImage(cachedImage, withHiddenLabel: true)
+                DispatchQueue.main.async { [self] in
+                    self.configImage(cachedImage, withHiddenLabel: true)
+                }
             }
-        } failure: { [weak self] _ in
-            self?.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
+        } failure: { [self] _ in
+            DispatchQueue.main.async { [self] in
+                self.configImage(pwgImageType.image.placeHolder, withHiddenLabel: false)
+            }
         }
     }
     
@@ -203,49 +207,48 @@ class ImageCollectionViewCell: UICollectionViewCell {
         return attributedStr
     }
 
+    @MainActor
     func configImage(_ image: UIImage, withHiddenLabel isHidden: Bool) {
-        DispatchQueue.main.async { [self] in
-            // Set image and label
-            self.cellImage?.image = image
-            self.noDataLabel?.isHidden = isHidden
+        // Set image and label
+        self.cellImage?.image = image
+        self.noDataLabel?.isHidden = isHidden
+        
+        // Favorite image position depends on device
+        self.deltaX = CGFloat.zero
+        self.deltaY = CGFloat.zero
+        let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
+                                     self.bounds.size.height / image.size.height))
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // Case of an iPad: respect aspect ratio
+            let imageWidth = image.size.width * imageScale
+            self.darkImgWidth?.constant = imageWidth
+            self.deltaX += max(0, (self.bounds.size.width - imageWidth) / 2.0)
             
-            // Favorite image position depends on device
-            self.deltaX = CGFloat.zero
-            self.deltaY = CGFloat.zero
-            let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
-                                         self.bounds.size.height / image.size.height))
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                // Case of an iPad: respect aspect ratio
-                let imageWidth = image.size.width * imageScale
-                self.darkImgWidth?.constant = imageWidth
-                self.deltaX += max(0, (self.bounds.size.width - imageWidth) / 2.0)
-                
-                let imageHeight = image.size.height * imageScale
-                self.darkImgHeight?.constant = imageHeight
-                self.deltaY += max(0, (self.bounds.size.height - imageHeight) / 2.0)
-            }
-            
-            // Update horizontal constraints
-            let horOffset: CGFloat = 3.0 + self.deltaX
-            self.selImgRight?.constant = horOffset
-            self.favLeft?.constant = horOffset
-            self.playLeft?.constant = horOffset
-            
-            // Update vertical constraints
-            let vertOffset: CGFloat = 3.0 + self.deltaY
-            self.playTop?.constant = vertOffset
-            if self.bottomLayer?.isHidden ?? false {
-                // Image title not displayed
-                self.favBottom?.constant = vertOffset
-                self.selImgBot?.constant = vertOffset
-            } else {
-                // Image title displayed
-                let banOffset: CGFloat = max(vertOffset, bannerHeight + 3.0)
-                self.favBottom?.constant = banOffset
-                self.selImgBot?.constant = banOffset
-            }
-            applyColorPalette()
+            let imageHeight = image.size.height * imageScale
+            self.darkImgHeight?.constant = imageHeight
+            self.deltaY += max(0, (self.bounds.size.height - imageHeight) / 2.0)
         }
+        
+        // Update horizontal constraints
+        let horOffset: CGFloat = 3.0 + self.deltaX
+        self.selImgRight?.constant = horOffset
+        self.favLeft?.constant = horOffset
+        self.playLeft?.constant = horOffset
+        
+        // Update vertical constraints
+        let vertOffset: CGFloat = 3.0 + self.deltaY
+        self.playTop?.constant = vertOffset
+        if self.bottomLayer?.isHidden ?? false {
+            // Image title not displayed
+            self.favBottom?.constant = vertOffset
+            self.selImgBot?.constant = vertOffset
+        } else {
+            // Image title displayed
+            let banOffset: CGFloat = max(vertOffset, bannerHeight + 3.0)
+            self.favBottom?.constant = banOffset
+            self.selImgBot?.constant = banOffset
+        }
+        applyColorPalette()
     }
     
     override func prepareForReuse() {
