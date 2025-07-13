@@ -99,32 +99,35 @@ extension AlbumViewController
                     favorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             } failure: { [self] error in
-                self.favoriteError(error, contextually: contextually)
+                DispatchQueue.main.async { [self] in
+                    self.favoriteError(error, contextually: contextually)
+                }
             }
         } failure: { [self] error in
-            self.favoriteError(error, contextually: contextually)
+            DispatchQueue.main.async { [self] in
+                self.favoriteError(error, contextually: contextually)
+            }
         }
     }
     
+    @MainActor
     private func favoriteError(_ error: Error, contextually: Bool) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
-            
-            // Report error
-            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                navigationController?.hideHUD() { [self] in
-                    if contextually {
-                        setEnableStateOfButtons(true)
-                    } else {
-                        updateBarsInSelectMode()
-                    }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
+        // Report error
+        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+        let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+        navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            navigationController?.hideHUD() { [self] in
+                if contextually {
+                    setEnableStateOfButtons(true)
+                } else {
+                    updateBarsInSelectMode()
                 }
             }
         }
@@ -203,32 +206,34 @@ extension AlbumViewController
                     unfavorite(imagesWithID: remainingIDs, total: total, contextually: contextually)
                 }
             } failure: { [self] error in
-                self.unfavoriteError(error, contextually: contextually)
+                DispatchQueue.main.async { [self] in
+                    self.unfavoriteError(error, contextually: contextually)
+                }
             }
         } failure: { [self] error in
-            self.unfavoriteError(error, contextually: contextually)
+            DispatchQueue.main.async { [self] in
+                self.unfavoriteError(error, contextually: contextually)
+            }
         }
     }
     
     private func unfavoriteError(_ error: Error, contextually: Bool) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                navigationController?.hideHUD() { [self] in
-                    if contextually {
-                        setEnableStateOfButtons(true)
-                    } else {
-                        updateBarsInSelectMode()
-                    }
+        // Report error
+        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+        let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+        navigationController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            navigationController?.hideHUD() { [self] in
+                if contextually {
+                    setEnableStateOfButtons(true)
+                } else {
+                    updateBarsInSelectMode()
                 }
             }
         }

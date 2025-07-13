@@ -119,31 +119,34 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.removeImageFromAlbumError(error)
+                DispatchQueue.main.async { [self] in
+                    self.removeImageFromAlbumError(error)
+                }
             }
         } failure: { [self] error in
-            self.removeImageFromAlbumError(error)
+            DispatchQueue.main.async { [self] in
+                self.removeImageFromAlbumError(error)
+            }
         }
     }
     
+    @MainActor
     private func removeImageFromAlbumError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                // Hide HUD
-                hideHUD { [self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
-                }
+        // Report error
+        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            // Hide HUD
+            hideHUD { [self] in
+                // Re-enable buttons
+                setEnableStateOfButtons(true)
             }
         }
     }
@@ -200,31 +203,33 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.deleteImageFromDatabaseError(error)
+                DispatchQueue.main.async { [self] in
+                    self.deleteImageFromDatabaseError(error)
+                }
             }
         } failure: { [self] error in
-            self.deleteImageFromDatabaseError(error)
+            DispatchQueue.main.async { [self] in
+                self.deleteImageFromDatabaseError(error)
+            }
         }
     }
     
     private func deleteImageFromDatabaseError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                // Hide HUD
-                hideHUD { [self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
-                }
+        // Report error
+        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            // Hide HUD
+            hideHUD { [self] in
+                // Re-enable buttons
+                setEnableStateOfButtons(true)
             }
         }
     }

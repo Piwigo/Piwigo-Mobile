@@ -13,6 +13,7 @@ import uploadKit
 
 class ClearCache: NSObject {
     
+    @MainActor
     static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgSessionError) {
         var title = "", message = ""
         switch error {
@@ -22,10 +23,8 @@ class ClearCache: NSObject {
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
-        DispatchQueue.main.async {
-            viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
-                closeSession()
-            }
+        viewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
+            closeSession()
         }
     }
     

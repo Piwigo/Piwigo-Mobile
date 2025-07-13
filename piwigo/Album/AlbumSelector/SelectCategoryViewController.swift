@@ -386,33 +386,35 @@ class SelectCategoryViewController: UIViewController {
             // Fetch albums recursively
             albumProvider.fetchAlbums(forUser: user, inParentWithId: 0, recursively: true,
                                       thumbnailSize: thumnailSize) { [self] error in
-                guard let error = error else {
-                    DispatchQueue.main.async { [self] in
+                DispatchQueue.main.async { [self] in
+                    guard let error = error
+                    else {
                         navigationController?.hideHUD { }
+                        return
                     }
-                    return
+                    didFetchAlbumsWithError(error: error)
                 }
-                didFetchAlbumsWithError(error: error)
             }
         } failure: { [self] error in
-            didFetchAlbumsWithError(error: error)
+            DispatchQueue.main.async { [self] in
+                didFetchAlbumsWithError(error: error)
+            }
         }
     }
     
+    @MainActor
     private func didFetchAlbumsWithError(error: Error) {
-        DispatchQueue.main.async { [self] in
-            navigationController?.hideHUD { [self] in
-                // Session logout required?
-                if let pwgError = error as? PwgSessionError,
-                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                    return
-                }
-                
-                // Report error
-                let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
-                dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
+        navigationController?.hideHUD { [self] in
+            // Session logout required?
+            if let pwgError = error as? PwgSessionError,
+               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                return
             }
+            
+            // Report error
+            let title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+            dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
         }
     }
     

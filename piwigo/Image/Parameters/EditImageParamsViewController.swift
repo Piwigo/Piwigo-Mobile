@@ -282,8 +282,10 @@ class EditImageParamsViewController: UIViewController
             updateImageProperties(fromIndex: index)
         } failure: { [self] error in
             // Display error
-            self.hideHUD {
-                self.showUpdatePropertiesError(error, atIndex: index)
+            DispatchQueue.main.async { [self] in
+                self.hideHUD {
+                    self.showUpdatePropertiesError(error, atIndex: index)
+                }
             }
         }
     }
@@ -313,12 +315,15 @@ class EditImageParamsViewController: UIViewController
         }
         failure: { [self] error in
             // Display error
-            self.hideHUD {
-                self.showUpdatePropertiesError(error, atIndex: index)
+            DispatchQueue.main.async { [self] in
+                self.hideHUD {
+                    self.showUpdatePropertiesError(error, atIndex: index)
+                }
             }
         }
     }
 
+    @MainActor
     private func showUpdatePropertiesError(_ error: Error, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?

@@ -64,28 +64,30 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.addToFavoritesError(error)
+                DispatchQueue.main.async { [self] in
+                    self.addToFavoritesError(error)
+                }
             }
         } failure: { [self] error in
-            self.addToFavoritesError(error)
+            DispatchQueue.main.async { [self] in
+                self.addToFavoritesError(error)
+            }
         }
     }
     
     private func addToFavoritesError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                favoriteBarButton?.isEnabled = true
-            }
+        // Report error
+        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+        let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+        dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            favoriteBarButton?.isEnabled = true
         }
     }
 
@@ -130,28 +132,31 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.removeFromFavoritesError(error)
+                DispatchQueue.main.async { [self] in
+                    self.removeFromFavoritesError(error)
+                }
             }
         } failure: { [self] error in
-            self.removeFromFavoritesError(error)
+            DispatchQueue.main.async { [self] in
+                self.removeFromFavoritesError(error)
+            }
         }
     }
     
+    @MainActor
     private func removeFromFavoritesError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                self.favoriteBarButton?.isEnabled = true
-            }
+        // Report error
+        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+        let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            self.favoriteBarButton?.isEnabled = true
         }
     }
 }

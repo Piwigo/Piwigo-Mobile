@@ -112,13 +112,18 @@ extension AlbumViewController
                     }
                 }
             } failure: { [self] error in
-                self.addCategoryError(error)
+                DispatchQueue.main.async { [self] in
+                    self.addCategoryError(error)
+                }
             }
         } failure: { [self] error in
-            self.addCategoryError(error)
+            DispatchQueue.main.async { [self] in
+                self.addCategoryError(error)
+            }
         }
     }
     
+    @MainActor
     private func addCategoryError(_ error: Error) {
         self.hideHUD() { [self] in
             // Session logout required?
