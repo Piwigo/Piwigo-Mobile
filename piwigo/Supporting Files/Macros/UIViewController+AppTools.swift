@@ -34,6 +34,7 @@ extension UIViewController {
 
     
     // MARK: - PiwigoHUD
+    @MainActor
     func showHUD(withTitle title: String, detail: String? = nil, minWidth: CGFloat = 200,
                  buttonTitle: String? = nil, buttonTarget: UIViewController? = nil, buttonSelector: Selector? = nil,
                  inMode mode: pwgHudMode = .indeterminate) {
@@ -51,6 +52,7 @@ extension UIViewController {
         }
     }
     
+    @MainActor
     func isShowingHUD() -> Bool {
         if let _ = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
             return true
@@ -58,39 +60,37 @@ extension UIViewController {
         return false
     }
     
+    @MainActor
     func updateHUD(title: String? = nil, detail: String? = nil,
                    buttonTitle: String? = nil, buttonTarget: UIViewController? = nil, buttonSelector: Selector? = nil,
                    inMode mode: pwgHudMode? = nil) {
-        DispatchQueue.main.async {
-            // Retrieve the existing HUD
-            if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
-                hud.update(title: title, detail: detail,
-                           buttonTitle: buttonTitle, buttonTarget: buttonTarget, buttonSelector: buttonSelector,
-                           inMode: mode)
-            }
+        // Retrieve the existing HUD
+        if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            hud.update(title: title, detail: detail,
+                       buttonTitle: buttonTitle, buttonTarget: buttonTarget, buttonSelector: buttonSelector,
+                       inMode: mode)
         }
     }
     
+    @MainActor
     func updateHUD(withProgress progress: Float) {
-        DispatchQueue.main.async {
-            if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
-                hud.progressView.progress = progress
-            }
+        if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            hud.progressView.progress = progress
         }
     }
 
+    @MainActor
     func updateHUDwithSuccess(completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            // Retrieve the existing HUD
-            if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
-                // Show "Complete" icon and text
-                hud.update(title: NSLocalizedString("completeHUD_label", comment: "Complete"),
-                           detail: nil, inMode: .success)
-            }
-            completion()
+        // Retrieve the existing HUD
+        if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            // Show "Complete" icon and text
+            hud.update(title: NSLocalizedString("completeHUD_label", comment: "Complete"),
+                       detail: nil, inMode: .success)
         }
+        completion()
     }
 
+    @MainActor
     func hideHUD(afterDelay delay:Int, completion: @escaping () -> Void) {
         let deadlineTime = DispatchTime.now() + .milliseconds(delay)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
@@ -99,14 +99,13 @@ extension UIViewController {
         }
     }
 
+    @MainActor
     func hideHUD(completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            // Hide and remove the HUD
-            if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
-                hud.hide()
-            }
-            completion()
+        // Hide and remove the HUD
+        if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            hud.hide()
         }
+        completion()
     }
 
     
