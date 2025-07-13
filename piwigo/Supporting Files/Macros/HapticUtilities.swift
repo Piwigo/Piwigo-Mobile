@@ -15,11 +15,9 @@ import Foundation
 @available(iOS 13.0, *)
 class HapticUtilities {
     
-    // Singleton
-    static let shared = HapticUtilities()
-
     // A haptic engine manages the connection to the haptic server.
-    var engine: CHHapticEngine? = {
+    @MainActor
+    static var engine: CHHapticEngine? = {
         // Create and configure a haptic engine.
         var engine: CHHapticEngine?
         do {
@@ -31,13 +29,8 @@ class HapticUtilities {
             debugPrint("Engine Creation Error: \(error)")
         }
         
-        guard let engine = engine else {
-            debugPrint("Failed to create engine!")
-            return nil
-        }
-
         // The stopped handler alerts you of engine stoppage due to external causes.
-        engine.stoppedHandler = { reason in
+        engine?.stoppedHandler = { reason in
             debugPrint("The engine stopped for reason: \(reason.rawValue)")
             switch reason {
             case .audioSessionInterrupt:
@@ -60,11 +53,11 @@ class HapticUtilities {
         }
  
         // The reset handler provides an opportunity for your app to restart the engine in case of failure.
-        engine.resetHandler = {
+        engine?.resetHandler = {
             // Try restarting the engine.
             debugPrint("The engine reset --> Restarting now!")
             do {
-                try HapticUtilities.shared.engine?.start()
+                try HapticUtilities.engine?.start()
             } catch {
                 debugPrint("Failed to restart the engine: \(error)")
             }
@@ -73,15 +66,15 @@ class HapticUtilities {
     }()
     
     // Play AHAP
-    func playHapticsFile(named filename: String) {
+    @MainActor
+    static func playHapticsFile(named filename: String) {
         
         // If the device doesn't support Core Haptics, abort.
         if !AppVars.shared.supportsHaptics { return }
         
         // Express the path to the AHAP file before attempting to load it.
-        guard let path = Bundle.main.path(forResource: filename, ofType: "ahap") else {
-            return
-        }
+        guard let path = Bundle.main.path(forResource: filename, ofType: "ahap")
+        else { return }
         
         do {
             // Start the engine in case it's idle.
