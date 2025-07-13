@@ -9191,6 +9191,17 @@
           }
         }
       }
+    },
+    "v3.4.1_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.4.1\n\n• Adds Home screen quick action\n• Fixes bugs and improves the interface"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
