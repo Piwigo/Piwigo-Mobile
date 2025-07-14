@@ -35,7 +35,22 @@ class ImageDetailViewController: UIViewController
     // Variable introduced to cope with iOS not updating view bounds
     // upon device rotation of preloaded page views
     private lazy var viewSize: CGSize =  {
-        return view.bounds.size
+        if #available(iOS 13.0, *) {
+            let size = UIApplication.shared.connectedScenes
+                .filter({$0.activationState == .foregroundActive})
+                .map({$0 as? UIWindowScene})
+                .compactMap({$0})
+                .first?.windows
+                .filter({$0.isKeyWindow})
+                .first?.bounds.size
+            debugPrint(size ?? "nil")
+            return size ?? view.bounds.size
+        } else {
+            // Fallback on earlier versions
+            let size = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.bounds.size
+            debugPrint(size ?? "nil")
+            return size ?? view.bounds.size
+        }
     }()
     
     // Cached variables

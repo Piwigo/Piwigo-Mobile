@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23091" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23079"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -51,9 +51,8 @@
         <scene sceneID="dZW-fS-5pO">
             <objects>
                 <viewController storyboardIdentifier="ImageDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c1N-Y3-FVS" customClass="ImageDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="CkJ-ky-Kbn">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CkJ-ky-Kbn">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" minimumZoomScale="0.0" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="cGF-ek-t3W">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
@@ -78,7 +77,7 @@
                                 </connections>
                             </scrollView>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ydg-dw-Gdx" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="76.666666666666686" y="730" width="240" height="88"/>
+                                <rect key="frame" x="76.666666666666686" y="696" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="QaB-1D-fdH">
                                     <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -113,7 +112,7 @@
                                 </connections>
                             </visualEffectView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec0-NJ-b64" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="185" y="75" width="23" height="23"/>
+                                <rect key="frame" x="185" y="134" width="23" height="23"/>
                                 <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -166,7 +165,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vzA-8o-vxi">
-                                <rect key="frame" x="164.66666666666666" y="408" width="64" height="62.666666666666686"/>
+                                <rect key="frame" x="164.66666666666666" y="420.33333333333331" width="64" height="62.666666666666686"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="9nh-RH-T2h"/>
@@ -200,7 +199,7 @@
                                 </connections>
                             </scrollView>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ei-bj-KBT" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="76.666666666666686" y="666" width="240" height="88"/>
+                                <rect key="frame" x="76.666666666666686" y="632" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="3X0-TI-ixb">
                                     <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -235,7 +234,7 @@
                                 </connections>
                             </visualEffectView>
                             <visualEffectView opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="VideoControlsView" translatesAutoresizingMaskIntoConstraints="NO" id="jGl-s0-Ya6" customClass="VideoControlsView" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="766" width="353" height="40"/>
+                                <rect key="frame" x="20" y="732" width="353" height="40"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gyV-iA-Gwr">
                                     <rect key="frame" x="0.0" y="0.0" width="353" height="40"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
