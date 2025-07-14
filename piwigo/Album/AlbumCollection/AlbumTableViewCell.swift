@@ -99,21 +99,16 @@ class AlbumTableViewCell: UITableViewCell {
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
-                // Process saliency if needed
-    //            if #available(iOS 13.0, *) {
-    //                self.setBackgroundWithImage(cachedImage.processSaliency() ?? cachedImage)
-    //            } else {
-                    self.setBackgroundWithImage(cachedImage)
-    //            }
+                // Set backgoround image
+                DispatchQueue.main.async { [self] in
+                    self.backgroundImage.image = cachedImage
+                }
             }
-        } failure: { [weak self] _ in
-            self?.setBackgroundWithImage(pwgImageType.album.placeHolder)
-        }
-    }
-    
-    private func setBackgroundWithImage(_ image: UIImage) {
-        DispatchQueue.main.async { [self] in
-            self.backgroundImage.image = image
+        } failure: { [self] _ in
+            // Set backgoround image
+            DispatchQueue.main.async { [self] in
+                self.backgroundImage.image = pwgImageType.album.placeHolder
+            }
         }
     }
 

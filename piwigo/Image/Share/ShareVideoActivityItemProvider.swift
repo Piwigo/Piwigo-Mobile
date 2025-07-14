@@ -42,9 +42,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Update the value
             _progressFraction = progress
             // Notify the delegate on the main thread to show how it makes progress.
-            DispatchQueue.main.async(execute: {
+            DispatchQueue.main.async {
                 self.delegate?.imageActivityItemProvider(self, preprocessingProgressDidUpdate: self._progressFraction)
-            })
+            }
         }
     }
     

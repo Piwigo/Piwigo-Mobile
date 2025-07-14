@@ -363,6 +363,7 @@ class LocalImagesViewController: UIViewController
 
     
     // MARK: - Navigation Bar & Buttons
+    @MainActor
     func updateNavBar() {
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
         switch nberOfSelectedImages {
@@ -449,6 +450,7 @@ class LocalImagesViewController: UIViewController
         }
     }
     
+    @MainActor
     func updateActionButton() {
         // Change button icon or content
         if #available(iOS 14, *) {

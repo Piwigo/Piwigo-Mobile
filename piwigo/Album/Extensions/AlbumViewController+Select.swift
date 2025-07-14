@@ -171,6 +171,7 @@ extension AlbumViewController
         initBarsInSelectMode()
     }
     
+    @MainActor
     @objc func cancelSelect() {
         // Disable Images Selection mode
         inSelectionMode = false
@@ -370,6 +371,7 @@ extension AlbumViewController
         }
     }
     
+    @MainActor
     private func performAction(_ action: pwgImageAction, withImageIDs imageIDs: Set<Int64>, contextually: Bool) {
         switch action {
         case .edit          /* Edit images parameters */:

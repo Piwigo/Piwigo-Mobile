@@ -195,7 +195,7 @@ class EditImageParamsViewController: UIViewController
     
     
     // MARK: - Edit image Methods
-    
+    @MainActor
     private func resetCommonParameters() {
         // Common title?
         shouldUpdateTitle = false
@@ -256,6 +256,7 @@ class EditImageParamsViewController: UIViewController
         }
     }
     
+    @MainActor
     @objc func cancelEdit() {
         // No change
         resetCommonParameters()
@@ -264,6 +265,7 @@ class EditImageParamsViewController: UIViewController
         dismiss(animated: true)
     }
 
+    @MainActor
     @objc func doneEdit() {
         // Display HUD during the update
         if images.count > 1 {
@@ -290,6 +292,7 @@ class EditImageParamsViewController: UIViewController
         }
     }
 
+    @MainActor
     func updateImageProperties(fromIndex index: Int) {
         // Any further image to update?
         if index == images.count {
@@ -309,9 +312,11 @@ class EditImageParamsViewController: UIViewController
         // Update image info on server
         /// The cache will be updated by the parent view controller.
         setProperties(ofImage: images[index]) { [self] in
-            // Next image?
-            self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
-            self.updateImageProperties(fromIndex: index + 1)
+            DispatchQueue.main.async { [self] in
+                // Next image?
+                self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
+                self.updateImageProperties(fromIndex: index + 1)
+            }
         }
         failure: { [self] error in
             // Display error

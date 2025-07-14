@@ -13,6 +13,7 @@ import piwigoKit
 extension ImageViewController
 {
     // MARK: - Favorite Bar Button
+    @MainActor
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
         if user.canManageFavorites() == false {
@@ -29,6 +30,7 @@ extension ImageViewController
     
 
     // MARK: - Add/Remove Image from Favorites
+    @MainActor
     @objc func addToFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action
@@ -75,6 +77,7 @@ extension ImageViewController
         }
     }
     
+    @MainActor
     private func addToFavoritesError(_ error: Error) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
@@ -91,6 +94,7 @@ extension ImageViewController
         }
     }
 
+    @MainActor
     @objc func removeFromFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action

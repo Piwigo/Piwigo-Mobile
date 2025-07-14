@@ -192,6 +192,7 @@ class ImageDetailViewController: UIViewController
     
     
     // MARK: - Image Management
+    @MainActor
     private func loadAndDisplayHighResImage() {
         // Check if we already have the high-resolution image in cache
         if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
@@ -234,6 +235,7 @@ class ImageDetailViewController: UIViewController
         }
     }
 
+    @MainActor
     private func setImageView(with image: UIImage) {
         // Any change?
         if imageView.image?.size == image.size {
@@ -258,43 +260,42 @@ class ImageDetailViewController: UIViewController
         configScrollView()
     }
     
+    @MainActor
     func rotateImageView(by angle: CGFloat, completion: @escaping () -> Void) {
-        DispatchQueue.main.async { [self] in
-            // Check if we already have the high-resolution image in cache
-            var cachedImage: UIImage?
-            if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
-                // Downsample image in cache if needed
-                cachedImage = ImageUtilities.downsample(image: wantedImage, to: imageSize)
-            } else {
-                // Display thumbnail image which should be in cache
-                let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-                cachedImage = self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
-            }
-            guard let cachedImage = cachedImage,
-                  let imageSize = imageView?.image?.size
-            else {
-                // Reset image view with rotated image
-                self.didRotateImage = false
-                // Hide HUD
-                completion()
-                return
-            }
-            
-            // Rotate image keeping it displayed in fullscreen
-            let widthScale = viewSize.width / imageSize.height
-            let heightScale = viewSize.height / imageSize.width
-            let newMinScale = min(widthScale, heightScale)
-            UIView.animate(withDuration: 0.4) { [self] in
-                self.imageView.transform = CGAffineTransform(rotationAngle: -angle).scaledBy(x: newMinScale, y: newMinScale)
-            }
-            completion: { [self] _ in
-                // Reset image view with rotated image
-                self.didRotateImage = true
-                self.setImageView(with: cachedImage)
+        // Check if we already have the high-resolution image in cache
+        var cachedImage: UIImage?
+        if let wantedImage = imageData.cachedThumbnail(ofSize: previewSize) {
+            // Downsample image in cache if needed
+            cachedImage = ImageUtilities.downsample(image: wantedImage, to: imageSize)
+        } else {
+            // Display thumbnail image which should be in cache
+            let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+            cachedImage = self.imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
+        }
+        guard let cachedImage = cachedImage,
+              let imageSize = imageView?.image?.size
+        else {
+            // Reset image view with rotated image
+            self.didRotateImage = false
+            // Hide HUD
+            completion()
+            return
+        }
+        
+        // Rotate image keeping it displayed in fullscreen
+        let widthScale = viewSize.width / imageSize.height
+        let heightScale = viewSize.height / imageSize.width
+        let newMinScale = min(widthScale, heightScale)
+        UIView.animate(withDuration: 0.4) { [self] in
+            self.imageView.transform = CGAffineTransform(rotationAngle: -angle).scaledBy(x: newMinScale, y: newMinScale)
+        }
+        completion: { [self] _ in
+            // Reset image view with rotated image
+            self.didRotateImage = true
+            self.setImageView(with: cachedImage)
 
-                // Hide HUD
-                completion()
-            }
+            // Hide HUD
+            completion()
         }
     }
     

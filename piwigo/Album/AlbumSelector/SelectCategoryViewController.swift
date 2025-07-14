@@ -522,6 +522,7 @@ class SelectCategoryViewController: UIViewController {
     }
 
     // For presenting errors returned by Albums/Images actions
+    @MainActor
     func showError(_ error: Error?) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,

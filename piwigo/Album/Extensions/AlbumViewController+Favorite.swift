@@ -217,6 +217,7 @@ extension AlbumViewController
         }
     }
     
+    @MainActor
     private func unfavoriteError(_ error: Error, contextually: Bool) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,

@@ -56,6 +56,7 @@ class PlaybackController {
         coordinator(for: video).presentFullScreen(from: presentingViewController)
     }
     
+    @MainActor
     func play(contentOfVideo video: Video) {
         coordinator(for: video).playOrReplay()
     }

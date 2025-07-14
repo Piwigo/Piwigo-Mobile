@@ -64,6 +64,7 @@ class ExternalDisplayViewController: UIViewController {
         }
     }
     
+    @MainActor
     func configImage() {
         // Check provided image data
         guard let imageData = imageData
@@ -179,6 +180,7 @@ class ExternalDisplayViewController: UIViewController {
         }
     }
     
+    @MainActor
     private func presentVideo(_ video: Video) {
         // Already being displayed?
         if playbackController.coordinator(for: video).playerViewControllerIfLoaded?.viewIfLoaded?.isDescendant(of: videoContainerView) == true {

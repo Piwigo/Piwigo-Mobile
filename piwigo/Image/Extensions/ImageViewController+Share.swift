@@ -25,6 +25,7 @@ extension ImageViewController
 
 
     // MARK: - Share Image
+    @MainActor
     @objc func shareImage() {
         // Disable buttons during action
         setEnableStateOfButtons(false)
@@ -34,16 +35,13 @@ extension ImageViewController
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
                 onAccess: { [self] in
                     // User allowed to save image in camera roll
-                    presentShareImageViewController(withCameraRollAccess: true)
-                },
-                onDeniedAccess: { [self] in
+                    DispatchQueue.main.async { [self] in
+                        self.presentShareImageViewController(withCameraRollAccess: true)
+                    }
+            }, onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
-                    if Thread.isMainThread {
+                    DispatchQueue.main.async { [self] in
                         presentShareImageViewController(withCameraRollAccess: false)
-                    } else {
-                        DispatchQueue.main.async(execute: { [self] in
-                            presentShareImageViewController(withCameraRollAccess: false)
-                        })
                     }
                 })
         } else {
@@ -51,21 +49,19 @@ extension ImageViewController
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil,
                 onAuthorizedAccess: { [self] in
                     // User allowed to save image in camera roll
-                    presentShareImageViewController(withCameraRollAccess: true)
-                },
-                onDeniedAccess: { [self] in
+                    DispatchQueue.main.async { [self] in
+                        self.presentShareImageViewController(withCameraRollAccess: true)
+                    }
+            }, onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
-                    if Thread.isMainThread {
+                    DispatchQueue.main.async { [self] in
                         presentShareImageViewController(withCameraRollAccess: false)
-                    } else {
-                        DispatchQueue.main.async { [self] in
-                            presentShareImageViewController(withCameraRollAccess: false)
-                        }
                     }
                 })
         }
     }
 
+    @MainActor
     func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
         // To exclude some activity types
         var excludedActivityTypes = [UIActivity.ActivityType]()

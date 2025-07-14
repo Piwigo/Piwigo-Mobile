@@ -101,7 +101,9 @@ class TagSelectorViewController: UITableViewController {
                 }
             }
         } failure: { [self] error in
-            didFetchTagsWithError(error)
+            DispatchQueue.main.async { [self] in
+                didFetchTagsWithError(error)
+            }
         }
         
         // Add button for returning to albums/images
@@ -110,6 +112,7 @@ class TagSelectorViewController: UITableViewController {
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
     }
     
+    @MainActor
     private func didFetchTagsWithError(_ error: Error) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
@@ -121,9 +124,7 @@ class TagSelectorViewController: UITableViewController {
 
         // Report error
         let title = TagError.fetchFailed.localizedDescription
-        DispatchQueue.main.async {
-            self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
-        }
+        self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
     }
     
     @MainActor

@@ -473,6 +473,7 @@ class PlayerViewControllerCoordinator: NSObject {
     }
     
     // Play or replay the video if the end is reached
+    @MainActor
     func playOrReplay() {
         guard let player = playerViewControllerIfLoaded?.player,
               let duration = player.currentItem?.duration.seconds,

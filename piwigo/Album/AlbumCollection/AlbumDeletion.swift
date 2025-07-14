@@ -220,10 +220,14 @@ class AlbumDeletion: NSObject
                 self.fetchAlbumData(ofParentsWithIDs: parentIds)
                 
             } failure: { [self] error in
-                self.deleteAlbumError(error, title: title, message: message)
+                DispatchQueue.main.async { [self] in
+                    self.deleteAlbumError(error, title: title, message: message)
+                }
             }
         } failure: { [self] error in
-            self.deleteAlbumError(error, title: title, message: message)
+            DispatchQueue.main.async { [self] in
+                self.deleteAlbumError(error, title: title, message: message)
+            }
         }
     }
     
@@ -264,19 +268,18 @@ class AlbumDeletion: NSObject
         }
     }
     
+    @MainActor
     private func deleteAlbumError(_ error: Error, title: String, message: String) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
-                return
-            }
-            
-            // Report error
-            self.topViewController.dismissPiwigoError(withTitle: title, message: message,
-                                                      errorMessage: error.localizedDescription) {
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
+            return
+        }
+        
+        // Report error
+        self.topViewController.dismissPiwigoError(withTitle: title, message: message,
+                                                  errorMessage: error.localizedDescription) {
         }
     }
 }

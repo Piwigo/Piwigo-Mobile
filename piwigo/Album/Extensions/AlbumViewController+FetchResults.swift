@@ -206,9 +206,11 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate
                     self.collectionView?.insertItems(at: [newIndexPath])
                     // Enable menu if this is the first added image
                     if self.albumData.nbImages == 1 {
-                        debugPrint("••> First added image ► enable menu")
-                        self.initBarsInPreviewMode()
-                        self.setTitleViewFromAlbumData()
+                        DispatchQueue.main.async {
+                            debugPrint("••> First added image ► enable menu")
+                            self.initBarsInPreviewMode()
+                            self.setTitleViewFromAlbumData()
+                        }
                     }
                 })
             case .delete:

@@ -63,14 +63,8 @@ class PhotosFetch: NSObject {
                         }
                     default:
                         // Allowed to read and add photos with limitations or not
-                        if Thread.isMainThread {
-                            doWithAccess()
-                        } else {
-                            DispatchQueue.main.async {
-                                doWithAccess()
-                            }
-                        }
-                }
+                        doWithAccess()
+                    }
             }
         case .restricted:
             switch accessLevel {
@@ -103,13 +97,7 @@ class PhotosFetch: NSObject {
             }
         case .limited, .authorized:
             // Allowed to read and add photos with limitations or not
-            if Thread.isMainThread {
-                doWithAccess()
-            } else {
-                DispatchQueue.main.async {
-                    doWithAccess()
-                }
-            }
+            doWithAccess()
         @unknown default:
             debugPrint("unknown Photo Library authorization status")
         }
@@ -148,12 +136,8 @@ class PhotosFetch: NSObject {
                             doWithoutAccess()
                         default:
                             // Retry as this should be fine
-                            if Thread.isMainThread {
+                            DispatchQueue.main.async {
                                 doWithAccess()
-                            } else {
-                                DispatchQueue.main.async {
-                                    doWithAccess()
-                                }
                             }
                     }
                 })
@@ -177,14 +161,10 @@ class PhotosFetch: NSObject {
                 doWithoutAccess()
             default:
                 // Should be fine
-                if Thread.isMainThread {
+                DispatchQueue.main.async {
                     doWithAccess()
-                } else {
-                    DispatchQueue.main.async {
-                        doWithAccess()
-                    }
                 }
-        }
+            }
     }
 
     @MainActor

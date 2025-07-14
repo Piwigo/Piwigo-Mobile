@@ -25,17 +25,22 @@ extension AlbumViewController
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
                 // Open local albums view controller in new navigation controller
-                self.presentLocalAlbums()
+                DispatchQueue.main.async {
+                    self.presentLocalAlbums()
+                }
             }, onDeniedAccess: { })
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self, onAuthorizedAccess: { [self] in
                 // Open local albums view controller in new navigation controller
-                self.presentLocalAlbums()
+                DispatchQueue.main.async {
+                    self.presentLocalAlbums()
+                }
             }, onDeniedAccess: { })
         }
     }
     
+    @MainActor
     private func presentLocalAlbums() {
         // Open local albums view controller in new navigation controller
         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
@@ -51,6 +56,7 @@ extension AlbumViewController
         present(navController, animated: true)
     }
 
+    @MainActor
     @objc func didTapUploadQueueButton() {
         // Open upload queue controller in new navigation controller
         let uploadQueueSB = UIStoryboard(name: "UploadQueueViewController", bundle: nil)

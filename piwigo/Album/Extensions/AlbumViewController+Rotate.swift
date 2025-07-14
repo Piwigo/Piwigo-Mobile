@@ -64,10 +64,10 @@ extension AlbumViewController
     func rotateImages(withID someIDs: Set<Int64>, by angle: CGFloat, total: Float) {
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
-            // Save changes
-            mainContext.saveIfNeeded()
-            // Close HUD with success
             DispatchQueue.main.async { [self] in
+                // Save changes
+                mainContext.saveIfNeeded()
+                // Close HUD with success
                 self.navigationController?.updateHUDwithSuccess() { [self] in
                     navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
                         // Deselect images

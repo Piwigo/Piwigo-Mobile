@@ -20,6 +20,7 @@ extension ImageViewController
 
 
     // MARK: - Delete or Remove Image from Album
+    @MainActor
     @objc func deleteImage() {
         // Disable buttons during action
         setEnableStateOfButtons(false)
@@ -70,6 +71,7 @@ extension ImageViewController
         }
     }
     
+    @MainActor
     func removeImageFromAlbum() {
         // Display HUD during deletion
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"))
@@ -98,24 +100,26 @@ extension ImageViewController
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                // Retrieve album
-                if let albums = imageData.albums,
-                   let album = albums.first(where: {$0.pwgID == categoryId}) {
-                    // Remove image from album
-                    album.removeFromImages(imageData)
-
-                    // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
-
-                    // Save changes
-                    self.mainContext.saveIfNeeded()
-                }
-
-                // Hide HUD
-                self.updateHUDwithSuccess { [self] in
-                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        // Display preceding/next image or return to album view
-                        self.didRemoveImage()
+                DispatchQueue.main.async { [self] in
+                    // Retrieve album
+                    if let albums = imageData.albums,
+                       let album = albums.first(where: {$0.pwgID == categoryId}) {
+                        // Remove image from album
+                        album.removeFromImages(imageData)
+                        
+                        // Update albums
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                        
+                        // Save changes
+                        self.mainContext.saveIfNeeded()
+                    }
+                    
+                    // Hide HUD
+                    self.updateHUDwithSuccess { [self] in
+                        self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            // Display preceding/next image or return to album view
+                            self.didRemoveImage()
+                        }
                     }
                 }
             } failure: { [self] error in
@@ -151,6 +155,7 @@ extension ImageViewController
         }
     }
     
+    @MainActor
     func deleteImageFromDatabase() {
         // Remove selected category ID from image category list
         guard let imageData = imageData else {
@@ -214,6 +219,7 @@ extension ImageViewController
         }
     }
     
+    @MainActor
     private func deleteImageFromDatabaseError(_ error: Error) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
