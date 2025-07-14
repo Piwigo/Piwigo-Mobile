@@ -316,17 +316,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         // Prepare Home screen quick actions
-        let application = UIApplication.shared
-        application.shortcutItems = [
-            UIApplicationShortcutItem(type: ActionType.showFavoritesAction.rawValue,
-                                      localizedTitle: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
-                                      localizedSubtitle: nil,
-                                      icon: UIApplicationShortcutIcon(systemImageName: "heart")),
-            UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
-                                      localizedTitle: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
-                                      localizedSubtitle: nil,
-                                      icon: UIApplicationShortcutIcon(systemImageName: "clock"))
-        ]
+        var quickActions: [UIApplicationShortcutItem] = []
+        var albumIDs: Set<Int32> = []
+        if #available(iOS 26, *) {
+            UIApplication.shared.connectedScenes.forEach { scene in
+                if let window = (scene.delegate as? SceneDelegate)?.window,
+                   let rootVC = window.windowScene?.rootViewController() {
+                    let children = (rootVC as? UINavigationController)?.viewControllers ?? []
+                    albumIDs.formUnion(children.compactMap({ $0 as? AlbumViewController}).map({ $0.categoryId }))
+                }
+            }
+        }
+        if albumIDs.contains(pwgSmartAlbum.favorites.rawValue) == false {
+            quickActions.append(contentsOf: [
+                UIApplicationShortcutItem(type: ActionType.showFavoritesAction.rawValue,
+                                          localizedTitle: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
+                                          localizedSubtitle: nil,
+                                          icon: UIApplicationShortcutIcon(systemImageName: "heart"))
+            ])
+        }
+        if albumIDs.contains(pwgSmartAlbum.recent.rawValue) == false {
+            quickActions.append(contentsOf: [
+                UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
+                                          localizedTitle: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
+                                          localizedSubtitle: nil,
+                                          icon: UIApplicationShortcutIcon(systemImageName: "clock"))
+                ])
+        }
+        UIApplication.shared.shortcutItems = quickActions
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
