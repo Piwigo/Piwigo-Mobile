@@ -15,6 +15,7 @@ import uploadKit
 class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
     
     // MARK: - Core Data Object Contexts
+    @MainActor
     private lazy var mainContext: NSManagedObjectContext = {
         return DataController.shared.mainContext
     }()
@@ -62,7 +63,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         
         // We collect the list of images in the upload queue
         // so that we can check which ones are already in the upload queue.
-        var uploadsInQueue: [String] = uploadProvider.getAllMd5sum()
+        let uploadsInQueue: [String] = uploadProvider.getAllMd5sum()
 
         // Get date of action for preparing identifier
         let dateFormatter = DateFormatter()
