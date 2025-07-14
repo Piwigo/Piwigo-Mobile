@@ -9195,10 +9195,16 @@
     "v3.4.1_text" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 3.4.1\n\n• يضيف إجراءات سريعة للشاشة الرئيسية\n• يصلح الأخطاء ويحسن الواجهة"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.4.1\n\n• Adds Home screen quick action\n• Fixes bugs and improves the interface"
+            "value" : "Version 3.4.1\n\n• Adds Home screen quick actions\n• Fixes bugs and improves the interface"
           }
         }
       }
