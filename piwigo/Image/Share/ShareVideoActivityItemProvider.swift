@@ -15,7 +15,8 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-class ShareVideoActivityItemProvider: UIActivityItemProvider {
+// Warning: class must restate inherited '@unchecked Sendable' conformance
+class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
 
     // MARK: - Initialisation
     weak var delegate: ShareImageActivityItemProviderDelegate?
