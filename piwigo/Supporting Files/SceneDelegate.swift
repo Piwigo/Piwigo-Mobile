@@ -355,6 +355,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Flag used to prevent background tasks from running when the app is active
         AppVars.shared.applicationIsActive = false
+
+        // Reset list of albums being fetched
+        AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
     }
     
     
