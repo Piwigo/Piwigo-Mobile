@@ -27,6 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // List of known shortcut actions.
     enum ActionType: String {
         case showFavoritesAction = "ShowFavoritesAction"
+        case showRecentPhotosAction = "ShowRecentPhotosAction"
     }
     var savedShortCutItem: UIApplicationShortcutItem!
 
@@ -320,7 +321,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UIApplicationShortcutItem(type: ActionType.showFavoritesAction.rawValue,
                                       localizedTitle: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
                                       localizedSubtitle: nil,
-                                      icon: UIApplicationShortcutIcon(systemImageName: "heart"))
+                                      icon: UIApplicationShortcutIcon(systemImageName: "heart")),
+            UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
+                                      localizedTitle: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
+                                      localizedSubtitle: nil,
+                                      icon: UIApplicationShortcutIcon(systemImageName: "clock"))
         ]
     }
     
@@ -395,17 +400,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        // NOP in absence of user session
+        if let topMostVC = window?.windowScene?.topMostViewController(),
+           topMostVC is LoginViewController {
+            return true
+        }
+        
+        // Dismiss image or settings view controllers if needed
+        dismissNonAlbumViewControllers()
+
+        // Load the requested view controller
         if let actionTypeValue = ActionType(rawValue: shortcutItem.type) {
             switch actionTypeValue {
             case .showFavoritesAction:
-                // Dismiss image or settings view controllers if needed
-                dismissNonAlbumViewControllers()
 
                 // The root view controller should be the AlbumNavigationController
                 if let navController = window?.rootViewController as? AlbumNavigationController {
                     // Return to root view controller
                     navController.popToRootViewController(animated: false)
-                    debugPrint("#func handleShortCutItem(): did pop to root view controller")
                     
                     // Check that an album of favorites exists in cache (create it if necessary)
                     guard let albumVC = navController.viewControllers.first as? AlbumViewController,
@@ -418,6 +430,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     else { preconditionFailure("Could not load AlbumViewController") }
                     favoritesVC.categoryId = pwgSmartAlbum.favorites.rawValue
                     navController.pushViewController(favoritesVC, animated: false)
+                }
+            case .showRecentPhotosAction:
+                // The root view controller should be the AlbumNavigationController
+                if let navController = window?.rootViewController as? AlbumNavigationController {
+                    // Return to root view controller
+                    navController.popToRootViewController(animated: false)
+                    
+                    // Present recent images
+                    guard let albumVC = navController.viewControllers.first as? AlbumViewController
+                    else { return false }
+                    albumVC.discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
                 }
             }
         }
