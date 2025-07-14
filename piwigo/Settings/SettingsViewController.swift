@@ -445,7 +445,7 @@ class SettingsViewController: UIViewController {
             PwgSession.shared.sessionLogout {
                 // Close session
                 DispatchQueue.main.async { [self] in
-                    self.navigationController?.hideHUD {
+                    self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {
                         ClearCache.closeSession()
                     }
                 }
