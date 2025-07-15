@@ -52387,97 +52387,198 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum/"
+            "value" : "https://da.piwigo.org/forum/"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum/"
+            "value" : "https://de.piwigo.org/forum/"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://es.piwigo.org/forum/"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://fr.piwigo.org"
+            "value" : "https://fr.piwigo.org/forum/"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "http://piwigo.org/forum"
+            "state" : "translated",
+            "value" : "https://piwigo.org/forum"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://it.piwigo.org/forum/"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://nl.piwigo.org/forum/"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://pl.piwigo.org/forum"
+            "value" : "https://pl.piwigo.org/forum/"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://ru.piwigo.org/forum"
+            "value" : "https://ru.piwigo.org/forum/"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://Piwigo.org/forum"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://cn.piwigo.org/forum/"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "http://piwigo.org/forum"
+            "value" : "https://cn.piwigo.org/forum/"
+          }
+        }
+      }
+    },
+    "settings_pwgURL" : {
+      "comment" : "https://piwigo.org",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://da.piwigo.org"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://de.piwigo.org"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://es.piwigo.org"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://fr.piwigo.org"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://it.piwigo.org"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://nl.piwigo.org"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://pl.piwigo.org"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://ru.piwigo.org"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://piwigo.org"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://cn.piwigo.org"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://cn.piwigo.org"
           }
         }
       }
@@ -56218,210 +56319,6 @@
           }
         }
       }
-    },
-    "settings_twitter" : {
-      "comment" : "@piwigo",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "@piwigo"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "@piwigo"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "@piwigo"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "@piwigo"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "@piwigo"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "settings_twitterURL" : {
-      "comment" : "https://twitter.com/piwigo",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "https://twitter.com/piwigo"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "settings_username" : {
       "comment" : "Username",
