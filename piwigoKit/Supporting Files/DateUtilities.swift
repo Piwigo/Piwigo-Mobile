@@ -20,7 +20,7 @@ public class DateUtilities: NSObject {
     
     // Dates are provided by Piwigo servers as strings in the local time.
     // We store each date as a TimeInterval since 00:00:00 UTC on 1 January 2001.
-    public static var pwgDateFormatter: DateFormatter = {
+    public static let pwgDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -29,7 +29,7 @@ public class DateUtilities: NSObject {
     }()
     
     // Logs dates are provided with UTC time
-    public static var logsDateFormatter: DateFormatter = {
+    public static let logsDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.sss"

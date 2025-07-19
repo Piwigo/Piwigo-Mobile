@@ -48,6 +48,7 @@ class VideoControlsView: UIVisualEffectView {
         return view
     }
     
+    @MainActor
     func applyColorPalette() {
         if #available(iOS 13.0, *) {
             startLabel.textColor = .piwigoColorText()

@@ -256,12 +256,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                 self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
 
                 // Copy single image to selected album
-                DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.shared.usesSetCategory {
-                        self.associateImages(toAlbum: albumData)
-                    } else {
-                        self.copyImages(toAlbum: albumData)
-                    }
+                if NetworkVars.shared.usesSetCategory {
+                    self.associateImages(toAlbum: albumData)
+                } else {
+                    self.copyImages(toAlbum: albumData)
                 }
             }
 
@@ -281,12 +279,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                 self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
 
                 // Move single image to selected album
-                DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.shared.usesSetCategory {
-                        self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
-                    } else {
-                        self.moveImages(toAlbum: albumData)
-                    }
+                if NetworkVars.shared.usesSetCategory {
+                    self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
+                } else {
+                    self.moveImages(toAlbum: albumData)
                 }
             }
 
@@ -306,12 +302,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                              inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
                 
                 // Copy several images to selected album
-                DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.shared.usesSetCategory {
-                        self.associateImages(toAlbum: albumData)
-                    } else {
-                        self.copyImages(toAlbum: albumData)
-                    }
+                if NetworkVars.shared.usesSetCategory {
+                    self.associateImages(toAlbum: albumData)
+                } else {
+                    self.copyImages(toAlbum: albumData)
                 }
             }
 
@@ -331,12 +325,10 @@ extension SelectCategoryViewController: UITableViewDelegate
                              inMode: NetworkVars.shared.usesSetCategory ? .indeterminate : .determinate)
 
                 // Move several images to selected album
-                DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    if NetworkVars.shared.usesSetCategory {
-                        self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
-                    } else {
-                        self.moveImages(toAlbum: albumData)
-                    }
+                if NetworkVars.shared.usesSetCategory {
+                    self.associateImages(toAlbum: albumData, andDissociateFromPreviousAlbum: true)
+                } else {
+                    self.moveImages(toAlbum: albumData)
                 }
             }
 
@@ -345,6 +337,7 @@ extension SelectCategoryViewController: UITableViewDelegate
         }
     }
     
+    @MainActor
     private func requestConfirmation(withTitle title:String, message:String,
                                      forCategory albumData: Album, at indexPath:IndexPath,
                                      handler:((UIAlertAction) -> Void)? = nil) -> Void {

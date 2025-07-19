@@ -81,6 +81,7 @@ class RenameFileViewController: UIViewController {
         tableView?.register(AddActionTableViewFooterView.self, forHeaderFooterViewReuseIdentifier: "addActionFooter")
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

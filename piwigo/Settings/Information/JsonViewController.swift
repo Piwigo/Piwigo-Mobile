@@ -42,6 +42,7 @@ class JsonViewController: UIViewController {
         fileContent?.text = String(decoding: content ?? Data(), as: UTF8.self)
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

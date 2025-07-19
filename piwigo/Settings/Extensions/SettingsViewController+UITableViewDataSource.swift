@@ -759,12 +759,12 @@ extension SettingsViewController: UITableViewDataSource
         // MARK: Information
         case .about /* Information */:
             switch indexPath.row {
-            case 0 /* @piwigo (Twitter) */:
+            case 0 /* Piwigo.org website */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
-                cell.configure(with: NSLocalizedString("settings_twitter", comment: "@piwigo"), detail: "")
+                cell.configure(with: "Piwigo", detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "piwigoInfo"
+                cell.accessibilityIdentifier = "piwigoWebsite"
                 tableViewCell = cell
                 
             case 1 /* Rate Piwigo Mobile */:

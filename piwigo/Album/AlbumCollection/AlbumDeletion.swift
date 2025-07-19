@@ -33,11 +33,12 @@ class AlbumDeletion: NSObject
         return provider
     }()
 
+    @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         let alert = UIAlertController(
             title: NSLocalizedString("deleteCategory_title", comment: "DELETE ALBUM"),
-            message: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ IMAGES?"), albumData.name, NSNumber(value: albumData.totalNbImages)),
+            message: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_message", comment: "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %lld IMAGES?"), albumData.name, albumData.totalNbImages),
             preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(
@@ -89,7 +90,7 @@ class AlbumDeletion: NSObject
             }
             else if nbOrphans != 0 {
                 let orphanImagesAction = UIAlertAction(
-                    title: self.nbOrphans > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %@ Orphans"), NSNumber(value: self.nbOrphans)) : NSLocalizedString("deleteCategory_singleOrphanedImage", comment: "Delete Orphan"),
+                    title: String.localizedStringWithFormat(NSLocalizedString("deleteCategory_severalOrphanedImages", comment: "Delete %lld Orphans"), self.nbOrphans),
                     style: .destructive,
                     handler: { [self] action in
                         confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
@@ -99,7 +100,7 @@ class AlbumDeletion: NSObject
             }
             
             let allImagesAction = UIAlertAction(
-                title: albumData.totalNbImages > 1 ? String.localizedStringWithFormat(NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Images"), NSNumber(value: albumData.totalNbImages)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Image"),
+                title: String.localizedStringWithFormat(NSLocalizedString("deleteSeveralImages_title", comment: "Delete %@ Photos/Videos"), NSNumber(value: albumData.totalNbImages)),
                 style: .destructive,
                 handler: { [self] action in
                     confirmAlbumDeletion(withNumberOfImages: albumData.totalNbImages,
@@ -123,6 +124,7 @@ class AlbumDeletion: NSObject
         }
     }
     
+    @MainActor
     private func confirmAlbumDeletion(withNumberOfImages number: Int64,
                                       deletionMode: pwgAlbumDeletionMode,
                                       completion: @escaping (Bool) -> Void) {
@@ -174,6 +176,7 @@ class AlbumDeletion: NSObject
         }
     }
     
+    @MainActor
     private func checkDeletion(withNumberOfImages number: Int, deletionMode: pwgAlbumDeletionMode,
                                completion: @escaping (Bool) -> Void) {
         // Check provided number of images
@@ -217,10 +220,14 @@ class AlbumDeletion: NSObject
                 self.fetchAlbumData(ofParentsWithIDs: parentIds)
                 
             } failure: { [self] error in
-                self.deleteAlbumError(error, title: title, message: message)
+                DispatchQueue.main.async { [self] in
+                    self.deleteAlbumError(error, title: title, message: message)
+                }
             }
         } failure: { [self] error in
-            self.deleteAlbumError(error, title: title, message: message)
+            DispatchQueue.main.async { [self] in
+                self.deleteAlbumError(error, title: title, message: message)
+            }
         }
     }
     
@@ -261,19 +268,18 @@ class AlbumDeletion: NSObject
         }
     }
     
+    @MainActor
     private func deleteAlbumError(_ error: Error, title: String, message: String) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
-                return
-            }
-            
-            // Report error
-            self.topViewController.dismissPiwigoError(withTitle: title, message: message,
-                                                      errorMessage: error.localizedDescription) {
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
+            return
+        }
+        
+        // Report error
+        self.topViewController.dismissPiwigoError(withTitle: title, message: message,
+                                                  errorMessage: error.localizedDescription) {
         }
     }
 }

@@ -93,40 +93,43 @@ extension ImageViewController
                     self.mainContext.saveIfNeeded()
                 }
             } failure: { [self] error in
-                self.rotateImageInDatabaseError(error)
+                DispatchQueue.main.async { [self] in
+                    self.rotateImageInDatabaseError(error)
+                }
             }
         } failure: { [self] error in
-            self.rotateImageInDatabaseError(error)
+            DispatchQueue.main.async { [self] in
+                self.rotateImageInDatabaseError(error)
+            }
         }
     }
     
+    @MainActor
     private func rotateImageInDatabaseError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
+        // Hide HUD
+        self.hideHUD { [self] in
+            // Plugin rotateImage installed?
+            let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
+            var message = ""
             if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
+               pwgError == .otherError(code: 501, msg: "") {
+                message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
+            }
+            else {
+                message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
             }
             
-            // Hide HUD
-            self.hideHUD { [self] in
-                // Plugin rotateImage installed?
-                let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
-                var message = ""
-                if let pwgError = error as? PwgSessionError,
-                   pwgError == .otherError(code: 501, msg: "") {
-                    message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
-                }
-                else {
-                    message = NSLocalizedString("rotateImageFail_message", comment: "Image could not be rotated")
-                }
-                
-                // Report error
-                self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
-                }
+            // Report error
+            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+                // Re-enable buttons
+                setEnableStateOfButtons(true)
             }
         }
     }

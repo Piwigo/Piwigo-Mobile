@@ -12,6 +12,7 @@ import UIKit
 extension TagsViewController
 {
     // MARK: - Add tag (for admins only)
+    @MainActor
     @objc func requestNewTagName() {
         let alert = UIAlertController(title: NSLocalizedString("tagsAdd_title", comment: "Add Tag"), message: NSLocalizedString("tagsAdd_message", comment: "Enter a name for this new tag"), preferredStyle: .alert)
 
@@ -52,31 +53,33 @@ extension TagsViewController
         }
     }
 
+    @MainActor
     func addTag(withName tagName: String?) {
         // Check tag name
-        guard let tagName = tagName, tagName.count != 0 else {
-            return
-        }
+        guard let tagName = tagName, tagName.count != 0
+        else { return }
         
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
 
         // Add new tag
         DispatchQueue.global(qos: .userInteractive).async {
-            self.tagProvider.addTag(with: tagName, completionHandler: { error in
-                guard let error = error else {
-                    self.updateHUDwithSuccess {
-                        self.hideHUD(afterDelay: pwgDelayHUD, completion: {})
+            self.tagProvider.addTag(with: tagName) { error in
+                DispatchQueue.main.async {
+                    guard let error = error else {
+                        self.updateHUDwithSuccess {
+                            self.hideHUD(afterDelay: pwgDelayHUD, completion: {})
+                        }
+                        return
                     }
-                    return
+                    self.hideHUD {
+                        self.dismissPiwigoError(
+                            withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
+                            message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
+                            errorMessage: error.localizedDescription, completion: { })
+                    }
                 }
-                self.hideHUD {
-                    self.dismissPiwigoError(
-                        withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
-                        message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
-                        errorMessage: error.localizedDescription, completion: { })
-                }
-            })
+            }
         }
     }
 }

@@ -315,6 +315,7 @@ class AlbumViewController: UIViewController
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
@@ -707,13 +708,13 @@ class AlbumViewController: UIViewController
         
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
-        PwgSession.shared.dataSession.getAllTasks { [unowned self] tasks in
+        PwgSession.shared.dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
                 .value(forHTTPHeaderField: NetworkVars.shared.HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
-                debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(self.categoryId)")
+                debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(catIDstr)")
                 $0.cancel()
             })
         }

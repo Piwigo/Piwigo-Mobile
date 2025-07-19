@@ -192,7 +192,7 @@ class UploadImageTableViewCell: UITableViewCell {
         cropToSquare.normalizedCropRect = cropRect
 
         PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
-            DispatchQueue.main.async(execute: {
+            DispatchQueue.main.async {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
                         debugPrint("••> Error : \(error.localizedDescription)")
@@ -205,7 +205,7 @@ class UploadImageTableViewCell: UITableViewCell {
                 if self.cellImage.layer.cornerRadius != 7 {
                     self.cellImage.layer.cornerRadius = 10 - 3
                 }
-            })
+            }
         })
         
         // Video icon?

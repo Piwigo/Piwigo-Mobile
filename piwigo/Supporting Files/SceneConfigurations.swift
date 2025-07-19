@@ -22,17 +22,26 @@ enum ActivityType: String {
     func sceneConfiguration() -> UISceneConfiguration {
         switch self {
         case .album:        // Album/images collection view
-            return UISceneConfiguration(name: SceneConfiguration.default.rawValue,
-                                        sessionRole: .windowApplication)
+            let sceneConfig = UISceneConfiguration(name: SceneConfiguration.default.rawValue,
+                                                   sessionRole: .windowApplication)
+            sceneConfig.delegateClass = SceneDelegate.self
+            sceneConfig.storyboard = UIStoryboard(name: "LaunchScreen", bundle: nil)
+            return sceneConfig
         
         case .external:     // Album/images collection view w/o interaction
             if #available(iOS 16.0, *) {
-                return UISceneConfiguration(name: SceneConfiguration.external.rawValue,
-                                            sessionRole: .windowExternalDisplayNonInteractive)
+                let sceneConfig = UISceneConfiguration(name: SceneConfiguration.external.rawValue,
+                                                       sessionRole: .windowExternalDisplayNonInteractive)
+                sceneConfig.delegateClass = ExternalDisplaySceneDelegate.self
+                sceneConfig.storyboard = UIStoryboard(name: "LaunchScreenExternal", bundle: nil)
+                return sceneConfig
             } else {
                 // Fallback on earlier versions
-                return UISceneConfiguration(name: SceneConfiguration.external.rawValue,
-                                            sessionRole: .windowExternalDisplay)
+                let sceneConfig = UISceneConfiguration(name: SceneConfiguration.external.rawValue,
+                                                       sessionRole: .windowExternalDisplay)
+                sceneConfig.delegateClass = ExternalDisplaySceneDelegate.self
+                sceneConfig.storyboard = UIStoryboard(name: "LaunchScreenExternal", bundle: nil)
+                return sceneConfig
             }
         }
     }

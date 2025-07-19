@@ -80,24 +80,20 @@ class AlbumCollectionViewCell: UICollectionViewCell {
                 // Downsample image in cache
                 let cachedImage = ImageUtilities.downsample(imageAt: cachedImageURL, to: cellSize, for: .album)
                 
-                // Process saliency if needed
-    //            if #available(iOS 13.0, *) {
-    //                self.setThumbnailWithImage(cachedImage.processSaliency() ?? cachedImage)
-    //            } else {
-                    self.setThumbnailWithImage(cachedImage)
-    //            }
+                // Set album thumbnail
+                DispatchQueue.main.async { [self] in
+                    self.albumThumbnail.image = cachedImage
+                }
             }
-        } failure: { [weak self] _ in
-            self?.setThumbnailWithImage(pwgImageType.album.placeHolder)
-        }
-    }
-        
-    private func setThumbnailWithImage(_ image: UIImage) {
-        DispatchQueue.main.async { [self] in
-            self.albumThumbnail.image = image
+        } failure: { [self] _ in
+            // Set album thumbnail
+            DispatchQueue.main.async { [self] in
+                self.albumThumbnail.image = pwgImageType.album.placeHolder
+            }
         }
     }
 
+    @MainActor
     func applyColorPalette() {
         backgroundColor = UIColor.piwigoColorBackground()
         contentView.backgroundColor = UIColor.piwigoColorCellBackground()

@@ -35,6 +35,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         applyColorPalette()
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

@@ -86,6 +86,7 @@ extension AlbumViewController
         actionBarButton?.isEnabled = hasImages
     }
 
+    @MainActor
     func updateBarsInPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
         if let displayedVC = navigationController?.viewControllers.last,
@@ -259,6 +260,7 @@ extension AlbumViewController
         }
     }
     
+    @MainActor
     func updateBarsInSelectMode() {
         setTitleViewFromAlbumData()
         let hasImagesSelected = !selectedImageIDs.isEmpty
@@ -314,6 +316,7 @@ extension AlbumViewController
         
     
     // MARK: - Title View
+    @MainActor
     @objc func updateTitleView(_ notification: Notification?) {
         // Check notification data
         guard let info = notification?.userInfo,
@@ -325,6 +328,7 @@ extension AlbumViewController
         setTitleViewFromAlbumData(progress: progress)
     }
     
+    @MainActor
     func setTitleViewFromAlbumData(progress: Float = 0) {
         // Title view
         if categoryId == 0 {

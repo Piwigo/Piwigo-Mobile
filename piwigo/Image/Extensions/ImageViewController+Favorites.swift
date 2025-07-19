@@ -13,6 +13,7 @@ import piwigoKit
 extension ImageViewController
 {
     // MARK: - Favorite Bar Button
+    @MainActor
     func getFavoriteBarButton() -> UIBarButtonItem? {
         // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
         if user.canManageFavorites() == false {
@@ -29,6 +30,7 @@ extension ImageViewController
     
 
     // MARK: - Add/Remove Image from Favorites
+    @MainActor
     @objc func addToFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action
@@ -64,31 +66,35 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.addToFavoritesError(error)
+                DispatchQueue.main.async { [self] in
+                    self.addToFavoritesError(error)
+                }
             }
         } failure: { [self] error in
-            self.addToFavoritesError(error)
+            DispatchQueue.main.async { [self] in
+                self.addToFavoritesError(error)
+            }
         }
     }
     
+    @MainActor
     private func addToFavoritesError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
-            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                favoriteBarButton?.isEnabled = true
-            }
+        // Report error
+        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+        let message = NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites.")
+        dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            favoriteBarButton?.isEnabled = true
         }
     }
 
+    @MainActor
     @objc func removeFromFavorites() {
         guard let imageData = imageData else { return }
         // Disable button during action
@@ -130,28 +136,31 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.removeFromFavoritesError(error)
+                DispatchQueue.main.async { [self] in
+                    self.removeFromFavoritesError(error)
+                }
             }
         } failure: { [self] error in
-            self.removeFromFavoritesError(error)
+            DispatchQueue.main.async { [self] in
+                self.removeFromFavoritesError(error)
+            }
         }
     }
     
+    @MainActor
     private func removeFromFavoritesError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
-            let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                self.favoriteBarButton?.isEnabled = true
-            }
+        // Report error
+        let title = NSLocalizedString("imageFavorites_title", comment: "Favorites")
+        let message = NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites.")
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            self.favoriteBarButton?.isEnabled = true
         }
     }
 }

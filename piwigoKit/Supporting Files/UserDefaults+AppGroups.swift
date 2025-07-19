@@ -62,9 +62,6 @@ public struct UserDefault<Value: PropertyListValue> {
 /// Property List? in Property List Programming Guide.public protocol PropertyListValue {}
 public protocol PropertyListValue {}
 
-extension String: PropertyListValue {}
-extension NSString: PropertyListValue {}
-
 extension Bool: PropertyListValue {}
 extension Int: PropertyListValue {}
 extension Int16: PropertyListValue {}
@@ -73,6 +70,6 @@ extension Int64: PropertyListValue {}
 extension UInt: PropertyListValue {}
 extension UInt16: PropertyListValue {}
 extension UInt32: PropertyListValue {}
-
 extension Float: PropertyListValue {}
 extension TimeInterval: PropertyListValue {}
+extension String: PropertyListValue {}

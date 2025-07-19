@@ -135,6 +135,7 @@ class ImageViewController: UIViewController {
                                                name: Notification.Name.pwgVideoMutedOrNot, object: nil)
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Set background color according to navigation bar visibility
         if navigationController?.isNavigationBarHidden ?? false {
@@ -383,7 +384,9 @@ class ImageViewController: UIViewController {
                 } failure: { [self] error in
                     // Display error only when image data is incomplete
                     if isIncomplete {
-                        self.retrieveImageDataError(error)
+                        DispatchQueue.main.async { [self] in
+                            self.retrieveImageDataError(error)
+                        }
                     }
                 }
             } failure: { [self] error in
@@ -395,26 +398,27 @@ class ImageViewController: UIViewController {
                 }
                 // Display error only once and when image data is incomplete
                 if isIncomplete  {
-                    self.retrieveImageDataError(error)
+                    DispatchQueue.main.async { [self] in
+                        self.retrieveImageDataError(error)
+                    }
                 }
             }
         }
     }
 
+    @MainActor
     private func retrieveImageDataError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
-
-            // Report error
-            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            let message = NSLocalizedString("imageDetailsFetchError_retryMessage", comment: "Fetching the image data failed.")
-            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
         }
+
+        // Report error
+        let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+        let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the image data failed.")
+        dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { }
     }
 
     func logImageVisitIfNeeded(_ imageID: Int64, asDownload: Bool = false) {
@@ -424,24 +428,26 @@ class ImageViewController: UIViewController {
                     // Statistics updated
                 } failure: { [self] error in
                     // Session logout required?
-                    if let pwgError = error as? PwgSessionError,
-                       [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                        .contains(pwgError) {
-                        ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                        return
+                    DispatchQueue.main.async { [self] in
+                        if let pwgError = error as? PwgSessionError,
+                           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
+                            .contains(pwgError) {
+                            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                            return
+                        }
                     }
-                    
                     // Statistics not updated ► No error reported
                 }
             }
         } failure: { [self] error in
             // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
+            DispatchQueue.main.async { [self] in
+                if let pwgError = error as? PwgSessionError,
+                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                    return
+                }
             }
-
             // Statistics not updated ► No error reported
         }
     }

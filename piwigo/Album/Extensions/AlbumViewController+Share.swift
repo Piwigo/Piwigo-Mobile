@@ -40,24 +40,33 @@ extension AlbumViewController
                 for: PHAccessLevel.addOnly, for: self,
                 onAccess: { [self] in
                     // User allowed to save image in camera roll
-                    shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
+                    DispatchQueue.main.async {
+                        self.shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
+                    }
                 },
                 onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
-                    shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
+                    DispatchQueue.main.async {
+                        self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
+                    }
                 })
         } else {
             // Fallback on earlier versions
             PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil) { [self] in
                 // User allowed to save image in camera roll
-                shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
+                DispatchQueue.main.async {
+                    self.shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
+                }
             } onDeniedAccess: { [self] in
                 // User not allowed to save image in camera roll
-                shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
+                DispatchQueue.main.async {
+                    self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
+                }
             }
         }
     }
 
+    @MainActor
     func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
         // To exclude some activity types
         var hasVideoItem = false

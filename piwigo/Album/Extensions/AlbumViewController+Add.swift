@@ -92,33 +92,37 @@ extension AlbumViewController
             AlbumUtilities.create(withName: albumName, description: albumComment,
                                   status: "public", inAlbumWithId: albumData.pwgID) { [self] newCatId in
                 // Album successfully created ▶ Add new album to cache and update parent albums
-                DispatchQueue.global(qos: .userInitiated).async { [self] in
-                    self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
-                                                inAlbumWithObjectID: albumData.objectID,
-                                                forUserWithObjectID: user.objectID)
-                }
-                
+                self.albumProvider.addAlbum(newCatId, withName: albumName, comment: albumComment,
+                                            inAlbumWithObjectID: albumData.objectID,
+                                            forUserWithObjectID: user.objectID)
                 // Hide HUD
-                updateHUDwithSuccess() { [self] in
-                    hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        // Reset buttons
-                        didCancelTapAddButton()
-                        // Scroll to top if necessary
-                        let indexPath = IndexPath(item: 0, section: 0)
-                        let visibleCells = collectionView.indexPathsForVisibleItems
-                        if visibleCells.isEmpty == false, visibleCells.contains(indexPath) == false {
-                            collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+                DispatchQueue.main.async { [self] in
+                    updateHUDwithSuccess() { [self] in
+                        hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            // Reset buttons
+                            didCancelTapAddButton()
+                            // Scroll to top if necessary
+                            let indexPath = IndexPath(item: 0, section: 0)
+                            let visibleCells = collectionView.indexPathsForVisibleItems
+                            if visibleCells.isEmpty == false, visibleCells.contains(indexPath) == false {
+                                collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+                            }
                         }
                     }
                 }
             } failure: { [self] error in
-                self.addCategoryError(error)
+                DispatchQueue.main.async { [self] in
+                    self.addCategoryError(error)
+                }
             }
         } failure: { [self] error in
-            self.addCategoryError(error)
+            DispatchQueue.main.async { [self] in
+                self.addCategoryError(error)
+            }
         }
     }
     
+    @MainActor
     private func addCategoryError(_ error: Error) {
         self.hideHUD() { [self] in
             // Session logout required?

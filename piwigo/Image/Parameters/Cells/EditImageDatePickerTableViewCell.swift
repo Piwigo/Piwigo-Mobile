@@ -105,6 +105,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         datePicker.reloadAllComponents()
     }

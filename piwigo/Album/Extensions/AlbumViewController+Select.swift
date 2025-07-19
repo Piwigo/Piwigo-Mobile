@@ -171,6 +171,7 @@ extension AlbumViewController
         initBarsInSelectMode()
     }
     
+    @MainActor
     @objc func cancelSelect() {
         // Disable Images Selection mode
         inSelectionMode = false
@@ -370,6 +371,7 @@ extension AlbumViewController
         }
     }
     
+    @MainActor
     private func performAction(_ action: pwgImageAction, withImageIDs imageIDs: Set<Int64>, contextually: Bool) {
         switch action {
         case .edit          /* Edit images parameters */:
@@ -430,7 +432,9 @@ extension AlbumViewController
                 retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
                              beforeAction: action, contextually: contextually)
             } failure: { [self] error in
-                retrieveImageDataError(error, contextually: contextually)
+                DispatchQueue.main.async { [self] in
+                    retrieveImageDataError(error, contextually: contextually)
+                }
             }
         }
     }
@@ -468,29 +472,30 @@ extension AlbumViewController
             retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
                          beforeAction: action, contextually: contextually)
         } failure: { [self] error in
-            retrieveImageDataError(error, contextually: contextually)
+            DispatchQueue.main.async { [self] in
+                retrieveImageDataError(error, contextually: contextually)
+            }
         }
     }
     
+    @MainActor
     private func retrieveImageDataError(_ error: Error, contextually: Bool) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed] .contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
-            
-            // Report error
-            let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
-            let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
-            dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                navigationController?.hideHUD() { [self] in
-                    if contextually {
-                        setEnableStateOfButtons(true)
-                    } else {
-                        updateBarsInSelectMode()
-                    }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed] .contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+        
+        // Report error
+        let title = NSLocalizedString("imageDetailsFetchError_title", comment: "Image Details Fetch Failed")
+        let message = NSLocalizedString("imageDetailsFetchError_message", comment: "Fetching the photo data failed.")
+        dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            navigationController?.hideHUD() { [self] in
+                if contextually {
+                    setEnableStateOfButtons(true)
+                } else {
+                    updateBarsInSelectMode()
                 }
             }
         }

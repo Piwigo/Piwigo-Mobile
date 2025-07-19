@@ -49,6 +49,7 @@ class PiwigoHUD: UIView
     
     // MARK: - Create/Update HUD
     // Create and show HUD
+    @MainActor
     func show(withTitle title: String, detail: String?, minWidth: CGFloat,
               buttonTitle: String? = nil, buttonTarget: UIViewController? = nil, buttonSelector: Selector? = nil,
               inMode mode: pwgHudMode = .indeterminate, view: UIView)
@@ -116,6 +117,7 @@ class PiwigoHUD: UIView
         }
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         backgroundColor = UIColor(white: 0, alpha: 0.5)
         view?.backgroundColor = .piwigoColorBackground()
@@ -126,6 +128,7 @@ class PiwigoHUD: UIView
         completedImage?.tintColor = UIColor.piwigoColorLeftLabel()
     }
     
+    @MainActor
     func update(title: String? = nil, detail: String? = nil,
                 buttonTitle: String? = nil, buttonTarget: UIViewController? = nil, buttonSelector: Selector? = nil,
                 inMode mode: pwgHudMode? = nil) {
@@ -181,6 +184,7 @@ class PiwigoHUD: UIView
         viewWidth.constant = self.minWidth
     }
     
+    @MainActor
     func hide() {
         // Show HUD
         UIView.animate(withDuration: duration) {
@@ -192,6 +196,7 @@ class PiwigoHUD: UIView
     
     
     // MARK: - HUD Modes
+    @MainActor
     private func config(mode: pwgHudMode) {
         switch mode {
         case .text:                 // No activity indicator or checkmark

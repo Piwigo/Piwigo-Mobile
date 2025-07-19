@@ -26,7 +26,8 @@ protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
     func showError(withTitle title: String, andMessage message: String?)
 }
 
-class ShareImageActivityItemProvider: UIActivityItemProvider {
+// Warning: class must restate inherited '@unchecked Sendable' conformance
+class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
     
     // MARK: - Initialisation
     weak var delegate: ShareImageActivityItemProviderDelegate?
@@ -51,9 +52,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             // Update the value
             _progressFraction = progress
             // Notify the delegate on the main thread to show how it makes progress.
-            DispatchQueue.main.async(execute: {
+            DispatchQueue.main.async {
                 self.delegate?.imageActivityItemProvider(self, preprocessingProgressDidUpdate: self._progressFraction)
-            })
+            }
         }
     }
     

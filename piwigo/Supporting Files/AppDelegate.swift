@@ -312,6 +312,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
+
+        // Reset list of albums being fetched
+        AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
     }
         
     func applicationWillTerminate(_ application: UIApplication) {

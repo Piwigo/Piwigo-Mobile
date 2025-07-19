@@ -20,6 +20,7 @@ class ImageDescriptionView: UIVisualEffectView {
         super.awakeFromNib()
     }
 
+    @MainActor
     func applyColorPalette() {
         if #available(iOS 13.0, *) {
             descTextView.textColor = .piwigoColorText()

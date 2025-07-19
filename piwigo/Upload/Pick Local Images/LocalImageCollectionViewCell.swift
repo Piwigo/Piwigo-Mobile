@@ -74,6 +74,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         })
     }
     
+    @MainActor
     func configure(with image: UIImage, identifier: String) {
         // Configure icons
         configureIcons()

@@ -131,10 +131,14 @@ class TagsViewController: UITableViewController {
         PwgSession.checkSession(ofUser: user) {
             self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
-                didFetchTagsWithError(error as Error)
+                DispatchQueue.main.async { [self] in
+                    didFetchTagsWithError(error as Error)
+                }
             }
         } failure: { [self] error in
-            didFetchTagsWithError(error as Error)
+            DispatchQueue.main.async { [self] in
+                didFetchTagsWithError(error as Error)
+            }
         }
         
         // Title
@@ -147,6 +151,7 @@ class TagsViewController: UITableViewController {
         }
     }
     
+    @MainActor
     private func didFetchTagsWithError(_ error: Error) {
         // Session logout required?
         if let pwgError = error as? PwgSessionError,
@@ -158,12 +163,11 @@ class TagsViewController: UITableViewController {
 
         // Report error
         let title = TagError.fetchFailed.localizedDescription
-        DispatchQueue.main.async {
-            self.dismissPiwigoError(withTitle: title,
-                                    message: error.localizedDescription) { }
-        }
+        self.dismissPiwigoError(withTitle: title,
+                                message: error.localizedDescription) { }
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

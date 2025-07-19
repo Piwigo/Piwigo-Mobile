@@ -55,13 +55,17 @@ extension SelectCategoryViewController
                     }
                 }
             } failure: { [self] error in
-                self.hideHUD { [self] in
-                    self.showError(error)
+                DispatchQueue.main.async { [self] in
+                    self.hideHUD { [self] in
+                        self.showError(error)
+                    }
                 }
             }
         } failure: { [self] error in
-            self.hideHUD { [self] in
-                self.showError(error)
+            DispatchQueue.main.async { [self] in
+                self.hideHUD { [self] in
+                    self.showError(error)
+                }
             }
         }
     }
@@ -88,13 +92,17 @@ extension SelectCategoryViewController
                     }
                 }
             } failure: { [self] error in
-                self.hideHUD {
-                    self.showError(error)
+                DispatchQueue.main.async { [self] in
+                    self.hideHUD {
+                        self.showError(error)
+                    }
                 }
             }
         } failure: { [self] error in
-            self.hideHUD {
-                self.showError(error)
+            DispatchQueue.main.async { [self] in
+                self.hideHUD {
+                    self.showError(error)
+                }
             }
         }
     }

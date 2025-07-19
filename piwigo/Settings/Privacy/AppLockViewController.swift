@@ -119,6 +119,7 @@ class AppLockViewController: UIViewController {
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Navigation bar (if any)
         let attributes = [
@@ -496,9 +497,9 @@ class AppLockViewController: UIViewController {
             }
         }
         
-        // If the device supports Core Haptics, exploit them.
+        // If the device supports Core Haptics, exploit it.
         if #available(iOS 13.0, *) {
-            HapticUtilities.shared.playHapticsFile(named: "VerificationFailed")
+            HapticUtilities.playHapticsFile(named: "VerificationFailed")
         }
     }
 }

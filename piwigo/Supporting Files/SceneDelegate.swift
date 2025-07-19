@@ -20,37 +20,52 @@ import uploadKit
 
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
     private var privacyView: UIView?
+    
+    // List of known shortcut actions.
+    enum ActionType: String {
+        case showFavoritesAction = "ShowFavoritesAction"
+        case showRecentPhotosAction = "ShowRecentPhotosAction"
+    }
+    var savedShortCutItem: UIApplicationShortcutItem!
 
+    
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
         return DataController.shared.mainContext
     }()
     
-
+    
     // MARK: - Connecting and Disconnecting scenes
     /** Apps configure their UIWindow and attach it to the provided UIWindowScene scene.
-        The system calls willConnectTo shortly after the app delegate's "configurationForConnecting" function.
-        Use this function to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
+     The system calls willConnectTo shortly after the app delegate's "configurationForConnecting" function.
+     Use this function to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
      
-        When using a storyboard file, as specified by the Info.plist key, UISceneStoryboardFile, the system automatically configures
-        the window property and attaches it to the windowScene.
- 
-        Remember to retain the SceneDelegate's UIWindow.
-        The recommended approach is for the SceneDelegate to retain the scene's window.
-    */
+     When using a storyboard file, as specified by the Info.plist key, UISceneStoryboardFile, the system automatically configures
+     the window property and attaches it to the windowScene.
+     
+     Remember to retain the SceneDelegate's UIWindow.
+     The recommended approach is for the SceneDelegate to retain the scene's window.
+     */
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
+        // Process the quick action if the user selected one to launch the app.
+        if let shortcutItem = connectionOptions.shortcutItem {
+            // Save shortcut for later when app becomes active
+            savedShortCutItem = shortcutItem
+        }
+        
         debugPrint("••> \(session.persistentIdentifier): Scene will connect to session.")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
               let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-
+        
         // Get other existing scenes of the main screen
         let otherScenes = UIApplication.shared.connectedScenes
             .filter({($0.session.role == .windowApplication) &&
-                     ($0.session.persistentIdentifier != session.persistentIdentifier)})
+                ($0.session.persistentIdentifier != session.persistentIdentifier)})
         
         // Determine the user activity from a new connection or from a session's state restoration.
         guard let userActivity = connectionOptions.userActivities.first ?? session.stateRestorationActivity else {
@@ -140,7 +155,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 appDelegate.loadMigrationView(in: window)
             }
         }
-
+        
         // Hold and present login window
         self.window = window
         window.makeKeyAndVisible()
@@ -179,11 +194,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             appDelegate.loadNavigation(in: window)
             return true
         }
-
+        
         // The incoming userActivity is not recognizable here.
         return false
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did disconnect.")
         // Called as the scene is being released by the system.
@@ -191,7 +206,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
-
+    
     
     // MARK: - Transitioning to the Foreground
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -205,17 +220,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Flag used to force relogin at start
         NetworkVars.shared.applicationShouldRelogin = true
     }
-
+    
     func sceneDidBecomeActive(_ scene: UIScene) {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did become active.")
         // Called when the scene has become active and is now responding to user events.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
+        // did the user open the app with a Home menu quick action?
+        if savedShortCutItem != nil {
+             _ = handleShortCutItem(shortcutItem: savedShortCutItem)
+        }
+        
         // Called during biometric authentication or data migration?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let isMigratingData = (scene as? UIWindowScene)?.topMostViewController() is DataMigrationViewController
         if appDelegate.isAuthenticatingWithBiometrics || isMigratingData || AppVars.shared.isMigrationRunning { return }
-
+        
         // Request passcode if necessary
         if AppVars.shared.isAppUnlocked == false {
             // Loop over all scenes
@@ -248,18 +268,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             return
         }
-
+        
         // Login/relogin and resume uploads
         loginOrReloginAndResumeUploads()
     }
     
-
+    
     // MARK: - Transitioning to the Background
     func sceneWillResignActive(_ scene: UIScene) {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene will resign active.")
         // Called when the scene is about to resign the active state and stop responding to user events.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
-
+        
         // Called during biometric authentication?
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         if appDelegate.isAuthenticatingWithBiometrics { return }
@@ -294,42 +314,75 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Remember to not ask for passcode
             AppVars.shared.isAppUnlocked = true
         }
+        
+        // Prepare Home screen quick actions
+        var quickActions: [UIApplicationShortcutItem] = []
+        var albumIDs: Set<Int32> = []
+        if #available(iOS 26, *) {
+            UIApplication.shared.connectedScenes.forEach { scene in
+                if let window = (scene.delegate as? SceneDelegate)?.window,
+                   let rootVC = window.windowScene?.rootViewController() {
+                    let children = (rootVC as? UINavigationController)?.viewControllers ?? []
+                    albumIDs.formUnion(children.compactMap({ $0 as? AlbumViewController}).map({ $0.categoryId }))
+                }
+            }
+        }
+        if albumIDs.contains(pwgSmartAlbum.favorites.rawValue) == false {
+            quickActions.append(contentsOf: [
+                UIApplicationShortcutItem(type: ActionType.showFavoritesAction.rawValue,
+                                          localizedTitle: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
+                                          localizedSubtitle: nil,
+                                          icon: UIApplicationShortcutIcon(systemImageName: "heart"))
+            ])
+        }
+        if albumIDs.contains(pwgSmartAlbum.recent.rawValue) == false {
+            quickActions.append(contentsOf: [
+                UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
+                                          localizedTitle: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
+                                          localizedSubtitle: nil,
+                                          icon: UIApplicationShortcutIcon(systemImageName: "clock"))
+                ])
+        }
+        UIApplication.shared.shortcutItems = quickActions
     }
-
+    
     func sceneDidEnterBackground(_ scene: UIScene) {
         debugPrint("••> \(scene.session.persistentIdentifier): Scene did enter background.")
         // Called when the scene is running in the background and is no longer onscreen.
         // Use this method to save data, release shared resources, and store enough scene-specific state information to restore the scene back to its current state.
-
+        
         // NOP if at least another scene is active in the foreground
         let connectedScenes = UIApplication.shared.connectedScenes
         if connectedScenes.filter({$0.activationState == .foregroundActive}).count > 0 { return }
-
+        
         // Remember to ask for passcode or not
         AppVars.shared.isAppUnlocked = !AppVars.shared.isAppLockActive
-
+        
         // Should we save changes in cache and schedule background tasks?
         if AppVars.shared.isMigrationRunning == false {
             // Save changes in the app's managed object context
             mainContext.saveIfNeeded()
         }
-
+        
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
         if NetworkVars.shared.usesUploadAsync {
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             appDelegate?.scheduleNextUpload()
         }
-
+        
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         appDelegate?.cleanUpTemporaryDirectory(immediately: false)
-
+        
         // Flag used to prevent background tasks from running when the app is active
         AppVars.shared.applicationIsActive = false
+
+        // Reset list of albums being fetched
+        AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
     }
-
-
+    
+    
     // MARK: - Privacy & Passcode
     func addPrivacyProtection() {
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene shows privacy protection window.")
@@ -350,6 +403,74 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         window?.addSubview(privacyView!)
+    }
+    
+    
+    // MARK: - Application Shortcut Support
+    /** Called when the user activates the application by selecting a shortcut on the Home Screen,
+        and the window scene is already connected.
+     */
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
+        let handled = handleShortCutItem(shortcutItem: shortcutItem)
+        completionHandler(handled)
+    }
+    
+    func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        // NOP in absence of user session
+        if let topMostVC = window?.windowScene?.topMostViewController(),
+           topMostVC is LoginViewController {
+            return true
+        }
+        
+        // Dismiss image or settings view controllers if needed
+        dismissNonAlbumViewControllers()
+
+        // Load the requested view controller
+        if let actionTypeValue = ActionType(rawValue: shortcutItem.type) {
+            switch actionTypeValue {
+            case .showFavoritesAction:
+
+                // The root view controller should be the AlbumNavigationController
+                if let navController = window?.rootViewController as? AlbumNavigationController {
+                    // Return to root view controller
+                    navController.popToRootViewController(animated: false)
+                    
+                    // Check that an album of favorites exists in cache (create it if necessary)
+                    guard let albumVC = navController.viewControllers.first as? AlbumViewController,
+                          let _ = albumVC.albumProvider.getAlbum(ofUser: albumVC.user, withId: pwgSmartAlbum.favorites.rawValue)
+                    else { return false }
+                    
+                    // Present favorite images
+                    let storyboard = UIStoryboard(name: "AlbumViewController", bundle: nil)
+                    guard let favoritesVC = storyboard.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+                    else { preconditionFailure("Could not load AlbumViewController") }
+                    favoritesVC.categoryId = pwgSmartAlbum.favorites.rawValue
+                    navController.pushViewController(favoritesVC, animated: false)
+                }
+            case .showRecentPhotosAction:
+                // The root view controller should be the AlbumNavigationController
+                if let navController = window?.rootViewController as? AlbumNavigationController {
+                    // Return to root view controller
+                    navController.popToRootViewController(animated: false)
+                    
+                    // Present recent images
+                    guard let albumVC = navController.viewControllers.first as? AlbumViewController
+                    else { return false }
+                    albumVC.discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
+                }
+            }
+        }
+        return true
+    }
+    
+    private func dismissNonAlbumViewControllers() {
+        if let topMostVC = window?.windowScene?.topMostViewController(),
+           (topMostVC is AlbumViewController) == false {
+            topMostVC.dismiss(animated: false) {
+                self.dismissNonAlbumViewControllers()
+            }
+        }
     }
 }
 

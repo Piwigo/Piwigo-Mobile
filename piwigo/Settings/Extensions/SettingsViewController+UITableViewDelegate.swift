@@ -415,8 +415,8 @@ extension SettingsViewController: UITableViewDelegate
         // MARK: Information
         case .about /* About — Informations */:
             switch indexPath.row {
-            case 0 /* Open @piwigo on Twitter */:
-                if let url = URL(string: NSLocalizedString("settings_twitterURL", comment: "https://twitter.com/piwigo")) {
+            case 0 /* Open piwigo.org webpage */:
+                if let url = URL(string: NSLocalizedString("settings_pwgURL", comment: "https://piwigo.org")) {
                     UIApplication.shared.open(url)
                 }
             case 1 /* Open Piwigo App Store page for rating */:

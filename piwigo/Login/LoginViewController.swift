@@ -100,6 +100,7 @@ class LoginViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
@@ -189,6 +190,7 @@ class LoginViewController: UIViewController {
     
     
     // MARK: - Login business
+    @MainActor
     @objc func launchLogin() {
         // User pressed "Login"
         view.endEditing(true)
@@ -233,6 +235,7 @@ class LoginViewController: UIViewController {
         requestServerMethods()
     }
     
+    @MainActor
     func requestServerMethods() {
         // Collect list of methods supplied by Piwigo server
         PwgSession.requestServerMethods { [self] in
@@ -263,6 +266,7 @@ class LoginViewController: UIViewController {
         }
     }
 
+    @MainActor
     func requestCertificateApproval(afterError error: Error?) {
         let title = NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private")
         let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.shared.certificateInformation)"
@@ -292,6 +296,7 @@ class LoginViewController: UIViewController {
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, acceptAction])
     }
 
+    @MainActor
     func requestHttpCredentials(afterError error: Error?) {
         let username = NetworkVars.shared.httpUsername
         let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: username)
@@ -319,6 +324,7 @@ class LoginViewController: UIViewController {
         }
     }
 
+    @MainActor
     func requestNonSecuredAccess(afterError error: Error?) {
         let title = NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed")
         let message = NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
@@ -351,6 +357,7 @@ class LoginViewController: UIViewController {
         requestServerMethods()
     }
 
+    @MainActor
     func performLogin() {
         // Perform login if username exists
         let username = userTextField.text ?? ""
@@ -367,18 +374,20 @@ class LoginViewController: UIViewController {
                 // Create/update User account in persistent cache, create Server if necessary.
                 // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
                 DispatchQueue.main.async { [self] in
+                    // Create User instance if needed
                     let _ = self.userProvider.getUserAccount(inContext: mainContext,
                                                              withUsername: username, afterUpdate: true)
+                    // First determine user rights if Community extension installed
+                    self.getCommunityStatus()
                 }
-
-                // First determine user rights if Community extension installed
-                getCommunityStatus()
             } failure: { [self] error in
                 // Don't keep unaccepted credentials
                 KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
                                                  account: username)
-                // Login request failed
-                logging(inConnectionError: error)
+                DispatchQueue.main.async { [self] in
+                    // Login request failed
+                    logging(inConnectionError: error)
+                }
             }
         } else {
             // Reset keychain and credentials
@@ -388,17 +397,15 @@ class LoginViewController: UIViewController {
 
             // Create/update guest account in persistent cache, create Server if necessary.
             // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            DispatchQueue.main.async { [self] in
-                let _ = self.userProvider.getUserAccount(inContext: mainContext,
-                                                         withUsername: username, afterUpdate: true)
-            }
-
+            let _ = self.userProvider.getUserAccount(inContext: mainContext,
+                                                     withUsername: username, afterUpdate: true)
             // Check Piwigo version, get token, available sizes, etc.
-            getCommunityStatus()
+            self.getCommunityStatus()
         }
     }
 
     // Determine true user rights when Community extension installed
+    @MainActor
     func getCommunityStatus() {
         // Community plugin installed?
         if NetworkVars.shared.usesCommunityPluginV29 {
@@ -408,17 +415,19 @@ class LoginViewController: UIViewController {
             // Community extension installed
             PwgSession.shared.communityGetStatus { [self] in
                 // Update user account in persistent cache
-                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                // Performed in main thread as to avoid concurrency issue with AlbumViewController initialisation
                 DispatchQueue.main.async { [self] in
+                    // Create User instance if needed
                     let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
+                    // Check Piwigo version, get token, available sizes, etc.
+                    self.getSessionStatus()
                 }
-
-                // Check Piwigo version, get token, available sizes, etc.
-                getSessionStatus()
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
                 isAlreadyTryingToLogin = false
-                logging(inConnectionError: error)
+                DispatchQueue.main.async { [self] in
+                    self.logging(inConnectionError: error)
+                }
             }
         } else {
             // Community extension not installed
@@ -428,40 +437,40 @@ class LoginViewController: UIViewController {
     }
 
     // Check Piwigo version, get token, available sizes, etc.
+    @MainActor
     func getSessionStatus() {
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
         PwgSession.shared.sessionGetStatus() { [self] _ in
-            // Is the Piwigo server incompatible?
-            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                // Piwigo update required ► Close login or re-login view and inform user
-                isAlreadyTryingToLogin = false
-                // Display error message
-                logging(inConnectionError: PwgSessionError.incompatiblePwgVersion)
-                return
-            }
-            
-            // Should this server be updated?
-            let now: Double = Date().timeIntervalSinceReferenceDate
-            if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
-               NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
-                // Store date of last upgrade request
-                NetworkVars.shared.dateOfLastUpdateRequest = now
-
-                // Piwigo server update recommanded ► Inform user
-                DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async { [self] in
+                // Is the Piwigo server incompatible?
+                if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
+                    // Piwigo update required ► Close login or re-login view and inform user
+                    isAlreadyTryingToLogin = false
+                    // Display error message
+                    logging(inConnectionError: PwgSessionError.incompatiblePwgVersion)
+                    return
+                }
+                
+                // Should this server be updated?
+                let now: Double = Date().timeIntervalSinceReferenceDate
+                if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
+                   NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
+                    // Store date of last upgrade request
+                    NetworkVars.shared.dateOfLastUpdateRequest = now
+                    
+                    // Piwigo server update recommanded ► Inform user
                     hideHUD() {
                         self.dismissPiwigoError(withTitle: NSLocalizedString("serverVersionOld_title", comment: "Server Update Available"), message: String.localizedStringWithFormat(NSLocalizedString("serverVersionOld_message", comment: "Your Piwigo server version is %@. Please ask the administrator to update it."), NetworkVars.shared.pwgVersion), completion: {
                                 // Piwigo server version is still appropriate.
                                 self.launchApp()
                         })
                     }
+                } else {
+                    // Piwigo server version is appropriate.
+                    self.launchApp()
                 }
-            }
-            else {
-                // Piwigo server version is appropriate.
-                launchApp()
             }
         } failure: { [self] error in
             isAlreadyTryingToLogin = false
@@ -470,30 +479,30 @@ class LoginViewController: UIViewController {
         }
     }
 
+    @MainActor
     func launchApp() {
         isAlreadyTryingToLogin = false
-        // Hide HUD and present root album
-        DispatchQueue.main.async { [self] in
-            // Update user account in persistent cache
-            // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
-            let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
-            // Check image size availabilities
-            LoginUtilities.checkAvailableSizes()
+        // Update user account in persistent cache
+        // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
+        let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
+        // Check image size availabilities
+        LoginUtilities.checkAvailableSizes()
+
+        // Present Album/Images view and resume uploads
+        guard let window = self.view.window,
+              let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        else { return }
+        hideHUD() {
             // Present Album/Images view and resume uploads
-            guard let window = self.view.window,
-                  let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            else { return }
-            hideHUD() {
-                // Present Album/Images view and resume uploads
-                appDelegate.loadNavigation(in: window)
-            }
+            appDelegate.loadNavigation(in: window)
         }
     }
     
     
     // MARK: - HUD methods
+    @MainActor
     @objc func cancelLoggingIn() {
         // Update login HUD
         updateHUD(detail: NSLocalizedString("internetCancellingConnection_button", comment: "Cancelling Connection…"))
@@ -504,6 +513,7 @@ class LoginViewController: UIViewController {
         }
     }
 
+    @MainActor
     func logging(inConnectionError error: Error?) {
         // Do not present error message when executing background task
         if UploadManager.shared.isExecutingBackgroundUploadTask {
@@ -544,6 +554,7 @@ class LoginViewController: UIViewController {
                   inMode: .text)
     }
     
+    @MainActor
     @objc func suggestPwdRetrieval() {
         // Hide HUD
         hideLoading()
@@ -564,6 +575,7 @@ class LoginViewController: UIViewController {
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, retrieveAction])
     }
 
+    @MainActor
     @objc func hideLoading() {
         // Hide and remove login HUD
         hideHUD() { }
@@ -644,6 +656,7 @@ class LoginViewController: UIViewController {
         return true
     }
 
+    @MainActor
     func showIncorrectWebAddressAlert() {
         // The URL is not correct —> inform user
         let defaultAction = UIAlertAction(
@@ -653,6 +666,7 @@ class LoginViewController: UIViewController {
                            message: NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address."), actions: [defaultAction])
     }
 
+    @MainActor
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }

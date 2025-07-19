@@ -221,6 +221,7 @@ class SettingsViewController: UIViewController {
         }
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
@@ -444,7 +445,7 @@ class SettingsViewController: UIViewController {
             PwgSession.shared.sessionLogout {
                 // Close session
                 DispatchQueue.main.async { [self] in
-                    self.navigationController?.hideHUD {
+                    self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) {
                         ClearCache.closeSession()
                     }
                 }

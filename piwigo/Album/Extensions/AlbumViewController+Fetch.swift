@@ -242,36 +242,35 @@ extension AlbumViewController
     
 
     // MARK: - Error Management
+    @MainActor
     private func showError(_ error: Error?) {
-        DispatchQueue.main.async { [self] in
-            guard let error = error else {
-                navigationController?.showHUD(
-                    withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
-                    detail: " ", minWidth: 200,
-                    buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                    buttonTarget: self, buttonSelector: #selector(hideLoading),
-                    inMode: .text)
-                return
-            }
-            
-            // Returns to login view only when credentials are rejected
-            if [NSURLErrorUserAuthenticationRequired, 401, 403].contains((error as NSError).code) ||
-                NetworkVars.shared.didFailHTTPauthentication {
-                // Invalid Piwigo or HTTP credentials
-                navigationController?.showHUD(
-                    withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
-                    detail: error.localizedDescription, minWidth: 240,
-                    buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                    buttonTarget: self, buttonSelector: #selector(hideLoading),
-                    inMode: .text)
-            }
-            else if let err = error as? PwgSessionError, 
-                    err == PwgSessionError.missingParameter {
-                // Hide HUD
-                navigationController?.hideHUD() { [self] in
-                    // End refreshing if needed
-                    self.collectionView?.refreshControl?.endRefreshing()
-                }
+        guard let error = error else {
+            navigationController?.showHUD(
+                withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
+                detail: " ", minWidth: 200,
+                buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+                buttonTarget: self, buttonSelector: #selector(hideLoading),
+                inMode: .text)
+            return
+        }
+        
+        // Returns to login view only when credentials are rejected
+        if [NSURLErrorUserAuthenticationRequired, 401, 403].contains((error as NSError).code) ||
+            NetworkVars.shared.didFailHTTPauthentication {
+            // Invalid Piwigo or HTTP credentials
+            navigationController?.showHUD(
+                withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
+                detail: error.localizedDescription, minWidth: 240,
+                buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+                buttonTarget: self, buttonSelector: #selector(hideLoading),
+                inMode: .text)
+        }
+        else if let err = error as? PwgSessionError,
+                err == PwgSessionError.missingParameter {
+            // Hide HUD
+            navigationController?.hideHUD() { [self] in
+                // End refreshing if needed
+                self.collectionView?.refreshControl?.endRefreshing()
             }
         }
     }

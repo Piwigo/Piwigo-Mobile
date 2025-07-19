@@ -1,0 +1,612 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "compatibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo متوافق أيضًا مع الملحقات التالية:\n-Community: السماح للمستخدمين الذين لا يتوفرون على صلاحية الأدمين بإضافة الصور\n- piwigo-videojs: إضافة دعم الفيديو"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo er også kompatibel med følgende filtypenavne:\n- Community: tillader ikke-admin brugere at tilføje foto\n- rotateImage: giver dig mulighed for at rotere billeder\n- piwigo-videojs: tilføjer support for videofiler"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo ist auch mit den folgenden Plugins kompatibel:\n- Community: ermöglicht es Benutzern, Alben zu erstellen und Fotos hinzuzufügen\n- rotateImage: ermöglicht das Drehen von Bildern\n- piwigo-videojs: fügt Videounterstützung hinzu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo is also compatible with the following plugins:\n- Community: allows users to create albums and add photos\n- rotateImage: enables you to rotate images\n- piwigo-videojs: adds video support"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo también es compatible con los siguientes plugins:\n- Comunidad: permite a los usuarios crear álbumes y añadir fotos\n- rotateImage: permite rotar imágenes\n- piwigo-videojs: añade soporte de vídeo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo est également compatible avec les plugins suivants :\n- Community : permet aux utilisateurs de créer des albums et d'ajouter des photos\n- rotateImage : vous permet de faire pivoter des images\n- piwigo-videojs : ajoute le support vidéo"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Piwigo a következő bővítményekkel is kompatibilis:\n- Community: nem-admin felhasználók is tölthetnek fel képeket\n- rotateImage: lehetővé teszi a képek elforgatását\n- piwigo-videojs: videófájlok támogatása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo juga kompatibel dengan ekstensi berikut ini:\n- Community: mengijinkan pengguna selain admin menambahkan foto\n- piwigo-videojs: menambah dukungan video"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo è anche compatibile con le seguenti estensioni:\n- Community: consente agli utenti non amministratori di aggiungere foto\n- rotateImage: consente di ruotare le immagini\n- piwigo-videojs: aggiunge il supporto video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigoは次の拡張とも互換性があります:\n- Community: 管理者以外のユーザに写真の追加を許可します\n- rotateImage: 画像を回転できます\n- piwigo-videojs: ビデオのサポートを追加します"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo is ook compatibel met de volgende extensies:\n- Community: staat toe dat niet-beheerder-gebruikers foto's toevoegen \n- rotateImage: hiermee kunt u afbeeldingen roteren\n- piwigo-videos: voegt video ondersteuning toe"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo jest również kompatybilny z następującymi rozszerzeniami:\n- Community: umożliwia dodawanie zdjęć użytkownikom bez uprawnień administratora\n- rotateImage: umożliwia obracanie obrazów\n- piwigo-videojs: dodaje obsługę wideo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo также совместим со следующими расширениями:\n- Сообщество: позволяет непривелегирированным пользователям добавлять фотографии\n- rotateImage: позволяет вращать изображения\n- piwigo-videojs: добавляет поддержку видео"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo är också kompatibel med följande tillägg:\n- Community: tillåter icke-administratörsanvändare att lägga till bilder\n- rotateImage: låter dig rotera bilder\n- piwigo-videos: lägger till stöd för video"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo兼容以下扩展：\n- Community插件：允许非管理员用户添加照片\n- rotateImage插件：可以旋转图像\n- piwigo-videojs插件：使Piwigo支持视频功能"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo同時支援下列擴充功能:\n- community: 允許非管理員用戶上傳照片\n- rotateImage：使您能夠旋轉影像\n- piwigo-videojs: 新增影片支援"
+          }
+        }
+      }
+    },
+    "description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo للأيفون / وآي باد / وآي بود ملاحق برنامج معرض الصور في سحابة بيويغو (v2.10 أو أعلى):\n\n• تصفح ألبوماتك ،\n• إنشاء وحذف ونقل وإعادة تسمية الألبومات ،\n• بحث وتحرير وتنزيل وحذف الصور ومقاطع الفيديو ،\n• نسخ ونقل الصور ومقاطع الفيديو بين الألبومات ،\n• تعيين صورة كصورة ألبوم ،\n• تحميل الصور:\n  ء من حجم ونوعية قابلة للتعديل،\n  ء مع الوصف، والمؤلف، والعلامات، والبيانات الوصفية EXIF ،\n  ء مع أو بدون بيانات التعريف GPS.\n• تحميل أشرطة الفيديو،\n• مشاركة الصور ومقاطع الفيديو.\n\nبيويغو يخول لك لإنشاء معرض الصور الخاصة بك على شبكة الإنترنت. ويشمل العديد من الميزات القوية مثل الألبومات، والعلامات، وتحديد الموقع الجغرافي، والعديد من مستويات التخصيص، وتحميل من قبل الزوار، والخصوصية، والتقويم أو الإحصاأت.\n\nPiwigo مجاني ومفتوح المصدر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo til iPhone/iPad/iPod supplerer fotobiblioteksporgrammet i skyen Piwigo (v2.10 eller højere): \n\n• Gennemse dine album,\n• Opret, slette, flytte og omdøbe album,\n• Søg, redigere, hente og slette fotos og videoer,\n• Kopier og flyt fotos og videoer mellem album,\n• Tilføj og fjern fotos og videoer fra dine favoritter,\n• Angive et foto som albumbilledet,\n• Upload fotos og videoer:\n - modificer størrelse og kvalitet, \n - med beskrivelse, forfatter, tags, EXIF metadata, \n - med eller uden GPS-metadata. \n• Upload videoer,\n• Del billeder og videoer.\n\nPiwigo giver dig mulighed for at oprette dit eget galleri på nettet. Det indeholder mange kraftfulde funktioner såsom album, tags og Geolokalisering mange niveauer af tilpasning, upload af besøgende, privatlivets fred, kalender eller statistikker. \n\nPiwigo er gratis og opensource."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo für iPhone/iPad/iPod ergänzt die Fotogalerie-Software in der Cloud Piwigo (v2.10 oder höher):\n\n• Durchsuchen Sie Ihre Alben,\n• Alben erstellen, löschen, verschieben und umbenennen,\n• Fotos und Videos suchen, bearbeiten, herunterladen und löschen,\n• Kopieren und Verschieben von Fotos und Videos zwischen Alben,\n• Hinzufügen und Entfernen von Fotos und Videos aus Ihren Favoriten,\n• Ein Foto als Albumbild festlegen,\n• Hochladen von Fotos und Videos:\n - mit veränderbarer Größe und Qualität,\n - mit Beschreibung, Autor, Tags, EXIF-Metadaten,\n - mit oder ohne GPS-Metadaten.\n• Fotos und Videos teilen.\n\nPiwigo ermöglicht es Ihnen, Ihre eigene Fotogalerie im Internet zu erstellen. Es enthält viele leistungsstarke Funktionen wie Alben, Tags, Geolokalisierung, viele Ebenen der Anpassung, Upload durch Besucher, Datenschutz, Kalender oder Statistiken.\n\nPiwigo ist kostenlos und quelloffen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.10 or higher):\n\n• Browse your albums,\n• Create, delete, move and rename albums,\n• Search, edit, download and delete photos and videos,\n• Copy and move photos and videos between albums,\n• Add and remove photos and videos from your favorites,\n• Set a photo as album image,\n• Upload photos and videos:\n - of modifiable size and quality,\n - with description, author, tags, EXIF metadata,\n - with or without GPS metadata.\n• Share photos and videos.\n\nPiwigo empowers you to create your own photo gallery on the web. It includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.\n\nPiwigo is free and opensource."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo para iPhone / iPad / iPod complementa el software de la galería de fotos en la nube Piwigo (v2.10 o superior):\n\n• Explore sus álbumes,\n• Crear, eliminar, mover y renombrar álbumes,\n• Buscar, editar, descargar y eliminar fotos y videos,\n• Copie y mueva fotos y videos entre álbumes,\n• Añadir y eliminar fotos y vídeos de los favoritos,\n• Establecer una foto como imagen del álbum,\n• Subir fotos:\n - de tamaño y calidad modificables,\n - con descripción, autor, etiquetas, metadatos EXIF,\n - Con o sin metadatos GPS.\n• Subir videos,\n• Compartir fotos y videos.\n\nPiwigo te permite crear tu propia galería de fotos en la web. Incluye muchas funciones potentes como álbumes, etiquetas, geolocalización, muchos niveles de personalización, carga por visitantes, privacidad, calendario o estadísticas.\n\nPiwigo es gratis y de código abierto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo pour iPhone/iPad/iPod complète le logiciel de galerie photos dans le cloud Piwigo (v2.10 ou supérieur) :\n\n• Visionner ses albums,\n• Créer, effacer, déplacer et renommer des albums,\n• Chercher, éditer, télécharger et effacer des photos et des vidéos,\n• Copier et déplacer des photos et des vidéos entre albums,\n• Ajouter et supprimer des photos et vidéos de vos favoris,\n• Définir une photo comme image d'album,\n• Télécharger des photos et des vidéos sur le serveur :\n - de taille et qualité modifiables,\n - avec description, auteur, tags, données EXIF,\n - avec ou sans données GPS.\n• Partager des photos et des vidéos.\n\nPiwigo vous permet de créer votre propre galerie photo sur le web. Piwigo inclut de nombreuses fonctionnalités telles que les albums, les tags, la géolocalisation, plusieurs niveaux de personnalisation, l'envoi de photos par les visiteurs, la confidentialité des photos, un calendrier et des statistiques.\n\nPiwigo est libre et gratuit."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Piwigo for iPhone/iPad/iPod a Piwigo (v2.10 vagy újabb) cloud fotógaléria-szoftver kiegészítője.\n\n• Böngészhetsz az albumjaidban,\n• Létrehozhatsz, törölhetsz, mozgathatsz és átnevezhetsz albumokat,\n• Kereshetsz, szerkeszthetsz, letölthetsz és törölhetsz fotókat és videókat,\n• Másolhatsz, mozgathatsz fotókat és videókat albumok között,\n• Kedvenc fotók és videók kezelése,\n• Beállíthatod albumok nyitóképét,\n• Feltölthetsz fotókat és videókat:\n - változtatható méretben és minőségben,\n - megjegyzésekkel, szerzői információval, címkékkel és EXIF adatokkal,\n - GPS adatokkal, vagy akár nélkülük is.\n• Megoszthatsz fotókat és videókat.\n\nA Piwigoval saját fotógalériát hozhatsz létre a weben. Számos hatékony funkciót tartalmaz, mint például albumok, címkék, helymeghatározás, több szintű testreszabhatóság, látogatók általi feltöltések, adatvédelem, naptár és statisztikák.\n\nA Piwigo ingyenes és nyílt forráskódú."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo untuk iPhone/iPad/iPod melengkapi perangkat lunak galeri foto pada komputasi awan Piwigo (v2.10 atau lebih tinggi):\n\n• Jelajahi album,\n• Buat, hapus, pindahkan dan ganti nama album,\n• Cari, dit, unduh dan hapus foto & video,\n• Salin dan pindahkan foto dan video antar album,\n• Atur foto sebagai gambar album,\n• Unggah foto:\n - dengan memodifikasi ukuran dan kualitas,\n - dengan deskripsi, penulis, tag, metadata EXIF,\n - dengan atau tanpa metadata GPS.\n• Unggah video,\n• Bagikan foto dan video.\n\nPiwigo memberdayakan Anda untuk membuat galeri foto Anda sendiri di web. Ini mencakup banyak fitur hebat seperti album, tag, geolokasi, banyak tingkat penyesuaian, unggah oleh pengunjung, privasi, kalender atau statistik.\n\nPiwigo gratis dan sumber-terbuka."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo per iPhone/iPad/iPod integra il software di galleria fotografica nel cloud Piwigo (v2.10 o successivo):\n\n• Sfoglia i tuoi album,\n• Crea, elimina, sposta e rinomina gli album,\n• Ricerca, modifica, scarica ed elimina foto e video,\n• Copia e sposta foto e video tra gli album,\n• Aggiungi e rimuovi foto e video dai tuoi preferiti,\n• Imposta una foto come immagine dell'album,\n- Caricare foto e video:\n  - di dimensioni e qualità modificabili,\n  - con descrizione, autore, tag, metadati EXIF,\n  - con o senza metadati GPS.\n• Condividere foto e video.\n\nPiwigo ti consente di creare la tua galleria fotografica sul web. Include molte funzioni potenti come album, tag, geolocalizzazione, molti livelli di personalizzazione, caricamento da parte dei visitatori, privacy, calendario o statistiche.\n\nPiwigo è gratuito e opensource."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo for iPhone/iPad/iPodは、クラウド版Piwigo (v2.10以降) 内の写真ギャラリーソフトウェアを補います：\n\n• アルバムの閲覧。\n• アルバムの作成、削除、移動、名前の変更。\n• 写真やビデオの検索、編集、ダウンロード、削除。\n• アルバム間の写真やビデオのコピーと移動。\n• お気に入りから写真やビデオを追加、削除。\n• 写真をアルバムの画像として設定する。\n• 写真やビデオのアップロード。\n - サイズや画質を変更することができます。\n - 説明、著者、タグ、EXIFメタデータ付き。\n - GPSメタデータ付きまたはなし。\n• 写真やビデオを共有する。\n\nPiwigoを使えば自分の写真ギャラリーをweb上に構築できるようになります。Piwigoにはアルバムやタグ、地理情報、多くのレベルのカスタマイズ、訪問者によるアップロード、プライバシー、カレンダーや統計などの強力な機能があります。\n\nPiwigoは無料のオープンソースです。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo voor iPhone / iPad / iPod vormt een aanvulling op de fotogalerij-software in de cloud Piwigo (v2.10 of hoger):\n\n• Blader door jouw albums,\n• Albums maken, verwijderen, verplaatsen en hernoemen,\n• Zoek, bewerk, download en verwijder foto's en video's,\n• Kopieer en verplaats foto's en video's tussen albums,\n• Foto's toevoegen aan en verwijderen uit favorieten,\n• Een foto instellen als albumfoto,\n• Foto's uploaden:\n  - van aanpasbare grootte en kwaliteit,\n  - met beschrijving, fotograaf, labels, EXIF-metadata,\n  - met of zonder GPS-metadata.\n• Upload video's.\n\nPiwigo stelt je in staat om jouw eigen fotogalerij op het web te maken. Het bevat veel krachtige functies zoals albums, labels, geolocatie, vele niveaus van aanpassing, uploaden door bezoekers, privacy, kalender of statistieken.\n\nPiwigo is gratis en opensource."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo dla urządzeń iPhone/iPad/iPod obsługuje oprogramowanie galerii zdjęć w chmurze Piwigo (w wersji 2.10 lub wyższej). Aplikacja pozwala na:\n\n• Przeglądanie albumów.\n• Tworzenie, usuwanie, przenoszenie i zmianę nazw albumów.\n• Wyszukiwanie, edycję, pobieranie i usuwanie zdjęć i filmów.\n• Kopiowanie i przenoszenie zdjęć i filmów między albumami.\n• Dodawanie i usuwanie zdjęć i filmów z Twoich Ulubionych.\n• Ustawianie zdjęcia jako zdjęcia albumu.\n• Przesyłanie zdjęć i filmów:\n  - z możliwością modyfikacji rozmiaru i jakości,\n  - z opisem, autorem, znacznikami, metadanymi EXIF,\n  - z metadanymi GPS lub bez nich.\n• Udostępnianie zdjęć i filmów.\n\nPiwigo umożliwia Ci tworzenie własnej galerii zdjęć w sieci. Zawiera wiele potężnych funkcji, takich jak albumy, znaczniki, geolokalizacja, wiele poziomów personalizacji, przesyłanie przez gości, prywatność, kalendarz czy statystyki.\n\nPiwigo jest oprogramowaniem bezpłatnym i otwartym."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo для iPhone/iPad/iPod добавляет к облачной галерее фотографий Piwigo (v2.10 или выше) следующие возможности:\n\n• Просмотр ваши альбомов,\n• Создание, удаление, перемещение и переименование альбомов,\n• Поиск, редактирование, скачивание и удаление фотографий и видео,\n• Копирование и перемещение фотографий и видео между альбомами,\n• Добавление и удаление фото и видео из избранного,\n• Установка фотографии в качестве обложки альбома,\n• Загрузка фотографий и видео:\n - изменяемого размера и качества,\n - с описанием, автором, тегами, метаданными EXIF,\n - с или без метаданных GPS.\n• Делитесь фотографиями и видео.\n\nPiwigo дает вам возможность создать свою собственную фотогалерею в Интернете. Он включает в себя множество мощных функций, таких как альбомы, теги, геолокация, различные уровни настройки, загрузка посетителями, конфиденциальность, календарь и статистика.\n\nPiwigo является бесплатным и открытым."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v2.10 eller högre):\n\n• Bläddra bland dina album,\n• Skapa, radera, flytta och byt namn på album,\n• Sök, redigera, ladda ner och ta bort bilder och videoklipp,\n• Kopiera och flytta foton och videoklipp mellan album,\n• Lägg till och ta bort foton och videor från dina favoriter,\n• Ställ in en bild som albumbild,\n• Ladda upp bilder:\n  - av modifierbar storlek och kvalitet\n  - med beskrivning, författare, taggar, EXIF-metadata,\n  - med eller utan GPS-metadata\n• Ladda upp videoklipp,\n• Dela bilder och videoklipp.\n\nPiwigo ger dig möjlighet att skapa ditt eget bildgalleri på webben. Den innehåller många kraftfulla funktioner som album, taggar, geolocation, många nivåer av anpassning, uppladdning av besökare, integritet, kalender eller statistik.\n\nPiwigo är gratis och opensource."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS版Piwigo支持2.10版本以上的Piwigo云端相册软件，可以在iPhone/iPad/iPod端实现以下功能：\n\n• 浏览相册中的图片\n• 创建、删除、移动、重命名相册\n• 搜索、编辑、下载、删除照片或视频\n• 在相册之间复制、移动照片或视频\n• 从您的收藏夹中添加和删除照片和视频\n• 将照片设置为相册封面\n• 上传照片，并支持以下扩展功能：\n - 自定义相片大小与质量\n - 添加描述、作者、标签或附带EXIF信息\n - 选择是否上传GPS信息\n• 上传视频\n• 分享你所上传的图片或视频\n\nPiwigo能帮助你简单创建属于自己的在线图库，支持相册、标签、地理定位、界面个性化，并在多用户的基础上构建了完善的权限管理机制，此外还支持按日期分类图片与图片浏览量统计等功能。\n\n最重要的是：Piwigo不仅免费，还是开放源代码软件！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "供iPhone/iPad/iPod使用的Piwigo雲端相簿軟體，支援Piwigo雲端主機(v2.10以上) 並提供下列功能:\n\n• 檢視您的相簿，\n• 建立，刪除，移動以及重新命名相簿，\n• 搜尋，編輯，下載以及刪除照片及影片，\n• 於相簿之間複製並移動照片及影片，\n• 增加或移除照片及影片至您的最愛，\n• 設定照片為相簿封面，\n• 上傳照片及影片:\n - 以可調整的大小及品質，\n - 附上備註，作者，標籤及EXIF中繼資料，\n - 選擇是否上傳GPS資訊。\n• 分享照片及影片。\n\nPiwigo讓您可以在網路中建立自己的照片圖庫。它包含許多強大的功能像是相簿，標籤，地理位置，多層面的自訂，訪客上傳，隱私及權限管理，行事曆及數據統計。\n\nPiwigo是免費及開放原始碼的軟體。"
+          }
+        }
+      }
+    },
+    "feedback" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ردود أو أسئلة؟\nتقدم بيويغو الدعم المجاني في %@ ونود أن نسمع منك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback eller spørgsmål? \nPiwigo tilbyder gratis support på %@ og vi vil gerne høre fra dig."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback oder Fragen?\nPiwigo bietet kostenlosen Support über %@, wir würden uns freuen von Dir zu hören."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback or questions ?\nPiwigo offers free support at %@ and we'd love to hear from you."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Comentarios o preguntas?\nPiwigo ofrece soporte gratuito en %@ y nos encantaría saber de usted."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des suggestions ou des questions ?\nPiwigo offre un service technique gratuit sur son forum : %@ et nous serons heureux de vous répondre."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visszajelzés vagy kérdések?\nA Piwigo ingyenes támogatást nyújt a %@ címen, írj nekünk!"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanggapan atau pertanyaan ?\nPiwigo menawarkan layanan gratis di %@ dan kami ingin mendengar kabar dari Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback o domande?\nPiwigo offre supporto gratuito a %@ e ci piacerebbe sentirti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィードバックや質問はありませんか？\nPiwigoは%@で自由な支援を提供していて、あなたからのご一報をお待ちしています。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback of vragen?\nPiwigo biedt gratis ondersteuning bij %@ en we horen graag van je."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opinie lub pytania? \nPiwigo oferuje bezpłatną pomoc w %@ i chcielibyśmy poznać Twoje zdanie."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратная связь и вопросы ?\nPiwigo предлагает бесплатную поддержку %@ и мы будем рады вас услышать."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Återkoppling eller frågor?\nPiwigo erbjuder gratis support på %@ och vi vill gärna höra från dig."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你在使用过程中遇到了问题，可以在 %@ 获取免费支持，我们非常乐意聆听你的反馈与意见。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任何意見或問題?\nPiwigo於 %@ 提供免費支援，我們非常樂意聽到您的意見及反應。"
+          }
+        }
+      }
+    },
+    "keywords" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo، السحابة، الألبوم، الصور، الفيديو، صورة، التحميل، التنزيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, foto, video, billede, upload, download"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, Album, Foto, Video, Foto, Upload, Download"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, photo, video, image, upload, download"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, nube de Internet, álbum, foto, video, imagen, subir, descargar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, photo, vidéo, image, télécharger"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Felhő, album, fotó, videó, kép, feltöltés, letöltés"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, foto, video, Gambar, meng-upload, download"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, foto, video, immagini, upload, download"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo、クラウド、アルバム、写真、ビデオ、画像、アップロード、ダウンロード"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, foto, video, beeld, uploaden, downloaden"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Cloud, album, zdjęcie, video, obraz, wysyłanie, pobieranie"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, Облако, альбом, фотография, видео, изображение, загрузка, скачивание"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, molnet, album, foto, video, bild, ladda upp, ladda ner"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, 云, 相册, 照片, 视频, 图像, 上传, 下载"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo, 雲端, 相簿, 照片, 影片, 圖片, 上傳, 下載"
+          }
+        }
+      }
+    },
+    "promotional_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مكتبة الصور سحابة بيويغو المجانية الخاصة بك في متناول اليد!"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo fotobiblioteket i skyen ved hånden!"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihre kostenlose Piwigo Cloud Foto-Bibliothek!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your free Piwigo cloud photo library at hand!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Tu biblioteca de fotos gratuita en la nube de Piwigo en tu mano!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre photothèque Piwigo gratuite à portée de main!"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az ingyenes Piwigo felhő-fotókönyvtár mindig kéznél van!"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Komputasi awan Piwigo yang gratis ada di tangan Anda!"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua libreria fotografica di Piwigo gratuita a portata di mano!"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたの自由なPiwigoクラウド写真ライブラリを手に！"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uw gratis Piwigo cloud fotobibliotheek bij de hand!"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoja biblioteka zdjęć w chmurze Piwigo pod ręką!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваша бесплатная облачная библиотека фотографий Piwigo под рукой!"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditt fria Piwigo bildbibliotek i molnet till hands!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是你掌上的Piwigo相册！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的免費Piwigo雲端相片圖庫就在手中!"
+          }
+        }
+      }
+    },
+    "subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صورك في السحابة الخاصة بك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine billeder i din Cloud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihre Fotos in Ihrer Cloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your photos in your Cloud"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus fotos en tu nube"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos photos dans votre Cloud"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotóid a saját felhődben"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto Anda dalam Cloud Anda"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le tue foto nel tuo Cloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラウド中にあるあなたの写真"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jouw foto's in jouw cloud"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoje zdjęcia w Twojej chmurze"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваши фотографии в Вашем Облаке"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina bilder i ditt Moln"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你存储于云端的照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儲存在您雲端的照片"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

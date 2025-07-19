@@ -12,6 +12,7 @@ import piwigoKit
 
 extension ImageViewController {
     // MARK: Navigation Bar & Toolbar
+    @MainActor
     func updateNavBar() {
         // Share button depends on Piwigo server version, user role and image data
         shareBarButton = getShareButton()
@@ -26,7 +27,7 @@ extension ImageViewController {
         }
     }
     
-    @available(iOS 14, *)
+    @available(iOS 14, *) @MainActor
     private func updateNavBarNew() {
         // Interface depends on device and orientation
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
@@ -112,6 +113,7 @@ extension ImageViewController {
         }
     }
     
+    @MainActor
     private func updateNavBarOld() {
         // Interface depends on device and orientation
         let orientation = UIApplication.shared.statusBarOrientation
@@ -146,6 +148,7 @@ extension ImageViewController {
         }
     }
     
+    @MainActor
     private func updateBarForStdUserOrGuest(for orientation: UIInterfaceOrientation) {
         if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
@@ -242,6 +245,7 @@ extension ImageViewController {
     
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
+    @MainActor
     func setEnableStateOfButtons(_ state: Bool) {
 //        debugPrint("••> \(state ? "Enable" : "Disable") buttons")
         actionBarButton?.isEnabled = state
@@ -256,6 +260,7 @@ extension ImageViewController {
 
 
     // MARK: - Title View
+    @MainActor
     func setTitleViewFromImageData() {
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))

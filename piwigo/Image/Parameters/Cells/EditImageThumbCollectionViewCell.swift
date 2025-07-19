@@ -57,6 +57,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background
         imageThumbnailView.backgroundColor = .piwigoColorBackground()
@@ -260,34 +261,40 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 else {
                     // Could not change the filename
                     debugPrint("••> setImageInfoForImageWithId(): no successful")
-                    self.renameImageFileError(PwgSessionError.unexpectedError, topViewController: topViewController)
+                    DispatchQueue.main.async {
+                        self.renameImageFileError(PwgSessionError.unexpectedError, topViewController: topViewController)
+                    }
                     return
                 }
             } catch let error {
                 // Data cannot be digested
-                self.renameImageFileError(error, topViewController: topViewController)
+                DispatchQueue.main.async {
+                    self.renameImageFileError(error, topViewController: topViewController)
+                }
             }
         } failure: { [self] error in
             /// - Network communication errors
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
-            self.renameImageFileError(error, topViewController: topViewController)
+            DispatchQueue.main.async {
+                self.renameImageFileError(error, topViewController: topViewController)
+            }
         }
     }
     
+    @MainActor
     private func renameImageFileError(_ error: Error, topViewController: UIViewController?) {
-        DispatchQueue.main.async {
-            topViewController?.hideHUD {
-                topViewController?.dismissPiwigoError(
-                    withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                    message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
-                    errorMessage: error.localizedDescription) { }
-            }
+        topViewController?.hideHUD {
+            topViewController?.dismissPiwigoError(
+                withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
+                message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
+                errorMessage: error.localizedDescription) { }
         }
     }
 
     
     // MARK: - Remove Image from Selection
+    @MainActor
     @IBAction func removeImage() {
         // Notify this deselection to parent view
         delegate?.didDeselectImage(withID: imageID)

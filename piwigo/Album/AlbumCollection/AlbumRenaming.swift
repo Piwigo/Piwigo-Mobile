@@ -34,6 +34,7 @@ class AlbumRenaming: NSObject
         case albumName = 1000, albumDescription
     }
 
+    @MainActor
     func displayAlert(completion: @escaping (Bool) -> Void)
     {
         renameAlert = UIAlertController(
@@ -113,6 +114,7 @@ class AlbumRenaming: NSObject
         }
     }
     
+    @MainActor
     private func renameAlbum(withName albumName: String?, comment albumComment: String?,
                              completion: @escaping (Bool) -> Void) {
         guard let albumName = albumName,
@@ -143,29 +145,32 @@ class AlbumRenaming: NSObject
                     }
                 }
             } failure: { [self] error in
-                self.renameCategoryError(error, completion: completion)
+                DispatchQueue.main.async { [self] in
+                    self.renameCategoryError(error, completion: completion)
+                }
             }
         } failure: { [self] error in
-            self.renameCategoryError(error, completion: completion)
+            DispatchQueue.main.async { [self] in
+                self.renameCategoryError(error, completion: completion)
+            }
         }
     }
     
+    @MainActor
     private func renameCategoryError(_ error: Error, completion: @escaping (Bool) -> Void) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
-            let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
-            self.topViewController.hideHUD() { [self] in
-                self.topViewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
-                    completion(true)
-                }
+        // Report error
+        let title = NSLocalizedString("renameCategoyError_title", comment: "Rename Fail")
+        let message = NSLocalizedString("renameCategoyError_message", comment: "Failed to rename your album")
+        self.topViewController.hideHUD() { [self] in
+            self.topViewController.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) {
+                completion(true)
             }
         }
     }

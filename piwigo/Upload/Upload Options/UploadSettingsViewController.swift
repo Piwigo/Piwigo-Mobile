@@ -56,6 +56,7 @@ class UploadSettingsViewController: UITableViewController {
         settingsTableView.accessibilityIdentifier = "Settings"
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = .piwigoColorBackground()

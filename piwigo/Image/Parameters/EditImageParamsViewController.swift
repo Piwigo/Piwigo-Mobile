@@ -115,6 +115,7 @@ class EditImageParamsViewController: UIViewController
         applyColorPalette()
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()
@@ -194,7 +195,7 @@ class EditImageParamsViewController: UIViewController
     
     
     // MARK: - Edit image Methods
-    
+    @MainActor
     private func resetCommonParameters() {
         // Common title?
         shouldUpdateTitle = false
@@ -255,6 +256,7 @@ class EditImageParamsViewController: UIViewController
         }
     }
     
+    @MainActor
     @objc func cancelEdit() {
         // No change
         resetCommonParameters()
@@ -263,6 +265,7 @@ class EditImageParamsViewController: UIViewController
         dismiss(animated: true)
     }
 
+    @MainActor
     @objc func doneEdit() {
         // Display HUD during the update
         if images.count > 1 {
@@ -281,12 +284,15 @@ class EditImageParamsViewController: UIViewController
             updateImageProperties(fromIndex: index)
         } failure: { [self] error in
             // Display error
-            self.hideHUD {
-                self.showUpdatePropertiesError(error, atIndex: index)
+            DispatchQueue.main.async { [self] in
+                self.hideHUD {
+                    self.showUpdatePropertiesError(error, atIndex: index)
+                }
             }
         }
     }
 
+    @MainActor
     func updateImageProperties(fromIndex index: Int) {
         // Any further image to update?
         if index == images.count {
@@ -306,18 +312,23 @@ class EditImageParamsViewController: UIViewController
         // Update image info on server
         /// The cache will be updated by the parent view controller.
         setProperties(ofImage: images[index]) { [self] in
-            // Next image?
-            self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
-            self.updateImageProperties(fromIndex: index + 1)
+            DispatchQueue.main.async { [self] in
+                // Next image?
+                self.updateHUD(withProgress: Float(index + 1) / Float(images.count))
+                self.updateImageProperties(fromIndex: index + 1)
+            }
         }
         failure: { [self] error in
             // Display error
-            self.hideHUD {
-                self.showUpdatePropertiesError(error, atIndex: index)
+            DispatchQueue.main.async { [self] in
+                self.hideHUD {
+                    self.showUpdatePropertiesError(error, atIndex: index)
+                }
             }
         }
     }
 
+    @MainActor
     private func showUpdatePropertiesError(_ error: Error, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?

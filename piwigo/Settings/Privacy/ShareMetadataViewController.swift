@@ -39,6 +39,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(stopEditingOptions))
     }
 
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

@@ -76,6 +76,7 @@ class TimeFormatSelectorViewController: UIViewController {
         navigationItem.rightBarButtonItem = editButtonItem
     }
     
+    @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = .piwigoColorBackground()

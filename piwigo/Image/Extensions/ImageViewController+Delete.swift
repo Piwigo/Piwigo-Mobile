@@ -20,6 +20,7 @@ extension ImageViewController
 
 
     // MARK: - Delete or Remove Image from Album
+    @MainActor
     @objc func deleteImage() {
         // Disable buttons during action
         setEnableStateOfButtons(false)
@@ -70,6 +71,7 @@ extension ImageViewController
         }
     }
     
+    @MainActor
     func removeImageFromAlbum() {
         // Display HUD during deletion
         showHUD(withTitle: imageData.isVideo ? NSLocalizedString("removeSingleVideoHUD_removing", comment: "Removing Video…") : NSLocalizedString("removeSingleImageHUD_removing", comment: "Removing Photo…"))
@@ -98,56 +100,62 @@ extension ImageViewController
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                // Retrieve album
-                if let albums = imageData.albums,
-                   let album = albums.first(where: {$0.pwgID == categoryId}) {
-                    // Remove image from album
-                    album.removeFromImages(imageData)
-
-                    // Update albums
-                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
-
-                    // Save changes
-                    self.mainContext.saveIfNeeded()
-                }
-
-                // Hide HUD
-                self.updateHUDwithSuccess { [self] in
-                    self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        // Display preceding/next image or return to album view
-                        self.didRemoveImage()
+                DispatchQueue.main.async { [self] in
+                    // Retrieve album
+                    if let albums = imageData.albums,
+                       let album = albums.first(where: {$0.pwgID == categoryId}) {
+                        // Remove image from album
+                        album.removeFromImages(imageData)
+                        
+                        // Update albums
+                        self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: album)
+                        
+                        // Save changes
+                        self.mainContext.saveIfNeeded()
+                    }
+                    
+                    // Hide HUD
+                    self.updateHUDwithSuccess { [self] in
+                        self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            // Display preceding/next image or return to album view
+                            self.didRemoveImage()
+                        }
                     }
                 }
             } failure: { [self] error in
-                self.removeImageFromAlbumError(error)
-            }
-        } failure: { [self] error in
-            self.removeImageFromAlbumError(error)
-        }
-    }
-    
-    private func removeImageFromAlbumError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
-
-            // Report error
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                // Hide HUD
-                hideHUD { [self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
+                DispatchQueue.main.async { [self] in
+                    self.removeImageFromAlbumError(error)
                 }
             }
+        } failure: { [self] error in
+            DispatchQueue.main.async { [self] in
+                self.removeImageFromAlbumError(error)
+            }
         }
     }
     
+    @MainActor
+    private func removeImageFromAlbumError(_ error: Error) {
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
+
+        // Report error
+        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            // Hide HUD
+            hideHUD { [self] in
+                // Re-enable buttons
+                setEnableStateOfButtons(true)
+            }
+        }
+    }
+    
+    @MainActor
     func deleteImageFromDatabase() {
         // Remove selected category ID from image category list
         guard let imageData = imageData else {
@@ -200,31 +208,34 @@ extension ImageViewController
                     }
                 }
             } failure: { [self] error in
-                self.deleteImageFromDatabaseError(error)
+                DispatchQueue.main.async { [self] in
+                    self.deleteImageFromDatabaseError(error)
+                }
             }
         } failure: { [self] error in
-            self.deleteImageFromDatabaseError(error)
+            DispatchQueue.main.async { [self] in
+                self.deleteImageFromDatabaseError(error)
+            }
         }
     }
     
+    @MainActor
     private func deleteImageFromDatabaseError(_ error: Error) {
-        DispatchQueue.main.async { [self] in
-            // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
-                return
-            }
+        // Session logout required?
+        if let pwgError = error as? PwgSessionError,
+           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            return
+        }
 
-            // Report error
-            let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
-            let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
-            self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
-                // Hide HUD
-                hideHUD { [self] in
-                    // Re-enable buttons
-                    setEnableStateOfButtons(true)
-                }
+        // Report error
+        let title = NSLocalizedString("deleteImageFail_title", comment: "Delete Failed")
+        let message = NSLocalizedString("deleteImageFail_message", comment: "Image could not be deleted")
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
+            // Hide HUD
+            hideHUD { [self] in
+                // Re-enable buttons
+                setEnableStateOfButtons(true)
             }
         }
     }
