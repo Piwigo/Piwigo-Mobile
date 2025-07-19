@@ -115,7 +115,7 @@ extension UploadManager
 
         // Launch preparation job (limited to stripping metadata)
         if fileURL.lastPathComponent.contains("img") {
-            upload.isVideo = false
+            upload.fileType = pwgImageFileType.image.rawValue
 
             // Update state of upload and launch preparation job
             prepareImage(atURL: fileURL, for: upload)
@@ -149,7 +149,7 @@ extension UploadManager
         // Launch preparation job if file format accepted by Piwigo server
         let fileExt = fileURL.pathExtension.lowercased()
         if fileName.contains("img") {
-            upload.isVideo = false
+            upload.fileType = pwgImageFileType.image.rawValue
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
@@ -191,7 +191,7 @@ extension UploadManager
             didEndPreparation()
         }
         else if fileName.contains("mov") {
-            upload.isVideo = true
+            upload.fileType = pwgImageFileType.video.rawValue
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
@@ -332,7 +332,7 @@ extension UploadManager
         let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
         switch originalAsset.mediaType {
         case .image:
-            upload.isVideo = false
+            upload.fileType = pwgImageFileType.image.rawValue
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
@@ -361,7 +361,7 @@ extension UploadManager
 //            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
         case .video:
-            upload.isVideo = true
+            upload.fileType = pwgImageFileType.video.rawValue
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job

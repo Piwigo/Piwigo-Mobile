@@ -26,9 +26,9 @@ extension Upload {
     @NSManaged public var fileNamePrefixEncodedActions: String
     @NSManaged public var fileNameReplaceEncodedActions: String
     @NSManaged public var fileNameSuffixEncodedActions: String
+    @NSManaged public var fileType: Int16
     @NSManaged public var imageId: Int64
     @NSManaged public var imageName: String
-    @NSManaged public var isVideo: Bool
     @NSManaged public var localIdentifier: String
     @NSManaged public var md5Sum: String
     @NSManaged public var mimeType: String
@@ -45,7 +45,6 @@ extension Upload {
     @NSManaged public var markedForAutoUpload: Bool
     @NSManaged public var tags: Set<Tag>?
     @NSManaged public var user: User?
-
 }
 
 // MARK: Generated accessors for tags

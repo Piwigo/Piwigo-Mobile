@@ -103,18 +103,38 @@ public class Image: NSManagedObject {
             if fileExt.isEmpty == false {
                 if #available(iOS 14.0, *) {
                     if let uti = UTType(filenameExtension: fileExt) {
-                        let newIsVideo = uti.conforms(to: .movie)
-                        if isVideo != newIsVideo {
-                            isVideo = newIsVideo
+                        if uti.conforms(to: .movie) {
+                            if fileType != pwgImageFileType.video.rawValue {
+                                fileType = pwgImageFileType.video.rawValue
+                            }
+                        } else if uti.conforms(to: .pdf) {
+                            if fileType != pwgImageFileType.pdf.rawValue {
+                                fileType = pwgImageFileType.pdf.rawValue
+                            }
+                        } else {
+                            if fileType != pwgImageFileType.image.rawValue {
+                                fileType = pwgImageFileType.image.rawValue
+                            }
                         }
+                    } else if fileType != pwgImageFileType.image.rawValue {
+                        fileType = pwgImageFileType.image.rawValue
                     }
                 } else {
                     // Fallback to previous version
                     if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() {
-                        let newIsVideo = UTTypeConformsTo(uti, kUTTypeMovie)
-                        if isVideo != newIsVideo {
-                            isVideo = newIsVideo
+                        if UTTypeConformsTo(uti, kUTTypeMovie) {
+                            if fileType != pwgImageFileType.video.rawValue {
+                                fileType = pwgImageFileType.video.rawValue
+                            }
+                        } else if UTTypeConformsTo(uti, kUTTypePDF) {
+                            if fileType != pwgImageFileType.pdf.rawValue {
+                                fileType = pwgImageFileType.pdf.rawValue
+                            }
+                        } else if fileType != pwgImageFileType.image.rawValue {
+                            fileType = pwgImageFileType.image.rawValue
                         }
+                    } else if fileType != pwgImageFileType.image.rawValue {
+                        fileType = pwgImageFileType.image.rawValue
                     }
                 }
             }

@@ -27,9 +27,9 @@ public struct UploadProperties
     public var fileNamePrefixEncodedActions: String
     public var fileNameReplaceEncodedActions: String
     public var fileNameSuffixEncodedActions: String
+    public var fileType: Int16                     // See pwgImageFileType
     public var mimeType: String                    // "image/png"
     public var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
-    public var isVideo: Bool                       // true/false
     
     public var author: String                      // "Author"
     public var privacyLevel: pwgPrivacy            // 0
@@ -77,7 +77,7 @@ extension UploadProperties {
             fileNamePrefixEncodedActions: UploadVars.shared.prefixFileNameActionList,
             fileNameReplaceEncodedActions: UploadVars.shared.replaceFileNameActionList,
             fileNameSuffixEncodedActions: UploadVars.shared.suffixFileNameActionList,
-            mimeType: "", md5Sum: "", isVideo: false,
+            fileType: Int16.zero, mimeType: "", md5Sum: "",
             
             // Photo author name defaults to name entered in Settings
             author: UploadVars.shared.defaultAuthor,
