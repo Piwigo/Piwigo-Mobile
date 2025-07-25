@@ -12,6 +12,7 @@ import AVFoundation
 import LinkPresentation
 import MobileCoreServices
 import UIKit
+import UniformTypeIdentifiers
 import piwigoKit
 import uploadKit
 
@@ -153,7 +154,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!")
+            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), "")
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.

@@ -20304,7 +20304,7 @@
       }
     },
     "downloadImageFail_message" : {
-      "comment" : "Failed to download image!\nFailed to download image!\n%@",
+      "comment" : "Failed to download image!\n%@",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20707,6 +20707,9 @@
         }
       }
     },
+    "downloadingPDF" : {
+      "comment" : "Downloading PDF file"
+    },
     "downloadingVideo" : {
       "comment" : "Downloading Video",
       "localizations" : {
@@ -20807,6 +20810,9 @@
           }
         }
       }
+    },
+    "downloadPdfFail_message" : {
+      "comment" : "Failed to download PDF file!\n%@"
     },
     "downloadSeveralImage_confirmation" : {
       "extractionState" : "manual",
@@ -21214,7 +21220,7 @@
       }
     },
     "downloadVideoFail_message" : {
-      "comment" : "Failed to download video!\nFailed to download video!\n%@",
+      "comment" : "Failed to download video!\n%@",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

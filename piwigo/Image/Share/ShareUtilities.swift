@@ -14,7 +14,7 @@ class ShareUtilities {
     
     // MARK: - Image Download
     /** Returns:
-     - the Piwigo  image size
+     - the Piwigo image size
      - the URL of the image file stored on the Piwigo server
        whose resolution matches the one demaned by the activity type
      **/
@@ -23,9 +23,9 @@ class ShareUtilities {
         // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
 
-        // If this is a video, always select the full resolution file, i.e. the video.
-        if imageData.isVideo {
-            if let pwgURL = imageData.fullRes?.url {
+        // If this is a video or a PDF file, always select the full resolution file.
+        if imageData.isNotImage {
+            if let pwgURL = imageData.downloadUrl {
                 return (.fullRes, pwgURL as URL)
             } else {
                 return nil
@@ -229,7 +229,11 @@ class ShareUtilities {
             if image?.isVideo ?? false {
                 // Videos are generally exported in MP4 format
                 fileName = fileName?.appending(".mp4")
-            } else  {
+            }
+            else if image?.isPDF ?? false {
+                fileName = fileName?.appending(".pdf")
+            }
+            else {
                 // Adopt JPEG photo format by default, will be rechecked
                 fileName = fileName?.appending(".jpg")
             }

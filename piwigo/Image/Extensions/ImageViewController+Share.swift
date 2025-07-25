@@ -30,7 +30,16 @@ extension ImageViewController
         // Disable buttons during action
         setEnableStateOfButtons(false)
 
-        // Check autorisation to access Photo Library (camera roll)
+        // Check input image data
+        guard let imageData = imageData, imageData.isPDF == false
+        else {
+            DispatchQueue.main.async { [self] in
+                self.presentShareImageViewController(withCameraRollAccess: false)
+            }
+            return
+        }
+
+        // Check autorisation to access Photo Library (camera roll) if needed
         if #available(iOS 14, *) {
             PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
                 onAccess: { [self] in
@@ -41,7 +50,7 @@ extension ImageViewController
             }, onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
                     DispatchQueue.main.async { [self] in
-                        presentShareImageViewController(withCameraRollAccess: false)
+                        self.presentShareImageViewController(withCameraRollAccess: false)
                     }
                 })
         } else {
@@ -55,7 +64,7 @@ extension ImageViewController
             }, onDeniedAccess: { [self] in
                     // User not allowed to save image in camera roll
                     DispatchQueue.main.async { [self] in
-                        presentShareImageViewController(withCameraRollAccess: false)
+                        self.presentShareImageViewController(withCameraRollAccess: false)
                     }
                 })
         }
@@ -64,7 +73,7 @@ extension ImageViewController
     @MainActor
     func presentShareImageViewController(withCameraRollAccess hasCameraRollAccess: Bool) {
         // To exclude some activity types
-        var excludedActivityTypes = [UIActivity.ActivityType]()
+        var excludedActivityTypes = Set<UIActivity.ActivityType>()
 
         // Check input image data
         guard let imageData = imageData else { return }
@@ -82,7 +91,30 @@ extension ImageViewController
             itemsToShare.append(videoItemProvider)
 
             // Exclude "assign to contact" activity
-            excludedActivityTypes.append(.assignToContact)
+            excludedActivityTypes.insert(.assignToContact)
+            if #available(iOS 16.4, *) {
+                excludedActivityTypes.formUnion([.addToHomeScreen,
+                                                 .collaborationCopyLink, .collaborationInviteWithLink])
+            }
+        }
+        else if imageData.isPDF {
+            // Case of a PDF file
+            let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: imageData, contextually: false)
+
+            // Use delegation to monitor the progress of the item method
+            pdfItemProvider.delegate = self
+
+            // Add to list of items to share
+            itemsToShare.append(pdfItemProvider)
+
+            // Exclude "assign to contact" activity
+            excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll,
+                                             .postToFacebook, .postToTwitter, .postToWeibo,
+                                             .postToVimeo, .postToTencentWeibo])
+            if #available(iOS 16.4, *) {
+                excludedActivityTypes.formUnion([.addToHomeScreen,
+                                                 .collaborationCopyLink, .collaborationInviteWithLink])
+            }
         }
         else {
             // Case of an image
@@ -103,7 +135,7 @@ extension ImageViewController
         // Exclude some activity types if needed
         if !hasCameraRollAccess {
             // Exclude "camera roll" activity when the Photo Library is not accessible
-            excludedActivityTypes.append(.saveToCameraRoll)
+            excludedActivityTypes.insert(.saveToCameraRoll)
         }
         activityViewController.excludedActivityTypes = Array(excludedActivityTypes)
 

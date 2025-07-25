@@ -29,6 +29,6 @@ extension Image
     }
     
     public var isNotImage: Bool {
-        return !isVideo && !isPDF
+        return isVideo || isPDF
     }
 }

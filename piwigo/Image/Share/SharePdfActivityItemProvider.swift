@@ -1,38 +1,24 @@
 //
-//  ShareImageActivityItemProvider.swift
+//  SharePdfActivityItemProvider.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 12/01/2019.
-//  Copyright © 2019 Piwigo.org. All rights reserved.
-//
-//  Converted to Swift 5.2 by Eddy Lelièvre-Berna on 10/01/2021.
+//  Created by Eddy Lelièvre-Berna on 25/07/2025.
+//  Copyright © 2025 Piwigo.org. All rights reserved.
 //
 
+import Foundation
 import LinkPresentation
 import MobileCoreServices
-import Photos
 import UIKit
 import UniformTypeIdentifiers
 import piwigoKit
-import uploadKit
-
-@objc
-protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
-    func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                        withTitle title: String)
-    func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                   preprocessingProgressDidUpdate progress: Float)
-    func imageActivityItemProviderPreprocessingDidEnd(_ imageActivityItemProvider: UIActivityItemProvider?,
-                                                      withImageID imageID: Int64, contextually: Bool)
-    func showError(withTitle title: String, andMessage message: String?)
-}
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance
-class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
+class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
     
     // MARK: - Initialisation
     weak var delegate: ShareImageActivityItemProviderDelegate?
-
+    
     private var imageData: Image                        // Core Data image
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
@@ -67,7 +53,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         
         // Remember if this video is shared from a contextual menu
         self.contextually = contextually
-
+        
         // We use the thumbnail image stored in cache
         let size = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         guard let cacheURL = imageData.cacheURL(ofSize: size) else {
@@ -88,14 +74,15 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         } else {
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
-
+        
         // Register image share methods to perform on completion
         NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage),
                                                name: Notification.Name.pwgDidShare, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask),
                                                name: Notification.Name.pwgCancelDownload, object: nil)
     }
-
+    
+    
     // MARK: - Download & Prepare Image
     ///*************************************************
     /// The item method runs on a secondary thread using an NSOperationQueue
@@ -114,29 +101,26 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         
         // Notify the delegate on the main thread that the processing is beginning.
         DispatchQueue.main.async { [self] in
-            let title = NSLocalizedString("downloadingImage", comment: "Downloading Photo")
+            let title = NSLocalizedString("downloadingPDF", comment: "Downloading PDF file")
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: title)
         }
 
-        // Get the maximum accepted image size (infinity for largest)
-        let maxSize = activityType?.imageMaxSize() ?? Int.max
-
-        // Get the server ID and optimum available image size
+        // Get the server ID and URL on server
         guard let serverID = imageData.server?.uuid,
-              let (imageSize, imageURL) = ShareUtilities.getOptimumSizeAndURL(imageData, ofMaxSize: maxSize) else {
+              let (imageSize, imageURL) = ShareUtilities.getOptimumSizeAndURL(imageData, ofMaxSize: Int.max) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
             alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
-            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
+            alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!
         }
         
-        // Store URL of image in Piwigo server for being able to cancel the download
+        // Store URL of PDF file in Piwigo server for being able to cancel the download
         pwgImageURL = imageURL
 
-        // Download image synchronously if not in cache
+        // Download PDF file synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
         PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
                                    fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
@@ -148,12 +132,12 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         } failure: { [unowned self] error in
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
+            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), error.localizedDescription)
             sema.signal()
         }
         let _ = sema.wait(timeout: .distantFuture)
 
-        // Cancel item task if image could not be retrieved
+        // Cancel item task if PDF file could not be retrieved
         if alertTitle != nil {
             // Cancel task
             cancel()
@@ -162,11 +146,11 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
         
-        // Check that we have the URL of the cached image
+        // Check that we have the URL of the cached PDF file
         guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
+            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
@@ -199,141 +183,11 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             return placeholderItem!
         }
 
-        // Should we strip GPS metadata (yes by default)?
-        if !(activityType?.shouldStripMetadata() ?? true) {
-            // Notify the delegate on the main thread to show how it makes progress.
-            progressFraction = 1.0
-            // Notify the delegate on the main thread that the processing has finished.
-            preprocessingDidEnd()
-            // No need to strip metadata, share the file immediately
-            return imageFileURL
-        }
-
-        // We now need to remove private metadata…
-        // Create new file from original one because one cannot modify metadata of existing file
-        // Shared files are saved in the /tmp directory and will be deleted:
-        // - by the app if the user kills it
-        // - by the system after a certain amount of time
-        let newSourceFileName = imageFileURL.lastPathComponent.dropLast(imageFileURL.pathExtension.count+1)
-                                            .appending("-original." + imageFileURL.pathExtension)
-        let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory())
-        let newSourceURL = tempDirectoryUrl.appendingPathComponent(newSourceFileName)
-
-        // Deletes temporary image file if it exists
-        try? FileManager.default.removeItem(at: newSourceURL)
-
-        // Rename temporary original image file
-        do {
-            try FileManager.default.moveItem(at: imageFileURL, to: newSourceURL)
-        }
-        catch let error {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-        
-        // Notify the delegate on the main thread to show how it makes progress.
-        progressFraction = 0.80
-
-        // Create CGI reference from moved source file
-        guard let sourceRef = CGImageSourceCreateWithURL(newSourceURL as CFURL, nil) else {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-
-        // Prepare destination file of same type
-        guard let UTI = CGImageSourceGetType(sourceRef),
-              let destinationRef = CGImageDestinationCreateWithURL(imageFileURL as CFURL, UTI, 1, nil) else {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-
-        // Copy source to destination without private data
-        /// See https://developer.apple.com/library/archive/qa/qa1895/_index.html
-        /// Try to copy source into destination w/o recompression
-        /// One of kCGImageDestinationMetadata, kCGImageDestinationOrientation, or kCGImageDestinationDateTime is required.
-        if var metadata = CGImageSourceCopyMetadataAtIndex(sourceRef, 0, nil) {
-            // Strip private metadata
-            metadata = metadata.stripPrivateMetadata()
-            
-            // Set destination options
-            let options = [kCGImageDestinationMetadata      : metadata,
-                           kCGImageMetadataShouldExcludeGPS : true
-            ] as [CFString : Any] as CFDictionary
-            
-            // Copy image source w/o private metadata
-            if CGImageDestinationCopyImageSource(destinationRef, sourceRef, options, nil) {
-                // Notify the delegate on the main thread to show how it makes progress.
-                progressFraction = 1.0
-
-                // Notify the delegate on the main thread that the processing has finished.
-                preprocessingDidEnd()
-
-                // Set creation date as the photo creation date
-                try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
-
-                // Return image to share
-                return imageFileURL
-            }
-        }
-        
-        // We could not copy source into destination, so we try by recompressing the image
-        guard var imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, nil) as? [CFString:Any] else {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Private metadata cannot be removed")
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-
-        // Strip private properties
-        imageProperties = imageProperties.stripPrivateProperties()
-
-        // Copy source into destination with unavoidable recompression
-        CGImageDestinationSetProperties(destinationRef, imageProperties as CFDictionary)
-        let nberOfImages = CGImageSourceGetCount(sourceRef)
-        for index in 0..<nberOfImages {
-            // Add image at index
-            CGImageDestinationAddImageFromSource(destinationRef, sourceRef, index, imageProperties as CFDictionary)
-        }
-
-        // Save destination
-        guard CGImageDestinationFinalize(destinationRef) else {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-
         // Notify the delegate on the main thread to show how it makes progress.
         progressFraction = 1.0
-
         // Notify the delegate on the main thread that the processing has finished.
         preprocessingDidEnd()
-
-        // Set creation date as the photo creation date
-        try? FileManager.default.setAttributes(attrs, ofItemAtPath: imageFileURL.path)
-
-        // Return image to share
+        // Return PDF file to share
         return imageFileURL
     }
 
@@ -383,9 +237,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
         if #available(iOS 14.0, *) {
-            return UTType.image.identifier
+            return UTType.pdf.identifier
         } else {
-            return kUTTypeImage as String
+            return kUTTypePDF as String
         }
     }
     
