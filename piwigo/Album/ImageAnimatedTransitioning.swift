@@ -96,6 +96,14 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
                                      window: window)
                 return
             }
+            else if let pdfVC = detailVC as? PdfDetailViewController,
+                    let imageViewSnapshot = pdfVC.placeHolderView.snapshotView(afterScreenUpdates: true) {
+                presentOrDismissView(using: transitionContext, imageViewController: imageViewController,
+                                     detailViewController: pdfVC, imageViewSnapshot: imageViewSnapshot,
+                                     window: window)
+                return
+            }
+                    
             
             transitionContext.completeTransition(false)
         }
@@ -180,6 +188,8 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
             imageViewRect = imageDVC.imageView.convert(imageDVC.imageView.bounds, to: window)
         } else if let videoDVC = detailViewController as? VideoDetailViewController {
             imageViewRect = videoDVC.placeHolderView.convert(videoDVC.placeHolderView.bounds, to: window)
+        } else if let pdfDVC = detailViewController as? PdfDetailViewController {
+            imageViewRect = pdfDVC.placeHolderView.convert(pdfDVC.placeHolderView.bounds, to: window)
         }
 
         // Perform the animation
@@ -233,6 +243,8 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
             imageViewRect = imageDVC.imageView.convert(imageDVC.imageView.bounds, to: window)
         } else if let videoDVC = detailViewController as? VideoDetailViewController {
             imageViewRect = videoDVC.placeHolderView.convert(videoDVC.placeHolderView.bounds, to: window)
+        } else if let pdfDVC = detailViewController as? PdfDetailViewController {
+            imageViewRect = pdfDVC.placeHolderView.convert(pdfDVC.placeHolderView.bounds, to: window)
         }
 
         // Set frame of images for starting the animation

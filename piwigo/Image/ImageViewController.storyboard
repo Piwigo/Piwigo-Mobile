@@ -150,7 +150,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPj-N2-xH5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1569.5652173913045" y="71.651785714285708"/>
+            <point key="canvasLocation" x="1569" y="73"/>
         </scene>
         <!--Video Detail View Controller-->
         <scene sceneID="2wm-HV-SVE">
@@ -323,7 +323,95 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fg0-Q1-2IZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2223.9436619718313" y="69.465648854961827"/>
+            <point key="canvasLocation" x="2236" y="73"/>
+        </scene>
+        <!--Pdf Detail View Controller-->
+        <scene sceneID="p7a-Bj-Uaj">
+            <objects>
+                <viewController storyboardIdentifier="PdfDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="dhw-Aw-i5X" customClass="PdfDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3Eu-Oy-2lh">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yo7-0W-J1I">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </imageView>
+                            <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cd8-Yp-hz7" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="76.666666666666686" y="696" width="240" height="88"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="9Ey-tF-XFQ">
+                                    <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Y24-s4-nKw">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="88"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+                                            <color key="textColor" systemColor="labelColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstItem="Y24-s4-nKw" firstAttribute="bottom" secondItem="9Ey-tF-XFQ" secondAttribute="bottom" id="4PS-mC-FY6"/>
+                                        <constraint firstItem="Y24-s4-nKw" firstAttribute="top" secondItem="9Ey-tF-XFQ" secondAttribute="top" id="LVK-Pp-hcF"/>
+                                        <constraint firstItem="Y24-s4-nKw" firstAttribute="trailing" secondItem="9Ey-tF-XFQ" secondAttribute="trailing" id="X7q-rR-dVg"/>
+                                        <constraint firstItem="Y24-s4-nKw" firstAttribute="leading" secondItem="9Ey-tF-XFQ" secondAttribute="leading" id="tls-GZ-bvx"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="88" id="XVj-l9-E4f"/>
+                                    <constraint firstAttribute="width" constant="240" id="h2H-9c-4nb"/>
+                                </constraints>
+                                <blurEffect style="regular"/>
+                                <connections>
+                                    <outlet property="descHeight" destination="XVj-l9-E4f" id="ktQ-9i-icc"/>
+                                    <outlet property="descOffset" destination="5W9-hW-wav" id="3pP-fd-Wjv"/>
+                                    <outlet property="descTextView" destination="Y24-s4-nKw" id="vo3-Dc-yat"/>
+                                    <outlet property="descWidth" destination="h2H-9c-4nb" id="wpM-wx-K9H"/>
+                                </connections>
+                            </visualEffectView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A4K-Xo-ZAl" customClass="PDFView">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ti-1d-twU" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="185" y="134" width="23" height="23"/>
+                                <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="23" id="Dp1-Jc-82O"/>
+                                    <constraint firstAttribute="width" constant="23" id="PLg-t2-N8q"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="IrK-e5-7ah"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="0ti-1d-twU" firstAttribute="top" secondItem="IrK-e5-7ah" secondAttribute="top" constant="16" id="8qt-ks-Arr"/>
+                            <constraint firstItem="IrK-e5-7ah" firstAttribute="bottom" secondItem="cd8-Yp-hz7" secondAttribute="bottom" id="DCb-by-p0z"/>
+                            <constraint firstItem="0ti-1d-twU" firstAttribute="centerX" secondItem="IrK-e5-7ah" secondAttribute="centerX" id="u8t-Tm-F91"/>
+                            <constraint firstItem="cd8-Yp-hz7" firstAttribute="centerX" secondItem="IrK-e5-7ah" secondAttribute="centerX" id="vhn-aV-s6z"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <connections>
+                        <outlet property="descContainer" destination="cd8-Yp-hz7" id="2dL-Ux-JUt"/>
+                        <outlet property="pdfView" destination="A4K-Xo-ZAl" id="rpv-cK-lOH"/>
+                        <outlet property="placeHolderView" destination="Yo7-0W-J1I" id="tBP-bV-ZTS"/>
+                        <outlet property="progressView" destination="0ti-1d-twU" id="AgJ-Dj-hMi"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cgK-cC-XoG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2904.5801526717555" y="72.535211267605632"/>
         </scene>
     </scenes>
     <resources>

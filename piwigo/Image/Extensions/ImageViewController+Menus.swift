@@ -37,7 +37,7 @@ extension ImageViewController
     /// - for editing image parameters
     func editMenu() -> UIMenu {
         var children = [UIMenuElement]()
-        if imageData.isVideo == false {
+        if imageData.isImage {
             children.append(rotateMenu())
         }
         children.append(editParamsAction())

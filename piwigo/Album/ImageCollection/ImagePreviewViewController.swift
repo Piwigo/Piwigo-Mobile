@@ -24,7 +24,7 @@ class ImagePreviewViewController: UIViewController
         let sizes = imageData.sizes
         aspectRatio = sizes.medium?.aspectRatio ?? sizes.thumb?.aspectRatio ?? 1.0
         var previewSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .medium
-        if imageData.isVideo, previewSize == .fullRes {
+        if imageData.isNotImage, previewSize == .fullRes {
             previewSize = .xxLarge
         }
         
