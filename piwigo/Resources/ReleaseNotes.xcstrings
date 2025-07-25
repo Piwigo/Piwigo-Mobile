@@ -9292,6 +9292,107 @@
           }
         }
       }
+    },
+    "v3.5.0_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 3.5\n\n• إضافة إدارة ملفات PDF\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5\n\n• Tilføjer PDF-filhåndtering\n• Rette fejl og forbedrer grænsefladen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5\n\n• Fügt PDF-Dateiverwaltung hinzu\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5\n\n• Adds PDF file management\n• Fixes bugs and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 3.5\n\n• Añade gestión de archivos PDF.\n• Corrige errores y mejora la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5\n\n• Ajoute la gestion des fichiers PDF\n• Corrige les bugs et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3.5-ös verzió\n\n• PDF-fájlok kezelésének hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 3.5\n\n• Menambahkan pengelolaan file PDF\n• Memperbaiki bug dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 3.5\n\n• Aggiunge la gestione dei file PDF\n• Corregge bug e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 3.5\n\n• PDF ファイルの管理機能を追加\n• バグの修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 3.5\n\n• Voegt PDF-bestandsbeheer toe\n• Verhelpt bugs en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 3.5\n\n• Dodano zarządzanie plikami PDF\n• Poprawki błędów i usprawnienia interfejsu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 3.5\n\n• Добавлено управление файлами PDF.\n• Исправлены ошибки и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5\n\n• Lägger till hantering av PDF-filer\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 3.5\n\n• 添加 PDF 文件管理功能\n• 修复了 bug 并改进了界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 3.5\n\n• 新增 PDF 檔案管理\n• 修正錯誤並改進介面"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
