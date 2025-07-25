@@ -582,6 +582,11 @@ extension ImageViewController: UIPageViewControllerDelegate
             // Pause download
             PwgSession.shared.pauseDownload(atURL: imageURL)
         }
+        else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController,
+                let imageURL = pdfDVC.imageURL {
+            // Pause download
+            PwgSession.shared.pauseDownload(atURL: imageURL)
+        }
     }
     
     // Called after a gesture-driven transition completes
