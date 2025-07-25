@@ -107,7 +107,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
 
         // Get the server ID and URL on server
         guard let serverID = imageData.server?.uuid,
-              let (imageSize, imageURL) = ShareUtilities.getOptimumSizeAndURL(imageData, ofMaxSize: Int.max) else {
+              let imageURL = imageData.downloadUrl as? URL else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
@@ -122,7 +122,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
 
         // Download PDF file synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
                                    fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self?.updateProgressView(with: Float((0.75 * fractionCompleted)))

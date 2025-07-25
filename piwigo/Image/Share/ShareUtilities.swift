@@ -182,12 +182,12 @@ class ShareUtilities {
         return (pwgSize, pwgURL as URL)
     }
     
+    // Check if the size is smaller and the nearest to the wanted size
     static private func sizeIsNearest(_ size: Int, current: Int, wanted: Int) -> Bool {
-        // Check if the size is smaller and the nearest to the wanted size
         return (size < wanted) && (abs(wanted - size) < abs(wanted - current))
     }
     
-    // Returns the URL of the image file stored in /tmp before the share
+    // Returns the URL of the image/video/PDF file stored in /tmp before sharing
     static func getFileUrl(ofImage image: Image?, withURL imageUrl: URL?) -> URL {
         // Get filename from image data or URL request
         var fileName = imageUrl?.lastPathComponent
