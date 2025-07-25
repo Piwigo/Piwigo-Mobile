@@ -181,7 +181,8 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Copy original file to /tmp directly with appropriate file name
         // and set creation date as the photo creation date
-        let creationDate = NSDate(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let fileDate = imageData.dateCreated == DateUtilities.unknownDateInterval ? imageData.datePosted : imageData.dateCreated
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: fileDate)
         let attrs = [FileAttributeKey.creationDate     : creationDate,
                      FileAttributeKey.modificationDate : creationDate]
         do {
