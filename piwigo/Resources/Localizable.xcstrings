@@ -20844,7 +20844,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de télécharger le fichier PDF!\n%@"
+            "value" : "Impossible de télécharger le fichier PDF !"
           }
         },
         "hu" : {
