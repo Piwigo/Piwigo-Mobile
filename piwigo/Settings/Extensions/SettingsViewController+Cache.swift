@@ -74,6 +74,7 @@ extension SettingsViewController
 
 
     // MARK: - Return Clear Cache Alert
+    @MainActor
     func getClearCacheAlert() -> UIAlertController {
         let alert = UIAlertController(title: "", message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
         let hudTitle = NSLocalizedString("settings_cacheClearing", comment: "Clearing Cache")
@@ -85,18 +86,20 @@ extension SettingsViewController
 
             // Delete all data and directories in foreground queue
             ClearCache.clearData() { [self] in
-                // Get server instance
-                guard let server = self.user.server else {
-                    assert(self.user?.server != nil, "••> User not provided!")
-                    return
+                DispatchQueue.main.async {
+                    // Get server instance
+                    guard let server = self.user.server else {
+                        assert(self.user?.server != nil, "••> User not provided!")
+                        return
+                    }
+                    self.mainContext.saveIfNeeded()
+
+                    // Refresh Settings cell related with data
+                    self.dataCacheSize = server.getAlbumImageCount()
+
+                    // Hide HUD on completion
+                    self.navigationController?.hideHUD { }
                 }
-                self.mainContext.saveIfNeeded()
-
-                // Refresh Settings cell related with data
-                self.dataCacheSize = server.getAlbumImageCount()
-
-                // Hide HUD on completion
-                self.navigationController?.hideHUD { }
             }
         })
         alert.addAction(clearDataAction)
@@ -171,19 +174,21 @@ extension SettingsViewController
 
                 // Delete upload data and Uploads/tempporary folders in foreground queue
                 ClearCache.clearUploads() {
-                    // Get server instance
-                    guard let server = self.user.server else {
-                        assert(self.user?.server != nil, "••> User not provided!")
-                        return
+                    DispatchQueue.main.async {
+                        // Get server instance
+                        guard let server = self.user.server else {
+                            assert(self.user?.server != nil, "••> User not provided!")
+                            return
+                        }
+                        self.mainContext.saveIfNeeded()
+                        
+                        // Refresh upload cache cell
+                        self.uploadCacheSize = server.getUploadCount()
+                            + " | " + UploadManager.shared.getUploadsDirectorySize()
+                        
+                        // Hide HUD on completion
+                        self.navigationController?.hideHUD { }
                     }
-                    self.mainContext.saveIfNeeded()
-                    
-                    // Refresh upload cache cell
-                    self.uploadCacheSize = server.getUploadCount()
-                        + " | " + UploadManager.shared.getUploadsDirectorySize()
-
-                    // Hide HUD on completion
-                    self.navigationController?.hideHUD { }
                 }
             })
             clearUploadCacheAction.accessibilityIdentifier = "uploadCache"
@@ -196,27 +201,29 @@ extension SettingsViewController
 
             // Delete whole cache and folders in foreground queue
             ClearCache.clearData() {
-                // Get server instance
-                guard let server = self.user.server else {
-                    assert(self.user?.server != nil, "••> User not provided!")
-                    return
+                DispatchQueue.main.async {
+                    // Get server instance
+                    guard let server = self.user.server else {
+                        assert(self.user?.server != nil, "••> User not provided!")
+                        return
+                    }
+                    self.mainContext.saveIfNeeded()
+                    
+                    // Clear all image files
+                    server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
+                    
+                    // Refresh variables and cells
+                    self.dataCacheSize = server.getAlbumImageCount()
+                    var sizes = self.getThumbnailSizes()
+                    self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
+                    sizes = self.getPhotoSizes()
+                    self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
+                    self.videoCacheSize = server.getCacheSizeOfVideos()
+                    self.uploadCacheSize = server.getUploadCount()
+                    
+                    // Hide HUD on completion
+                    self.navigationController?.hideHUD { }
                 }
-                self.mainContext.saveIfNeeded()
-
-                // Clear all image files
-                server.clearCachedImages(ofSizes: Set(pwgImageSize.allCases), exceptVideos: false)
-
-                // Refresh variables and cells
-                self.dataCacheSize = server.getAlbumImageCount()
-                var sizes = self.getThumbnailSizes()
-                self.thumbCacheSize = server.getCacheSize(forImageSizes: sizes)
-                sizes = self.getPhotoSizes()
-                self.photoCacheSize = server.getCacheSize(forImageSizes: sizes)
-                self.videoCacheSize = server.getCacheSizeOfVideos()
-                self.uploadCacheSize = server.getUploadCount()
-
-                // Hide HUD on completion
-                self.navigationController?.hideHUD { }
             }
         })
         alert.addAction(clearAction)

@@ -313,6 +313,7 @@ extension AlbumViewController
 
     
     // MARK: - Prepare Selection
+    @MainActor
     func initSelection(ofImagesWithIDs imageIDs: Set<Int64>,
                        beforeAction action: pwgImageAction, contextually: Bool) {
         if imageIDs.isEmpty { return }
@@ -406,6 +407,7 @@ extension AlbumViewController
         }
     }
 
+    @MainActor
     private func prepareDataRetrieval(ofImagesWithIDs imageIDs: Set<Int64>,
                                       beforeAction action: pwgImageAction, contextually: Bool) {
         // Remove images from which we already have complete data

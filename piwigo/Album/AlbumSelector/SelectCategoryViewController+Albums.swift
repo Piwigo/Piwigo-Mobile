@@ -13,6 +13,7 @@ import piwigoKit
 extension SelectCategoryViewController
 {
     // MARK: - Move Category Methods
+    @MainActor
     func moveCategory(intoCategory parentData: Album) {
         // Display HUD during the update
         showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
@@ -72,6 +73,7 @@ extension SelectCategoryViewController
 
     
     // MARK: - Set Album Thumbnail Methods
+    @MainActor
     func setRepresentative(for albumData: Album) {
         guard let imageData = self.inputImages.first else { return }
         

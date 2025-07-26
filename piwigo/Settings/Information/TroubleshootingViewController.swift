@@ -202,6 +202,7 @@ class TroubleshootingViewController: UIViewController {
         queue.addOperations([getLogs, getJSONfiles], waitUntilFinished: false)
     }
     
+    @MainActor
     @objc func deleteJSONfiles() {
         // Delete JSON data files
         if JSONfiles.count > 200 {

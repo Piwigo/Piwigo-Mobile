@@ -209,6 +209,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
     }
 
+    @MainActor
     private func renameImageFile(withName fileName: String,
                          andViewController topViewController: UIViewController?) {
         // Display HUD during the update

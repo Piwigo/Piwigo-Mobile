@@ -14,6 +14,7 @@ import piwigoKit
 @available(iOS 14, *)
 extension ImageViewController
 {
+    @MainActor
     func rotateMenu() -> UIMenu {
         return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
                       image: nil,
@@ -21,6 +22,7 @@ extension ImageViewController
                       children: [rotateRightAction(), rotateLeftAction()])
     }
     
+    @MainActor
     func rotateRightAction() -> UIAction {
         // Rotate image right
         let action = UIAction(title: NSLocalizedString("rotateImage_right", comment: "Clockwise"),
@@ -33,6 +35,7 @@ extension ImageViewController
         return action
     }
 
+    @MainActor
     func rotateLeftAction() -> UIAction {
         // Rotate image left
         let action = UIAction(title: NSLocalizedString("rotateImage_left", comment: "Counterclockwise"),
@@ -51,6 +54,7 @@ extension ImageViewController
 extension ImageViewController
 {
     // MARK: - Rotate Image
+    @MainActor
     @objc func rotateImage(by angle: CGFloat) {
         guard let imageData = imageData else { return }
         // Disable buttons during action

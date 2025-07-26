@@ -243,8 +243,9 @@ extension AlbumViewController
 
 
 // MARK: - ShareImageActivityItemProviderDelegate Methods
-extension AlbumViewController: ShareImageActivityItemProviderDelegate
+extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDelegate
 {
+    @MainActor
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
                                                         withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
@@ -260,6 +261,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
         }
     }
     
+    @MainActor
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
                                    preprocessingProgressDidUpdate progress: Float) {
         // Update HUD
