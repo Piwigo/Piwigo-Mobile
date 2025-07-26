@@ -93,25 +93,29 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         // Show button for removing image from selection if needed
         removeButtonView.isHidden = !hasRemove
 
-        // Image size in pixels, file size, date and time
+        // Image size in pixels, file size
         self.imageSize?.text = imageData.fullRes?.pixels ?? "?x?"
         self.imageFileSize?.text = ByteCountFormatter.string(fromByteCount: imageData.fileSize, countStyle: .file)
-        imageDate.text = ""
-        let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-        let dateFormatter = DateUtilities.dateFormatter()
-        if bounds.size.width > CGFloat(430) {
-            // i.e. larger than iPhone 14 Pro Max screen width
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .none
-            imageDate.text = dateFormatter.string(from: dateCreated)
-        } else {
-            dateFormatter.dateStyle = .short
-            dateFormatter.timeStyle = .none
-            imageDate.text = dateFormatter.string(from: dateCreated)
+        
+        // Image date and time
+        imageDate.text = ""; imageTime.text = ""
+        if imageData.dateCreated != DateUtilities.unknownDateInterval {
+            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+            let dateFormatter = DateUtilities.dateFormatter()
+            if bounds.size.width > CGFloat(430) {
+                // i.e. larger than iPhone 14 Pro Max screen width
+                dateFormatter.dateStyle = .long
+                dateFormatter.timeStyle = .none
+                imageDate.text = dateFormatter.string(from: dateCreated)
+            } else {
+                dateFormatter.dateStyle = .short
+                dateFormatter.timeStyle = .none
+                imageDate.text = dateFormatter.string(from: dateCreated)
+            }
+            dateFormatter.dateStyle = .none
+            dateFormatter.timeStyle = .medium
+            imageTime.text = dateFormatter.string(from: dateCreated)
         }
-        dateFormatter.dateStyle = .none
-        dateFormatter.timeStyle = .medium
-        imageTime.text = dateFormatter.string(from: dateCreated)
 
         // Get image from cache or download it
         imageThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
