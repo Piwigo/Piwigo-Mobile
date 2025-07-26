@@ -52494,7 +52494,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://da.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "de" : {
@@ -52554,13 +52554,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://pl.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://ru.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "sv" : {
@@ -52572,13 +52572,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://cn.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum/"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://cn.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         }
       }
