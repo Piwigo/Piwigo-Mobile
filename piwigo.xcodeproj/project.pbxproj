@@ -307,7 +307,6 @@
 		AD6E6C4A2E2BE76E00600E5A /* UserGroupToUserGroupMigrationPolicy_Copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C492E2BE76E00600E5A /* UserGroupToUserGroupMigrationPolicy_Copy.swift */; };
 		AD6E6C4C2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4B2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift */; };
 		AD6E6C4E2E2C001F00600E5A /* PdfDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */; };
-		AD6E6C502E2CE4EF00600E5A /* PdfPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6E6C4F2E2CE4EF00600E5A /* PdfPageViewController.swift */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
 		AD73C6C02DF3474B00CC3837 /* MappingModel_0H_to_0I.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD73C6BF2DF3474B00CC3837 /* MappingModel_0H_to_0I.xcmappingmodel */; };
@@ -1030,7 +1029,6 @@
 		AD6E6C492E2BE76E00600E5A /* UserGroupToUserGroupMigrationPolicy_Copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserGroupToUserGroupMigrationPolicy_Copy.swift; sourceTree = "<group>"; };
 		AD6E6C4B2E2BF11800600E5A /* UploadToUploadMigrationPolicy_0J_to_0K.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicy_0J_to_0K.swift; sourceTree = "<group>"; };
 		AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfDetailViewController.swift; sourceTree = "<group>"; };
-		AD6E6C4F2E2CE4EF00600E5A /* PdfPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfPageViewController.swift; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
 		AD73C6BF2DF3474B00CC3837 /* MappingModel_0H_to_0I.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0H_to_0I.xcmappingmodel; sourceTree = "<group>"; };
@@ -2660,7 +2658,6 @@
 				AD3DB4122773958200017542 /* ImageDetailViewController.swift */,
 				AD09E2FE2A90D6DD00D8E134 /* VideoDetailViewController.swift */,
 				AD6E6C4D2E2C001F00600E5A /* PdfDetailViewController.swift */,
-				AD6E6C4F2E2CE4EF00600E5A /* PdfPageViewController.swift */,
 				ADC1FD9E29E3202500D8ADDC /* PieProgressView.swift */,
 				D818EA031A74D32100733991 /* Extensions */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
@@ -3985,7 +3982,6 @@
 				ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */,
 				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
 				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
-				AD6E6C502E2CE4EF00600E5A /* PdfPageViewController.swift in Sources */,
 				ADB007D72D7B0A5F004A84A7 /* ImageViewController+Bars.swift in Sources */,
 				ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */,
 				AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */,

@@ -138,7 +138,7 @@ class PdfDetailViewController: UIViewController
     }
     
     
-    // MARK: - PDF Management
+    // MARK: - PDF View
     @MainActor
     private func setPlaceHolderViewFrame() {
         // Check input
@@ -195,12 +195,11 @@ class PdfDetailViewController: UIViewController
     
     @MainActor
     private func setPdfView(with document: PDFDocument) {
+        pdfView?.document = document
         pdfView?.autoScales = true
         pdfView?.displayMode = .singlePageContinuous
         pdfView?.displaysPageBreaks = true
         pdfView?.displayDirection = .vertical
-        document.delegate = self
-        pdfView?.document = document
     }
     
     
@@ -210,13 +209,5 @@ class PdfDetailViewController: UIViewController
         if descContainer.descTextView.text.isEmpty == false {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
         }
-    }
-}
-
-
-extension PdfDetailViewController: PDFDocumentDelegate
-{
-    func classForPage() -> AnyClass {
-        return PdfPageViewController.self
     }
 }

@@ -285,12 +285,11 @@ class ExternalDisplayViewController: UIViewController {
         UIView.transition(with: imageView, duration: 0.5,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
+            pdfView?.document = document
             pdfView?.autoScales = true
             pdfView?.displayMode = .singlePageContinuous
             pdfView?.displaysPageBreaks = true
             pdfView?.displayDirection = .vertical
-            document.delegate = self
-            pdfView?.document = document
         }, completion: { [self] _ in
             self.progressView?.isHidden = true
             self.imageView?.image = nil
@@ -308,13 +307,5 @@ extension ExternalDisplayViewController: VideoControlsDelegate
         if let video = video {
             playbackController.seek(contentOfVideo: video, toTimeFraction: value)
         }
-    }
-}
-
-
-extension ExternalDisplayViewController: PDFDocumentDelegate
-{
-    func classForPage() -> AnyClass {
-        return PdfPageViewController.self
     }
 }
