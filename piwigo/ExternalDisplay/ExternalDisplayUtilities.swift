@@ -13,21 +13,13 @@ class ExternalDisplayUtilities {
     /** Returns:
      - the Piwigo  image size
      - the URL of the image file stored on the Piwigo server
-       whose resolution matches the one demaned by the activity type
+       whose resolution matches the one of the external screen
+     
+     N.B.: Should only be applied to images
      **/
-    // Returns the size and Piwigo URL of the image of at least the wanted size
-    static func getOptimumSizeAndURL(_ imageData: Image, ofMinSize wantedSize: Int) -> (pwgImageSize, URL)? {
+    static func getOptimumImageSizeAndURL(_ imageData: Image, ofMinSize wantedSize: Int) -> (pwgImageSize, URL)? {
         // ATTENTION: Some sizes and/or URLs may not be available!
         // So we go through the whole list of URLs...
-
-        // If this is a video, always select the full resolution file, i.e. the video.
-        if imageData.isVideo {
-            if let pwgURL = imageData.fullRes?.url {
-                return (.fullRes, pwgURL as URL)
-            } else {
-                return nil
-            }
-        }
         
         // Download image of optimum size (depends on Piwigo server settings)
         /// - Check available image sizes from the smallest to the highest resolution
@@ -152,7 +144,7 @@ class ExternalDisplayUtilities {
             let size = sizes.xxlarge?.maxSize ?? 1
             // Ensure that at least an URL will be returned
             // and check if this size is more appropriate
-            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
+            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) || imageData.isNotImage {
                 pwgSize = .xxLarge
                 pwgURL = imageURL
                 selectedSize = size
@@ -164,8 +156,8 @@ class ExternalDisplayUtilities {
             // Max dimension of this image
             let size = imageData.fullRes?.maxSize ?? 1
             // Ensure that at least an URL will be returned
-            // and check if this size is more appropriate
-            if (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
+            // and check if this size is more appropriate for an image exclusively
+            if imageData.isImage, (pwgURL == nil) || sizeIsNearest(size, current: selectedSize, wanted: wantedSize) {
                 pwgSize = .fullRes
                 pwgURL = imageURL
                 selectedSize = size

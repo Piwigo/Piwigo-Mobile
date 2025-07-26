@@ -62,6 +62,47 @@ class PdfDetailViewController: UIViewController
         applyColorPalette()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Should this PDF file be also displayed on the external screen?
+        if #available(iOS 13.0, *) {
+            // Get scene role of external display
+            var wantedRole: UISceneSession.Role!
+            if #available(iOS 16.0, *) {
+                wantedRole = .windowExternalDisplayNonInteractive
+            } else {
+                // Fallback on earlier versions
+                wantedRole = .windowExternalDisplay
+            }
+            
+            // Get scene of external display
+            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
+                  let windowScene = scenes.first as? UIWindowScene
+            else { return }
+                
+            // Add PDF view to external screen
+            if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+                // Configure external display view controller
+                imageVC.imageData = imageData
+                imageVC.configImage()
+            }
+            else {
+                // Create external display view controller
+                let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
+                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
+                else { preconditionFailure("Could not load ExternalDisplayViewController") }
+                imageVC.imageData = imageData
+                
+                // Create window and make it visible
+                let window = UIWindow(windowScene: windowScene)
+                window.rootViewController = imageVC
+                sceneDelegate.initExternalDisplay(with: window)
+            }
+        }
+    }
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -130,7 +171,12 @@ class PdfDetailViewController: UIViewController
             if let imageURL = self.imageURL {
                 PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .image, atURL: imageURL,
                                            fromServer: imageData.server?.uuid, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
-                    self?.updateProgressView(with: fractionCompleted)
+                    // Show download progress
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        debugPrint("••> Loading image \(self.imageData.pwgID): \(fractionCompleted)%")
+                        self.progressView.progress = fractionCompleted
+                    }
                 } completion: { [weak self] cachedFileURL in
                     DispatchQueue.main.async {
                         guard let self = self else { return }
@@ -148,17 +194,7 @@ class PdfDetailViewController: UIViewController
     }
     
     @MainActor
-    private func updateProgressView(with fractionCompleted: Float) {
-        //        debugPrint("••> Loading image \(imageData.pwgID): \(fractionCompleted)%")
-        DispatchQueue.main.async { [self] in
-            // Show download progress
-            self.progressView.progress = fractionCompleted
-        }
-    }
-    
-    @MainActor
     private func setPdfView(with document: PDFDocument) {
-        // Center document
         pdfView?.autoScales = true
         pdfView?.displayMode = .singlePageContinuous
         pdfView?.displaysPageBreaks = true
