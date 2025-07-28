@@ -685,7 +685,7 @@ extension ImageViewController: UIPageViewControllerDataSource
         guard let pdfDVC = storyboard?.instantiateViewController(withIdentifier: "PdfDetailViewController") as? PdfDetailViewController
         else { return nil }
 
-        // Create video detail view
+        // Create PDF detail view
         pdfDVC.indexPath = indexPath
         pdfDVC.imageData = imageData
         return pdfDVC

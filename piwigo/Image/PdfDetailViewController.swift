@@ -195,6 +195,7 @@ class PdfDetailViewController: UIViewController
     
     @MainActor
     private func setPdfView(with document: PDFDocument) {
+        // Initialiase the PDF view
         pdfView?.document = document
         pdfView?.autoScales = true
         pdfView?.displayMode = .singlePageContinuous
@@ -202,6 +203,23 @@ class PdfDetailViewController: UIViewController
         pdfView?.displayDirection = .vertical
     }
     
+    @MainActor
+    func didSelectPageNumber(_ pageNumber: Int) {
+        // Check number of pages
+        guard let pageCount = self.pdfView?.document?.pageCount,
+              pageCount > 0
+        else { return }
+        
+        // Check requested page number
+        let pageNumberToShow = min(max(1, pageNumber), pageCount)
+        
+        // Go to page different than current one
+        guard let currentPageNumber = pdfView?.currentPage?.pageRef?.pageNumber,
+              pageNumberToShow != currentPageNumber,
+              let page = pdfView?.document?.page(at: pageNumberToShow - 1)
+        else { return }
+        pdfView?.go(to: page)
+    }
     
     // MARK: - Gestures Management
     func updateDescriptionVisibility() {

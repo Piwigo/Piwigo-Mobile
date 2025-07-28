@@ -413,6 +413,7 @@
 		AD96F4302748601D004C8DFF /* piwigo.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96F42F2748601D004C8DFF /* piwigo.png */; };
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
+		AD9833A62E37834200159DEA /* ImageViewController+PDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9833A52E37834200159DEA /* ImageViewController+PDF.swift */; };
 		AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD987633262606C600B964C5 /* UIViewController+AppTools.swift */; };
 		AD98DEB227C1AF2900FAC983 /* pwg.session.getStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */; };
 		AD98DEB427C2375C00FAC983 /* pwg.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98DEB327C2375C00FAC983 /* pwg.session.getStatus.swift */; };
@@ -1151,6 +1152,7 @@
 		AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppGroups.swift"; sourceTree = "<group>"; };
 		AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkVars.swift; sourceTree = "<group>"; };
 		AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumVars.swift; sourceTree = "<group>"; };
+		AD9833A52E37834200159DEA /* ImageViewController+PDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+PDF.swift"; sourceTree = "<group>"; };
 		AD98762E2626014500B964C5 /* UploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProperties.swift; sourceTree = "<group>"; };
 		AD987633262606C600B964C5 /* UIViewController+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppTools.swift"; sourceTree = "<group>"; };
 		AD98DEB127C1AF2900FAC983 /* pwg.session.getStatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.session.getStatus.json; sourceTree = "<group>"; };
@@ -2798,6 +2800,7 @@
 				ADEA269F285F962800B6C9A0 /* ImageViewController+Menus.swift */,
 				ADEA26A1285F9E2400B6C9A0 /* ImageViewController+CopyMove.swift */,
 				ADEA26A7285FA2C300B6C9A0 /* ImageViewController+AlbumThumnail.swift */,
+				AD9833A52E37834200159DEA /* ImageViewController+PDF.swift */,
 				ADEA269D285F909F00B6C9A0 /* ImageViewController+Edit.swift */,
 				AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */,
 				ADEA26A5285FA1EB00B6C9A0 /* ImageViewController+Delete.swift */,
@@ -3795,6 +3798,7 @@
 				ADDB2A602B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift in Sources */,
 				AD12D6F62AA657080038BBFF /* VideoControlsView.swift in Sources */,
 				ADEA269C285F8F2E00B6C9A0 /* ImageViewController+Favorites.swift in Sources */,
+				AD9833A62E37834200159DEA /* ImageViewController+PDF.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				AD400B212C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift in Sources */,
 				ADDB2A5E2B416A8400FDC1B1 /* EditImageParamsViewController+UITextField.swift in Sources */,
