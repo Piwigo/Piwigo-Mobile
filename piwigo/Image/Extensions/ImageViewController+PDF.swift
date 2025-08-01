@@ -28,11 +28,10 @@ extension ImageViewController
 
 
 // MARK: - Go To Page of PDF file
-@available(iOS 14.0, *)
 extension ImageViewController
 {
     @MainActor
-    func goToPage() {
+    @objc func goToPage() {
         // Disable buttons during action
         setEnableStateOfButtons(false)
         
@@ -76,7 +75,9 @@ extension ImageViewController
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        }
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying

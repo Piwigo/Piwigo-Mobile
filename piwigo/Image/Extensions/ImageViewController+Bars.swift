@@ -128,7 +128,7 @@ extension ImageViewController {
                                               target: self, action: #selector(editImage))
             actionBarButton?.accessibilityIdentifier = "edit"
             navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, muteBarButton].compactMap { $0 }
+            navigationItem.rightBarButtonItems = [actionBarButton, muteBarButton, goToPageButton].compactMap { $0 }
 
             // Navigation toolbar
             isToolbarRequired = true
@@ -179,7 +179,7 @@ extension ImageViewController {
                     
                     // Buttons not related to video player in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
+                    navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton].compactMap { $0 }
                 }
                 else {
                     // No toolbar
@@ -188,8 +188,13 @@ extension ImageViewController {
                     navigationController?.setToolbarHidden(true, animated: true)
                     
                     // Buttons w/o player controls in the navigation bar
-                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
+                    if favoriteBarButton != nil {
+                        navigationItem.leftBarButtonItems = [backButton, goToPageButton].compactMap {$0}
+                        navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
+                    } else {
+                        navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                        navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton].compactMap { $0 }
+                    }
                 }
             }
             else {
@@ -217,7 +222,7 @@ extension ImageViewController {
                     
                     // Buttons w/o player controls in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [favoriteBarButton].compactMap { $0 }
+                    navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
                 }
                 else {
                     // Show toolbar with player controls
@@ -228,7 +233,7 @@ extension ImageViewController {
                     
                     // Buttons w/o player controls in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [favoriteBarButton].compactMap { $0 }
+                    navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
                 }
             }
         } else {      // iPad or iPhone in landscape orientation
@@ -238,7 +243,7 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
 
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
         }
     }
@@ -256,6 +261,7 @@ extension ImageViewController {
         favoriteBarButton?.isEnabled = state
         playBarButton?.isEnabled = state
         muteBarButton?.isEnabled = state
+        goToPageButton?.isEnabled = state
     }
 
 

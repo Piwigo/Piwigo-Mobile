@@ -56,7 +56,21 @@ extension UIBarButtonItem {
         button.accessibilityIdentifier = "pause"
         return button
     }
-    
+
+    static func goToPageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button: UIBarButtonItem!
+        if #available(iOS 13.0, *) {
+            button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
+                                     style: .plain, target: target, action: action)
+        } else {
+            button = UIBarButtonItem(barButtonSystemItem: .bookmarks,
+                                     target: target, action: action)
+        }
+        button.tintColor = .piwigoColorOrange()
+        button.accessibilityIdentifier = "goToPage"
+        return button
+    }
+
     
     // MARK: - Set Album Thumbnail Bar Button Item
     static func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {

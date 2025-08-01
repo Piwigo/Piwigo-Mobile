@@ -66,6 +66,7 @@ class ImageViewController: UIViewController {
     var favoriteBarButton: UIBarButtonItem?
     var playBarButton: UIBarButtonItem?
     var muteBarButton: UIBarButtonItem?
+    var goToPageButton: UIBarButtonItem?
     
     // MARK: - Rotate View & Buttons
     var rotateView: UIView?
@@ -603,14 +604,18 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
-            // Reset video player buttons
+            // Reset video player and PDF goToPage buttons
             playBarButton = nil
             muteBarButton = nil
+            goToPageButton = nil
         }
         else if let videoDVC = pageViewController.viewControllers?.first as? VideoDetailViewController {
             // Store index and image data of presented page
             indexPath = videoDVC.indexPath
             imageData = videoDVC.imageData
+            
+            // Reset PDF goToPage buttons
+            goToPageButton = nil
             
             // Set video player buttons
             playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
@@ -620,6 +625,13 @@ extension ImageViewController: UIPageViewControllerDelegate
             // Store index and image data of presented page
             indexPath = pdfDVC.indexPath
             imageData = pdfDVC.imageData
+            
+            // Reset video player and PDF reader buttons
+            playBarButton = nil
+            muteBarButton = nil
+            
+            // Set PDF goToPage button
+            goToPageButton = UIBarButtonItem.goToPageButton(self, action: #selector(goToPage))
         }
         else {
             return
