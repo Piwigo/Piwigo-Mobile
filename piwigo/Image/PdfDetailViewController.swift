@@ -11,8 +11,17 @@ import PDFKit
 import UIKit
 import piwigoKit
 
+protocol PdfDetailDelegate: NSObjectProtocol {
+    func updateProgressView(with fractionCompleted: Float)
+    func setPdfView(with document: PDFDocument)
+    func didSelectPageNumber(_ pageNumber: Int)
+    func scrolled(_ height: Double, by offset: Double, max maxOffset: Double)
+}
+
 class PdfDetailViewController: UIViewController
 {
+    weak var pdfDetailDelegate: PdfDetailDelegate?
+
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
         didSet {
@@ -20,6 +29,7 @@ class PdfDetailViewController: UIViewController
         }
     }
     var imageURL: URL?
+    private var scrollView: UIScrollView?
     
     @IBOutlet weak var placeHolderView: UIImageView!
     @IBOutlet weak var pdfView: PDFView!
@@ -86,7 +96,9 @@ class PdfDetailViewController: UIViewController
             if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
                 // Configure external display view controller
                 imageVC.imageData = imageData
+                imageVC.document = pdfView?.document
                 imageVC.configImage()
+                pdfDetailDelegate = imageVC
             }
             else {
                 // Create external display view controller
@@ -94,7 +106,9 @@ class PdfDetailViewController: UIViewController
                 guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
                 else { preconditionFailure("Could not load ExternalDisplayViewController") }
                 imageVC.imageData = imageData
-                
+                imageVC.document = pdfView?.document
+                pdfDetailDelegate = imageVC
+
                 // Create window and make it visible
                 let window = UIWindow(windowScene: windowScene)
                 window.rootViewController = imageVC
@@ -118,9 +132,7 @@ class PdfDetailViewController: UIViewController
             setPlaceHolderViewFrame()
             
             // Set scale to fullscreen if needed
-            if pdfView.scaleFactor < pdfView.scaleFactorForSizeToFit {
-                pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
-            }
+            pdfView.autoScales = true
         })
     }
     
@@ -174,8 +186,8 @@ class PdfDetailViewController: UIViewController
                     // Show download progress
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
-                        debugPrint("••> Loading image \(self.imageData.pwgID): \(fractionCompleted)%")
                         self.progressView.progress = fractionCompleted
+                        self.pdfDetailDelegate?.updateProgressView(with: fractionCompleted)
                     }
                 } completion: { [weak self] cachedFileURL in
                     DispatchQueue.main.async {
@@ -183,10 +195,13 @@ class PdfDetailViewController: UIViewController
                         // Hide progress view
                         self.progressView.isHidden = true
 
-                        // Show PDF file in cache
+                        // Show PDF file stored in cache
                         guard let document = PDFDocument(url: cachedFileURL)
                         else { return }
                         self.setPdfView(with: document)
+                        
+                        // Show PDF file on external screen if needed
+                        self.pdfDetailDelegate?.setPdfView(with: document)
                     }
                 } failure: { _ in }
             }
@@ -201,6 +216,13 @@ class PdfDetailViewController: UIViewController
         pdfView?.displayMode = .singlePageContinuous
         pdfView?.displaysPageBreaks = true
         pdfView?.displayDirection = .vertical
+        
+        // Seek the scroll view associated to the PDFView
+        /// This scrollview is not exposed as of iOS 18
+        if let scrollView = pdfView?.subviews.compactMap({ $0 as? UIScrollView }).first {
+            self.scrollView = scrollView
+            self.scrollView?.delegate = self
+        }
     }
     
     @MainActor
@@ -219,7 +241,9 @@ class PdfDetailViewController: UIViewController
               let page = pdfView?.document?.page(at: pageNumberToShow - 1)
         else { return }
         pdfView?.go(to: page)
+        pdfDetailDelegate?.didSelectPageNumber(pageNumberToShow)
     }
+    
     
     // MARK: - Gestures Management
     func updateDescriptionVisibility() {
@@ -227,5 +251,22 @@ class PdfDetailViewController: UIViewController
         if descContainer.descTextView.text.isEmpty == false {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
         }
+    }
+}
+
+
+// MARK: - UIScrollViewDelegate Methods
+extension PdfDetailViewController: UIScrollViewDelegate
+{
+    // Scroll the PDF view on the external display if needed
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Get content height
+        let contentHeight: Double = scrollView.contentSize.height
+        // Get 'real' content offset
+        let contentOffset: Double = scrollView.contentOffset.y + Double(scrollView.adjustedContentInset.top)
+        // Get max 'real' content offset
+        let viewHeight: Double = Double(scrollView.bounds.height - scrollView.adjustedContentInset.top - scrollView.adjustedContentInset.bottom)
+        let maxContentOffset: Double = contentHeight - viewHeight
+        pdfDetailDelegate?.scrolled(contentHeight, by: contentOffset, max: maxContentOffset)
     }
 }

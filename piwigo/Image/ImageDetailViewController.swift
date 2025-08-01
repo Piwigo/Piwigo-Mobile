@@ -37,6 +37,7 @@ class ImageDetailViewController: UIViewController
     private lazy var viewSize: CGSize =  {
         if #available(iOS 13.0, *) {
             let size = UIApplication.shared.connectedScenes
+                .filter({$0.session.role == .windowApplication})
                 .filter({$0.activationState == .foregroundActive})
                 .map({$0 as? UIWindowScene})
                 .compactMap({$0})
