@@ -261,11 +261,17 @@ extension UploadManager {
                 return
             }
 
-            // Apply properties of the source to the destination
-            /// - must be done before adding images
+            // Prepare container properties from the source
+            /// - must be added before adding images
+            var properties: [CFString : Any] = [:]
             if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
+#if DEBUG
+debugPrint("====> Container properties of the source image:")
+containerProperties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
                 // Should we remove private metadata?
-                var properties: [CFString : Any] = [:]
                 if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
                     properties = containerProperties.stripPrivateProperties()
@@ -273,26 +279,104 @@ extension UploadManager {
                     // Keeps private metadata attributed to this image
                     properties = containerProperties
                 }
-                
-                // Fix properties
-                properties.fixProperties(from: containerProperties)
-                
-                // Copy metadata w/o private infos
-                CGImageDestinationSetProperties(destinationRef, properties as CFDictionary)
             }
 
-            // Loop over images contained in source file
-            for imageIndex in 0..<nberOfImages {
+            // Get index of the primary image
+            let imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
+            
+            // Should we resize the primary image?
+            var image:CGImage
+            let resizeImage = upload.resizeImageOnUpload && (upload.photoMaxSize != 0)
+            if resizeImage {
+                // Set options for retrieving the primary image
+                let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
+                let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
+                                     kCGImageSourceCreateThumbnailWithTransform   : true,
+                                     kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
+                // Get image
+                guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
+                                                                        resizeOptions as CFDictionary) else {
+                    // Could not retrieve primary image
+                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    failure(error)
+                    return
+                }
+                image = resized
+            } else {
+                // Get image
+                guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
+                    // Could not retrieve primary image
+                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    failure(error)
+                    return
+                }
+                image = copied
+            }
+
+            // Fix container properties from converted/resized image
+            properties.fixContents(from: image, resettingOrientation: resizeImage)
+#if DEBUG
+debugPrint("====> Container properties of the destination image:")
+properties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
+            
+            // Set container metadata
+            CGImageDestinationSetProperties(destinationRef, properties as CFDictionary)
+
+            // Set primary metadata from the source image
+            var imageOptions: Dictionary<CFString,Any> = [:]
+            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
+#if DEBUG
+debugPrint("====> Primary image properties of the source image:")
+imageProperties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
+                // Should we remove private metadata?
+                if upload.stripGPSdataOnUpload {
+                    // Removes private metadata attributed to this image
+                    imageOptions = imageProperties.stripPrivateProperties()
+                }
+                else {
+                    // Copy metadata attributed to this image
+                    imageOptions = imageProperties
+                }
+                
+                // Fix primary image properties from converted/resized image
+                imageOptions.fixContents(from: image, resettingOrientation: resizeImage)
+#if DEBUG
+debugPrint("====> Primary image properties of the destination image:")
+imageOptions.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
+            }
+
+            // Should we compress the image?
+            if upload.compressImageOnUpload {
+                let quality = CGFloat(upload.photoQuality) / 100.0
+                imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
+            }
+                    
+            // Add image to destination w/ appropriate metadata
+            CGImageDestinationAddImage(destinationRef, image, imageOptions as CFDictionary)
+
+            // Loop over the remaining images of the source container
+            for index in 0..<nberOfImages {
+                // All images except the primary one
+                if index == imageIndex { continue }
+                
                 // Should we resize the images?
-                var image:CGImage
-                if upload.resizeImageOnUpload, upload.photoMaxSize != 0 {
+                if resizeImage {
                     // Set options for retrieving the primary image
                     let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
                     let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                          kCGImageSourceCreateThumbnailWithTransform   : true,
                                          kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
                     // Get image
-                    guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
+                    guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, index,
                                                                             resizeOptions as CFDictionary) else {
                         // Could not retrieve primary image
                         let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
@@ -302,7 +386,7 @@ extension UploadManager {
                     image = resized
                 } else {
                     // Get image
-                    guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
+                    guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, index, nil) else {
                         // Could not retrieve primary image
                         let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                         failure(error)
@@ -312,8 +396,13 @@ extension UploadManager {
                 }
                 
                 // Set metadata from the source image
-                var imageOptions: [CFString : Any] = [:]
-                if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
+                if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, index, options) as? [CFString : Any] {
+#if DEBUG
+debugPrint("====> Image #\(index) properties of the source image:")
+imageProperties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
                     // Should we remove private metadata?
                     if upload.stripGPSdataOnUpload {
                         // Removes private metadata attributed to this image
@@ -325,7 +414,13 @@ extension UploadManager {
                     }
                     
                     // Fix metadata for resized image
-                    imageOptions.fixContents(from: image)
+                    imageOptions.fixContents(from: image, resettingOrientation: resizeImage)
+#if DEBUG
+debugPrint("====> Image #\(index) properties of the destination image:")
+imageOptions.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
                 }
                 
                 // Should we compress the image?
@@ -334,7 +429,7 @@ extension UploadManager {
                     imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
                 }
                         
-                // Add image to destination w/ appropriate metadatab
+                // Add image to destination w/ appropriate metadata
                 CGImageDestinationAddImage(destinationRef, image, imageOptions as CFDictionary)
             }
 
@@ -368,7 +463,7 @@ extension UploadManager {
                 return
             }
             
-            // Get number of images in source
+            // Check number of images in source
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
@@ -376,7 +471,7 @@ extension UploadManager {
                 failure(error)
                 return
             }
-                        
+            
             // Get creation date from metadata if possible
             if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
                 upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
@@ -384,12 +479,57 @@ extension UploadManager {
                 upload.creationDate = (originalFileURL.creationDate ?? DateUtilities.unknownDate).timeIntervalSinceReferenceDate
             }
             
+            // Prepare conversion to JPEG format
+            var UTI: CFString, fileExt: String
+            if #available(iOS 14.0, *) {
+                UTI = UTType.jpeg.identifier as CFString
+                fileExt = UTType.jpeg.preferredFilenameExtension!
+            } else {
+                // Fallback on earlier versions
+                UTI = kUTTypeJPEG as CFString
+                fileExt = "jpeg"
+            }
+            upload.fileName = URL(fileURLWithPath: upload.fileName)
+                .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
+            
+            // Get URL of final image data file to be stored into Piwigo/Uploads directory
+            let fileURL = getUploadFileURL(from: upload, deleted: true)
+
+            // Prepare destination file of JPEG type containing a single image
+            guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
+                // Could not prepare image source
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                failure(error)
+                return
+            }
+            
+            // Prepare container properties from the source
+            /// - must be added before adding images
+            var properties: [CFString : Any] = [:]
+            if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
+#if DEBUG
+debugPrint("====> Container properties of the source image:")
+containerProperties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
+                // Should we remove private metadata?
+                if upload.stripGPSdataOnUpload {
+                    // Removes private metadata attributed to this image
+                    properties = containerProperties.stripPrivateProperties()
+                } else {
+                    // Keeps private metadata attributed to this image
+                    properties = containerProperties
+                }
+            }
+
             // Get index of the primary image
             let imageIndex = CGImageSourceGetPrimaryImageIndex(sourceRef)
             
             // Should we resize the image?
             var image:CGImage
-            if upload.resizeImageOnUpload, upload.photoMaxSize != 0 {
+            let resizeImage = upload.resizeImageOnUpload && (upload.photoMaxSize != 0)
+            if resizeImage {
                 // Set options for retrieving the primary image
                 let maxSize = pwgPhotoMaxSizes(rawValue: upload.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
@@ -415,53 +555,27 @@ extension UploadManager {
                 image = copied
             }
             
-            // Prepare conversion to JPEG format
-            var UTI: CFString, fileExt: String
-            if #available(iOS 14.0, *) {
-                UTI = UTType.jpeg.identifier as CFString
-                fileExt = UTType.jpeg.preferredFilenameExtension!
-            } else {
-                // Fallback on earlier versions
-                UTI = kUTTypeJPEG as CFString
-                fileExt = "jpeg"
-            }
-            upload.fileName = URL(fileURLWithPath: upload.fileName)
-                .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
+            // Fix container properties from converted/resized image
+            properties.fixContents(from: image, resettingOrientation: resizeImage)
+#if DEBUG
+debugPrint("====> Container properties of the destination image:")
+properties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
             
-            // Get URL of final image data file to be stored into Piwigo/Uploads directory
-            let fileURL = getUploadFileURL(from: upload, deleted: true)
+            // Set container metadata
+            CGImageDestinationSetProperties(destinationRef, properties as CFDictionary)
 
-            // Prepare destination file of JPEG type with a single image
-            guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
-                // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
-                return
-            }
-            
-            // Apply container properties of the source to the destination
-            /// - must be done before adding images
-            if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
-                // Should we remove private metadata?
-                var options: [CFString : Any] = [:]
-                if upload.stripGPSdataOnUpload {
-                    // Removes private metadata attributed to this image
-                    options = containerProperties.stripPrivateProperties()
-                } else {
-                    // Removes private metadata attributed to this image
-                    options = containerProperties
-                }
-                
-                // Fix properties
-                options.fixProperties(from: containerProperties)
-                
-                // Copy metadata w/ or w/o private infos
-                CGImageDestinationSetProperties(destinationRef, options as CFDictionary)
-            }
-
-            // Set metadata from the source image
+            // Set primary image metadata from the source image
             var imageOptions: Dictionary<CFString,Any> = [:]
             if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
+#if DEBUG
+debugPrint("====> Primary image properties of the source image:")
+imageProperties.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
                 // Should we remove private metadata?
                 if upload.stripGPSdataOnUpload {
                     // Removes private metadata attributed to this image
@@ -472,8 +586,14 @@ extension UploadManager {
                     imageOptions = imageProperties
                 }
                 
-                // Fix metadata for converted/resized image
-                imageOptions.fixContents(from: image)
+                // Fix primary image properties from converted/resized image
+                imageOptions.fixContents(from: image, resettingOrientation: resizeImage)
+#if DEBUG
+debugPrint("====> Primary image properties of the destination image:")
+imageOptions.forEach { (key, value) in
+    debugPrint("\(key): \(value)")
+}
+#endif
             }
             
             // Should we compress the image?
