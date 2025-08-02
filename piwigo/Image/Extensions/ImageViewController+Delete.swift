@@ -306,9 +306,19 @@ extension ImageViewController: SelectCategoryImageRemovedDelegate
     }
     
     private func presentImage(inDirection direction: UIPageViewController.NavigationDirection) {
-        // Create image view controller
+        // Create image detail view controller
+        var newImageVC: UIViewController?
         let imageData = getImageData(atIndexPath: indexPath)
-        guard let newImageVC = imageData.isVideo ? videoDetailViewController(ofImage: imageData, atIndexPath: indexPath) : imageDetailViewController(ofImage: imageData, atIndexPath: indexPath)
+        let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
+        switch fileType {
+        case .image:
+            newImageVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath)
+        case .video:
+            newImageVC = videoDetailViewController(ofImage: imageData, atIndexPath: indexPath)
+        case .pdf:
+            newImageVC = pdfDetailViewController(ofImage: imageData, atIndexPath: indexPath)
+        }
+        guard let newImageVC = newImageVC
         else {
             // Return to the Album/Images collection view
             navigationController?.dismiss(animated: true)

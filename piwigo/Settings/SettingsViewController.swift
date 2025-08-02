@@ -417,6 +417,7 @@ class SettingsViewController: UIViewController {
         }
     }
     
+    @MainActor
     func loginLogout() {
         // Set date of use of server and user
         let now = Date.timeIntervalSinceReferenceDate

@@ -12,6 +12,7 @@ import AVFoundation
 import LinkPresentation
 import MobileCoreServices
 import UIKit
+import UniformTypeIdentifiers
 import piwigoKit
 import uploadKit
 
@@ -109,7 +110,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Get the server ID and optimum available image size
         guard let serverID = imageData.server?.uuid,
-              let (imageSize, imageURL) = ShareUtilities.getOptimumSizeAndURL(imageData, ofMaxSize: Int.max) else {
+              let imageURL = imageData.downloadUrl as? URL else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
@@ -124,7 +125,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Download video synchronously if not in cache
         let sema = DispatchSemaphore(value: 0)
-        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: imageSize, type: .album, atURL: imageURL,
+        PwgSession.shared.getImage(withID: imageData.pwgID, ofSize: .fullRes, type: .album, atURL: imageURL,
                                    fromServer: serverID, fileSize: imageData.fileSize) { [weak self] fractionCompleted in
             // Notify the delegate on the main thread to show how it makes progress.
             self?.updateProgressView(with: Float((0.75 * fractionCompleted)))
@@ -153,7 +154,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         guard let cachedFileURL = cachedFileURL else {
             // Will notify the delegate on the main thread that the processing is cancelled
             self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            self.alertMessage = NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!")
+            self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), "")
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
@@ -168,7 +169,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
 
         // Copy original file to /tmp directly with appropriate file name
         // and set creation date as the photo creation date
-        let creationDate = NSDate(timeIntervalSinceReferenceDate: imageData.dateCreated)
+        let fileDate = imageData.dateCreated == DateUtilities.unknownDateInterval ? imageData.datePosted : imageData.dateCreated
+        let creationDate = NSDate(timeIntervalSinceReferenceDate: fileDate)
         let attrs = [FileAttributeKey.creationDate     : creationDate,
                      FileAttributeKey.modificationDate : creationDate]
         do {

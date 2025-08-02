@@ -66,6 +66,7 @@ class ImageViewController: UIViewController {
     var favoriteBarButton: UIBarButtonItem?
     var playBarButton: UIBarButtonItem?
     var muteBarButton: UIBarButtonItem?
+    var goToPageButton: UIBarButtonItem?
     
     // MARK: - Rotate View & Buttons
     var rotateView: UIView?
@@ -86,13 +87,19 @@ class ImageViewController: UIViewController {
 
         // Load initial image preview view controller
         imageData = getImageData(atIndexPath: indexPath)
-        if imageData.isVideo {
+        let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
+        switch fileType {
+        case .image:
+            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
+                pageViewController?.setViewControllers([imageDVC], direction: .forward, animated: false)
+            }
+        case .video:
             if let videoDVC = videoDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
                 pageViewController?.setViewControllers([videoDVC], direction: .forward, animated: false)
             }
-        } else {
-            if let imageDVC = imageDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
-                pageViewController!.setViewControllers([imageDVC], direction: .forward, animated: false)
+        case .pdf:
+            if let pdfDVC = pdfDetailViewController(ofImage: imageData, atIndexPath: indexPath) {
+                pageViewController?.setViewControllers([pdfDVC], direction: .forward, animated: false)
             }
         }
                 
@@ -378,6 +385,18 @@ class ImageViewController: UIViewController {
                                 self.updateNavBar()
                                 self.setEnableStateOfButtons(true)
                                 break
+                            } else if let pvc = vc as? PdfDetailViewController, pvc.imageData.pwgID == imageID,
+                                      let updatedImage = self.images.fetchedObjects?.first(where: { $0.pwgID == imageID }){
+                                // Update image data
+                                if updatedImage.isFault {
+                                    updatedImage.willAccessValue(forKey: nil)
+                                    updatedImage.didAccessValue(forKey: nil)
+                                }
+                                pvc.imageData = updatedImage
+                                // Update navigation bar and enable buttons
+                                self.updateNavBar()
+                                self.setEnableStateOfButtons(true)
+                                break
                             }
                         }
                     }
@@ -564,6 +583,11 @@ extension ImageViewController: UIPageViewControllerDelegate
             // Pause download
             PwgSession.shared.pauseDownload(atURL: imageURL)
         }
+        else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController,
+                let imageURL = pdfDVC.imageURL {
+            // Pause download
+            PwgSession.shared.pauseDownload(atURL: imageURL)
+        }
     }
     
     // Called after a gesture-driven transition completes
@@ -580,19 +604,36 @@ extension ImageViewController: UIPageViewControllerDelegate
             indexPath = imageDVC.indexPath
             imageData = imageDVC.imageData
             
-            // Reset video player buttons
+            // Reset video player and PDF goToPage buttons
             playBarButton = nil
             muteBarButton = nil
+            goToPageButton = nil
         }
         else if let videoDVC = pageViewController.viewControllers?.first as? VideoDetailViewController {
             // Store index and image data of presented page
             indexPath = videoDVC.indexPath
             imageData = videoDVC.imageData
             
+            // Reset PDF goToPage buttons
+            goToPageButton = nil
+            
             // Set video player buttons
             playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
             muteBarButton = UIBarButtonItem.muteAudioButton(VideoVars.shared.isMuted, target: self, action: #selector(muteUnmuteAudio))
-        } else {
+        }
+        else if let pdfDVC = pageViewController.viewControllers?.first as? PdfDetailViewController {
+            // Store index and image data of presented page
+            indexPath = pdfDVC.indexPath
+            imageData = pdfDVC.imageData
+            
+            // Reset video player and PDF reader buttons
+            playBarButton = nil
+            muteBarButton = nil
+            
+            // Set PDF goToPage button
+            goToPageButton = UIBarButtonItem.goToPageButton(self, action: #selector(goToPage))
+        }
+        else {
             return
         }
         
@@ -608,6 +649,9 @@ extension ImageViewController: UIPageViewControllerDelegate
         }
         else if let videoDVC = previousViewControllers.first as? VideoDetailViewController {
             didPresentNextPage = indexPath > videoDVC.indexPath
+        }
+        else if let pdfDVC = previousViewControllers.first as? PdfDetailViewController {
+            didPresentNextPage = indexPath > pdfDVC.indexPath
         }
 
         // Scroll album collection view to keep the selected image centered on the screen
@@ -647,6 +691,18 @@ extension ImageViewController: UIPageViewControllerDataSource
         return videoDVC
     }
     
+    // Create view controller for presenting the PDF at the provided index
+    func pdfDetailViewController(ofImage imageData: Image, atIndexPath indexPath: IndexPath) -> PdfDetailViewController? {
+//        debugPrint("••> Create page view controller for PDF #\(imageData.pwgID) at index \(indexPath)")
+        guard let pdfDVC = storyboard?.instantiateViewController(withIdentifier: "PdfDetailViewController") as? PdfDetailViewController
+        else { return nil }
+
+        // Create PDF detail view
+        pdfDVC.indexPath = indexPath
+        pdfDVC.imageData = imageData
+        return pdfDVC
+    }
+    
     // Returns the view controller after the given view controller
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
@@ -659,10 +715,14 @@ extension ImageViewController: UIPageViewControllerDataSource
         
         // Create view controller for presenting next image
         let imageData = getImageData(atIndexPath: nextIndexPath)
-        if imageData.isVideo {
-            return videoDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
-        } else {
+        let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
+        switch fileType {
+        case .image:
             return imageDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
+        case .video:
+            return videoDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
+        case .pdf:
+            return pdfDetailViewController(ofImage: imageData, atIndexPath: nextIndexPath)
         }
     }
 
@@ -678,10 +738,14 @@ extension ImageViewController: UIPageViewControllerDataSource
         
         // Create view controller
         let imageData = getImageData(atIndexPath: previousIndexPath)
-        if imageData.isVideo {
-            return videoDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
-        } else {
+        let fileType = pwgImageFileType(rawValue: imageData.fileType) ?? .image
+        switch fileType {
+        case .image:
             return imageDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
+        case .video:
+            return videoDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
+        case .pdf:
+            return pdfDetailViewController(ofImage: imageData, atIndexPath: previousIndexPath)
         }
     }
 }

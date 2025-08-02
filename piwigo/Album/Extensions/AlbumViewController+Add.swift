@@ -13,6 +13,7 @@ import piwigoKit
 extension AlbumViewController
 {
     // MARK: - Create Sub-Album
+    @MainActor
     @objc func addAlbum() {
         // Change colour of Upload Images button
         createAlbumButton.backgroundColor = UIColor.gray
@@ -21,6 +22,7 @@ extension AlbumViewController
         showCreateCategoryDialog()
     }
 
+    @MainActor
     func showCreateCategoryDialog() {
         let alert = UIAlertController(
             title: NSLocalizedString("createNewAlbum_title", comment: "New Album"),
@@ -82,6 +84,7 @@ extension AlbumViewController
         }
     }
 
+    @MainActor
     func addCategory(withName albumName: String, andComment albumComment: String,
                      inParent albumData: Album) {
         // Display HUD during the update

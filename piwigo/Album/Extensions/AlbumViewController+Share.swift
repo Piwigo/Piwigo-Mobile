@@ -68,13 +68,17 @@ extension AlbumViewController
 
     @MainActor
     func shareImages(withID imageIDs: Set<Int64>, withCameraRollAccess hasCameraRollAccess: Bool, contextually: Bool) {
-        // To exclude some activity types
-        var hasVideoItem = false
-        var totalSize = Int64.zero
 
         // Create new activity provider items to pass to the activity view controller
         var itemsToShare: [UIActivityItemProvider] = []
-        
+
+        // To exclude some activity types
+        var totalSize = Int64.zero
+        var excludedActivityTypes = Set<UIActivity.ActivityType>()
+        if !hasCameraRollAccess {
+            excludedActivityTypes.insert(.saveToCameraRoll)
+        }
+
         // Loop over images
 //        timeCounter = CFAbsoluteTimeGetCurrent()
         for imageID in imageIDs {
@@ -90,8 +94,32 @@ extension AlbumViewController
                         // Add to list of items to share
                         itemsToShare.append(videoItemProvider)
                         
-                        // To exclude some activities
-                        hasVideoItem = true
+                        // Exclude some activities
+                        excludedActivityTypes.insert(.assignToContact)
+                        if #available(iOS 16.4, *) {
+                            excludedActivityTypes.formUnion([.addToHomeScreen,
+                                                             .collaborationCopyLink, .collaborationInviteWithLink])
+                        }
+                        totalSize += image.fileSize
+                    }
+                    else if image.isPDF {
+                        // Case of a PDF file
+                        let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: image, contextually: contextually)
+                        
+                        // Use delegation to monitor the progress of the item method
+                        pdfItemProvider.delegate = self
+                        
+                        // Add to list of items to share
+                        itemsToShare.append(pdfItemProvider)
+                        
+                        // Exclude some activities
+                        excludedActivityTypes.formUnion([.assignToContact, .saveToCameraRoll,
+                                                         .postToFacebook, .postToTwitter, .postToWeibo,
+                                                         .postToVimeo, .postToTencentWeibo])
+                        if #available(iOS 16.4, *) {
+                            excludedActivityTypes.formUnion([.addToHomeScreen,
+                                                             .collaborationCopyLink, .collaborationInviteWithLink])
+                        }
                         totalSize += image.fileSize
                     }
                     else {
@@ -132,18 +160,14 @@ extension AlbumViewController
                 let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
 
                 // Exclude some activities if needed
-                var excludedActivityTypes = [UIActivity.ActivityType]()
-                if hasVideoItem || count > 1 {
-                    excludedActivityTypes.append(.assignToContact)
+                if count > 1 {
+                    excludedActivityTypes.insert(.assignToContact)
                     if #available(iOS 16.4, *) {
-                        excludedActivityTypes.append(.addToHomeScreen)
+                        excludedActivityTypes.insert(.addToHomeScreen)
                     }
                 }
-                if !hasCameraRollAccess {
-                    excludedActivityTypes.append(.saveToCameraRoll)
-                }
                 if totalSize * 10 > deviceMemory {  // i.e. 10% of available memory
-                    excludedActivityTypes.append(.copyToPasteboard)
+                    excludedActivityTypes.insert(.copyToPasteboard)
                 }
                 activityViewController.excludedActivityTypes = Array(excludedActivityTypes)
                 
@@ -219,8 +243,9 @@ extension AlbumViewController
 
 
 // MARK: - ShareImageActivityItemProviderDelegate Methods
-extension AlbumViewController: ShareImageActivityItemProviderDelegate
+extension AlbumViewController: @preconcurrency ShareImageActivityItemProviderDelegate
 {
+    @MainActor
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
                                                         withTitle title: String) {
         // Show HUD to let the user know the image is being downloaded in the background.
@@ -236,6 +261,7 @@ extension AlbumViewController: ShareImageActivityItemProviderDelegate
         }
     }
     
+    @MainActor
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
                                    preprocessingProgressDidUpdate progress: Float) {
         // Update HUD

@@ -32,12 +32,25 @@ extension ImageViewController
     }
 
 
+    // MARK: - PDF file related Actions & Menus
+    /// - for going to a page
+    func pdfMenu() -> UIMenu? {
+        guard imageData.isPDF
+        else { return nil }
+        
+        return UIMenu(title: "", image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.piwigoPDF.goToPage"),
+                      options: .displayInline,
+                      children: [goToPage()])
+    }
+
+
     // MARK: - Images related Actions & Menus
     /// - for rotating image (not video)
     /// - for editing image parameters
     func editMenu() -> UIMenu {
         var children = [UIMenuElement]()
-        if imageData.isVideo == false {
+        if imageData.isImage {
             children.append(rotateMenu())
         }
         children.append(editParamsAction())

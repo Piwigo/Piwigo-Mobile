@@ -63,6 +63,10 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
             videoVC.videoAirplay.isHidden = false
             imageVC.videoDetailDelegate = videoVC
         }
+        if let pdfVC = vc.pageViewController?.viewControllers?.first as? PdfDetailViewController {
+            imageVC.document = pdfVC.pdfView?.document
+            pdfVC.pdfDetailDelegate = imageVC
+        }
 
         // Initialise the external display
         window.rootViewController = imageVC

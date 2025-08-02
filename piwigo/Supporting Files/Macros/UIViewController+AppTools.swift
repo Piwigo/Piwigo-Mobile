@@ -38,18 +38,16 @@ extension UIViewController {
     func showHUD(withTitle title: String, detail: String? = nil, minWidth: CGFloat = 200,
                  buttonTitle: String? = nil, buttonTarget: UIViewController? = nil, buttonSelector: Selector? = nil,
                  inMode mode: pwgHudMode = .indeterminate) {
-        DispatchQueue.main.async {
-            // Remove an existing HUD if needed
-            if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
-                hud.removeFromSuperview()
-            }
-            // Create the HUD
-            guard let hud = UINib(nibName: "PiwigoHUD", bundle: nil).instantiate(withOwner: nil)[0] as? PiwigoHUD
-            else { preconditionFailure("PiwigoHUD not found/instantiated") }
-            hud.show(withTitle: title, detail: detail, minWidth: minWidth,
-                     buttonTitle: buttonTitle, buttonTarget: buttonTarget, buttonSelector: buttonSelector,
-                     inMode: mode, view: self.view)
+        // Remove an existing HUD if needed
+        if let hud = self.view.viewWithTag(pwgTagHUD) as? PiwigoHUD {
+            hud.removeFromSuperview()
         }
+        // Create the HUD
+        guard let hud = UINib(nibName: "PiwigoHUD", bundle: nil).instantiate(withOwner: nil)[0] as? PiwigoHUD
+        else { preconditionFailure("PiwigoHUD not found/instantiated") }
+        hud.show(withTitle: title, detail: detail, minWidth: minWidth,
+                 buttonTitle: buttonTitle, buttonTarget: buttonTarget, buttonSelector: buttonSelector,
+                 inMode: mode, view: self.view)
     }
     
     @MainActor

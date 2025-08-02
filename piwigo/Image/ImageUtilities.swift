@@ -514,7 +514,7 @@ class ImageUtilities: NSObject {
     static func getPiwigoURL(_ imageData: Image, ofMinSize size: pwgImageSize) -> URL? {
         // ATTENTION: Some URLs may not be available!
         /// - Check available image sizes from the smallest to the highest resolution
-        /// - The max size of a video thumbnail is xxLarge
+        /// - The max size of a video or PDF  thumbnail is xxLarge
         let sizes = imageData.sizes
         var pwgURL: NSURL?
         
@@ -622,13 +622,13 @@ class ImageUtilities: NSObject {
             pwgURL = imageURL
         }
         
-        // Done if wanted size reached or video
-        if (size <= .xxLarge) || imageData.isVideo, let imageURL = pwgURL {
+        // Done if wanted size reached or not an image
+        if (size <= .xxLarge) || imageData.isNotImage, let imageURL = pwgURL {
             return imageURL as URL
         }
         
         // Full Resolution
-        if imageData.isVideo == false,
+        if imageData.isImage,
            let imageURL = imageData.fullRes?.url, !(imageURL.absoluteString ?? "").isEmpty {
             // Ensure that at least an URL will be returned
             pwgURL = imageURL

@@ -20,10 +20,12 @@ extension AlbumViewController
 
     
     // MARK: - Delete or Remove Images
+    @MainActor
     @objc func deleteSelection() {
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .delete, contextually: false)
     }
 
+    @MainActor
     func askDeleteConfirmation(forImagesWithID imageIDs: Set<Int64>, contextually: Bool) {
         // Split orphaned and non-orphaned images
         var toRemove = Set<Image>()

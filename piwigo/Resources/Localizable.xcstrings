@@ -20304,7 +20304,7 @@
       }
     },
     "downloadImageFail_message" : {
-      "comment" : "Failed to download image!\nFailed to download image!\n%@",
+      "comment" : "Failed to download image!\n%@",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -20606,103 +20606,103 @@
         }
       }
     },
-    "downloadingImages" : {
-      "extractionState" : "manual",
+    "downloadingPDF" : {
+      "comment" : "Downloading PDF file",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تنزيل الصور"
+            "value" : "تنزيل ملف PDF"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Henter Billeder"
+            "value" : "Downloader PDF-fil"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotos herunterladen"
+            "value" : "PDF-Datei herunterladen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Downloading Photos"
+            "value" : "Downloading PDF file"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Descargando fotos"
+            "value" : "Descargando archivo PDF"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Téléchargement des photos"
+            "value" : "Téléchargement du fichier PDF"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotók letöltése"
+            "value" : "PDF fájl letöltése"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengunduh Gambar"
+            "value" : "Mengunduh berkas PDF"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download di immagini"
+            "value" : "Scaricamento file PDF"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写真をダウンロード中"
+            "value" : "PDFファイルのダウンロード"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto's downloaden"
+            "value" : "PDF-bestand downloaden"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pobieranie zdjęć"
+            "value" : "Pobieranie pliku PDF"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скачивание фотографий"
+            "value" : "Загрузка PDF файла"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hämtar bilder"
+            "value" : "Hämtar PDF-fil"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在下载照片中"
+            "value" : "下载PDF文件"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在下載照片"
+            "value" : "下載 PDF 檔案"
           }
         }
       }
@@ -20804,6 +20804,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在下載影片"
+          }
+        }
+      }
+    },
+    "downloadPdfFail_message" : {
+      "comment" : "Failed to download PDF file!\n%@",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشل في تنزيل ملف PDF!\n%@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke downloade PDF-fil!\n%@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF-Datei konnte nicht heruntergeladen werden!\n%@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to download PDF file!\n%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Error al descargar el archivo PDF!\n%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de télécharger le fichier PDF !"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A PDF fájl letöltése sikertelen!\n%@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gagal mengunduh berkas PDF!\n%@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile scaricare il file PDF!\n%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDFファイルのダウンロードに失敗しました！\n%@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloaden van PDF-bestand is mislukt!\n%@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się pobrać pliku PDF!\n%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось загрузить PDF-файл!\n%@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att hämta PDF-filen!\n%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载PDF文件失败！\n%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下載 PDF 檔案失敗！\n%@"
           }
         }
       }
@@ -21214,7 +21315,7 @@
       }
     },
     "downloadVideoFail_message" : {
-      "comment" : "Failed to download video!\nFailed to download video!\n%@",
+      "comment" : "Failed to download video!\n%@",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -23532,6 +23633,208 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "全名"
+          }
+        }
+      }
+    },
+    "goToPage_message" : {
+      "comment" : "Page number?",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رقم الصفحة؟"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sidetal?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seitenzahl?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page number?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Número de página?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numéro de page ?"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oldalszám?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomor halaman?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numero di pagina?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ページ番号？"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paginanummer?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numer strony?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер страницы?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sidnummer?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "页码？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "頁號？"
+          }
+        }
+      }
+    },
+    "goToPage_title" : {
+      "comment" : "Go to page…",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انتقل إلى الصفحة…"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå til side…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gehe zu Seite…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Page…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir a la página…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aller à la page…"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ugrás az oldalra…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergi ke Halaman…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vai alla pagina…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ページに移動…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ga naar pagina…"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przejdź do strony…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти на страницу…"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå till sidan…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "转到页面…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往頁…"
           }
         }
       }
@@ -52393,7 +52696,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://da.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "de" : {
@@ -52453,13 +52756,13 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://pl.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://ru.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         },
         "sv" : {
@@ -52471,13 +52774,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://cn.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum/"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "https://cn.piwigo.org/forum/"
+            "value" : "https://piwigo.org/forum"
           }
         }
       }

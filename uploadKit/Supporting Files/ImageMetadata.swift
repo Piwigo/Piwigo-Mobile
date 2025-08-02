@@ -340,7 +340,7 @@ extension Dictionary where Key == CFString, Value == Any {
 // MARK: - Fix Metadata
 extension Dictionary where Key == CFString, Value == Any {
     // Fix image properties from resized/converted image
-    mutating func fixContents(from image:CGImage) {
+    mutating func fixContents(from image:CGImage, resettingOrientation: Bool) {
         var metadata = self
 
         // Extract image source from UIImage object (orientation managed)
@@ -352,13 +352,13 @@ extension Dictionary where Key == CFString, Value == Any {
         // Extract image source container properties
         if let sourceMetadata = CGImageSourceCopyProperties(source, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the container
-            metadata.fixProperties(from: sourceMetadata)
+            metadata.fixProperties(from: sourceMetadata, resettingOrientation)
         }
 
         // Extract image properties from image data
         if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the image
-            metadata.fixProperties(from: imageMetadata)
+            metadata.fixProperties(from: imageMetadata, resettingOrientation)
             
             // Update/add width from image properties
             if let width = imageMetadata[kCGImagePropertyPixelWidth] {
@@ -369,18 +369,28 @@ extension Dictionary where Key == CFString, Value == Any {
             if let height = imageMetadata[kCGImagePropertyPixelHeight] {
                 metadata[kCGImagePropertyPixelHeight] = height
             }
+
+            // Reset orientation if requested (according to the TIFF and EXIF specifications)
+            if resettingOrientation {
+                metadata[kCGImagePropertyOrientation] = CGImagePropertyOrientation.up.rawValue
+            }
         }
         
         self = metadata
     }
 
     // Fix image properties from (resized) image metadata
-    mutating func fixProperties(from imageMetadata: [CFString: Any]) {
+    mutating func fixProperties(from imageMetadata: [CFString: Any], _ resettingOrientation: Bool) {
         var metadata = self
 
         // Common Image Properties
         // Update/add Exif dictionary from image metadata
-        if let imageEXIFDictionary = imageMetadata[kCGImagePropertyExifDictionary] as? [CFString : Any] {
+        if var imageEXIFDictionary = imageMetadata[kCGImagePropertyExifDictionary] as? [CFString : Any] {
+            // Should we reset the orientation?
+            /// See https://www.exiftool.org/TagNames/EXIF.html
+            if resettingOrientation {
+                imageEXIFDictionary[kCGImagePropertyExifSceneCaptureType] = NSNumber(value: 1)
+            }
             // Image contains an EXIF dictionary
             if var metadataEXIFDictionary = metadata[kCGImagePropertyExifDictionary] as? [CFString : Any] {
                 // An EXIF dictionary already exists -> update key/value pairs
@@ -543,7 +553,11 @@ extension Dictionary where Key == CFString, Value == Any {
         }
         
         // Update TIFF dictionary from image metadata
-        if let imageTIFFDictionary = imageMetadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
+        if var imageTIFFDictionary = imageMetadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
+            // Should we reset the orientation?
+            if resettingOrientation {
+                imageTIFFDictionary[kCGImagePropertyTIFFOrientation] = NSNumber(value: 1)
+            }
             // Image contains a TIFF dictionary
             if var metadataTIFFDictionary = metadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
                 // A TIFF dictionary already exists -> update key/value pairs

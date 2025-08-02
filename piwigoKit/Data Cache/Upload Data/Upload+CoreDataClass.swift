@@ -86,8 +86,8 @@ public class Upload: NSManagedObject {
         if md5Sum != uploadProperties.md5Sum {
             md5Sum = uploadProperties.md5Sum
         }
-        if isVideo != uploadProperties.isVideo {
-            isVideo = uploadProperties.isVideo
+        if fileType != uploadProperties.fileType {
+            fileType = uploadProperties.fileType
         }
         
         // Photo author name is empty if not provided
@@ -220,6 +220,10 @@ extension Upload {
         return pwgPrivacy(rawValue: self.privacyLevel) ?? .unknown
     }
 
+    public var isVideo: Bool {
+        return pwgImageFileType(rawValue: self.fileType) == .video
+    }
+    
     public func getProperties() -> UploadProperties {
         let tags = self.tags?.compactMap({$0}) ?? []
         let newTagIds = String(tags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
@@ -242,7 +246,7 @@ extension Upload {
             fileNamePrefixEncodedActions: self.fileNamePrefixEncodedActions,
             fileNameReplaceEncodedActions: self.fileNameReplaceEncodedActions,
             fileNameSuffixEncodedActions: self.fileNameSuffixEncodedActions,
-            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
+            fileType: self.fileType, mimeType: self.mimeType, md5Sum: self.md5Sum,
             
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
@@ -281,7 +285,7 @@ extension Upload {
             fileNamePrefixEncodedActions: self.fileNamePrefixEncodedActions,
             fileNameReplaceEncodedActions: self.fileNameReplaceEncodedActions,
             fileNameSuffixEncodedActions: self.fileNameSuffixEncodedActions,
-            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
+            fileType: self.fileType, mimeType: self.mimeType, md5Sum: self.md5Sum,
             
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
