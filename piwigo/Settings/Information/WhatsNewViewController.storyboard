@@ -45,24 +45,24 @@
                                 </variation>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Lbm-xL-FQe">
-                                <rect key="frame" x="40" y="378.33333333333331" width="313" height="145.66666666666669"/>
+                                <rect key="frame" x="40" y="376.33333333333331" width="313" height="149.66666666666669"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="waY-KD-pQs">
-                                        <rect key="frame" x="0.0" y="0.0" width="313" height="42.666666666666664"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="313" height="46.666666666666664"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ofx-vJ-Gvf">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="42.666666666666664"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="46.666666666666664"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="t7h-dM-o5J"/>
                                                 </constraints>
-                                                <imageReference key="image" image="video" symbolScale="large"/>
+                                                <imageReference key="image" image="document.pdf" symbolScale="large"/>
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                             </imageView>
                                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="jUo-i2-eB3">
-                                                <rect key="frame" x="60" y="0.0" width="253" height="42.666666666666664"/>
+                                                <rect key="frame" x="60" y="0.0" width="253" height="46.666666666666664"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Videos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6CT-Fq-rLJ">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PDF Files" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6CT-Fq-rLJ">
                                                         <rect key="frame" x="0.0" y="0.0" width="253" height="20.333333333333332"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                         <nil key="textColor"/>
@@ -74,8 +74,8 @@
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                                         </variation>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto-play and loop options" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-U7-rmr">
-                                                        <rect key="frame" x="0.0" y="22.333333333333371" width="253" height="20.333333333333329"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Read and share PDF files directly" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-U7-rmr">
+                                                        <rect key="frame" x="0.0" y="26.333333333333371" width="253" height="20.333333333333329"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -91,21 +91,21 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qAs-yp-B32">
-                                        <rect key="frame" x="0.0" y="82.666666666666686" width="313" height="63"/>
+                                        <rect key="frame" x="0.0" y="86.666666666666686" width="313" height="63"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFA-Xb-eXV">
-                                                <rect key="frame" x="0.0" y="-3.3333333333333357" width="40" height="69.666666666666686"/>
+                                                <rect key="frame" x="0.0" y="-4.6666666666666714" width="40" height="75"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="rK1-QG-eNb"/>
                                                 </constraints>
-                                                <imageReference key="image" image="character.cursor.ibeam" catalog="system" symbolScale="large"/>
+                                                <imageReference key="image" image="ladybug.slash" catalog="system" symbolScale="large"/>
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                             </imageView>
                                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="yMr-f9-CrM">
                                                 <rect key="frame" x="60" y="0.0" width="253" height="63"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rename Files" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Stability" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
                                                         <rect key="frame" x="0.0" y="0.0" width="253" height="20.333333333333332"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                         <nil key="textColor"/>
@@ -117,7 +117,7 @@
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
                                                         </variation>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Before uploading with creation date, counter, album ID, text…" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bug fixes and improvement of the interface" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
                                                         <rect key="frame" x="0.0" y="22.333333333333311" width="253" height="40.666666666666657"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
@@ -275,8 +275,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="character.cursor.ibeam" catalog="system" width="128" height="119"/>
-        <image name="video" width="25" height="19.333333969116211"/>
+        <image name="document.pdf" width="40" height="46.666667938232422"/>
+        <image name="ladybug.slash" catalog="system" width="124" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

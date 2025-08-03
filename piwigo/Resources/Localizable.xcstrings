@@ -64303,6 +64303,7 @@
     },
     "singleVideo" : {
       "comment" : "Video",
+      "extractionState" : "manual",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -70050,203 +70051,203 @@
       }
     },
     "whatsNew_desc1" : {
-      "comment" : "Auto-play and loop options",
+      "comment" : "Read and share PDF files directly",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "خيارات التشغيل التلقائي والتكرار"
+            "value" : "قراءة ومشاركة ملفات PDF مباشرة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indstillinger for automatisk afspilning og loop"
+            "value" : "Læs og del PDF-filer direkte"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatische Wiedergabe und Schleifen"
+            "value" : "PDF-Dateien direkt lesen und teilen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-play and loop options"
+            "value" : "Read and share PDF files directly"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opciones de reproducción automática y bucle"
+            "value" : "Leer y compartir archivos PDF directamente"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Options de lecture automatique et de lecture en boucle"
+            "value" : "Lire et partager des fichiers PDF directement"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Automatikus lejátszás és loop beállítások"
+            "value" : "PDF fájlok közvetlen olvasása és megosztása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-play and loop options"
+            "value" : "Baca dan bagikan berkas PDF secara langsung"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opzioni di riproduzione automatica e ciclo"
+            "value" : "Leggi e condividi direttamente i file PDF"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動再生とループオプション"
+            "value" : "PDF ファイルの読み取りと共有"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-play en loop opties"
+            "value" : "PDF-bestanden direct lezen en delen"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opcje automatycznego odtwarzania i zapętlenia"
+            "value" : "Odczytuj i udostępniaj pliki PDF bezpośrednio"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Опции автоматического воспроизведения и зацикливания"
+            "value" : "Читать и делиться PDF-файлами напрямую"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-play och loopalternativ"
+            "value" : "Läs och dela PDF-filer direkt"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自动播放和循环选项"
+            "value" : "直接阅读和分享 PDF 文件"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自動播放和循環選項"
+            "value" : "直接讀取和分享 PDF 檔案"
           }
         }
       }
     },
     "whatsNew_desc2" : {
-      "comment" : "Before uploading with creation date, counter, album ID, text…",
+      "comment" : "Bug fixes and improvement of the interface",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "قبل الرفع مع تاريخ الإنشاء، والعداد، ومعرف الألبوم، والنص..."
+            "value" : "إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "før upload med oprettelsesdato, tæller, album ID, tekst…"
+            "value" : "Fejlrettelser og forbedringer af grænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vor dem Hochladen mit Erstellungsdatum, Zähler, Album-ID, Text…"
+            "value" : "Fehlerbehebung und Verbesserung der Schnittstelle"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "before upload with creation date, counter, album ID, text…"
+            "value" : "Bug fixes and improvement of the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "antes de subir con fecha de creación, contador, ID del álbum, texto…"
+            "value" : "Corrección de errores y mejora de la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "avant le téléchargement avec la date de création, le compteur, l'ID de l'album, le texte…"
+            "value" : "Corrections de bugs et amélioration de l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "feltöltés előtt a létrehozás dátumával, számlálóval, album azonosítóval, szöveggel..."
+            "value" : "Hibajavítások és a felület fejlesztése"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "before upload with creation date, counter, album ID, text…"
+            "value" : "Perbaikan bug dan peningkatan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "prima di caricare con data di creazione, contatore, ID album, testo…"
+            "value" : "Correzioni di bug e miglioramento dell'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作成日、カウンター、アルバムID、テキストでアップロード前に…"
+            "value" : "バグ修正とインターフェースの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "voordat het uploaden met aanmaakdatum, teller albumID, tekst…"
+            "value" : "Bug fixes en verbetering van de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "przed przesłaniem, wykorzystując datę utworzenia, licznik, identyfikator albumu, tekst…"
+            "value" : "Poprawki błędów i ulepszenia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "перед загрузкой с указанием даты создания, счетчика, идентификатора альбома, текста…"
+            "value" : "Исправления ошибок и улучшение интерфейса"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "före uppladdning med skapelsedatum, räknare, album-ID, text…"
+            "value" : "Buggfixar och förbättring av gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "上传创建日期前，计数器，相册ID，文本…"
+            "value" : "错误修复和界面改进"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "上傳前有建立日期、計數器、相簿 ID、文字…"
+            "value" : "修正錯誤並改進介面"
           }
         }
       }
@@ -70353,203 +70354,203 @@
       }
     },
     "whatsNew_title1" : {
-      "comment" : "Group Photos",
+      "comment" : "PDF Files",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "صور جماعية"
+            "value" : "ملفات PDF"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gruppe Fotos"
+            "value" : "PDF Filer"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotos gruppieren"
+            "value" : "PDF-Dateien"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Group Photos"
+            "value" : "PDF Files"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Agrupar fotos"
+            "value" : "Archivos PDF"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regrouper les photos"
+            "value" : "Fichiers PDF"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Csoportképek"
+            "value" : "PDF fájlok"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Group Photos"
+            "value" : "Berkas PDF"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto di gruppo"
+            "value" : "File PDF"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "グループ写真"
+            "value" : "PDF ファイル"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Groep foto's"
+            "value" : "PDF bestanden"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grupuj zdjęcia"
+            "value" : "Pliki PDF"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Групповые фото"
+            "value" : "PDF-файлы"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gruppera foton"
+            "value" : "PDF-filer"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "群组照片"
+            "value" : "PDF 文件"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "集體照"
+            "value" : "PDF 檔案"
           }
         }
       }
     },
     "whatsNew_title2" : {
-      "comment" : "Rename Files",
+      "comment" : "Stability",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إعادة تسمية الملفات"
+            "value" : "الاستقرار"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omdøb Filer"
+            "value" : "Stabilitet"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Datei umbenennen"
+            "value" : "Stabilität"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename Files"
+            "value" : "Stability"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Renombrar archivos"
+            "value" : "Estabilidad"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Renommer les fichiers"
+            "value" : "Stabilité"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fájlok átnevezése"
+            "value" : "Stabilitás"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename Files"
+            "value" : "Stabilitas"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rinomina File"
+            "value" : "Stabilità"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイル名の変更"
+            "value" : "安定度"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hernoem bestanden"
+            "value" : "Stabiliteit"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zmiana nazw plików"
+            "value" : "Stabilność"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Переименование файлов"
+            "value" : "Стабильность"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Byt namn på filer"
+            "value" : "Stabilitet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重命名文件"
+            "value" : "稳定性"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重新命名檔案"
+            "value" : "穩定性"
           }
         }
       }

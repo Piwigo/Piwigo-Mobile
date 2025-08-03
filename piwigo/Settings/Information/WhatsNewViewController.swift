@@ -30,25 +30,24 @@ class WhatsNewViewController: UIViewController {
         titleLabel.text = NSLocalizedString("whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
-        if #available(iOS 13.0, *) {
-            firstNewsImage.image = UIImage(systemName: "play.rectangle")
-        } else {
-            // Fallback on ealier version
-            firstNewsImage.image = UIImage(named: "video")
-        }
-//        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "Group Photos")
-        firstNewsTitle.text = NSLocalizedString("singleVideo", comment: "Video")
-        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Auto-play and loop options")
+//        if #available(iOS 13.0, *) {
+//            firstNewsImage.image = UIImage(systemName: "document.pdf")
+//        } else {
+//            // Fallback on ealier version
+            firstNewsImage.image = UIImage(named: "document.pdf")
+//        }
+        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "PDF Files")
+        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Read and share PDF files directly")
         
         // What's new — 2nd annoucement
-        if #available(iOS 14.5, *) {
-            secondNewsImage.image = UIImage(systemName: "character.cursor.ibeam")
+        if #available(iOS 18.0, *) {
+            secondNewsImage.image = UIImage(systemName: "ladybug.slash")
         } else {
             // Fallback on ealier version
-            secondNewsImage.image = UIImage(named: "character.cursor.ibeam")
+            secondNewsImage.image = UIImage(named: "ladybug.slash")
         }
-        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Rename Files")
-        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Before uploading with creation date, counter, album ID, text…")
+        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Stability")
+        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Bug fixes and improvement of the interface")
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)
