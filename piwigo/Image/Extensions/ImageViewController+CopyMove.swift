@@ -132,6 +132,8 @@ extension ImageViewController
 extension ImageViewController: SelectCategoryImageCopiedDelegate
 {
     func didCopyImage() {
+        // Update menus
+        updateNavBar()
         // Re-enable buttons
         setEnableStateOfButtons(true)
     }
