@@ -21,7 +21,7 @@ extension ImageViewController
             // Present album selector for setting album thumbnail
             self.setAsAlbumImage()
         })
-        action.accessibilityIdentifier = "SetThumbnail"
+        action.accessibilityIdentifier = "org.piwigo.image.setThumbnail"
         return action
     }
 }

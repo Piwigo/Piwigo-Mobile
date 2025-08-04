@@ -24,7 +24,7 @@ extension ImageViewController
             // Present album selector for copying image
             selectCategory(withAction: .copyImage)
         })
-        action.accessibilityIdentifier = "Copy"
+        action.accessibilityIdentifier = "org.piwigo.image.copy"
         return action
     }
     
@@ -38,7 +38,7 @@ extension ImageViewController
             // Present album selector for moving image
             selectCategory(withAction: .moveImage)
         })
-        action.accessibilityIdentifier = "Move"
+        action.accessibilityIdentifier = "org.piwigo.image.move"
         return action
     }
 }
@@ -132,6 +132,8 @@ extension ImageViewController
 extension ImageViewController: SelectCategoryImageCopiedDelegate
 {
     func didCopyImage() {
+        // Update menus
+        updateNavBar()
         // Re-enable buttons
         setEnableStateOfButtons(true)
     }

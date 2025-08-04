@@ -18,34 +18,32 @@ extension ImageViewController
     /// - for moving images to another album
     /// - for setting an image as album thumbnail
     func albumMenu() -> UIMenu {
+        let identifier = UIMenu.Identifier("org.piwigo.image.albumMenu")
         if user.hasAdminRights {
-            return UIMenu(title: "", image: nil,
-                          identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
+            return UIMenu(title: "", image: nil, identifier: identifier,
                           options: .displayInline,
                           children: [copyAction(), moveAction(), setAsThumbnailAction()])
         } else {
-            return UIMenu(title: "", image: nil,
-                          identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
+            return UIMenu(title: "", image: nil, identifier: identifier,
                           options: .displayInline,
                           children: [copyAction(), moveAction()])
         }
     }
 
 
-    // MARK: - PDF file related Actions & Menus
-    /// - for going to a page
-    func pdfMenu() -> UIMenu? {
-        guard imageData.isPDF
-        else { return nil }
-        
+    // MARK: - Image Preview related Actions & Menus
+    /// - for going to another album containing that image
+    /// - for going to a page of a PDF file
+    @MainActor
+    func goToMenu() -> UIMenu {
         return UIMenu(title: "", image: nil,
-                      identifier: UIMenu.Identifier("org.piwigo.piwigoPDF.goToPage"),
-                      options: .displayInline,
-                      children: [goToPage()])
+                      identifier: UIMenu.Identifier("org.piwigo.image.goToMenu"),
+                      options: UIMenu.Options.displayInline,
+                      children: [goToAlbumMenu(),goToPageAction()].compactMap({$0}))
     }
 
 
-    // MARK: - Images related Actions & Menus
+    // MARK: - Image Edition related Actions & Menus
     /// - for rotating image (not video)
     /// - for editing image parameters
     func editMenu() -> UIMenu {
@@ -55,7 +53,7 @@ extension ImageViewController
         }
         children.append(editParamsAction())
         return UIMenu(title: "", image: nil,
-                      identifier: UIMenu.Identifier("org.piwigo.piwigoImage.edit"),
+                      identifier: UIMenu.Identifier("org.piwigo.image.editMenu"),
                       options: .displayInline,
                       children: children)
     }

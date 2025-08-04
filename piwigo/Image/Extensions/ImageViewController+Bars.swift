@@ -44,7 +44,7 @@ extension ImageViewController {
             /// - to set the image as album thumbnail
             /// - to rotate a photo clockwise or counterclockwise,
             /// - to edit image parameters,
-            let menu = UIMenu(title: "", children: [albumMenu(), pdfMenu(), editMenu()].compactMap({$0}))
+            let menu = UIMenu(title: "", children: [albumMenu(), goToMenu(), editMenu()].compactMap({$0}))
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
             actionBarButton?.accessibilityIdentifier = "actions"
             
