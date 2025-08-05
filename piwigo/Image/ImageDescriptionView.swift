@@ -34,7 +34,8 @@ class ImageDescriptionView: UIVisualEffectView {
                 inViewController viewController: UIViewController, forVideo: Bool) {
         // Should we present a description?
         guard let comment = imageComment,
-              comment.string.isEmpty == false else {
+              comment.string.isEmpty == false
+        else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true

@@ -91,7 +91,7 @@ class PdfDetailViewController: UIViewController
             guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
                   let windowScene = scenes.first as? UIWindowScene
             else { return }
-                
+            
             // Add PDF view to external screen
             if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
                 // Configure external display view controller
@@ -116,7 +116,7 @@ class PdfDetailViewController: UIViewController
             }
         }
     }
-
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -127,12 +127,12 @@ class PdfDetailViewController: UIViewController
                 descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
                 descContainer.applyColorPalette()
             }
-
+            
             // Set place holder view frame for this orientation
             setPlaceHolderViewFrame()
             
             // Set scale to fullscreen if needed
-            pdfView.autoScales = true
+            pdfView?.autoScales = true
         })
     }
     
@@ -194,7 +194,7 @@ class PdfDetailViewController: UIViewController
                         guard let self = self else { return }
                         // Hide progress view
                         self.progressView.isHidden = true
-
+                        
                         // Show PDF file stored in cache
                         guard let document = PDFDocument(url: cachedFileURL)
                         else { return }
@@ -248,7 +248,7 @@ class PdfDetailViewController: UIViewController
         // Update image description
         descContainer.config(with: data.comment, inViewController: self, forVideo: false)
     }
-
+    
     // MARK: - Gestures Management
     func updateDescriptionVisibility() {
         // Hide/show the description view with the navigation bar

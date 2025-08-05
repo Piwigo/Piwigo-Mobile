@@ -329,7 +329,7 @@
         <scene sceneID="p7a-Bj-Uaj">
             <objects>
                 <viewController storyboardIdentifier="PdfDetailViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="dhw-Aw-i5X" customClass="PdfDetailViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="3Eu-Oy-2lh">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="3Eu-Oy-2lh">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -338,6 +338,12 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A4K-Xo-ZAl" customClass="PDFView">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
                             <visualEffectView hidden="YES" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cd8-Yp-hz7" customClass="ImageDescriptionView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="76.666666666666686" y="696" width="240" height="88"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="9Ey-tF-XFQ">
@@ -368,17 +374,11 @@
                                 <blurEffect style="regular"/>
                                 <connections>
                                     <outlet property="descHeight" destination="XVj-l9-E4f" id="ktQ-9i-icc"/>
-                                    <outlet property="descOffset" destination="5W9-hW-wav" id="3pP-fd-Wjv"/>
+                                    <outlet property="descOffset" destination="DCb-by-p0z" id="vVA-ae-uPr"/>
                                     <outlet property="descTextView" destination="Y24-s4-nKw" id="vo3-Dc-yat"/>
                                     <outlet property="descWidth" destination="h2H-9c-4nb" id="wpM-wx-K9H"/>
                                 </connections>
                             </visualEffectView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A4K-Xo-ZAl" customClass="PDFView">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ti-1d-twU" customClass="PieProgressView" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="185" y="134" width="23" height="23"/>
                                 <color key="backgroundColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -393,7 +393,8 @@
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="IrK-e5-7ah"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="0ti-1d-twU" firstAttribute="top" secondItem="IrK-e5-7ah" secondAttribute="top" constant="16" id="8qt-ks-Arr"/>
                             <constraint firstItem="IrK-e5-7ah" firstAttribute="bottom" secondItem="cd8-Yp-hz7" secondAttribute="bottom" id="DCb-by-p0z"/>
