@@ -23,8 +23,8 @@ class ImageHeaderReusableView: UICollectionReusableView
     
     weak var imageHeaderDelegate: ImageHeaderDelegate?
 
-    @IBOutlet weak var albumLabel: UILabel!
-    @IBOutlet weak var albumLabelHeight: NSLayoutConstraint!
+    @IBOutlet weak var albumDesc: UITextView!
+    @IBOutlet weak var albumDescHeight: NSLayoutConstraint!
     @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton!
@@ -41,11 +41,11 @@ class ImageHeaderReusableView: UICollectionReusableView
 
         // Set album description label
         if size == CGSize.zero {
-            albumLabel.text = ""
-            albumLabelHeight.constant = 0
+            albumDesc.text = ""
+            albumDescHeight.constant = 0
         } else {
-            albumLabel.attributedText = description
-            albumLabelHeight.constant = size.height
+            albumDesc.attributedText = description
+            albumDescHeight.constant = size.height
         }
         
         // Get date labels from images in section
@@ -100,7 +100,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         mainLabel.textColor = .piwigoColorLeftLabel()
         detailLabel.textColor = .piwigoColorRightLabel()
         selectButton.backgroundColor = .piwigoColorBackground()
-        albumLabel.textColor = .piwigoColorHeader()
+        albumDesc.textColor = .piwigoColorHeader()
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {

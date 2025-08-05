@@ -11,36 +11,38 @@
 import UIKit
 
 class AlbumHeaderReusableView: UICollectionReusableView {
-    var commentLabel: UILabel?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    @IBOutlet weak var albumDesc: UITextView!
+    @IBOutlet weak var albumDescHeight: NSLayoutConstraint!
 
-        self.backgroundColor = UIColor.clear
-        commentLabel = UILabel()
-        commentLabel?.backgroundColor = UIColor.clear
-        commentLabel?.translatesAutoresizingMaskIntoConstraints = false
-        commentLabel?.numberOfLines = 0
-        commentLabel?.adjustsFontSizeToFitWidth = false
-        commentLabel?.lineBreakMode = .byWordWrapping
-        commentLabel?.textAlignment = .center
-        commentLabel?.font = .systemFont(ofSize: 13)
-        commentLabel?.attributedText = NSAttributedString()
-        if let commentLabel = commentLabel {
-            addSubview(commentLabel)
-            addConstraint(NSLayoutConstraint.constraintCenterHorizontalView(commentLabel)!)
-            addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-16-[header]-16-|",
-                    options: [], metrics: nil, views: ["header": commentLabel
-            ]))
+    @MainActor
+    func config(withDescription description: NSAttributedString = NSAttributedString(), size: CGSize = CGSize.zero)
+    {
+        // Set colors
+        applyColorPalette()
+
+        // Set album description label
+        if size == CGSize.zero {
+            albumDesc.text = ""
+            albumDescHeight.constant = 0
+        } else {
+            albumDesc.attributedText = description
+            albumDescHeight.constant = size.height
         }
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    
+    func applyColorPalette() {
+        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+        albumDesc.textColor = .piwigoColorHeader()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        commentLabel?.attributedText = NSAttributedString()
+        
+        albumDesc?.attributedText = NSAttributedString()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

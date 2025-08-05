@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,6 +14,27 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="105"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Lorem ipsum dolor sit er elit lamet, …" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="xed-OC-S5p">
+                    <rect key="frame" x="15" y="4" width="290" height="16"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="SnL-R7-Iah"/>
+                    </constraints>
+                    <color key="textColor" systemColor="labelColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" lookupSuggestion="YES"/>
+                </textView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i4t-ex-Rxf">
+                    <rect key="frame" x="15" y="4" width="290" height="16"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="a9f-v8-CHv"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="3" translatesAutoresizingMaskIntoConstraints="NO" id="N6X-aU-0Ty">
                     <rect key="frame" x="58.666666666666657" y="24" width="202.99999999999997" height="32"/>
                     <segments>
@@ -51,16 +73,6 @@
                         <action selector="tappedSelectButton:" destination="48f-AC-xRm" eventType="touchUpInside" id="dBk-Tl-J7m"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i4t-ex-Rxf">
-                    <rect key="frame" x="15" y="4" width="290" height="16"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="16" id="a9f-v8-CHv"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -69,16 +81,20 @@
                 <constraint firstAttribute="trailing" secondItem="i4t-ex-Rxf" secondAttribute="trailing" constant="15" id="27K-mC-Elc"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="centerX" secondItem="48f-AC-xRm" secondAttribute="centerX" id="51q-HR-xHN"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="48f-AC-xRm" secondAttribute="leading" constant="16" id="Ldp-2d-RMK"/>
+                <constraint firstItem="N6X-aU-0Ty" firstAttribute="top" secondItem="xed-OC-S5p" secondAttribute="bottom" constant="4" id="TU5-zA-siI"/>
                 <constraint firstItem="N6X-aU-0Ty" firstAttribute="top" secondItem="i4t-ex-Rxf" secondAttribute="bottom" constant="4" id="WE3-1i-RAk"/>
                 <constraint firstAttribute="trailing" secondItem="cU4-a8-hx4" secondAttribute="trailing" constant="8" id="YFg-Tf-g18"/>
                 <constraint firstItem="fDz-SW-5Hc" firstAttribute="top" secondItem="N6X-aU-0Ty" secondAttribute="bottom" constant="8" symbolic="YES" id="aKh-x6-Pxf"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="N6X-aU-0Ty" secondAttribute="trailing" constant="16" id="aLt-D7-dIR"/>
                 <constraint firstItem="i4t-ex-Rxf" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="15" id="cIg-Gq-j2L"/>
                 <constraint firstItem="Itr-Ur-qXZ" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="8" id="dyK-nd-mhz"/>
+                <constraint firstItem="xed-OC-S5p" firstAttribute="top" secondItem="48f-AC-xRm" secondAttribute="top" constant="4" id="fc8-Kk-Nx4"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="fDz-SW-5Hc" secondAttribute="trailing" constant="10" id="h0y-H0-Oiy"/>
+                <constraint firstAttribute="trailing" secondItem="xed-OC-S5p" secondAttribute="trailing" constant="15" id="i9U-4L-Ubk"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="bottom" secondItem="Itr-Ur-qXZ" secondAttribute="bottom" id="iwk-6g-HUr"/>
                 <constraint firstItem="Itr-Ur-qXZ" firstAttribute="firstBaseline" secondItem="fDz-SW-5Hc" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="jEE-NY-puX"/>
                 <constraint firstItem="fDz-SW-5Hc" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="8" id="mlX-pS-yHZ"/>
+                <constraint firstItem="xed-OC-S5p" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="15" id="qJz-9E-aeW"/>
                 <constraint firstItem="i4t-ex-Rxf" firstAttribute="top" secondItem="48f-AC-xRm" secondAttribute="top" constant="4" id="qgx-2q-F9H"/>
                 <constraint firstItem="cU4-a8-hx4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Itr-Ur-qXZ" secondAttribute="trailing" constant="10" id="rtQ-es-ogk"/>
             </constraints>
@@ -86,6 +102,8 @@
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="albumDesc" destination="xed-OC-S5p" id="to1-gm-jQy"/>
+                <outlet property="albumDescHeight" destination="SnL-R7-Iah" id="cPF-dx-YRE"/>
                 <outlet property="albumLabel" destination="i4t-ex-Rxf" id="5vK-yF-tOX"/>
                 <outlet property="albumLabelHeight" destination="a9f-v8-CHv" id="AO3-yK-pX3"/>
                 <outlet property="detailLabel" destination="Itr-Ur-qXZ" id="GMF-BW-ej4"/>
@@ -93,7 +111,7 @@
                 <outlet property="segmentedControl" destination="N6X-aU-0Ty" id="z3a-0b-Kuu"/>
                 <outlet property="selectButton" destination="cU4-a8-hx4" id="GzN-u7-fzs"/>
             </connections>
-            <point key="canvasLocation" x="-344" y="281"/>
+            <point key="canvasLocation" x="-345.03816793893128" y="280.63380281690144"/>
         </view>
     </objects>
     <resources>
@@ -101,5 +119,8 @@
         <image name="imageDay" width="25.333333969116211" height="23"/>
         <image name="imageMonth" width="25.333333969116211" height="23"/>
         <image name="imageWeek" width="25.333333969116211" height="23"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

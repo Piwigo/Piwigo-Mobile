@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <view opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFill" restorationIdentifier="HeaderReusableView" preservesSuperviewLayoutMargins="YES" id="A0a-sb-PnH" customClass="AlbumHeaderReusableView" customModule="piwigo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="28"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Lorem ipsum dolor sit er elit lamet, …" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="sM2-DX-wfy">
+                    <rect key="frame" x="15" y="4" width="363" height="16"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="KKl-JX-ltz"/>
+                    </constraints>
+                    <color key="textColor" systemColor="labelColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" lookupSuggestion="YES"/>
+                </textView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="sM2-DX-wfy" firstAttribute="leading" secondItem="A0a-sb-PnH" secondAttribute="leading" constant="15" id="13C-Ip-Vbf"/>
+                <constraint firstAttribute="trailing" secondItem="sM2-DX-wfy" secondAttribute="trailing" constant="15" id="JxZ-Vm-uBA"/>
+                <constraint firstAttribute="bottom" secondItem="sM2-DX-wfy" secondAttribute="bottom" constant="8" id="dqz-AT-rcZ"/>
+                <constraint firstItem="sM2-DX-wfy" firstAttribute="top" secondItem="A0a-sb-PnH" secondAttribute="top" constant="4" id="zat-Ms-2Jz"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="albumDesc" destination="sM2-DX-wfy" id="xBt-4V-5Xd"/>
+                <outlet property="albumDescHeight" destination="KKl-JX-ltz" id="Q27-4e-WK2"/>
+            </connections>
+            <point key="canvasLocation" x="-964.12213740458014" y="-589.08450704225356"/>
+        </view>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+    </objects>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

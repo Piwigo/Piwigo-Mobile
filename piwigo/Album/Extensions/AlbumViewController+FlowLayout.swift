@@ -23,7 +23,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     
     // MARK: - Headers
-    func getAlbumDescriptionHeight() -> CGSize {
+    func getAlbumDescriptionSize() -> CGSize {
         guard !albumData.comment.string.isEmpty
         else { return CGSize.zero }
         
@@ -44,7 +44,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
                index == section {       /* Album collection */
                 // Header height?
-                return getAlbumDescriptionHeight()
+                return getAlbumDescriptionSize()
             }
             else {                    /* Image collection */
                 // Are images sorted by date?
@@ -58,7 +58,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 if #available(iOS 14, *) {
                     // Grouping options accessible from menu ► Display date and location (see XIB)
                     if section == 0, hasAlbumSection == false {
-                        return CGSize(width: collectionView.frame.size.width, height: 49 + self.getAlbumDescriptionHeight().height)
+                        return CGSize(width: collectionView.frame.size.width, height: 49 + self.getAlbumDescriptionSize().height)
                     } else {
                         return CGSize(width: collectionView.frame.size.width, height: 49)
                     }
@@ -66,7 +66,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 else {  // for iOS 13.x
                     // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
                     if section == 0, hasAlbumSection == false {
-                        return CGSize(width: collectionView.frame.size.width, height: 88 + self.getAlbumDescriptionHeight().height)
+                        return CGSize(width: collectionView.frame.size.width, height: 88 + self.getAlbumDescriptionSize().height)
                     } else {
                         return CGSize(width: collectionView.frame.size.width, height: 49)
                     }
@@ -77,7 +77,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             switch section {
             case 0 /* Section 0 — Album collection */:
                 // Header height?
-                return getAlbumDescriptionHeight()
+                return getAlbumDescriptionSize()
                 
             default: /* Images */
                 // Are images sorted by date?

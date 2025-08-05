@@ -20,8 +20,8 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
 
-    @IBOutlet weak var albumLabel: UILabel!
-    @IBOutlet weak var albumLabelHeight: NSLayoutConstraint!
+    @IBOutlet weak var albumDesc: UITextView!
+    @IBOutlet weak var albumDescHeight: NSLayoutConstraint!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
@@ -39,11 +39,11 @@ class ImageOldHeaderReusableView: UICollectionReusableView
 
         // Set album description label
         if size == CGSize.zero {
-            albumLabel.text = ""
-            albumLabelHeight.constant = 0
+            albumDesc.text = ""
+            albumDescHeight.constant = 0
         } else {
-            albumLabel.attributedText = description
-            albumLabelHeight.constant = size.height
+            albumDesc.attributedText = description
+            albumDescHeight.constant = size.height
         }
         
         // Segmented controller
