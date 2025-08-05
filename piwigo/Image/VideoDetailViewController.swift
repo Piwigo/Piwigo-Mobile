@@ -35,8 +35,8 @@ class VideoDetailViewController: UIViewController
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
     private var startingZoomScale = CGFloat(1)
-
-
+    
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,13 +45,13 @@ class VideoDetailViewController: UIViewController
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
         placeHolderView.image = imageData.cachedThumbnail(ofSize: thumbSize) ?? pwgImageType.image.placeHolder
         setPlaceHolderViewFrame()
-
+        
         // Initialise videoContainerView size with placeHolder size
         configVideoViews()
         
         // Initialise video controls delegate
         videoControls.videoControlsDelegate = self
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -75,7 +75,7 @@ class VideoDetailViewController: UIViewController
         
         // Configure the description view before layouting subviews
         descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
-
+        
         // Hide/show the description and controls views with the navigation bar
         updateDescriptionControlsVisibility()
         
@@ -88,47 +88,13 @@ class VideoDetailViewController: UIViewController
         
         // Should this video be also displayed on the external screen?
         if #available(iOS 13.0, *) {
-            // Get scene role of external display
-            var wantedRole: UISceneSession.Role!
-            if #available(iOS 16.0, *) {
-                wantedRole = .windowExternalDisplayNonInteractive
-            } else {
-                // Fallback on earlier versions
-                wantedRole = .windowExternalDisplay
-            }
-            
-            // Get scene of external display
-            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
-            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
-                  let windowScene = scenes.first as? UIWindowScene
-            else { return }
-                
-            // Add image view to external screen
-            if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-                // Configure external display view controller
-                imageVC.imageData = imageData
-                imageVC.videoDetailDelegate = self
-                imageVC.configImage()
-            }
-            else {
-                // Create external display view controller
-                let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
-                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
-                else { preconditionFailure("Could not load ExternalDisplayViewController") }
-                imageVC.imageData = imageData
-                imageVC.videoDetailDelegate = self
-
-                // Create window and make it visible
-                let window = UIWindow(windowScene: windowScene)
-                window.rootViewController = imageVC
-                sceneDelegate.initExternalDisplay(with: window)
-            }
+            self.configExternalVideoViews()
         }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         // Animate change of view size and reposition video
         coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
@@ -144,7 +110,7 @@ class VideoDetailViewController: UIViewController
             configScrollView()
         })
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -177,12 +143,12 @@ class VideoDetailViewController: UIViewController
         // Check input
         guard let imageSize = placeHolderView.image?.size
         else { return }
-
+        
         // Calc scale for displaying it fullscreen
         let widthScale = view.bounds.size.width / imageSize.width
         let heightScale = view.bounds.size.height / imageSize.height
         let scale = min(widthScale, heightScale)
-
+        
         // Center image on screen
         let imageWidth = CGFloat(imageSize.width * scale)
         let horizontalSpace = max(0, (CGFloat(view.bounds.width) - imageWidth) / 2)
@@ -198,11 +164,11 @@ class VideoDetailViewController: UIViewController
         scrollView.isPagingEnabled = false    // Do not stop on multiples of the scroll view’s bounds
         scrollView.contentInsetAdjustmentBehavior = .never  // Do not add/remove safe area insets
         scrollView.contentSize = videoSize ?? placeHolderView.frame.size
-
+        
         // Prevents scrolling image at minimum scale
         // Will be unlocked when starting zooming
         scrollView.isScrollEnabled = false
-
+        
         // Don't display video if screen mirroring is enabled
         guard AppVars.shared.inSingleDisplayMode else {
             placeHolderView.layer.opacity = 0.3
@@ -210,19 +176,19 @@ class VideoDetailViewController: UIViewController
             videoAirplay.isHidden = false
             return
         }
-
+        
         // Set video container view size
         videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
         videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
         videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
-
+        
         // Set scroll view scale and range
         if videoSize != nil {
             // Set zoom scale and scroll view
             configScrollView()
         }
     }
-
+    
     /*
      This method calculates the zoom scale for the scroll view.
      A zoom scale of 1 indicates that the content displays at its normal size.
@@ -241,15 +207,15 @@ class VideoDetailViewController: UIViewController
         if scrollView.minimumZoomScale != 0 {
             zoomFactor = scrollView.zoomScale / scrollView.minimumZoomScale
         }
-
+        
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = 2 * maxScale
-//        debugPrint("••> Did reset scrollView scale: ")
-//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
-//        debugPrint("    Offset: \(scrollView.contentOffset)")
-//        debugPrint("    Inset : \(scrollView.contentInset)")
-
+        //        debugPrint("••> Did reset scrollView scale: ")
+        //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon: x\(zoomFactor)")
+        //        debugPrint("    Offset: \(scrollView.contentOffset)")
+        //        debugPrint("    Inset : \(scrollView.contentInset)")
+        
         // Next line calls scrollViewDidZoom() if zoomScale has changed
         let newZoomScale = minScale * zoomFactor
         if scrollView.zoomScale != newZoomScale {
@@ -272,7 +238,7 @@ class VideoDetailViewController: UIViewController
         if horizontalSpace > 0 {
             scrollView.contentOffset.x = -horizontalSpace
         }
-
+        
         // Center image vertically  in scrollview
         let videoHeight = videoContainerView.bounds.size.height * scrollView.zoomScale
         let verticalSpace = max(0, (view.bounds.height - videoHeight) / 2.0)
@@ -281,21 +247,21 @@ class VideoDetailViewController: UIViewController
         if verticalSpace > 0 {
             scrollView.contentOffset.y = -verticalSpace
         }
-
+        
         // Show video with controls
         videoContainerView.isHidden = false
         videoControls.isHidden = navigationController?.isNavigationBarHidden ?? false
-//        debugPrint("••> Did updateScrollViewInset: ")
-//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
-//        debugPrint("    Offset: \(scrollView.contentOffset)")
-//        debugPrint("    Inset : \(scrollView.contentInset)")
+        //        debugPrint("••> Did updateScrollViewInset: ")
+        //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
+        //        debugPrint("    Offset: \(scrollView.contentOffset)")
+        //        debugPrint("    Inset : \(scrollView.contentInset)")
     }
-
+    
     func updateImageMetadata(with data: Image) {
         // Update image description
         descContainer.config(with: data.comment, inViewController: self, forVideo: true)
     }
-
+    
     
     // MARK: - Gestures Management
     func updateDescriptionControlsVisibility() {
@@ -333,6 +299,47 @@ class VideoDetailViewController: UIViewController
         else {
             // Let's zoom out…
             scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
+        }
+    }
+    
+
+    // MARK: - External Video Management
+    @available(iOS 13.0, *) @MainActor
+    private func configExternalVideoViews() {
+        // Get scene role of external display
+        var wantedRole: UISceneSession.Role!
+        if #available(iOS 16.0, *) {
+            wantedRole = .windowExternalDisplayNonInteractive
+        } else {
+            // Fallback on earlier versions
+            wantedRole = .windowExternalDisplay
+        }
+        
+        // Get scene of external display
+        let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+        guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
+              let windowScene = scenes.first as? UIWindowScene
+        else { return }
+        
+        // Add image view to external screen
+        if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+            // Configure external display view controller
+            imageVC.imageData = imageData
+            imageVC.videoDetailDelegate = self
+            imageVC.configImage()
+        }
+        else {
+            // Create external display view controller
+            let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
+            guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
+            else { preconditionFailure("Could not load ExternalDisplayViewController") }
+            imageVC.imageData = imageData
+            imageVC.videoDetailDelegate = self
+            
+            // Create window and make it visible
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = imageVC
+            sceneDelegate.initExternalDisplay(with: window)
         }
     }
 }

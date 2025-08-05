@@ -495,6 +495,7 @@ class ImageViewController: UIViewController {
         if let imagePVC = pageViewController?.viewControllers?.first {
             (imagePVC as? ImageDetailViewController)?.updateDescriptionVisibility()
             (imagePVC as? VideoDetailViewController)?.updateDescriptionControlsVisibility()
+            (imagePVC as? PdfDetailViewController)?.updateDescriptionVisibility()
         }
 
         // Set background color according to navigation bar visibility
@@ -654,7 +655,7 @@ extension ImageViewController: UIPageViewControllerDelegate
             didPresentNextPage = indexPath > pdfDVC.indexPath
         }
 
-        // Scroll album collection view to keep the selected image centered on the screen
+        // Scroll album collection view to keep the selected image/video centered on the screen
         imgDetailDelegate?.didSelectImage(atIndexPath: indexPath)
         
         // Update server statistics
