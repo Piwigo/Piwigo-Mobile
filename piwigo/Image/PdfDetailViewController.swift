@@ -244,7 +244,11 @@ class PdfDetailViewController: UIViewController
         pdfDetailDelegate?.didSelectPageNumber(pageNumberToShow)
     }
     
-    
+    func updateImageMetadata(with data: Image) {
+        // Update image description
+        descContainer.config(with: data.comment, inViewController: self, forVideo: false)
+    }
+
     // MARK: - Gestures Management
     func updateDescriptionVisibility() {
         // Hide/show the description view with the navigation bar
