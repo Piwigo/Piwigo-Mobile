@@ -44,6 +44,8 @@ class ImageHeaderReusableView: UICollectionReusableView
             albumDesc.text = ""
             albumDescHeight.constant = 0
         } else {
+            albumDesc.textContainer.lineBreakMode = .byWordWrapping
+            albumDesc.textContainer.widthTracksTextView = false
             albumDesc.attributedText = description
             albumDescHeight.constant = size.height
         }
