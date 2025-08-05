@@ -23,9 +23,9 @@ class ImageDetailViewController: UIViewController
     @IBOutlet weak var imageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var descContainer: ImageDescriptionView!
     @IBOutlet weak var progressView: PieProgressView!
-        
+    
     // Variable used to remember the position of the image on the screen
-//    private var imagePosition = CGPoint(x: 0.5, y: 0.5)
+    //    private var imagePosition = CGPoint(x: 0.5, y: 0.5)
     
     // Variable used to dismiss the view when the scale is reduced
     // from less than 1.1 x miminumZoomScale to less than 0.9 x miminumZoomScale
@@ -84,7 +84,7 @@ class ImageDetailViewController: UIViewController
         
         // Load andd display image (resume download if needed)
         loadAndDisplayHighResImage()
-
+        
         // Configure the description view before layouting subviews
         descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
         
@@ -100,45 +100,13 @@ class ImageDetailViewController: UIViewController
         
         // Should this image be also displayed on the external screen?
         if #available(iOS 13.0, *) {
-            // Get scene role of external display
-            var wantedRole: UISceneSession.Role!
-            if #available(iOS 16.0, *) {
-                wantedRole = .windowExternalDisplayNonInteractive
-            } else {
-                // Fallback on earlier versions
-                wantedRole = .windowExternalDisplay
-            }
-            
-            // Get scene of external display
-            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
-            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
-                  let windowScene = scenes.first as? UIWindowScene
-            else { return }
-                
-            // Add image view to external screen
-            if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-                // Configure external display view controller
-                imageVC.imageData = imageData
-                imageVC.configImage()
-            }
-            else {
-                // Create external display view controller
-                let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
-                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
-                else { preconditionFailure("Could not load ExternalDisplayViewController") }
-                imageVC.imageData = imageData
-                
-                // Create window and make it visible
-                let window = UIWindow(windowScene: windowScene)
-                window.rootViewController = imageVC
-                sceneDelegate.initExternalDisplay(with: window)
-            }
+            self.setExternalImageView()
         }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         // Animate change of view size and reposition image
         coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
@@ -146,16 +114,16 @@ class ImageDetailViewController: UIViewController
                 descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
                 descContainer.applyColorPalette()
             }
-
+            
             // Preloaded page views not updated as expected!
-//            debugPrint("••> viewWillTransition: ")
-//            debugPrint("    Size: \(size.width) x \(size.height)")
-//            debugPrint("    Screen: \(view.bounds.width) x \(view.bounds.height)")
-
+            //            debugPrint("••> viewWillTransition: ")
+            //            debugPrint("    Size: \(size.width) x \(size.height)")
+            //            debugPrint("    Screen: \(view.bounds.width) x \(view.bounds.height)")
+            
             // Update scale, insets and offsets
             self.viewSize = size
             configScrollView()
-//            applyImagePositionInScrollView()
+            //            applyImagePositionInScrollView()
         })
     }
     
@@ -183,7 +151,7 @@ class ImageDetailViewController: UIViewController
         // Replace high-resolution image
         loadAndDisplayHighResImage()
     }
-
+    
     deinit {
         // Unregister all observers
         imageData = nil
@@ -219,7 +187,7 @@ class ImageDetailViewController: UIViewController
     }
     
     private func updateProgressView(with fractionCompleted: Float) {
-//        debugPrint("••> Loading image \(imageData.pwgID): \(fractionCompleted)%")
+        //        debugPrint("••> Loading image \(imageData.pwgID): \(fractionCompleted)%")
         DispatchQueue.main.async { [self] in
             // Show download progress
             self.progressView.progress = fractionCompleted
@@ -235,28 +203,28 @@ class ImageDetailViewController: UIViewController
             self.setImageView(with: cachedImage)
         }
     }
-
+    
     @MainActor
     private func setImageView(with image: UIImage) {
         // Any change?
         if imageView.image?.size == image.size {
             return
         }
-
+        
         // Set image view
         imageView.image = image
         imageView.frame.size = image.size
         imageViewWidthConstraint.constant = image.size.width
         imageViewHeightConstraint.constant = image.size.height
-//        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
+        //        debugPrint("••> imageView: \(image.size.width) x \(image.size.height)")
         
         // Set scroll view content size
         scrollView.contentSize = image.size
-
+        
         // Prevents scrolling image at minimum scale
         // Will be unlocked when starting zooming
         scrollView.isScrollEnabled = false
-
+        
         // Set scroll view scale and range
         configScrollView()
     }
@@ -294,7 +262,7 @@ class ImageDetailViewController: UIViewController
             // Reset image view with rotated image
             self.didRotateImage = true
             self.setImageView(with: cachedImage)
-
+            
             // Hide HUD
             completion()
         }
@@ -311,7 +279,7 @@ class ImageDetailViewController: UIViewController
         guard let imageSize = imageView?.image?.size else { return }
         scrollView.isPagingEnabled = false    // Do not stop on multiples of the scroll view’s bounds
         scrollView.contentInsetAdjustmentBehavior = .never  // Do not add/remove safe area insets
-
+        
         // Calc new zoom scale range
         scrollView.bounds = view.bounds
         let widthScale = viewSize.width / imageSize.width
@@ -324,15 +292,15 @@ class ImageDetailViewController: UIViewController
         if scrollView.zoomScale > 1e-6, scrollView.minimumZoomScale > 1e-6 {
             zoomFactor = scrollView.zoomScale / scrollView.minimumZoomScale
         }
-
+        
         // Set zoom scale range
         scrollView.minimumZoomScale = minScale
         scrollView.maximumZoomScale = max(maxScale, 1)
-//        debugPrint("••> Did reset scrollView scale: ")
-//        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon x \(zoomFactor)")
-//        debugPrint("    Offset: \(scrollView.contentOffset)")
-//        debugPrint("    Inset : \(scrollView.contentInset)")
-
+        //        debugPrint("••> Did reset scrollView scale: ")
+        //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale); soon x \(zoomFactor)")
+        //        debugPrint("    Offset: \(scrollView.contentOffset)")
+        //        debugPrint("    Inset : \(scrollView.contentInset)")
+        
         // Next line calls scrollViewDidZoom() if zoomScale has changed
         let newZoomScale = minScale * zoomFactor
         if scrollView.zoomScale != newZoomScale {
@@ -347,10 +315,10 @@ class ImageDetailViewController: UIViewController
               imageSize.width != 0, imageSize.height != 0,
               scrollView.zoomScale != 0
         else {
-//            imagePosition = CGPoint.zero
+            //            imagePosition = CGPoint.zero
             return
         }
-
+        
         // Center image horizontally
         let imageWidth: CGFloat = imageSize.width * scrollView.zoomScale
         let leftWidth: CGFloat = (viewSize.width - imageWidth) / 2
@@ -376,16 +344,16 @@ class ImageDetailViewController: UIViewController
         }
         
         // Reset flag
-         didRotateImage = false
-
+        didRotateImage = false
+        
         // For debugging
-//        debugPrint("••> Did updateScrollViewInset: ")
-//        debugPrint("    View: \(viewSize.width) x \(viewSize.height)")
-//        debugPrint("    Offset: \(scrollView.contentOffset)")
-//        debugPrint("    Inset : \(scrollView.contentInset)")
-
+        //        debugPrint("••> Did updateScrollViewInset: ")
+        //        debugPrint("    View: \(viewSize.width) x \(viewSize.height)")
+        //        debugPrint("    Offset: \(scrollView.contentOffset)")
+        //        debugPrint("    Inset : \(scrollView.contentInset)")
+        
         // Remember position of image
-//        calcImagePositionInScrollView()
+        //        calcImagePositionInScrollView()
     }
     
     func updateImageMetadata(with data: Image) {
@@ -421,7 +389,46 @@ class ImageDetailViewController: UIViewController
             // Let's zoom out…
             scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
         }
-    }    
+    }
+    
+    
+    // MARK: - External Image Management
+    @available(iOS 13.0, *) @MainActor
+    private func setExternalImageView() {
+        // Get scene role of external display
+        var wantedRole: UISceneSession.Role!
+        if #available(iOS 16.0, *) {
+            wantedRole = .windowExternalDisplayNonInteractive
+        } else {
+            // Fallback on earlier versions
+            wantedRole = .windowExternalDisplay
+        }
+        
+        // Get scene of external display
+        let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+        guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
+              let windowScene = scenes.first as? UIWindowScene
+        else { return }
+        
+        // Add image view to external screen
+        if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+            // Configure external display view controller
+            imageVC.imageData = imageData
+            imageVC.configImage()
+        }
+        else {
+            // Create external display view controller
+            let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
+            guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
+            else { preconditionFailure("Could not load ExternalDisplayViewController") }
+            imageVC.imageData = imageData
+            
+            // Create window and make it visible
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = imageVC
+            sceneDelegate.initExternalDisplay(with: window)
+        }
+    }
 }
 
 

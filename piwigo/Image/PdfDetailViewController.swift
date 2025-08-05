@@ -249,7 +249,7 @@ class PdfDetailViewController: UIViewController
     
     
     // MARK: - External PDF View
-    @available(iOS 13.0, *)
+    @available(iOS 13.0, *) @MainActor
     private func setExternalPdfView() {
         // Get scene role of external display
         var wantedRole: UISceneSession.Role!
