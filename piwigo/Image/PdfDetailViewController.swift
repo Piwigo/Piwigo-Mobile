@@ -21,7 +21,7 @@ protocol PdfDetailDelegate: NSObjectProtocol {
 class PdfDetailViewController: UIViewController
 {
     weak var pdfDetailDelegate: PdfDetailDelegate?
-
+    
     var indexPath = IndexPath(item: 0, section: 0)
     var imageData: Image! {
         didSet {
@@ -77,49 +77,24 @@ class PdfDetailViewController: UIViewController
         
         // Should this PDF file be also displayed on the external screen?
         if #available(iOS 13.0, *) {
-            // Get scene role of external display
-            var wantedRole: UISceneSession.Role!
-            if #available(iOS 16.0, *) {
-                wantedRole = .windowExternalDisplayNonInteractive
-            } else {
-                // Fallback on earlier versions
-                wantedRole = .windowExternalDisplay
-            }
-            
-            // Get scene of external display
-            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
-            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
-                  let windowScene = scenes.first as? UIWindowScene
-            else { return }
-            
-            // Add PDF view to external screen
-            if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
-                // Configure external display view controller
-                imageVC.imageData = imageData
-                imageVC.document = pdfView?.document
-                imageVC.configImage()
-                pdfDetailDelegate = imageVC
-            }
-            else {
-                // Create external display view controller
-                let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
-                guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
-                else { preconditionFailure("Could not load ExternalDisplayViewController") }
-                imageVC.imageData = imageData
-                imageVC.document = pdfView?.document
-                pdfDetailDelegate = imageVC
-
-                // Create window and make it visible
-                let window = UIWindow(windowScene: windowScene)
-                window.rootViewController = imageVC
-                sceneDelegate.initExternalDisplay(with: window)
-            }
+            self.setExternalPdfView()
         }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
+        // Get content position
+        var contentHeight: Double = .zero
+        var contentOffset: Double = .zero
+        var maxContentOffset: Double = .zero
+        if let scrollView = self.scrollView {
+            contentHeight = scrollView.contentSize.height
+            contentOffset = scrollView.contentOffset.y + Double(scrollView.adjustedContentInset.top)
+            let viewHeight: Double = Double(scrollView.bounds.height - scrollView.adjustedContentInset.top - scrollView.adjustedContentInset.bottom)
+            maxContentOffset = contentHeight - viewHeight
+        }
+
         // Animate change of view size and reposition video
         coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
@@ -131,8 +106,22 @@ class PdfDetailViewController: UIViewController
             // Set place holder view frame for this orientation
             setPlaceHolderViewFrame()
             
-            // Set scale to fullscreen if needed
-            pdfView?.autoScales = true
+            // Reset PDF view
+            loadAndDisplayPDFfile()
+            
+            // Return to position
+            if maxContentOffset > 0, let scrollView = self.scrollView {
+                // Apply content height ratio to scroll in sync
+                let ratio = scrollView.contentSize.height / contentHeight
+                var offset = contentOffset * ratio
+
+                // Apply a linear correction so that the max offset will match the end of the document
+                let diffHeight: Double = scrollView.contentSize.height - maxContentOffset * ratio - scrollView.bounds.height
+                offset += contentOffset / maxContentOffset * diffHeight
+                
+                // Apply the offset
+                scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(offset)), animated: false)
+            }
         })
     }
     
@@ -249,11 +238,55 @@ class PdfDetailViewController: UIViewController
         descContainer.config(with: data.comment, inViewController: self, forVideo: false)
     }
     
+    
     // MARK: - Gestures Management
     func updateDescriptionVisibility() {
         // Hide/show the description view with the navigation bar
         if descContainer.descTextView.text.isEmpty == false {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+        }
+    }
+    
+    
+    // MARK: - External PDF View
+    @available(iOS 13.0, *)
+    private func setExternalPdfView() {
+        // Get scene role of external display
+        var wantedRole: UISceneSession.Role!
+        if #available(iOS 16.0, *) {
+            wantedRole = .windowExternalDisplayNonInteractive
+        } else {
+            // Fallback on earlier versions
+            wantedRole = .windowExternalDisplay
+        }
+        
+        // Get scene of external display
+        let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+        guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate,
+              let windowScene = scenes.first as? UIWindowScene
+        else { return }
+        
+        // Add PDF view to external screen
+        if let imageVC = windowScene.rootViewController() as? ExternalDisplayViewController {
+            // Configure external display view controller
+            imageVC.imageData = imageData
+            imageVC.document = pdfView?.document
+            imageVC.configImage()
+            pdfDetailDelegate = imageVC
+        }
+        else {
+            // Create external display view controller
+            let imageSB = UIStoryboard(name: "ExternalDisplayViewController", bundle: nil)
+            guard let imageVC = imageSB.instantiateViewController(withIdentifier: "ExternalDisplayViewController") as? ExternalDisplayViewController
+            else { preconditionFailure("Could not load ExternalDisplayViewController") }
+            imageVC.imageData = imageData
+            imageVC.document = pdfView?.document
+            pdfDetailDelegate = imageVC
+            
+            // Create window and make it visible
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = imageVC
+            sceneDelegate.initExternalDisplay(with: window)
         }
     }
 }
