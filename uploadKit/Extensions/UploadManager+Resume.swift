@@ -71,7 +71,9 @@ extension UploadManager
             }
             
             // Resume operations
-            self.resumeOperations()
+            UploadManager.shared.backgroundQueue.async {
+                self.resumeOperations()
+            }
         }
     }
     
