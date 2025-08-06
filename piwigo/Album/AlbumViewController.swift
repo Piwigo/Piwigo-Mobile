@@ -253,7 +253,7 @@ class AlbumViewController: UIViewController
         
         // Register classes before using them
         collectionView?.isPrefetchingEnabled = true
-        collectionView?.register(AlbumHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
+        collectionView?.register(UINib(nibName: "AlbumHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
         collectionView?.register(UINib(nibName: "AlbumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "AlbumCollectionViewCell")
         collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
@@ -375,8 +375,7 @@ class AlbumViewController: UIViewController
         collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
-                header.commentLabel?.attributedText = attributedComment()
-                header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+                header.applyColorPalette()
             }
             else if let header = header as? ImageHeaderReusableView {
                 header.applyColorPalette()
@@ -520,9 +519,9 @@ class AlbumViewController: UIViewController
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
-if categoryId == Int32.zero {
-    AppVars.shared.didShowWhatsNewAppVersion = "3.2"
-}
+//if categoryId == Int32.zero {
+//    AppVars.shared.didShowWhatsNewAppVersion = "3.2"
+//}
 #endif
         if let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             if AppVars.shared.didShowWhatsNewAppVersion.compare("3.5", options: .numeric) == .orderedAscending,

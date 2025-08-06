@@ -53,26 +53,27 @@ extension AlbumViewController
 extension AlbumViewController
 {
     // MARK: - Rotate Image
-    @objc func rotateSelectionLeft() {
+    @objc @MainActor
+    func rotateSelectionLeft() {
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesLeft, contextually: false)
     }
 
-    @objc func rotateSelectionRight() {
+    @objc @MainActor
+    func rotateSelectionRight() {
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .rotateImagesRight, contextually: false)
     }
 
+    @MainActor
     func rotateImages(withID someIDs: Set<Int64>, by angle: CGFloat, total: Float) {
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
-            DispatchQueue.main.async { [self] in
-                // Save changes
-                mainContext.saveIfNeeded()
-                // Close HUD with success
-                self.navigationController?.updateHUDwithSuccess() { [self] in
-                    navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        // Deselect images
-                        cancelSelect()
-                    }
+            // Save changes
+            mainContext.saveIfNeeded()
+            // Close HUD with success
+            self.navigationController?.updateHUDwithSuccess() { [self] in
+                navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                    // Deselect images
+                    cancelSelect()
                 }
             }
             return
@@ -86,10 +87,8 @@ extension AlbumViewController
             deselectImages(withIDs: Set([imageID]))
 
             // Update HUD
-            DispatchQueue.main.async { [self] in
-                let progress: Float = 1 - Float(remainingIDs.count) / total
-                self.navigationController?.updateHUD(withProgress: progress)
-            }
+            let progress: Float = 1 - Float(remainingIDs.count) / total
+            self.navigationController?.updateHUD(withProgress: progress)
             
             // Next image
             rotateImages(withID: remainingIDs, by: angle, total: total)
@@ -122,13 +121,12 @@ extension AlbumViewController
                             }
                         }
                     }
+                    
+                    // Next image
+                    remainingIDs.removeFirst()
+                    deselectImages(withIDs: Set([imageID]))
+                    rotateImages(withID: remainingIDs, by: angle, total: total)
                 }
-                
-                // Next image
-                remainingIDs.removeFirst()
-                deselectImages(withIDs: Set([imageID]))
-                rotateImages(withID: remainingIDs, by: angle, total: total)
-                
             } failure: { [self] error in
                 DispatchQueue.main.async { [self] in
                     rotateImagesInDatabaseError(error)

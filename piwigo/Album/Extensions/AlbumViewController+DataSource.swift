@@ -92,8 +92,7 @@ extension AlbumViewController
                 switch kind {
                 case UICollectionView.elementKindSectionHeader:
                     guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView", for: indexPath) as? AlbumHeaderReusableView else { preconditionFailure("Could not load AlbumHeaderReusableView")}
-                    header.commentLabel?.attributedText = self.attributedComment()
-                    header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+                    header.config(withDescription: self.attributedComment(), size: self.getAlbumDescriptionSize())
                     return header
                 case UICollectionView.elementKindSectionFooter:
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
@@ -127,15 +126,15 @@ extension AlbumViewController
                         
                         if indexPath.section == 0, hasAlbumSection == false {
                             header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
-                                          album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                                          album: self.attributedComment(), size: self.getAlbumDescriptionSize())
                         } else {
                             header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
                         }
                         header.imageHeaderDelegate = self
                         return header
                     }
-                    else {  // for iOS 13.x
-                        // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
+                    else {  // for iOS 12 - 13.x
+                        // Display segmented controller in first section for selecting grouping option
                         if indexPath.section == 0, hasAlbumSection == false {
                             // Display segmented controller
                             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView,
@@ -144,7 +143,7 @@ extension AlbumViewController
                             
                             header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
                                           section: indexPath.section, selectState: selectState,
-                                          album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                                          album: self.attributedComment(), size: self.getAlbumDescriptionSize())
                             header.imageHeaderDelegate = self
                             return header
                         } else {
@@ -213,7 +212,7 @@ extension AlbumViewController: UICollectionViewDataSource
                 if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                     if indexPath.section == 0, hasAlbumSection == false {
                         header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
-                                      album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                                      album: self.attributedComment(), size: self.getAlbumDescriptionSize())
                     } else {
                         header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
                     }
@@ -221,7 +220,7 @@ extension AlbumViewController: UICollectionViewDataSource
                 else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
                     header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
                                   section: indexPath.section, selectState: selectState,
-                                  album: self.attributedComment(), size: self.getAlbumDescriptionHeight())
+                                  album: self.attributedComment(), size: self.getAlbumDescriptionSize())
                 }
             } else {
                 // Fallback on earlier versions
@@ -411,8 +410,7 @@ extension AlbumViewController: UICollectionViewDataSource
             switch kind {
             case UICollectionView.elementKindSectionHeader:
                 guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView", for: indexPath) as? AlbumHeaderReusableView else { preconditionFailure("Could not load AlbumHeaderReusableView")}
-                header.commentLabel?.attributedText = attributedComment()
-                header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+                header.config(withDescription: self.attributedComment(), size: self.getAlbumDescriptionSize())
                 return header
             case UICollectionView.elementKindSectionFooter:
                 guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView

@@ -266,10 +266,10 @@ extension UploadManager {
             var properties: [CFString : Any] = [:]
             if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
 #if DEBUG
-debugPrint("====> Container properties of the source image:")
-containerProperties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Container properties of the source image:")
+//containerProperties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
                 // Should we remove private metadata?
                 if upload.stripGPSdataOnUpload {
@@ -316,10 +316,10 @@ containerProperties.forEach { (key, value) in
             // Fix container properties from converted/resized image
             properties.fixContents(from: image, resettingOrientation: resizeImage)
 #if DEBUG
-debugPrint("====> Container properties of the destination image:")
-properties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Container properties of the destination image:")
+//properties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
             
             // Set container metadata
@@ -329,10 +329,10 @@ properties.forEach { (key, value) in
             var imageOptions: Dictionary<CFString,Any> = [:]
             if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
 #if DEBUG
-debugPrint("====> Primary image properties of the source image:")
-imageProperties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Primary image properties of the source image:")
+//imageProperties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
                 // Should we remove private metadata?
                 if upload.stripGPSdataOnUpload {
@@ -347,10 +347,10 @@ imageProperties.forEach { (key, value) in
                 // Fix primary image properties from converted/resized image
                 imageOptions.fixContents(from: image, resettingOrientation: resizeImage)
 #if DEBUG
-debugPrint("====> Primary image properties of the destination image:")
-imageOptions.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Primary image properties of the destination image:")
+//imageOptions.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
             }
 
@@ -398,10 +398,10 @@ imageOptions.forEach { (key, value) in
                 // Set metadata from the source image
                 if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, index, options) as? [CFString : Any] {
 #if DEBUG
-debugPrint("====> Image #\(index) properties of the source image:")
-imageProperties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Image #\(index) properties of the source image:")
+//imageProperties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
                     // Should we remove private metadata?
                     if upload.stripGPSdataOnUpload {
@@ -416,10 +416,10 @@ imageProperties.forEach { (key, value) in
                     // Fix metadata for resized image
                     imageOptions.fixContents(from: image, resettingOrientation: resizeImage)
 #if DEBUG
-debugPrint("====> Image #\(index) properties of the destination image:")
-imageOptions.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Image #\(index) properties of the destination image:")
+//imageOptions.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
                 }
                 
@@ -508,10 +508,10 @@ imageOptions.forEach { (key, value) in
             var properties: [CFString : Any] = [:]
             if let containerProperties = CGImageSourceCopyProperties(sourceRef, options) as? [CFString : Any] {
 #if DEBUG
-debugPrint("====> Container properties of the source image:")
-containerProperties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Container properties of the source image:")
+//containerProperties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
                 // Should we remove private metadata?
                 if upload.stripGPSdataOnUpload {
@@ -558,10 +558,10 @@ containerProperties.forEach { (key, value) in
             // Fix container properties from converted/resized image
             properties.fixContents(from: image, resettingOrientation: resizeImage)
 #if DEBUG
-debugPrint("====> Container properties of the destination image:")
-properties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Container properties of the destination image:")
+//properties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
             
             // Set container metadata
@@ -571,10 +571,10 @@ properties.forEach { (key, value) in
             var imageOptions: Dictionary<CFString,Any> = [:]
             if let imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, imageIndex, options) as? [CFString : Any] {
 #if DEBUG
-debugPrint("====> Primary image properties of the source image:")
-imageProperties.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Primary image properties of the source image:")
+//imageProperties.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
                 // Should we remove private metadata?
                 if upload.stripGPSdataOnUpload {
@@ -589,10 +589,10 @@ imageProperties.forEach { (key, value) in
                 // Fix primary image properties from converted/resized image
                 imageOptions.fixContents(from: image, resettingOrientation: resizeImage)
 #if DEBUG
-debugPrint("====> Primary image properties of the destination image:")
-imageOptions.forEach { (key, value) in
-    debugPrint("\(key): \(value)")
-}
+//debugPrint("====> Primary image properties of the destination image:")
+//imageOptions.forEach { (key, value) in
+//    debugPrint("\(key): \(value)")
+//}
 #endif
             }
             

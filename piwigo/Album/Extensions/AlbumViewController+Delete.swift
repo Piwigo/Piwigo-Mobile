@@ -155,6 +155,7 @@ extension AlbumViewController
     }
 
     /// For calling Piwigo server in version 2.10 to 13.x
+    @MainActor
     func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>, total: Float) {
         var imagesToRemove = toRemove
         guard let imageData = imagesToRemove.first,
@@ -180,24 +181,23 @@ extension AlbumViewController
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
-                // Remove image from source album
-                imageData.removeFromAlbums(albumData)
-                
-                // Update albums
-                self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
-
-                // Next image
-                imagesToRemove.removeFirst()
-
-                // Update HUD
                 DispatchQueue.main.async { [self] in
+                    // Remove image from source album
+                    imageData.removeFromAlbums(albumData)
+                    
+                    // Update albums
+                    self.albumProvider.updateAlbums(removingImages: 1, fromAlbum: albumData)
+
+                    // Next image
+                    imagesToRemove.removeFirst()
+                    
+                    // Update HUD
                     let ratio = Float(imagesToRemove.count) / total
                     self.navigationController?.updateHUD(withProgress: 1.0 - ratio)
+                    
+                    // Next image
+                    removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
                 }
-
-                // Next image
-                removeImages(imagesToRemove, andThenDelete:toDelete, total: total)
-
             } failure: { [self] error in
                 DispatchQueue.main.async { [self] in
                     self.removeImages(imagesToRemove, andThenDelete: toDelete, total: total, error: error)
@@ -301,16 +301,15 @@ extension AlbumViewController
         }
     }
 
+    @MainActor
     func deleteImages(_ toDelete: Set<Image>) {
         if toDelete.isEmpty {
-            DispatchQueue.main.async { [self] in
-                self.navigationController?.updateHUDwithSuccess() { [self] in
-                    // Save changes
-                    self.mainContext.saveIfNeeded()
-                    // Hide HUD and deselect images
-                    self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                        self.cancelSelect()
-                    }
+            self.navigationController?.updateHUDwithSuccess() { [self] in
+                // Save changes
+                self.mainContext.saveIfNeeded()
+                // Hide HUD and deselect images
+                self.navigationController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                    self.cancelSelect()
                 }
             }
             return

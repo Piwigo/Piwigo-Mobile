@@ -32,6 +32,7 @@ extension AlbumViewController
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .edit, contextually: false)
     }
 
+    @MainActor
     func editImages(withIDs imageIDs: Set<Int64>) {
         if imageIDs.isEmpty {
             // No image => End (should never happen)

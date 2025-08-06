@@ -23,7 +23,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     
     
     // MARK: - Headers
-    func getAlbumDescriptionHeight() -> CGSize {
+    func getAlbumDescriptionSize() -> CGSize {
         guard !albumData.comment.string.isEmpty
         else { return CGSize.zero }
         
@@ -34,7 +34,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                                                         height: CGFloat.greatestFiniteMagnitude),
                                            options: .usesLineFragmentOrigin, context: context)
         return CGSize(width: collectionView.frame.size.width - 30.0,
-                      height: ceil(headerRect.size.height + 12.0))
+                      height: ceil(headerRect.size.height + 4.0))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
@@ -44,13 +44,32 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
                index == section {       /* Album collection */
                 // Header height?
-                return getAlbumDescriptionHeight()
+                let descriptionSize = self.getAlbumDescriptionSize()
+                if descriptionSize.height == 0 {
+                    debugPrint(#function, "=> Album collection, return 0.0")
+                    return CGSize.zero
+                } else {
+                    return CGSize(width: collectionView.frame.size.width,
+                                  height: 8 + self.getAlbumDescriptionSize().height)
+                }
             }
             else {                    /* Image collection */
                 // Are images sorted by date?
                 if let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
                    [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey) == false {
-                    return CGSize.zero
+                    // Images not sorted by date
+                    // First section shows the album description
+                    if section == 0 {
+                        let descriptionSize = self.getAlbumDescriptionSize()
+                        if descriptionSize.height == 0 {
+                            return CGSize.zero
+                        } else {
+                            return CGSize(width: collectionView.frame.size.width,
+                                          height: 10 + self.getAlbumDescriptionSize().height)
+                        }
+                    } else {
+                        return CGSize.zero
+                    }
                 }
                 
                 // Images are sorted by date ► Presents menu or segmented controller
@@ -58,15 +77,17 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 if #available(iOS 14, *) {
                     // Grouping options accessible from menu ► Display date and location (see XIB)
                     if section == 0, hasAlbumSection == false {
-                        return CGSize(width: collectionView.frame.size.width, height: 49 + self.getAlbumDescriptionHeight().height)
+                        return CGSize(width: collectionView.frame.size.width,
+                                      height: 49 + self.getAlbumDescriptionSize().height)
                     } else {
                         return CGSize(width: collectionView.frame.size.width, height: 49)
                     }
                 }
-                else {  // for iOS 13.x
-                    // Display segmented controller in first section for selecting grouping option on iOS 12 - 13.x
+                else {  // for iOS 12 - 13.x
+                    // Display segmented controller in first section for selecting grouping option
                     if section == 0, hasAlbumSection == false {
-                        return CGSize(width: collectionView.frame.size.width, height: 88 + self.getAlbumDescriptionHeight().height)
+                        return CGSize(width: collectionView.frame.size.width,
+                                      height: 88 + self.getAlbumDescriptionSize().height)
                     } else {
                         return CGSize(width: collectionView.frame.size.width, height: 49)
                     }
@@ -77,13 +98,26 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             switch section {
             case 0 /* Section 0 — Album collection */:
                 // Header height?
-                return getAlbumDescriptionHeight()
+                let descriptionSize = self.getAlbumDescriptionSize()
+                if descriptionSize.height == 0 {
+                    return CGSize.zero
+                } else {
+                    return CGSize(width: collectionView.frame.size.width,
+                                  height: 8 + self.getAlbumDescriptionSize().height)
+                }
                 
             default: /* Images */
                 // Are images sorted by date?
                 if let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
                    [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey) == false {
-                    return CGSize.zero
+                    // Images not sorted by date
+                    // First section shows the album description
+                    if section == 1 {
+                        return CGSize(width: collectionView.frame.size.width,
+                                      height: 10 + self.getAlbumDescriptionSize().height)
+                    } else {
+                        return CGSize.zero
+                    }
                 }
                 
                 // Images are sorted by date ► Presents menu or segmented controller
