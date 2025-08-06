@@ -32,6 +32,7 @@ extension AlbumViewController
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .favorite, contextually: false)
     }
 
+    @MainActor
     func favorite(imagesWithID someIDs: Set<Int64>, total: Float, contextually: Bool) {
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
@@ -139,6 +140,7 @@ extension AlbumViewController
         initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .unfavorite, contextually: false)
     }
 
+    @MainActor
     func unfavorite(imagesWithID someIDs: Set<Int64>, total: Float, contextually: Bool) {
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
