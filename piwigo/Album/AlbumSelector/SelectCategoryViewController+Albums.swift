@@ -40,9 +40,11 @@ extension SelectCategoryViewController
                     // Check error
                     guard let error = error else {
                         // No error ► Hide HUD
-                        self.updateHUDwithSuccess() { [self] in
-                            self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                                self.dismiss(animated: true)
+                        DispatchQueue.main.async { [self] in
+                            self.updateHUDwithSuccess() { [self] in
+                                self.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                                    self.dismiss(animated: true)
+                                }
                             }
                         }
                         return
