@@ -30,11 +30,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         let desc = attributedComment()
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let headerRect = desc.boundingRect(with: CGSize(width: collectionView.frame.size.width - 32.0,
+        let headerRect = desc.boundingRect(with: CGSize(width: collectionView.frame.size.width - 30.0,
                                                         height: CGFloat.greatestFiniteMagnitude),
                                            options: .usesLineFragmentOrigin, context: context)
         return CGSize(width: collectionView.frame.size.width - 30.0,
-                      height: ceil(headerRect.size.height + 12.0))
+                      height: ceil(headerRect.size.height + 4.0))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
@@ -46,10 +46,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 // Header height?
                 let descriptionSize = self.getAlbumDescriptionSize()
                 if descriptionSize.height == 0 {
+                    debugPrint(#function, "=> Album collection, return 0.0")
                     return CGSize.zero
                 } else {
                     return CGSize(width: collectionView.frame.size.width,
-                                  height: 12 + self.getAlbumDescriptionSize().height)
+                                  height: 8 + self.getAlbumDescriptionSize().height)
                 }
             }
             else {                    /* Image collection */
@@ -64,7 +65,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                             return CGSize.zero
                         } else {
                             return CGSize(width: collectionView.frame.size.width,
-                                          height: 14 + self.getAlbumDescriptionSize().height)
+                                          height: 10 + self.getAlbumDescriptionSize().height)
                         }
                     } else {
                         return CGSize.zero
@@ -102,7 +103,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                     return CGSize.zero
                 } else {
                     return CGSize(width: collectionView.frame.size.width,
-                                  height: 12 + self.getAlbumDescriptionSize().height)
+                                  height: 8 + self.getAlbumDescriptionSize().height)
                 }
                 
             default: /* Images */
@@ -113,7 +114,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                     // First section shows the album description
                     if section == 1 {
                         return CGSize(width: collectionView.frame.size.width,
-                                      height: 14 + self.getAlbumDescriptionSize().height)
+                                      height: 10 + self.getAlbumDescriptionSize().height)
                     } else {
                         return CGSize.zero
                     }

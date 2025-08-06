@@ -38,12 +38,14 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         applyColorPalette()
 
         // Set album description label
+        albumDesc.contentSize = size
+        albumDesc.textContainerInset = .zero
+        albumDesc.textContainer.widthTracksTextView = false
+        albumDesc.textContainer.lineBreakMode = .byWordWrapping
         if size == CGSize.zero {
             albumDesc.text = ""
             albumDescHeight.constant = 0
         } else {
-            albumDesc.textContainer.lineBreakMode = .byWordWrapping
-            albumDesc.textContainer.widthTracksTextView = false
             albumDesc.attributedText = description
             albumDescHeight.constant = size.height
         }

@@ -30,7 +30,6 @@
             <constraints>
                 <constraint firstItem="sM2-DX-wfy" firstAttribute="leading" secondItem="A0a-sb-PnH" secondAttribute="leading" constant="15" id="13C-Ip-Vbf"/>
                 <constraint firstAttribute="trailing" secondItem="sM2-DX-wfy" secondAttribute="trailing" constant="15" id="JxZ-Vm-uBA"/>
-                <constraint firstAttribute="bottom" secondItem="sM2-DX-wfy" secondAttribute="bottom" constant="4" id="RvX-7U-W4b"/>
                 <constraint firstItem="sM2-DX-wfy" firstAttribute="top" secondItem="A0a-sb-PnH" secondAttribute="top" constant="4" id="VIE-md-JnP"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
