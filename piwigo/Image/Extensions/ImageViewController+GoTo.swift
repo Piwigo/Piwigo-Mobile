@@ -116,7 +116,7 @@ extension ImageViewController
         let sourcePath = sourceAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
         let destinationPath = destinationAlbum.upperIds.components(separatedBy: ",").compactMap({ Int32($0) })
         let commonPath = sourcePath.filter({ destinationPath.contains($0) })
-        let lastCommonAlbumId = Array(commonPath).last ?? Int32.zero
+        let lastCommonAlbumId = Array(commonPath).last ?? self.categoryId
         
         // Keep album view controllers from which to push the remaining albums
         /// Note: firstAlbumVCs should at least contain the root album vew controller.
@@ -142,9 +142,19 @@ extension ImageViewController
             return subAlbumVC
         })
         
-        // Update the series of album view controllers
+        // Update the stack of album view controllers
         navController.setViewControllers(firstAlbumVCs + newAlbumVCs, animated: false)
-        dismiss(animated: true)
+        
+        // Dismiss the image view and reset the search if necessary
+        dismiss(animated: false) {
+            // Reset search if necessary
+            guard self.categoryId == pwgSmartAlbum.search.rawValue,
+                  let searchVC = firstAlbumVCs.first?.searchController
+            else { return }
+            searchVC.isActive = false
+            searchVC.searchBar.text = ""
+            searchVC.searchBar.resignFirstResponder()
+        }
     }
 }
 
