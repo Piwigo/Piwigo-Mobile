@@ -248,7 +248,7 @@ extension SelectCategoryViewController: UITableViewDelegate
 
             // Ask user to confirm
             let title = NSLocalizedString("copyImage_title", comment:"Copy to Album")
-            let imageTitle = inputImages.first?.title.string ?? ""
+            let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
             let message = String(format: NSLocalizedString("copySingleImage_message", comment:"Are you sure you want to copy the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath) { [self] _ in
@@ -271,7 +271,7 @@ extension SelectCategoryViewController: UITableViewDelegate
 
             // Ask user to confirm
             let title = NSLocalizedString("moveImage_title", comment:"Move to Album")
-            let imageTitle = inputImages.first?.title.string ?? ""
+            let imageTitle = inputImages.first?.titleStr ?? inputImages.first?.fileName ?? ""
             let message = String(format: NSLocalizedString("moveSingleImage_message", comment:"Are you sure you want to move the photo \"%@\" to the album \"%@\"?"), imageTitle.isEmpty ? inputImages.first?.fileName ?? "-?-" : imageTitle, albumData.name)
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: albumData, at: indexPath) { [self] _ in

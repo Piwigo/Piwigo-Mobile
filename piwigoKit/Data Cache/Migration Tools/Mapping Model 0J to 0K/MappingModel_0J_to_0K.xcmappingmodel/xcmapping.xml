@@ -307,15 +307,15 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z155"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z155">
-        <attribute name="migrationpolicyclassname" type="string">UploadToUploadMigrationPolicy_0J_to_0K</attribute>
+        <attribute name="migrationpolicyclassname" type="string">piwigoKit.UploadToUploadMigrationPolicy_0J_to_0K</attribute>
         <attribute name="sourcename" type="string">Upload</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">9</attribute>
         <attribute name="destinationname" type="string">Upload</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z208"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z119 z194 z163 z203 z134 z127 z154 z218 z198 z172 z202 z185 z230 z216 z233 z111 z148 z157 z237 z235 z120 z140 z141 z211 z220 z113 z195"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z166 z181"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z203 z216 z119 z172 z185 z202 z237 z218 z140 z134 z113 z195 z157 z198 z163 z120 z141 z211 z220 z111 z233 z148 z154 z235 z194 z230 z127"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z181 z166"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z156">
         <attribute name="name" type="string">id</attribute>

@@ -74,7 +74,7 @@ class VideoDetailViewController: UIViewController
         }
         
         // Configure the description view before layouting subviews
-        descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
+        descContainer.config(withImage: imageData, inViewController: self, forVideo: true)
         
         // Hide/show the description and controls views with the navigation bar
         updateDescriptionControlsVisibility()
@@ -99,7 +99,7 @@ class VideoDetailViewController: UIViewController
         coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
-                descContainer.config(with: imageData.comment, inViewController: self, forVideo: true)
+                descContainer.config(withImage: imageData, inViewController: self, forVideo: true)
                 descContainer.applyColorPalette()
             }
             
@@ -257,9 +257,9 @@ class VideoDetailViewController: UIViewController
         //        debugPrint("    Inset : \(scrollView.contentInset)")
     }
     
-    func updateImageMetadata(with data: Image) {
+    func updateImageMetadata(with imageData: Image) {
         // Update image description
-        descContainer.config(with: data.comment, inViewController: self, forVideo: true)
+        descContainer.config(withImage: imageData, inViewController: self, forVideo: true)
     }
     
     

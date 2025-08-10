@@ -86,7 +86,7 @@ class ImageDetailViewController: UIViewController
         loadAndDisplayHighResImage()
         
         // Configure the description view before layouting subviews
-        descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
+        descContainer.config(withImage: imageData, inViewController: self, forVideo: false)
         
         // Hide/show the description view with the navigation bar
         updateDescriptionVisibility()
@@ -111,7 +111,7 @@ class ImageDetailViewController: UIViewController
         coordinator.animate(alongsideTransition: { [self] _ in
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
-                descContainer.config(with: imageData.comment, inViewController: self, forVideo: false)
+                descContainer.config(withImage: imageData, inViewController: self, forVideo: false)
                 descContainer.applyColorPalette()
             }
             
@@ -356,9 +356,9 @@ class ImageDetailViewController: UIViewController
         //        calcImagePositionInScrollView()
     }
     
-    func updateImageMetadata(with data: Image) {
+    func updateImageMetadata(with imageData: Image) {
         // Update image description
-        descContainer.config(with: data.comment, inViewController: self, forVideo: false)
+        descContainer.config(withImage: imageData, inViewController: self, forVideo: false)
     }
     
     

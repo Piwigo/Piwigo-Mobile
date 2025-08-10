@@ -115,7 +115,10 @@ class AlbumTableViewCell: UITableViewCell {
     private func getDescription(fromAlbumData albumData: Album?) -> NSAttributedString {
         var desc = NSMutableAttributedString()
         // Any provided description?
-        if let description = albumData?.comment, description.string.isEmpty == false {
+        if let description = albumData?.commentHTML, description.string.isEmpty == false {
+            desc = NSMutableAttributedString(attributedString: description)
+        }
+        else if let description = albumData?.comment, description.string.isEmpty == false {
             desc = NSMutableAttributedString(attributedString: description)
             let wholeRange = NSRange(location: 0, length: desc.string.count)
             let style = NSMutableParagraphStyle()

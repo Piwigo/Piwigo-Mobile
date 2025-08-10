@@ -28,7 +28,7 @@ class EditImageParamsViewController: UIViewController
     private let kEditImageParamsViewWidth: CGFloat = 512.0
 
     var shouldUpdateTitle = false
-    var commonTitle = NSAttributedString()
+    var commonTitle = ""
     
     var shouldUpdateAuthor = false
     var commonAuthor = ""
@@ -48,7 +48,7 @@ class EditImageParamsViewController: UIViewController
     var removedTags = Set<Tag>()
     
     var shouldUpdateComment = false
-    var commonComment = NSAttributedString()
+    var commonComment = ""
     
     enum EditImageParamsOrder : Int {
         case thumbnails
@@ -199,14 +199,14 @@ class EditImageParamsViewController: UIViewController
     private func resetCommonParameters() {
         // Common title?
         shouldUpdateTitle = false
-        if images[0].title.string == "NSNotFound" {
-            commonTitle = NSAttributedString()
+        if images[0].titleStr == "NSNotFound" {
+            commonTitle = ""
         } else {
-            commonTitle = images[0].title
+            commonTitle = images[0].titleStr
         }
-        if images.contains(where: {$0.title != commonTitle}) {
+        if images.contains(where: {$0.titleStr != commonTitle}) {
             // Images titles are different
-            commonTitle = NSAttributedString()
+            commonTitle = ""
         }
         
         // Common author?
@@ -249,10 +249,10 @@ class EditImageParamsViewController: UIViewController
         
         // Common comment?
         shouldUpdateComment = false
-        commonComment = images[0].comment
-        if images.contains(where: { $0.comment != commonComment}) {
+        commonComment = images[0].commentStr
+        if images.contains(where: { $0.commentStr != commonComment}) {
             // Images comments are different, display no comment
-            commonComment = NSAttributedString()
+            commonComment = ""
         }
     }
     
@@ -366,7 +366,7 @@ class EditImageParamsViewController: UIViewController
                                           "multiple_value_mode" : "replace"]
         // Update image title?
         if shouldUpdateTitle {
-            paramsDict["name"] = PwgSession.utf8mb3String(from: commonTitle.string)
+            paramsDict["name"] = PwgSession.utf8mb3String(from: commonTitle)
         }
 
         // Update image author? (We should never set NSNotFound in the database)
@@ -406,7 +406,7 @@ class EditImageParamsViewController: UIViewController
 
         // Update image description?
         if shouldUpdateComment {
-            paramsDict["comment"] = PwgSession.utf8mb3String(from: commonComment.string)
+            paramsDict["comment"] = PwgSession.utf8mb3String(from: commonComment)
         }
         
         // Send request to Piwigo server
@@ -414,9 +414,10 @@ class EditImageParamsViewController: UIViewController
             PwgSession.shared.setInfos(with: paramsDict) { [self] in
                 DispatchQueue.main.async { [self] in
                     // Update image title?
-                    if shouldUpdateTitle {
-                        let newTitle = PwgSession.utf8mb4String(from: (paramsDict["name"] as! String))
-                        imageData.title = newTitle.htmlToAttributedString
+                    if shouldUpdateTitle,
+                       let newTitle = paramsDict["name"] as? String {
+                        imageData.titleStr = PwgSession.utf8mb4String(from: newTitle)
+                        imageData.title = imageData.titleStr.attributedPlain()
                     }
                     
                     // Update image author? (We should never set NSNotFound in the database)
@@ -474,9 +475,11 @@ class EditImageParamsViewController: UIViewController
                     }
                     
                     // Update image description?
-                    if shouldUpdateComment {
-                        let newComment = PwgSession.utf8mb4String(from: (paramsDict["comment"] as! String))
-                        imageData.comment = newComment.htmlToAttributedString
+                    if shouldUpdateComment,
+                       let newComment = paramsDict["comment"] as? String {
+                        imageData.commentStr = PwgSession.utf8mb4String(from: newComment)
+                        imageData.comment = imageData.commentStr.attributedPlain()
+                        imageData.commentHTML = imageData.commentStr.attributedHTML()
                     }
                     
                     // Save changes

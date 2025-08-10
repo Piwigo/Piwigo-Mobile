@@ -208,9 +208,8 @@ extension PwgSession {
     public static
     func utf8mb4String(from string: String?) -> String {
         // Return empty string if nothing provided
-        guard let strToConvert = string, strToConvert.isEmpty == false else {
-            return ""
-        }
+        guard let strToConvert = string, strToConvert.isEmpty == false
+        else { return "" }
         
         // Convert string to UTF-8 encoding
         let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
@@ -225,9 +224,8 @@ extension PwgSession {
     public static
     func utf8mb3String(from string: String?) -> String {
         // Return empty string if nothing provided
-        guard let strToFilter = string, strToFilter.isEmpty == false else {
-            return ""
-        }
+        guard let strToFilter = string, strToFilter.isEmpty == false
+        else { return "" }
 
         // Replace characters encoded on 4 bytes
         var utf8mb3String = ""

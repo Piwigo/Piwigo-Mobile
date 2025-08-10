@@ -42,10 +42,17 @@ public class Album: NSManagedObject {
         }
 
         // Album description (required)
-        let newCommentUTF8 = PwgSession.utf8mb4String(from: albumData.comment)
-        let newCommentAttrStr = newCommentUTF8.htmlToAttributedString
-        if comment != newCommentAttrStr {
-            comment = newCommentAttrStr
+        let newCommentStr = PwgSession.utf8mb4String(from: albumData.comment)
+        if commentStr != newCommentStr {
+            commentStr = newCommentStr
+        }
+        let newComment = newCommentStr.attributedPlain()
+        if comment != newComment {
+            comment = newComment
+        }
+        let newCommentHTML = newCommentStr.attributedHTML()
+        if newCommentHTML != commentHTML {
+            commentHTML = newCommentHTML
         }
         
         // Album rank (required)

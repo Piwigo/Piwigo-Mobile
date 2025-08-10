@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class ImageDescriptionView: UIVisualEffectView {
     
@@ -30,30 +31,33 @@ class ImageDescriptionView: UIVisualEffectView {
         }
     }
     
-    func config(with imageComment:NSAttributedString?,
+    func config(withImage image: Image,
                 inViewController viewController: UIViewController, forVideo: Bool) {
         // Should we present a description?
-        guard let comment = imageComment,
-              comment.string.isEmpty == false
-        else {
+        if image.commentHTML.string.isEmpty == false {
+            descTextView.attributedText = image.commentHTML
+        }
+        else if image.comment.string.isEmpty == false {
+            // Configure the description view
+            let wholeRange = NSRange(location: 0, length: image.comment.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes: [NSAttributedString.Key : Any] = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let desc = NSMutableAttributedString(attributedString: image.comment)
+            desc.addAttributes(attributes, range: wholeRange)
+            descTextView.attributedText = desc
+        } else {
             // Hide the description view
             descTextView.text = ""
             self.isHidden = true
             return
         }
         
-        // Configure the description view
-        let wholeRange = NSRange(location: 0, length: comment.string.count)
-        let style = NSMutableParagraphStyle()
-        style.alignment = NSTextAlignment.center
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
-            NSAttributedString.Key.paragraphStyle: style
-        ]
-        let desc = NSMutableAttributedString(attributedString: comment)
-        desc.addAttributes(attributes, range: wholeRange)
-        descTextView.attributedText = desc
+        // Don't show the description only when the bar is hidden
         let navController = viewController.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
 
@@ -64,19 +68,35 @@ class ImageDescriptionView: UIVisualEffectView {
             safeAreaWidth -= root.view.safeAreaInsets.left + root.view.safeAreaInsets.right
         }
         
-        // Calculate the required number of lines, corners'width deducted
+        // Calc the height required to display the text, corners'width deducted
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
         let lineHeight = (descTextView.font ?? UIFont.systemFont(ofSize: 13)).lineHeight
         let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
         let rect = descTextView.attributedText.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius,
                                                                          height: CGFloat.greatestFiniteMagnitude),
-                                                            options: .usesLineFragmentOrigin, context: context)
+                                                            options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                                            context: context)
         let textHeight = rect.height
-        let nberOfLines = textHeight / lineHeight
+        
+        // Determine the max height according to device and orientation
+        let maxHeight: CGFloat!
+        let orientation: UIInterfaceOrientation
+        if #available(iOS 14, *) {
+            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        let height = window?.bounds.height ?? UIScreen.main.bounds.height
+        switch orientation {
+        case .landscapeLeft, .landscapeRight:
+            maxHeight = 0.20 * height
+        default:
+            maxHeight = 0.23 * height
+        }
         
         // Can the description be presented on 3 lines maximum?
-        if nberOfLines < 4 {
+        if textHeight < maxHeight {
             // Calculate the height (the width should be < safeAreaWidth)
             let requiredHeight = ceil(descTextView.textContainerInset.top + textHeight + descTextView.textContainerInset.bottom)
             // Calculate the optimum size
@@ -84,32 +104,17 @@ class ImageDescriptionView: UIVisualEffectView {
                                                         height: requiredHeight))
             descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
-            descOffset.constant = forVideo ? 12 : 10 - 2 * nberOfLines
+            descOffset.constant = forVideo ? 12 : 4
             self.layer.cornerRadius = cornerRadius
             self.layer.masksToBounds = true
         }
         else if rect.width < safeAreaWidth - 4*cornerRadius {
-            // Several short lines but width much smaller than screen width
+            // Several short lines but the width is smaller than screen width
             descWidth.constant = rect.width + cornerRadius   // Add space taken by corners
+            descHeight.constant = min(maxHeight, rect.height)
+            descOffset.constant = forVideo ? 12 : 4
             self.layer.cornerRadius = cornerRadius
             self.layer.masksToBounds = true
-
-            // The maximum height is limited on iPhone
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                let orientation: UIInterfaceOrientation
-                if #available(iOS 14, *) {
-                    orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-                } else {
-                    orientation = UIApplication.shared.statusBarOrientation
-                }
-                let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
-                descHeight.constant = min(maxHeight, rect.height)
-                descOffset.constant = forVideo ? 12 : 2
-            }
-            else {
-                descHeight.constant = rect.height
-                descOffset.constant = forVideo ? 12 : 0
-            }
             
             // Scroll text to the top
             descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))
@@ -119,24 +124,10 @@ class ImageDescriptionView: UIVisualEffectView {
             self.layer.cornerRadius = 0            // Disable rounded corner in case user added text
             self.layer.masksToBounds = false
             descWidth.constant = safeAreaWidth
-            descOffset.constant = forVideo ? 12 : 0
             let height = descTextView.sizeThatFits(CGSize(width: safeAreaWidth,
                                                           height: CGFloat.greatestFiniteMagnitude)).height
-
-            // The maximum height is limited on iPhone
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                let orientation: UIInterfaceOrientation
-                if #available(iOS 14, *) {
-                    orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-                } else {
-                    orientation = UIApplication.shared.statusBarOrientation
-                }
-                let maxHeight:CGFloat = orientation.isPortrait ? 88 : 52
-                descHeight.constant = min(maxHeight, height)
-            }
-            else {
-                descHeight.constant = height
-            }
+            descHeight.constant = min(maxHeight, height)
+            descOffset.constant = forVideo ? 12 : 0
             
             // Scroll text to the top
             descTextView.scrollRangeToVisible(NSRange(location: 0, length: 1))

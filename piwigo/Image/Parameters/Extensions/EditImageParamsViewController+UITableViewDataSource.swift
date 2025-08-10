@@ -43,7 +43,8 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .imageName:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as? EditImageTextFieldTableViewCell
             else { preconditionFailure("Could not load a EditImageTextFieldTableViewCell") }
-            let titleLength: Int = commonTitle.string.count
+            let title = NSMutableAttributedString(string: commonTitle)
+            let titleLength: Int = commonTitle.count
             let wholeRange = NSRange(location: 0, length: titleLength)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.right
@@ -51,9 +52,8 @@ extension EditImageParamsViewController: UITableViewDataSource
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
                 NSAttributedString.Key.paragraphStyle: style
             ]
-            let detail = NSMutableAttributedString(attributedString: commonTitle)
-            detail.addAttributes(attributes, range: wholeRange)
-            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title")), placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"), andImageDetail: detail)
+            title.addAttributes(attributes, range: wholeRange)
+            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title")), placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"), andImageDetail: title)
             if shouldUpdateTitle {
                 cell.cellTextField.textColor = .piwigoColorOrange()
             }
@@ -119,14 +119,14 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .desc:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "description", for: indexPath) as? EditImageTextViewTableViewCell
             else { preconditionFailure("Could not load a EditImageTextViewTableViewCell") }
-            let wholeRange = NSRange(location: 0, length: commonComment.string.count)
+            let wholeRange = NSRange(location: 0, length: commonComment.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.left
             let attributes = [
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
                 NSAttributedString.Key.paragraphStyle: style
             ]
-            let detail = NSMutableAttributedString(attributedString: commonComment)
+            let detail = NSMutableAttributedString(string: commonComment)
             detail.addAttributes(attributes, range: wholeRange)
             cell.config(withText: detail,
                         inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())

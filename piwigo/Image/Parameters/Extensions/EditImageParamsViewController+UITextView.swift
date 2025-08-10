@@ -35,7 +35,7 @@ extension EditImageParamsViewController: UITextViewDelegate
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let finalString = (textView.text as NSString).replacingCharacters(in: range, with: text)
-        commonComment = finalString.htmlToAttributedString
+        commonComment = finalString
         return true
     }
 
@@ -45,6 +45,6 @@ extension EditImageParamsViewController: UITextViewDelegate
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        commonComment = textView.text.htmlToAttributedString
+        commonComment = textView.text
     }
 }

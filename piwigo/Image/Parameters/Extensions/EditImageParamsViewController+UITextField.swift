@@ -100,7 +100,7 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
-                commonTitle = finalString.htmlToAttributedString
+                commonTitle = finalString
             case .author:
                 // Author
                 commonAuthor = finalString
@@ -115,7 +115,7 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
-                commonTitle = "".htmlToAttributedString
+                commonTitle = ""
             case .author:
                 // Author
                 commonAuthor = ""
@@ -135,7 +135,7 @@ extension EditImageParamsViewController: UITextFieldDelegate
         switch EditImageParamsOrder(rawValue: row) {
             case .imageName:
                 // Title
-                commonTitle = (textField.text ?? "").htmlToAttributedString
+                commonTitle = textField.text ?? ""
             case .author:
                 // Author
                 commonAuthor = textField.text ?? ""

@@ -504,7 +504,7 @@ private extension DataMigrationVersion {
                     }
                     return .version0J
                 }
-                return .version0K
+                return .version0L
             }
         }
         return compatibleVersion

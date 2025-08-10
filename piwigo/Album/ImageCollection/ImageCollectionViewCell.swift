@@ -185,7 +185,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             fallthrough
 
         default:
-            if imageData.title.string.isEmpty == false {
+            if imageData.titleStr.isEmpty == false {
                 return attributedTitle(imageData.title)
             } else {
                 return attributedTitle(NSAttributedString(string: imageData.fileName))

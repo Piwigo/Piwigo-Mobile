@@ -178,18 +178,22 @@ extension AlbumViewController
 extension AlbumViewController: UICollectionViewDataSource
 {
     // MARK: - Headers
-    func attributedComment() -> NSMutableAttributedString {
-        let desc = NSMutableAttributedString(attributedString: albumData.comment)
-        let wholeRange = NSRange(location: 0, length: albumData.comment.string.count)
-        let style = NSMutableParagraphStyle()
-        style.alignment = NSTextAlignment.center
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
-            NSAttributedString.Key.paragraphStyle: style
-        ]
-        desc.addAttributes(attributes, range: wholeRange)
-        return desc
+    func attributedComment() -> NSAttributedString {
+        if albumData.commentHTML.string.isEmpty {
+            let desc = NSMutableAttributedString(attributedString: albumData.comment)
+            let wholeRange = NSRange(location: 0, length: albumData.comment.string.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            desc.addAttributes(attributes, range: wholeRange)
+            return desc
+        } else {
+            return albumData.commentHTML
+        }
     }
     
     func updateHeaders() {

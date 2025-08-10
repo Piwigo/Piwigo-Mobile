@@ -489,7 +489,7 @@ class SelectCategoryViewController: UIViewController {
                                  text: String(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), inputAlbum.name))
 
         case .setAlbumThumbnail:
-            let title = inputImages.first?.title.string ?? ""
+            let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("categorySelection_setThumbnail", comment:"Please select the album which will use the photo \"%@\" as a thumbnail."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
@@ -498,12 +498,12 @@ class SelectCategoryViewController: UIViewController {
                                  text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             
         case .copyImage:
-            let title = inputImages.first?.title.string ?? ""
+            let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("copySingleImage_selectAlbum", comment:"Please, select the album in which you wish to copy the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 
         case .moveImage:
-            let title = inputImages.first?.title.string ?? ""
+            let title = inputImages.first?.titleStr ?? ""
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSubViewWidth),
                                  text: String(format: NSLocalizedString("moveSingleImage_selectAlbum", comment:"Please, select the album in which you wish to move the photo \"%@\"."), title.isEmpty ? inputImages.first?.fileName ?? "-?-" : title))
 

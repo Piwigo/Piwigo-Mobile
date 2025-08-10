@@ -134,8 +134,10 @@ class AlbumRenaming: NSObject
                     if albumData.name != albumName {
                         albumData.name = albumName
                     }
-                    if albumData.comment.string != albumComment {
-                        albumData.comment = albumComment.htmlToAttributedString
+                    if albumData.commentStr != albumComment {
+                        albumData.commentStr = albumComment
+                        albumData.comment = albumComment.attributedPlain()
+                        albumData.commentHTML = albumComment.attributedHTML()
                     }
                     self.mainContext.saveIfNeeded()
                     
@@ -191,11 +193,11 @@ extension AlbumRenaming: UITextFieldDelegate
         }
         
         // Changing the album description is not possible with a nil.
-        guard let newAlbumDesc = newDescription?.htmlToAttributedString
+        guard let newAlbumDesc = newDescription
         else { return false }
         
         // Compare the old and new album descriptions
-        return (albumData.comment != newAlbumDesc)
+        return (albumData.commentStr != newAlbumDesc)
     }
 
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {

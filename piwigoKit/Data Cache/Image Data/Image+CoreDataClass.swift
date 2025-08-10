@@ -48,20 +48,27 @@ public class Image: NSManagedObject {
         }
         
         // Image title (required)
-        let titleUTF8 = PwgSession.utf8mb4String(from: imageData.title)
-        if titleStr != titleUTF8 {
-            titleStr = titleUTF8
+        let newTitleStr = PwgSession.utf8mb4String(from: imageData.title)
+        if titleStr != newTitleStr {
+            titleStr = newTitleStr
         }
-        let titleAttrStr = titleUTF8.htmlToAttributedString
-        if title != titleAttrStr {
-            title = titleAttrStr
+        let newTitle = newTitleStr.attributedPlain()
+        if newTitle != title {
+            title = newTitle
         }
         
         // Image description (required)
-        let newCommentUTF8 = PwgSession.utf8mb4String(from: imageData.comment)
-        let newCommentAttrStr = newCommentUTF8.htmlToAttributedString
-        if comment != newCommentAttrStr {
-            comment = newCommentAttrStr
+        let newCommentStr = PwgSession.utf8mb4String(from: imageData.comment)
+        if commentStr != newCommentStr {
+            commentStr = newCommentStr
+        }
+        let newComment = newCommentStr.attributedPlain()
+        if comment != newComment {
+            comment = newComment
+        }
+        let newCommentHTML = newCommentStr.attributedHTML()
+        if newCommentHTML != commentHTML {
+            commentHTML = newCommentHTML
         }
         
         // Image visits (returned by pwg.category.getImages)
