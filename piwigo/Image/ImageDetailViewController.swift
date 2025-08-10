@@ -44,12 +44,10 @@ class ImageDetailViewController: UIViewController
                 .first?.windows
                 .filter({$0.isKeyWindow})
                 .first?.bounds.size
-            debugPrint(size ?? "nil")
             return size ?? view.bounds.size
         } else {
             // Fallback on earlier versions
             let size = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.bounds.size
-            debugPrint(size ?? "nil")
             return size ?? view.bounds.size
         }
     }()

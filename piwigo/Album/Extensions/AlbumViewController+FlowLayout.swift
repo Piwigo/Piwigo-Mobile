@@ -46,7 +46,6 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 // Header height?
                 let descriptionSize = self.getAlbumDescriptionSize()
                 if descriptionSize.height == 0 {
-                    debugPrint(#function, "=> Album collection, return 0.0")
                     return CGSize.zero
                 } else {
                     return CGSize(width: collectionView.frame.size.width,
