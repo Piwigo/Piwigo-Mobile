@@ -130,8 +130,15 @@ extension EditImageParamsViewController: UITableViewDataSource
             detail.addAttributes(attributes, range: wholeRange)
             cell.config(withText: detail,
                         inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
-            cell.textView.tag = indexPath.row
-            cell.textView.delegate = self
+            // Piwigo does not manage HTML descriptions.
+            // So we disable the editor to prevent a mess when the description contains HTML.
+            if commonComment.containsHTML() {
+                cell.textView.isEditable = false
+            } else {
+                cell.textView.isEditable = true
+                cell.textView.tag = indexPath.row
+                cell.textView.delegate = self
+            }
             tableViewCell = cell
             
         default:

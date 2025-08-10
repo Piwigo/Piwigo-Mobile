@@ -28,6 +28,16 @@ extension String
         return NSAttributedString(string: trimmedText)
     }
 
+    public func containsHTML() -> Bool {
+        let lowerCaseText = self.lowercased()
+        if lowerCaseText.hasPrefix("<!doctype html") ||
+            lowerCaseText.hasPrefix("<html") ||
+            (lowerCaseText.contains("<html") && lowerCaseText.contains("</html>")) {
+            return true
+        }
+        return false
+    }
+    
     public func attributedHTML() -> NSAttributedString {
         // Remove any white space or newline located at the beginning or end
         let trimmedText = self.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -36,14 +46,9 @@ extension String
         guard trimmedText.isEmpty == false
         else { return NSAttributedString() }
         
-        // Specifically detect full HTML document
-        let lowerCaseTrimmedText = trimmedText.lowercased()
-        guard lowerCaseTrimmedText.hasPrefix("<!doctype html") ||
-                lowerCaseTrimmedText.hasPrefix("<html") ||
-                (lowerCaseTrimmedText.contains("<html") && lowerCaseTrimmedText.contains("</html>"))
-        else {
-            return NSAttributedString()
-        }
+        // Detect if its contains HTML text
+        guard trimmedText.containsHTML()
+        else { return NSAttributedString() }
         
         // Decode HTML code if possible
         guard let data = trimmedText.data(using: .utf8)
