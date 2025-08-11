@@ -101,23 +101,13 @@ class DataMigrationViewController: UIViewController {
                         errorMsg = ""
                     }
                     
-                    if #available(iOS 13.0, *) {
-                        let activeScenes = UIApplication.shared.connectedScenes
-                            .filter({ $0.activationState == .foregroundActive })
-                            .filter({ $0.session.role == .windowApplication})
-                        if let scene = activeScenes.first as? UIWindowScene {
-                            scene.topMostViewController()?.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg) {
-                                return
-                            }
+                    let activeScenes = UIApplication.shared.connectedScenes
+                        .filter({ $0.activationState == .foregroundActive })
+                        .filter({ $0.session.role == .windowApplication})
+                    if let scene = activeScenes.first as? UIWindowScene {
+                        scene.topMostViewController()?.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg) {
+                            return
                         }
-                    } else {
-                        // Fallback on earlier version
-                        if UIApplication.shared.keyWindow?.rootViewController != nil {
-                            UIApplication.shared.keyWindow?.rootViewController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg) {
-                                return
-                            }
-                        }
-                        return
                     }
                 }
             }

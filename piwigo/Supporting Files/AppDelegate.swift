@@ -515,7 +515,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Display error message and resume Upload Manager operation
         let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
-        if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
+        let keyWindows = UIApplication.shared.connectedScenes
+            .filter({$0.session.role == .windowApplication})
+            .filter({$0.activationState == .foregroundActive})
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows
+            .filter({$0.isKeyWindow})
+        if let keyWindow = keyWindows?.first,
+           let topViewController = keyWindow.windowScene?.rootViewController(),
            topViewController is UINavigationController,
            let visibleVC = (topViewController as! UINavigationController).visibleViewController {
             // Inform user

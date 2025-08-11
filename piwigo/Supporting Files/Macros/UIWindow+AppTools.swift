@@ -13,15 +13,6 @@ extension UIWindow {
     
     // MARK: - Top Most View Controller
     func topMostViewController() -> UIViewController? {
-        // Get the rootViewController of the associated window
-        var rootViewController: UIViewController? = nil
-        if #available(iOS 13, *) {
-            return self.windowScene?.topMostViewController()
-        }
-        else {
-            // Get the app's key window
-            rootViewController = UIApplication.shared.keyWindow?.rootViewController
-            return rootViewController?.topMostViewController()
-        }
+        return self.windowScene?.topMostViewController()
     }
 }
