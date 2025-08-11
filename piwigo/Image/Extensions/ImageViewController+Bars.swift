@@ -116,8 +116,8 @@ extension ImageViewController {
     @MainActor
     private func updateNavBarOld() {
         // Interface depends on device and orientation
-        let orientation = UIApplication.shared.statusBarOrientation
-        
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+
         // User with admin or upload rights can do everything
         // WRONG =====> 'normal' user with upload access to the current category can edit images
         // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
@@ -298,8 +298,8 @@ extension ImageViewController {
         titleLabel.sizeToFit()
 
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
-        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
-            (UIApplication.shared.statusBarOrientation.isLandscape)) ||
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        if ((UIDevice.current.userInterfaceIdiom == .phone) && orientation.isLandscape) ||
             imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))

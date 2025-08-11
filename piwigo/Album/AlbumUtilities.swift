@@ -430,13 +430,7 @@ class AlbumUtilities: NSObject {
     
     static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
         // Available width in portrait mode
-        var orientation: UIInterfaceOrientation = .portrait
-        if #available(iOS 13, *) {
-            // Interface depends on device and orientation
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         return orientation == .portrait ? pageSize.width : pageSize.height
     }
     

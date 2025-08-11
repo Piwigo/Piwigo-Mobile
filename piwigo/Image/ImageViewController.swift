@@ -525,12 +525,7 @@ class ImageViewController: UIViewController {
     
     // Display/hide status bar
     override var prefersStatusBarHidden: Bool {
-        let orientation: UIInterfaceOrientation
-        if #available(iOS 14, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         let phoneInLandscape = UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape
         return phoneInLandscape || navigationController?.isNavigationBarHidden ?? false
     }

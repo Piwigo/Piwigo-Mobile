@@ -81,17 +81,11 @@ class ImageDescriptionView: UIVisualEffectView {
         
         // Determine the max height according to device and orientation
         let maxHeight: CGFloat!
-        let orientation: UIInterfaceOrientation
-        if #available(iOS 14, *) {
-            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = viewController.view.window?.windowScene?.interfaceOrientation ?? .portrait
         let height = window?.bounds.height ?? UIScreen.main.bounds.height
-        switch orientation {
-        case .landscapeLeft, .landscapeRight:
+        if orientation.isLandscape {
             maxHeight = 0.20 * height
-        default:
+        } else {
             maxHeight = 0.23 * height
         }
         

@@ -288,12 +288,7 @@ class AppLockViewController: UIViewController {
         }
 
         // Get device orientation
-        var orientation: UIInterfaceOrientation
-        if #available(iOS 13.0, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
 
         // Initialise constants
         let margin: CGFloat =  16

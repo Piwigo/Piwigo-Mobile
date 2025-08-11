@@ -18,12 +18,7 @@ class SettingsUtilities: NSObject {
         let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
         
         // Change label according to orientation
-        var orientation: UIInterfaceOrientation
-        if #available(iOS 13.0, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         if (UIDevice.current.userInterfaceIdiom == .phone) && orientation.isPortrait {
             // iPhone in portrait mode
             return "\(authors1)\r\(authors2)"

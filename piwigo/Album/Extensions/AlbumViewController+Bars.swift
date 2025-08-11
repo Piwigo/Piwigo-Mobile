@@ -192,7 +192,7 @@ extension AlbumViewController
 
     private func initBarsInSelectModeOld() {
         // Interface depends on device and orientation
-        let orientation = UIApplication.shared.statusBarOrientation
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
 
         // User with admin or upload rights can do everything
         // except may be downloading images (i.e. sharing images)
@@ -370,8 +370,8 @@ extension AlbumViewController
 
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
-        if !(UIDevice.current.userInterfaceIdiom == .phone &&
-             UIApplication.shared.statusBarOrientation.isLandscape) {
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
