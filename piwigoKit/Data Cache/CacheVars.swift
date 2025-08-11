@@ -36,6 +36,16 @@ public class CacheVars: NSObject {
     @UserDefault("recentPeriodIndexCorrectedInVersion321", defaultValue: false)
     public var recentPeriodIndexCorrectedInVersion321: Bool
     
+    public func correctRecentPeriodIndex() {
+        // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
+        if recentPeriodIndexCorrectedInVersion321 == false,
+           let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           version.compare(recentPeriodListChangedInVersion312) == .orderedSame {
+            recentPeriodIndex += 1
+            recentPeriodIndexCorrectedInVersion321 = true
+        }
+    }
+    
     
     // MARK: - Vars in UserDefaults / App Group
     // Variables stored in UserDefaults / App Group

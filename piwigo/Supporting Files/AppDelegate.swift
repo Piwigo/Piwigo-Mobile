@@ -57,6 +57,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
         }
         
+        // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
+        CacheVars.shared.correctRecentPeriodIndex()
+
         // Set Settings Bundle data
         setSettingsBundleData()
         
