@@ -9,9 +9,7 @@
 import Foundation
 
 // Mark UserDefaults as Sendable since Apple documents it as thread-safe
-extension UserDefaults: @retroactive @unchecked Sendable {}
-
-extension UserDefaults {
+extension UserDefaults: @retroactive @unchecked Sendable {
 
     // We use different App Groups:
     /// - Development: one chosen by the developer
