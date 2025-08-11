@@ -7,13 +7,7 @@
 //
 
 import Foundation
-import var CommonCrypto.CC_MD5_DIGEST_LENGTH
-import func CommonCrypto.CC_MD5
-import typealias CommonCrypto.CC_LONG
-
-#if canImport(CryptoKit)
-import CryptoKit        // Requires iOS 13
-#endif
+import CryptoKit
 
 public let JSONprefix = "JSON "
 public let JSONextension = ".txt"
@@ -23,45 +17,10 @@ extension Data {
     // MARK: - MD5 Checksum
     // Return the MD5 checksum of data
     public func MD5checksum() -> String {
-        var md5Checksum = ""
-
-        // Determine MD5 checksum of video file to upload
-        if #available(iOS 13.0, *) {
-            #if canImport(CryptoKit)        // Requires iOS 13
-            md5Checksum = self.MD5(data: self)
-            #endif
-        } else {
-            // Fallback on earlier versions
-            md5Checksum = self.oldMD5(data: self)
-        }
-        return md5Checksum
-    }
-
-    #if canImport(CryptoKit)        // Requires iOS 13
-    @available(iOS 13.0, *)
-    private func MD5(data: Data?) -> String {
-        let digest = Insecure.MD5.hash(data: data ?? Data())
+        let digest = Insecure.MD5.hash(data: self)
         return digest.map { String(format: "%02hhx", $0) }.joined()
     }
-    #endif
 
-    private func oldMD5(data: Data?) -> String {
-        let length = Int(CC_MD5_DIGEST_LENGTH)
-        let messageData = data ?? Data()
-        var digestData = Data(count: length)
-
-        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
-                messageData.withUnsafeBytes { messageBytes -> UInt8 in
-                if let messageBytesBaseAddress = messageBytes.baseAddress,
-                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
-                    let messageLength = CC_LONG(messageData.count)
-                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
-                }
-                return 0
-            }
-        }
-        return digestData.map { String(format: "%02hhx", $0) }.joined()
-    }
 
     // MARK: - MIME type and file extension sniffing
     // Return contentType of image data
