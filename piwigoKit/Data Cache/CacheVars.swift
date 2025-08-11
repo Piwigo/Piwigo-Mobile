@@ -8,7 +8,8 @@
 
 import Foundation
 
-public class CacheVars: NSObject {
+// Mark CacheVars as Sendable since Apple documents UserDefaults as thread-safe
+public class CacheVars: NSObject, @unchecked Sendable {
     
     // Singleton
     public static let shared = CacheVars()
