@@ -11,7 +11,7 @@ import Foundation
 @objc(Resolution)
 public class Resolution: NSObject, NSSecureCoding {
     
-    public static var supportsSecureCoding = true
+    public static let supportsSecureCoding = true
 
     public var width: Int = 1
     public var height: Int = 1
