@@ -504,18 +504,6 @@ class AlbumViewController: UIViewController
             revealImageOfInteret()
         }
         
-        // Inform user why the app crashed at start
-        if CacheVars.shared.couldNotMigrateCoreDataStore {
-            dismissPiwigoError(
-                withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
-                message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
-                errorMessage: "") {
-                    // Reset flag
-                    CacheVars.shared.couldNotMigrateCoreDataStore = false
-                }
-            return
-        }
-        
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
