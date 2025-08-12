@@ -390,7 +390,6 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         }
     }
     
-    @available(iOS 13.0, *)
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
         // Initialisation
         let linkMetaData = LPLinkMetadata()

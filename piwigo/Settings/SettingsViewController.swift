@@ -244,17 +244,15 @@ class SettingsViewController: UIViewController {
         navigationBar?.largeTitleTextAttributes = attributesLarge
         navigationBar?.prefersLargeTitles = true
         
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            barAppearance.largeTitleTextAttributes = attributesLarge
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-            navigationBar?.prefersLargeTitles = true
-        }
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.titleTextAttributes = attributes
+        barAppearance.largeTitleTextAttributes = attributesLarge
+        navigationItem.standardAppearance = barAppearance
+        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+        navigationItem.scrollEdgeAppearance = barAppearance
+        navigationBar?.prefersLargeTitles = true
         
         // Table view
         settingsTableView?.separatorColor = .piwigoColorSeparator()
@@ -293,9 +291,7 @@ class SettingsViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = title
-        }
+        view.window?.windowScene?.title = title
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
@@ -320,11 +316,7 @@ class SettingsViewController: UIViewController {
             alert.addAction(cancelAction)
             alert.addAction(defaultAction)
             alert.view.tintColor = .piwigoColorOrange()
-            if #available(iOS 13.0, *) {
-                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-            } else {
-                // Fallback on earlier versions
-            }
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                 alert.view.tintColor = .piwigoColorOrange()
@@ -381,9 +373,8 @@ class SettingsViewController: UIViewController {
                 } else {
                     helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
                 }
-            } else if #available(iOS 13, *) {
-                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3,9]
             } else {
+                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3,9]
                 helpVC.displayHelpPagesWithID = [1,5,6,4,3]
             }
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -475,11 +466,7 @@ class SettingsViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = settingsTableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero

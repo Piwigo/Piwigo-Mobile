@@ -7,16 +7,13 @@
 //
 
 import AVFoundation
+import BackgroundTasks
 import CoreData
 import CoreHaptics
 import Foundation
 import Intents
 import LocalAuthentication
 import UIKit
-
-#if canImport(BackgroundTasks)
-import BackgroundTasks        // Requires iOS 13
-#endif
 
 import piwigoKit
 import uploadKit
@@ -52,10 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initColorPalette()
 
         // Check if the device supports haptics.
-        if #available(iOS 13.0, *) {
-            let hapticCapability = CHHapticEngine.capabilitiesForHardware()
-            AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
-        }
+        let hapticCapability = CHHapticEngine.capabilitiesForHardware()
+        AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
         
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
         CacheVars.shared.correctRecentPeriodIndex()
@@ -81,35 +76,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let migrator = DataMigrator()
         AppVars.shared.isMigrationRunning = migrator.requiresMigration()
         
-        // Register launch handlers for tasks if using iOS 13+
+        // Register launch handlers for tasks
         /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
-        if #available(iOS 13.0, *) {
-            registerBgTasks()
-        }
-
-        // What follows depends on iOS version
-        if #available(iOS 13.0, *) {
-            // Delegate to SceneDelegate
-            /// - Present login view and if needed passcode view
-            /// - or album view behind passcode view if needed
-        } else {
-            // Create window
-            window = UIWindow(frame: UIScreen.main.bounds)
-
-            // Check if a migration is necessary
-            if AppVars.shared.isMigrationRunning {
-                // Tell user to wait until migration is completed and launch the migration
-                loadMigrationView(in: window, startMigrationWith: migrator)
-            } else {
-                // Create login view
-                loadLoginView(in: window)
-                addPrivacyProtectionIfNeeded()
-            }
-        }
-
-        // Display view
-        window?.makeKeyAndVisible()
+        registerBgTasks()
 
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
@@ -139,7 +109,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
     // MARK: - Scene Configuration
-    @available(iOS 13.0, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 
@@ -185,7 +154,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return activity.sceneConfiguration()
     }
 
-    @available(iOS 13.0, *)
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         // Called when the system, due to a user interaction or a request from the application itself, removes one or more representation from the -[UIApplication openSessions] set
         // If sessions are discarded while the application is not running, this method is called shortly after the applications next launch.
@@ -339,13 +307,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
-
-        if #available(iOS 13.0, *) {
-            // NOP
-        } else {
-            // Unregister brightnessDidChangeNotification
-            NotificationCenter.default.removeObserver(self, name: UIScreen.brightnessDidChangeNotification, object: nil)
-        }
     }
     
 
@@ -382,7 +343,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        return appExtensionSession
 //    }
 
-    @available(iOS 13.0, *)
     private func registerBgTasks() {
         // Register background upload task
         BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundTaskUpload, using: nil) { task in
@@ -390,7 +350,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 13.0, *)
     func scheduleNextUpload() {
         // Schedule upload not earlier than 15 minute from now
         // Uploading requires network connectivity and external power
@@ -408,7 +367,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 13.0, *)
     private func handleNextUpload(task: BGProcessingTask) {
         // Schedule the next uploads if needed
         if UploadVars.shared.nberOfUploadsToComplete > 0 {
@@ -718,15 +676,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
-        if #available(iOS 13.0, *) {
-            // Transition to migration view
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve,
-                              animations: nil) { _ in }
-        } else {
-            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-            window.rootViewController?.view.setNeedsUpdateConstraints()
-        }
+        // Transition to migration view
+        UIView.transition(with: window, duration: 0.5,
+                          options: .transitionCrossDissolve,
+                          animations: nil) { _ in }
     }
 
     
@@ -753,12 +706,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
-        if #available(iOS 13.0, *) {
-            // Transition to login view
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve,
-                              animations: nil) { _ in }
-        }
+        // Transition to login view
+        UIView.transition(with: window, duration: 0.5,
+                          options: .transitionCrossDissolve,
+                          animations: nil) { _ in }
     }
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
@@ -780,23 +731,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else { preconditionFailure("Could not load AlbumViewController") }
         albumVC.categoryId = AlbumVars.shared.defaultCategory
         window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
-        if #available(iOS 13.0, *) {
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve) { }
-                completion: { [self] success in
-                    if success, keepLoginView == false {
-                        self._loginVC = nil
-                    }
+        UIView.transition(with: window, duration: 0.5,
+                          options: .transitionCrossDissolve) { }
+            completion: { [self] success in
+                if success, keepLoginView == false {
+                    self._loginVC = nil
                 }
-        } else {
-            // Fallback on earlier versions
-            _loginVC?.removeFromParent()
-            _loginVC = nil
-
-            // Observe the UIScreenBrightnessDidChangeNotification
-            NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
-                                                   name: UIScreen.brightnessDidChangeNotification, object: nil)
-        }
+            }
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
@@ -911,52 +852,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else if AppVars.shared.switchPaletteAutomatically
         {
             // Dynamic palette mode chosen
-            if #available(iOS 13.0, *) {
-                if AppVars.shared.isSystemDarkModeActive {
-                    // System-wide dark mode active
-                    if AppVars.shared.isDarkPaletteActive {
-                        // Keep dark palette but make sure that images stays in appropriate mode
-                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                        return;
-                    } else {
-                        // Switch to dark mode
-                        AppVars.shared.isDarkPaletteActive = true
-                    }
-                } else {
-                    // System-wide light mode active
-                    if AppVars.shared.isDarkPaletteActive {
-                        // Switch to light mode
-                        AppVars.shared.isDarkPaletteActive = false
-                    } else {
-                        // Keep light palette but make sure that images stays in appropriate mode
-                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                        return;
-                    }
-                }
-            }
-            else {
-                // Option managed by screen brightness
-                let currentBrightness = lroundf(Float(UIScreen.main.brightness) * 100.0);
+            if AppVars.shared.isSystemDarkModeActive {
+                // System-wide dark mode active
                 if AppVars.shared.isDarkPaletteActive {
-                    // Dark palette displayed
-                    if currentBrightness > AppVars.shared.switchPaletteThreshold
-                    {
-                        // Screen brightness > thereshold, switch to light palette
-                        AppVars.shared.isDarkPaletteActive = false
-                    } else {
-                        // Keep dark palette
-                        return;
-                    }
+                    // Keep dark palette but make sure that images stays in appropriate mode
+                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                    return;
                 } else {
-                    // Light palette displayed
-                    if currentBrightness < AppVars.shared.switchPaletteThreshold
-                    {
-                        // Screen brightness < threshold, switch to dark palette
-                        AppVars.shared.isDarkPaletteActive = true
-                    } else {
-                        // Keep light palette
-                        return;
-                    }
+                    // Switch to dark mode
+                    AppVars.shared.isDarkPaletteActive = true
+                }
+            } else {
+                // System-wide light mode active
+                if AppVars.shared.isDarkPaletteActive {
+                    // Switch to light mode
+                    AppVars.shared.isDarkPaletteActive = false
+                } else {
+                    // Keep light palette but make sure that images stays in appropriate mode
+                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                    return;
                 }
             }
         } else {

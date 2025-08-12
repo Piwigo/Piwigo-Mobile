@@ -412,9 +412,6 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the tag list is not presented.
-        if #available(iOS 13, *), view.window == nil { return }
-        
         // Perform all updates
         tagsTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }

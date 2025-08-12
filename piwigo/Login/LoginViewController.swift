@@ -31,12 +31,7 @@ class LoginViewController: UIViewController {
     var httpLoginAction: UIAlertAction?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        if #available(iOS 13.0, *) {
-            return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
-        } else {
-            // Fallback on earlier versions
-            return .lightContent
-        }
+        return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 
     
@@ -107,9 +102,7 @@ class LoginViewController: UIViewController {
         contentView.backgroundColor = .piwigoColorBackground()
 
         // Change text colour according to palette colour
-        if #available(iOS 13.0, *) {
-            piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         let attributes = [
@@ -161,22 +154,18 @@ class LoginViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = NSLocalizedString("login", comment: "Login")
-        }
+        view.window?.windowScene?.title = NSLocalizedString("login", comment: "Login")
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
+        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
         }
     }
 
@@ -212,12 +201,7 @@ class LoginViewController: UIViewController {
         }
 
         // Display HUD during login
-        var buttonTitle = ""
-        if #available(iOS 13.0, *) {
-            buttonTitle = NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection")
-        } else {
-            buttonTitle = " " + NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection") + " "
-        }
+        let buttonTitle = NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection")
         showHUD(withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
                 detail: NSLocalizedString("login_connecting", comment: "Connecting"),
                 buttonTitle: buttonTitle,

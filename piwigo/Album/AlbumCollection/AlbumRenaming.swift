@@ -101,11 +101,7 @@ class AlbumRenaming: NSObject
             renameAlert?.addAction(renameAction)
         }
         renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if let alert = renameAlert {
             topViewController.present(alert, animated: true) { [self] in
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying

@@ -12,7 +12,6 @@ import UIKit
 extension UIImage {
     
     // MARK: - Saliency Analysis
-    @available(iOS 13.0, *)
     func processSaliency() -> UIImage? {
         // Disabled when using simulator
         #if targetEnvironment(simulator)

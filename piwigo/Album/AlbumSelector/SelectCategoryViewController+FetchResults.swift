@@ -14,7 +14,6 @@ import piwigoKit
 // MARK: - NSFetchedResultsControllerDelegate
 extension SelectCategoryViewController: NSFetchedResultsControllerDelegate
 {
-    @available(iOS 13.0, *)
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
 //        // Expected controller?

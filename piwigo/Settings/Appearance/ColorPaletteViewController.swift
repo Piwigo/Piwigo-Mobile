@@ -40,16 +40,14 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         navigationBar?.titleTextAttributes = attributes
         navigationBar?.prefersLargeTitles = false
 
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-            navigationBar?.prefersLargeTitles = false
-        }
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.titleTextAttributes = attributes
+        navigationItem.standardAppearance = barAppearance
+        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+        navigationItem.scrollEdgeAppearance = barAppearance
+        navigationBar?.prefersLargeTitles = false
 
         // Table view
         tableView.separatorColor = .piwigoColorSeparator()

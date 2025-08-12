@@ -161,7 +161,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "defaultAlbumThumbnailFile"
                 tableViewCell = cell
 
-            case 2 /* Display Descriptions — iOS 12-13 only */:
+            case 2 /* Display Descriptions — iOS 13 only */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
@@ -175,7 +175,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.cellSwitch.setOn(AlbumVars.shared.displayAlbumDescriptions, animated: true)
                 cell.cellSwitch.accessibilityIdentifier = "switchAlbumDescriptions"
                 cell.cellSwitchBlock = { [self] switchState in
-                    // Only called when running on iOS 12 - 13
+                    // Only called when running on iOS 13
                     AlbumVars.shared.displayAlbumDescriptions = switchState
                     if let navController = presentingViewController as? AlbumNavigationController,
                        let albumVC = navController.viewControllers.first as? AlbumViewController {
@@ -321,7 +321,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
                 
-            case 3 /* Display titles on thumbnails — iOS 12-13 only */:
+            case 3 /* Display titles on thumbnails — iOS 13 only */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res

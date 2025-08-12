@@ -76,9 +76,7 @@ class PdfDetailViewController: UIViewController
         super.viewDidAppear(animated)
         
         // Should this PDF file be also displayed on the external screen?
-        if #available(iOS 13.0, *) {
-            self.setExternalPdfView()
-        }
+        self.setExternalPdfView()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -249,7 +247,7 @@ class PdfDetailViewController: UIViewController
     
     
     // MARK: - External PDF View
-    @available(iOS 13.0, *) @MainActor
+    @MainActor
     private func setExternalPdfView() {
         // Get scene role of external display
         var wantedRole: UISceneSession.Role!

@@ -76,7 +76,6 @@ public class UploadProvider: NSObject {
         completionHandler(nil)
     }
 
-    @available(iOS 13.0, *)
     public func importUploads(from uploadRequest: [UploadProperties]) async throws -> Int {
         
         guard uploadRequest.isEmpty == false

@@ -8,7 +8,6 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
 extension SceneDelegate {
     
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {

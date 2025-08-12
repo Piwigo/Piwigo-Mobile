@@ -137,7 +137,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         return nil
     }
 
-    @available(iOS 13.0, *)
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
@@ -160,7 +159,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
                               inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
@@ -184,7 +182,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
                                 inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
@@ -212,7 +209,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
 
-    @available(iOS 13.0, *)
     private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
                         image: UIImage(named: "imageUpload")) { action in

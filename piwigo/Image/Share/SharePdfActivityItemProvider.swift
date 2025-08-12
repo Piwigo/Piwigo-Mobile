@@ -244,7 +244,6 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         }
     }
     
-    @available(iOS 13.0, *)
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
         // Initialisation
         let linkMetaData = LPLinkMetadata()

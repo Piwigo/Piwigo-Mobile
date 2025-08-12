@@ -214,11 +214,7 @@ class LocalImagesViewController: UIViewController
 
             // The sort options are presented in a segmented bar on iPhone & iPad.
             // Segmented control (choice for presenting images by month, week, day or in a single collection)
-            if #available(iOS 13.0, *) {
-                segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
-            } else {
-                segmentedControl.tintColor = .piwigoColorOrange()
-            }
+            segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
             segmentedControl.selectedSegmentIndex = Int(sortType.rawValue)
             segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
             segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
@@ -248,16 +244,14 @@ class LocalImagesViewController: UIViewController
         navigationBar?.titleTextAttributes = attributes
         navigationBar?.prefersLargeTitles = false
 
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-            navigationBar?.prefersLargeTitles = false
-        }
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.titleTextAttributes = attributes
+        navigationItem.standardAppearance = barAppearance
+        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+        navigationItem.scrollEdgeAppearance = barAppearance
+        navigationBar?.prefersLargeTitles = false
 
         // Segmented control
         if #available(iOS 14, *) {
@@ -272,12 +266,7 @@ class LocalImagesViewController: UIViewController
             // Fallback on earlier versions
             // Segmented control
             segmentedControl.superview?.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.8)
-            if #available(iOS 13.0, *) {
-                // Keep standard background color
-                segmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-            } else {
-                segmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
-            }
+            segmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         }
 
         // Collection view
@@ -486,17 +475,9 @@ class LocalImagesViewController: UIViewController
     private func getSwapSortImage() -> UIImage {
         switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
-            if #available(iOS 13.0, *) {
-                return UIImage(named: "dateDescending")!
-            } else {
-                return UIImage(named: "dateDescendingLight")!
-            }
+            return UIImage(named: "dateDescending")!
         case .dateCreatedDescending:
-            if #available(iOS 13.0, *) {
-                return UIImage(named: "dateAscending")!
-            } else {
-                return UIImage(named: "dateAscendingLight")!
-            }
+            return UIImage(named: "dateAscending")!
         default:
             return UIImage(named: "action")!
         }
@@ -506,17 +487,9 @@ class LocalImagesViewController: UIViewController
     private func getSwapSortCompactImage() -> UIImage {
         switch UploadVars.shared.localImagesSort {
         case .dateCreatedAscending:
-            if #available(iOS 13.0, *) {
-                return UIImage(named: "dateDescendingCompact")!
-            } else {
-                return UIImage(named: "dateDescendingLightCompact")!
-            }
+            return UIImage(named: "dateDescendingCompact")!
         case .dateCreatedDescending:
-            if #available(iOS 13.0, *) {
-                return UIImage(named: "dateAscendingCompact")!
-            } else {
-                return UIImage(named: "dateAscendingLightCompact")!
-            }
+            return UIImage(named: "dateAscendingCompact")!
         default:
             return UIImage(named: "actionCompact")!
         }
@@ -797,11 +770,7 @@ class LocalImagesViewController: UIViewController
         alert.addAction(defaultAction)
         alert.addAction(deleteAction)
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         self.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = .piwigoColorOrange()

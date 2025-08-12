@@ -401,7 +401,6 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         return kUTTypeMovie as String
     }
     
-    @available(iOS 13.0, *)
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
         // Initialisation
         let linkMetaData = LPLinkMetadata()

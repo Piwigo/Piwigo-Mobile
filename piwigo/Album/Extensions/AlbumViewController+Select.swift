@@ -60,11 +60,7 @@ extension AlbumViewController
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -251,28 +247,16 @@ extension AlbumViewController
         }
 
         // Album section?
-        if #available(iOS 13.0, *) {
-            // Album or image?
-            if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
-               index == section {
-                return .none
-            }
-        } else {
-            if section == 0 {
-                return .none
-            }
+        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+           index == section {
+            return .none
         }
         
         // Number of images in section
         var nberOfImagesInSection = Int.zero
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            let sectionID = snapshot.sectionIdentifiers[section]
-            nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
-        } else {
-            // Fallback on earlier versions
-            nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
-        }
+        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let sectionID = snapshot.sectionIdentifiers[section]
+        nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
         if nberOfImagesInSection == 0 {
             selectedSections[section] = SelectButtonState.none
             return .none
@@ -280,22 +264,10 @@ extension AlbumViewController
 
         // Number of selected images
         var nberOfSelectedImagesInSection = 0
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            let sectionID = snapshot.sectionIdentifiers[section]
-            snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
-                if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                   selectedImageIDs.contains(image.pwgID) {
-                    nberOfSelectedImagesInSection += 1
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            for item in 0..<nberOfImagesInSection {
-                let imageIndexPath = IndexPath(item: item, section: section - 1)
-                if selectedImageIDs.contains(images.object(at: imageIndexPath).pwgID) {
-                    nberOfSelectedImagesInSection += 1
-                }
+        snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
+            if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+               selectedImageIDs.contains(image.pwgID) {
+                nberOfSelectedImagesInSection += 1
             }
         }
         
@@ -587,24 +559,15 @@ extension AlbumViewController: UIGestureRecognizerDelegate
 extension AlbumViewController: ImageDetailDelegate
 {
     func didSelectImage(atIndexPath indexPath: IndexPath) {
-        // Correspondinng collection view index path
-        var collIndexPath = IndexPath()
-        if #available(iOS 13.0, *) {
-            collIndexPath = indexPath
-        } else {
-            // Fallback on earlier versions
-            collIndexPath = IndexPath(item: indexPath.item, section: indexPath.section + 1)
-        }
-        
         // Scroll view to center image
-        if collectionView?.numberOfSections ?? 0 > collIndexPath.section,
-           collectionView?.numberOfItems(inSection: collIndexPath.section) ?? 0 > collIndexPath.item {
+        if collectionView?.numberOfSections ?? 0 > indexPath.section,
+           collectionView?.numberOfItems(inSection: indexPath.section) ?? 0 > indexPath.item {
             
-            imageOfInterest = collIndexPath
-            collectionView?.scrollToItem(at: collIndexPath, at: .centeredVertically, animated: true)
+            imageOfInterest = indexPath
+            collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
             
             // Prepare variables for transitioning delegate
-            if let selectedCell = collectionView?.cellForItem(at: collIndexPath) as? ImageCollectionViewCell {
+            if let selectedCell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                 animatedCell = selectedCell
                 albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
                 cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)

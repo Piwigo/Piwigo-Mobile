@@ -68,12 +68,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
             showHideSubCategoriesImage.tintColor = .piwigoColorOrange()  // required on iOS 9
-            if #available(iOS 13.0, *) {
-                showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
-            } else {
-                // Fallback on earlier versions
-                showHideSubCategoriesImage.image = UIImage(named: "openClose")
-            }
+            showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
             if buttonState == .hideSubAlbum {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))
             } else {

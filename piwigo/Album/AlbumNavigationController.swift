@@ -64,23 +64,18 @@ class AlbumNavigationController: UINavigationController
         // Search bar
         let searchBar = navigationItem.searchController?.searchBar
         searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        if #available(iOS 13.0, *) {
-            searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
-            searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
+        searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
         
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            barAppearance.largeTitleTextAttributes = attributesLarge
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-        } else {
-            navigationBar.barTintColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-        }
+        // Navigation bar
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.titleTextAttributes = attributes
+        barAppearance.largeTitleTextAttributes = attributesLarge
+        navigationItem.standardAppearance = barAppearance
+        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+        navigationItem.scrollEdgeAppearance = barAppearance
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -92,11 +87,6 @@ class AlbumNavigationController: UINavigationController
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        if #available(iOS 13.0, *) {
-            return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
-        } else {
-            // Fallback on earlier versions
-            return AppVars.shared.isDarkPaletteActive ? .lightContent : .default
-        }
+        return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 }

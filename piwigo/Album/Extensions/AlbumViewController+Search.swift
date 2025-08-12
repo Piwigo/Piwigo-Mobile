@@ -178,13 +178,5 @@ extension AlbumViewController: UISearchBarDelegate
         debugPrint("searchBarSearchButtonClicked…")
         // Animates Cancel button disappearance
         searchBar.setShowsCancelButton(false, animated: true)
-
-        // Dismiss seach bar on iOS 12 only
-        if #available(iOS 13, *) {
-            // NOP
-        } else {
-            navigationController?.navigationBar.prefersLargeTitles = false
-            searchController?.dismiss(animated: true, completion: nil)
-        }
     }
 }

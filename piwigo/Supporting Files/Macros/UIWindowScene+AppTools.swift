@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-@available(iOS 13.0, *)
 extension UIWindowScene {
     func rootViewController() -> UIViewController? {
         // Determine top most view controller of a UIWindowScene

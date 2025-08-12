@@ -35,21 +35,15 @@ class ImageDetailViewController: UIViewController
     // Variable introduced to cope with iOS not updating view bounds
     // upon device rotation of preloaded page views
     private lazy var viewSize: CGSize =  {
-        if #available(iOS 13.0, *) {
-            let size = UIApplication.shared.connectedScenes
-                .filter({$0.session.role == .windowApplication})
-                .filter({$0.activationState == .foregroundActive})
-                .map({$0 as? UIWindowScene})
-                .compactMap({$0})
-                .first?.windows
-                .filter({$0.isKeyWindow})
-                .first?.bounds.size
-            return size ?? view.bounds.size
-        } else {
-            // Fallback on earlier versions
-            let size = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.bounds.size
-            return size ?? view.bounds.size
-        }
+        let size = UIApplication.shared.connectedScenes
+            .filter({$0.session.role == .windowApplication})
+            .filter({$0.activationState == .foregroundActive})
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows
+            .filter({$0.isKeyWindow})
+            .first?.bounds.size
+        return size ?? view.bounds.size
     }()
     
     // Cached variables
@@ -97,9 +91,7 @@ class ImageDetailViewController: UIViewController
         super.viewDidAppear(animated)
         
         // Should this image be also displayed on the external screen?
-        if #available(iOS 13.0, *) {
-            self.setExternalImageView()
-        }
+        self.setExternalImageView()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -391,7 +383,7 @@ class ImageDetailViewController: UIViewController
     
     
     // MARK: - External Image Management
-    @available(iOS 13.0, *) @MainActor
+    @MainActor
     private func setExternalImageView() {
         // Get scene role of external display
         var wantedRole: UISceneSession.Role!

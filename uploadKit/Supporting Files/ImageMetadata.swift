@@ -497,17 +497,15 @@ extension Dictionary where Key == CFString, Value == Any {
         }
 
         // Update/add HEIC dictionary from image metadata
-        if #available(iOS 13, *) {
-            if let imageHEICDictionary = imageMetadata[kCGImagePropertyHEICSDictionary] as? [CFString : Any] {
-                // Image contains an HEIC dictionary
-                if var metadataHEICDictionary = metadata[kCGImagePropertyHEICSDictionary] as? [CFString : Any] {
-                    // An HEIC dictionary already exists -> update key/value pairs
-                    for (k, v) in imageHEICDictionary { metadataHEICDictionary[k] = v }
-                    metadata[kCGImagePropertyHEICSDictionary] = metadataHEICDictionary
-                } else {
-                    // No HEIC dictionary -> Add it
-                    metadata[kCGImagePropertyHEICSDictionary] = imageHEICDictionary
-                }
+        if let imageHEICDictionary = imageMetadata[kCGImagePropertyHEICSDictionary] as? [CFString : Any] {
+            // Image contains an HEIC dictionary
+            if var metadataHEICDictionary = metadata[kCGImagePropertyHEICSDictionary] as? [CFString : Any] {
+                // An HEIC dictionary already exists -> update key/value pairs
+                for (k, v) in imageHEICDictionary { metadataHEICDictionary[k] = v }
+                metadata[kCGImagePropertyHEICSDictionary] = metadataHEICDictionary
+            } else {
+                // No HEIC dictionary -> Add it
+                metadata[kCGImagePropertyHEICSDictionary] = imageHEICDictionary
             }
         }
 

@@ -64,7 +64,6 @@ class SelectCategoryViewController: UIViewController {
 
     
     // MARK: - Core Data Source
-    @available(iOS 13.0, *)
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "private var diffableDataSource: DataSource!" replaced by below lines

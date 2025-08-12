@@ -23,7 +23,7 @@ extension UploadManager
     ///        and setting all parameters like pwg.images.setInfo.
     ///
     /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
-    ///   and the BackgroundTasks farmework (iOS 13+)
+    ///   and the BackgroundTasks farmework
     public func findNextImageToUpload() -> Void {
         // for debugging background tasks
 //        return
@@ -223,7 +223,7 @@ extension UploadManager
      - getUploadRequests() returns a series of upload requests to deal with
      - photos and videos are prepared sequentially to reduce the memory needs
      - uploads are launched in the background with the method pwg.images.uploadAsync
-     and the BackgroundTasks farmework (iOS 13+)
+       and the BackgroundTasks farmework
      - The number of bytes to be transferred is calculated and limited.
      - A delay is set between series of upload tasks to prevent server overloads
      - Failing tasks are automatically retried by iOS

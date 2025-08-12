@@ -517,9 +517,7 @@ class LoginUtilities: NSObject {
         alert.addAction(loginAction)
 
         alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         return alert
     }
 }

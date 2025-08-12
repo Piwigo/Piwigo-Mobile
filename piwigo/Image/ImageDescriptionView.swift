@@ -23,12 +23,7 @@ class ImageDescriptionView: UIVisualEffectView {
 
     @MainActor
     func applyColorPalette() {
-        if #available(iOS 13.0, *) {
-            descTextView.textColor = .piwigoColorText()
-        } else {
-            backgroundColor = .piwigoColorBackground()
-            descTextView.textColor = .piwigoColorText()
-        }
+        descTextView.textColor = .piwigoColorText()
     }
     
     func config(withImage image: Image,

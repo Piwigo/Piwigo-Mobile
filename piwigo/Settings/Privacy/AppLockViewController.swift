@@ -493,8 +493,6 @@ class AppLockViewController: UIViewController {
         }
         
         // If the device supports Core Haptics, exploit it.
-        if #available(iOS 13.0, *) {
-            HapticUtilities.playHapticsFile(named: "VerificationFailed")
-        }
+        HapticUtilities.playHapticsFile(named: "VerificationFailed")
     }
 }

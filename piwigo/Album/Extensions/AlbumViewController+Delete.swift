@@ -138,9 +138,7 @@ extension AlbumViewController
 
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if inSelectionMode, contextually == false {
             alert.popoverPresentationController?.barButtonItem = deleteBarButton
         } else if let imageID = imageIDs.first,

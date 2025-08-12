@@ -149,16 +149,14 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationBar?.titleTextAttributes = attributes
         navigationBar?.prefersLargeTitles = false
 
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-            navigationBar?.prefersLargeTitles = false
-        }
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.titleTextAttributes = attributes
+        navigationItem.standardAppearance = barAppearance
+        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
+        navigationItem.scrollEdgeAppearance = barAppearance
+        navigationBar?.prefersLargeTitles = false
 
         // Table view
         setTableViewMainHeader()
@@ -232,9 +230,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = NSLocalizedString("tabBar_upload", comment: "Upload")
-        }
+        view.window?.windowScene?.title = NSLocalizedString("tabBar_upload", comment: "Upload")
     }
 
     @objc func checkPasteboard() {

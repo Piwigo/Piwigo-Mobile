@@ -162,14 +162,11 @@ class AlbumViewController: UIViewController
     
     
     // MARK: - Core Data Source
-    @available(iOS 13.0, *)
     typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
-    @available(iOS 13.0, *)
     typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "var diffableDataSource: DataSource!" replaced by below lines
     var _diffableDataSource: NSObject? = nil
-    @available(iOS 13.0, *)
     var diffableDataSource: DataSource {
         if _diffableDataSource == nil {
             _diffableDataSource = configDataSource()
@@ -288,13 +285,9 @@ class AlbumViewController: UIViewController
         collectionView?.refreshControl = refreshControl
         
         // Initialise dataSource
-        if #available(iOS 13.0, *) {
-            _diffableDataSource = configDataSource()
-        } else {
-            // Fallback on earlier versions
-        }
+        _diffableDataSource = configDataSource()
         
-        // Fetch data (setting up the initial snapshot on iOS 13+)
+        // Fetch data, setting up the initial snapshot
         do {
             if categoryId >= Int32.zero {
                 try albums.performFetch()
@@ -556,8 +549,7 @@ class AlbumViewController: UIViewController
             if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
                 displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
             }
-            if #available(iOS 13, *),
-               (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
+            if (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
                 displayHelpPagesWithID.append(9) // i.e. management of albums w/o description
             }
         }
@@ -672,13 +664,11 @@ class AlbumViewController: UIViewController
         super.traitCollectionDidChange(previousTraitCollection)
         
         // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
+        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
         }
     }
     
@@ -878,29 +868,18 @@ class AlbumViewController: UIViewController
     // MARK: - Utilities
     func nberOfAlbums() -> Int {
         var nberOfAlbums = Int.zero
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
-                nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
-            }
-        } else {
-            // Fallback on earlier versions
-            nberOfAlbums = (albums.fetchedObjects ?? []).count
+        let snapshot = diffableDataSource.snapshot() as Snaphot
+        if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+            nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
         return nberOfAlbums
     }
     
     func nberOfImages() -> Int {
-        var nberOfImages = Int.zero
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            nberOfImages = diffableDataSource.snapshot().numberOfItems
-            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
-                nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
-            }
-        } else {
-            // Fallback on earlier versions
-            nberOfImages = (images.fetchedObjects ?? []).count
+        let snapshot = diffableDataSource.snapshot() as Snaphot
+        var nberOfImages = diffableDataSource.snapshot().numberOfItems
+        if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+            nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
         return nberOfImages
     }

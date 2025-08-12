@@ -167,27 +167,22 @@ class ImageViewController: UIViewController {
         setTitleViewFromImageData()
         navigationBar?.prefersLargeTitles = false
 
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
-            navigationBar?.standardAppearance = barAppearance
-            navigationBar?.compactAppearance = barAppearance
-            navigationBar?.scrollEdgeAppearance = barAppearance
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
+        navigationBar?.standardAppearance = barAppearance
+        navigationBar?.compactAppearance = barAppearance
+        navigationBar?.scrollEdgeAppearance = barAppearance
 
-            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.9)
-            toolbar?.standardAppearance = toolbarAppearance
-            toolbar?.compactAppearance = toolbarAppearance
-            if #available(iOS 15.0, *) {
-                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-                /// which by default produces a transparent background, to all navigation bars.
-                toolbar?.scrollEdgeAppearance = toolbarAppearance
-            }
-        } else {
-            navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
-            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
+        let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
+        toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.9)
+        toolbar?.standardAppearance = toolbarAppearance
+        toolbar?.compactAppearance = toolbarAppearance
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            toolbar?.scrollEdgeAppearance = toolbarAppearance
         }
     }
 
@@ -219,33 +214,29 @@ class ImageViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
 
         // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
+        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
         }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         // Was this image displayed on the external screen?
-        if #available(iOS 13.0, *) {
-            var wantedRole: UISceneSession.Role!
-            if #available(iOS 16.0, *) {
-                wantedRole = .windowExternalDisplayNonInteractive
-            } else {
-                // Fallback on earlier versions
-                wantedRole = .windowExternalDisplay
-            }
-            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
-            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate
-                else { return }
-            
-            // Return to basic screen sharing
-            sceneDelegate.window?.windowScene = nil
+        var wantedRole: UISceneSession.Role!
+        if #available(iOS 16.0, *) {
+            wantedRole = .windowExternalDisplayNonInteractive
+        } else {
+            // Fallback on earlier versions
+            wantedRole = .windowExternalDisplay
         }
+        let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+        guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate
+            else { return }
+        
+        // Return to basic screen sharing
+        sceneDelegate.window?.windowScene = nil
     }
     
     deinit {

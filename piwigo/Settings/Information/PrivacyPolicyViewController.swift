@@ -36,9 +36,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         view.backgroundColor = .piwigoColorBackground()
 
         // Change text colour according to palette colour
-        if #available(iOS 13.0, *) {
-            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         let attributes = [

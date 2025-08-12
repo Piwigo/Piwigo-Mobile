@@ -322,11 +322,7 @@ class RenameFileViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
@@ -418,11 +414,7 @@ class RenameFileViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
@@ -513,11 +505,7 @@ class RenameFileViewController: UIViewController {
         
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero

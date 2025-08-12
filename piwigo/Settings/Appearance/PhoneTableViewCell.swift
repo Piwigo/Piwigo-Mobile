@@ -44,31 +44,16 @@ class PhoneTableViewCell: UITableViewCell {
         darkLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
         
         // Buttons
-        if #available(iOS 13.0, *) {
-            if AppVars.shared.isDarkPaletteActive {
-                lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                lightButton.tintColor = .piwigoColorRightLabel()
-                darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                darkButton.tintColor = .piwigoColorOrange()
-            } else {
-                lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                lightButton.tintColor = .piwigoColorOrange()
-                darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                darkButton.tintColor = .piwigoColorRightLabel()
-            }
+        if AppVars.shared.isDarkPaletteActive {
+            lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            lightButton.tintColor = .piwigoColorRightLabel()
+            darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+            darkButton.tintColor = .piwigoColorOrange()
         } else {
-            // Fallback on earlier versions
-            if AppVars.shared.isDarkPaletteActive {
-                lightButton.setImage(UIImage(named: "circle"), for: .normal)
-                lightButton.tintColor = .piwigoColorRightLabel()
-                darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-                darkButton.tintColor = .piwigoColorOrange()
-            } else {
-                lightButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-                lightButton.tintColor = .piwigoColorOrange()
-                darkButton.setImage(UIImage(named: "circle"), for: .normal)
-                darkButton.tintColor = .piwigoColorRightLabel()
-            }
+            lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+            lightButton.tintColor = .piwigoColorOrange()
+            darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            darkButton.tintColor = .piwigoColorRightLabel()
         }
     }
         
@@ -83,14 +68,8 @@ class PhoneTableViewCell: UITableViewCell {
         appDelegate?.screenBrightnessChanged()
 
         // Update button
-        if #available(iOS 13.0, *) {
-            lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-        } else {
-            // Fallback on earlier versions
-            lightButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-            darkButton.setImage(UIImage(named: "circle"), for: .normal)
-        }
+        lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+        darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
     }
     
     @IBAction func didTapDarkMode(_ sender: Any) {
@@ -104,13 +83,7 @@ class PhoneTableViewCell: UITableViewCell {
         appDelegate?.screenBrightnessChanged()
 
         // Update button
-        if #available(iOS 13.0, *) {
-            lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-        } else {
-            // Fallback on earlier versions
-            lightButton.setImage(UIImage(named: "circle"), for: .normal)
-            darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-        }
+        lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
     }
 }

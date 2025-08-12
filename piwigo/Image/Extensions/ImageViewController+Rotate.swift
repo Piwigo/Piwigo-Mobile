@@ -50,7 +50,6 @@ extension ImageViewController
 }
 
 
-@available(iOS 13.0, *)
 extension ImageViewController
 {
     // MARK: - Rotate Image

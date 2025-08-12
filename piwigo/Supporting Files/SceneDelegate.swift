@@ -7,18 +7,14 @@
 //
 
 import AVFoundation
+import BackgroundTasks
 import CoreData
 import LocalAuthentication
 import UIKit
 
-#if canImport(BackgroundTasks)
-import BackgroundTasks        // Requires iOS 13
-#endif
-
 import piwigoKit
 import uploadKit
 
-@available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
@@ -476,7 +472,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 // MARK: - AppLockDelegate Methods
-@available(iOS 13.0, *)
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene presents the login view or resume uploads.")

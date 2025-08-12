@@ -22,11 +22,7 @@ class SeparatorSelectorTableViewCell: UITableViewCell {
         
         // Background color and aspect
         backgroundColor = .piwigoColorCellBackground()
-        if #available(iOS 13.0, *) {
-            segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
-        } else {
-            segmentedControl.tintColor = .piwigoColorOrange()
-        }
+        segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
 
         // Configure segments
         let separators = pwgSeparator.allCases.filter({$0 != .none})

@@ -373,17 +373,10 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Appearance
         case .appearance /* Appearance */:
-            if #available(iOS 13.0, *) {
-                let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController
-                else { preconditionFailure("Could not load ColorPaletteViewController") }
-                navigationController?.pushViewController(colorPaletteVC, animated: true)
-            } else {
-                let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewControllerOld", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld
-                else { preconditionFailure("Could not load ColorPaletteViewControllerOld") }
-                navigationController?.pushViewController(colorPaletteVC, animated: true)
-            }
+            let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
+            guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController
+            else { preconditionFailure("Could not load ColorPaletteViewController") }
+            navigationController?.pushViewController(colorPaletteVC, animated: true)
 
         // MARK: Cache
         case .clear /* Cache Clear */:
@@ -396,11 +389,7 @@ extension SettingsViewController: UITableViewDelegate
                 // Present list of actions
                 let alert = getClearCacheAlert()
                 alert.view.tintColor = .piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
+                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 alert.popoverPresentationController?.sourceView = settingsTableView
                 alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero

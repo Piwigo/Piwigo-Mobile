@@ -75,9 +75,7 @@ extension AlbumViewController
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         alert.view.accessibilityIdentifier = "CreateAlbum"
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()

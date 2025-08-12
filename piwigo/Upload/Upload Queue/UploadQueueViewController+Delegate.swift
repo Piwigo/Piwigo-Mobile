@@ -16,39 +16,17 @@ extension UploadQueueViewController: UITableViewDelegate
 {
     // MARK: - UITableView - Headers
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if #available(iOS 13.0, *) {
-            let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
-            return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
-                                                            width: tableView.frame.size.width)
-        } else {
-            // Fallback on earlier versions
-            var sectionName = SectionKeys.Section4.name
-            if let sectionInfo = uploads.sections?[section] {
-                let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
-                sectionName = sectionKey.name
-            }
-            return TableViewUtilities.shared.heightOfHeader(withTitle: sectionName,
-                                                            width: tableView.frame.size.width)
-        }
+        let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
+        return TableViewUtilities.shared.heightOfHeader(withTitle: sectionKey.name,
+                                                        width: tableView.frame.size.width)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "UploadImageHeaderView") as? UploadImageHeaderView
         else { preconditionFailure("Could not load a UploadImageHeaderView!") }
-        if #available(iOS 13.0, *) {
-            let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
-            header.config(with: sectionKey)
-            return header
-        } else {
-            // Fallback on earlier versions
-            if let sectionInfo = uploads.sections?[section] {
-                let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
-                header.config(with: sectionKey)
-            } else {
-                header.config(with: SectionKeys.Section4)
-            }
-            return header
-        }
+        let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
+        header.config(with: sectionKey)
+        return header
     }
     
 

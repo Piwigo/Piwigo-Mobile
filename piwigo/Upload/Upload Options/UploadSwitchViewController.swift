@@ -48,11 +48,7 @@ class UploadSwitchViewController: UIViewController {
         // Segmented control (choice for presenting common image parameters or upload settings)
         switchViewSegmentedControl = UISegmentedControl(items: [UIImage(named: "imageAll")!,
                                                                 UIImage(named: "settings")!])
-        if #available(iOS 13.0, *) {
-            switchViewSegmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
-        } else {
-            switchViewSegmentedControl.tintColor = .piwigoColorOrange()
-        }
+        switchViewSegmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
         switchViewSegmentedControl.selectedSegmentIndex = 0
         switchViewSegmentedControl.addTarget(self, action: #selector(didSwitchView), for: .valueChanged)
         switchViewSegmentedControl.superview?.layer.cornerRadius = switchViewSegmentedControl.layer.cornerRadius
@@ -95,12 +91,7 @@ class UploadSwitchViewController: UIViewController {
 
         // Segmented control
         switchViewSegmentedControl.superview?.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.8)
-        if #available(iOS 13.0, *) {
-            // Keep standard background color
-            switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            switchViewSegmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
-        }
+        switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
     }
 
     override func viewWillAppear(_ animated: Bool) {

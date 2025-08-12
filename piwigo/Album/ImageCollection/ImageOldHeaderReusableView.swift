@@ -103,11 +103,7 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
         mainLabel.textColor = .piwigoColorLeftLabel()
         detailLabel.textColor = .piwigoColorRightLabel()
-        if #available(iOS 13.0, *) {
-            segmentedControl?.selectedSegmentTintColor = .piwigoColorOrange()
-        } else {
-            segmentedControl?.tintColor = .piwigoColorOrange()
-        }
+        segmentedControl?.selectedSegmentTintColor = .piwigoColorOrange()
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {

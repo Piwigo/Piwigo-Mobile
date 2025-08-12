@@ -58,14 +58,8 @@ extension UIBarButtonItem {
     }
 
     static func goToPageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button: UIBarButtonItem!
-        if #available(iOS 13.0, *) {
-            button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
+        let button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
                                      style: .plain, target: target, action: action)
-        } else {
-            button = UIBarButtonItem(barButtonSystemItem: .bookmarks,
-                                     target: target, action: action)
-        }
         button.tintColor = .piwigoColorOrange()
         button.accessibilityIdentifier = "goToPage"
         return button
@@ -74,16 +68,8 @@ extension UIBarButtonItem {
     
     // MARK: - Set Album Thumbnail Bar Button Item
     static func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
-        let button: UIBarButtonItem!
-        if #available(iOS 13.0, *) {
-            button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
+        let button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
                                      style: .plain, target: target, action: action)
-        } else {
-            // Fallback on earlier versions
-            button = UIBarButtonItem(image: UIImage(named: "imagePaperclip"),
-                                     landscapeImagePhone: UIImage(named: "imagePaperclipCompact"),
-                                     style: .plain, target: target, action: action)
-        }
         button.tintColor = .piwigoColorOrange()
         button.accessibilityIdentifier = "albumThumbnail"
         return button
@@ -101,19 +87,9 @@ extension UIBarButtonItem {
     
     func setFavoriteImage(for state: Bool) {
         if state {
-            if #available(iOS 13.0, *) {
-                self.image = UIImage(systemName: "heart.fill")
-            } else {
-                self.image = UIImage(named: "imageFavorite")
-                self.landscapeImagePhone = UIImage(named: "imageFavoriteCompact")
-            }
+            self.image = UIImage(systemName: "heart.fill")
         } else {
-            if #available(iOS 13.0, *) {
-                self.image = UIImage(systemName: "heart")
-            } else {
-                self.image = UIImage(named: "imageNotFavorite")
-                self.landscapeImagePhone = UIImage(named: "imageNotFavoriteCompact")
-            }
+            self.image = UIImage(systemName: "heart")
         }
     }
     
@@ -128,24 +104,13 @@ extension UIBarButtonItem {
     }
     
     func setBackImage() {
-        if #available(iOS 13, *) {
-            if #available(iOS 14.0, *) {
-                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
-                self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
-            } else {
-                let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-                let name = "chevron." + (isAppLanguageL2R ? "left" : "right")
-                self.image = UIImage(systemName: name)
-            }
+        if #available(iOS 14.0, *) {
+            let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
+            self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
         } else {
             let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-            if isAppLanguageL2R {
-                self.image = UIImage(named: "chevronBackLeft")
-                self.landscapeImagePhone = UIImage(named: "chevronBackLeftCompact")
-            } else {
-                self.image = UIImage(named: "chevronBackRight")
-                self.landscapeImagePhone = UIImage(named: "chevronBackRightCompact")
-            }
+            let name = "chevron." + (isAppLanguageL2R ? "left" : "right")
+            self.image = UIImage(systemName: name)
         }
     }
     

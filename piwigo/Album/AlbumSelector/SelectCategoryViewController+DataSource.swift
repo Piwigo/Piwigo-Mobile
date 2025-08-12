@@ -11,7 +11,6 @@ import UIKit
 import piwigoKit
 
 // MARK: - UITableView - Diffable Data Source
-@available(iOS 13.0, *)
 extension SelectCategoryViewController
 {
 //    func configDataSource() -> DataSource {

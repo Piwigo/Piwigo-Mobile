@@ -251,11 +251,7 @@ extension AlbumViewController
 
         // Present list of actions
         alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -314,58 +310,30 @@ extension AlbumViewController: ImageHeaderDelegate
             initBarsInSelectMode()
         }
         
-        let nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
             // Loop over all images in section to select them
-            if #available(iOS 13.0, *) {
-                let snapshot = self.diffableDataSource.snapshot()
-                let sectionID = snapshot.sectionIdentifiers[section]
-                let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
-                sectionItems.forEach { objectID in
-                    // Retrieve image data
-                    guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                          selectedImageIDs.contains(image.pwgID) == false
-                    else { return }
-                    
-                    // Select this image
-                    if let indexPath = diffableDataSource.indexPath(for: objectID),
-                       let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                        selectImage(image, isFavorite: cell.isFavorite)
-                        cell.isSelection = true
+            let snapshot = self.diffableDataSource.snapshot()
+            let sectionID = snapshot.sectionIdentifiers[section]
+            let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
+            sectionItems.forEach { objectID in
+                // Retrieve image data
+                guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                      selectedImageIDs.contains(image.pwgID) == false
+                else { return }
+                
+                // Select this image
+                if let indexPath = diffableDataSource.indexPath(for: objectID),
+                   let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    selectImage(image, isFavorite: cell.isFavorite)
+                    cell.isSelection = true
+                } else {
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if hasFavorites {
+                        selectImage(image, isFavorite: (image.albums ?? Set<Album>())
+                            .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
                     } else {
-                        // pwg.users.favorites… methods available from Piwigo version 2.10
-                        if hasFavorites {
-                            selectImage(image, isFavorite: (image.albums ?? Set<Album>())
-                                .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
-                        } else {
-                            selectImage(image, isFavorite: false)
-                        }
-                    }
-                }
-            } else {
-                // Fallback on earlier versions
-                for item in 0..<nberOfImagesInSection {
-                    // Retrieve image data
-                    let imageIndexPath = IndexPath(item: item, section: section - 1)
-                    let image = images.object(at: imageIndexPath)
-
-                    // Is this image already selected?
-                    if selectedImageIDs.contains(image.pwgID) { continue }
-                    
-                    // Select this image
-                    let indexPath = IndexPath(item: item, section: section)
-                    if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                        selectImage(image, isFavorite: cell.isFavorite)
-                        cell.isSelection = true
-                    } else {
-                        // pwg.users.favorites… methods available from Piwigo version 2.10
-                        if hasFavorites {
-                            selectImage(image, isFavorite: (image.albums ?? Set<Album>())
-                                .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
-                        } else {
-                            selectImage(image, isFavorite: false)
-                        }
+                        selectImage(image, isFavorite: false)
                     }
                 }
             }
@@ -374,39 +342,20 @@ extension AlbumViewController: ImageHeaderDelegate
         } 
         else {
             // Loop over all images in section to deselect them
-            if #available(iOS 13.0, *) {
-                let snapshot = self.diffableDataSource.snapshot()
-                let sectionID = snapshot.sectionIdentifiers[section]
-                let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
-                sectionItems.forEach { objectID in
-                    // Retrieve image data
-                    guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                          selectedImageIDs.contains(image.pwgID)
-                    else { return }
-                    
-                    // Deselect this image
-                    deselectImages(withIDs: Set([image.pwgID]))
-                    if let indexPath = diffableDataSource.indexPath(for: objectID),
-                       let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                        cell.isSelection = false
-                    }
-                }
-            } else {
-                // Fallback on earlier versions
-                for item in 0..<nberOfImagesInSection {
-                    // Retrieve image data
-                    let imageIndexPath = IndexPath(item: item, section: section - 1)
-                    let image = images.object(at: imageIndexPath)
-                    
-                    // Is this image already deselected?
-                    if selectedImageIDs.contains(image.pwgID) == false { continue }
-                    
-                    // Deselect this image
-                    deselectImages(withIDs: Set([image.pwgID]))
-                    let indexPath = IndexPath(item: item, section: section)
-                    if let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                        cell.isSelection = false
-                    }
+            let snapshot = self.diffableDataSource.snapshot()
+            let sectionID = snapshot.sectionIdentifiers[section]
+            let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
+            sectionItems.forEach { objectID in
+                // Retrieve image data
+                guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                      selectedImageIDs.contains(image.pwgID)
+                else { return }
+                
+                // Deselect this image
+                deselectImages(withIDs: Set([image.pwgID]))
+                if let indexPath = diffableDataSource.indexPath(for: objectID),
+                   let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    cell.isSelection = false
                 }
             }
             
