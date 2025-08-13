@@ -10,7 +10,9 @@
 import Foundation
 import SystemConfiguration
 
-public class NetworkVars: NSObject {
+// Mark NetworkVars as Sendable since Apple documents UserDefaults as thread-safe
+// and pwgUserStatus is Sendable
+public class NetworkVars: NSObject, @unchecked Sendable {
     
     // Singleton
     public static let shared = NetworkVars()

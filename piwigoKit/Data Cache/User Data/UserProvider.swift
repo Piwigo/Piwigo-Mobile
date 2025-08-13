@@ -8,7 +8,7 @@
 
 import CoreData
 
-public enum pwgUserStatus: String, CaseIterable {
+public enum pwgUserStatus: String, CaseIterable, Sendable {
     case guest, generic, normal, admin, webmaster
 }
 
