@@ -357,7 +357,7 @@ public class Image: NSManagedObject {
         let IDopt = ID + CacheVars.shared.optImage
         guard let serverUUID = self.server?.uuid else { return }
         let fm = FileManager.default
-        let cacheUrl = DataDirectories.shared.cacheDirectory
+        let cacheUrl = DataDirectories.cacheDirectory
             .appendingPathComponent(serverUUID)
 
         // Loop over image sizes

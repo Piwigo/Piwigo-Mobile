@@ -48,18 +48,18 @@ public class DataMigrator: NSObject {
     // MARK: - Migration Required?
     public func requiresMigration() -> Bool {
         // URL of the store in the App Group directory
-        let storeURL = DataDirectories.shared.appGroupDirectory
+        let storeURL = DataDirectories.appGroupDirectory
             .appendingPathComponent(SQLfileName)
         
         // Move the very old store to the new folder if needed
-        var oldStoreURL = DataDirectories.shared.appDocumentsDirectory
+        var oldStoreURL = DataDirectories.appDocumentsDirectory
             .appendingPathComponent(SQLfileName)
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             return true
         }
         
         // Move the old store to the new folder if needed
-        oldStoreURL = DataDirectories.shared.appSupportDirectory
+        oldStoreURL = DataDirectories.appSupportDirectory
             .appendingPathComponent(SQLfileName)
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             return true
@@ -89,11 +89,11 @@ public class DataMigrator: NSObject {
         logNotice("Migration started…")
         
         // URL of the store in the App Group directory
-        let storeURL = DataDirectories.shared.appGroupDirectory
+        let storeURL = DataDirectories.appGroupDirectory
             .appendingPathComponent(SQLfileName)
         
         // Move the very old store to the new folder if needed
-        var oldStoreURL = DataDirectories.shared.appDocumentsDirectory
+        var oldStoreURL = DataDirectories.appDocumentsDirectory
             .appendingPathComponent(SQLfileName)
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             // Perform the migration (version after version)
@@ -115,7 +115,7 @@ public class DataMigrator: NSObject {
         }
         
         // Move the old store to the new folder if needed
-        oldStoreURL = DataDirectories.shared.appSupportDirectory
+        oldStoreURL = DataDirectories.appSupportDirectory
             .appendingPathComponent(SQLfileName)
         if requiresMigration(at: oldStoreURL, toVersion: DataMigrationVersion.current) {
             // Perform the migration (version after version)
@@ -276,7 +276,7 @@ public class DataMigrator: NSObject {
     // MARK: - File Management
     private func backupStore(storeURL: URL) {
         let fm = FileManager.default
-        let appBackupStoresDirectory = DataDirectories.shared.appBackupDirectory
+        let appBackupStoresDirectory = DataDirectories.appBackupDirectory
         
         // Delete old backup files so that we won't restore files from mixed versions
         storeExtension.allCases.forEach { ext in
@@ -307,7 +307,7 @@ public class DataMigrator: NSObject {
     
     public func restoreStore(storeURL: URL) {
         let fm = FileManager.default
-        let appBackupStoresDirectory = DataDirectories.shared.appBackupDirectory
+        let appBackupStoresDirectory = DataDirectories.appBackupDirectory
         
         // Loop over all files of the data store
         storeExtension.allCases.forEach { ext in
@@ -332,7 +332,7 @@ public class DataMigrator: NSObject {
     
     private func moveIncompatibleStore(storeURL: URL) {
         let fm = FileManager.default
-        let appIncompatibleStoresDirectory = DataDirectories.shared.appIncompatibleDirectory
+        let appIncompatibleStoresDirectory = DataDirectories.appIncompatibleDirectory
                 
         // Rename files with current date
         let dateFormatter = DateFormatter()
@@ -364,9 +364,9 @@ public class DataMigrator: NSObject {
     
     private func moveFilesToUpload() {
         let fm = FileManager.default
-        let oldURL = DataDirectories.shared.appSupportDirectory
+        let oldURL = DataDirectories.appSupportDirectory
             .appendingPathComponent("Uploads")
-        let newURL = DataDirectories.shared.appUploadsDirectory
+        let newURL = DataDirectories.appUploadsDirectory
                 
         // Move Uploads directory
         do {

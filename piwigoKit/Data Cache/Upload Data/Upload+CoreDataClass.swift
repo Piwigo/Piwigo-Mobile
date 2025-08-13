@@ -193,7 +193,7 @@ public class Upload: NSManagedObject {
             let fm = FileManager.default
             do {
                 // Get list of files
-                let uploadsDirectory: URL = DataDirectories.shared.appUploadsDirectory
+                let uploadsDirectory: URL = DataDirectories.appUploadsDirectory
                 var filesToDelete = try fm.contentsOfDirectory(at: uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 
                 // Delete files whose filenames starts with the prefix

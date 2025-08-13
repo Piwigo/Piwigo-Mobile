@@ -74,7 +74,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // For debugging purposes | Force a migration
                 // Restore the database from the files available in the AppGroup Piwigo folder
 //                let SQLfileName = "DataModel.sqlite"
-//                let storeURL = DataDirectories.shared.appGroupDirectory
+//                let storeURL = DataDirectories.appGroupDirectory
 //                    .appendingPathComponent(SQLfileName)
 //                migrator.restoreStore(storeURL: storeURL)
 #endif

@@ -25,7 +25,7 @@ extension PwgSession
         }
         
         // Determine URL of image in cache
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         let fileURL = cacheDir.appendingPathComponent(imageSize.path)
             .appendingPathComponent(String(imageID))
 

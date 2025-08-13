@@ -72,7 +72,7 @@ extension Image
         if serverID.isEmpty { return nil }
         
         // Return the URL of the thumbnail file
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         return cacheDir.appendingPathComponent(size.path)
             .appendingPathComponent(String(self.pwgID))
     }

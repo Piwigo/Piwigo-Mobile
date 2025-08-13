@@ -641,7 +641,7 @@ class ImageUtilities: NSObject {
     static func rotateThumbnailsOfImage(_ imageData: Image, by angle: CGFloat) {
         // Initialisation
         guard let serverID = imageData.server?.uuid else { return }
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         let fm = FileManager.default
 
         // Loop over all sizes
