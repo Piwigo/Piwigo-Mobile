@@ -83,7 +83,7 @@ extension ImageViewController
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData, scale: scale, contextually: false)
+            let videoItemProvider = ShareVideoActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -100,7 +100,7 @@ extension ImageViewController
         }
         else if imageData.isPDF {
             // Case of a PDF file
-            let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: imageData, scale: scale, contextually: false)
+            let pdfItemProvider = SharePdfActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             pdfItemProvider.delegate = self
@@ -119,7 +119,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData, scale: scale, contextually: false)
+            let imageItemProvider = ShareImageActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self
