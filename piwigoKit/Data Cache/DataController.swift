@@ -41,7 +41,7 @@ public class DataController: NSObject {
     
     public lazy var mainContext: NSManagedObjectContext = {
         let context = self.persistentContainer.viewContext
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         context.shouldDeleteInaccessibleFaults = true
         context.name = "View context"
@@ -50,7 +50,7 @@ public class DataController: NSObject {
     
     public func newTaskContext() -> NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.shouldDeleteInaccessibleFaults = true
         return context
     }
