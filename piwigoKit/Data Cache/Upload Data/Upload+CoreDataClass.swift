@@ -316,9 +316,8 @@ extension Upload {
 
 
 // MARK: - Section Keys
-public enum SectionKeys: String, Sendable {
+public enum SectionKeys: String, CaseIterable, Sendable {
     case Section1, Section2, Section3, Section4
-    public static let allValues = [Section1, Section2, Section3, Section4]
 }
 
 extension SectionKeys {
@@ -331,8 +330,6 @@ extension SectionKeys {
         case .Section3:
             return NSLocalizedString("uploadSection_queue", comment: "Upload Queue")
         case .Section4:
-            fallthrough
-        default:
             return "—?—"
         }
     }
