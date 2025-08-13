@@ -19,6 +19,7 @@ class UploadImageTableViewCell: UITableViewCell {
     var objectID: NSManagedObjectID? = nil
     private let offset: CGFloat = 1.0
     private let playScale: CGFloat = 0.20
+    private lazy var scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
 
     @IBOutlet weak var cellImage: UIImageView!
 
@@ -129,7 +130,7 @@ class UploadImageTableViewCell: UITableViewCell {
         }
 
         // Scale/crop image
-        let finalImage = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
+        let finalImage = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true, scale: scale)
         if let currentImage = cellImage.image, !currentImage.isEqual(finalImage) {
             cellImage.image = finalImage
         }
@@ -180,10 +181,7 @@ class UploadImageTableViewCell: UITableViewCell {
         imageInfoLabel.text = text
 
         // Cell image: retrieve data of right size and crop image
-        let retinaScale = Int(UIScreen.main.scale)
-        let retinaSquare = CGSize(width: 58.0 * CGFloat(retinaScale),
-                                  height: 58.0 * CGFloat(retinaScale))
-
+        let squareSize = CGSize(width: 58.0 * scale, height: 58.0 * scale)
         let cropToSquare = PHImageRequestOptions()
         cropToSquare.resizeMode = .exact
         let cropSideLength = min(imageAsset.pixelWidth, imageAsset.pixelHeight)
@@ -191,7 +189,7 @@ class UploadImageTableViewCell: UITableViewCell {
         let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
         cropToSquare.normalizedCropRect = cropRect
 
-        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
+        PHImageManager.default().requestImage(for: imageAsset, targetSize: squareSize, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
@@ -338,7 +336,6 @@ class UploadImageTableViewCell: UITableViewCell {
     
     private func addMovieIcon() {
         // Match size to cell size
-        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
         let width = cellImage.frame.size.width * playScale + (scale - 1)
         playBckg.setMovieIconImage()
         playBckg.tintColor = UIColor.white.withAlphaComponent(0.3)

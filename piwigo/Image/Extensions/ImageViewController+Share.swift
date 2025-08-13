@@ -79,10 +79,11 @@ extension ImageViewController
         guard let imageData = imageData else { return }
         
         // Create new activity provider item to pass to the activity view controller
+        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData, contextually: false)
+            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -99,7 +100,7 @@ extension ImageViewController
         }
         else if imageData.isPDF {
             // Case of a PDF file
-            let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: imageData, contextually: false)
+            let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             pdfItemProvider.delegate = self
@@ -118,7 +119,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData, contextually: false)
+            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self

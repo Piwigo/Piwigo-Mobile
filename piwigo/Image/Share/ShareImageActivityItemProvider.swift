@@ -61,9 +61,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     
     
     // MARK: - Placeholder Image
-    init(placeholderImage: Image, contextually: Bool) {
+    init(imageData: Image, scale: CGFloat, contextually: Bool) {
         // Store Piwigo image data for future use
-        self.imageData = placeholderImage
+        self.imageData = imageData
         
         // Remember if this video is shared from a contextual menu
         self.contextually = contextually
@@ -83,7 +83,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
         
         // Retrieve image in cache
         if let cachedImage = UIImage(contentsOfFile: imageFileURL.path) {
-            let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
+            let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true, scale: scale)
             super.init(placeholderItem: resizedImage)
         } else {
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
