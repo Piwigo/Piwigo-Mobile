@@ -316,7 +316,7 @@ extension Upload {
 
 
 // MARK: - Section Keys
-public enum SectionKeys: String {
+public enum SectionKeys: String, Sendable {
     case Section1, Section2, Section3, Section4
     public static let allValues = [Section1, Section2, Section3, Section4]
 }
