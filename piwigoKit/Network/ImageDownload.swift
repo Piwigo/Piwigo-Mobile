@@ -27,10 +27,10 @@ extension pwgImageType {
 class ImageDownload {
     
     // MARK: - Variables and Properties
-    var imageURL: URL!
-    var fileSize: Int64
-    var fileURL: URL!
-    var placeHolder: UIImage!
+    let imageURL: URL!
+    let fileSize: Int64
+    let fileURL: URL!
+    let placeHolder: UIImage!
     var progressHandler: ((Float) -> Void)?
     var completionHandler: ((URL) -> Void)!
     var failureHandler: ((Error) -> Void)!
