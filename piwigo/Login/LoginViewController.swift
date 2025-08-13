@@ -472,7 +472,8 @@ class LoginViewController: UIViewController {
         let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
         // Check image size availabilities
-        LoginUtilities.checkAvailableSizes()
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+        LoginUtilities.checkAvailableSizes(forScale: scale)
 
         // Present Album/Images view and resume uploads
         guard let window = self.view.window,

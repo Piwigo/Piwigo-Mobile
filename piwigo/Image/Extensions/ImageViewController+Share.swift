@@ -79,7 +79,7 @@ extension ImageViewController
         guard let imageData = imageData else { return }
         
         // Create new activity provider item to pass to the activity view controller
-        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video

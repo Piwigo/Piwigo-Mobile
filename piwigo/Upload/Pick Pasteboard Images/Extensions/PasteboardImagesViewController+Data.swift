@@ -75,7 +75,7 @@ extension PasteboardImagesViewController {
         }
 
         // Create an instance of the preparation method
-        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         let preparer = ObjectPreparation(pbObject, at: indexPath.item, scale: scale)
       
         // Refresh the thumbnail of the cell and update upload cache

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public enum pwgImageSize : Int16, CaseIterable {
+public enum pwgImageSize : Int16, CaseIterable, Sendable {
     case square = 0
     case thumb
     case xxSmall
@@ -30,10 +30,7 @@ extension pwgImageSize {
     public static let maxZoomScale: CGFloat = 4
     
     // Default Piwigo image minimum number of points
-    public var minPoints: CGFloat {
-        // Get device scale factor
-        let scale: CGFloat = max(1, UIScreen.main.scale)
-        
+    public func minPoints(forScale scale: CGFloat)-> CGFloat {
         // Default width
         var width: CGFloat = 120
         switch(self) {
@@ -62,10 +59,7 @@ extension pwgImageSize {
     }
     
     // Default Piwigo image maximum number of points
-    public var maxPoints: CGFloat {
-        // Get device scale factor
-        let scale: CGFloat = UIScreen.main.scale
-        
+    public func maxPoints(forScale scale: CGFloat) -> CGFloat {
         // Default width
         var width: CGFloat = 120
         switch(self) {
@@ -94,17 +88,14 @@ extension pwgImageSize {
     }
     
     // Default number of pixels at the current scale
-    public var sizeAndScale: String {
-        // Get device scale factor
-        let scale = Float(UIScreen.main.scale)
-        
+    public func sizeAndScale(forScale scale: CGFloat) -> String {
         // Build size string
         if self == .fullRes {
             return ""
         }
         
-        let minPnts = lroundf(Float(self.minPoints))
-        let maxPnts = lroundf(Float(self.maxPoints))
+        let minPnts = lroundf(Float(self.minPoints(forScale: scale)))
+        let maxPnts = lroundf(Float(self.maxPoints(forScale: scale)))
         return String(format: " (%ldx%ld@%.0fx)", maxPnts, minPnts, scale)
     }
     

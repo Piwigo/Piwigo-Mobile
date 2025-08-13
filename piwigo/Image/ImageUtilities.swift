@@ -486,25 +486,26 @@ class ImageUtilities: NSObject {
         // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
         let screenSize = UIScreen.main.bounds.size
         let screenWidth = fmin(screenSize.width, screenSize.height) * pwgImageSize.maxZoomScale
-        
+        let scale = AppVars.shared.currentDeviceScale
+
         switch screenWidth {
-        case 0...pwgImageSize.square.minPoints:
+        case 0...pwgImageSize.square.minPoints(forScale: scale):
             return .square
-        case pwgImageSize.square.minPoints+1...pwgImageSize.thumb.minPoints:
+        case pwgImageSize.square.minPoints(forScale: scale)+1...pwgImageSize.thumb.minPoints(forScale: scale):
             return .thumb
-        case pwgImageSize.thumb.minPoints+1...pwgImageSize.xxSmall.minPoints:
+        case pwgImageSize.thumb.minPoints(forScale: scale)+1...pwgImageSize.xxSmall.minPoints(forScale: scale):
             return .xxSmall
-        case pwgImageSize.xxSmall.minPoints+1...pwgImageSize.xSmall.minPoints:
+        case pwgImageSize.xxSmall.minPoints(forScale: scale)+1...pwgImageSize.xSmall.minPoints(forScale: scale):
             return .xSmall
-        case pwgImageSize.xSmall.minPoints+1...pwgImageSize.small.minPoints:
+        case pwgImageSize.xSmall.minPoints(forScale: scale)+1...pwgImageSize.small.minPoints(forScale: scale):
             return .small
-        case pwgImageSize.small.minPoints+1...pwgImageSize.medium.minPoints:
+        case pwgImageSize.small.minPoints(forScale: scale)+1...pwgImageSize.medium.minPoints(forScale: scale):
             return .medium
-        case pwgImageSize.medium.minPoints+1...pwgImageSize.large.minPoints:
+        case pwgImageSize.medium.minPoints(forScale: scale)+1...pwgImageSize.large.minPoints(forScale: scale):
             return .large
-        case pwgImageSize.large.minPoints+1...pwgImageSize.xLarge.minPoints:
+        case pwgImageSize.large.minPoints(forScale: scale)+1...pwgImageSize.xLarge.minPoints(forScale: scale):
             return .xLarge
-        case pwgImageSize.xLarge.minPoints+1...pwgImageSize.xxLarge.minPoints:
+        case pwgImageSize.xLarge.minPoints(forScale: scale)+1...pwgImageSize.xxLarge.minPoints(forScale: scale):
             return .xxLarge
         default:
             return .fullRes

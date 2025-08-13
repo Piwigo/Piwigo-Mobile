@@ -442,9 +442,10 @@ class AlbumUtilities: NSObject {
 //        albumThumbnailSize *= pwgImageSize.maxSaliencyScale
         
         // Loop over all sizes
+        let scale = AppVars.shared.currentDeviceScale
         let sizes = pwgImageSize.allCases.dropLast(1)
         for size in sizes {
-            if size.minPoints >= albumThumbnailSize {
+            if size.minPoints(forScale: scale) >= albumThumbnailSize {
                 return size
             }
         }
@@ -493,8 +494,9 @@ class AlbumUtilities: NSObject {
         // Returns the lowest size of sufficient resolution
         // to display the minimum number of thumbnails on the device.
         let sizes = pwgImageSize.allCases.dropLast(1)   // Avoids full resolution
+        let scale = AppVars.shared.currentDeviceScale
         for size in sizes {
-            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPoints)
+            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPoints(forScale: scale))
             if nbImages <= minNberOfImagesPerRow {
                 return size
             }

@@ -128,7 +128,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             return UIContextMenuConfiguration(identifier: identifier,
                 previewProvider: { [self] in
                     // Create preview view controller
-                    let scale = view.window?.screen.scale ?? 1.0
+                    let scale = self.view.traitCollection.displayScale
                     let maxPixelSize = CGSize(width: view.bounds.width * scale, height: view.bounds.height * scale)
                     return LocalImagePreviewViewController(imageAsset: imageAsset, pixelSize: maxPixelSize)
                 }, actionProvider: { suggestedActions in

@@ -20,7 +20,8 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
     weak var delegate: DefaultImageSizeDelegate?
     private lazy var currentImageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     private lazy var optimumSize = ImageUtilities.optimumImageSizeForDevice()
-    
+    private lazy var scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+
     @IBOutlet var tableView: UITableView!
     
     
@@ -171,7 +172,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
             if size == optimumSize {
                 sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
             } else {
-                sizeName.append(contentsOf: size.sizeAndScale)
+                sizeName.append(contentsOf: size.sizeAndScale(forScale: scale))
             }
             cell.textLabel?.text = sizeName
         } else {

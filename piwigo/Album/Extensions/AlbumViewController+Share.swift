@@ -81,7 +81,7 @@ extension AlbumViewController
 
         // Loop over images
 //        timeCounter = CFAbsoluteTimeGetCurrent()
-        let scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         for imageID in imageIDs {
             autoreleasepool {
                 if let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) {

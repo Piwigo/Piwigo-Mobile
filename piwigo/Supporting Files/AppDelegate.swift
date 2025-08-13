@@ -45,9 +45,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                if granted { debugPrint("request succeeded!") }
         }
 
+        // Remember the natural scale associated with the integrated screen for future initialisations
+        AppVars.shared.currentDeviceScale = UIScreen.main.scale
+        
         // Color palette depends on system settings
         initColorPalette()
-
+        
         // Check if the device supports haptics.
         let hapticCapability = CHHapticEngine.capabilitiesForHardware()
         AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics

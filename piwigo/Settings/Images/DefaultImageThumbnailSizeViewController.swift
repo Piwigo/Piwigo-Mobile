@@ -20,7 +20,8 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     weak var delegate: DefaultImageThumbnailSizeDelegate?
     private lazy var currentThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
     private lazy var optimumSize = AlbumUtilities.optimumThumbnailSizeForDevice()
-    
+    private lazy var scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+
     @IBOutlet var tableView: UITableView!
     
 
@@ -172,7 +173,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
             if size == optimumSize {
                 sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
             } else {
-                sizeName.append(contentsOf: size.sizeAndScale)
+                sizeName.append(contentsOf: size.sizeAndScale(forScale: scale))
             }
             cell.textLabel?.text = sizeName
         } else {

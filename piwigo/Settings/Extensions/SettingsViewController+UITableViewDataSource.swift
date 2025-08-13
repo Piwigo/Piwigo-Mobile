@@ -289,7 +289,8 @@ extension SettingsViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-                let defaultWidth = thumbnailSize.minPoints
+                let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+                let defaultWidth = thumbnailSize.minPoints(forScale: scale)
                 let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
