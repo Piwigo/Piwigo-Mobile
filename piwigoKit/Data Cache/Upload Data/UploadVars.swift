@@ -17,7 +17,9 @@ public enum FileExtCase: Int16 {
     case uppercase
 }
 
-public class UploadVars: NSObject {
+// Mark UploadVars as Sendable since Apple documents UserDefaults as thread-safe
+// and pwgImageSort is Sendable
+public class UploadVars: NSObject, @unchecked Sendable {
     
     // Singleton
     public static let shared = UploadVars()
