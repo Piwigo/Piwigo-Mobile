@@ -52,7 +52,7 @@ extension UploadManager
         /// - Wi-Fi required but unavailable
         if isPaused || isExecutingBackgroundUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi()) {
+            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
             return
         }
         

@@ -23,6 +23,18 @@ public class PwgSession: NSObject {
     // Singleton
     public static let shared = PwgSession()
     
+    override init() {
+        super.init()
+        
+        // Start network monitoring
+        Task {
+            self.monitor = await NetworkMonitor()
+        }
+    }
+
+    // Network monitoring
+    private var monitor: NetworkMonitor?
+
     // Create single instance
     public lazy var dataSession: URLSession = {
         let config = URLSessionConfiguration.default
@@ -69,8 +81,8 @@ public class PwgSession: NSObject {
     // Active downloads
     lazy var activeDownloads: [URL : ImageDownload] = [ : ]
     
-    // Remember if the session was opened with a WiFi
-    lazy var wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
+    // Will tell if the network connection has changed
+    lazy var hasNetworkConnectionChanged = false
     
     // Will accept the image formats supported by UIImage
     lazy var acceptedTypes: String = {

@@ -75,23 +75,22 @@ extension PwgSession {
     
     // Re-login if session was closed
     public static
-    func checkSession(ofUser user: User?, systematically: Bool = false,
+    func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (Error) -> Void) {
         // Check if the session is still active every 60 seconds or more
-        if systematically == false {
-            let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
-            if secondsSinceLastCheck < 60,
-               PwgSession.shared.wasConnectedToWifi == NetworkVars.shared.isConnectedToWiFi(),
-               NetworkVars.shared.applicationShouldRelogin == false {
-                completion()
-                return
-            }
+        let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
+        if PwgSession.shared.hasNetworkConnectionChanged == false,
+           NetworkVars.shared.applicationShouldRelogin == false,
+           secondsSinceLastCheck < 60 {
+            completion()
+            return
         }
         
         // Determine if the session is still active
+        PwgSession.shared.hasNetworkConnectionChanged = false
         if #available(iOSApplicationExtension 14.0, *) {
-            if NetworkVars.shared.isConnectedToWiFi() {
+            if NetworkVars.shared.isConnectedToWiFi {
                 logger.notice("Start checking session… (WiFi)")
             } else {
                 logger.notice("Start checking session… (Cellular)")
@@ -124,7 +123,6 @@ extension PwgSession {
                                 user?.status = NetworkVars.shared.userStatus.rawValue
                             }
                             NetworkVars.shared.applicationShouldRelogin = false
-                            PwgSession.shared.wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
                             completion()
                         } failure: { error in
                             failure(error)
@@ -142,7 +140,6 @@ extension PwgSession {
                                     user?.status = NetworkVars.shared.userStatus.rawValue
                                 }
                                 NetworkVars.shared.applicationShouldRelogin = false
-                                PwgSession.shared.wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
                                 completion()
                             } failure: { error in
                                 failure(error)

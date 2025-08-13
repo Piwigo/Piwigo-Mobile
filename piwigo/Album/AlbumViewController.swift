@@ -775,7 +775,7 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        PwgSession.checkSession(ofUser: self.user, systematically: true) { [self] in
+        PwgSession.checkSession(ofUser: self.user) { [self] in
             self.fetchAlbumsAndImages { [self] in
                 self.fetchCompleted()
             }
