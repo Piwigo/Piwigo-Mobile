@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - Image Sort Options
-public enum pwgImageAttr: String {
+public enum pwgImageAttr: String, Sendable {
     case identifier = "id"
     case rank = "rank"
     case title = "name"
@@ -20,13 +20,13 @@ public enum pwgImageAttr: String {
     case visits = "hit"
 }
 
-public enum pwgImageOrder: String {
+public enum pwgImageOrder: String, Sendable {
     case ascending = "asc"
     case descending = "desc"
     case random = "random"
 }
 
-public enum pwgImageSort: Int16, CaseIterable {
+public enum pwgImageSort: Int16, CaseIterable, Sendable {
     case nameAscending = 0              // Photo title, A → Z
     case nameDescending                 // Photo title, Z → A
             
