@@ -33,7 +33,7 @@ public class Tag: NSManagedObject {
         
         // Update name if prrovided
         if let newName = tagProperties.name, newName.isEmpty == false {
-            let newTagName = PwgSession.utf8mb4String(from: tagProperties.name)
+            let newTagName = newName.utf8mb4Encoded
             if tagName != newTagName {
                 tagName = newTagName
             }

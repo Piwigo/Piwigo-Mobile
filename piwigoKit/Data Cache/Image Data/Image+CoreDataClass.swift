@@ -48,7 +48,7 @@ public class Image: NSManagedObject {
         }
         
         // Image title (required)
-        let newTitleStr = PwgSession.utf8mb4String(from: imageData.title)
+        let newTitleStr = imageData.title?.utf8mb4Encoded ?? ""
         if titleStr != newTitleStr {
             titleStr = newTitleStr
         }
@@ -58,7 +58,7 @@ public class Image: NSManagedObject {
         }
         
         // Image description (required)
-        let newCommentStr = PwgSession.utf8mb4String(from: imageData.comment)
+        let newCommentStr = imageData.comment?.utf8mb4Encoded ?? ""
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }
@@ -101,7 +101,7 @@ public class Image: NSManagedObject {
             // Delete cache files to force a reload
             self.deleteCachedFiles()
         }
-        let newFile = PwgSession.utf8mb4String(from: imageData.fileName ?? "")
+        let newFile = imageData.fileName?.utf8mb4Encoded ?? ""
         if newFile.isEmpty == false {
             if fileName != newFile {
                 fileName = newFile
@@ -171,7 +171,7 @@ public class Image: NSManagedObject {
         
         // Author
         if let newAuthor = imageData.author {
-           let newAuthorUTF8 = PwgSession.utf8mb4String(from: newAuthor)
+            let newAuthorUTF8 = newAuthor.utf8mb4Encoded
             if author != newAuthorUTF8 {
                 author = newAuthorUTF8
             }

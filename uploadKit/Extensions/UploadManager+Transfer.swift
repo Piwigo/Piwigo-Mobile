@@ -1097,12 +1097,12 @@ extension UploadManager {
 
                 // Get data returned by the server
                 upload.imageId    = imageId
-                upload.imageName  = PwgSession.utf8mb4String(from: getInfos.title ?? "")
-                upload.author     = PwgSession.utf8mb4String(from: getInfos.author ?? "")
+                upload.imageName  = getInfos.title?.utf8mb4Encoded ?? ""
+                upload.author     = getInfos.author?.utf8mb4Encoded ?? ""
                 if let privacyLevelStr = getInfos.privacyLevel {
                     upload.privacyLevel = Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue
                 }
-                upload.comment    = PwgSession.utf8mb4String(from: getInfos.comment ?? "")
+                upload.comment    = getInfos.comment?.utf8mb4Encoded ?? ""
                 if let tags = getInfos.tags {
                     let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
                     let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: uploadBckgContext).map({$0.objectID})

@@ -36,13 +36,13 @@ public class Album: NSManagedObject {
         }
         
         // Album name (required)
-        let newNameUTF8 = PwgSession.utf8mb4String(from: newName)
+        let newNameUTF8 = newName.utf8mb4Encoded
         if name != newNameUTF8 {
             name = newNameUTF8
         }
 
         // Album description (required)
-        let newCommentStr = PwgSession.utf8mb4String(from: albumData.comment)
+        let newCommentStr = albumData.comment?.utf8mb4Encoded ?? ""
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }

@@ -406,7 +406,7 @@ class EditImageParamsViewController: UIViewController
 
         // Update image description?
         if shouldUpdateComment {
-            paramsDict["comment"] = PwgSession.utf8mb3String(from: commonComment)
+            paramsDict["comment"] = commonComment.utf8mb4Encoded
         }
         
         // Send request to Piwigo server
@@ -416,7 +416,7 @@ class EditImageParamsViewController: UIViewController
                     // Update image title?
                     if shouldUpdateTitle,
                        let newTitle = paramsDict["name"] as? String {
-                        imageData.titleStr = PwgSession.utf8mb4String(from: newTitle)
+                        imageData.titleStr = newTitle.utf8mb4Encoded
                         imageData.title = imageData.titleStr.attributedPlain()
                     }
                     
@@ -477,7 +477,7 @@ class EditImageParamsViewController: UIViewController
                     // Update image description?
                     if shouldUpdateComment,
                        let newComment = paramsDict["comment"] as? String {
-                        imageData.commentStr = PwgSession.utf8mb4String(from: newComment)
+                        imageData.commentStr = newComment.utf8mb4Encoded
                         imageData.comment = imageData.commentStr.attributedPlain()
                         imageData.commentHTML = imageData.commentStr.attributedHTML()
                     }

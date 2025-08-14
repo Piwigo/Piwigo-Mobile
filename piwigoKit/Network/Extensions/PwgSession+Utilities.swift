@@ -202,20 +202,6 @@ extension PwgSession {
 
 
     // MARK: - UTF-8 encoding on 3 and 4 bytes
-    public static
-    func utf8mb4String(from string: String?) -> String {
-        // Return empty string if nothing provided
-        guard let strToConvert = string, strToConvert.isEmpty == false
-        else { return "" }
-        
-        // Convert string to UTF-8 encoding
-        let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
-        if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
-            return String(data: strData, encoding: .utf8) ?? strToConvert
-        }
-        return ""
-    }
-
     // Piwigo supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
     // See https://github.com/Piwigo/Piwigo-Mobile/issues/429, https://github.com/Piwigo/Piwigo/issues/750
     public static

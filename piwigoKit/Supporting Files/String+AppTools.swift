@@ -11,6 +11,21 @@ import UIKit
 
 extension String
 {    
+    // MARK: - UTF-8 encoding on 3 and 4 bytes
+    public var utf8mb4Encoded: String {
+        // Return empty string if nothing provided
+        guard self.isEmpty == false
+        else { return "" }
+        
+        // Convert string to UTF-8 encoding
+        let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
+        if let strData = self.data(using: serverEncoding, allowLossyConversion: true) {
+            return String(data: strData, encoding: .utf8) ?? self
+        }
+        return ""
+    }
+
+
     // MARK: - HTML Conversion
     public func attributedPlain() -> NSAttributedString {
         // Remove any white space or newline located at the beginning or end
