@@ -479,7 +479,7 @@ class EditImageParamsViewController: UIViewController
                        let newComment = paramsDict["comment"] as? String {
                         imageData.commentStr = newComment.utf8mb4Encoded
                         imageData.comment = imageData.commentStr.attributedPlain
-                        imageData.commentHTML = imageData.commentStr.attributedHTML()
+                        imageData.commentHTML = imageData.commentStr.attributedHTML
                     }
                     
                     // Save changes

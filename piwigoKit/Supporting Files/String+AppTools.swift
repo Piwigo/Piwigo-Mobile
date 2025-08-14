@@ -72,7 +72,7 @@ extension String
         return false
     }
     
-    public func attributedHTML() -> NSAttributedString {
+    public var attributedHTML: NSAttributedString {
         // Remove any white space or newline located at the beginning or end
         let trimmedText = self.trimmingCharacters(in: .whitespacesAndNewlines)
         

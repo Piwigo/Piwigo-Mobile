@@ -50,7 +50,7 @@ public class Album: NSManagedObject {
         if comment != newComment {
             comment = newComment
         }
-        let newCommentHTML = newCommentStr.attributedHTML()
+        let newCommentHTML = newCommentStr.attributedHTML
         if newCommentHTML != commentHTML {
             commentHTML = newCommentHTML
         }
