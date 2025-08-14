@@ -410,6 +410,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Add operation setting flag and selecting upload requests
         let initOperation = BlockOperation {
+            // Start network monitoring
+            Task {
+                await self.networkMonitor?.startMonitoring()
+            }
+
             // Initialse variables and determine upload requests to prepare and transfer
             UploadManager.shared.initialiseBckgTask()
         }
@@ -442,6 +447,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("    > Task expired: Upload operation cancelled.")
             // Cancel operations
             uploadQueue.cancelAllOperations()
+            // Stop network monitoring
+            Task {
+                await self.networkMonitor?.stopMonitoring()
+            }
         }
         
         // Inform the system that the background task is complete
@@ -450,6 +459,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lastOperation.completionBlock = {
             debugPrint("••> Task completed with success.")
             task.setTaskCompleted(success: true)
+            // Stop network monitoring
+            Task {
+                await self.networkMonitor?.stopMonitoring()
+            }
             // Save cached data in the main thread
             DispatchQueue.main.async {
                 self.mainContext.saveIfNeeded()
