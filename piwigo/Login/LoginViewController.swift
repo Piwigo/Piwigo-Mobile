@@ -408,8 +408,8 @@ class LoginViewController: UIViewController {
                 }
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
-                isAlreadyTryingToLogin = false
                 DispatchQueue.main.async { [self] in
+                    self.isAlreadyTryingToLogin = false
                     self.logging(inConnectionError: error)
                 }
             }
@@ -457,9 +457,11 @@ class LoginViewController: UIViewController {
                 }
             }
         } failure: { [self] error in
-            isAlreadyTryingToLogin = false
-            // Display error message
-            logging(inConnectionError: error)
+            DispatchQueue.main.async { [self] in
+                self.isAlreadyTryingToLogin = false
+                // Display error message
+                self.logging(inConnectionError: error)
+            }
         }
     }
 
