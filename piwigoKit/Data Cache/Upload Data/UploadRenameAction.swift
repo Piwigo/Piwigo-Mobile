@@ -255,7 +255,7 @@ public extension String {
         }
         
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        self = PwgSession.utf8mb3String(from: fileName)
+        self = fileName.utf8mb3Encoded
     }
     
     /// Assuming the current string is base64 encoded, this property returns a String

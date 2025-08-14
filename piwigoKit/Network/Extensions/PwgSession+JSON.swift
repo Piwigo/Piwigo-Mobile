@@ -50,7 +50,7 @@ extension PwgSession
                 let keyArray = key + "[]"
                 valArray.forEach { valStr in
                     // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                    let utf8mb3Str = PwgSession.utf8mb3String(from: valStr)
+                    let utf8mb3Str = valStr.utf8mb3Encoded
                     let encStr = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
                     let queryItem = URLQueryItem(name: keyArray, value: encStr)
                     queryItems.append(queryItem)
@@ -62,7 +62,7 @@ extension PwgSession
             }
             else if let valStr = value as? String, valStr.isEmpty == false {
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                let utf8mb3Str = PwgSession.utf8mb3String(from: valStr)
+                let utf8mb3Str = valStr.utf8mb3Encoded
                 let encStr = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
                 let queryItem = URLQueryItem(name: key, value: encStr)
                 queryItems.append(queryItem)

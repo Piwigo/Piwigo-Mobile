@@ -366,12 +366,12 @@ class EditImageParamsViewController: UIViewController
                                           "multiple_value_mode" : "replace"]
         // Update image title?
         if shouldUpdateTitle {
-            paramsDict["name"] = PwgSession.utf8mb3String(from: commonTitle)
+            paramsDict["name"] = commonTitle.utf8mb3Encoded
         }
 
         // Update image author? (We should never set NSNotFound in the database)
         if shouldUpdateAuthor || imageData.author == "NSNotFound" {
-            paramsDict["author"] = PwgSession.utf8mb3String(from: commonAuthor)
+            paramsDict["author"] = commonAuthor.utf8mb3Encoded
         }
 
         // Update image creation date?

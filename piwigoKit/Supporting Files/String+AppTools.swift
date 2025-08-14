@@ -25,7 +25,26 @@ extension String
         return ""
     }
 
+    public var utf8mb3Encoded: String {
+        // Return empty string if nothing provided
+        guard self.isEmpty == false
+        else { return "" }
 
+        // Replace characters encoded on 4 bytes
+        var utf8mb3String = ""
+        for char in self {
+            if char.utf8.count > 3 {
+                // 4-byte char => Not handled by Piwigo Server
+                utf8mb3String.append("\u{FFFD}")  // Use the Unicode replacement character
+            } else {
+                // Up to 3-byte char
+                utf8mb3String.append(char)
+            }
+        }
+        return utf8mb3String
+    }
+
+    
     // MARK: - HTML Conversion
     public func attributedPlain() -> NSAttributedString {
         // Remove any white space or newline located at the beginning or end

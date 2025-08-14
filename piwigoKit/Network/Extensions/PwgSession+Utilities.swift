@@ -201,30 +201,6 @@ extension PwgSession {
     }
 
 
-    // MARK: - UTF-8 encoding on 3 and 4 bytes
-    // Piwigo supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-    // See https://github.com/Piwigo/Piwigo-Mobile/issues/429, https://github.com/Piwigo/Piwigo/issues/750
-    public static
-    func utf8mb3String(from string: String?) -> String {
-        // Return empty string if nothing provided
-        guard let strToFilter = string, strToFilter.isEmpty == false
-        else { return "" }
-
-        // Replace characters encoded on 4 bytes
-        var utf8mb3String = ""
-        for char in strToFilter {
-            if char.utf8.count > 3 {
-                // 4-byte char => Not handled by Piwigo Server
-                utf8mb3String.append("\u{FFFD}")  // Use the Unicode replacement character
-            } else {
-                // Up to 3-byte char
-                utf8mb3String.append(char)
-            }
-        }
-        return utf8mb3String
-    }
-
-    
     // MARK: - Clean URLs of Images
     public static
     func encodedImageURL(_ originalURL: String?) -> NSURL? {

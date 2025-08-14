@@ -75,18 +75,15 @@ extension UploadManager {
         let creationDate = DateUtilities.string(from: upload.creationDate)
 
         // Prepare parameters for setting the image/video data
-        let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
-        let author = PwgSession.utf8mb3String(from: upload.author)
-        let comment = PwgSession.utf8mb3String(from: upload.comment)
         let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         let paramsDict: [String : Any] = [
             "image_id"            : "\(NSNumber(value: upload.imageId))",
             "file"                : upload.fileName,
-            "name"                : imageTitle,
-            "author"              : author,
+            "name"                : upload.imageName.utf8mb3Encoded,
+            "author"              : upload.author.utf8mb3Encoded,
             "date_creation"       : creationDate,
             "level"               : "\(NSNumber(value: upload.privacyLevel))",
-            "comment"             : comment,
+            "comment"             : upload.comment.utf8mb3Encoded,
             "tag_ids"             : tagIDs,
             "single_value_mode"   : "replace",
             "multiple_value_mode" : "replace"]
