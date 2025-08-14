@@ -46,7 +46,7 @@ public class Album: NSManagedObject {
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }
-        let newComment = newCommentStr.attributedPlain()
+        let newComment = newCommentStr.attributedPlain
         if comment != newComment {
             comment = newComment
         }

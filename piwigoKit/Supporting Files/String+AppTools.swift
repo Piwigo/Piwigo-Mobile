@@ -46,7 +46,7 @@ extension String
 
     
     // MARK: - HTML Conversion
-    public func attributedPlain() -> NSAttributedString {
+    public var attributedPlain: NSAttributedString {
         // Remove any white space or newline located at the beginning or end
         // and then spaces located at the beginning or end of each line
         let trimmedText = self.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -417,7 +417,7 @@ class EditImageParamsViewController: UIViewController
                     if shouldUpdateTitle,
                        let newTitle = paramsDict["name"] as? String {
                         imageData.titleStr = newTitle.utf8mb4Encoded
-                        imageData.title = imageData.titleStr.attributedPlain()
+                        imageData.title = imageData.titleStr.attributedPlain
                     }
                     
                     // Update image author? (We should never set NSNotFound in the database)
@@ -478,7 +478,7 @@ class EditImageParamsViewController: UIViewController
                     if shouldUpdateComment,
                        let newComment = paramsDict["comment"] as? String {
                         imageData.commentStr = newComment.utf8mb4Encoded
-                        imageData.comment = imageData.commentStr.attributedPlain()
+                        imageData.comment = imageData.commentStr.attributedPlain
                         imageData.commentHTML = imageData.commentStr.attributedHTML()
                     }
                     

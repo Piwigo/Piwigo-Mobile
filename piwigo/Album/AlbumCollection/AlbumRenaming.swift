@@ -132,7 +132,7 @@ class AlbumRenaming: NSObject
                     }
                     if albumData.commentStr != albumComment {
                         albumData.commentStr = albumComment
-                        albumData.comment = albumComment.attributedPlain()
+                        albumData.comment = albumComment.attributedPlain
                         albumData.commentHTML = albumComment.attributedHTML()
                     }
                     self.mainContext.saveIfNeeded()

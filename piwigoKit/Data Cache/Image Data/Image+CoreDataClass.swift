@@ -52,7 +52,7 @@ public class Image: NSManagedObject {
         if titleStr != newTitleStr {
             titleStr = newTitleStr
         }
-        let newTitle = newTitleStr.attributedPlain()
+        let newTitle = newTitleStr.attributedPlain
         if newTitle != title {
             title = newTitle
         }
@@ -62,7 +62,7 @@ public class Image: NSManagedObject {
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }
-        let newComment = newCommentStr.attributedPlain()
+        let newComment = newCommentStr.attributedPlain
         if comment != newComment {
             comment = newComment
         }
