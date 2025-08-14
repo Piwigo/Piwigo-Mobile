@@ -31,7 +31,15 @@ public final class NetworkMonitor {
             // Interface type?
             NetworkVars.shared.isConnectedToWiFi = path.usesInterfaceType(.wifi)
         }
+        startMonitoring()
+    }
+    
+    public func startMonitoring() {
         monitor.start(queue: queue)
+    }
+    
+    public func stopMonitoring() {
+        monitor.cancel()
     }
     
     deinit {
