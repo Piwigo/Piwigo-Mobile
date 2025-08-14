@@ -9,21 +9,21 @@
 import Network
 import Foundation
 
-@globalActor actor NetworkMonitoring {
+@globalActor public actor NetworkMonitoring {
     public static let shared = NetworkMonitoring()
     
     private init() { }
 }
 
 @NetworkMonitoring
-final class NetworkMonitor {
+public final class NetworkMonitor {
     
     static let shared = NetworkMonitor()
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
         
-    init() {
+    public init() {
         monitor.pathUpdateHandler = { path in
             // Network connection change
             PwgSession.shared.hasNetworkConnectionChanged = true

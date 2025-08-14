@@ -210,6 +210,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
         
+        // Start network monitoring
+        Task {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            await appDelegate?.networkMonitor?.startMonitoring()
+        }
+
         // Flag used to prevent background tasks from running when the app is active
         AppVars.shared.applicationIsActive = true
         
@@ -376,6 +382,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
+
+        // Stop network monitoring
+        Task {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            await appDelegate?.networkMonitor?.stopMonitoring()
+        }
     }
     
     

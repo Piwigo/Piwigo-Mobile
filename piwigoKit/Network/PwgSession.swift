@@ -23,18 +23,6 @@ public class PwgSession: NSObject {
     // Singleton
     public static let shared = PwgSession()
     
-    override init() {
-        super.init()
-        
-        // Start network monitoring
-        Task {
-            self.monitor = await NetworkMonitor()
-        }
-    }
-
-    // Network monitoring
-    private var monitor: NetworkMonitor?
-
     // Create single instance
     public lazy var dataSession: URLSession = {
         let config = URLSessionConfiguration.default

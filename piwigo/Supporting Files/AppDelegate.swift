@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let k2WeeksInDays: TimeInterval = 60 * 60 * 24 * 14.0
     private let k3WeeksInDays: TimeInterval = 60 * 60 * 24 * 21.0
     private let pwgBackgroundTaskUpload = "org.piwigo.uploadManager"
+    private var networkMonitor: NetworkMonitor?
 
     var window: UIWindow?
     var privacyView: UIView?
@@ -83,6 +84,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
         registerBgTasks()
+
+        // Register network connection changes
+        Task {
+            // Start network monitoring
+            self.networkMonitor = await NetworkMonitor()
+        }
 
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
