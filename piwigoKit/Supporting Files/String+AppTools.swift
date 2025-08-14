@@ -81,7 +81,7 @@ extension String
         else { return NSAttributedString() }
         
         // Detect if its contains HTML text
-        guard trimmedText.containsHTML()
+        guard trimmedText.containsHTML
         else { return NSAttributedString() }
         
         // Decode HTML code if possible

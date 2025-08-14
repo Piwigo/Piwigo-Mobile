@@ -132,7 +132,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                         inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             // Piwigo does not manage HTML descriptions.
             // So we disable the editor to prevent a mess when the description contains HTML.
-            if commonComment.containsHTML() {
+            if commonComment.containsHTML {
                 cell.textView.isEditable = false
             } else {
                 cell.textView.isEditable = true
