@@ -403,8 +403,10 @@ extension AlbumViewController
             
             // Retrieve image data if needed
             PwgSession.checkSession(ofUser: user) {  [self] in
-                retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
-                             beforeAction: action, contextually: contextually)
+                DispatchQueue.main.async { [self] in
+                    self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
+                                      beforeAction: action, contextually: contextually)
+                }
             } failure: { [self] error in
                 DispatchQueue.main.async { [self] in
                     retrieveImageDataError(error, contextually: contextually)
@@ -413,19 +415,18 @@ extension AlbumViewController
         }
     }
     
+    @MainActor
     private func retrieveData(ofImagesWithID someIDs: Set<Int64>, among imageIDs: Set<Int64>,
                               beforeAction action:pwgImageAction, contextually: Bool) {
         // Get image ID if any
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
-            DispatchQueue.main.async { [self] in
-                if action == .share {
-                    // Update or display HUD
-                    self.performAction(action, withImageIDs: imageIDs, contextually: contextually)
-                } else {
-                    self.navigationController?.hideHUD() { [self] in
-                        performAction(action, withImageIDs: imageIDs, contextually: contextually)
-                    }
+            if action == .share {
+                // Update or display HUD
+                self.performAction(action, withImageIDs: imageIDs, contextually: contextually)
+            } else {
+                self.navigationController?.hideHUD() { [self] in
+                    performAction(action, withImageIDs: imageIDs, contextually: contextually)
                 }
             }
             return
@@ -433,18 +434,18 @@ extension AlbumViewController
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
-            // Image info retrieved
-            remainingIDs.remove(imageID)
-
-            // Update HUD
             DispatchQueue.main.async { [self] in
+                // Image info retrieved
+                remainingIDs.remove(imageID)
+                
+                // Update HUD
                 let progress: Float = Float(1) - Float(remainingIDs.count) / Float(imageIDs.count)
                 self.navigationController?.updateHUD(withProgress: progress)
-            }
 
-            // Next image
-            retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
-                         beforeAction: action, contextually: contextually)
+                // Next image
+                retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
+                             beforeAction: action, contextually: contextually)
+            }
         } failure: { [self] error in
             DispatchQueue.main.async { [self] in
                 retrieveImageDataError(error, contextually: contextually)
