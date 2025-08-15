@@ -111,12 +111,12 @@ class AlbumDeletion: NSObject
         }
         
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.view.accessibilityIdentifier = "DeleteAlbum"
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyle.dark : UIUserInterfaceStyle.light
         topViewController.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
     
@@ -160,11 +160,11 @@ class AlbumDeletion: NSObject
         if let deleteAction = deleteAction {
             alert.addAction(deleteAction)
         }
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
     

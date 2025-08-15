@@ -388,14 +388,14 @@ extension SettingsViewController: UITableViewDelegate
 
                 // Present list of actions
                 let alert = getClearCacheAlert()
-                alert.view.tintColor = .piwigoColorOrange()
+                alert.view.tintColor = PwgColor.orange
                 alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 alert.popoverPresentationController?.sourceView = settingsTableView
                 alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
                 present(alert, animated: true, completion: {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = .piwigoColorOrange()
+                    alert.view.tintColor = PwgColor.orange
                 })
             default:
                 break
@@ -460,7 +460,7 @@ extension SettingsViewController: UITableViewDelegate
                 if MFMailComposeViewController.canSendMail() {
                     let composeVC = MFMailComposeViewController()
                     composeVC.mailComposeDelegate = self
-                    composeVC.view.tintColor = .piwigoColorOrange()
+                    composeVC.view.tintColor = PwgColor.orange
 
                     // Configure the fields of the interface.
                     composeVC.setToRecipients([

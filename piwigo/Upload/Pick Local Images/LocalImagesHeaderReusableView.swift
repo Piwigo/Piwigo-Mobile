@@ -30,14 +30,14 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
 
         // Keep section for future use
         self.section = section
         
         // Date and place name of location
-        mainLabel.textColor = .piwigoColorLeftLabel()
-        detailLabel.textColor = .piwigoColorRightLabel()
+        mainLabel.textColor = PwgColor.leftLabel
+        detailLabel.textColor = PwgColor.rightLabel
 
         // Get date labels from images in section
         let oldest = DateUtilities.unknownDateInterval   // i.e. unknown date
@@ -103,7 +103,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         detailLabel.text = ""
         mainLabel.text = ""
         selectButton.setTitle("", for: .normal)
-        selectButton.backgroundColor = .piwigoColorBackground()
+        selectButton.backgroundColor = PwgColor.background
     }
 
     

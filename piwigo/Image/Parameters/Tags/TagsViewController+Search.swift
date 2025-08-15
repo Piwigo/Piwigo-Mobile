@@ -17,7 +17,7 @@ extension TagsViewController
         searchController.searchBar.isTranslucent = false
         searchController.searchBar.showsCancelButton = false
         searchController.searchBar.showsSearchResultsButton = false
-        searchController.searchBar.tintColor = UIColor.piwigoColorOrange()
+        searchController.searchBar.tintColor = PwgColor.orange
         searchController.searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self

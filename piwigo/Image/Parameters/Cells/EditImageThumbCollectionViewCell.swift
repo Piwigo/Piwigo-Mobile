@@ -50,7 +50,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         editButtonView.layer.cornerRadius = 5
         removeButtonView.layer.cornerRadius = 15
 
-        editImageButton.tintColor = .piwigoColorOrange()
+        editImageButton.tintColor = PwgColor.orange
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -60,17 +60,17 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     @MainActor
     @objc func applyColorPalette() {
         // Background
-        imageThumbnailView.backgroundColor = .piwigoColorBackground()
-        imageDetails.backgroundColor = .piwigoColorBackground()
-        editButtonView.backgroundColor = .piwigoColorBackground()
-        removeButtonView.backgroundColor = .piwigoColorCellBackground()
+        imageThumbnailView.backgroundColor = PwgColor.background
+        imageDetails.backgroundColor = PwgColor.background
+        editButtonView.backgroundColor = PwgColor.background
+        removeButtonView.backgroundColor = PwgColor.cellBackground
 
         // Image size, file name, date and time
-        imageSize.textColor = .piwigoColorLeftLabel()
-        imageFile.textColor = .piwigoColorLeftLabel()
-        imageFileSize.textColor = .piwigoColorLeftLabel()
-        imageDate.textColor = .piwigoColorLeftLabel()
-        imageTime.textColor = .piwigoColorLeftLabel()
+        imageSize.textColor = PwgColor.leftLabel
+        imageFile.textColor = PwgColor.leftLabel
+        imageFileSize.textColor = PwgColor.leftLabel
+        imageDate.textColor = PwgColor.leftLabel
+        imageTime.textColor = PwgColor.leftLabel
     }
 
     func config(withImage imageData: Image?, removeOption hasRemove: Bool) {
@@ -201,11 +201,11 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         if let renameFileNameAction = renameFileNameAction {
             alert.addAction(renameFileNameAction)
         }
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController?.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
 

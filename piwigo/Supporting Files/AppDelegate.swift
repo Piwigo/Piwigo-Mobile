@@ -805,13 +805,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Tint colour
-        UIView.appearance().tintColor = .piwigoColorOrange()
+        UIView.appearance().tintColor = PwgColor.orange
         
         // Activity indicator
-        UIActivityIndicatorView.appearance().color = .piwigoColorOrange()
+        UIActivityIndicatorView.appearance().color = PwgColor.orange
 
         // Tab bars
-        UITabBar.appearance().barTintColor = .piwigoColorBackground()
+        UITabBar.appearance().barTintColor = PwgColor.background
 
         // Styles
         if AppVars.shared.isDarkPaletteActive

@@ -36,8 +36,8 @@ class AlbumHeaderReusableView: UICollectionReusableView {
     }
     
     func applyColorPalette() {
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        albumDesc.textColor = .piwigoColorHeader()
+        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        albumDesc.textColor = PwgColor.header
     }
 
     override func prepareForReuse() {

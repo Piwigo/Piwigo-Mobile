@@ -87,10 +87,10 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
     @MainActor
     func applyColorPalette() {
-        backgroundColor = UIColor.piwigoColorBackground()
-        contentView.backgroundColor = UIColor.piwigoColorCellBackground()
-        albumName.textColor = UIColor.piwigoColorText()
-        numberOfImages.textColor = UIColor.piwigoColorText()
+        backgroundColor = PwgColor.background
+        contentView.backgroundColor = PwgColor.cellBackground
+        albumName.textColor = PwgColor.text
+        numberOfImages.textColor = PwgColor.text
     }
     
     private func getNberOfImages(fromAlbumData albumData: Album?) -> String {

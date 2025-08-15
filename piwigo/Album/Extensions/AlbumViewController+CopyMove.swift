@@ -16,7 +16,7 @@ extension AlbumViewController
     func getMoveBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply, target: self,
                                      action: #selector(copyMoveSelection))
-        button.tintColor = UIColor.piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         return button
     }
 
@@ -85,14 +85,14 @@ extension AlbumViewController
         alert.addAction(moveAction)
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if let parent = parent as? AlbumViewController {
             alert.popoverPresentationController?.barButtonItem = parent.moveBarButton
         }
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
 

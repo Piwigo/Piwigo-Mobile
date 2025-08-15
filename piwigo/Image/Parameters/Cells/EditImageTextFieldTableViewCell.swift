@@ -18,11 +18,11 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
     func config(withLabel label: NSAttributedString?, placeHolder: String?,
                 andImageDetail imageDetail: NSAttributedString?) {
         // Cell background
-        backgroundColor = .piwigoColorBackground()
+        backgroundColor = PwgColor.background
 
         // Cell label
         cellLabel.attributedText = label
-        cellLabel.textColor = .piwigoColorLeftLabel()
+        cellLabel.textColor = PwgColor.leftLabel
 
         // Cell text field
         if let detail = imageDetail {
@@ -30,10 +30,10 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
         } else {
             cellTextField.text = ""
         }
-        cellTextField.textColor = .piwigoColorRightLabel()
+        cellTextField.textColor = PwgColor.rightLabel
         if (placeHolder?.count ?? 0) > 0 {
             cellTextField.attributedPlaceholder = NSAttributedString(string: placeHolder ?? "", attributes: [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorPlaceHolder()
+                NSAttributedString.Key.foregroundColor: PwgColor.placeHolder
             ])
         }
         cellTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default

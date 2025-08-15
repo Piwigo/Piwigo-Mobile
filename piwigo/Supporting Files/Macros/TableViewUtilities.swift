@@ -76,7 +76,7 @@ class TableViewUtilities: NSObject {
         // Create header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
+        headerLabel.textColor = PwgColor.header
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -138,7 +138,7 @@ class TableViewUtilities: NSObject {
         // Create header label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.textColor = .piwigoColorHeader()
+        footerLabel.textColor = PwgColor.header
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.textAlignment = alignment

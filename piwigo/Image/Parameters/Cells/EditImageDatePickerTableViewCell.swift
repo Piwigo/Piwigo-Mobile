@@ -125,8 +125,8 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         }
         
         // Set colours
-        datePicker.backgroundColor = .piwigoColorCellBackground()
-        datePicker.tintColor = .piwigoColorLeftLabel()
+        datePicker.backgroundColor = PwgColor.cellBackground
+        datePicker.tintColor = PwgColor.leftLabel
 
         // Initialisation
         var calendar = Calendar.current
@@ -185,15 +185,15 @@ class EditImageDatePickerTableViewCell: UITableViewCell
     // MARK: - Buttons Methods
     func setDatePickerButtons()
     {
-        toolBarTop.barTintColor = .piwigoColorCellBackground()
+        toolBarTop.barTintColor = PwgColor.cellBackground
         unsetDateButton.tintColor = .red
-        incrementMonthButton.tintColor = .piwigoColorRightLabel()
-        decrementMonthButton.tintColor = .piwigoColorRightLabel()
+        incrementMonthButton.tintColor = PwgColor.rightLabel
+        decrementMonthButton.tintColor = PwgColor.rightLabel
 
-        toolBarBottom.barTintColor = .piwigoColorCellBackground()
-        todayDateButton.tintColor = .piwigoColorRightLabel()
-        incrementYearButton.tintColor = .piwigoColorRightLabel()
-        decrementYearButton.tintColor = .piwigoColorRightLabel()
+        toolBarBottom.barTintColor = PwgColor.cellBackground
+        todayDateButton.tintColor = PwgColor.rightLabel
+        incrementYearButton.tintColor = PwgColor.rightLabel
+        decrementYearButton.tintColor = PwgColor.rightLabel
     }
 
     @IBAction func unsetDate(_ sender: Any) {
@@ -353,7 +353,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
         if label == nil {
             label = UILabel()
             label?.font = .systemFont(ofSize: 17)
-            label?.textColor = .piwigoColorLeftLabel()
+            label?.textColor = PwgColor.leftLabel
         }
         switch PickerComponents(rawValue: component) {
             case .day:

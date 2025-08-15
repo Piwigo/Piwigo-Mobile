@@ -29,7 +29,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     
     private func configureIcons() {
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
+        backgroundColor = PwgColor.cellBackground
         waitingActivity?.color = UIColor.white
         uploadingProgress?.trackTintColor = UIColor.white
         playImg?.tintColor = UIColor.white

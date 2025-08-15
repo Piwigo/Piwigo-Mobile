@@ -844,7 +844,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 if !MFMailComposeViewController.canSendMail() {
-                    cell.titleLabel.textColor = .piwigoColorRightLabel()
+                    cell.titleLabel.textColor = PwgColor.rightLabel
                 }
                 cell.accessibilityIdentifier = "mailContact"
                 tableViewCell = cell

@@ -25,16 +25,16 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar appearance
         let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.view.backgroundColor = PwgColor.background
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        navigationBar?.tintColor = PwgColor.orange
 
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
@@ -42,7 +42,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
 
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.titleTextAttributes = attributes
         navigationItem.standardAppearance = barAppearance
         navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
@@ -50,7 +50,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         navigationBar?.prefersLargeTitles = false
 
         // Table view
-        tableView.separatorColor = .piwigoColorSeparator()
+        tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
@@ -159,8 +159,8 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         }
 
         // Appearance
-        tableViewCell.backgroundColor = .piwigoColorCellBackground()
-        tableViewCell.tintColor = .piwigoColorOrange()
+        tableViewCell.backgroundColor = PwgColor.cellBackground
+        tableViewCell.tintColor = PwgColor.orange
 
         return tableViewCell
     }

@@ -22,7 +22,7 @@ extension AlbumViewController
         searchController?.searchBar.isTranslucent = false
         searchController?.searchBar.showsCancelButton = false
         searchController?.searchBar.showsSearchResultsButton = false
-        searchController?.searchBar.tintColor = UIColor.piwigoColorOrange()
+        searchController?.searchBar.tintColor = PwgColor.orange
         searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
         definesPresentationContext = true
 

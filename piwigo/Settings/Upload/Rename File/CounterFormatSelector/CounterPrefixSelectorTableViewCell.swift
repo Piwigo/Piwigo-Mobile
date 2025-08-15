@@ -21,8 +21,8 @@ class CounterPrefixSelectorTableViewCell: UITableViewCell {
     func configure(with choice: String) {
         
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
-        segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        segmentedControl.selectedSegmentTintColor = PwgColor.orange
 
         // Configure segments
         let prefixes = pwgCounterFormat.Prefix.allCases.filter({$0 != .none})

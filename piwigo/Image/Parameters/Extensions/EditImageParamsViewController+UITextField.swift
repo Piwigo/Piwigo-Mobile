@@ -81,11 +81,11 @@ extension EditImageParamsViewController: UITextFieldDelegate
             case .imageName:
                 // Title
                 shouldUpdateTitle = true
-                textField.textColor = .piwigoColorOrange()
+                textField.textColor = PwgColor.orange
             case .author:
                 // Author
                 shouldUpdateAuthor = true
-                textField.textColor = .piwigoColorOrange()
+                textField.textColor = PwgColor.orange
             default:
                 break
         }

@@ -156,7 +156,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         selectedImages = .init(repeating: nil, count: pbObjects.count)
         
         // Navigation bar
-        navigationController?.toolbar.tintColor = .piwigoColorOrange()
+        navigationController?.toolbar.tintColor = PwgColor.orange
         navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
 
         // The cancel button is used to cancel the selection of images to upload (left side of navigation bar)
@@ -192,16 +192,16 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar appearance
         let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.view.backgroundColor = PwgColor.background
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        navigationBar?.tintColor = PwgColor.orange
 
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
@@ -209,7 +209,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.titleTextAttributes = attributes
         navigationItem.standardAppearance = barAppearance
         navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
@@ -219,10 +219,10 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         // Case of an iPhone
         if #available(iOS 14, *) {
             // Toolbar
-            legendLabel.textColor = .piwigoColorText()
+            legendLabel.textColor = PwgColor.text
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-            navigationController?.toolbar.barTintColor = .piwigoColorBackground()
+            navigationController?.toolbar.barTintColor = PwgColor.background
             navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         }
         else {
@@ -424,12 +424,12 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         }
         
         // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 //        alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
 

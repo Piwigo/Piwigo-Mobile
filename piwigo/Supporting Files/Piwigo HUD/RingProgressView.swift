@@ -39,7 +39,7 @@ class RingProgressView: UIView {
         backgroundLayer.frame = rect
         backgroundLayer.path = progressPath.cgPath
         backgroundLayer.fillColor = UIColor.clear.cgColor
-        backgroundLayer.strokeColor = UIColor.piwigoColorCellBackground().cgColor
+        backgroundLayer.strokeColor = PwgColor.cellBackground.cgColor
         backgroundLayer.lineCap = .round
         backgroundLayer.lineWidth = 2
         backgroundLayer.strokeEnd = 1
@@ -48,7 +48,7 @@ class RingProgressView: UIView {
         progressLayer.frame = rect
         progressLayer.path = progressPath.cgPath
         progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.strokeColor = UIColor.piwigoColorRightLabel().cgColor
+        progressLayer.strokeColor = PwgColor.rightLabel.cgColor
         progressLayer.lineCap = .round
         progressLayer.lineWidth = 2
         progressLayer.strokeEnd = 0

@@ -143,32 +143,32 @@ class UploadQueueViewController: UIViewController {
     
     private func applyColorPaletteToInitialViews() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = PwgColor.orange
+        navigationController?.navigationBar.barTintColor = PwgColor.background
+        navigationController?.navigationBar.backgroundColor = PwgColor.background
         
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
+            barAppearance.backgroundColor = PwgColor.background
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
         
         // Table view
-        queueTableView.separatorColor = .piwigoColorSeparator()
+        queueTableView.separatorColor = PwgColor.separator
         queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
@@ -180,14 +180,14 @@ class UploadQueueViewController: UIViewController {
         // Table view items
         let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
         visibleCells.forEach { (cell) in
-            cell.backgroundColor = .piwigoColorCellBackground()
-            cell.uploadInfoLabel.textColor = .piwigoColorLeftLabel()
-            cell.imageInfoLabel.textColor = .piwigoColorRightLabel()
+            cell.backgroundColor = PwgColor.cellBackground
+            cell.uploadInfoLabel.textColor = PwgColor.leftLabel
+            cell.imageInfoLabel.textColor = PwgColor.rightLabel
         }
         for section in 0..<queueTableView.numberOfSections {
             let header = queueTableView.headerView(forSection: section) as? UploadImageHeaderView
-            header?.headerLabel.textColor = .piwigoColorHeader()
-            header?.headerBckg.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+            header?.headerLabel.textColor = PwgColor.header
+            header?.headerBckg.backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
     }
     
@@ -319,12 +319,12 @@ class UploadQueueViewController: UIViewController {
         }
         
         // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
     

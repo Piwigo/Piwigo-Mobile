@@ -193,12 +193,12 @@ extension AlbumViewController
         alert.addAction(recentAction)
         
         // Present list of Discover views
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = discoverBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
 }

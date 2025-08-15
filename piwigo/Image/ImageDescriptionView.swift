@@ -23,7 +23,7 @@ class ImageDescriptionView: UIVisualEffectView {
 
     @MainActor
     func applyColorPalette() {
-        descTextView.textColor = .piwigoColorText()
+        descTextView.textColor = PwgColor.text
     }
     
     func config(withImage image: Image,
@@ -38,7 +38,7 @@ class ImageDescriptionView: UIVisualEffectView {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes: [NSAttributedString.Key : Any] = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.foregroundColor: PwgColor.text,
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]

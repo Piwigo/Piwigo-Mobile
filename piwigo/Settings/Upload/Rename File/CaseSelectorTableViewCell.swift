@@ -21,8 +21,8 @@ class CaseSelectorTableViewCell: UITableViewCell {
     func configure(with caseType: FileExtCase) {
         
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
-        segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        segmentedControl.selectedSegmentTintColor = PwgColor.orange
 
         // Select proper segment
         let selectedSegmentIndex: Int = caseType == .keep ? 1 : Int(UploadVars.shared.caseOfFileExtension)

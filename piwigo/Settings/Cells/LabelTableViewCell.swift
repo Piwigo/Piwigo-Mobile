@@ -18,16 +18,16 @@ class LabelTableViewCell: UITableViewCell {
     func configure(with title: String, detail: String) -> Void {
 
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
+        backgroundColor = PwgColor.cellBackground
 
         // Left side: title
         titleLabel.font = .systemFont(ofSize: 17)
-        titleLabel.textColor = .piwigoColorLeftLabel()
+        titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
         
         // Right side: detail
         detailLabel.font = .systemFont(ofSize: 17)
-        detailLabel.textColor = .piwigoColorRightLabel()
+        detailLabel.textColor = PwgColor.rightLabel
         detailLabel.text = detail
     }
 

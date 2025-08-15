@@ -85,7 +85,7 @@ class PiwigoHUD: UIView
             let attrTitle = getAttributed(button: buttonTitle, forWidth: screenWidth)
             button?.setAttributedTitle(attrTitle, for: .normal)
             button?.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
-            button?.backgroundColor = .piwigoColorCellBackground()
+            button?.backgroundColor = PwgColor.cellBackground
             button?.isHidden = false
             buttonBottomToDetailBottom?.constant = 36
         } else {
@@ -99,7 +99,7 @@ class PiwigoHUD: UIView
         // Add HUD to superview
         self.alpha = 0
         self.backgroundColor = UIColor(white: 0, alpha: 0.5)
-        self.view?.backgroundColor = .piwigoColorBackground()
+        self.view?.backgroundColor = PwgColor.background
         view.addSubview(self)
         self.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -120,12 +120,12 @@ class PiwigoHUD: UIView
     @MainActor
     @objc func applyColorPalette() {
         backgroundColor = UIColor(white: 0, alpha: 0.5)
-        view?.backgroundColor = .piwigoColorBackground()
-        titleLabel?.textColor = UIColor.piwigoColorText()
-        detailLabel?.textColor = UIColor.piwigoColorText()
-        button?.backgroundColor = .piwigoColorCellBackground()
-        activityIndicator?.color = UIColor.piwigoColorText()
-        completedImage?.tintColor = UIColor.piwigoColorLeftLabel()
+        view?.backgroundColor = PwgColor.background
+        titleLabel?.textColor = PwgColor.text
+        detailLabel?.textColor = PwgColor.text
+        button?.backgroundColor = PwgColor.cellBackground
+        activityIndicator?.color = PwgColor.text
+        completedImage?.tintColor = PwgColor.leftLabel
     }
     
     @MainActor
@@ -163,7 +163,7 @@ class PiwigoHUD: UIView
             let attrTitle = getAttributed(button: buttonTitle, forWidth: screenWidth)
             button.setAttributedTitle(attrTitle, for: .normal)
             button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
-            button.backgroundColor = .piwigoColorCellBackground()
+            button.backgroundColor = PwgColor.cellBackground
             button.isHidden = false
             detailBottomToTitleBottom.constant = 36
         } else {
@@ -205,7 +205,7 @@ class PiwigoHUD: UIView
             completedImage.isHidden = true
             titleBottomToIndicatorBottom.constant = 0
         case .indeterminate:        // Activity indicator presented
-            activityIndicator.color = UIColor.piwigoColorText()
+            activityIndicator.color = PwgColor.text
             activityIndicator.isHidden = false
             progressView.isHidden = true
             completedImage.isHidden = true
@@ -218,7 +218,7 @@ class PiwigoHUD: UIView
         case .success:              // Checkmark image presented
             activityIndicator.isHidden = true
             progressView.isHidden = true
-            completedImage.tintColor = UIColor.piwigoColorLeftLabel()
+            completedImage.tintColor = PwgColor.leftLabel
             completedImage.isHidden = false
             titleBottomToIndicatorBottom.constant = 26
         }
@@ -235,7 +235,7 @@ class PiwigoHUD: UIView
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.foregroundColor: PwgColor.text,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize, weight: .semibold),
             NSAttributedString.Key.paragraphStyle: style
         ]
@@ -269,7 +269,7 @@ class PiwigoHUD: UIView
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.foregroundColor: PwgColor.text,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize, weight: .regular),
             NSAttributedString.Key.paragraphStyle: style
         ]
@@ -304,7 +304,7 @@ class PiwigoHUD: UIView
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
+            NSAttributedString.Key.foregroundColor: PwgColor.orange,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize, weight: .semibold),
             NSAttributedString.Key.paragraphStyle: style
         ]

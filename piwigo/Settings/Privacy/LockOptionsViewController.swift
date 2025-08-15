@@ -40,32 +40,32 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = PwgColor.orange
+        navigationController?.navigationBar.barTintColor = PwgColor.background
+        navigationController?.navigationBar.backgroundColor = PwgColor.background
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
+            barAppearance.backgroundColor = PwgColor.background
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Table view
-        lockOptionsTableView.separatorColor = .piwigoColorSeparator()
+        lockOptionsTableView.separatorColor = PwgColor.separator
         lockOptionsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         lockOptionsTableView.reloadData()
     }
@@ -182,8 +182,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             }
             cell.configure(with: title)
             if contextErrorMsg.isEmpty == false {
-                cell.switchName.textColor = .piwigoColorRightLabel()
-                cell.cellSwitch.onTintColor = .piwigoColorRightLabel()
+                cell.switchName.textColor = PwgColor.rightLabel
+                cell.cellSwitch.onTintColor = PwgColor.rightLabel
                 cell.isUserInteractionEnabled = false
             }
             cell.cellSwitch.setOn(AppVars.shared.isBiometricsEnabled, animated: true)
@@ -196,8 +196,8 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
             break
         }
 
-        tableViewCell.backgroundColor = .piwigoColorCellBackground()
-        tableViewCell.tintColor = .piwigoColorOrange()
+        tableViewCell.backgroundColor = PwgColor.cellBackground
+        tableViewCell.tintColor = PwgColor.orange
         return tableViewCell
     }
 

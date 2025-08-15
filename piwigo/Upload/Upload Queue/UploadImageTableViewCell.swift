@@ -36,12 +36,12 @@ class UploadImageTableViewCell: UITableViewCell {
     func configure(with upload:Upload, availableWidth:Int) {
 
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
+        backgroundColor = PwgColor.cellBackground
         localIdentifier = upload.localIdentifier
         objectID = upload.objectID
 
         // Upload info label
-        uploadInfoLabel.textColor = .piwigoColorLeftLabel()
+        uploadInfoLabel.textColor = PwgColor.leftLabel
         uploadInfoLabel.text = upload.stateLabel
         
         // Uploading progress bar
@@ -57,7 +57,7 @@ class UploadImageTableViewCell: UITableViewCell {
         }
 
         // Image info label
-        imageInfoLabel.textColor = .piwigoColorRightLabel()
+        imageInfoLabel.textColor = PwgColor.rightLabel
         
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier

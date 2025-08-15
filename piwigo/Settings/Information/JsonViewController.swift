@@ -45,33 +45,33 @@ class JsonViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = PwgColor.orange
+        navigationController?.navigationBar.barTintColor = PwgColor.background
+        navigationController?.navigationBar.backgroundColor = PwgColor.background
         
         /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
         /// which by default produces a transparent background, to all navigation bars.
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithOpaqueBackground()
-        barAppearance.backgroundColor = .piwigoColorBackground()
+        barAppearance.backgroundColor = PwgColor.background
         navigationController?.navigationBar.standardAppearance = barAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
         // Text color depdending on background color
-        method?.textColor = .piwigoColorText()
-        dateTime?.textColor = .piwigoColorText()
-        fileContent?.textColor = .piwigoColorText()
-        fileContent?.backgroundColor = .piwigoColorBackground()
+        method?.textColor = PwgColor.text
+        dateTime?.textColor = PwgColor.text
+        fileContent?.textColor = PwgColor.text
+        fileContent?.backgroundColor = PwgColor.background
     }
     
     override func viewWillAppear(_ animated: Bool) {

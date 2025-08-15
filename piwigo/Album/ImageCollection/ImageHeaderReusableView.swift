@@ -100,11 +100,11 @@ class ImageHeaderReusableView: UICollectionReusableView
     
     @MainActor
     func applyColorPalette() {
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        mainLabel.textColor = .piwigoColorLeftLabel()
-        detailLabel.textColor = .piwigoColorRightLabel()
-        selectButton.backgroundColor = .piwigoColorBackground()
-        albumDesc.textColor = .piwigoColorHeader()
+        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        mainLabel.textColor = PwgColor.leftLabel
+        detailLabel.textColor = PwgColor.rightLabel
+        selectButton.backgroundColor = PwgColor.background
+        albumDesc.textColor = PwgColor.header
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {

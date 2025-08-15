@@ -24,8 +24,8 @@ class TagTableViewCell: UITableViewCell {
 
     func configure(with tag: Tag, andEditOption option: pwgEditOption) {
         // General settings
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.orange
         textLabel?.font = .systemFont(ofSize: 17)
 
         // => pwg.tags.getList returns in addition: counter, url
@@ -44,7 +44,7 @@ class TagTableViewCell: UITableViewCell {
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
         leftLabel.font = .systemFont(ofSize: 17)
-        leftLabel.textColor = .piwigoColorLeftLabel()
+        leftLabel.textColor = PwgColor.leftLabel
 
         // Change image according to state
         switch option {

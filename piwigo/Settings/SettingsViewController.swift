@@ -224,21 +224,21 @@ class SettingsViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar appearance
         let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.view.backgroundColor = PwgColor.background
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        navigationBar?.tintColor = PwgColor.orange
         
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
         let attributesLarge = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
         ]
         navigationBar?.largeTitleTextAttributes = attributesLarge
@@ -246,7 +246,7 @@ class SettingsViewController: UIViewController {
         
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.titleTextAttributes = attributes
         barAppearance.largeTitleTextAttributes = attributesLarge
         navigationItem.standardAppearance = barAppearance
@@ -255,7 +255,7 @@ class SettingsViewController: UIViewController {
         navigationBar?.prefersLargeTitles = true
         
         // Table view
-        settingsTableView?.separatorColor = .piwigoColorSeparator()
+        settingsTableView?.separatorColor = PwgColor.separator
         settingsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
@@ -315,11 +315,11 @@ class SettingsViewController: UIViewController {
             
             alert.addAction(cancelAction)
             alert.addAction(defaultAction)
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
             alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = .piwigoColorOrange()
+                alert.view.tintColor = PwgColor.orange
             })
         }
     }
@@ -465,14 +465,14 @@ class SettingsViewController: UIViewController {
         let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
         
         // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = settingsTableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         })
     }
 }

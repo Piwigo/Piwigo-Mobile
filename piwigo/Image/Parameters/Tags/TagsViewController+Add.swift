@@ -41,11 +41,11 @@ extension TagsViewController
         if let addAction = addAction {
             alert.addAction(addAction)
         }
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
 

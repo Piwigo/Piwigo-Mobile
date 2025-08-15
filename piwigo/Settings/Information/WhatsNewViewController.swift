@@ -96,14 +96,14 @@ class WhatsNewViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Text color depdends on background color
-        titleLabel.textColor = .piwigoColorText()
-        firstNewsTitle.textColor = .piwigoColorText()
-        firstNewsDescription.textColor = .piwigoColorText()
-        secondNewsTitle.textColor = .piwigoColorText()
-        secondNewsDescription.textColor = .piwigoColorText()
+        titleLabel.textColor = PwgColor.text
+        firstNewsTitle.textColor = PwgColor.text
+        firstNewsDescription.textColor = PwgColor.text
+        secondNewsTitle.textColor = PwgColor.text
+        secondNewsDescription.textColor = PwgColor.text
 }
 
     override func viewWillAppear(_ animated: Bool) {

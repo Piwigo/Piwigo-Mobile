@@ -98,43 +98,43 @@ class LoginViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
-        contentView.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
+        contentView.backgroundColor = PwgColor.background
 
         // Change text colour according to palette colour
         piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = PwgColor.orange
+        navigationController?.navigationBar.barTintColor = PwgColor.background
+        navigationController?.navigationBar.backgroundColor = PwgColor.background
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
+            barAppearance.backgroundColor = PwgColor.background
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Text color depdending on background color
-        serverTextField.textColor = .piwigoColorText()
-        serverTextField.backgroundColor = .piwigoColorCellBackground()
-        userTextField.textColor = .piwigoColorText()
-        userTextField.backgroundColor = .piwigoColorCellBackground()
-        passwordTextField.textColor = .piwigoColorText()
-        passwordTextField.backgroundColor = .piwigoColorCellBackground()
-        versionLabel.textColor = .piwigoColorText()
-        websiteNotSecure.textColor = .piwigoColorText()
+        serverTextField.textColor = PwgColor.text
+        serverTextField.backgroundColor = PwgColor.cellBackground
+        userTextField.textColor = PwgColor.text
+        userTextField.backgroundColor = PwgColor.cellBackground
+        passwordTextField.textColor = PwgColor.text
+        passwordTextField.backgroundColor = PwgColor.cellBackground
+        versionLabel.textColor = PwgColor.text
+        websiteNotSecure.textColor = PwgColor.text
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -303,7 +303,7 @@ class LoginViewController: UIViewController {
         if let httpAlertController = httpAlertController {
             present(httpAlertController, animated: true) {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                httpAlertController.view.tintColor = UIColor.piwigoColorOrange()
+                httpAlertController.view.tintColor = PwgColor.orange
             }
         }
     }

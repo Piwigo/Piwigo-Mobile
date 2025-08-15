@@ -16,17 +16,17 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
     func configure(with title: String, nberPhotos: Int64) -> Void {
 
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.orange
 
         // Title
         titleLabel.font = .systemFont(ofSize: 17)
-        titleLabel.textColor = .piwigoColorLeftLabel()
+        titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
         
         // Number of photos
         numberLabel.font = .systemFont(ofSize: 13)
-        numberLabel.textColor = .piwigoColorRightLabel()
+        numberLabel.textColor = PwgColor.rightLabel
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         if [Int64.min, Int64.max].contains(nberPhotos) {

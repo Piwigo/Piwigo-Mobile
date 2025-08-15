@@ -157,8 +157,8 @@ extension AlbumViewController
             uploadImagesButton.isHidden = true
 
             // Reset background colours
-            createAlbumButton.backgroundColor = UIColor.piwigoColorOrange()
-            uploadImagesButton.backgroundColor = UIColor.piwigoColorOrange()
+            createAlbumButton.backgroundColor = PwgColor.orange
+            uploadImagesButton.backgroundColor = PwgColor.orange
 
             // Execute block
             completion()
@@ -174,7 +174,7 @@ extension AlbumViewController
         button.layer.masksToBounds = false
         button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.backgroundColor = UIColor.piwigoColorOrange()
+        button.backgroundColor = PwgColor.orange
         button.tintColor = UIColor.white
         button.showsTouchWhenHighlighted = true
         if categoryId == 0 {
@@ -232,7 +232,7 @@ extension AlbumViewController
             // Reset appearance and action of Add button
             addButton.removeTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
             addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-            addButton.backgroundColor = UIColor.piwigoColorOrange()
+            addButton.backgroundColor = PwgColor.orange
             addButton.tintColor = UIColor.white
 
             // Show button on the left of the Add button if needed
@@ -523,7 +523,7 @@ extension AlbumViewController
         button.layer.masksToBounds = false
         button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.backgroundColor = UIColor.piwigoColorOrange()
+        button.backgroundColor = PwgColor.orange
         button.tintColor = UIColor.white
         button.showsTouchWhenHighlighted = true
         button.setImage(UIImage(named: "create"), for: .normal)
@@ -553,7 +553,7 @@ extension AlbumViewController
         button.layer.masksToBounds = false
         button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.backgroundColor = UIColor.piwigoColorOrange()
+        button.backgroundColor = PwgColor.orange
         button.tintColor = UIColor.white
         button.showsTouchWhenHighlighted = true
         button.setImage(UIImage(named: "imageUpload"), for: .normal)

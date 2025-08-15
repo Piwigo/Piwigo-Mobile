@@ -20,7 +20,7 @@ extension UIBarButtonItem {
     static func shareImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .action,
                                      target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "share"
         return button
     }
@@ -28,7 +28,7 @@ extension UIBarButtonItem {
     static func moveImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply,
                                      target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "move"
         return button
     }
@@ -36,7 +36,7 @@ extension UIBarButtonItem {
     static func deleteImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .trash,
                                      target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "delete"
         return button
     }
@@ -44,7 +44,7 @@ extension UIBarButtonItem {
     static func playImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .play,
                                      target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "play"
         return button
     }
@@ -52,7 +52,7 @@ extension UIBarButtonItem {
     static func pauseImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .pause,
                                      target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "pause"
         return button
     }
@@ -60,7 +60,7 @@ extension UIBarButtonItem {
     static func goToPageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
                                      style: .plain, target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "goToPage"
         return button
     }
@@ -70,7 +70,7 @@ extension UIBarButtonItem {
     static func setThumbnailButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
                                      style: .plain, target: target, action: action)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "albumThumbnail"
         return button
     }
@@ -80,7 +80,7 @@ extension UIBarButtonItem {
     static func favoriteImageButton(_ isFavorite: Bool, target: Any?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: nil)
         button.setFavoriteImage(for: isFavorite)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "favorite"
         return button
     }
@@ -98,7 +98,7 @@ extension UIBarButtonItem {
     static func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
         button.setBackImage()
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "back"
         return button
     }
@@ -121,7 +121,7 @@ extension UIBarButtonItem {
     static func muteAudioButton(_ isMuted: Bool, target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
         button.setMuteAudioImage(for: isMuted)
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         button.accessibilityIdentifier = "mute"
         button.tag = isMuted ? pwgMuted : pwgNotMuted
         return button

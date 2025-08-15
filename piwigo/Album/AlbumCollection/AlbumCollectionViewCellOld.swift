@@ -154,7 +154,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
                 self.pushAlbumDelegate?.pushAlbumView(moveVC, completion: completionHandler)
             }
         })
-        move.backgroundColor = .piwigoColorBrown()
+        move.backgroundColor = PwgColor.brown
         move.image = UIImage(named: "swipeMove.png")
         
         // Album renaming
@@ -164,7 +164,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
                                        topViewController: topViewController)
             rename.displayAlert(completion: completionHandler)
         })
-        rename.backgroundColor = .piwigoColorOrange()
+        rename.backgroundColor = PwgColor.orange
         rename.image = UIImage(named: "swipeRename.png")
 
         // Disallow user to delete the active auto-upload destination album

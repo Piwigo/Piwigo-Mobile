@@ -38,7 +38,7 @@ extension UploadParametersViewController {
             cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title:")),
                         placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
                         andImageDetail: NSAttributedString(string: commonTitle))
-            cell.cellTextField.textColor = shouldUpdateTitle ? .piwigoColorOrange() : .piwigoColorRightLabel()
+            cell.cellTextField.textColor = shouldUpdateTitle ? PwgColor.orange : PwgColor.rightLabel
             cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
             cell.cellTextField.delegate = self
             tableViewCell = cell
@@ -49,7 +49,7 @@ extension UploadParametersViewController {
             cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_author", comment: "Author:")),
                         placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
                         andImageDetail: NSAttributedString(string: commonAuthor))
-            cell.cellTextField.textColor = shouldUpdateAuthor ? .piwigoColorOrange() : .piwigoColorRightLabel()
+            cell.cellTextField.textColor = shouldUpdateAuthor ? PwgColor.orange : PwgColor.rightLabel
             cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
             cell.cellTextField.delegate = self
             tableViewCell = cell
@@ -59,14 +59,14 @@ extension UploadParametersViewController {
             else { preconditionFailure("Could not load a EditImagePrivacyTableViewCell!") }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
             cell.setPrivacyLevel(with: commonPrivacyLevel,
-                                 inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
+                                 inColor: shouldUpdatePrivacyLevel ? PwgColor.orange : PwgColor.rightLabel)
             tableViewCell = cell
 
         case .tags:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell
             else { preconditionFailure("Could not load a EditImageTagsTableViewCell!") }
             cell.config(withList: commonTags,
-                        inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+                        inColor: shouldUpdateTags ? PwgColor.orange : PwgColor.rightLabel)
             cell.accessibilityIdentifier = "setTags"
             tableViewCell = cell
 
@@ -74,7 +74,7 @@ extension UploadParametersViewController {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell
             else { preconditionFailure("Could not load a EditImageTextViewTableViewCell!") }
             cell.config(withText: NSAttributedString(string: commonComment),
-                        inColor: shouldUpdateComment ? .piwigoColorOrange() : .piwigoColorRightLabel())
+                        inColor: shouldUpdateComment ? PwgColor.orange : PwgColor.rightLabel)
             cell.textView.delegate = self
             tableViewCell = cell
 
@@ -82,8 +82,8 @@ extension UploadParametersViewController {
             break
         }
 
-        tableViewCell.backgroundColor = .piwigoColorCellBackground()
-        tableViewCell.tintColor = .piwigoColorOrange()
+        tableViewCell.backgroundColor = PwgColor.cellBackground
+        tableViewCell.tintColor = PwgColor.orange
         return tableViewCell
     }
 }

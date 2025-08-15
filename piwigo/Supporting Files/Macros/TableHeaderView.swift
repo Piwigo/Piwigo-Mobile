@@ -17,7 +17,7 @@ class TableHeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.orange
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 17, weight: .semibold)

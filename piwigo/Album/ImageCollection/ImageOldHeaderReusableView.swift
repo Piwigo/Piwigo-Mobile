@@ -100,10 +100,10 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     
     @MainActor
     func applyColorPalette() {
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        mainLabel.textColor = .piwigoColorLeftLabel()
-        detailLabel.textColor = .piwigoColorRightLabel()
-        segmentedControl?.selectedSegmentTintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        mainLabel.textColor = PwgColor.leftLabel
+        detailLabel.textColor = PwgColor.rightLabel
+        segmentedControl?.selectedSegmentTintColor = PwgColor.orange
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {
@@ -133,7 +133,7 @@ class ImageOldHeaderReusableView: UICollectionReusableView
         mainLabel.text = ""
         detailLabel.text = ""
         selectButton.setTitle("", for: .normal)
-        selectButton.backgroundColor = .piwigoColorBackground()
+        selectButton.backgroundColor = PwgColor.background
     }
 
     @IBAction func didChangeGroupType(_ sender: Any) {

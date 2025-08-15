@@ -34,11 +34,11 @@ class SliderTableViewCell: UITableViewCell {
                    minValue:Float, maxValue:Float, prefix:String, suffix:String) {
 
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
+        backgroundColor = PwgColor.cellBackground
 
         // Slider title
         sliderName.font = .systemFont(ofSize: 17)
-        sliderName.textColor = .piwigoColorLeftLabel()
+        sliderName.textColor = PwgColor.leftLabel
         sliderName.text = title
 
         // Slider
@@ -46,12 +46,12 @@ class SliderTableViewCell: UITableViewCell {
         incrementSliderBy = increment
         slider.minimumValue = minValue
         slider.maximumValue = maxValue
-        slider.tintColor = .piwigoColorOrange()
-        slider.thumbTintColor = .piwigoColorThumb()
+        slider.tintColor = PwgColor.orange
+        slider.thumbTintColor = PwgColor.thumb
 
         // Slider value
         sliderValue.font = .systemFont(ofSize: 17)
-        sliderValue.textColor = .piwigoColorRightLabel()
+        sliderValue.textColor = PwgColor.rightLabel
         valuePrefix = prefix
         valueSuffix = suffix
         updateDisplayedValue(value)

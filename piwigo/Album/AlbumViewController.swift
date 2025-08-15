@@ -311,27 +311,27 @@ class AlbumViewController: UIViewController
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
-        noAlbumLabel.textColor = UIColor.piwigoColorHeader()
+        view.backgroundColor = PwgColor.background
+        noAlbumLabel.textColor = PwgColor.header
         
         // Navigation bar title
         setTitleViewFromAlbumData()
         navigationController?.navigationBar.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
         
         // Buttons appearance
-        addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        addButton.layer.shadowColor = PwgColor.shadow.cgColor
         
-        createAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadImagesButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
+        createAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
+        uploadImagesButton.layer.shadowColor = PwgColor.shadow.cgColor
         
-        uploadQueueButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadQueueButton.backgroundColor = UIColor.piwigoColorRightLabel()
-        nberOfUploadsLabel.textColor = UIColor.piwigoColorBackground()
-        progressLayer.strokeColor = UIColor.piwigoColorBackground().cgColor
+        uploadQueueButton.layer.shadowColor = PwgColor.shadow.cgColor
+        uploadQueueButton.backgroundColor = PwgColor.rightLabel
+        nberOfUploadsLabel.textColor = PwgColor.background
+        progressLayer.strokeColor = PwgColor.background.cgColor
         
-        homeAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        homeAlbumButton.backgroundColor = UIColor.piwigoColorRightLabel()
-        homeAlbumButton.tintColor = UIColor.piwigoColorBackground()
+        homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
+        homeAlbumButton.backgroundColor = PwgColor.rightLabel
+        homeAlbumButton.tintColor = PwgColor.background
         
         if AppVars.shared.isDarkPaletteActive {
             addButton.layer.shadowRadius = 1.0
@@ -364,7 +364,7 @@ class AlbumViewController: UIViewController
         }
         
         // Collection view
-        collectionView?.backgroundColor = UIColor.piwigoColorBackground()
+        collectionView?.backgroundColor = PwgColor.background
         collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
@@ -392,15 +392,15 @@ class AlbumViewController: UIViewController
         }
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter) ?? []).forEach { footer in
             if let footer = footer as? ImageFooterReusableView {
-                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                footer.nberImagesLabel?.textColor = PwgColor.header
             }
         }
         
         // Refresh controller
-        collectionView?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-        collectionView?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
+        collectionView?.refreshControl?.backgroundColor = PwgColor.background
+        collectionView?.refreshControl?.tintColor = PwgColor.header
         let attributesRefresh = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.foregroundColor: PwgColor.header,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
         collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)

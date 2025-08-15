@@ -108,11 +108,11 @@ class ImageViewController: UIViewController {
 
         // Navigation bar
         let navigationBar = navigationController?.navigationBar
-        navigationBar?.tintColor = .piwigoColorOrange()
+        navigationBar?.tintColor = PwgColor.orange
         
         // Toolbar
         let toolbar = navigationController?.toolbar
-        toolbar?.tintColor = .piwigoColorOrange()
+        toolbar?.tintColor = PwgColor.orange
 
         // Single taps display/hide the navigation bar, toolbar and description
         let tapOnce = UITapGestureRecognizer(target: self, action: #selector(didTapOnce))
@@ -148,7 +148,7 @@ class ImageViewController: UIViewController {
         if navigationController?.isNavigationBarHidden ?? false {
             view.backgroundColor = .black
         } else {
-            view.backgroundColor = .piwigoColorBackground()
+            view.backgroundColor = PwgColor.background
         }
 
         // Navigation bar
@@ -160,7 +160,7 @@ class ImageViewController: UIViewController {
         toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
 
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
@@ -169,14 +169,14 @@ class ImageViewController: UIViewController {
 
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
         navigationBar?.standardAppearance = barAppearance
         navigationBar?.compactAppearance = barAppearance
         navigationBar?.scrollEdgeAppearance = barAppearance
 
         let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-        toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.9)
+        toolbar?.barTintColor = PwgColor.background.withAlphaComponent(0.9)
         toolbar?.standardAppearance = toolbarAppearance
         toolbar?.compactAppearance = toolbarAppearance
         if #available(iOS 15.0, *) {
@@ -493,7 +493,7 @@ class ImageViewController: UIViewController {
         if navigationController?.isNavigationBarHidden ?? false {
             view.backgroundColor = .black
         } else {
-            view.backgroundColor = .piwigoColorBackground()
+            view.backgroundColor = PwgColor.background
         }
     }
     

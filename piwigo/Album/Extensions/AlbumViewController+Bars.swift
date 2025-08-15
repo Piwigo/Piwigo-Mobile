@@ -343,7 +343,7 @@ extension AlbumViewController
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = .piwigoColorWhiteCream()
+        titleLabel.textColor = PwgColor.whiteCream
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
         titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
@@ -355,7 +355,7 @@ extension AlbumViewController
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
             NSAttributedString.Key.paragraphStyle: style
         ]
@@ -427,7 +427,7 @@ extension AlbumViewController
         if subtitle.isEmpty == false {
             let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = .piwigoColorWhiteCream()
+            subTitleLabel.textColor = PwgColor.whiteCream
             subTitleLabel.textAlignment = .center
             subTitleLabel.numberOfLines = 1
             subTitleLabel.translatesAutoresizingMaskIntoConstraints = false

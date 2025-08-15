@@ -35,15 +35,15 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     func configure(with album: Album, atDepth depth:Int,
                    andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.orange
 
         // Category data
         albumData = album
         
         // Is this a sub-category?
         albumLabel.font = .systemFont(ofSize: 17)
-        albumLabel.textColor = .piwigoColorLeftLabel()
+        albumLabel.textColor = PwgColor.leftLabel
         albumLabel.text = albumData.name
         if depth == 0 {
             // Categories in root album or root album itself
@@ -67,7 +67,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             
             self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
-            showHideSubCategoriesImage.tintColor = .piwigoColorOrange()  // required on iOS 9
+            showHideSubCategoriesImage.tintColor = PwgColor.orange  // required on iOS 9
             showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
             if buttonState == .hideSubAlbum {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))

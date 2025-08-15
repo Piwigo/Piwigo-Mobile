@@ -354,14 +354,14 @@ extension SelectCategoryViewController: UITableViewDelegate
         alert.addAction(performAction)
 
         // Present popover view
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = categoriesTableView
         alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
         alert.popoverPresentationController?.permittedArrowDirections = [.left, .right]
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         })
     }
 }

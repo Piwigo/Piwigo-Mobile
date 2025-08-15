@@ -94,9 +94,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
     @MainActor
     func applyColorPalette() {
-        bottomLayer?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.7)
-        nameLabel?.textColor = UIColor.piwigoColorLeftLabel()
-        noDataLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        bottomLayer?.backgroundColor = PwgColor.background.withAlphaComponent(0.7)
+        nameLabel?.textColor = PwgColor.leftLabel
+        noDataLabel?.textColor = PwgColor.leftLabel
         favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
         favImg?.tintColor = UIColor.white
         playImg?.tintColor = UIColor.white
@@ -199,7 +199,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+            NSAttributedString.Key.foregroundColor: PwgColor.text,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10, weight: .medium),
             NSAttributedString.Key.paragraphStyle: style
         ]
@@ -271,7 +271,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     func highlight(onCompletion completion: @escaping () -> Void) {
         // Select cell of image of interest and apply effect
-        self.backgroundColor = UIColor.piwigoColorBackground()
+        self.backgroundColor = PwgColor.background
         self.contentMode = .scaleAspectFit
         UIView.animate(withDuration: 0.4, delay: 0.3, options: .allowUserInteraction, animations: { [self] in
             cellImage?.alpha = 0.2

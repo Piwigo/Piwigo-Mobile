@@ -134,16 +134,16 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar appearance
         let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.view.backgroundColor = PwgColor.background
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        navigationBar?.tintColor = PwgColor.orange
 
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
@@ -151,7 +151,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.titleTextAttributes = attributes
         navigationItem.standardAppearance = barAppearance
         navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
@@ -160,7 +160,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Table view
         setTableViewMainHeader()
-        localAlbumsTableView?.separatorColor = .piwigoColorSeparator()
+        localAlbumsTableView?.separatorColor = PwgColor.separator
         localAlbumsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         localAlbumsTableView?.reloadData()
     }

@@ -62,7 +62,7 @@ class AlbumRenaming: NSObject
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.left
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.foregroundColor: PwgColor.text,
                 NSAttributedString.Key.font: renameAlert?.textFields?.first?.font ?? UIFont.systemFont(ofSize: 13),
                 NSAttributedString.Key.paragraphStyle: style
             ]
@@ -100,12 +100,12 @@ class AlbumRenaming: NSObject
         if let renameAction = renameAction {
             renameAlert?.addAction(renameAction)
         }
-        renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
+        renameAlert?.view.tintColor = PwgColor.orange
         renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if let alert = renameAlert {
             topViewController.present(alert, animated: true) { [self] in
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
+                renameAlert?.view.tintColor = PwgColor.orange
             }
         }
     }

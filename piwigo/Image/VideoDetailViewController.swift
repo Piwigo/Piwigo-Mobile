@@ -62,7 +62,7 @@ class VideoDetailViewController: UIViewController
         // Update description view colors if necessary
         descContainer.applyColorPalette()
         videoControls.applyColorPalette()
-        videoAirplay.tintColor = .piwigoColorText()
+        videoAirplay.tintColor = PwgColor.text
     }
     
     override func viewWillAppear(_ animated: Bool) {

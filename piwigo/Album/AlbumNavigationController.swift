@@ -40,23 +40,23 @@ class AlbumNavigationController: UINavigationController
     @MainActor
    @objc func applyColorPalette() {
         // Navigation bar appearance
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar.tintColor = UIColor.piwigoColorOrange()
+        navigationBar.tintColor = PwgColor.orange
         setNeedsStatusBarAppearanceUpdate()
         
         // Toolbar appearance
         let toolbar = navigationController?.toolbar
         toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        toolbar?.tintColor = UIColor.piwigoColorOrange()
+        toolbar?.tintColor = PwgColor.orange
 
         // Title text attributes
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         let attributesLarge = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
         ]
         navigationBar.largeTitleTextAttributes = attributesLarge
@@ -64,13 +64,13 @@ class AlbumNavigationController: UINavigationController
         // Search bar
         let searchBar = navigationItem.searchController?.searchBar
         searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        searchBar?.searchTextField.textColor = UIColor.piwigoColorLeftLabel()
+        searchBar?.searchTextField.textColor = PwgColor.leftLabel
         searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
         
         // Navigation bar
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.titleTextAttributes = attributes
         barAppearance.largeTitleTextAttributes = attributesLarge
         navigationItem.standardAppearance = barAppearance

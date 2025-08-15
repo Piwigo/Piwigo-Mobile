@@ -27,11 +27,11 @@ class AlbumTableViewCell: UITableViewCell {
     
     func config(withAlbumData albumData: Album?) {
         // General settings
-        backgroundColor = UIColor.piwigoColorBackground()
-        contentView.backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = PwgColor.background
+        contentView.backgroundColor = PwgColor.cellBackground
         selectionStyle = UITableViewCell.SelectionStyle.none
-        topCut.backgroundColor = UIColor.piwigoColorBackground()
-        bottomCut.backgroundColor = UIColor.piwigoColorBackground()
+        topCut.backgroundColor = PwgColor.background
+        bottomCut.backgroundColor = PwgColor.background
         recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
         recentImage.tintColor = UIColor.white
 
@@ -47,7 +47,7 @@ class AlbumTableViewCell: UITableViewCell {
 
         // Number of images and sub-albums
         numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
-        numberOfImages.textColor = UIColor.piwigoColorText()
+        numberOfImages.textColor = PwgColor.text
         numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
 
         // Add renaming, moving and deleting capabilities when user has admin rights
@@ -116,7 +116,7 @@ class AlbumTableViewCell: UITableViewCell {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.foregroundColor: PwgColor.text,
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]
@@ -129,7 +129,7 @@ class AlbumTableViewCell: UITableViewCell {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorRightLabel(),
+                NSAttributedString.Key.foregroundColor: PwgColor.rightLabel,
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]

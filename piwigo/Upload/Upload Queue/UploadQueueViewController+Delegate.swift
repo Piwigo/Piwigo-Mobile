@@ -51,7 +51,7 @@ extension UploadQueueViewController: UITableViewDelegate
             }
             completionHandler(true)
         })
-        retry.backgroundColor = .piwigoColorBrown()
+        retry.backgroundColor = PwgColor.brown
         retry.image = UIImage(named: "swipeRetry.png")
         
         // Create trash/cancel upload action

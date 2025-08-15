@@ -48,7 +48,7 @@ class UploadSwitchViewController: UIViewController {
         // Segmented control (choice for presenting common image parameters or upload settings)
         switchViewSegmentedControl = UISegmentedControl(items: [UIImage(named: "imageAll")!,
                                                                 UIImage(named: "settings")!])
-        switchViewSegmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
+        switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.orange
         switchViewSegmentedControl.selectedSegmentIndex = 0
         switchViewSegmentedControl.addTarget(self, action: #selector(didSwitchView), for: .valueChanged)
         switchViewSegmentedControl.superview?.layer.cornerRadius = switchViewSegmentedControl.layer.cornerRadius
@@ -65,32 +65,32 @@ class UploadSwitchViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = PwgColor.orange
+        navigationController?.navigationBar.barTintColor = PwgColor.background
+        navigationController?.navigationBar.backgroundColor = PwgColor.background
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
+            barAppearance.backgroundColor = PwgColor.background
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Segmented control
-        switchViewSegmentedControl.superview?.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.8)
+        switchViewSegmentedControl.superview?.backgroundColor = PwgColor.background.withAlphaComponent(0.8)
         switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
     }
 

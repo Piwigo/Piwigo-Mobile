@@ -25,7 +25,7 @@ class AddActionTableViewFooterView: UITableViewHeaderFooterView {
     func config() {
         // Create Add Action button
         button.setTitle(NSLocalizedString("alertAddButton", comment: "Add"), for: .normal)
-        button.setTitleColor(.piwigoColorOrange(), for: .normal)
+        button.setTitleColor(PwgColor.orange, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
         button.translatesAutoresizingMaskIntoConstraints = false
         

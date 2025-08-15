@@ -31,7 +31,7 @@ extension UITextField
 
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let button = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonAction))
-        button.tintColor = .piwigoColorOrange()
+        button.tintColor = PwgColor.orange
         
         let items = [flexSpace, button]
         doneToolbar.items = items

@@ -97,7 +97,7 @@ extension AlbumViewController
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}
                     if self.categoryId == Int64.zero {
-                        footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                        footer.nberImagesLabel?.textColor = PwgColor.header
                         footer.nberImagesLabel?.text = self.getImageCount()
                     } else {
                         footer.nberImagesLabel?.text = " "
@@ -159,7 +159,7 @@ extension AlbumViewController
                 case UICollectionView.elementKindSectionFooter:
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}
-                    footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                    footer.nberImagesLabel?.textColor = PwgColor.header
                     footer.nberImagesLabel?.text = self.getImageCount()
                     return footer
                 default:
@@ -180,7 +180,7 @@ extension AlbumViewController
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+                NSAttributedString.Key.foregroundColor: PwgColor.header,
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]

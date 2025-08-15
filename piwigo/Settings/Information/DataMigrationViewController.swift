@@ -36,15 +36,15 @@ class DataMigrationViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Change text colour according to palette colour
         piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         
         // Text color depdending on background color
-        migrationLabel.textColor = .piwigoColorText()
-        pleaseWaitLabel.textColor = .piwigoColorText()
-        piwigoUrlLabel.textColor = .piwigoColorText()
+        migrationLabel.textColor = PwgColor.text
+        pleaseWaitLabel.textColor = PwgColor.text
+        piwigoUrlLabel.textColor = PwgColor.text
     }
     
     override func viewWillAppear(_ animated: Bool) {

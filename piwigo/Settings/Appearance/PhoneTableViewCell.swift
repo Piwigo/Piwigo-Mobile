@@ -39,21 +39,21 @@ class PhoneTableViewCell: UITableViewCell {
 
         // Labels
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
-        lightLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
+        lightLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         darkLabel.setTitle(NSLocalizedString("settings_darkColor", comment: "Dark"), for: .normal)
-        darkLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
+        darkLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         
         // Buttons
         if AppVars.shared.isDarkPaletteActive {
             lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            lightButton.tintColor = .piwigoColorRightLabel()
+            lightButton.tintColor = PwgColor.rightLabel
             darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            darkButton.tintColor = .piwigoColorOrange()
+            darkButton.tintColor = PwgColor.orange
         } else {
             lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            lightButton.tintColor = .piwigoColorOrange()
+            lightButton.tintColor = PwgColor.orange
             darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            darkButton.tintColor = .piwigoColorRightLabel()
+            darkButton.tintColor = PwgColor.rightLabel
         }
     }
         

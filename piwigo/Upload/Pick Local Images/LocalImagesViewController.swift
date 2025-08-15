@@ -157,7 +157,7 @@ class LocalImagesViewController: UIViewController
         }
         
         // Navigation bar
-        navigationController?.toolbar.tintColor = .piwigoColorOrange()
+        navigationController?.toolbar.tintColor = PwgColor.orange
         navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
 
         // The cancel button is used to cancel the selection of images to upload
@@ -214,7 +214,7 @@ class LocalImagesViewController: UIViewController
 
             // The sort options are presented in a segmented bar on iPhone & iPad.
             // Segmented control (choice for presenting images by month, week, day or in a single collection)
-            segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
+            segmentedControl.selectedSegmentTintColor = PwgColor.orange
             segmentedControl.selectedSegmentIndex = Int(sortType.rawValue)
             segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
             segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
@@ -228,17 +228,17 @@ class LocalImagesViewController: UIViewController
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = .piwigoColorBackground()
-        sortOptionsView.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
+        sortOptionsView.backgroundColor = PwgColor.background
 
         // Navigation bar appearance
         let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.view.backgroundColor = PwgColor.background
         navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
+        navigationBar?.tintColor = PwgColor.orange
 
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
         ]
         navigationBar?.titleTextAttributes = attributes
@@ -246,7 +246,7 @@ class LocalImagesViewController: UIViewController
 
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
         barAppearance.titleTextAttributes = attributes
         navigationItem.standardAppearance = barAppearance
         navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
@@ -256,16 +256,16 @@ class LocalImagesViewController: UIViewController
         // Segmented control
         if #available(iOS 14, *) {
             // Toolbar
-            legendLabel.textColor = .piwigoColorText()
+            legendLabel.textColor = PwgColor.text
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-            navigationController?.toolbar.barTintColor = .piwigoColorBackground()
+            navigationController?.toolbar.barTintColor = PwgColor.background
             navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
             // Segmented control
-            segmentedControl.superview?.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.8)
+            segmentedControl.superview?.backgroundColor = PwgColor.background.withAlphaComponent(0.8)
             segmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         }
 
@@ -769,11 +769,11 @@ class LocalImagesViewController: UIViewController
         })
         alert.addAction(defaultAction)
         alert.addAction(deleteAction)
-        alert.view.tintColor = .piwigoColorOrange()
+        alert.view.tintColor = PwgColor.orange
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         self.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.orange
         }
     }
     
