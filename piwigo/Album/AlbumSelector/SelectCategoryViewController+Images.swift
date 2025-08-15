@@ -230,9 +230,11 @@ extension SelectCategoryViewController
     /// For calling Piwigo server in version +14.0
     @MainActor
     func dissociateImages(fromAlbum albumData: Album) {
+        let albumID = albumData.pwgID
+        let imageIDs = self.inputImages.map({ $0.pwgID })
         // Send request to Piwigo server
         PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setCategory(albumData, forImages: self.inputImages, withAction: .dissociate) {
+            ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
                 DispatchQueue.main.async { [self] in
                     // Remove images from album
                     albumData.removeFromImages(self.inputImages)
