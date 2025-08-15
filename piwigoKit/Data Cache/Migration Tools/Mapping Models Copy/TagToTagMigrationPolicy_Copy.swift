@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class TagToTagMigrationPolicy_Copy: NSEntityMigrationPolicy {
+final class TagToTagMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Tag ► Tag (Copy)"
     let numberFormatter: NumberFormatter = {

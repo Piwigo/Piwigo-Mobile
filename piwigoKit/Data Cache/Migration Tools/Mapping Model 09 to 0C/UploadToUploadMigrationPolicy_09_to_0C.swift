@@ -11,7 +11,7 @@ import CoreData
 
 let uploadErrorDomain = "Upload Migration"
 
-class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
+final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Upload 09 ► Upload 0C"
     let numberFormatter: NumberFormatter = {

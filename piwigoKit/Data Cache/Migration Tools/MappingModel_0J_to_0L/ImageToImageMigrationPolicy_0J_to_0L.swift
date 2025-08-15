@@ -15,7 +15,7 @@ import MobileCoreServices
 import UniformTypeIdentifiers        // Requires iOS 14
 #endif
 
-class ImageToImageMigrationPolicy_0J_to_0L: NSEntityMigrationPolicy {
+final class ImageToImageMigrationPolicy_0J_to_0L: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Image 0J ► Image 0L"
     let numberFormatter: NumberFormatter = {

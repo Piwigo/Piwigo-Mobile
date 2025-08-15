@@ -12,7 +12,7 @@ import Foundation
 
 let imageErrorDomain = "Image Migration"
 
-class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
+final class ImageToImageMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Image 0F ► Image 0G"
     let numberFormatter: NumberFormatter = {

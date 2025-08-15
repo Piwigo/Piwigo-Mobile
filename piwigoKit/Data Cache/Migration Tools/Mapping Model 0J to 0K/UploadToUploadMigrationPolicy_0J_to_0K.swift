@@ -15,7 +15,7 @@ import MobileCoreServices
 import UniformTypeIdentifiers        // Requires iOS 14
 #endif
 
-class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
+final class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Upload 0J ► Upload 0K"
     let numberFormatter: NumberFormatter = {

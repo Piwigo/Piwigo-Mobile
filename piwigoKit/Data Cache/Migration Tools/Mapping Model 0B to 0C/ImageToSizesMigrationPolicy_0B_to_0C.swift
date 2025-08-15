@@ -11,7 +11,7 @@ import CoreData
 
 let sizesErrorDomain = "Sizes Migration"
 
-class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
+final class ImageToSizesMigrationPolicy_0B_to_0C: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Image 0B ► Sizes 0C"
     let numberFormatter: NumberFormatter = {

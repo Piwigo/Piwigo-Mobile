@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class SizesToSizesMigrationPolicy_Copy: NSEntityMigrationPolicy {
+final class SizesToSizesMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Sizes ► Sizes (Copy)"
     let numberFormatter: NumberFormatter = {

@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class UploadToUploadMigrationPolicy_0H_to_0J: NSEntityMigrationPolicy {
+final class UploadToUploadMigrationPolicy_0H_to_0J: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Upload 0H ► Upload 0J"
     let numberFormatter: NumberFormatter = {

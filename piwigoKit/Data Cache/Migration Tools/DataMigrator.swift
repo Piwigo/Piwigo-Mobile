@@ -28,7 +28,7 @@ import CoreData
  Then when we create model version 5, we only need to create one additional mapping 4 to 5. This greatly reduces the work
  required when adding a new version.
  */
-public class DataMigrator: NSObject {
+public final class DataMigrator: NSObject {
     
     // SQL database filename
     enum storeExtension: String, CaseIterable {

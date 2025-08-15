@@ -11,7 +11,7 @@ import CoreData
 
 let tagErrorDomain = "Tag Migration"
 
-class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
+final class TagToTagMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Tag 09 ► Tag 0C"
     let numberFormatter: NumberFormatter = {

@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
+final class ServerToServerMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Server ► Server (Copy)"
     let numberFormatter: NumberFormatter = {
