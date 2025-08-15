@@ -718,7 +718,7 @@ class AlbumUtilities: NSObject {
                 }
                 
                 // => Images not taken the same month => Display day/month of year
-                let dateFormatter = DateUtilities.dateIntervalFormatter()
+                let dateFormatter = DateUtilities.dateIntervalFormatter
                 dateFormatter.timeStyle = .none
                 switch UIScreen.main.bounds.size.width {
                 case 0..<400:
