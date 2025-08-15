@@ -24,7 +24,7 @@ extension pwgImageType {
     }
 }
 
-class ImageDownload {
+final class ImageDownload {
     
     // MARK: - Variables and Properties
     let imageURL: URL!
