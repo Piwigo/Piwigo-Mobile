@@ -12,10 +12,6 @@ import Foundation
 public extension PwgSession {
     
     func getInfos() {
-        // Initialisation
-        var stats = ""
-        var infos = [String]()
-        
         // Collect stats from server
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgGetInfos, paramDict: [:],
@@ -37,6 +33,7 @@ public extension PwgSession {
                 }
                 
                 // Collect statistics
+                var infos = [String]()
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = .decimal
                 for info in pwgData.data {
@@ -90,6 +87,7 @@ public extension PwgSession {
                 }
 
                 // Update statistics stored in cache
+                var stats = ""
                 for info in infos {
                     if stats.isEmpty {
                         stats.append(info)
