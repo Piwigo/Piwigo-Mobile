@@ -15,7 +15,7 @@ extension URL {
         var fileData: Data = Data()
         do {
             try fileData = NSData(contentsOf: self, options: .alwaysMapped) as Data
-            let md5Checksum = fileData.MD5checksum()
+            let md5Checksum = fileData.MD5checksum
             return (md5Checksum, nil)
         }
         catch let error {

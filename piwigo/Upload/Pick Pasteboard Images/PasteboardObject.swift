@@ -71,7 +71,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
             }
             
             // Update object
-            pbObject.md5Sum = movieData.MD5checksum()
+            pbObject.md5Sum = movieData.MD5checksum
             pbObject.identifier.append(".\(fileExt)")
 
             // Store movie data
@@ -85,7 +85,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
             }
 
             // Update object
-            pbObject.md5Sum = imageData.MD5checksum()
+            pbObject.md5Sum = imageData.MD5checksum
             pbObject.identifier.append(".\(fileExt)")
 
             // Store image data

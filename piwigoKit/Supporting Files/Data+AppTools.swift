@@ -16,7 +16,7 @@ extension Data {
     
     // MARK: - MD5 Checksum
     // Return the MD5 checksum of data
-    public func MD5checksum() -> String {
+    public var MD5checksum: String {
         let digest = Insecure.MD5.hash(data: self)
         return digest.map { String(format: "%02hhx", $0) }.joined()
     }

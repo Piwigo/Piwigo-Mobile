@@ -824,7 +824,7 @@ extension UploadManager {
 
         // Chunk of data
         let chunkOfData = imageData.subdata(in: chunk*chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-        let md5Checksum = chunkOfData.MD5checksum()
+        let md5Checksum = chunkOfData.MD5checksum
         httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
         httpBody.append(self.convertFileData(fieldName: "file",
                                              fileName: upload.fileName,
