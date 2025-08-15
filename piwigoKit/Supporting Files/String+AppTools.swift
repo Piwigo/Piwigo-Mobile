@@ -62,7 +62,7 @@ extension String
         return NSAttributedString(string: trimmedText)
     }
 
-    public func containsHTML() -> Bool {
+    public var containsHTML: Bool {
         let lowerCaseText = self.lowercased()
         if lowerCaseText.hasPrefix("<!doctype html") ||
             lowerCaseText.hasPrefix("<html") ||
