@@ -13,6 +13,7 @@ import uploadKit
 extension AlbumViewController
 {
     // MARK: - Fetch Album Data in the Background
+    @MainActor
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
         // Remember query and which images belong to the album
         // from main context before calling background tasks
@@ -49,7 +50,7 @@ extension AlbumViewController
                     completion()
                 }
             } else {
-                fetchAlbums(withInitialImageIds: oldImageIDs, query: query) {
+                self.fetchAlbums(withInitialImageIds: oldImageIDs, query: query) {
                     completion()
                 }
             }
