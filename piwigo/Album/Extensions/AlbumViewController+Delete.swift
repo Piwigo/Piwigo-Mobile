@@ -252,8 +252,10 @@ extension AlbumViewController
     /// For calling Piwigo server in version +14.0
     private func dissociateImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>) {
         // Send request to Piwigo server
+        let albumID = albumData.pwgID
+        let imageIDs = toRemove.map({ $0.pwgID })
         PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setCategory(albumData, forImages: toRemove, withAction: .dissociate) {
+            ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
                 DispatchQueue.main.async { [self] in
                     // Remove images from album
                     self.albumData.removeFromImages(toRemove)

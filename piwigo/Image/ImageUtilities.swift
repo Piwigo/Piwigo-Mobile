@@ -65,14 +65,13 @@ class ImageUtilities: NSObject {
         }
     }
     
-    static func setCategory(_ album: Album, forImages images: Set<Image>,
+    static func setCategory(_ albumID: Int32, forImageIDs listOfImageIds: [Int64],
                             withAction action: pwgImagesSetCategoryAction,
                             completion: @escaping () -> Void,
                             failure: @escaping (Error) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"    : listOfImageIds,
-                                          "category_id" : album.pwgID,
+                                          "category_id" : albumID,
                                           "action"      : action.rawValue,
                                           "pwg_token"   : NetworkVars.shared.pwgToken]
         
