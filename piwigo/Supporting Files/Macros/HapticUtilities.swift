@@ -12,7 +12,7 @@ import AVFoundation
 import CoreHaptics
 import Foundation
 
-class HapticUtilities {
+final class HapticUtilities {
     
     // A haptic engine manages the connection to the haptic server.
     @MainActor
