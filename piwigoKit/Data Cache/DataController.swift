@@ -10,7 +10,7 @@ import os
 import Foundation
 import CoreData
 
-public class DataController: NSObject {
+public final class DataController: NSObject {
 
     // MARK: - Singleton
     public static let shared = DataController()
