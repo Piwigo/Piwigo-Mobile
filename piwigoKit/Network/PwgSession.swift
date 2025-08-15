@@ -13,7 +13,15 @@ import Foundation
 import UniformTypeIdentifiers        // Requires iOS 14
 #endif
 
-public class PwgSession: NSObject {
+//@globalActor
+//public actor NetworkActor {
+//    public static let shared = NetworkActor()
+//    
+//    private init() { }
+//}
+
+//@NetworkActor
+public final class PwgSession: NSObject, Sendable {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
@@ -23,7 +31,7 @@ public class PwgSession: NSObject {
     // Singleton
     public static let shared = PwgSession()
     
-    // Create single instance
+    // Create single session
     public lazy var dataSession: URLSession = {
         let config = URLSessionConfiguration.default
         
@@ -34,9 +42,7 @@ public class PwgSession: NSObject {
         config.waitsForConnectivity = true
         
         /// Connections should use the network when the user has specified Low Data Mode
-        //        if #available(iOSApplicationExtension 13.0, *) {
-        //            config.allowsConstrainedNetworkAccess = true
-        //        }
+        // config.allowsConstrainedNetworkAccess = true
         
         /// Indicates that the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true

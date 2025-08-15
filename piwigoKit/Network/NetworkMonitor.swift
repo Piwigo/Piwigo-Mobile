@@ -9,7 +9,8 @@
 import Network
 import Foundation
 
-@globalActor public actor NetworkMonitoring {
+@globalActor
+public actor NetworkMonitoring {
     public static let shared = NetworkMonitoring()
     
     private init() { }
