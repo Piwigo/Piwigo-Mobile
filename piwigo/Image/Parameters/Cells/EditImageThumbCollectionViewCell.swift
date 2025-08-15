@@ -101,7 +101,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         imageDate.text = ""; imageTime.text = ""
         if imageData.dateCreated != DateUtilities.unknownDateInterval {
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-            let dateFormatter = DateUtilities.dateFormatter()
+            let dateFormatter = DateUtilities.dateFormatter
             if bounds.size.width > CGFloat(430) {
                 // i.e. larger than iPhone 14 Pro Max screen width
                 dateFormatter.dateStyle = .long

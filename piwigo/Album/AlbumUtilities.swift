@@ -642,7 +642,7 @@ class AlbumUtilities: NSObject {
             dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
             
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-            let optFormatter = DateUtilities.dateFormatter()
+            let optFormatter = DateUtilities.dateFormatter
             if arePwgDates {
                 switch UIScreen.main.bounds.size.width {
                 case 0..<400:
@@ -694,7 +694,7 @@ class AlbumUtilities: NSObject {
                     
                     // Define optional string with day/time values
                     // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                    let optFormatter = DateUtilities.dateFormatter()
+                    let optFormatter = DateUtilities.dateFormatter
                     optFormatter.locale = .current
                     if arePwgDates {
                         switch UIScreen.main.bounds.size.width {
@@ -732,7 +732,7 @@ class AlbumUtilities: NSObject {
                 
                 // Define optional string with day/time values
                 // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                let optFormatter = DateUtilities.dateFormatter()
+                let optFormatter = DateUtilities.dateFormatter
                 if arePwgDates {
                     switch UIScreen.main.bounds.size.width {
                     case 0..<400:

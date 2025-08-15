@@ -154,7 +154,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var dateStr = ""
         var timeStr = ""
         if let date = date, date > DateUtilities.weekAfter {
-            let dateFormatter = DateUtilities.dateFormatter()
+            let dateFormatter = DateUtilities.dateFormatter
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhone 14 Pro Max screen width
                 dateFormatter.dateStyle = .long

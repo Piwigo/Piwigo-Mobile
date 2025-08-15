@@ -322,7 +322,7 @@ extension ImageViewController {
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
-            let dateFormatter = DateUtilities.dateFormatter()
+            let dateFormatter = DateUtilities.dateFormatter
             if UIDevice.current.userInterfaceIdiom == .pad {
                 dateFormatter.dateStyle = .long
                 dateFormatter.timeStyle = .medium   // Without time zone (unknown)
