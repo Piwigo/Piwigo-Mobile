@@ -8,11 +8,10 @@
 
 import Foundation
 
-public
-class KeychainUtilities : NSObject {
+public final class KeychainUtilities: NSObject {
     
     // Access group
-    private class
+    private static
     func getAccessGroup() -> String {
         let teamID = Bundle.main.infoDictionary!["AppIdentifierPrefix"] as! String
         let bundleID = Bundle.main.bundleIdentifier!.components(separatedBy: ".")
@@ -30,7 +29,7 @@ class KeychainUtilities : NSObject {
     /// HTTP credentials are stored in the Keychain with:
     /// - service: <scheme>:<host>
     /// - account: <httpUsername>
-    public class
+    public static
     func setPassword(_ password:String, forService service:String, account:String) {
         // Check input parameters
         guard service.isEmpty == false, account.isEmpty == false, password.isEmpty == false,
@@ -72,7 +71,7 @@ class KeychainUtilities : NSObject {
         return
     }
     
-    public class
+    public static
     func password(forService service:String, account:String) -> String {
         // Check input parameters
         guard service.isEmpty == false, account.isEmpty == false else { return "" }
@@ -152,7 +151,7 @@ class KeychainUtilities : NSObject {
         return password
     }
     
-    public class
+    public static
     func deletePassword(forService service:String, account:String) {
         // Check input parameters
         guard service.isEmpty == false, account.isEmpty == false else { return }
@@ -170,7 +169,7 @@ class KeychainUtilities : NSObject {
         return
     }
     
-    public class
+    public static
     func logOSStatus(_ status:OSStatus) {
         #if DEBUG
         if #available(iOSApplicationExtension 11.3, *) {
@@ -185,7 +184,7 @@ class KeychainUtilities : NSObject {
 
     
     // MARK: - SSL Certificate Validation
-    public class
+    public static
     func isSSLtransactionValid(inState serverTrust: SecTrust,
                                for domain: String) -> (Bool) {
         // Define policy for validating domain name
@@ -197,7 +196,7 @@ class KeychainUtilities : NSObject {
         return SecTrustEvaluateWithError(serverTrust, nil)
     }
     
-    public class
+    public static
     func isCertKnownForSSLtransaction(_ certificate: SecCertificate,
                                       for domain: String) -> Bool {
         // Get certificate in Keychain (should exist)
@@ -223,7 +222,7 @@ class KeychainUtilities : NSObject {
         return isInKeychain
     }
     
-    public class
+    public static
     func deleteCertificate(for domain: String) {
         // Certificates are stored in the Keychain with label "Piwigo:<host>"
         let query = [kSecClass as String            : kSecClassCertificate,
@@ -233,7 +232,7 @@ class KeychainUtilities : NSObject {
         if status != errSecSuccess { logOSStatus(status) }
     }
     
-    public class
+    public static
     func storeCertificate(_ certificate: SecCertificate, for domain: String) {
         // Certificates are stored in the Keychain with label "Piwigo:<host>"
         let query = [kSecClass as String            : kSecClassCertificate,
@@ -244,7 +243,7 @@ class KeychainUtilities : NSObject {
         if status != errSecSuccess { logOSStatus(status) }
     }
     
-    public class
+    public static
     func getCertificateInfo(_ certificate: SecCertificate, for fomain: String) -> String {
         // Initialise string that will be presented to the user.
         var certString = "(" + NetworkVars.shared.domain()
