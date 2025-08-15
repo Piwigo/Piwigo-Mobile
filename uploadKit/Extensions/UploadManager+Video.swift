@@ -140,7 +140,7 @@ extension UploadManager {
 
             // Determine MD5 checksum
             let error: Error?
-            (upload.md5Sum, error) = originalFileURL.MD5checksum()
+            (upload.md5Sum, error) = originalFileURL.MD5checksum
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: upload, error)

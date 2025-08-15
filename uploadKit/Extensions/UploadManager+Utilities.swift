@@ -69,7 +69,7 @@ extension UploadManager {
         
         // Determine MD5 checksum of image file to upload
         let error: Error?
-        (upload.md5Sum, error) = fileURL.MD5checksum()
+        (upload.md5Sum, error) = fileURL.MD5checksum
          if error != nil {
             // Could not determine the MD5 checksum
             failure(error)
