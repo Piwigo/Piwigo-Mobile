@@ -35,46 +35,8 @@ extension PwgSession
             break
         }
 
-        // Combine percent encoded parameters  d
-        var urlComponents = URLComponents()
-        var queryItems: [URLQueryItem] = []
-        for (key, value) in paramDict {
-            if let valArray = value as? [NSNumber] {
-                let keyArray = key + "[]"
-                valArray.forEach { valNum in
-                    let queryItem = URLQueryItem(name: keyArray, value: valNum.stringValue)
-                    queryItems.append(queryItem)
-                }
-            }
-            else if let valArray = value as? [String] {
-                let keyArray = key + "[]"
-                valArray.forEach { valStr in
-                    // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                    let utf8mb3Str = valStr.utf8mb3Encoded
-                    let encStr = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
-                    let queryItem = URLQueryItem(name: keyArray, value: encStr)
-                    queryItems.append(queryItem)
-                }
-            }
-            else if let valNum = value as? NSNumber {
-                let queryItem = URLQueryItem(name: key, value: valNum.stringValue)
-                queryItems.append(queryItem)
-            }
-            else if let valStr = value as? String, valStr.isEmpty == false {
-                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                let utf8mb3Str = valStr.utf8mb3Encoded
-                let encStr = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
-                let queryItem = URLQueryItem(name: key, value: encStr)
-                queryItems.append(queryItem)
-            }
-            else {
-                let queryItem = URLQueryItem(name: key, value: nil)
-                queryItems.append(queryItem)
-            }
-        }
-        urlComponents.queryItems = queryItems
-        let httpBody = urlComponents.query?.data(using: .utf8)
-        request.httpBody = httpBody
+        // Combine percent encoded parameters
+        request.httpBody = httpBody(for: paramDict)
 
         // Launch the HTTP(S) request
         let task = dataSession.dataTask(with: request) { data, response, error in
@@ -167,8 +129,8 @@ extension PwgSession
         }
         
         // Tell the system how many bytes are expected to be exchanged
-        task.countOfBytesClientExpectsToSend = Int64((httpBody ?? Data()).count +
-                                                        (request.allHTTPHeaderFields ?? [:]).count)
+        task.countOfBytesClientExpectsToSend = Int64((request.httpBody ?? Data()).count +
+                                                     (request.allHTTPHeaderFields ?? [:]).count)
         task.countOfBytesClientExpectsToReceive = countOfBytesClientExpectsToReceive
 
         // Sets the task description from the method
@@ -180,5 +142,47 @@ extension PwgSession
         
         // Execute the task
         task.resume()
+    }
+    
+    private func httpBody(for paramDict: [String: Any]) -> Data?
+    {
+        var urlComponents = URLComponents()
+        var queryItems: [URLQueryItem] = []
+        for (key, value) in paramDict {
+            if let valArray = value as? [NSNumber] {
+                let keyArray = key + "[]"
+                valArray.forEach { valNum in
+                    let queryItem = URLQueryItem(name: keyArray, value: valNum.stringValue)
+                    queryItems.append(queryItem)
+                }
+            }
+            else if let valArray = value as? [String] {
+                let keyArray = key + "[]"
+                valArray.forEach { valStr in
+                    // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+                    let utf8mb3Str = valStr.utf8mb3Encoded
+                    let encStr = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
+                    let queryItem = URLQueryItem(name: keyArray, value: encStr)
+                    queryItems.append(queryItem)
+                }
+            }
+            else if let valNum = value as? NSNumber {
+                let queryItem = URLQueryItem(name: key, value: valNum.stringValue)
+                queryItems.append(queryItem)
+            }
+            else if let valStr = value as? String, valStr.isEmpty == false {
+                // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+                let utf8mb3Str = valStr.utf8mb3Encoded
+                let encStr = utf8mb3Str.addingPercentEncoding(withAllowedCharacters: .pwgURLQueryAllowed) ?? utf8mb3Str
+                let queryItem = URLQueryItem(name: key, value: encStr)
+                queryItems.append(queryItem)
+            }
+            else {
+                let queryItem = URLQueryItem(name: key, value: nil)
+                queryItems.append(queryItem)
+            }
+        }
+        urlComponents.queryItems = queryItems
+        return urlComponents.query?.data(using: .utf8)
     }
 }
