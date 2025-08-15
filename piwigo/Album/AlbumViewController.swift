@@ -314,10 +314,26 @@ class AlbumViewController: UIViewController
         view.backgroundColor = PwgColor.background
         noAlbumLabel.textColor = PwgColor.header
         
-        // Navigation bar title
+        // Navigation bar
+        let navigationBar = navigationController?.navigationBar
+        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
+        ]
+        navigationBar?.titleTextAttributes = attributes
         setTitleViewFromAlbumData()
-        navigationController?.navigationBar.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
-        
+        navigationBar?.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
+
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithTransparentBackground()
+        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        barAppearance.shadowColor = .clear
+        navigationBar?.standardAppearance = barAppearance
+        navigationBar?.compactAppearance = barAppearance
+        navigationBar?.scrollEdgeAppearance = barAppearance
+
         // Buttons appearance
         addButton.layer.shadowColor = PwgColor.shadow.cgColor
         
@@ -663,7 +679,7 @@ class AlbumViewController: UIViewController
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        // Should we update user interface based on the appearance?
+        // Should we update the user interface based on the appearance?
         let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
         if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
             AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
