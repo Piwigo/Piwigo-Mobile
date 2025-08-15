@@ -72,7 +72,7 @@ class AppLockViewController: UIViewController {
         case .verifyPasscode:
             passcodeToVerify = password
         case .unlockApp:
-            passcodeToVerify = AppVars.shared.appLockKey.decrypted()
+            passcodeToVerify = AppVars.shared.appLockKey.decrypted
         }
     }
 

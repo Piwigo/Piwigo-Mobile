@@ -18,7 +18,7 @@ extension String {
         return String(repeating: "0", count: max(0, 8 - key.count)) + key
     }
 
-    func decrypted() -> String {
+    var decrypted: String {
         guard let key = Int64(self, radix: 23) else {
             // No known passscode -> empty string
             return ""
