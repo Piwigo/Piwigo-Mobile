@@ -15,6 +15,7 @@ import CoreData
     - Each instance belongs to a Server.
     - Instances are associated to Images and Upload requests.
  */
+@objc(Tag)
 public class Tag: NSManagedObject {
 
     /**

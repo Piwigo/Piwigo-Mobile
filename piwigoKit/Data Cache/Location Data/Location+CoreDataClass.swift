@@ -17,6 +17,7 @@ import CoreLocation
     - an UUID which is later used to store images in cache,
     - the server path e.g. "mywebsite.com/piwigo".
  */
+@objc(Location)
 public class Location: NSManagedObject {
 
     /**

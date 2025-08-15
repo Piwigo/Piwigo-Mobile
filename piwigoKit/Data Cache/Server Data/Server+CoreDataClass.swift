@@ -16,6 +16,7 @@ import CoreData
     - an UUID which is later used to store images in cache,
     - the server path e.g. "mywebsite.com/piwigo".
  */
+@objc(Server)
 public class Server: NSManagedObject {
 
     /**

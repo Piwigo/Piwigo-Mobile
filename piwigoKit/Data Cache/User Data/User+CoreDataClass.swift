@@ -16,6 +16,7 @@ import CoreData
     - Instances share images whose access is defined by album data.
     - Each instance contains upload requests only belonging to it.
  */
+@objc(User)
 public class User: NSManagedObject {
     
     /**
