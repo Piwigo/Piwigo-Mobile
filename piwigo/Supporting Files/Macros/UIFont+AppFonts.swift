@@ -58,7 +58,7 @@ extension UIFont {
 //        return UIFont(name: "OpenSans", size: 21.0) ?? UIFont.systemFont(ofSize: 21.0)
 //    }
 
-    class func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
+    static func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
         // Check label is not nil
         guard let label = label, let font = label.font else { return 17.0 }
         
