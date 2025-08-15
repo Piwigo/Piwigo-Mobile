@@ -403,7 +403,7 @@ class AppLockViewController: UIViewController {
             }
             
             // Store encrypted passcode
-            AppVars.shared.appLockKey = passcode.encrypted()
+            AppVars.shared.appLockKey = passcode.encrypted
             
             // Return to the Settings view
             if let vc = navigationController?.children.filter({ $0 is LockOptionsViewController}).first {
