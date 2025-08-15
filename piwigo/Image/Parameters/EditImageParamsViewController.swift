@@ -281,7 +281,9 @@ class EditImageParamsViewController: UIViewController
         // Update all images
         let index = 0
         PwgSession.checkSession(ofUser: user) { [self] in
-            updateImageProperties(fromIndex: index)
+            DispatchQueue.main.async { [self] in
+                self.updateImageProperties(fromIndex: index)
+            }
         } failure: { [self] error in
             // Display error
             DispatchQueue.main.async { [self] in
