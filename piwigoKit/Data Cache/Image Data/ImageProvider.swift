@@ -166,24 +166,16 @@ public class ImageProvider: NSObject {
                                 jsonObjectClientExpectsToReceive: CategoriesGetImagesJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and import it into Core Data.
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failed(error)
+                    return
+                }
+                
+                // Import image data into Core Data.
                 do {
-                    // Initialisation
-                    var totalCount = Int64.zero
-                    
-                    // Decode the JSON into codable type CategoriesGetImagesJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(CategoriesGetImagesJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failed(error)
-                        return
-                    }
-                    
-                    // Import the imageJSON into Core Data.
                     if [.rankAscending, .random].contains(sort) {
                         let startRank = Int64(page * perPage)
                         try self.importImages(pwgData.data, inAlbum: albumId,
@@ -193,6 +185,7 @@ public class ImageProvider: NSObject {
                     }
                     
                     // Retrieve total number of images
+                    var totalCount = Int64.zero
                     if albumId == pwgSmartAlbum.favorites.rawValue {
                         totalCount = pwgData.paging?.count ?? Int64.zero
                     } else {
@@ -256,22 +249,17 @@ public class ImageProvider: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 50000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and store image data in cache.
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    failure(error)
+                    return
+                }
+                
+                // Import the imageJSON into Core Data
+                // The provided sort option will not change the rankManual/rankRandom values.
                 do {
-                    // Decode the JSON into codable type ImagesGetInfoJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Import the imageJSON into Core Data
-                    // The provided sort option will not change the rankManual/rankRandom values.
                     try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
                     
                     completion()
@@ -280,7 +268,7 @@ public class ImageProvider: NSObject {
                     // Data cannot be digested
                     failure(error)
                 }
-
+                
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty

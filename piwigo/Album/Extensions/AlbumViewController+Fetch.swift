@@ -256,8 +256,7 @@ extension AlbumViewController
         }
         
         // Returns to login view only when credentials are rejected
-        if [NSURLErrorUserAuthenticationRequired, 401, 403].contains((error as NSError).code) ||
-            NetworkVars.shared.didFailHTTPauthentication {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             // Invalid Piwigo or HTTP credentials
             navigationController?.showHUD(
                 withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
@@ -266,8 +265,7 @@ extension AlbumViewController
                 buttonTarget: self, buttonSelector: #selector(hideLoading),
                 inMode: .text)
         }
-        else if let err = error as? PwgSessionError,
-                err == PwgSessionError.missingParameter {
+        else if let pwgError = error as? PwgSessionError, pwgError.hasMissingParameter {
             // Hide HUD
             navigationController?.hideHUD() { [self] in
                 // End refreshing if needed

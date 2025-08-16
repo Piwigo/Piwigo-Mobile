@@ -24,34 +24,21 @@ public extension PwgSession {
                                 jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and check if the login was successful
-                do {
-                    // Decode the JSON into codable type UsersGetListJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(UsersGetListJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
 #if DEBUG
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        debugPrint(error)
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    debugPrint(error)
 #endif
-                        return
-                    }
-                    
-                    // Update current recentPeriodIndex
-                    if let usersData = pwgData.users.first {
-                       completion(usersData)
-                    }
-                    failure()
+                    return
                 }
-                catch {
-                    // Data cannot be digested
-#if DEBUG
-                    debugPrint(error.localizedDescription)
-#endif
+                
+                // Update current recentPeriodIndex
+                if let usersData = pwgData.users.first {
+                   completion(usersData)
                 }
+                failure()
 
             case .failure:
                 /// - Network communication errors
@@ -78,27 +65,16 @@ public extension PwgSession {
                                 jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and check if the login was successful
-                do {
-                    // Decode the JSON into codable type UsersGetListJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(UsersGetListJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Update current recentPeriodIndex
-                    completion(true)
-                }
-                catch {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
                 }
+                
+                // Update current recentPeriodIndex
+                completion(true)
 
             case .failure(let error):
                 /// - Network communication errors

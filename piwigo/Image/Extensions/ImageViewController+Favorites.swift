@@ -80,8 +80,7 @@ extension ImageViewController
     @MainActor
     private func addToFavoritesError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -150,8 +149,7 @@ extension ImageViewController
     @MainActor
     private func removeFromFavoritesError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }

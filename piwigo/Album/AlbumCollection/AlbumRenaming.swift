@@ -157,8 +157,7 @@ class AlbumRenaming: NSObject
     @MainActor
     private func renameCategoryError(_ error: Error, completion: @escaping (Bool) -> Void) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
             return
         }

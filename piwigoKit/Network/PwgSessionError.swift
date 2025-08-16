@@ -9,6 +9,12 @@
 import Foundation
 
 public enum PwgSessionError: Error {
+    // Error types
+    case decodingFailed(innerError: DecodingError)
+    case invalidStatusCode(statusCode: Int)
+    case requestFailed(innerError: URLError)
+    case otherError(innerError: Error)
+
     // App errors
     case authenticationFailed
     case invalidResponse
@@ -26,29 +32,55 @@ public enum PwgSessionError: Error {
     case wrongJSONobject
 
     // Piwigo server errors
-    case otherError(code: Int, msg: String)
+    case pwgError(code: Int, msg: String)
 }
 
-extension PwgSessionError: Equatable {
-    static public func ==(lhs: PwgSessionError, rhs: PwgSessionError) -> Bool {
-        switch (lhs, rhs) {
-        case (.authenticationFailed, .authenticationFailed),
-             (.invalidResponse, .invalidResponse),
-             (.emptyJSONobject, .emptyJSONobject),
-             (.failedToPrepareDownload, .failedToPrepareDownload),
-             (.incompatiblePwgVersion, .incompatiblePwgVersion),
-             (.invalidCredentials, .invalidCredentials),
-             (.invalidJSONobject, .invalidJSONobject),
-             (.invalidMethod, .invalidMethod),
-             (.invalidParameter, .invalidParameter),
-             (.invalidURL, .invalidURL),
-             (.missingParameter, .missingParameter),
-             (.networkUnavailable, .networkUnavailable),
-             (.unexpectedError, .unexpectedError),
-             (.wrongJSONobject, .wrongJSONobject):
+extension PwgSessionError {
+    // Errors that should lead to a logout
+    public var requiresLogout: Bool {
+        switch self {
+        case .authenticationFailed,
+             .incompatiblePwgVersion,
+             .invalidCredentials,
+             .invalidURL:
             return true
-        case (let .otherError(lhsCode, _), let .otherError(rhsCode, _)):
-            return lhsCode == rhsCode
+        default:
+            return false
+        }
+    }
+    
+    public var failedAuthentication: Bool {
+        switch self {
+        case .authenticationFailed,
+             .invalidCredentials:
+            return true
+        default:
+            return false
+        }
+    }
+
+    public var incompatibleVersion: Bool {
+        switch self {
+        case .incompatiblePwgVersion:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public var pluginMissing: Bool {
+        switch self {
+        case (let .pwgError(code, _)):
+            return code == 501 ? true : false
+        default:
+            return false
+        }
+    }
+    
+    public var hasMissingParameter: Bool {
+        switch self {
+        case .missingParameter:
+            return true
         default:
             return false
         }
@@ -97,7 +129,7 @@ extension PwgSessionError: LocalizedError {
         case .networkUnavailable:
             return NSLocalizedString("internetErrorGeneral_broken",
                                      comment: "Sorry, the communication was broken.\nTry logging in again.")
-        case .otherError(code: let code, msg: let msg):
+        case .pwgError(code: let code, msg: let msg):
             return String(format: "Error %d: ", code) + msg
         
         case .unexpectedError:
@@ -113,12 +145,14 @@ extension PwgSession {
     // Always return an error message, localized or not.
     /// Updated on 23 February 2025 — Piwigo 15.3.0 using BBEdit multi-file search "PwgError"
     public func error(for errorCode: Int, errorMessage: String = "") -> Error {
+        // Check presence of message
         switch errorCode {
         case 400:
             // Messages not translated in Piwigo:
             /// - Unknown request format
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidMethod
+                let errorMsg = PwgSessionError.invalidMethod.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 401:
             // Messages not translated in Piwigo:
@@ -131,7 +165,8 @@ extension PwgSession {
             // Messages translated in Piwigo:
             /// - Webmaster status is required.
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidMethod
+                let errorMsg = PwgSessionError.invalidMethod.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 403:
             // Messages not translated in Piwigo:
@@ -156,7 +191,8 @@ extension PwgSession {
             /// - Your comment has NOT been registered because it did not pass the validation rules
             /// - Webmaster status is required.
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidParameter
+                let errorMsg = PwgSessionError.invalidMethod.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 404:
             // Messages not translated in Piwigo:
@@ -167,14 +203,16 @@ extension PwgSession {
             /// - No format found for the id(s) given
             /// - This image is not associated to this category
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidParameter
+                let errorMsg = PwgSessionError.invalidMethod.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 405:
             // Messages not translated in Piwigo:
             /// - The image (file) is missing
             /// - This method requires HTTP POST
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidMethod
+                let errorMsg = PwgSessionError.invalidMethod.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 500:
             // Messages not translated in Piwigo:
@@ -196,26 +234,30 @@ extension PwgSession {
             /// - … the following categories are unknown:…
             /// - $errors (in pwg.extensions.php)
             if errorMessage.isEmpty {
-                return PwgSessionError.unexpectedError
+                let errorMsg = PwgSessionError.unexpectedError.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 501:   // i.e. WS_ERR_INVALID_METHOD
             // Messages not translated in Piwigo:
             /// - Method name is not valid
             /// - Missing "method" name
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidMethod
+                let errorMsg = PwgSessionError.invalidMethod.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 999:
             // Messages not translated in Piwigo:
             /// - Invalid username/password
             if errorMessage.contains("Invalid username/password") {
-                return PwgSessionError.invalidCredentials
+                let errorMsg = PwgSessionError.invalidCredentials.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 1002:  // i.e. WS_ERR_MISSING_PARAM
             // Messages not translated in Piwigo:
             /// - Missing parameters: …
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidParameter
+                let errorMsg = PwgSessionError.invalidParameter.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         case 1003:  // i.e. WS_ERR_INVALID_PARAM
             // Messages not translated in Piwigo:
@@ -280,11 +322,12 @@ extension PwgSession {
             /// - The passwords do not match
             /// - this login is already used
             if errorMessage.isEmpty {
-                return PwgSessionError.invalidParameter
+                let errorMsg = PwgSessionError.invalidParameter.localizedDescription
+                return PwgSessionError.pwgError(code: errorCode, msg: errorMsg)
             }
         default:
             break
         }
-        return PwgSessionError.otherError(code: errorCode, msg: errorMessage)
+        return PwgSessionError.pwgError(code: errorCode, msg: errorMessage)
     }
 }

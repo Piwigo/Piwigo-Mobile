@@ -225,54 +225,42 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and update image filename if successful.
-                do {
-                    // Decode the JSON into codable type ImagesSetInfoJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        DispatchQueue.main.async {
-                            topViewController?.hideHUD {
-                                topViewController?.dismissPiwigoError(
-                                    withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                                    message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
-                                    errorMessage: error.localizedDescription) { }
-                            }
-                        }
-                        return
-                    }
-
-                    // Successful?
-                    if pwgData.success {
-                        // Filename successfully changed
-                        DispatchQueue.main.async {
-                            topViewController?.updateHUDwithSuccess { [self] in
-                                topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                                    // Adopt new original filename
-                                    imageFile.text = fileName
-                                    
-                                    // Update parent image view
-                                    delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        // Could not change the filename
-                        DispatchQueue.main.async {
-                            self.renameImageFileError(PwgSessionError.unexpectedError, topViewController: topViewController)
-                        }
-                        return
-                    }
-                } catch let error {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     DispatchQueue.main.async {
-                        self.renameImageFileError(error, topViewController: topViewController)
+                        topViewController?.hideHUD {
+                            topViewController?.dismissPiwigoError(
+                                withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
+                                message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
+                                errorMessage: error.localizedDescription) { }
+                        }
                     }
+                    return
+                }
+
+                // Successful?
+                if pwgData.success {
+                    // Filename successfully changed
+                    DispatchQueue.main.async {
+                        topViewController?.updateHUDwithSuccess { [self] in
+                            topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                                // Adopt new original filename
+                                imageFile.text = fileName
+                                
+                                // Update parent image view
+                                delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
+                            }
+                        }
+                    }
+                }
+                else {
+                    // Could not change the filename
+                    DispatchQueue.main.async {
+                        self.renameImageFileError(PwgSessionError.unexpectedError, topViewController: topViewController)
+                    }
+                    return
                 }
                 
             case .failure(let error):

@@ -405,8 +405,7 @@ class SelectCategoryViewController: UIViewController {
     private func didFetchAlbumsWithError(error: Error) {
         navigationController?.hideHUD { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -524,8 +523,7 @@ class SelectCategoryViewController: UIViewController {
     @MainActor
     func showError(_ error: Error?) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }

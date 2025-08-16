@@ -29,35 +29,25 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON if successful.
-                do {
-                    // Decode the JSON into codable type ImageRotateJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(ImageRotateJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Successful?
-                    /// Image data not always immediately available after rotation.
-                    /// We rotate the images stored in cache instead of downloading them.
-                    if pwgData.result {
-                        // Image rotated successfully ► Rotate thumbnails in cache
-                        rotateThumbnailsOfImage(image, by: angle)
-                        completion()
-                    }
-                    else {
-                        // Could not rotate image
-                        failure(PwgSessionError.unexpectedError)
-                    }
-                } catch {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
+                }
+                
+                // Successful?
+                /// Image data not always immediately available after rotation.
+                /// We rotate the images stored in cache instead of downloading them.
+                if pwgData.result {
+                    // Image rotated successfully ► Rotate thumbnails in cache
+                    rotateThumbnailsOfImage(image, by: angle)
+                    completion()
+                }
+                else {
+                    // Could not rotate image
+                    failure(PwgSessionError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -84,32 +74,22 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesSetCategoryJSON.self,
                                 countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON and delete image from cache if successful.
-                do {
-                    // Decode the JSON into codable type ImagesSetCategoryJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(ImagesSetCategoryJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Successful?
-                    if pwgData.success {
-                        // Images associated/dissociated/moved successfully
-                        completion()
-                    }
-                    else {
-                        // Could not associate/dissociate/move images
-                        failure(PwgSessionError.unexpectedError as Error)
-                    }
-                } catch {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
+                }
+                
+                // Successful?
+                if pwgData.success {
+                    // Images associated/dissociated/moved successfully
+                    completion()
+                }
+                else {
+                    // Could not associate/dissociate/move images
+                    failure(PwgSessionError.unexpectedError as Error)
                 }
 
             case .failure(let error):
@@ -134,34 +114,24 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON and delete image from cache if successful.
-                do {
-                    // Decode the JSON into codable type ImagesDeleteJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(ImagesDeleteJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Successful?
-                    if pwgData.success {
-                        // Images deleted successfully
-                        /// We may check here that the number returned matches the number of images to delete
-                        /// and return an error to the user.
-                        completion()
-                    }
-                    else {
-                        // Could not delete images
-                        failure(PwgSessionError.unexpectedError)
-                    }
-                } catch {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
+                }
+                
+                // Successful?
+                if pwgData.success {
+                    // Images deleted successfully
+                    /// We may check here that the number returned matches the number of images to delete
+                    /// and return an error to the user.
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    failure(PwgSessionError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -184,33 +154,22 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and add image to favorites.
-                do {
-                    // Decode the JSON into codable type FavoritesAddRemoveJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Successful?
-                    if pwgData.success {
-                        // Images successfully added to user's favorites
-                        completion()
-                    }
-                    else {
-                        // Could not delete images
-                        failure(PwgSessionError.unexpectedError)
-                    }
-                } catch {
-                    // Data cannot be digested
-                    let error = error
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
+                }
+                
+                // Successful?
+                if pwgData.success {
+                    // Images successfully added to user's favorites
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    failure(PwgSessionError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -233,32 +192,22 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and remove image from faborites.
-                do {
-                    // Decode the JSON into codable type FavoritesAddRemoveJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Successful?
-                    if pwgData.success {
-                        // Images successfully added to user's favorites
-                        completion()
-                    }
-                    else {
-                        // Could not delete images
-                        failure(PwgSessionError.unexpectedError)
-                    }
-                } catch {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
+                }
+                
+                // Successful?
+                if pwgData.success {
+                    // Images successfully added to user's favorites
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    failure(PwgSessionError.unexpectedError)
                 }
 
             case .failure(let error):

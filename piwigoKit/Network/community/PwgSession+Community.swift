@@ -21,34 +21,23 @@ public extension PwgSession {
                     jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
                     countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and retrieve the status
-                do {
-                    // Decode the JSON into codable type CommunitySessionGetStatusJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // Update user's status
-                    guard pwgData.realUser.isEmpty == false,
-                          let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
-                    else {
-                        failure(UserError.unknownUserStatus)
-                        return
-                    }
-                    NetworkVars.shared.userStatus = userStatus
-                    completion()
-                }
-                catch {
-                    // Data cannot be digested
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
                 }
+                
+                // Update user's status
+                guard pwgData.realUser.isEmpty == false,
+                      let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
+                else {
+                    failure(UserError.unknownUserStatus)
+                    return
+                }
+                NetworkVars.shared.userStatus = userStatus
+                completion()
 
             case .failure(let error):
                 /// - Network communication errors

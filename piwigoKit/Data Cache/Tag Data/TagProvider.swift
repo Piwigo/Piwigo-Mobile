@@ -45,21 +45,16 @@ public class TagProvider: NSObject {
                                 jsonObjectClientExpectsToReceive: TagJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and import it into Core Data.
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    completionHandler(error)
+                    return
+                }
+
+                // Import tag data into Core Data.
                 do {
-                    // Decode the JSON into codable type TagJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(TagJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        completionHandler(error)
-                        return
-                    }
-
-                    // Import the tagJSON into Core Data.
                     try self.importTags(from: pwgData.data, asAdmin: asAdmin)
 
                 } catch {
@@ -259,38 +254,28 @@ public class TagProvider: NSObject {
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
                                 countOfBytesClientExpectsToReceive: 3000) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and import it into Core Data.
-                do {
-                    // Decode the JSON into codable type TagJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(TagAddJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        completionHandler(error)
-                        return
-                    }
-
-                    // Import the tagJSON into Core Data.
-                    guard let tagId = pwgData.data.id else {
-                        completionHandler(TagError.missingData)
-                        return
-                    }
-                    let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
-                                               name: name.utf8mb4Encoded,
-                                               lastmodified: "", counter: 0, url_name: "", url: "")
-
-                    // Import the new tag in a private queue context.
-                    if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
-                        completionHandler(nil)
-                    } else {
-                        completionHandler(TagError.creationError)
-                    }
-                } catch {
-                    // Alert the user if data cannot be digested.
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     completionHandler(error)
+                    return
+                }
+
+                // Import the tagJSON into Core Data.
+                guard let tagId = pwgData.data.id else {
+                    completionHandler(TagError.missingData)
+                    return
+                }
+                let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
+                                           name: name.utf8mb4Encoded,
+                                           lastmodified: "", counter: 0, url_name: "", url: "")
+
+                // Import the new tag in a private queue context.
+                if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
+                    completionHandler(nil)
+                } else {
+                    completionHandler(TagError.creationError)
                 }
 
             case .failure(let error):

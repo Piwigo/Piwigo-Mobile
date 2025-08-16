@@ -114,8 +114,7 @@ extension AlbumViewController
     @MainActor
     private func favoriteError(_ error: Error, contextually: Bool) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -222,8 +221,7 @@ extension AlbumViewController
     @MainActor
     private func unfavoriteError(_ error: Error, contextually: Bool) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }

@@ -21,25 +21,16 @@ public extension PwgSession {
                     jsonObjectClientExpectsToReceive: HistoryLogJSON.self,
                     countOfBytesClientExpectsToReceive: pwgHistoryLogBytes) { result in
             switch result {
-            case .success(let jsonData):
-                do {
-                    // Decode the JSON into codable type HistoryLogJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(HistoryLogJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        // Will retry later
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failure(error)
-                        return
-                    }
-
-                    completion()
-                }
-                catch {
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    // Will retry later
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
                     failure(error)
+                    return
                 }
+
+                completion()
                 
             case .failure(let error):
                 /// - Network communication errors

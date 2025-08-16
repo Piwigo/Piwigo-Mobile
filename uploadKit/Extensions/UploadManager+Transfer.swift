@@ -264,7 +264,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = PwgSessionError.otherError(code: error.code, msg: msg)
+            let err = PwgSessionError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -390,7 +390,7 @@ extension UploadManager {
                 }
                 else if let httpResponse = task.response as? HTTPURLResponse {
                     let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                    let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: msg)
+                    let error = PwgSessionError.pwgError(code: httpResponse.statusCode, msg: msg)
                     if (400...499).contains(httpResponse.statusCode) {
                         upload.setState(.uploadingFail, error: error, save: false)
                     } else {
@@ -477,9 +477,10 @@ extension UploadManager {
                 }
                 return
             }
+            
+            // Filter returned data
             var jsonData = data
-            guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self,
-                                                 method: pwgImagesUpload) else {
+            guard jsonData.extractingBalancedBraces() else {
                 // Update upload request status
                 let dataStr = String(decoding: data, as: UTF8.self)
                 if #available(iOSApplicationExtension 14.0, *) {
@@ -590,7 +591,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = PwgSessionError.otherError(code: error.code, msg: msg)
+            let err = PwgSessionError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -708,7 +709,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = PwgSessionError.otherError(code: error.code, msg: msg)
+            let err = PwgSessionError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -905,7 +906,7 @@ extension UploadManager {
             }
             else if let httpResponse = task.response as? HTTPURLResponse {
                 let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: msg)
+                let error = PwgSessionError.pwgError(code: httpResponse.statusCode, msg: msg)
                 if (400...499).contains(httpResponse.statusCode) {
                     upload.setState(.uploadingFail, error: error, save: false)
                 } else {
@@ -997,8 +998,7 @@ extension UploadManager {
             return
         }
         var jsonData = data
-        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self,
-                                             method: pwgImagesUploadAsync) else {
+        guard jsonData.extractingBalancedBraces() else {
             // Update upload request status
             let dataStr = String(decoding: data, as: UTF8.self)
             if #available(iOSApplicationExtension 14.0, *) {

@@ -188,101 +188,7 @@ extension Data {
     
     
     // MARK: - Piwgo Response Checker
-    // Clean and check the response returned by the server
-    public mutating func isPiwigoResponseValid<T: Decodable>(for type: T.Type, method: String) -> Bool {
-        // Is this an empty object?
-        if self.isEmpty { return false }
-
-        // Is this a valid JSON object?
-        let decoder = JSONDecoder()
-        if let _ = try? decoder.decode(type, from: self) {
-            // Next line for debugging only
-//            self.saveInvalidJSON(for: method)
-            return true
-        }
-        
-        // Store the invalid JSON data for helping user debugging issues
-        self.saveInvalidJSON(for: method)
-        
-        // Remove HTML data located
-        /// - before the first opening curly brace
-        /// - after the last closing curly brace
-        let dataStr = String(decoding: self, as: UTF8.self)
-        var filteredDataStr = ""
-        if let openingCBindex = dataStr.firstIndex(of: "{"),
-           let closingCBIndex = dataStr.lastIndex(of: "}") {
-            filteredDataStr = String(dataStr[openingCBindex...closingCBIndex])
-        } else {
-            // Did not find an opening curly brace
-            return false
-        }
-
-        // Is this now a valid JSON object?
-        if let filteredData = filteredDataStr.data(using: String.Encoding.utf8),
-           let _ = try? decoder.decode(type, from: filteredData) {
-            self = filteredData
-            return true
-        }
-
-        // Loop over the possible blocks between curly braces
-        repeat {
-            // Look for the first closing curly brace at the same level
-            // and extract the block of data in between the curly braces.
-            var blockStr = ""
-            var level:Int = 0
-            for (index, char) in filteredDataStr.enumerated() {
-                if char == "{" { level += 1 }
-                if char == "}" { level -= 1 }
-                if level == 0 {
-                    // Found "}" of same level -> extract object
-                    let strIndex = dataStr.index(filteredDataStr.startIndex, offsetBy: index)
-                    blockStr = String(filteredDataStr[...strIndex])
-                    break
-                }
-            }
-            
-            // Did we identified a block of data?
-            if (level != 0) || blockStr.isEmpty {
-                // No -> Remove the current opening curly brace
-                let newDataStr = String(filteredDataStr.dropFirst())
-                
-                // Look for the next opening curly brace
-                if let openingCBindex = newDataStr.firstIndex(of: "{"),
-                   let closingCBIndex = newDataStr.lastIndex(of: "}") {
-                    // Look for the next block of data
-                    filteredDataStr = String(newDataStr[openingCBindex...closingCBIndex])
-                } else {
-                    // Did not find an opening curly brace
-                    filteredDataStr = ""
-                }
-                continue
-            }
-            
-            // Is this block a valid JSON object?
-            if let blockData = blockStr.data(using: String.Encoding.utf8),
-               let _ = try? decoder.decode(type, from: blockData) {
-                self = blockData
-                return true
-            }
-
-            // No -> Remove the current opening curly brace
-            let newDataStr = String(filteredDataStr.dropFirst())
-            if let openingCBindex = newDataStr.firstIndex(of: "{"),
-               let closingCBIndex = newDataStr.lastIndex(of: "}") {
-                // Look for the next block of data
-                filteredDataStr = String(newDataStr[openingCBindex...closingCBIndex])
-            } else {
-                // Did not find an opening curly brace
-                filteredDataStr = ""
-                continue
-            }
-        } while filteredDataStr.isEmpty == false
-        
-        self = Data()
-        return false
-    }
-    
-    private func saveInvalidJSON(for method: String) {
+    func saveInvalidJSON(for method: String) {
         // Prepare file name from current date (UTC time)
         let pwgMethod = method.replacingOccurrences(of: "format=json&method=", with: "")
         let fileName = JSONprefix + DateUtilities.logsDateFormatter.string(from: Date()) + " " + pwgMethod + JSONextension
@@ -295,5 +201,41 @@ extension Data {
             try? FileManager.default.removeItem(atPath: filePath)
         }
         FileManager.default.createFile(atPath: filePath, contents: self)
+    }
+
+    public mutating func extractingBalancedBraces() -> Bool {
+        // Get data as string
+        var dataStr = String(decoding: self, as: UTF8.self)
+
+        // Look for the first opening brace
+        guard let firstBrace = dataStr.firstIndex(of: "{")
+        else { return false }
+        
+        var braceCount = 0
+        var endIndex: String.Index?
+        
+        for (index, char) in dataStr[firstBrace...].enumerated() {
+            let currentIndex = dataStr.index(firstBrace, offsetBy: index)
+            
+            if char == "{" {
+                braceCount += 1
+            } else if char == "}" {
+                braceCount -= 1
+                if braceCount == 0 {
+                    endIndex = dataStr.index(after: currentIndex)
+                    break
+                }
+            }
+        }
+        
+        if let end = endIndex {
+            let filteredDataStr = String(dataStr[firstBrace..<end])
+            if let filteredData = filteredDataStr.data(using: String.Encoding.utf8) {
+                self = filteredData
+                return true
+            }
+        }
+        
+        return false
     }
 }

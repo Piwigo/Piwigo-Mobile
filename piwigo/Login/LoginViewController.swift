@@ -522,13 +522,11 @@ class LoginViewController: UIViewController {
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
-        if let pwgError = error as? PwgSessionError,
-           pwgError == PwgSessionError.incompatiblePwgVersion {
+        if let pwgError = error as? PwgSessionError, pwgError.incompatibleVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         }
-        else if let pwgError = error as? PwgSessionError,
-                pwgError == PwgSessionError.invalidCredentials {
+        else if let pwgError = error as? PwgSessionError, pwgError.failedAuthentication {
             title = NSLocalizedString("loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
         }

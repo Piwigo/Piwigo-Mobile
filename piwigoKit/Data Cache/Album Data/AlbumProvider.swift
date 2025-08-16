@@ -147,20 +147,16 @@ public class AlbumProvider: NSObject {
                                 jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and import it into Core Data.
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    completion(error)
+                    return
+                }
+                
+                // Import album data into Core Data.
                 do {
-                    // Decode the JSON into codable type CategoriesGetListJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        completion(error)
-                        return
-                    }
-                    
                     // Update albums if Community installed (not needed for admins)
                     if user.hasAdminRights == false,
                        NetworkVars.shared.usesCommunityPluginV29 {
@@ -200,13 +196,9 @@ public class AlbumProvider: NSObject {
                                 jsonObjectClientExpectsToReceive: CommunityCategoriesGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object and return the Community albums
+            case .success(let pwgData):
+                // Import Community albums into Core Data.
                 do {
-                    // Decode the JSON into codable type CommunityCategoriesGetListJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
-                    
                     // Piwigo error?
                     if pwgData.errorCode != 0 {
                         let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)

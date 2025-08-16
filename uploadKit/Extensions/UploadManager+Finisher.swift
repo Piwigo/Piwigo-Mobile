@@ -97,31 +97,22 @@ extension UploadManager {
                 UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
             }
             switch result {
-            case .success(let jsonData):
-                // Decode the JSON object
-                do {
-                    // Decode the JSON into codable type ImagesSetInfoJSON.
-                    let pwgData = try self.decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                        self.didFinishTransfer(for: upload, error: error)
-                        return
-                    }
-
-                    // Successful?
-                    if pwgData.success {
-                        // Image successfully uploaded and set
-                        self.didFinishTransfer(for: upload, error: nil)
-                    }
-                    else {
-                        // Could not set image parameters, upload still ready for finish
-                        self.didFinishTransfer(for: upload, error: PwgSessionError.unexpectedError)
-                    }
-                } catch {
-                    // Data cannot be digested, upload still ready for finish
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    let error = PwgSessionError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     self.didFinishTransfer(for: upload, error: error)
+                    return
+                }
+
+                // Successful?
+                if pwgData.success {
+                    // Image successfully uploaded and set
+                    self.didFinishTransfer(for: upload, error: nil)
+                }
+                else {
+                    // Could not set image parameters, upload still ready for finish
+                    self.didFinishTransfer(for: upload, error: PwgSessionError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -175,35 +166,26 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
-                                countOfBytesClientExpectsToReceive: 2500) { [self] result in
+                                countOfBytesClientExpectsToReceive: 2500) { result in
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("processImages() in \(queueName(), privacy: .public) after calling postRequest")
             }
             switch result {
-            case .success(let jsonData):
-                do {
-                    // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                    let pwgData = try self.decoder.decode(ImagesUploadCompletedJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        // Will retry later
-                        let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                        completionHandler(error)
-                        return
-                    }
-
-                    if pwgData.success {
-                        completionHandler(nil)
-                    } else {
-                        completionHandler(UploadError.wrongJSONobject)
-                    }
-                }
-                catch {
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
                     // Will retry later
+                    let error = PwgSessionError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     completionHandler(error)
+                    return
                 }
-
+                
+                if pwgData.success {
+                    completionHandler(nil)
+                } else {
+                    completionHandler(UploadError.wrongJSONobject)
+                }
+                
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -248,39 +230,30 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { [self] result in
+                                countOfBytesClientExpectsToReceive: 1000) { result in
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public) after calling postRequest")
             }
             switch result {
-            case .success(let jsonData):
-                do {
-                    // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                    let pwgData = try self.decoder.decode(CommunityImagesUploadCompletedJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        // Will retry later
-                        let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                        debugPrint("••> moderateImages(): \(error.localizedDescription)")
-                        completionHandler(false, [])
-                        return
-                    }
-
-                    // Return validated image IDs
-                    var validatedIDs = [Int64]()
-                    pwgData.data.forEach { (pendingData) in
-                        if let imageIDstr = pendingData.id, let imageID = Int64(imageIDstr),
-                           let pendingState = pendingData.state, pendingState == "validated" {
-                            validatedIDs.append(imageID)
-                        }
-                    }
-                    completionHandler(true, validatedIDs)
-                }
-                catch {
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
                     // Will retry later
+                    let error = PwgSessionError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    debugPrint("••> moderateImages(): \(error.localizedDescription)")
                     completionHandler(false, [])
-                 }
+                    return
+                }
+
+                // Return validated image IDs
+                var validatedIDs = [Int64]()
+                pwgData.data.forEach { (pendingData) in
+                    if let imageIDstr = pendingData.id, let imageID = Int64(imageIDstr),
+                       let pendingState = pendingData.state, pendingState == "validated" {
+                        validatedIDs.append(imageID)
+                    }
+                }
+                completionHandler(true, validatedIDs)
 
             case .failure:
                 /// - Network communication errors

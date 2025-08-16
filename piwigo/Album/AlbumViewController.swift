@@ -803,9 +803,7 @@ class AlbumViewController: UIViewController
                 self.collectionView?.refreshControl?.endRefreshing()
                 
                 // Session logout required?
-                if let pwgError = error as? PwgSessionError,
-                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                    .contains(pwgError) {
+                if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                     return
                 }
