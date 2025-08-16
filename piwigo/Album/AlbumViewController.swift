@@ -823,6 +823,8 @@ class AlbumViewController: UIViewController
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
             debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId))")
+            // End animated refresh if needed
+            self.collectionView?.refreshControl?.endRefreshing()
             return
         }
         
