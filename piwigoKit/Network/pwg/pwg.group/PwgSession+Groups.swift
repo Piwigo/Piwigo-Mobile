@@ -17,37 +17,41 @@ public extension PwgSession {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgGroupsGetList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: GroupsGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: 10800) { jsonData in
-            // Decode the JSON object and check if the login was successful
-            do {
-                // Decode the JSON into codable type GroupsGetListJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(GroupsGetListJSON.self, from: jsonData)
-                
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
+                                countOfBytesClientExpectsToReceive: 10800) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and check if the login was successful
+                do {
+                    // Decode the JSON into codable type GroupsGetListJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(GroupsGetListJSON.self, from: jsonData)
+                    
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
 #if DEBUG
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    debugPrint(error)
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        debugPrint(error)
 #endif
-                    return
+                        return
+                    }
+                    
+                    // Update current recentPeriodIndex
+                    completion(pwgData.groups)
                 }
-                
-                // Update current recentPeriodIndex
-                completion(pwgData.groups)
-            }
-            catch {
-                // Data cannot be digested
+                catch {
+                    // Data cannot be digested
 #if DEBUG
-                debugPrint(error.localizedDescription)
+                    debugPrint(error.localizedDescription)
 #endif
+                }
+
+            case .failure:
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                /// -> nothing presented in the footer
+                failure()
             }
-        } failure: { _ in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            /// -> nothing presented in the footer
-            failure()
         }
     }
 }

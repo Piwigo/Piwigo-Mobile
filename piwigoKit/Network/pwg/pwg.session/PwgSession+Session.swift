@@ -27,32 +27,36 @@ public extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionLogin, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { jsonData in
-            // Decode the JSON object and check if the login was successful
-            do {
-                // Decode the JSON into codable type SessionLoginJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(SessionLoginJSON.self, from: jsonData)
-                
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
-                    return
+                    countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and check if the login was successful
+                do {
+                    // Decode the JSON into codable type SessionLoginJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(SessionLoginJSON.self, from: jsonData)
+                    
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failure(error)
+                        return
+                    }
+                    
+                    // Login successful
+                    completion()
                 }
-                
-                // Login successful
-                completion()
-            }
-            catch {
-                // Data cannot be digested
+                catch {
+                    // Data cannot be digested
+                    failure(error)
+                }
+
+            case .failure (let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
@@ -61,145 +65,149 @@ public extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { jsonData in
-            // Decode the JSON object and retrieve the status
-            do {
-                // Decode the JSON into codable type SessionGetStatusJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(SessionGetStatusJSON.self, from: jsonData)
+                    countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and retrieve the status
+                do {
+                    // Decode the JSON into codable type SessionGetStatusJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(SessionGetStatusJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
-                    return
-                }
-                
-                // No status returned?
-                guard let data = pwgData.data else {
-                    failure(PwgSessionError.authenticationFailed)
-                    return
-                }
-
-                // Update Piwigo token
-                if let pwgToken = data.pwgToken {
-                    NetworkVars.shared.pwgToken = pwgToken
-                }
-                
-                // Default language
-                NetworkVars.shared.language = data.language ?? ""
-                
-                // Piwigo server version should be of format 1.2.3
-                var versionStr = data.version ?? ""
-                let components = versionStr.components(separatedBy: ".")
-                switch components.count {
-                    case 1:     // Version of type 1
-                    versionStr.append(".0.0")
-                    case 2:     // Version of type 1.2
-                    versionStr.append(".0")
-                    default:
-                        break
-                }
-                NetworkVars.shared.pwgVersion = versionStr
-
-                // Community users cannot upload with uploadAsync with Piwigo 11.x
-                if NetworkVars.shared.usesCommunityPluginV29,
-                   NetworkVars.shared.userStatus == pwgUserStatus.normal,
-                   "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
-                   "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
-                    NetworkVars.shared.usesUploadAsync = false
-                }
-
-                // Retrieve charset used by the Piwigo server
-                let charset = (data.charset ?? "UTF-8").uppercased()
-                switch charset {
-                case "UNICODE":
-                    NetworkVars.shared.stringEncoding = String.Encoding.unicode.rawValue
-                case "UNICODEFFFE":
-                    NetworkVars.shared.stringEncoding = String.Encoding.utf16BigEndian.rawValue
-                case "UTF-8":
-                    NetworkVars.shared.stringEncoding = String.Encoding.utf8.rawValue
-                case "UTF-16":
-                    NetworkVars.shared.stringEncoding = String.Encoding.utf16.rawValue
-                case "UTF-32":
-                    NetworkVars.shared.stringEncoding = String.Encoding.utf32.rawValue
-                case "ISO-2022-JP":
-                    NetworkVars.shared.stringEncoding = String.Encoding.iso2022JP.rawValue
-                case "ISO-8859-1":
-                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1252.rawValue
-                case "ISO-8859-3":
-                    NetworkVars.shared.stringEncoding = String.Encoding.isoLatin1.rawValue
-                case "CP870":
-                    NetworkVars.shared.stringEncoding = String.Encoding.isoLatin2.rawValue
-                case "MACINTOSH":
-                    NetworkVars.shared.stringEncoding = String.Encoding.macOSRoman.rawValue
-                case "SHIFT-JIS":
-                    NetworkVars.shared.stringEncoding = String.Encoding.shiftJIS.rawValue
-                case "WINDOWS-1250":
-                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1250.rawValue
-                case "WINDOWS-1251":
-                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1251.rawValue
-                case "WINDOWS-1252":
-                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1252.rawValue
-                case "WINDOWS-1253":
-                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1253.rawValue
-                case "WINDOWS-1254":
-                    NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1254.rawValue
-                case "X-EUC":
-                    NetworkVars.shared.stringEncoding = String.Encoding.japaneseEUC.rawValue
-                case "US-ASCII":
-                    NetworkVars.shared.stringEncoding = String.Encoding.ascii.rawValue
-                default:
-                    NetworkVars.shared.stringEncoding = String.Encoding.utf8.rawValue
-                }
-
-                // Upload chunk size is null if not provided by server
-                if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
-                    UploadVars.shared.uploadChunkSize = uploadChunkSize
-                } else {
-                    UploadVars.shared.uploadChunkSize = 500    // i.e. 500 ko
-                }
-
-                // Images and videos can be uploaded if their file types are found.
-                // The iPhone creates mov files that will be uploaded in mp4 format.
-                NetworkVars.shared.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
-                
-                // User rights are determined by Community extension (if installed)
-                if let status = data.userStatus, status.isEmpty == false,
-                   let userStatus = pwgUserStatus(rawValue: status) {
-                    if NetworkVars.shared.usesCommunityPluginV29 == false {
-                        NetworkVars.shared.userStatus = userStatus
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failure(error)
+                        return
                     }
-                } else {
-                    failure(UserError.unknownUserStatus)
-                    return
+                    
+                    // No status returned?
+                    guard let data = pwgData.data else {
+                        failure(PwgSessionError.authenticationFailed)
+                        return
+                    }
+
+                    // Update Piwigo token
+                    if let pwgToken = data.pwgToken {
+                        NetworkVars.shared.pwgToken = pwgToken
+                    }
+                    
+                    // Default language
+                    NetworkVars.shared.language = data.language ?? ""
+                    
+                    // Piwigo server version should be of format 1.2.3
+                    var versionStr = data.version ?? ""
+                    let components = versionStr.components(separatedBy: ".")
+                    switch components.count {
+                        case 1:     // Version of type 1
+                        versionStr.append(".0.0")
+                        case 2:     // Version of type 1.2
+                        versionStr.append(".0")
+                        default:
+                            break
+                    }
+                    NetworkVars.shared.pwgVersion = versionStr
+
+                    // Community users cannot upload with uploadAsync with Piwigo 11.x
+                    if NetworkVars.shared.usesCommunityPluginV29,
+                       NetworkVars.shared.userStatus == pwgUserStatus.normal,
+                       "11.0.0".compare(versionStr, options: .numeric) != .orderedDescending,
+                       "12.0.0".compare(versionStr, options: .numeric) != .orderedAscending {
+                        NetworkVars.shared.usesUploadAsync = false
+                    }
+
+                    // Retrieve charset used by the Piwigo server
+                    let charset = (data.charset ?? "UTF-8").uppercased()
+                    switch charset {
+                    case "UNICODE":
+                        NetworkVars.shared.stringEncoding = String.Encoding.unicode.rawValue
+                    case "UNICODEFFFE":
+                        NetworkVars.shared.stringEncoding = String.Encoding.utf16BigEndian.rawValue
+                    case "UTF-8":
+                        NetworkVars.shared.stringEncoding = String.Encoding.utf8.rawValue
+                    case "UTF-16":
+                        NetworkVars.shared.stringEncoding = String.Encoding.utf16.rawValue
+                    case "UTF-32":
+                        NetworkVars.shared.stringEncoding = String.Encoding.utf32.rawValue
+                    case "ISO-2022-JP":
+                        NetworkVars.shared.stringEncoding = String.Encoding.iso2022JP.rawValue
+                    case "ISO-8859-1":
+                        NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1252.rawValue
+                    case "ISO-8859-3":
+                        NetworkVars.shared.stringEncoding = String.Encoding.isoLatin1.rawValue
+                    case "CP870":
+                        NetworkVars.shared.stringEncoding = String.Encoding.isoLatin2.rawValue
+                    case "MACINTOSH":
+                        NetworkVars.shared.stringEncoding = String.Encoding.macOSRoman.rawValue
+                    case "SHIFT-JIS":
+                        NetworkVars.shared.stringEncoding = String.Encoding.shiftJIS.rawValue
+                    case "WINDOWS-1250":
+                        NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1250.rawValue
+                    case "WINDOWS-1251":
+                        NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1251.rawValue
+                    case "WINDOWS-1252":
+                        NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1252.rawValue
+                    case "WINDOWS-1253":
+                        NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1253.rawValue
+                    case "WINDOWS-1254":
+                        NetworkVars.shared.stringEncoding = String.Encoding.windowsCP1254.rawValue
+                    case "X-EUC":
+                        NetworkVars.shared.stringEncoding = String.Encoding.japaneseEUC.rawValue
+                    case "US-ASCII":
+                        NetworkVars.shared.stringEncoding = String.Encoding.ascii.rawValue
+                    default:
+                        NetworkVars.shared.stringEncoding = String.Encoding.utf8.rawValue
+                    }
+
+                    // Upload chunk size is null if not provided by server
+                    if let uploadChunkSize = data.uploadChunkSize, uploadChunkSize != 0 {
+                        UploadVars.shared.uploadChunkSize = uploadChunkSize
+                    } else {
+                        UploadVars.shared.uploadChunkSize = 500    // i.e. 500 ko
+                    }
+
+                    // Images and videos can be uploaded if their file types are found.
+                    // The iPhone creates mov files that will be uploaded in mp4 format.
+                    NetworkVars.shared.serverFileTypes = data.uploadFileTypes ?? "jpg,jpeg,png,gif"
+                    
+                    // User rights are determined by Community extension (if installed)
+                    if let status = data.userStatus, status.isEmpty == false,
+                       let userStatus = pwgUserStatus(rawValue: status) {
+                        if NetworkVars.shared.usesCommunityPluginV29 == false {
+                            NetworkVars.shared.userStatus = userStatus
+                        }
+                    } else {
+                        failure(UserError.unknownUserStatus)
+                        return
+                    }
+
+                    // Retrieve the list of available sizes
+                    NetworkVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
+                    NetworkVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
+                    NetworkVars.shared.hasXXSmallSizeImages = data.imageSizes?.contains("2small") ?? false
+                    NetworkVars.shared.hasXSmallSizeImages  = data.imageSizes?.contains("xsmall") ?? false
+                    NetworkVars.shared.hasSmallSizeImages   = data.imageSizes?.contains("small") ?? false
+                    NetworkVars.shared.hasMediumSizeImages  = data.imageSizes?.contains("medium") ?? false
+                    NetworkVars.shared.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
+                    NetworkVars.shared.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
+                    NetworkVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
+                    
+                    // Should the app log visits and downloads? (since Piwigo 14)
+                    NetworkVars.shared.saveVisits = data.saveVisits ?? false
+
+                    completion(data.userName ?? "")
+                }
+                catch {
+                    // Data cannot be digested
+                    failure(error)
                 }
 
-                // Retrieve the list of available sizes
-                NetworkVars.shared.hasSquareSizeImages  = data.imageSizes?.contains("square") ?? false
-                NetworkVars.shared.hasThumbSizeImages   = data.imageSizes?.contains("thumb") ?? false
-                NetworkVars.shared.hasXXSmallSizeImages = data.imageSizes?.contains("2small") ?? false
-                NetworkVars.shared.hasXSmallSizeImages  = data.imageSizes?.contains("xsmall") ?? false
-                NetworkVars.shared.hasSmallSizeImages   = data.imageSizes?.contains("small") ?? false
-                NetworkVars.shared.hasMediumSizeImages  = data.imageSizes?.contains("medium") ?? false
-                NetworkVars.shared.hasLargeSizeImages   = data.imageSizes?.contains("large") ?? false
-                NetworkVars.shared.hasXLargeSizeImages  = data.imageSizes?.contains("xlarge") ?? false
-                NetworkVars.shared.hasXXLargeSizeImages = data.imageSizes?.contains("xxlarge") ?? false
-                
-                // Should the app log visits and downloads? (since Piwigo 14)
-                NetworkVars.shared.saveVisits = data.saveVisits ?? false
-
-                completion(data.userName ?? "")
-            }
-            catch {
-                // Data cannot be digested
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 
@@ -211,32 +219,36 @@ public extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { jsonData in
-            // Decode the JSON object and check if the logout was successful
-            do {
-                // Decode the JSON into codable type SessionLogoutJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
+                    countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and check if the logout was successful
+                do {
+                    // Decode the JSON into codable type SessionLogoutJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failure(error)
+                        return
+                    }
+
+                    // Logout successful
+                    completion()
+                }
+                catch {
+                    // Data cannot be digested
                     failure(error)
-                    return
                 }
 
-                // Logout successful
-                completion()
-            }
-            catch {
-                // Data cannot be digested
+            case .failure (let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

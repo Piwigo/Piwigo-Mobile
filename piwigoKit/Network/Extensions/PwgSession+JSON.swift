@@ -14,8 +14,7 @@ extension PwgSession
     public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
                                           jsonObjectClientExpectsToReceive: T.Type,
                                           countOfBytesClientExpectsToReceive: Int64,
-                                          success: @escaping (Data) -> Void,
-                                          failure: @escaping (Error) -> Void) {
+                                          completion: @escaping (Result<Data, Error>) -> Void) {
         // Create POST request
         let url = URL(string: NetworkVars.shared.service + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
@@ -40,92 +39,63 @@ extension PwgSession
 
         // Launch the HTTP(S) request
         let task = dataSession.dataTask(with: request) { data, response, error in
-            // Transaction completed?
-            guard let httpResponse = response as? HTTPURLResponse,
-                (200...299).contains(httpResponse.statusCode) else {
-                // Transaction error
-                guard let error = error else {
-                    // No communication error returned,
-                    // so Piwigo returned an error to be handled by the caller.
-                    guard var jsonData = data, jsonData.isEmpty == false else {
-                        // Empty JSON data
-                        guard let httpResponse = response as? HTTPURLResponse else {
-                            // Nothing returned
-                            failure(PwgSessionError.emptyJSONobject)
-                            return
-                        }
-                        
-                        // Return error code
-                        let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                        let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: errorMessage)
-                        failure(error)
-                        return
-                    }
-
-                    // Data returned, is this a valid JSON object?
-                    guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self,
-                                                         method: method) else {
-                        // Invalid JSON data
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            #if DEBUG
-                            let dataStr = String(decoding: jsonData, as: UTF8.self)
-                            PwgSession.logger.notice("Received invalid JSON data: \(dataStr, privacy: .public)")
-                            #else
-                            let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
-                            PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
-                            #endif
-                        }
-                        guard let httpResponse = response as? HTTPURLResponse else {
-                            // Nothing to report
-                            failure(PwgSessionError.invalidJSONobject)
-                            return
-                        }
-                        
-                        // Return error code
-                        let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                        let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: errorMessage)
-                        failure(error)
-                        return
-                    }
-                    
-                    // The caller will decode the returned data
-                    success(jsonData)
-                    return
+            do {
+                // Return communication error if any
+                if let error = error {
+                    throw error
                 }
                 
-                // Return transaction error
-                failure(error)
-                return
-            }
-            
-            // No error, check that the JSON object is not empty
-            guard var jsonData = data, jsonData.isEmpty == false else {
-                // Empty JSON data
-                failure(PwgSessionError.emptyJSONobject)
-                return
-            }
-            
-            // Log returned data
-            if #available(iOSApplicationExtension 14.0, *) {
-                let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
-            #if DEBUG
-                let dataStr = String(decoding: jsonData.prefix(80), as: UTF8.self) + "…"
-//                let dataStr = String(decoding: jsonData, as: UTF8.self)
-                PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
-            #else
-                PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of data.")
-            #endif
-            }
+                // No error, check that we received a valid response
+                guard var jsonData = data, let httpResponse = response as? HTTPURLResponse
+                else { throw PwgSessionError.invalidResponse }
+                
+                // Valid response, check the absence of HTTP error
+                guard (200...299).contains(httpResponse.statusCode)
+                else { // Return HTTP error code
+                    let errorMessage = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                    let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: errorMessage)
+                    throw error
+                }
+                
+                // Check that we have received some data
+                guard var jsonData = data, jsonData.isEmpty == false
+                else { throw PwgSessionError.emptyJSONobject }
+                
+                // Data returned, check that it is a valid JSON object after cleanup
+                guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self, method: method)
+                else {
+                    // Invalid JSON data
+                    if #available(iOSApplicationExtension 14.0, *) {
+                        #if DEBUG
+                        let dataStr = String(decoding: jsonData, as: UTF8.self)
+                        PwgSession.logger.notice("Received invalid JSON data: \(dataStr, privacy: .public)")
+                        #else
+                        let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
+                        PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
+                        #endif
+                    }
+                    // Return error
+                    throw PwgSessionError.invalidJSONobject
+                }
+                
+                // Log returned data
+                if #available(iOSApplicationExtension 14.0, *) {
+                    let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
+                #if DEBUG
+                    let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
+    //                let dataStr = String(decoding: jsonData, as: UTF8.self)
+                    PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
+                #else
+                    PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of data.")
+                #endif
+                }
 
-            // Return Piwigo error if no error and no data returned.
-            guard jsonData.isPiwigoResponseValid(for: jsonObjectClientExpectsToReceive.self, 
-                                                 method: method) else {
-                failure(PwgSessionError.invalidJSONobject)
-                return
+                // The caller will decode the returned data
+                completion(.success(jsonData))
+                
+            } catch {
+                completion(.failure(error))
             }
-
-            // The caller will decode the returned data
-            success(jsonData)
         }
         
         // Tell the system how many bytes are expected to be exchanged

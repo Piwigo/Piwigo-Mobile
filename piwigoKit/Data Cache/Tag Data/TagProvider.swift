@@ -43,9 +43,10 @@ public class TagProvider: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: asAdmin ? pwgTagsGetAdminList : pwgTagsGetList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: TagJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
-            // Decode the JSON object and import it into Core Data.
-            DispatchQueue.global(qos: .background).async {
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and import it into Core Data.
                 do {
                     // Decode the JSON into codable type TagJSON.
                     let decoder = JSONDecoder()
@@ -67,12 +68,13 @@ public class TagProvider: NSObject {
                     return
                 }
                 completionHandler(nil)
+                
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                completionHandler(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completionHandler(error)
         }
     }
     
@@ -255,45 +257,48 @@ public class TagProvider: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgTagsAdd, paramDict: ["name" : name],
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 3000) { jsonData in
-            // Decode the JSON object and import it into Core Data.
-            do {
-                // Decode the JSON into codable type TagJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(TagAddJSON.self, from: jsonData)
+                                countOfBytesClientExpectsToReceive: 3000) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and import it into Core Data.
+                do {
+                    // Decode the JSON into codable type TagJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(TagAddJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        completionHandler(error)
+                        return
+                    }
+
+                    // Import the tagJSON into Core Data.
+                    guard let tagId = pwgData.data.id else {
+                        completionHandler(TagError.missingData)
+                        return
+                    }
+                    let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
+                                               name: name.utf8mb4Encoded,
+                                               lastmodified: "", counter: 0, url_name: "", url: "")
+
+                    // Import the new tag in a private queue context.
+                    if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
+                        completionHandler(nil)
+                    } else {
+                        completionHandler(TagError.creationError)
+                    }
+                } catch {
+                    // Alert the user if data cannot be digested.
                     completionHandler(error)
-                    return
                 }
 
-                // Import the tagJSON into Core Data.
-                guard let tagId = pwgData.data.id else {
-                    completionHandler(TagError.missingData)
-                    return
-                }
-                let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
-                                           name: name.utf8mb4Encoded,
-                                           lastmodified: "", counter: 0, url_name: "", url: "")
-
-                // Import the new tag in a private queue context.
-                if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
-                    completionHandler(nil)
-                } else {
-                    completionHandler(TagError.creationError)
-                }
-            } catch {
-                // Alert the user if data cannot be digested.
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 completionHandler(error)
-                return
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completionHandler(error)
         }
     }
     

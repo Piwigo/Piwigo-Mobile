@@ -19,40 +19,43 @@ public extension PwgSession {
         // Launch request
         postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { jsonData in
-            // Decode the JSON object and retrieve the status
-            do {
-                // Decode the JSON into codable type CommunitySessionGetStatusJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
+                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and retrieve the status
+                do {
+                    // Decode the JSON into codable type CommunitySessionGetStatusJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failure(error)
+                        return
+                    }
+                    
+                    // Update user's status
+                    guard pwgData.realUser.isEmpty == false,
+                          let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
+                    else {
+                        failure(UserError.unknownUserStatus)
+                        return
+                    }
+                    NetworkVars.shared.userStatus = userStatus
+                    completion()
+                }
+                catch {
+                    // Data cannot be digested
                     failure(error)
-                    return
                 }
-                
-                // Update user's status
-                guard pwgData.realUser.isEmpty == false,
-                      let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
-                else {
-                    failure(UserError.unknownUserStatus)
-                    return
-                }
-                NetworkVars.shared.userStatus = userStatus
-                completion()
-            }
-            catch {
-                // Data cannot be digested
-                let error = error
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

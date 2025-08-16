@@ -11,6 +11,7 @@ import Foundation
 public enum PwgSessionError: Error {
     // App errors
     case authenticationFailed
+    case invalidResponse
     case emptyJSONobject
     case failedToPrepareDownload
     case incompatiblePwgVersion
@@ -32,6 +33,7 @@ extension PwgSessionError: Equatable {
     static public func ==(lhs: PwgSessionError, rhs: PwgSessionError) -> Bool {
         switch (lhs, rhs) {
         case (.authenticationFailed, .authenticationFailed),
+             (.invalidResponse, .invalidResponse),
              (.emptyJSONobject, .emptyJSONobject),
              (.failedToPrepareDownload, .failedToPrepareDownload),
              (.incompatiblePwgVersion, .incompatiblePwgVersion),
@@ -59,6 +61,9 @@ extension PwgSessionError: LocalizedError {
         case .authenticationFailed:
             return NSLocalizedString("sessionStatusError_message",
                                      comment: "Failed to authenticate with server.\nTry logging in again.")
+        case .invalidResponse:
+            return NSLocalizedString("PiwigoServer_invalidResponse",
+                                     comment: "Piwigo server did not return an invalid response.")
         case .emptyJSONobject:
             return NSLocalizedString("PiwigoServer_emptyJSONobject",
                                      comment: "Piwigo server did return an empty JSON object.")

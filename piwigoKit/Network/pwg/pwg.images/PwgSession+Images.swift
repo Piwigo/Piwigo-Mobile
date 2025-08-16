@@ -18,35 +18,40 @@ public extension PwgSession {
         let paramDict: [String : Any] = ["md5sum_list": md5sum]
         postRequest(withMethod: pwgImagesExist, paramDict: paramDict,
                     jsonObjectClientExpectsToReceive: ImagesExistJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { jsonData in
-            do {
-                // Decode the JSON into codable type ImagesExistJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesExistJSON.self, from: jsonData)
+                    countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { result in
+            switch result {
+            case .success(let jsonData):
+                do {
+                    // Decode the JSON into codable type ImagesExistJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(ImagesExistJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        // Will retry later
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failure(error)
+                        return
+                    }
+
+                    if let imageID = pwgData.data.first(where: {$0.md5sum == md5sum})?.imageID {
+                        completion(imageID)
+                    } else {
+                        completion(nil)
+                    }
+                }
+                catch {
+                    // Data cannot be digested
                     failure(error)
                     return
                 }
 
-                if let imageID = pwgData.data.first(where: {$0.md5sum == md5sum})?.imageID {
-                    completion(imageID)
-                } else {
-                    completion(nil)
-                }
-            }
-            catch {
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
-                return
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 
@@ -55,38 +60,42 @@ public extension PwgSession {
                   failure: @escaping (Error) -> Void) {
         postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { jsonData in
-            // Decode the JSON object and check if image data were updated on server.
-            do {
-                // Decode the JSON into codable type ImagesSetInfoJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
-                
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and check if image data were updated on server.
+                do {
+                    // Decode the JSON into codable type ImagesSetInfoJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
+                    
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        failure(error)
+                        return
+                    }
+                    
+                    // Successful?
+                    if pwgData.success {
+                        // Image properties successfully updated ▶ update image
+                        completion()
+                    }
+                    else {
+                        // Could not set image parameters
+                        failure(PwgSessionError.unexpectedError)
+                    }
+                } catch {
+                    // Data cannot be digested
                     failure(error)
-                    return
                 }
-                
-                // Successful?
-                if pwgData.success {
-                    // Image properties successfully updated ▶ update image
-                    completion()
-                }
-                else {
-                    // Could not set image parameters
-                    failure(PwgSessionError.unexpectedError)
-                }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

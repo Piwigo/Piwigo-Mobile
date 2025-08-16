@@ -145,9 +145,10 @@ public class AlbumProvider: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesGetList, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
-            // Decode the JSON object and import it into Core Data.
-            DispatchQueue.global(qos: .background).async {
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and import it into Core Data.
                 do {
                     // Decode the JSON into codable type CategoriesGetListJSON.
                     let decoder = JSONDecoder()
@@ -177,12 +178,13 @@ public class AlbumProvider: NSObject {
                     // Alert the user if data cannot be digested.
                     completion(error)
                 }
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                completion(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completion(error)
         }
     }
     
@@ -196,59 +198,63 @@ public class AlbumProvider: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kCommunityCategoriesGetList, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CommunityCategoriesGetListJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
-            // Decode the JSON object and return the Community albums
-            do {
-                // Decode the JSON into codable type CommunityCategoriesGetListJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
-                
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    debugPrint("••> fetchCommunityAlbums error: \(error)")
-                    try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
+            switch result {
+            case .success(let jsonData):
+                // Decode the JSON object and return the Community albums
+                do {
+                    // Decode the JSON into codable type CommunityCategoriesGetListJSON.
+                    let decoder = JSONDecoder()
+                    let pwgData = try decoder.decode(CommunityCategoriesGetListJSON.self, from: jsonData)
+                    
+                    // Piwigo error?
+                    if pwgData.errorCode != 0 {
+                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        debugPrint("••> fetchCommunityAlbums error: \(error)")
+                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                        completion(nil)
+                        return
+                    }
+                    
+                    // No Community albums?
+                    if pwgData.data.isEmpty == true {
+                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                        completion(nil)
+                        return
+                    }
+                    
+                    // Update album list
+                    var combinedAlbums = albums
+                    for comAlbum in pwgData.data {
+                        if let index = combinedAlbums.firstIndex(where: { $0.id == comAlbum.id }) {
+                            combinedAlbums[index].hasUploadRights = true
+                        } else {
+                            var newAlbum = comAlbum
+                            newAlbum.hasUploadRights = true
+                            combinedAlbums.append(newAlbum)
+                        }
+                    }
+                    try self.importAlbums(combinedAlbums, recursively: recursively, inParent: parentId)
                     completion(nil)
-                    return
                 }
-                
-                // No Community albums?
-                if pwgData.data.isEmpty == true {
-                    try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                    completion(nil)
-                    return
-                }
-                
-                // Update album list
-                var combinedAlbums = albums
-                for comAlbum in pwgData.data {
-                    if let index = combinedAlbums.firstIndex(where: { $0.id == comAlbum.id }) {
-                        combinedAlbums[index].hasUploadRights = true
-                    } else {
-                        var newAlbum = comAlbum
-                        newAlbum.hasUploadRights = true
-                        combinedAlbums.append(newAlbum)
+                catch {
+                    // Data cannot be digested
+                    do {
+                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                    } catch {
+                        completion(error)
                     }
                 }
-                try self.importAlbums(combinedAlbums, recursively: recursively, inParent: parentId)
-                completion(nil)
-            }
-            catch {
-                // Data cannot be digested
+                
+            case .failure:
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 do {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                 } catch {
                     completion(error)
                 }
-            }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            do {
-                try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-            } catch {
-                completion(error)
             }
         }
     }
