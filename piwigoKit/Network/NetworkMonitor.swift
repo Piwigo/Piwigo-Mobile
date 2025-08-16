@@ -25,6 +25,10 @@ public final class NetworkMonitor {
     private let queue = DispatchQueue(label: "NetworkMonitor")
         
     public init() {
+        startMonitoring()
+    }
+    
+    public func startMonitoring() {
         monitor.pathUpdateHandler = { path in
             // Network connection change
             PwgSession.shared.hasNetworkConnectionChanged = true
@@ -32,10 +36,6 @@ public final class NetworkMonitor {
             // Interface type?
             NetworkVars.shared.isConnectedToWiFi = path.usesInterfaceType(.wifi)
         }
-        startMonitoring()
-    }
-    
-    public func startMonitoring() {
         monitor.start(queue: queue)
     }
     
