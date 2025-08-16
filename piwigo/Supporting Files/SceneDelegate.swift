@@ -211,7 +211,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to undo the changes made on entering the background.
         
         // Start network monitoring
-        Task {
+        Task { @MainActor in
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             await appDelegate?.networkMonitor?.startMonitoring()
         }
@@ -384,7 +384,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
 
         // Stop network monitoring
-        Task {
+        Task { @MainActor in
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             await appDelegate?.networkMonitor?.stopMonitoring()
         }

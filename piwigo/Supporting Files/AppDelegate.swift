@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         registerBgTasks()
 
         // Register network connection changes
-        Task {
+        Task { @MainActor in
             // Start network monitoring
             self.networkMonitor = await NetworkMonitor()
         }
@@ -204,14 +204,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             mainContext.saveIfNeeded()
         }
 
+        // Cancel tasks and close session
+        PwgSession.shared.dataSession.invalidateAndCancel()
+
         // Unregister network connection changes
-        Task {
+        Task { @MainActor in
             // Stop network monitoring
             await self.networkMonitor?.stopMonitoring()
         }
-
-        // Cancel tasks and close session
-        PwgSession.shared.dataSession.invalidateAndCancel()
 
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
