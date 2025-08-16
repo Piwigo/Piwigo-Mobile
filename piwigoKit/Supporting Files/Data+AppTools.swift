@@ -205,7 +205,7 @@ extension Data {
 
     public mutating func extractingBalancedBraces() -> Bool {
         // Get data as string
-        var dataStr = String(decoding: self, as: UTF8.self)
+        let dataStr = String(decoding: self, as: UTF8.self)
 
         // Look for the first opening brace
         guard let firstBrace = dataStr.firstIndex(of: "{")
