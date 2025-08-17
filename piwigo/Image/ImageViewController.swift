@@ -50,17 +50,12 @@ class ImageViewController: UIViewController {
 
     
     // MARK: - Navigation Bar & Toolbar Buttons
-    var actionBarButton: UIBarButtonItem?               // iPhone & iPad until iOS 13:
-                                                        // - for editing image properties
-                                                        // iPhone & iPad as from iOS 14:
-                                                        // - for copying or moving images to other albums
+    var actionBarButton: UIBarButtonItem?               // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
     lazy var backButton: UIBarButtonItem = {
         return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
     }()
-    lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
-    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?

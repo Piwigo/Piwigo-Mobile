@@ -37,28 +37,19 @@ public class UploadManager: NSObject {
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
     lazy var acceptedImageExtensions: [String] = {
-        if #available(iOS 14.0, *) {
-            let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
-            var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-            if #available(iOS 14.3, *) {
-                fileExtensions.append("dng")    // i.e. Apple ProRAW
-                return fileExtensions
-            } else {
-                // Fallback on earlier version
-                return fileExtensions
-            }
+        let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
+        var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
+        if #available(iOS 14.3, *) {
+            fileExtensions.append("dng")    // i.e. Apple ProRAW
+            return fileExtensions
         } else {
             // Fallback on earlier version
-            return ["heic","heif","png","gif","jpg","jpeg","webp","tif","tiff","bmp","raw","ico","icns"]
+            return fileExtensions
         }
     }()
     lazy var acceptedMovieExtensions: [String] = {
-        if #available(iOS 14.0, *) {
-            let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
-            return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-        } else {
-            return ["mov","mpg","mpeg","mpeg2","mp4","avi"]
-        }
+        let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
+        return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
     }()
     
     // For producing filename suffixes

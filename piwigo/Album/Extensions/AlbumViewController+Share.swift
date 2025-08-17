@@ -35,35 +35,20 @@ extension AlbumViewController
 
     func checkPhotoLibraryAccessBeforeSharing(imagesWithID imageIDs: Set<Int64>, contextually: Bool) {
         // Check autorisation to access Photo Library (camera roll)
-        if #available(iOS 14, *) {
-            PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(
-                for: PHAccessLevel.addOnly, for: self,
-                onAccess: { [self] in
-                    // User allowed to save image in camera roll
-                    DispatchQueue.main.async {
-                        self.shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
-                    }
-                },
-                onDeniedAccess: { [self] in
-                    // User not allowed to save image in camera roll
-                    DispatchQueue.main.async {
-                        self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
-                    }
-                })
-        } else {
-            // Fallback on earlier versions
-            PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil) { [self] in
+        PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(
+            for: PHAccessLevel.addOnly, for: self,
+            onAccess: { [self] in
                 // User allowed to save image in camera roll
                 DispatchQueue.main.async {
                     self.shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
                 }
-            } onDeniedAccess: { [self] in
+            },
+            onDeniedAccess: { [self] in
                 // User not allowed to save image in camera roll
                 DispatchQueue.main.async {
                     self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
                 }
-            }
-        }
+            })
     }
 
     @MainActor

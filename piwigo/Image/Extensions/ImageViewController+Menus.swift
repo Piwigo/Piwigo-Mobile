@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 import piwigoKit
 
-@available(iOS 14, *)
+// MARK: Menus
 extension ImageViewController
 {
-    // MARK: - Albums related Actions & Menus
+    // MARK: - Albums
     /// - for copying images to another album
     /// - for moving images to another album
     /// - for setting an image as album thumbnail
@@ -31,7 +31,7 @@ extension ImageViewController
     }
 
 
-    // MARK: - Image Preview related Actions & Menus
+    // MARK: - Image Preview
     /// - for going to another album containing that image
     /// - for going to a page of a PDF file
     @MainActor
@@ -43,7 +43,7 @@ extension ImageViewController
     }
 
 
-    // MARK: - Image Edition related Actions & Menus
+    // MARK: - Image Edition
     /// - for rotating image (not video)
     /// - for editing image parameters
     func editMenu() -> UIMenu {

@@ -40,34 +40,18 @@ extension ImageViewController
         }
 
         // Check autorisation to access Photo Library (camera roll) if needed
-        if #available(iOS 14, *) {
-            PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
-                onAccess: { [self] in
-                    // User allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: true)
-                    }
-            }, onDeniedAccess: { [self] in
-                    // User not allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: false)
-                    }
-                })
-        } else {
-            // Fallback on earlier versions
-            PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil,
-                onAuthorizedAccess: { [self] in
-                    // User allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: true)
-                    }
-            }, onDeniedAccess: { [self] in
-                    // User not allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: false)
-                    }
-                })
-        }
+        PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
+            onAccess: { [self] in
+                // User allowed to save image in camera roll
+                DispatchQueue.main.async { [self] in
+                    self.presentShareImageViewController(withCameraRollAccess: true)
+                }
+        }, onDeniedAccess: { [self] in
+                // User not allowed to save image in camera roll
+                DispatchQueue.main.async { [self] in
+                    self.presentShareImageViewController(withCameraRollAccess: false)
+                }
+            })
     }
 
     @MainActor

@@ -10,16 +10,11 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: "Settings" Button
+// MARK: Settings Button
 extension AlbumViewController
 {
     func getSettingsBarButton() -> UIBarButtonItem {
-        var button: UIBarButtonItem!
-        if #available(iOS 14.0, *) {
-            button = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(didTapSettingsButton))
-        } else {
-            button = UIBarButtonItem(image: UIImage(named: "settings"), landscapeImagePhone: UIImage(named: "settingsCompact"), style: .plain, target: self, action: #selector(didTapSettingsButton))
-        }
+        let button = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(didTapSettingsButton))
         button.accessibilityIdentifier = "settings"
         return button
     }

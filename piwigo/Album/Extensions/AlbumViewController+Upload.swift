@@ -22,22 +22,12 @@ extension AlbumViewController
     }
     
     func checkPhotoLibraryAccess() {
-        if #available(iOS 14, *) {
-            PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
-                // Open local albums view controller in new navigation controller
-                DispatchQueue.main.async {
-                    self.presentLocalAlbums()
-                }
-            }, onDeniedAccess: { })
-        } else {
-            // Fallback on earlier versions
-            PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self, onAuthorizedAccess: { [self] in
-                // Open local albums view controller in new navigation controller
-                DispatchQueue.main.async {
-                    self.presentLocalAlbums()
-                }
-            }, onDeniedAccess: { })
-        }
+        PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
+            // Open local albums view controller in new navigation controller
+            DispatchQueue.main.async {
+                self.presentLocalAlbums()
+            }
+        }, onDeniedAccess: { })
     }
     
     @MainActor

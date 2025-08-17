@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: Go To Actions
-@available(iOS 14, *)
+// MARK: Go To
 extension ImageViewController
 {    
+    // MARK: - Menu
     @MainActor
     func goToAlbumMenu() -> UIMenu {
         return UIMenu(title: NSLocalizedString("imageOptions_goToAlbum", comment: "Go To Album…"),
@@ -22,6 +22,8 @@ extension ImageViewController
                       children: [goToAlbumActions()].compactMap({$0}))
     }
     
+    
+    // MARK: - Go To Album
     @MainActor
     func goToAlbumActions() -> UIMenu? {
         // Get parent albums
@@ -82,27 +84,6 @@ extension ImageViewController
     }
     
     @MainActor
-    func goToPageAction() -> UIAction? {
-        // Check that the current image is a PDF document
-        guard imageData.isPDF else { return nil }
-        
-        // Copy image to album
-        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
-                              image: UIImage(systemName: "arrow.turn.down.right"),
-                              handler: { [self] _ in
-            // Request page number
-            self.goToPage()
-        })
-        action.accessibilityIdentifier = "org.piwigo.image.goToPage"
-        return action
-    }
-}
-
-
-// MARK: - Go To Album
-extension ImageViewController
-{
-    @MainActor
     func goToAlbumWithID(_ albumId: Int32) {
         // Disable buttons during action
         setEnableStateOfButtons(false)
@@ -156,12 +137,25 @@ extension ImageViewController
             searchVC.searchBar.resignFirstResponder()
         }
     }
-}
 
+    
+    // MARK: - Go To PDF Page
+    @MainActor
+    func goToPageAction() -> UIAction? {
+        // Check that the current image is a PDF document
+        guard imageData.isPDF else { return nil }
+        
+        // Copy image to album
+        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
+                              image: UIImage(systemName: "arrow.turn.down.right"),
+                              handler: { [self] _ in
+            // Request page number
+            self.goToPage()
+        })
+        action.accessibilityIdentifier = "org.piwigo.image.goToPage"
+        return action
+    }
 
-// MARK: - Go To Page of PDF file
-extension ImageViewController
-{
     @MainActor
     @objc func goToPage() {
         // Disable buttons during action
@@ -214,5 +208,4 @@ extension ImageViewController
             alert.view.tintColor = PwgColor.orange
         }
     }
-    
 }

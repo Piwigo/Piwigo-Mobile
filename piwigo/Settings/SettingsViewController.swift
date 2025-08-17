@@ -62,16 +62,7 @@ class SettingsViewController: UIViewController {
     // The image sort type is returned with album data since Piwigo 14.0.
     lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
-    
-    // Present image title and album description options on iOS 12.0 - 13.x
-    lazy var showOptions: Bool = {
-        if #available(iOS 14, *) {
-            return false
-        } else {
-            return true
-        }
-    }()
-    
+        
     // For displaying cache sizes
     var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
         didSet {
@@ -367,15 +358,10 @@ class SettingsViewController: UIViewController {
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
-            if #available(iOS 14, *) {
-                if NetworkVars.shared.usesUploadAsync {
-                    helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
-                } else {
-                    helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
-                }
+            if NetworkVars.shared.usesUploadAsync {
+                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
             } else {
-                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3,9]
-                helpVC.displayHelpPagesWithID = [1,5,6,4,3]
+                helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
             }
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up

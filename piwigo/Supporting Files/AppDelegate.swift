@@ -444,8 +444,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     // MARK: - Intents
-    
-    @available(iOS 14.0, *)
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         switch intent {
         case is AutoUploadIntent:
@@ -460,7 +458,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-//    @available(iOS 10.0, *)
 //    func application(_ application: UIApplication, handle intent: INIntent, completionHandler: @escaping (INIntentResponse) -> Void) {
 //        switch intent {
 //        case is AutoUploadIntent:

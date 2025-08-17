@@ -237,11 +237,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        if #available(iOS 14.0, *) {
-            return UTType.pdf.identifier
-        } else {
-            return kUTTypePDF as String
-        }
+        return UTType.pdf.identifier
     }
     
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {

@@ -11,9 +11,10 @@ import UIKit
 import piwigoKit
 import uploadKit
 
+// MARK: - Delete/Remove Image
 extension ImageViewController
 {
-    // MARK: - Delete/Remove Image Bar Button
+    // MARK: - Bar Button
     func getDeleteBarButton() -> UIBarButtonItem {
         return UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
     }

@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: Copy/Move Image Actions
-@available(iOS 14, *)
+// MARK: Copy/Move Image
 extension ImageViewController
 {
+    // MARK: - Actions
     func copyAction() -> UIAction {
         // Copy image to album
         let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
@@ -41,18 +41,7 @@ extension ImageViewController
         action.accessibilityIdentifier = "org.piwigo.image.move"
         return action
     }
-}
 
-
-extension ImageViewController
-{
-    // MARK: Copy/Move Image Button
-    func getMoveBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
-    }
-
-
-    // MARK: Copy/Move Image
     func selectCategory(withAction action: pwgCategorySelectAction) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
@@ -65,62 +54,7 @@ extension ImageViewController
             } else {
                 copyVC.imageRemovedDelegate = self  // To remove image after move
             }
-            if #available(iOS 14.0, *) {
-                pushView(copyVC, forButton: actionBarButton)
-            } else {
-                pushView(copyVC, forButton: moveBarButton)
-            }
-        }
-    }
-    
-    @objc func addImageToCategory() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
-
-        // If image selected from Search, immediatley propose to copy it
-        if categoryId == pwgSmartAlbum.search.rawValue {
-            // Present album selector for copying image
-            self.selectCategory(withAction: .copyImage)
-            return
-        }
-
-        // Image selected from album collection
-        let alert = UIAlertController(title: nil, message: nil,
-            preferredStyle: .actionSheet)
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                // Re-enable buttons
-                setEnableStateOfButtons(true)
-            })
-
-        let copyAction = UIAlertAction(
-            title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-            style: .default, handler: { [self] action in
-                // Present album selector for copying image
-                self.selectCategory(withAction: .copyImage)
-            })
-
-        let moveAction = UIAlertAction(
-            title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-            style: .default, handler: { [self] action in
-                // Present album selector for moving image
-                self.selectCategory(withAction: .moveImage)
-            })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(copyAction)
-        alert.addAction(moveAction)
-
-        // Present list of actions
-        alert.view.tintColor = PwgColor.orange
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        alert.popoverPresentationController?.barButtonItem = moveBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            pushView(copyVC, forButton: actionBarButton)
         }
     }
 }

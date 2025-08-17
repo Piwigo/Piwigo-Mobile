@@ -87,10 +87,9 @@ extension SettingsViewController: UITableViewDelegate
             
         // MARK: Albums
         case .albums /* Albums */:
-            var row = indexPath.row
-            row += (!showOptions && (row > 1)) ? 1 : 0
-            switch row {
-            case 0 /* Default album */, 1 /* Default Thumbnail File */:
+            switch indexPath.row {
+            case 0 /* Default album */,
+                 1 /* Thumbnail File */:
                 result = true
             default:
                 result = false
@@ -100,11 +99,10 @@ extension SettingsViewController: UITableViewDelegate
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */,
-                1 /* Default Thumbnail File */,
-                4 /* Default Size of Previewed Images */:
+                 1 /* Thumbnail File */,
+                 3 /* Preview File */:
                 result = true
             default:
                 result = false
@@ -231,9 +229,7 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Albums
         case .albums /* Albums */:
-            var row = indexPath.row
-            row += (!showOptions && (row > 1)) ? 1 : 0
-            switch row {
+            switch indexPath.row {
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
@@ -258,7 +254,6 @@ extension SettingsViewController: UITableViewDelegate
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
@@ -272,7 +267,7 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load DefaultImageThumbnailSizeViewController") }
                 defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-            case 4 /* Image file selection */:
+            case 3 /* Preview file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
                 guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController
                 else { preconditionFailure("Could not load DefaultImageSizeViewController") }

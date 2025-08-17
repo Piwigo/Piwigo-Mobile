@@ -8,10 +8,7 @@
 
 import os
 import Foundation
-
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
+import UniformTypeIdentifiers
 
 //@globalActor
 //public actor NetworkActor {
@@ -21,7 +18,7 @@ import UniformTypeIdentifiers        // Requires iOS 14
 //}
 
 //@NetworkActor
-public final class PwgSession: NSObject, Sendable {
+public final class PwgSession: NSObject { //}, Sendable {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
@@ -80,14 +77,9 @@ public final class PwgSession: NSObject, Sendable {
     
     // Will accept the image formats supported by UIImage
     lazy var acceptedTypes: String = {
-        var acceptedTypes = ""
-        if #available(iOS 14.0, *) {
-            let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
-            acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
-        } else {
-            // Fallback on earlier versions
-            acceptedTypes = "image/heic, image/heif, image/vnd.microsoft.icon, image/png, image/gif, image/jpeg, image/jpg, image/webp, image/tiff, image/bmp, image/svg+xml, "
-        }
+        // Image types
+        let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
+        var acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
         
         // Add text types for handling Piwigo errors and redirects
         acceptedTypes += "text/plain, text/html"

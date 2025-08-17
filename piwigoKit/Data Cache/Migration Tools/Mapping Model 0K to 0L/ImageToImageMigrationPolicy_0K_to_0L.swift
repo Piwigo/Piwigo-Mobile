@@ -10,10 +10,7 @@ import os
 import CoreData
 import Foundation
 import MobileCoreServices
-
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
+import UniformTypeIdentifiers
 
 final class ImageToImageMigrationPolicy_0K_to_0L: NSEntityMigrationPolicy {
     // Constants

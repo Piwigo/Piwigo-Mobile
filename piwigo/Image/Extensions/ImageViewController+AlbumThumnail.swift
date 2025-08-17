@@ -9,8 +9,7 @@
 import Foundation
 import UIKit
 
-// MARK: - Set as Album Thumbnail Action
-@available(iOS 14, *)
+// MARK: Set as Album Thumbnail
 extension ImageViewController
 {
     func setAsThumbnailAction() -> UIAction {
@@ -24,18 +23,7 @@ extension ImageViewController
         action.accessibilityIdentifier = "org.piwigo.image.setThumbnail"
         return action
     }
-}
 
-
-extension ImageViewController
-{
-    // MARK: - Set as Album Thumbnail Button
-    func getSetThumbnailBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem.setThumbnailButton(self, action: #selector(setAsAlbumImage))
-    }
-
-    
-    // MARK: - Set Image as Album Thumbnail
     @objc func setAsAlbumImage() {
         // Check image data
         guard let imageData = imageData else { return }
@@ -49,11 +37,7 @@ extension ImageViewController
         setThumbVC.user = user
         if setThumbVC.setInput(parameter:[imageData, categoryId] as [Any], for: .setAlbumThumbnail) {
             setThumbVC.delegate = self
-            if #available(iOS 14.0, *) {
-                pushView(setThumbVC, forButton: actionBarButton)
-            } else {
-                pushView(setThumbVC, forButton: setThumbnailBarButton)
-            }
+            pushView(setThumbVC, forButton: actionBarButton)
         }
     }
 }

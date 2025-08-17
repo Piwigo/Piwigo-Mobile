@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: - Rotate Image Actions
-@available(iOS 14, *)
+// MARK: Rotate Image
 extension ImageViewController
 {
+    // MARK: - Menu
     @MainActor
     func rotateMenu() -> UIMenu {
         return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
@@ -22,6 +22,8 @@ extension ImageViewController
                       children: [rotateRightAction(), rotateLeftAction()])
     }
     
+
+    // MARK: - Actions
     @MainActor
     func rotateRightAction() -> UIAction {
         // Rotate image right
@@ -47,11 +49,8 @@ extension ImageViewController
         action.accessibilityIdentifier = "Rotate Left"
         return action
     }
-}
 
 
-extension ImageViewController
-{
     // MARK: - Rotate Image
     @MainActor
     @objc func rotateImage(by angle: CGFloat) {

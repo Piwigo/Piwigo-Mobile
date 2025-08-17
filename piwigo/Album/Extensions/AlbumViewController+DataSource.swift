@@ -115,47 +115,20 @@ extension AlbumViewController
                     // Determine state of Select button
                     let selectState = self.updateSelectButton(ofSection: indexPath.section)
                     
-                    // Images are grouped by day, week or month
+                    // Images are grouped by day, week or month ► Only display date and location
                     let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
-                    if #available(iOS 14, *) {
-                        // Grouping options accessible from menu ► Only display date and location
-                        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
-                              let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
-                        else { preconditionFailure("Could not load ImageHeaderReusableView") }
-                        
-                        if indexPath.section == 0, hasAlbumSection == false {
-                            header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
-                                          album: self.attributedComment(), size: self.getAlbumDescriptionSize())
-                        } else {
-                            header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
-                        }
-                        header.imageHeaderDelegate = self
-                        return header
+                    guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
+                          let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
+                    else { preconditionFailure("Could not load ImageHeaderReusableView") }
+                    
+                    if indexPath.section == 0, hasAlbumSection == false {
+                        header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState,
+                                      album: self.attributedComment(), size: self.getAlbumDescriptionSize())
+                    } else {
+                        header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
                     }
-                    else {  // for iOS 13.x
-                        // Display segmented controller in first section for selecting grouping option
-                        if indexPath.section == 0, hasAlbumSection == false {
-                            // Display segmented controller
-                            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView", for: indexPath) as? ImageOldHeaderReusableView,
-                                  let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
-                            else { preconditionFailure("Could not load ImageOldHeaderReusableView")}
-                            
-                            header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
-                                          section: indexPath.section, selectState: selectState,
-                                          album: self.attributedComment(), size: self.getAlbumDescriptionSize())
-                            header.imageHeaderDelegate = self
-                            return header
-                        } else {
-                            // Grouping options accessible from menu ► Only display date and location
-                            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView", for: indexPath) as? ImageHeaderReusableView,
-                                  let sortKey = self.images.fetchRequest.sortDescriptors?.first?.key
-                            else { preconditionFailure("Could not load ImageHeaderReusableView") }
-                            
-                            header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
-                            header.imageHeaderDelegate = self
-                            return header
-                        }
-                    }
+                    header.imageHeaderDelegate = self
+                    return header
                 case UICollectionView.elementKindSectionFooter:
                     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView", for: indexPath) as? ImageFooterReusableView
                     else { preconditionFailure("Could not load ImageFooterReusableView")}

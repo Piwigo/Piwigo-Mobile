@@ -10,255 +10,10 @@ import Foundation
 import UIKit
 import piwigoKit
 
-extension AlbumViewController
-{
-    // MARK: - Sort/Select Buttons
-    func getSortBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapSortButton))
-        button.accessibilityIdentifier = "Action"
-        return button
-    }
+// MARK: - Contextual Menu
+extension AlbumViewController {
     
-    func getSelectBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"), style: .plain, target: self, action: #selector(didTapSelect))
-        button.accessibilityIdentifier = "Select"
-        return button
-    }
-    
-    
-    // MARK: - Sort Image
-    /// - for selecting image sort options
-    @objc func didTapSortButton() {
-        let alert = UIAlertController(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
-                                      message: nil, preferredStyle: .actionSheet)
-        
-        // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                         style: .cancel, handler: { action in })
-        alert.addAction(cancelAction)
-        
-        // Default sort option
-        if sortOption != .albumDefault {
-            let title = NSLocalizedString("categorySort_default", comment: "Default")
-            let defaultSortAction = UIAlertAction(title: title, style: .default) { [self] _ in
-                sortOption = .albumDefault
-                images.delegate = nil
-                images = data.images(sortedBy: .albumDefault)
-                images.delegate = self
-                updateImageCollection()
-            }
-            alert.addAction(defaultSortAction)
-        }
-        
-        // Sorting by title
-        var title = NSLocalizedString("categorySort_name", comment: "Photo Title")
-        var handler: ((UIAlertAction) -> Void)? = nil
-        switch sortOption {
-        case .nameAscending:
-            title += " ↑"
-            handler = { [self] action in
-                sortOption = .nameDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .nameDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        case .nameDescending:
-            title += " ↓"
-            handler = { [self] action in
-                sortOption = .nameAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .nameAscending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        default:
-            handler = { [self] action in
-                sortOption = .nameAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .nameAscending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        }
-        let titleSortAction = UIAlertAction(title: title, style: .default, handler: handler)
-        alert.addAction(titleSortAction)
-        
-        // Sorting by date created
-        title = NSLocalizedString("categorySort_dateCreated", comment: "Date Created")
-        switch sortOption {
-        case .dateCreatedAscending:
-            title += " ↑"
-            handler = { [self] action in
-                sortOption = .dateCreatedDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        case .dateCreatedDescending:
-            title += " ↓"
-            handler = { [self] action in
-                sortOption = .dateCreatedAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedAscending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        default:
-            handler = { [self] action in
-                sortOption = .dateCreatedDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .dateCreatedDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        }
-        let dateCreatedAction = UIAlertAction(title: title, style: .default, handler: handler)
-        alert.addAction(dateCreatedAction)
-        
-        // Sorting by date posted
-        title = NSLocalizedString("categorySort_datePosted", comment: "Date Posted")
-        switch sortOption {
-        case .datePostedAscending:
-            title += " ↑"
-            handler = { [self] action in
-                sortOption = .datePostedDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .datePostedDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        case .datePostedDescending:
-            title += " ↓"
-            handler = { [self] action in
-                sortOption = .datePostedAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .datePostedAscending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        default:
-            handler = { [self] action in
-                sortOption = .datePostedDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .datePostedDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        }
-        let postedSortAction =  UIAlertAction(title: title, style: .default, handler: handler)
-        alert.addAction(postedSortAction)
-        
-        // Sorting by rate
-        title = NSLocalizedString("categorySort_ratingScore", comment: "Rating Score")
-        switch sortOption {
-        case .ratingScoreAscending:
-            title += " ↑"
-            handler = { [self] action in
-                sortOption = .ratingScoreDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        case .ratingScoreDescending:
-            title += " ↓"
-            handler = { [self] action in
-                sortOption = .ratingScoreAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreAscending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        default:
-            handler = { [self] action in
-                sortOption = .ratingScoreDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .ratingScoreDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        }
-        let ratingSortAction = UIAlertAction(title: title, style: .default, handler: handler)
-        alert.addAction(ratingSortAction)
-
-        // Sorted by number of visits
-        title = NSLocalizedString("categorySort_visits", comment: "Visits")
-        switch sortOption {
-        case .visitsAscending:
-            title += " ↑"
-            handler = { [self] action in
-                sortOption = .visitsDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .visitsDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        case .visitsDescending:
-            title += " ↓"
-            handler = { [self] action in
-                sortOption = .visitsAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .visitsAscending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        default:
-            handler = { [self] action in
-                sortOption = .visitsDescending
-                images.delegate = nil
-                images = data.images(sortedBy: .visitsDescending)
-                images.delegate = self
-                updateImageCollection()
-            }
-        }
-        let visitsSortAction = UIAlertAction(title: title, style: .default, handler: handler)
-        alert.addAction(visitsSortAction)
-
-        // Sorted manually
-        if sortOption != .rankAscending {
-            let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
-                                             style: .default, handler: { [self] action in
-                if let allImages = images.fetchedObjects {
-                    allImages.forEach { image in
-                        debugPrint("Manual Sort: \(image.pwgID) -> \(image.rankManual == Int64.min ? "Unknown" : "Known")")
-                    }
-                }
-                sortOption = .rankAscending
-                images.delegate = nil
-                images = data.images(sortedBy: .rankAscending)
-                images.delegate = self
-                let shouldFetch = images.fetchedObjects?.first(where: {$0.rankManual == Int64.min}) != nil
-                updateImageCollection(afterFetchingRanks: shouldFetch)
-            })
-            alert.addAction(randomAction)
-        }
-
-        // Presents photos randomly
-        if sortOption != .random {
-            let randomAction = UIAlertAction(title: NSLocalizedString("categorySort_randomly", comment: "Randomly"),
-                                             style: .default, handler: { [self] action in
-                sortOption = .random
-                images.delegate = nil
-                images = data.images(sortedBy: .random)
-                images.delegate = self
-                let shouldFetch = images.fetchedObjects?.first(where: {$0.rankRandom == Int64.min}) != nil
-                updateImageCollection(afterFetchingRanks: shouldFetch)
-            })
-            alert.addAction(randomAction)
-        }
-
-        // Present list of actions
-        alert.view.tintColor = PwgColor.orange
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        alert.popoverPresentationController?.barButtonItem = actionBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
-        }
-    }
-    
+    // MARK: - Update Collection & Menu
     func updateImageCollection(afterFetchingRanks shouldFetch: Bool = false) {
         if shouldFetch {
             // Some image ranks are unknown and must be retrieved
@@ -269,126 +24,7 @@ extension AlbumViewController
             collectionView?.reloadData()
         }
     }
-}
 
-
-// MARK: - ImageHeaderDelegate Methods
-extension AlbumViewController: ImageHeaderDelegate
-{
-    func changeImageGrouping(for group: pwgImageGroup) {
-        // User changed segmented control choice
-        images.delegate = nil
-        images = data.images(groupedBy: group)
-        images.delegate = self
-        updateImageCollection()
-    }
-    
-    func didSelectImagesOfSection(_ section: Int) {
-        // Is the selection mode active?
-        if inSelectionMode == false {
-            // Hide buttons
-            hideButtons()
-            
-            // Activate Images Selection mode
-            inSelectionMode = true
-            
-            // Disable interaction with album cells
-            for cell in collectionView?.visibleCells ?? []
-            {
-                // Disable user interaction with album cell
-                if let albumCell = cell as? AlbumCollectionViewCell {
-                    albumCell.contentView.alpha = 0.5
-                    albumCell.isUserInteractionEnabled = false
-                }
-                else if let albumCell = cell as? AlbumCollectionViewCellOld {
-                    albumCell.contentView.alpha = 0.5
-                    albumCell.isUserInteractionEnabled = false
-                }
-            }
-            
-            // Initialisae navigation bar and toolbar
-            initBarsInSelectMode()
-        }
-        
-//        let start = CFAbsoluteTimeGetCurrent()
-        if selectedSections[section] == .select {
-            // Loop over all images in section to select them
-            let snapshot = self.diffableDataSource.snapshot()
-            let sectionID = snapshot.sectionIdentifiers[section]
-            let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
-            sectionItems.forEach { objectID in
-                // Retrieve image data
-                guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                      selectedImageIDs.contains(image.pwgID) == false
-                else { return }
-                
-                // Select this image
-                if let indexPath = diffableDataSource.indexPath(for: objectID),
-                   let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    selectImage(image, isFavorite: cell.isFavorite)
-                    cell.isSelection = true
-                } else {
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if hasFavorites {
-                        selectImage(image, isFavorite: (image.albums ?? Set<Album>())
-                            .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
-                    } else {
-                        selectImage(image, isFavorite: false)
-                    }
-                }
-            }
-            // Change section button state
-            selectedSections[section] = .deselect
-        } 
-        else {
-            // Loop over all images in section to deselect them
-            let snapshot = self.diffableDataSource.snapshot()
-            let sectionID = snapshot.sectionIdentifiers[section]
-            let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
-            sectionItems.forEach { objectID in
-                // Retrieve image data
-                guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                      selectedImageIDs.contains(image.pwgID)
-                else { return }
-                
-                // Deselect this image
-                deselectImages(withIDs: Set([image.pwgID]))
-                if let indexPath = diffableDataSource.indexPath(for: objectID),
-                   let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                    cell.isSelection = false
-                }
-            }
-            
-            // Change section button state
-            selectedSections[section] = .select
-        }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        debugPrint("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
-        
-        // Update navigation bar and toolbar
-        updateBarsInSelectMode()
-
-        // Update button
-        collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader).forEach { indexPath in
-            guard indexPath.section == section ,
-                  let sectionState = selectedSections[section]
-            else { return }
-            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.selectButton.setTitle(forState: sectionState)
-            }
-            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.selectButton.setTitle(forState: sectionState)
-            }
-        }
-    }
-}
-
-
-// MARK: - iOS 14+ Menu
-@available(iOS 14, *)
-extension AlbumViewController
-{
-    // MARK: - Menu
     func updateCollectionAndMenu(afterFetchingRanks shouldFetch: Bool = false) {
         // Re-fetch image collection
         updateImageCollection(afterFetchingRanks: shouldFetch)
@@ -867,5 +503,117 @@ extension AlbumViewController
         })
         action.accessibilityIdentifier = "showHideImageTitles"
         return action
+    }
+}
+
+
+// MARK: - ImageHeaderDelegate Methods
+extension AlbumViewController: ImageHeaderDelegate
+{
+    func changeImageGrouping(for group: pwgImageGroup) {
+        // User changed segmented control choice
+        images.delegate = nil
+        images = data.images(groupedBy: group)
+        images.delegate = self
+        updateImageCollection()
+    }
+    
+    func didSelectImagesOfSection(_ section: Int) {
+        // Is the selection mode active?
+        if inSelectionMode == false {
+            // Hide buttons
+            hideButtons()
+            
+            // Activate Images Selection mode
+            inSelectionMode = true
+            
+            // Disable interaction with album cells
+            for cell in collectionView?.visibleCells ?? []
+            {
+                // Disable user interaction with album cell
+                if let albumCell = cell as? AlbumCollectionViewCell {
+                    albumCell.contentView.alpha = 0.5
+                    albumCell.isUserInteractionEnabled = false
+                }
+                else if let albumCell = cell as? AlbumCollectionViewCellOld {
+                    albumCell.contentView.alpha = 0.5
+                    albumCell.isUserInteractionEnabled = false
+                }
+            }
+            
+            // Initialisae navigation bar and toolbar
+            initBarsInSelectMode()
+        }
+        
+//        let start = CFAbsoluteTimeGetCurrent()
+        if selectedSections[section] == .select {
+            // Loop over all images in section to select them
+            let snapshot = self.diffableDataSource.snapshot()
+            let sectionID = snapshot.sectionIdentifiers[section]
+            let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
+            sectionItems.forEach { objectID in
+                // Retrieve image data
+                guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                      selectedImageIDs.contains(image.pwgID) == false
+                else { return }
+                
+                // Select this image
+                if let indexPath = diffableDataSource.indexPath(for: objectID),
+                   let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    selectImage(image, isFavorite: cell.isFavorite)
+                    cell.isSelection = true
+                } else {
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if hasFavorites {
+                        selectImage(image, isFavorite: (image.albums ?? Set<Album>())
+                            .contains(where: {$0.pwgID == pwgSmartAlbum.favorites.rawValue}))
+                    } else {
+                        selectImage(image, isFavorite: false)
+                    }
+                }
+            }
+            // Change section button state
+            selectedSections[section] = .deselect
+        } 
+        else {
+            // Loop over all images in section to deselect them
+            let snapshot = self.diffableDataSource.snapshot()
+            let sectionID = snapshot.sectionIdentifiers[section]
+            let sectionItems = snapshot.itemIdentifiers(inSection: sectionID)
+            sectionItems.forEach { objectID in
+                // Retrieve image data
+                guard let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+                      selectedImageIDs.contains(image.pwgID)
+                else { return }
+                
+                // Deselect this image
+                deselectImages(withIDs: Set([image.pwgID]))
+                if let indexPath = diffableDataSource.indexPath(for: objectID),
+                   let cell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+                    cell.isSelection = false
+                }
+            }
+            
+            // Change section button state
+            selectedSections[section] = .select
+        }
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        debugPrint("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
+        
+        // Update navigation bar and toolbar
+        updateBarsInSelectMode()
+
+        // Update button
+        collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader).forEach { indexPath in
+            guard indexPath.section == section ,
+                  let sectionState = selectedSections[section]
+            else { return }
+            if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
+                header.selectButton.setTitle(forState: sectionState)
+            }
+            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
+                header.selectButton.setTitle(forState: sectionState)
+            }
+        }
     }
 }

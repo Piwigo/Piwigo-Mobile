@@ -635,11 +635,7 @@ class AlbumUtilities: NSObject {
     static func getLocation(of images: [Image]) -> CLLocation {
         // Initialise location of section with invalid location
         var verticalAccuracy = CLLocationAccuracy.zero
-        if #available(iOS 14, *) {
-            verticalAccuracy = kCLLocationAccuracyReduced
-        } else {
-            verticalAccuracy = kCLLocationAccuracyThreeKilometers
-        }
+        verticalAccuracy = kCLLocationAccuracyReduced
         var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
                                             altitude: CLLocationDistance(0.0),
                                             horizontalAccuracy: kCLLocationAccuracyBest,

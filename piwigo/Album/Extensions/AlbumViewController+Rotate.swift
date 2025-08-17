@@ -11,7 +11,6 @@ import UIKit
 import piwigoKit
 
 // MARK: - Rotate Images Actions
-@available(iOS 14, *)
 extension AlbumViewController
 {
     func rotateMenu() -> UIMenu? {

@@ -37,14 +37,6 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver
             // Disable sort options and actions before sorting and caching
             self.actionBarButton?.isEnabled = false
             self.uploadBarButton?.isEnabled = false
-            if #available(iOS 14, *) {
-                // NOP
-            } else {
-                // Disable segmented control
-                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
-                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
-                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
-            }
 
             // Sort images in background, reset cache and image selection
             DispatchQueue.global(qos: .userInitiated).async {

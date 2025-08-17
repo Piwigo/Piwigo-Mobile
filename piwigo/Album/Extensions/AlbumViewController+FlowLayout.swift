@@ -70,25 +70,13 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 }
             }
             
-            // Images are sorted by date ► Presents menu or segmented controller
+            // Images are sorted by date ► Presents menu
             let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
-            if #available(iOS 14, *) {
-                // Grouping options accessible from menu ► Display date and location (see XIB)
-                if section == 0, hasAlbumSection == false {
-                    return CGSize(width: collectionView.frame.size.width,
-                                  height: 49 + self.getAlbumDescriptionSize().height)
-                } else {
-                    return CGSize(width: collectionView.frame.size.width, height: 49)
-                }
-            }
-            else {  // for iOS 13.x
-                // Display segmented controller in first section for selecting grouping option
-                if section == 0, hasAlbumSection == false {
-                    return CGSize(width: collectionView.frame.size.width,
-                                  height: 88 + self.getAlbumDescriptionSize().height)
-                } else {
-                    return CGSize(width: collectionView.frame.size.width, height: 49)
-                }
+            if section == 0, hasAlbumSection == false {
+                return CGSize(width: collectionView.frame.size.width,
+                              height: 49 + self.getAlbumDescriptionSize().height)
+            } else {
+                return CGSize(width: collectionView.frame.size.width, height: 49)
             }
         }
     }

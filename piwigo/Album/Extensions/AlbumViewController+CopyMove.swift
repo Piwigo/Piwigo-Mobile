@@ -12,15 +12,7 @@ import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: - Copy/Move Bar Button & Actions
-    func getMoveBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .reply, target: self,
-                                     action: #selector(copyMoveSelection))
-        button.tintColor = PwgColor.orange
-        return button
-    }
-
-    @available(iOS 14.0, *)
+    // MARK: - Copy/Move Image Actions
     func imagesCopyAction() -> UIAction {
         let actionId = UIAction.Identifier("Copy")
         let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
@@ -35,7 +27,6 @@ extension AlbumViewController
         return action
     }
     
-    @available(iOS 14.0, *)
     func imagesMoveAction() -> UIAction {
         let actionId = UIAction.Identifier("Move")
         let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
@@ -52,50 +43,6 @@ extension AlbumViewController
 
     
     // MARK: - Copy/Move Images to Album
-    @objc func copyMoveSelection() {    // Alert displayed on iOS 9.x to 13.x
-        // Disable buttons
-        setEnableStateOfButtons(false)
-
-        // Present alert to user
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { [self] action in
-                setEnableStateOfButtons(true)
-            })
-
-        let copyAction = UIAlertAction(
-            title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-            style: .default, handler: { [self] action in
-                // Retrieve complete image data before copying images
-                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .copyImages, contextually: false)
-            })
-
-        let moveAction = UIAlertAction(
-            title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-            style: .default, handler: { [self] action in
-                // Retrieve complete image data before moving images
-                initSelection(ofImagesWithIDs: selectedImageIDs, beforeAction: .moveImages, contextually: false)
-            })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(copyAction)
-        alert.addAction(moveAction)
-
-        // Present list of actions
-        alert.view.tintColor = PwgColor.orange
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        if let parent = parent as? AlbumViewController {
-            alert.popoverPresentationController?.barButtonItem = parent.moveBarButton
-        }
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
-        }
-    }
-
     func copyToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
         guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }

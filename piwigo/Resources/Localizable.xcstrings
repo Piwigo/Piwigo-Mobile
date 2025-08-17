@@ -2313,6 +2313,7 @@
     },
     "categoryDiscover_title" : {
       "comment" : "Discover",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50564,7 +50565,7 @@
       }
     },
     "settings_displayDescriptions" : {
-      "comment" : "Album Descriptions\nDisplay Descriptions",
+      "comment" : "Album Descriptions",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50666,6 +50667,7 @@
     },
     "settings_displayDescriptions>320px" : {
       "comment" : "Display Album Descriptions",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50766,7 +50768,7 @@
       }
     },
     "settings_displayTitles" : {
-      "comment" : "Image Titles\nTitles on Thumbnails",
+      "comment" : "Image Titles",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50868,6 +50870,7 @@
     },
     "settings_displayTitles>320px" : {
       "comment" : "Display Titles on Thumbnails",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

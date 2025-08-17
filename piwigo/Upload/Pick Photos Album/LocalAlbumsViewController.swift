@@ -51,12 +51,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                                                                    .mediaTypes   : false,
                                                                    .otherAlbums  : false]
     private lazy var pasteboardTypes : [String] = {
-        if #available(iOS 14.0, *) {
-            return [UTType.image.identifier, UTType.movie.identifier]
-        } else {
-            // Fallback on earlier version
-            return [kUTTypeImage as String, kUTTypeMovie as String]
-        }
+        return [UTType.image.identifier, UTType.movie.identifier]
     }()
     
     // MARK: - Core Data Objects
@@ -77,9 +72,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         title = NSLocalizedString("localAlbums", comment: "Photo Library")
         
         // Button for selecting Photo Library items (.limited access mode)
-        if #available(iOS 14.0, *) {
-            selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
-        }
+        selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
@@ -125,7 +118,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 
-    @available(iOS 14, *)
     @objc func selectPhotoLibraryItems() {
         // Proposes to change the Photo Library selection
         PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
@@ -196,10 +188,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.isToolbarHidden = true
 
         // Navigation "Select Photo Library items" button
-        if #available(iOS 14, *) {
-            if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
-                navigationItem.setRightBarButton(selectPhotoLibraryItemsButton, animated: true)
-            }
+        if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
+            navigationItem.setRightBarButton(selectPhotoLibraryItemsButton, animated: true)
         }
 
         // Register Low Power Mode status

@@ -398,7 +398,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        return kUTTypeMovie as String
+        return UTType.movie.identifier
     }
     
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {

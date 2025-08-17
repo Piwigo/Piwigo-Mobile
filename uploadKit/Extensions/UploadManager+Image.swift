@@ -467,14 +467,8 @@ extension UploadManager {
             
             // Prepare conversion to JPEG format
             var UTI: CFString, fileExt: String
-            if #available(iOS 14.0, *) {
-                UTI = UTType.jpeg.identifier as CFString
-                fileExt = UTType.jpeg.preferredFilenameExtension!
-            } else {
-                // Fallback on earlier versions
-                UTI = kUTTypeJPEG as CFString
-                fileExt = "jpeg"
-            }
+            UTI = UTType.jpeg.identifier as CFString
+            fileExt = UTType.jpeg.preferredFilenameExtension!
             upload.fileName = URL(fileURLWithPath: upload.fileName)
                 .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
             

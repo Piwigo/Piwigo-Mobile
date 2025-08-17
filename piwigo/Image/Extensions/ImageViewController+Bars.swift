@@ -10,24 +10,19 @@ import Foundation
 import UIKit
 import piwigoKit
 
+// MARK: Navigation Bar & Toolbar
 extension ImageViewController {
-    // MARK: Navigation Bar & Toolbar
     @MainActor
     func updateNavBar() {
         // Share button depends on Piwigo server version, user role and image data
         shareBarButton = getShareButton()
         // Favorites button depends on Piwigo server version, user role and image data
         favoriteBarButton = getFavoriteBarButton()
-
-        if #available(iOS 14, *) {
-            updateNavBarNew()
-        } else {
-            // Fallback on earlier versions
-            updateNavBarOld()
-        }
+        // Contextual menu
+        updateNavBarNew()
     }
     
-    @available(iOS 14, *) @MainActor
+    @MainActor
     private func updateNavBarNew() {
         // Interface depends on device and orientation
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
@@ -112,42 +107,7 @@ extension ImageViewController {
             updateBarForStdUserOrGuest(for: orientation)
         }
     }
-    
-    @MainActor
-    private func updateNavBarOld() {
-        // Interface depends on device and orientation
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-
-        // User with admin or upload rights can do everything
-        // WRONG =====> 'normal' user with upload access to the current category can edit images
-        // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-        if user.hasUploadRights(forCatID: categoryId) {
-            // Navigation bar
-            // The action menu is simply an Edit button
-            actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                              target: self, action: #selector(editImage))
-            actionBarButton?.accessibilityIdentifier = "edit"
-            navigationItem.leftBarButtonItems = [backButton, playBarButton].compactMap {$0}
-            navigationItem.rightBarButtonItems = [actionBarButton, muteBarButton, goToPageButton].compactMap { $0 }
-
-            // Navigation toolbar
-            isToolbarRequired = true
-            let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-            var toolbarItems = [UIBarButtonItem?]()
-            // [share - move - favorite - setThumb - delete]
-            toolbarItems.append(contentsOf: [shareBarButton, shareBarButton == nil ? nil : .space()])
-            toolbarItems.append(contentsOf: [moveBarButton, .space()])
-            toolbarItems.append(contentsOf: [favoriteBarButton, favoriteBarButton == nil ? nil : .space()])
-            toolbarItems.append(contentsOf: [setThumbnailBarButton, .space()])
-            toolbarItems.append(deleteBarButton)
-            setToolbarItems(toolbarItems.compactMap { $0 }, animated: false)
-            navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-        }
-        else {      // Case of users without admin or upload rights
-            updateBarForStdUserOrGuest(for: orientation)
-        }
-    }
-    
+        
     @MainActor
     private func updateBarForStdUserOrGuest(for orientation: UIInterfaceOrientation) {
         if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
@@ -158,13 +118,9 @@ extension ImageViewController {
                 var toolbarItems = [UIBarButtonItem?]()
                 // [ play - mute ] or [play - favorite - mute]
                 toolbarItems.append(favoriteBarButton == nil ? .space() : nil)
-                if #available(iOS 14.0, *) {
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                }
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
                 toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
-                if #available(iOS 14.0, *) {
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                }
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
                 toolbarItems.append(contentsOf: [favoriteBarButton, .space()])
                 toolbarItems.append(contentsOf: [muteBarButton, favoriteBarButton == nil ? .space() : nil])
                 
@@ -203,13 +159,9 @@ extension ImageViewController {
                 /// matches the width of the mute/unmute button.
                 var toolbarItems = [UIBarButtonItem?]()
                 // [ play - mute ]
-                if #available(iOS 14.0, *) {
-                    toolbarItems.append(contentsOf: [.space(), playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                }
+                toolbarItems.append(contentsOf: [.space(), playBarButton == nil ? nil : .fixedSpace(4.3333)])
                 toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
-                if #available(iOS 14.0, *) {
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                }
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
                 toolbarItems.append(contentsOf: [.space(), muteBarButton, .space()])
                 
                 // We present the toolbar only if it contains player controls
@@ -252,11 +204,8 @@ extension ImageViewController {
     // They are also disabled during an action
     @MainActor
     func setEnableStateOfButtons(_ state: Bool) {
-//        debugPrint("••> \(state ? "Enable" : "Disable") buttons")
         actionBarButton?.isEnabled = state
         shareBarButton?.isEnabled = state
-        moveBarButton.isEnabled = state
-        setThumbnailBarButton.isEnabled = state
         deleteBarButton.isEnabled = state
         favoriteBarButton?.isEnabled = state
         playBarButton?.isEnabled = state

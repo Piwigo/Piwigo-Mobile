@@ -11,10 +11,7 @@ import os
 import CoreData
 import Foundation
 import MobileCoreServices
-
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
+import UniformTypeIdentifiers
 
 /* Image instances represent photos and videos of a Piwigo server.
     - Each instance belongs to a Server.
@@ -108,41 +105,22 @@ public class Image: NSManagedObject {
             }
             let fileExt = URL(fileURLWithPath: newFile).pathExtension.lowercased()
             if fileExt.isEmpty == false {
-                if #available(iOS 14.0, *) {
-                    if let uti = UTType(filenameExtension: fileExt) {
-                        if uti.conforms(to: .movie) {
-                            if fileType != pwgImageFileType.video.rawValue {
-                                fileType = pwgImageFileType.video.rawValue
-                            }
-                        } else if uti.conforms(to: .pdf) {
-                            if fileType != pwgImageFileType.pdf.rawValue {
-                                fileType = pwgImageFileType.pdf.rawValue
-                            }
-                        } else {
-                            if fileType != pwgImageFileType.image.rawValue {
-                                fileType = pwgImageFileType.image.rawValue
-                            }
+                if let uti = UTType(filenameExtension: fileExt) {
+                    if uti.conforms(to: .movie) {
+                        if fileType != pwgImageFileType.video.rawValue {
+                            fileType = pwgImageFileType.video.rawValue
                         }
-                    } else if fileType != pwgImageFileType.image.rawValue {
-                        fileType = pwgImageFileType.image.rawValue
-                    }
-                } else {
-                    // Fallback to previous version
-                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() {
-                        if UTTypeConformsTo(uti, kUTTypeMovie) {
-                            if fileType != pwgImageFileType.video.rawValue {
-                                fileType = pwgImageFileType.video.rawValue
-                            }
-                        } else if UTTypeConformsTo(uti, kUTTypePDF) {
-                            if fileType != pwgImageFileType.pdf.rawValue {
-                                fileType = pwgImageFileType.pdf.rawValue
-                            }
-                        } else if fileType != pwgImageFileType.image.rawValue {
+                    } else if uti.conforms(to: .pdf) {
+                        if fileType != pwgImageFileType.pdf.rawValue {
+                            fileType = pwgImageFileType.pdf.rawValue
+                        }
+                    } else {
+                        if fileType != pwgImageFileType.image.rawValue {
                             fileType = pwgImageFileType.image.rawValue
                         }
-                    } else if fileType != pwgImageFileType.image.rawValue {
-                        fileType = pwgImageFileType.image.rawValue
                     }
+                } else if fileType != pwgImageFileType.image.rawValue {
+                    fileType = pwgImageFileType.image.rawValue
                 }
             }
         }

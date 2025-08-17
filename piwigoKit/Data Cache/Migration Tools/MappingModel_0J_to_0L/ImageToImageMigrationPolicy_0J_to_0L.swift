@@ -10,10 +10,7 @@ import os
 import CoreData
 import Foundation
 import MobileCoreServices
-
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
+import UniformTypeIdentifiers
 
 final class ImageToImageMigrationPolicy_0J_to_0L: NSEntityMigrationPolicy {
     // Constants
@@ -105,31 +102,16 @@ final class ImageToImageMigrationPolicy_0J_to_0L: NSEntityMigrationPolicy {
                     newImage.setValue(pwgImageFileType.image.rawValue, forKey: "fileType")
                 }
             } else {
-                if #available(iOS 14.0, *) {
-                    if let uti = UTType(filenameExtension: fileExt) {
-                        if uti.conforms(to: .movie) {
-                            newImage.setValue(pwgImageFileType.video.rawValue, forKey: "fileType")
-                        } else if uti.conforms(to: .pdf) {
-                            newImage.setValue(pwgImageFileType.pdf.rawValue, forKey: "fileType")
-                        } else {
-                            newImage.setValue(pwgImageFileType.image.rawValue, forKey: "fileType")
-                        }
+                if let uti = UTType(filenameExtension: fileExt) {
+                    if uti.conforms(to: .movie) {
+                        newImage.setValue(pwgImageFileType.video.rawValue, forKey: "fileType")
+                    } else if uti.conforms(to: .pdf) {
+                        newImage.setValue(pwgImageFileType.pdf.rawValue, forKey: "fileType")
                     } else {
                         newImage.setValue(pwgImageFileType.image.rawValue, forKey: "fileType")
                     }
                 } else {
-                    // Fallback to previous version
-                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() {
-                        if UTTypeConformsTo(uti, kUTTypeMovie) {
-                            newImage.setValue(pwgImageFileType.video.rawValue, forKey: "fileType")
-                        } else if UTTypeConformsTo(uti, kUTTypePDF) {
-                            newImage.setValue(pwgImageFileType.pdf.rawValue, forKey: "fileType")
-                        } else {
-                            newImage.setValue(pwgImageFileType.image.rawValue, forKey: "fileType")
-                        }
-                    } else {
-                        newImage.setValue(pwgImageFileType.image.rawValue, forKey: "fileType")
-                    }
+                    newImage.setValue(pwgImageFileType.image.rawValue, forKey: "fileType")
                 }
             }
         }

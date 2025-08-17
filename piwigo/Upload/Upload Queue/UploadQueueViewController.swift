@@ -76,14 +76,8 @@ class UploadQueueViewController: UIViewController {
         // Register section header view before using it
         queueTableView?.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
         
-        // Buttons
-        if #available(iOS 14.0, *) {
-            // Menu
-            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
-        } else {
-            // Fallback on earlier versions
-            actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
-        }
+        // Menu & button
+        actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
         

@@ -383,11 +383,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        if #available(iOS 14.0, *) {
-            return UTType.image.identifier
-        } else {
-            return kUTTypeImage as String
-        }
+        return UTType.image.identifier
     }
     
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {

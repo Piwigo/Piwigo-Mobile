@@ -442,17 +442,15 @@ extension Dictionary where Key == CFString, Value == Any {
         }
         
         // Update/add WebP dictionary from image metadata
-        if #available(iOS 14, *) {
-            if let imageWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
-                // Image contains a WebP dictionary
-                if var metadataWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
-                    // A WebP dictionary already exists -> update key/value pairs
-                    for (k, v) in imageWebPDictionary { metadataWebPDictionary[k] = v }
-                    metadata[kCGImagePropertyGPSDictionary] = metadataWebPDictionary
-                } else {
-                    // No WebP dictionary -> Add it
-                    metadata[kCGImagePropertyGPSDictionary] = imageWebPDictionary
-                }
+        if let imageWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
+            // Image contains a WebP dictionary
+            if var metadataWebPDictionary = metadata[kCGImagePropertyWebPDictionary] as? [CFString : Any] {
+                // A WebP dictionary already exists -> update key/value pairs
+                for (k, v) in imageWebPDictionary { metadataWebPDictionary[k] = v }
+                metadata[kCGImagePropertyGPSDictionary] = metadataWebPDictionary
+            } else {
+                // No WebP dictionary -> Add it
+                metadata[kCGImagePropertyGPSDictionary] = imageWebPDictionary
             }
         }
         
@@ -536,17 +534,15 @@ extension Dictionary where Key == CFString, Value == Any {
         }
 
         // Update/add TGA dictionary from image metadata
-        if #available(iOS 14, *) {
-            if let imageTGADictionary = imageMetadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
-                // Image contains a TGA dictionary
-                if var metadataTGADictionary = metadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
-                    // A TGA dictionary already exists -> update key/value pairs
-                    for (k, v) in imageTGADictionary { metadataTGADictionary[k] = v }
-                    metadata[kCGImagePropertyTIFFDictionary] = metadataTGADictionary
-                } else {
-                    // No TGA dictionary -> Add it
-                    metadata[kCGImagePropertyTGADictionary] = imageTGADictionary
-                }
+        if let imageTGADictionary = imageMetadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
+            // Image contains a TGA dictionary
+            if var metadataTGADictionary = metadata[kCGImagePropertyTGADictionary] as? [CFString : Any] {
+                // A TGA dictionary already exists -> update key/value pairs
+                for (k, v) in imageTGADictionary { metadataTGADictionary[k] = v }
+                metadata[kCGImagePropertyTIFFDictionary] = metadataTGADictionary
+            } else {
+                // No TGA dictionary -> Add it
+                metadata[kCGImagePropertyTGADictionary] = imageTGADictionary
             }
         }
         

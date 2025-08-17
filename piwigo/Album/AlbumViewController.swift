@@ -72,7 +72,6 @@ class AlbumViewController: UIViewController
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
-    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
@@ -645,18 +644,8 @@ class AlbumViewController: UIViewController
                 uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
                 
                 // Reset title and back button
-                if #available(iOS 14.0, *) {
-                    setTitleViewFromAlbumData() // with or without update info below the name
-                    navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
-                } else {
-                    // Fallback on earlier versions
-                    if size.width <= minWidthForDefaultBackButton, title?.count ?? 0 > 10 {
-                        // Will reset back button item
-                        title = nil
-                    } else {
-                        setTitleViewFromAlbumData()
-                    }
-                }
+                setTitleViewFromAlbumData() // with or without update info below the name
+                navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
                 
             default: // Other albums including the visible one
                 // Update position of buttons (recalculated after device rotation)
@@ -667,11 +656,7 @@ class AlbumViewController: UIViewController
                 
                 // Reset title and back button
                 setTitleViewFromAlbumData() // with or without update info below the name
-                if #available(iOS 14.0, *) {
-                    navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
-                } else {
-                    // Fallback on earlier versions
-                }
+                navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
             }
         })
     }
@@ -692,17 +677,6 @@ class AlbumViewController: UIViewController
         super.viewWillDisappear(animated)
         debugPrint("••> viewWillDisappear — Album #\(categoryId): \(albumData.name)")
 
-        // Keep title small when the screen width is small
-        if #available(iOS 14.0, *) {
-            // backButtonDisplayMode already set
-        } else {
-            // Fallback on earlier versions
-            if view.bounds.size.width <= minWidthForDefaultBackButton, title?.count ?? 0 > 10 {
-                // Will reset back button item
-                title = nil
-            }
-        }
-        
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
         PwgSession.shared.dataSession.getAllTasks { tasks in
@@ -942,11 +916,7 @@ class AlbumViewController: UIViewController
         if UIDevice.current.userInterfaceIdiom == .pad {
             viewController.modalPresentationStyle = .popover
             if viewController is SelectCategoryViewController {
-                if #available(iOS 14.0, *) {
-                    viewController.popoverPresentationController?.barButtonItem = actionBarButton
-                } else {
-                    viewController.popoverPresentationController?.barButtonItem = moveBarButton
-                }
+                viewController.popoverPresentationController?.barButtonItem = actionBarButton
                 viewController.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(viewController, animated: true)
             }

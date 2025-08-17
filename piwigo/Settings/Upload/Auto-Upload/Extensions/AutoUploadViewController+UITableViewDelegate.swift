@@ -116,30 +116,16 @@ extension AutoUploadViewController: UITableViewDelegate
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :
                 // Check autorisation to access Photo Library before uploading
-                if #available(iOS 14, *) {
-                    PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
-                        // Open local albums view controller
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.categoryId = Int32.min
-                        localAlbumsVC.user = self.user
-                        localAlbumsVC.delegate = self
-                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
-                    } onDeniedAccess: {
-                        PhotosFetch.shared.requestPhotoLibraryAccess(in: self)
-                    }
-                } else {
-                    // Fallback on earlier versions
-                    PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self) {
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.categoryId = Int32.min
-                        localAlbumsVC.user = self.user
-                        localAlbumsVC.delegate = self
-                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
-                    } onDeniedAccess: {
-                        PhotosFetch.shared.requestPhotoLibraryAccess(in: self)
-                    }
+                PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
+                    // Open local albums view controller
+                    let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                    guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                    localAlbumsVC.categoryId = Int32.min
+                    localAlbumsVC.user = self.user
+                    localAlbumsVC.delegate = self
+                    self.navigationController?.pushViewController(localAlbumsVC, animated: true)
+                } onDeniedAccess: {
+                    PhotosFetch.shared.requestPhotoLibraryAccess(in: self)
                 }
 
             case 1 /* Select Piwigo album*/ :

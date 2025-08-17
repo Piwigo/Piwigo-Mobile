@@ -55,9 +55,7 @@ class HelpViewController: UIViewController {
         pageViewController = children[0] as? UIPageViewController
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
-        if #available(iOS 14.0, *) {
-            pageControl.allowsContinuousInteraction = true
-        }
+        pageControl.allowsContinuousInteraction = true
         
         // Display first page
         pageDisplayed = 0

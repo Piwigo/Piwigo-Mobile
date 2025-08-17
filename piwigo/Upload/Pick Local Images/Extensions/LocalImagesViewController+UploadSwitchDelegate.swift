@@ -148,8 +148,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithID.append(2)     // i.e. use background uploading
         }
-        if #available(iOS 14, *),
-           NetworkVars.shared.usesUploadAsync,
+        if NetworkVars.shared.usesUploadAsync,
            (AppVars.shared.didWatchHelpViews & 0b00000000_01000000) == 0 {
             displayHelpPagesWithID.append(7)     // i.e. use auto-uploading
         }

@@ -20,7 +20,6 @@ class PhotosFetch: NSObject {
     
     // MARK: - Photo Library Access
     /// Called before saving photos to the Photo Library or uploading photo of the Library
-    @available(iOS 14, *)
     func checkPhotoLibraryAuthorizationStatus(for accessLevel: PHAccessLevel,
                                               for viewController: UIViewController?,
                                               onAccess doWithAccess: @escaping () -> Void,
@@ -101,70 +100,6 @@ class PhotosFetch: NSObject {
         @unknown default:
             debugPrint("unknown Photo Library authorization status")
         }
-    }
-
-    /// Used up to iOS 13
-    func checkPhotoLibraryAccessForViewController(_ viewController: UIViewController?,
-                                                  onAuthorizedAccess doWithAccess: @escaping () -> Void,
-                                                  onDeniedAccess doWithoutAccess: @escaping () -> Void) {
-        
-        // Check autorisation to access Photo Library
-        let status = PHPhotoLibrary.authorizationStatus()
-        switch status {
-            case .notDetermined:
-                // Request authorization to access photos
-                PHPhotoLibrary.requestAuthorization({ status in
-                    // Create "Photos access" in Settings app for Piwigo, return user's choice
-                    switch status {
-                        case .restricted:
-                            // Inform user that he/she cannot access the Photo library
-                            if viewController != nil {
-                                DispatchQueue.main.async {
-                                    self.showPhotosLibraryAccessRestricted(in: viewController)
-                                }
-                            }
-                            // Exceute next steps
-                            doWithoutAccess()
-                        case .denied:
-                            // Invite user to provide access to the Photo library
-                            if viewController != nil {
-                                DispatchQueue.main.async {
-                                    self.requestPhotoLibraryAccess(in: viewController)
-                                }
-                            }
-                            // Exceute next steps
-                            doWithoutAccess()
-                        default:
-                            // Retry as this should be fine
-                            DispatchQueue.main.async {
-                                doWithAccess()
-                            }
-                    }
-                })
-            case .restricted:
-                // Inform user that he/she cannot access the Photo library
-                if viewController != nil {
-                    DispatchQueue.main.async {
-                        self.showPhotosLibraryAccessRestricted(in: viewController)
-                    }
-                }
-                // Exceute next steps
-                doWithoutAccess()
-            case .denied:
-                // Invite user to provide access to the Photo library
-                if viewController != nil {
-                    DispatchQueue.main.async {
-                        self.requestPhotoLibraryAccess(in: viewController)
-                    }
-                }
-                // Exceute next steps
-                doWithoutAccess()
-            default:
-                // Should be fine
-                DispatchQueue.main.async {
-                    doWithAccess()
-                }
-            }
     }
 
     @MainActor
