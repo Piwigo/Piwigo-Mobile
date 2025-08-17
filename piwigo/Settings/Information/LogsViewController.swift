@@ -11,7 +11,6 @@ import OSLog
 import UIKit
 import piwigoKit
 
-@available(iOS 15.0, *)
 class LogsViewController: UIViewController {
     
     @IBOutlet weak var category: UILabel!
@@ -133,7 +132,6 @@ class LogsViewController: UIViewController {
 
 
 // MARK: - UIActivityItemSource
-@available(iOS 15.0, *)
 extension LogsViewController: UIActivityItemSource
 {
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {

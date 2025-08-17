@@ -98,15 +98,13 @@ class RenameFileViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = PwgColor.background
         navigationController?.navigationBar.backgroundColor = PwgColor.background
         
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = PwgColor.background
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+        /// which by default produces a transparent background, to all navigation bars.
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.configureWithOpaqueBackground()
+        barAppearance.backgroundColor = PwgColor.background
+        navigationController?.navigationBar.standardAppearance = barAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         
         // Header and example
         headerLabel.textColor = PwgColor.header

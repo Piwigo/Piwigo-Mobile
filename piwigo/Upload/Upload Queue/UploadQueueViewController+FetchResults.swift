@@ -53,11 +53,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate
         if reloadIdentifiers.isEmpty == false {
             // Animate only a non-empty UI
             let shouldAnimate = queueTableView.numberOfSections != 0
-            if #available(iOS 15.0, *) {
-                snapshot.reconfigureItems(Array(reloadIdentifiers))
-            } else {
-                snapshot.reloadItems(Array(reloadIdentifiers))
-            }
+            snapshot.reconfigureItems(Array(reloadIdentifiers))
             dataSource.apply(snapshot as Snaphot, animatingDifferences: shouldAnimate)
         }
         

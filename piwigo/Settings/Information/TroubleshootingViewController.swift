@@ -12,7 +12,6 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-@available(iOS 15, *)
 class TroubleshootingViewController: UIViewController {
     
     @IBOutlet private weak var piwigoLogo: UIImageView!
@@ -233,7 +232,6 @@ class TroubleshootingViewController: UIViewController {
 
 
 // MARK: - UITableViewDataSource Methods
-@available(iOS 15, *)
 extension TroubleshootingViewController: UITableViewDataSource
 {
     // MARK: - Sections
@@ -294,7 +292,6 @@ extension TroubleshootingViewController: UITableViewDataSource
 
 
 // MARK: - UITableViewDelegate Methods
-@available(iOS 15, *)
 extension TroubleshootingViewController: UITableViewDelegate
 {
     // MARK: - Headers

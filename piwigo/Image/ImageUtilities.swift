@@ -269,95 +269,37 @@ class ImageUtilities: NSObject {
             }
         }
         
-        // Downsample and save the returned thumbnail if necessary
-        if #available(iOS 15, *) {
-            // Retrieve image
-            guard let image = UIImage(contentsOfFile: imageURL.path)
-            else {
-                // Delete corrupted cached image file if any
-                try? FileManager.default.removeItem(at: imageURL)
-                return type.placeHolder
-            }
-            // Downsample image if needed
-            guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
-                  let downsampledImage = image.preparingThumbnail(of: optSize)
-            else {
-                return image
-            }
-            // Save the downsampled image in cache
-            saveDownsampledImage(downsampledImage, atPath: filePath)
-            return downsampledImage
-        }
+        // Retrieve image
+        guard let image = UIImage(contentsOfFile: imageURL.path)
         else {
-            // Retrieve the image source
-            let options = [kCGImageSourceShouldCache: false] as CFDictionary
-            guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, options),
-                  let downsampledImage = downsampledImage(from: imageSource, to: pointSize)
-            else {
-                // Can we use the downloaded file?
-                if let image = UIImage(contentsOfFile: imageURL.path) {
-                    return image
-                } else {
-                    // Delete corrupted cached image file
-                    try? FileManager.default.removeItem(at: imageURL)
-                    return type.placeHolder
-                }
-            }
-            saveDownsampledImage(downsampledImage, atPath: filePath)
-            return downsampledImage
+            // Delete corrupted cached image file if any
+            try? FileManager.default.removeItem(at: imageURL)
+            return type.placeHolder
         }
+        
+        // Downsample image if needed
+        guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+              let downsampledImage = image.preparingThumbnail(of: optSize)
+        else {
+            return image
+        }
+        
+        // Save the downsampled image in cache
+        saveDownsampledImage(downsampledImage, atPath: filePath)
+        return downsampledImage
     }
     
     static func downsample(image: UIImage, to pointSize: CGSize) -> UIImage {
         autoreleasepool {
             // Downsample image if needed
-            if #available(iOS 15, *) {
-                if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
-                   let downsampledImage = image.preparingThumbnail(of: optSize) {
-                    return downsampledImage
-                }
-            }
-            
-            // Fallback on earlier versions
-            let options = [kCGImageSourceShouldCache: false] as CFDictionary
-            if let imageData = image.jpegData(compressionQuality: 1.0),
-               let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
-               let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
+            if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+               let downsampledImage = image.preparingThumbnail(of: optSize) {
                 return downsampledImage
             }
             
             // Return original image
             return image
         }
-    }
-    
-    static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize) -> UIImage? {
-        // Check that it is possible to downsample the image
-        // by checking if it is possible to create a CGImaage from the image.
-        let index = CGImageSourceGetPrimaryImageIndex(imageSource)
-        let options = [kCGImageSourceShouldCache: false,
-                       kCGImagePropertyPixelWidth: true,
-                       kCGImagePropertyPixelHeight: true] as CFDictionary
-        if let imageRef = CGImageSourceCreateImageAtIndex(imageSource, index, options),
-           supportsPixelFormat(ofCGImage: imageRef) == false {
-            return nil
-        }
-        
-        // Downsample image if needed
-        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, index, options) as? [CFString : CFNumber],
-           let width = imageMetadata[kCGImagePropertyPixelWidth] as? CGFloat,
-           let height = imageMetadata[kCGImagePropertyPixelHeight] as? CGFloat,
-           let size = reducedSize(from: CGSizeMake(width, height), to: pointSize) {
-            let maxPixelSize = max(size.width, size.height)
-            let downsampleOptions = [kCGImageSourceShouldAllowFloat              : true,
-                                     kCGImageSourceShouldCacheImmediately        : true,
-                                     kCGImageSourceCreateThumbnailWithTransform  : true,
-                                     kCGImageSourceCreateThumbnailFromImageAlways: true,
-                                     kCGImageSourceThumbnailMaxPixelSize         : maxPixelSize] as [CFString : Any]
-            let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, index, downsampleOptions as CFDictionary)
-            return downsampledImage == nil ? nil : UIImage(cgImage: downsampledImage!)
-        }
-        return nil
     }
     
     private static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {

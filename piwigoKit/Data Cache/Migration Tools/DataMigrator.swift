@@ -200,17 +200,9 @@ public final class DataMigrator: NSObject {
                 
                 // Perform a migration
                 do {
-                    if #available(iOS 15, *) {
-                        try manager.migrateStore(from: currentURL, type: .sqlite, options: nil,
-                                                 mapping: migrationStep.mappingModel,
-                                                 to: tempStoreURL, type: .sqlite, options: nil)
-                    } else {
-                        // Fallback to previous version
-                        try manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType,
-                                                 options: nil, with: migrationStep.mappingModel,
-                                                 toDestinationURL: tempStoreURL,
-                                                 destinationType: NSSQLiteStoreType, destinationOptions: nil)
-                    }
+                    try manager.migrateStore(from: currentURL, type: .sqlite, options: nil,
+                                             mapping: migrationStep.mappingModel,
+                                             to: tempStoreURL, type: .sqlite, options: nil)
                 } catch let error {
                     // Timeout?
                     if let error = error as? DataMigrationError, error == .timeout {

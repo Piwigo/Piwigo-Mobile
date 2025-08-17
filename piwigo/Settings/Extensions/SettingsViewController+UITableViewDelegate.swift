@@ -164,13 +164,7 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            var row = indexPath.row
-            if #available(iOS 15, *) {
-                // LogStore available
-            } else {
-                row += 1
-            }
-            switch row {
+            switch indexPath.row {
             case 0 /* Error Logs */,
                 1 /* Support Forum */:
                 result = true
@@ -433,20 +427,12 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            var row = indexPath.row
-            if #available(iOS 15, *) {
-                // LogStore available
-            } else {
-                row += 1
-            }
-            switch row {
+            switch indexPath.row {
             case 0 /* Open Logs page */:
-                if #available(iOS 15, *) {
-                    let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
-                    guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
-                    else { preconditionFailure("Could not load TroubleshootingViewController") }
-                    navigationController?.pushViewController(errorLogsVC, animated: true)
-                }
+                let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
+                guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
+                else { preconditionFailure("Could not load TroubleshootingViewController") }
+                navigationController?.pushViewController(errorLogsVC, animated: true)
             case 1 /* Open Piwigo support forum webpage with default browser */:
                 if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
                     UIApplication.shared.open(url)

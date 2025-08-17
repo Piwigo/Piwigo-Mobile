@@ -174,11 +174,7 @@ class ImageViewController: UIViewController {
         toolbar?.barTintColor = PwgColor.background.withAlphaComponent(0.9)
         toolbar?.standardAppearance = toolbarAppearance
         toolbar?.compactAppearance = toolbarAppearance
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            toolbar?.scrollEdgeAppearance = toolbarAppearance
-        }
+        toolbar?.scrollEdgeAppearance = toolbarAppearance
     }
 
     override func viewWillAppear(_ animated: Bool) {

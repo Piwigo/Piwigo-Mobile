@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import piwigoKit
 
-@available(iOS 15, *)
 class JsonViewController: UIViewController {
     
     @IBOutlet weak var method: UILabel!
@@ -124,7 +123,6 @@ class JsonViewController: UIViewController {
 
 
 // MARK: - UIActivityItemSource
-@available(iOS 15.0, *)
 extension JsonViewController: UIActivityItemSource
 {
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
