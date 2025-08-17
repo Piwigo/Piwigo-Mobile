@@ -41,11 +41,11 @@ class AlbumUtilities: NSObject {
     static let kImageDetailsMarginsSpacing = CGFloat(16)    // Left and right margins for image details cells
     
     
-    // MARK: - Piwigo Server Methods    
+    // MARK: - Piwigo Server Methods
     static func create(withName name:String, description: String, status: String,
                        inAlbumWithId parentAlbumId: Int32,
                        completion: @escaping (Int32) -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["name"    : name,
@@ -61,8 +61,7 @@ class AlbumUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -76,7 +75,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not create album
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -90,7 +89,7 @@ class AlbumUtilities: NSObject {
     
     static func setInfos(_ albumId: Int32, withName name:String, description: String,
                          completion: @escaping () -> Void,
-                         failure: @escaping (Error) -> Void) {
+                         failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
@@ -105,8 +104,7 @@ class AlbumUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -117,7 +115,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album data
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -131,7 +129,7 @@ class AlbumUtilities: NSObject {
     
     static func move(_ albumId: Int32, intoAlbumWithId newParentId: Int32,
                      completion: @escaping () -> Void,
-                     failure: @escaping (Error) -> Void) {
+                     failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "parent"      : newParentId,
@@ -145,8 +143,7 @@ class AlbumUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -157,7 +154,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not move album
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -171,7 +168,7 @@ class AlbumUtilities: NSObject {
     
     static func calcOrphans(_ catID: Int32,
                             completion: @escaping (Int64) -> Void,
-                            failure: @escaping (Error) -> Void) {
+                            failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id": catID]
         
@@ -183,15 +180,14 @@ class AlbumUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 // Data retrieved successfully?
                 guard let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan else {
                     // Could not retrieve number of orphans
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                     return
                 }
                 
@@ -208,7 +204,7 @@ class AlbumUtilities: NSObject {
     
     static func delete(_ catID: Int32, inMode mode: pwgAlbumDeletionMode,
                        completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : catID,
                                           "photo_deletion_mode" : mode.pwgArg,
@@ -222,8 +218,7 @@ class AlbumUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -237,7 +232,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not delete album
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
                 
             case .failure(let error):
@@ -251,7 +246,7 @@ class AlbumUtilities: NSObject {
     
     static func setRepresentative(_ albumData: Album, with imageData: Image,
                                   completion: @escaping () -> Void,
-                                  failure: @escaping (Error) -> Void) {
+                                  failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
                                           "image_id"    : imageData.pwgID]
@@ -264,8 +259,7 @@ class AlbumUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -279,7 +273,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album thumbnail
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):

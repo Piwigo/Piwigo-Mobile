@@ -38,7 +38,7 @@ public class Image: NSManagedObject {
         
         // Update the image only if the Id has a value.
         guard let newPwgID = imageData.id else {
-            throw ImageError.missingData
+            throw PwgKitError.missingImageData
         }
         if uuid.isEmpty {
             uuid = UUID().uuidString

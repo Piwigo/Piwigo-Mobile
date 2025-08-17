@@ -20,7 +20,7 @@ extension PwgSession
               let imageURL = imageURL, imageURL.isFileURL == false,
               let serverID = serverID, serverID.isEmpty == false
         else {
-            failure(PwgSessionError.failedToPrepareDownload)
+            failure(PwgKitError.failedToPrepareDownload)
             return
         }
         

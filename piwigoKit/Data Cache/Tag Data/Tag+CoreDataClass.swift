@@ -25,9 +25,8 @@ public class Tag: NSManagedObject {
         
         // Update the tag only if the Id and Name properties have values.
         // NB: Only the ID and the url are returned by pwg.categories.getImages
-        guard let newId = tagProperties.id?.int32Value else {
-                throw TagError.missingData
-        }
+        guard let newId = tagProperties.id?.int32Value
+        else { throw PwgKitError.missingTagData }
         if tagId != newId {
             tagId = newId
         }

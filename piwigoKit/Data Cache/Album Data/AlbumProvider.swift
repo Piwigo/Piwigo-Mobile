@@ -91,7 +91,7 @@ public class AlbumProvider: NSObject {
                 // Get current User object (will create Server object if needed)
                 guard let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                       into: taskContext) as? Album else {
-                    debugPrint(AlbumError.creationError.localizedDescription)
+                    debugPrint(PwgKitError.albumCreationError.localizedDescription)
                     return
                 }
                 
@@ -128,7 +128,7 @@ public class AlbumProvider: NSObject {
      Fetches the album feed from the remote Piwigo server, and imports it into Core Data.
      */
     public func fetchAlbums(forUser user: User, inParentWithId parentId: Int32, recursively: Bool = false,
-                            thumbnailSize: pwgImageSize, completion: @escaping (Error?) -> Void) {
+                            thumbnailSize: pwgImageSize, completion: @escaping (PwgKitError?) -> Void) {
         // Smart album requested?
         if parentId < 0 { fatalError("••> Cannot fetch data of smart album!") }
         debugPrint("••> Fetch albums in parent with ID: \(parentId)")
@@ -150,8 +150,7 @@ public class AlbumProvider: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    completion(error)
+                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -169,10 +168,12 @@ public class AlbumProvider: NSObject {
                     // Import the albumJSON into Core Data.
                     try self.importAlbums(pwgData.data, recursively: recursively, inParent: parentId)
                     completion(nil)
-                    
-                } catch {
-                    // Alert the user if data cannot be digested.
-                    completion(error)
+                }
+                catch let error as DecodingError {
+                    completion(.decodingFailed(innerError: error))
+                }
+                catch {
+                    completion(.otherError(innerError: error))
                 }
 
             case .failure(let error):
@@ -185,7 +186,7 @@ public class AlbumProvider: NSObject {
     }
     
     private func fetchCommunityAlbums(inParentWithId parentId: Int32, recursively: Bool = false,
-                                      albums: [CategoryData], completion: @escaping (Error?) -> Void) {
+                                      albums: [CategoryData], completion: @escaping (PwgKitError?) -> Void) {
         debugPrint("••> Fetch Community albums in parent with ID: \(parentId)")
         // Prepare parameters
         let paramsDict: [String : Any] = ["cat_id"    : parentId,
@@ -201,7 +202,7 @@ public class AlbumProvider: NSObject {
                 do {
                     // Piwigo error?
                     if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                        let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                         debugPrint("••> fetchCommunityAlbums error: \(error)")
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                         completion(nil)
@@ -233,8 +234,12 @@ public class AlbumProvider: NSObject {
                     // Data cannot be digested
                     do {
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                    } catch {
-                        completion(error)
+                    }
+                    catch let error as DecodingError {
+                        completion(.decodingFailed(innerError: error))
+                    }
+                    catch {
+                        completion(.otherError(innerError: error))
                     }
                 }
                 
@@ -244,8 +249,12 @@ public class AlbumProvider: NSObject {
                 /// - Cannot decode data returned by Piwigo server
                 do {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                } catch {
-                    completion(error)
+                }
+                catch let error as DecodingError {
+                    completion(.decodingFailed(innerError: error))
+                }
+                catch {
+                    completion(.otherError(innerError: error))
                 }
             }
         }
@@ -391,9 +400,9 @@ public class AlbumProvider: NSObject {
                         // Do not delete this album during the last iteration of the import
                         albumToDeleteIDs.remove(ID)
                     }
-                    catch AlbumError.missingData {
+                    catch PwgKitError.missingAlbumData {
                         // Could not perform the update
-                        debugPrint(AlbumError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingAlbumData.localizedDescription)
                     }
                     catch {
                         debugPrint(error.localizedDescription)
@@ -403,7 +412,7 @@ public class AlbumProvider: NSObject {
                     // Create an Album managed object on the private queue context.
                     guard let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                           into: bckgContext) as? Album else {
-                        debugPrint(AlbumError.creationError.localizedDescription)
+                        debugPrint(PwgKitError.albumCreationError.localizedDescription)
                         return
                     }
                     
@@ -416,9 +425,9 @@ public class AlbumProvider: NSObject {
                             user.removeUploadRightsToAlbum(withID: ID)
                         }
                     }
-                    catch AlbumError.missingData {
+                    catch PwgKitError.missingAlbumData {
                         // Delete invalid Album from the private queue context.
-                        debugPrint(AlbumError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingAlbumData.localizedDescription)
                         bckgContext.delete(album)
                     }
                     catch {
@@ -507,7 +516,7 @@ public class AlbumProvider: NSObject {
                       let parent = try bckgContext.existingObject(with: parentObjectID) as? Album,
                       let album = NSEntityDescription.insertNewObject(forEntityName: "Album",
                                                                       into: bckgContext) as? Album else {
-                    debugPrint(AlbumError.creationError.localizedDescription)
+                    debugPrint(PwgKitError.albumCreationError.localizedDescription)
                     return
                 }
                 
@@ -535,9 +544,9 @@ public class AlbumProvider: NSObject {
                         updateParents(adding: album)
                     }
                 }
-                catch AlbumError.missingData {
+                catch PwgKitError.missingAlbumData {
                     // Delete invalid Album from the private queue context.
-                    debugPrint(AlbumError.missingData.localizedDescription)
+                    debugPrint(PwgKitError.missingAlbumData.localizedDescription)
                     bckgContext.delete(album)
                 }
                 catch {

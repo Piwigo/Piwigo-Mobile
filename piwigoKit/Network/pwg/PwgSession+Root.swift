@@ -22,8 +22,7 @@ public extension PwgSession {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
 #if DEBUG
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    debugPrint(error)
+                    debugPrint(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
 #endif
                     return
                 }

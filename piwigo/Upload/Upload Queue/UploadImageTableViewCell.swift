@@ -275,11 +275,11 @@ class UploadImageTableViewCell: UITableViewCell {
         } else {
             switch upload.state {
             case .preparingError, .preparingFail:
-                error = UploadError.missingAsset.localizedDescription
+                error = PwgKitError.missingAsset.localizedDescription
             case .formatError:
-                error = UploadError.wrongDataFormat.localizedDescription
+                error = PwgKitError.wrongDataFormat.localizedDescription
             case .uploadingError, .uploadingFail, .finishingError:
-                error = PwgSessionError.networkUnavailable.localizedDescription
+                error = PwgKitError.networkUnavailable.localizedDescription
             default:
                 error = "— ? —"
             }

@@ -100,7 +100,7 @@ extension UploadManager {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     self.didFinishTransfer(for: upload, error: error)
                     return
                 }
@@ -112,7 +112,7 @@ extension UploadManager {
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
-                    self.didFinishTransfer(for: upload, error: PwgSessionError.unexpectedError)
+                    self.didFinishTransfer(for: upload, error: PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -158,7 +158,7 @@ extension UploadManager {
 
     func processImages(withIds imageIds: String,
                        inCategory categoryId: Int32,
-                       completionHandler: @escaping (Error?) -> Void) -> (Void) {
+                       completion: @escaping (PwgKitError?) -> Void) -> (Void) {
         // Launch request
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
@@ -175,27 +175,26 @@ extension UploadManager {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSessionError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    completionHandler(error)
+                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 if pwgData.success {
-                    completionHandler(nil)
+                    completion(nil)
                 } else {
-                    completionHandler(UploadError.wrongJSONobject)
+                    completion(PwgKitError.wrongJSONobject)
                 }
                 
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
                 /// - Cannot decode data returned by Piwigo server
-                completionHandler(error)
+                completion(error)
             }
         }
     }
 
-    private func didFinishTransfer(for upload: Upload, error: Error?) {
+    private func didFinishTransfer(for upload: Upload, error: PwgKitError?) {
         // Error?
         if let error = error {
             upload.setState(.finishingError, error: error, save: false)
@@ -239,7 +238,7 @@ extension UploadManager {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSessionError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     debugPrint("••> moderateImages(): \(error.localizedDescription)")
                     completionHandler(false, [])
                     return

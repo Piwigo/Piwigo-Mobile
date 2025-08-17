@@ -13,7 +13,7 @@ public extension PwgSession {
     
     func getIDofImage(withMD5 md5sum: String,
                       completion: @escaping (Int64?) -> Void,
-                      failure: @escaping (Error?) -> Void) {
+                      failure: @escaping (PwgKitError) -> Void) {
         // Launch request
         let paramDict: [String : Any] = ["md5sum_list": md5sum]
         postRequest(withMethod: pwgImagesExist, paramDict: paramDict,
@@ -24,8 +24,7 @@ public extension PwgSession {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
 
@@ -46,7 +45,7 @@ public extension PwgSession {
 
     func setInfos(with paramsDict: [String: Any],
                   completion: @escaping () -> Void,
-                  failure: @escaping (Error) -> Void) {
+                  failure: @escaping (PwgKitError) -> Void) {
         postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                     countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { result in
@@ -54,8 +53,7 @@ public extension PwgSession {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -66,7 +64,7 @@ public extension PwgSession {
                 }
                 else {
                     // Could not set image parameters
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):

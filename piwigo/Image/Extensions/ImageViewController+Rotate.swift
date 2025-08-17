@@ -110,7 +110,7 @@ extension ImageViewController
     @MainActor
     private func rotateImageInDatabaseError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -120,7 +120,7 @@ extension ImageViewController
             // Plugin rotateImage installed?
             let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
             var message = ""
-            if let pwgError = error as? PwgSessionError, pwgError.pluginMissing {
+            if let pwgError = error as? PwgKitError, pwgError.pluginMissing {
                 message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
             }
             else {

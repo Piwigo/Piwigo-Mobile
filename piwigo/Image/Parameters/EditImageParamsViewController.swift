@@ -334,7 +334,7 @@ class EditImageParamsViewController: UIViewController
     private func showUpdatePropertiesError(_ error: Error, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?
-        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }

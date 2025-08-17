@@ -28,7 +28,7 @@ public class Server: NSManagedObject {
         // Server path
         guard path.isEmpty == false,
               let _ = URL(string: NetworkVars.shared.serverProtocol + path) else {
-            throw ServerError.wrongURL
+            throw PwgKitError.wrongServerURL
         }
         if self.path != path {
             self.path = path

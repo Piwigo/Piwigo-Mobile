@@ -228,7 +228,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     DispatchQueue.main.async {
                         topViewController?.hideHUD {
                             topViewController?.dismissPiwigoError(
@@ -258,7 +258,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 else {
                     // Could not change the filename
                     DispatchQueue.main.async {
-                        self.renameImageFileError(PwgSessionError.unexpectedError, topViewController: topViewController)
+                        self.renameImageFileError(PwgKitError.unexpectedError, topViewController: topViewController)
                     }
                     return
                 }

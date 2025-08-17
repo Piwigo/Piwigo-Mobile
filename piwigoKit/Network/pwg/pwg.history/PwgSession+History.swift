@@ -13,7 +13,7 @@ public extension PwgSession {
     
     func logVisitOfImage(withID imageID: Int64, asDownload: Bool,
                          completion: @escaping () -> Void,
-                         failure: @escaping (Error?) -> Void) {
+                         failure: @escaping (PwgKitError) -> Void) {
         // Launch request
         let paramDict: [String : Any] = ["image_id": imageID,
                                          "is_download": asDownload]
@@ -25,8 +25,7 @@ public extension PwgSession {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
 

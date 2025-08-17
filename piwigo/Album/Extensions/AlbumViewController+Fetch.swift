@@ -200,7 +200,7 @@ extension AlbumViewController
             completion()
             return
         }
-        failed: { error in
+        failure: { error in
             DispatchQueue.main.async { [self] in
                 // Done fetching images
                 // ► Remove current album from list of album being fetched
@@ -256,7 +256,7 @@ extension AlbumViewController
         }
         
         // Returns to login view only when credentials are rejected
-        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             // Invalid Piwigo or HTTP credentials
             navigationController?.showHUD(
                 withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
@@ -265,7 +265,7 @@ extension AlbumViewController
                 buttonTarget: self, buttonSelector: #selector(hideLoading),
                 inMode: .text)
         }
-        else if let pwgError = error as? PwgSessionError, pwgError.hasMissingParameter {
+        else if let pwgError = error as? PwgKitError, pwgError.hasMissingParameter {
             // Hide HUD
             navigationController?.hideHUD() { [self] in
                 // End refreshing if needed
@@ -354,7 +354,7 @@ extension AlbumViewController
             DispatchQueue.main.async { [self] in
                 self.mainContext.saveIfNeeded()
             }
-        } failed: { error in
+        } failure: { error in
             // Remove favorite album from list of album being fetched
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
         }

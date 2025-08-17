@@ -12,7 +12,7 @@ import Foundation
 public extension PwgSession {
     
     func communityGetStatus(completion: @escaping () -> Void,
-                            failure: @escaping (Error) -> Void) {
+                            failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Retrieve community status.")
         }
@@ -24,8 +24,7 @@ public extension PwgSession {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -33,7 +32,7 @@ public extension PwgSession {
                 guard pwgData.realUser.isEmpty == false,
                       let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
                 else {
-                    failure(UserError.unknownUserStatus)
+                    failure(PwgKitError.unknownUserStatus)
                     return
                 }
                 NetworkVars.shared.userStatus = userStatus

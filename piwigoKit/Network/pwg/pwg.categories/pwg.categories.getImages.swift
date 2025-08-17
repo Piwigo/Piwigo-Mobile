@@ -59,7 +59,7 @@ public struct CategoriesGetImagesJSON: Decodable {
             catch {
                 // Returns an empty array => No category
                 errorCode = -1
-                errorMessage = ImageError.wrongDataFormat.localizedDescription
+                errorMessage = PwgKitError.wrongDataFormat.localizedDescription
             }
         }
         else if (status == "fail")

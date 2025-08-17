@@ -103,7 +103,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -138,7 +138,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -185,7 +185,7 @@ extension UploadManager
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Update upload request
             didEndPreparation()
@@ -227,14 +227,14 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
         }
         else {
             // Unknown type
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -246,7 +246,7 @@ extension UploadManager
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             self.didEndPreparation()
             return
@@ -314,7 +314,7 @@ extension UploadManager
         }
         else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -354,7 +354,7 @@ extension UploadManager
             }
 
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -383,7 +383,7 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -391,7 +391,7 @@ extension UploadManager
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -401,7 +401,7 @@ extension UploadManager
             fallthrough
         default:
             // Update state of upload request: Unknown format
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()

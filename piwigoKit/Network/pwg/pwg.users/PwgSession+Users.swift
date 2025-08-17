@@ -28,8 +28,7 @@ public extension PwgSession {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
 #if DEBUG
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    debugPrint(error)
+                    debugPrint(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
 #endif
                     return
                 }
@@ -52,7 +51,7 @@ public extension PwgSession {
     
     static func setRecentPeriod(_ recentPeriod: Int, forUserWithID pwgID: Int16,
                                 completion: @escaping (Bool) -> Void,
-                                failure: @escaping (Error) -> Void) {
+                                failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["user_id"       : pwgID,
@@ -68,8 +67,7 @@ public extension PwgSession {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 

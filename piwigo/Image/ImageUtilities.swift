@@ -17,7 +17,7 @@ class ImageUtilities: NSObject {
     // MARK: - Piwigo Server Methods
     static func rotate(_ image: Image, by angle: Double,
                        completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for rotating image
         let paramsDict: [String : Any] = ["image_id"  : image.pwgID,
                                           "angle"     : angle * 180.0 / .pi,
@@ -32,8 +32,7 @@ class ImageUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -47,7 +46,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not rotate image
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -62,7 +61,7 @@ class ImageUtilities: NSObject {
     static func setCategory(_ albumID: Int32, forImageIDs listOfImageIds: [Int64],
                             withAction action: pwgImagesSetCategoryAction,
                             completion: @escaping () -> Void,
-                            failure: @escaping (Error) -> Void) {
+                            failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"    : listOfImageIds,
                                           "category_id" : albumID,
@@ -77,8 +76,7 @@ class ImageUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -89,7 +87,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not associate/dissociate/move images
-                    failure(PwgSessionError.unexpectedError as Error)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -103,7 +101,7 @@ class ImageUtilities: NSObject {
 
     static func delete(_ images: Set<Image>,
                        completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
@@ -117,8 +115,7 @@ class ImageUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -131,7 +128,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -145,7 +142,7 @@ class ImageUtilities: NSObject {
     
     static func addToFavorites(_ imageData: Image,
                                completion: @escaping () -> Void,
-                               failure: @escaping (Error) -> Void) {
+                               failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
@@ -157,8 +154,7 @@ class ImageUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -169,7 +165,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):
@@ -183,7 +179,7 @@ class ImageUtilities: NSObject {
     
     static func removeFromFavorites(_ imageData: Image,
                                     completion: @escaping () -> Void,
-                                    failure: @escaping (Error) -> Void) {
+                                    failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
@@ -195,8 +191,7 @@ class ImageUtilities: NSObject {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -207,7 +202,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
 
             case .failure(let error):

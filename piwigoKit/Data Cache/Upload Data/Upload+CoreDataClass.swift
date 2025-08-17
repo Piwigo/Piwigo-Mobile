@@ -26,7 +26,7 @@ public class Upload: NSManagedObject {
         // Update the upload request only if the Id and category properties have values.
         guard uploadProperties.localIdentifier.count > 0,
               Int64(uploadProperties.category) != 0 else {
-            throw UploadError.missingData
+            throw PwgKitError.missingUploadData
         }
         // Local identifier of the image to upload
         if localIdentifier != uploadProperties.localIdentifier {

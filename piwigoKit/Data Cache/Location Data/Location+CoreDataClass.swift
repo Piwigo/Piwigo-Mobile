@@ -28,7 +28,7 @@ public class Location: NSManagedObject {
         // Update the location only if the latitude and longitude properties have values.
         guard let newLatitude = locationProperties.latitude,
               let newLongitude = locationProperties.longitude else {
-                throw LocationError.missingData
+                throw PwgKitError.missingLocationData
         }
         latitude = newLatitude as Double
         longitude = newLongitude as Double

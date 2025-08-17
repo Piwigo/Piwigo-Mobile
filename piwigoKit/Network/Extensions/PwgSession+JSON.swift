@@ -14,7 +14,7 @@ extension PwgSession
     public func postRequest<T: Decodable>(withMethod method: String, paramDict: [String: Any],
                                           jsonObjectClientExpectsToReceive: T.Type,
                                           countOfBytesClientExpectsToReceive: Int64,
-                                          completion: @escaping (Result<T, PwgSessionError>) -> Void) {
+                                          completion: @escaping (Result<T, PwgKitError>) -> Void) {
         // Create POST request
         let url = URL(string: NetworkVars.shared.service + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
@@ -47,15 +47,15 @@ extension PwgSession
                 
                 // No error, check that we received a valid response
                 guard var jsonData = data, let httpResponse = response as? HTTPURLResponse
-                else { throw PwgSessionError.invalidStatusCode(statusCode: -1) }
+                else { throw PwgKitError.invalidStatusCode(statusCode: -1) }
                 
                 // Valid response, check the absence of HTTP error
                 guard (200...299).contains(httpResponse.statusCode)
-                else { throw PwgSessionError.invalidStatusCode(statusCode: httpResponse.statusCode) }
+                else { throw PwgKitError.invalidStatusCode(statusCode: httpResponse.statusCode) }
                 
                 // Check that we have received some data
                 guard var jsonData = data, jsonData.isEmpty == false
-                else { throw PwgSessionError.emptyJSONobject }
+                else { throw PwgKitError.emptyJSONobject }
                 
                 // Data returned, try decoding JSON object
                 do {
@@ -116,7 +116,7 @@ extension PwgSession
             catch let error as URLError {
                 completion(.failure(.requestFailed(innerError: error)))
             }
-            catch let error as PwgSessionError {
+            catch let error as PwgKitError {
                 completion(.failure(error))
             }
             catch {

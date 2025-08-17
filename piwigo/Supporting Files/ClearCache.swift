@@ -14,7 +14,7 @@ import uploadKit
 class ClearCache: NSObject {
     
     @MainActor
-    static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgSessionError) {
+    static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgKitError) {
         var title = "", message = ""
         switch error {
         case .incompatiblePwgVersion:

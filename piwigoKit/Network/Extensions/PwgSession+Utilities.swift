@@ -176,7 +176,7 @@ extension PwgSession {
                 PwgSession.shared.sessionGetStatus { _ in
                     // Check Piwigo server version
                     if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                        failure(PwgSessionError.incompatiblePwgVersion) }
+                        failure(PwgKitError.incompatiblePwgVersion) }
                     else {
                         completion()
                     }
@@ -190,7 +190,7 @@ extension PwgSession {
             PwgSession.shared.sessionGetStatus { _ in
                 // Check Piwigo server version
                 if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                    failure(PwgSessionError.incompatiblePwgVersion) }
+                    failure(PwgKitError.incompatiblePwgVersion) }
                 else {
                     completion()
                 }

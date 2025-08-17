@@ -89,7 +89,7 @@ public class UserProvider: NSObject {
                 guard let server = serverProvider.getServer(inContext: taskContext, atPath: path),
                       let user = NSEntityDescription.insertNewObject(forEntityName: "User",
                                                                      into: taskContext) as? User else {
-                    debugPrint(UserError.creationError.localizedDescription)
+                    debugPrint(PwgKitError.userCreationError.localizedDescription)
                     return
                 }
                 

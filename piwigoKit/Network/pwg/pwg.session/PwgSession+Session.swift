@@ -13,7 +13,7 @@ public extension PwgSession {
     
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
-                      failure: @escaping (Error) -> Void) {
+                      failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             #if DEBUG
             PwgSession.logger.notice("Open session for \(username, privacy: .public).")
@@ -33,8 +33,7 @@ public extension PwgSession {
                 // Decode the JSON object and check if the login was successful
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -51,7 +50,7 @@ public extension PwgSession {
     }
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
-                                 failure: @escaping (Error) -> Void) {
+                                 failure: @escaping (PwgKitError) -> Void) {
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
@@ -60,14 +59,13 @@ public extension PwgSession {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 // No status returned?
                 guard let data = pwgData.data else {
-                    failure(PwgSessionError.authenticationFailed)
+                    failure(PwgKitError.authenticationFailed)
                     return
                 }
 
@@ -161,7 +159,7 @@ public extension PwgSession {
                         NetworkVars.shared.userStatus = userStatus
                     }
                 } else {
-                    failure(UserError.unknownUserStatus)
+                    failure(PwgKitError.unknownUserStatus)
                     return
                 }
 
@@ -191,7 +189,7 @@ public extension PwgSession {
     }
 
     func sessionLogout(completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Close session.")
         }
@@ -203,8 +201,7 @@ public extension PwgSession {
             case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
 

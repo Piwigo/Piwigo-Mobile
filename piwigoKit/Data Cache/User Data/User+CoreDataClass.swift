@@ -27,7 +27,7 @@ public class User: NSManagedObject {
                 withName name: String = "", lastUsed: Date = Date()) throws {
         // Check user's status
         guard pwgUserStatus.allCases.contains(userStatus) else {
-            throw UserError.unknownUserStatus
+            throw PwgKitError.unknownUserStatus
         }
         
         // Server

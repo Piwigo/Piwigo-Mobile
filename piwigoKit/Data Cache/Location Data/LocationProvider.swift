@@ -212,7 +212,7 @@ public class LocationProvider: NSObject {
             // Create a Location managed object on the private queue context.
             guard let newLocation = NSEntityDescription.insertNewObject(forEntityName: "Location", into: taskContext) as? Location
             else {
-                debugPrint(LocationError.creationError.localizedDescription)
+                debugPrint(PwgKitError.locationCreationError.localizedDescription)
                 return
             }
             
@@ -220,9 +220,9 @@ public class LocationProvider: NSObject {
             do {
                 try newLocation.update(with: locationData)
             }
-            catch LocationError.missingData {
+            catch PwgKitError.missingLocationData {
                 // Delete invalid Location from the private queue context.
-                debugPrint(LocationError.missingData.localizedDescription)
+                debugPrint(PwgKitError.missingLocationData.localizedDescription)
                 taskContext.delete(newLocation)
             }
             catch {

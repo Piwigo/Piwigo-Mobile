@@ -60,7 +60,7 @@ public struct UsersGetListJSON: Decodable {
             catch {
                 // Returns an empty array => No user
                 errorCode = -1
-                errorMessage = UserError.wrongDataFormat.localizedDescription
+                errorMessage = PwgKitError.wrongDataFormat.localizedDescription
             }
         }
         else if (status == "fail")

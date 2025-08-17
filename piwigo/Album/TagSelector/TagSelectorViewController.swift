@@ -115,13 +115,13 @@ class TagSelectorViewController: UITableViewController {
     @MainActor
     private func didFetchTagsWithError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError, pwgError.requiresLogout {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
 
         // Report error
-        let title = TagError.fetchFailed.localizedDescription
+        let title = PwgKitError.tagCreationError.localizedDescription
         self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
     }
     

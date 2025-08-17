@@ -11,7 +11,7 @@ import Foundation
 public extension PwgSession {
     
     static func getGroupsInfo(completion: @escaping ([GroupsGetInfo]) -> Void,
-                              failure: @escaping (Error) -> Void) {
+                              failure: @escaping (PwgKitError) -> Void) {
         
         // Collect data from server
         let JSONsession = PwgSession.shared
@@ -23,8 +23,7 @@ public extension PwgSession {
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
 #if DEBUG
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    debugPrint(error)
+                    debugPrint(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
 #endif
                     return
                 }
