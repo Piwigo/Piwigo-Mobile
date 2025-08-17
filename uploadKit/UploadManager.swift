@@ -37,18 +37,18 @@ public class UploadManager: NSObject {
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
     lazy var acceptedImageExtensions: [String] = {
-        let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
-        var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-        if #available(iOS 14.3, *) {
-            fileExtensions.append("dng")    // i.e. Apple ProRAW
-            return fileExtensions
-        } else {
-            // Fallback on earlier version
-            return fileExtensions
+        var utiTypes: [UTType] = [.ico, .icns,
+                                  .png, .gif, .jpeg, .webP, .tiff, .bmp, .svg, .rawImage,
+                                  .heic, .heif]
+        if #available(iOS 18.2, *) {
+            utiTypes += [.jpegxl]
         }
+        return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
     }()
     lazy var acceptedMovieExtensions: [String] = {
-        let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
+        let utiTypes: [UTType] = [.quickTimeMovie,
+                                  .mpeg, .mpeg2Video, .mpeg2TransportStream,
+                                  .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
         return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
     }()
     
