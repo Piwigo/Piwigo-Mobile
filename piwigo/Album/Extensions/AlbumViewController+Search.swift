@@ -20,12 +20,11 @@ extension AlbumViewController
 
         searchController?.searchBar.searchBarStyle = .minimal
         searchController?.searchBar.isTranslucent = false
-        if #available(iOS 26.0, *) {
+        if #unavailable(iOS 26.0) {
             // UISearchController automatically manages the Cancel button's visibility
             // when embedded in the navigation bar.
             // Explicitly setting showsCancelButton = true in iOS 26 is conflicting
             // with this automatic behavior.
-        } else {
             searchController?.searchBar.showsCancelButton = false
             searchController?.searchBar.tintColor = PwgColor.orange
         }
@@ -135,9 +134,8 @@ extension AlbumViewController: UISearchBarDelegate
         debugPrint("searchBarShouldBeginEditing…")
         
         // Animates Cancel button appearance
-        if #available(iOS 26.0, *) {
+        if #unavailable(iOS 26.0) {
             // NOP — See initSearchBar() comment
-        } else {
             searchBar.setShowsCancelButton(true, animated: true)
         }
         return true
@@ -183,9 +181,8 @@ extension AlbumViewController: UISearchBarDelegate
         imageProvider.userDidCancelSearch = true
 
         // Animates Cancel button appearance
-        if #available(iOS 26.0, *) {
+        if #unavailable(iOS 26.0) {
             // NOP — See initSearchBar() comment
-        } else {
             searchBar.setShowsCancelButton(true, animated: true)
         }
     }
@@ -194,9 +191,8 @@ extension AlbumViewController: UISearchBarDelegate
         debugPrint("searchBarSearchButtonClicked…")
         
         // Animates Cancel button appearance
-        if #available(iOS 26.0, *) {
+        if #unavailable(iOS 26.0) {
             // NOP — See initSearchBar() comment
-        } else {
             searchBar.setShowsCancelButton(true, animated: true)
         }
     }
