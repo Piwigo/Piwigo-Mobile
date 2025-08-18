@@ -13526,6 +13526,12 @@
         }
       }
     },
+    "CoreDataStore_WarningMessage" : {
+      "comment" : "A serious application error occurred…"
+    },
+    "CoreDataStore_WarningTitle" : {
+      "comment" : "Warning"
+    },
     "Counter" : {
       "comment" : "Counter",
       "localizations" : {
