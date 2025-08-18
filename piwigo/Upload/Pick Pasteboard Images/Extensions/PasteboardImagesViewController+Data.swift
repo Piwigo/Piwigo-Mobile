@@ -41,7 +41,7 @@ extension PasteboardImagesViewController {
                 let indexSet = IndexSet(integer: idx)
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
-                if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
+                if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
                                         pbDateTime, UploadManager.shared.kMovieSuffix, idx)
                 } else {
