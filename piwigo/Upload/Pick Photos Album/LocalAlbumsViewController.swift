@@ -276,26 +276,29 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - UITableView - Header
     @MainActor
     @objc private func setTableViewMainHeader() {
-        let headerView = SelectCategoryHeaderView(frame: .zero)
-        switch wantedAction {
-        case .presentLocalAlbum:
-            var text = NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded.")
-            if ProcessInfo.processInfo.isLowPowerModeEnabled {
-                text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
-            } else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
-                text += "\r\r⚠️ " + NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
+        // May be called from the notification center
+        DispatchQueue.main.async { [self] in
+            let headerView = SelectCategoryHeaderView(frame: .zero)
+            switch wantedAction {
+            case .presentLocalAlbum:
+                var text = NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded.")
+                if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                    text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
+                } else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi() {
+                    text += "\r\r⚠️ " + NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection") + " ⚠️"
+                }
+                headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),
+                                     text: text)
+                
+            case .setAutoUploadAlbum:
+                headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
+                                     text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
+                
+            default:
+                fatalError("Action not configured in setTableViewMainHeader().")
             }
-            headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: text)
-            
-        case .setAutoUploadAlbum:
-            headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
-                                 text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
-            
-        default:
-            fatalError("Action not configured in setTableViewMainHeader().")
+            localAlbumsTableView.tableHeaderView = headerView
         }
-        localAlbumsTableView.tableHeaderView = headerView
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

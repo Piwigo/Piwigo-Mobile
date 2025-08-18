@@ -195,35 +195,38 @@ class UploadQueueViewController: UIViewController {
     
     @MainActor
     @objc func setTableViewMainHeader() {
-        // Anything to do?
-        if queueTableView?.window == nil { return }
-        // No upload request in the queue?
-        if UploadVars.shared.nberOfUploadsToComplete == 0 {
-            queueTableView.tableHeaderView = nil
-            UIApplication.shared.isIdleTimerDisabled = false
+        // May be called from the notification center
+        DispatchQueue.main.async { [self] in
+            // Anything to do?
+            if queueTableView?.window == nil { return }
+            // No upload request in the queue?
+            if UploadVars.shared.nberOfUploadsToComplete == 0 {
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
+                // No Wi-Fi and user wishes to upload only on Wi-Fi
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: self.queueTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Low Power mode enabled
+                let headerView = TableHeaderView(frame: .zero)
+                headerView.configure(width: self.queueTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                self.queueTableView.tableHeaderView = headerView
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
+            else {
+                // Uploads in progress
+                queueTableView.tableHeaderView = nil
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
+            self.viewWillLayoutSubviews()
         }
-        else if !NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
-            // No Wi-Fi and user wishes to upload only on Wi-Fi
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: self.queueTableView.frame.size.width,
-                                 text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-            self.queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else if ProcessInfo.processInfo.isLowPowerModeEnabled {
-            // Low Power mode enabled
-            let headerView = TableHeaderView(frame: .zero)
-            headerView.configure(width: self.queueTableView.frame.size.width,
-                                 text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
-            self.queueTableView.tableHeaderView = headerView
-            UIApplication.shared.isIdleTimerDisabled = false
-        }
-        else {
-            // Uploads in progress
-            queueTableView.tableHeaderView = nil
-            UIApplication.shared.isIdleTimerDisabled = true
-        }
-        self.viewWillLayoutSubviews()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

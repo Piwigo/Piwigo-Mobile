@@ -2632,8 +2632,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.2\nMarch 27, 2019\n\n• Local photos presented in a timeline view by day before upload\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.2\n27 مارس, 2019\n\n• الصور المحلية المعروضة في الجدول الزمني قبل تحميل\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -2733,8 +2733,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.3\nApril 10, 2019\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.3\n10 نيسان/أبريل 2019\n\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -2834,8 +2834,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.4\nMay 1, 2019\n\n• Improved albums presentation on iPad (and iPhone)\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.4\n1 مايو 2019\n\n• تحسين عرض الألبومات على الأيباد (وآيفون)\n• إصلاحات الشوائب طفيفة وتحسين الواجهة"
           }
         },
         "da" : {
@@ -2935,8 +2935,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.3.5\nJune 6, 2019\n\n• Fix a crash which sometimes happens when editing the server address after logout"
+            "state" : "translated",
+            "value" : "الإصدار 2.3.5\n6 حزيران/يونيه 2019\n\n• إصلاح تحطم يحدث أحيانا عند تحرير عنوان الخادم بعد تسجيل الخروج"
           }
         },
         "da" : {
@@ -9198,97 +9198,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 3.4.1\n\n• يضيف إجراءات سريعة للشاشة الرئيسية\n• يصلح الأخطاء ويحسن الواجهة"
+            "value" : "الإصدار 3.4.1\n26 يوليو 2025\n\n• يضيف إجراءات سريعة للشاشة الرئيسية\n• يصلح الأخطاء ويحسن واجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.4.1\n\n• Tilføjer hurtig handling på startskærmen\n• Løser fejl og forbedrer brugerflade"
+            "value" : "Version 3.4.1\n26 juli 2025\n\n• Tilføjer hurtig handling på startskærmen\n• Løser fejl og forbedrer brugerflade"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.4.1\n\n• Fügt Schnellaktionen für den Startbildschirm hinzu\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
+            "value" : "Version 3.4.1\n26. Juli 2025\n\n• Fügt Schnellaktionen für den Startbildschirm hinzu\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.4.1\n\n• Adds Home screen quick actions\n• Fixes bugs and improves the interface"
+            "value" : "Version 3.4.1\nJuly 26, 2025\n\n• Adds Home screen quick actions\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 3.4.1\n\n• Añade acciones rápidas en la pantalla de inicio\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 3.4.1\n26 de julio de 2025\n\n• Añade acciones rápidas en la pantalla de inicio\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.4.1\n\n• Ajoute des actions rapides sur l'écran d'accueil\n• Corrige les bugs et améliore l'interface"
+            "value" : "Version 3.4.1\n26 juillet 2025\n\n• Ajoute des actions rapides sur l'écran d'accueil\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.4.1 verzió\n\n• Hozzáadja a kezdőképernyő gyors műveleteit\n• Hibák javítása és a felület javítása"
+            "value" : "3.4.1 verzió\n2025. július 26.\n\n• Hozzáadja a kezdőképernyő gyors műveleteit\n• Hibák javítása és a felület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 3.4.1\n\n• Menambahkan tindakan cepat layar Beranda\n• Memperbaiki bug dan meningkatkan antarmuka"
+            "value" : "Versi 3.4.1\n26 Juli 2025\n\n• Menambahkan tindakan cepat layar Beranda\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 3.4.1\n\n• Aggiunge le azioni rapide della schermata iniziale\n• Corregge i bug e migliora l'interfaccia"
+            "value" : "Versione 3.4.1\n26 luglio 2025\n\n• Aggiunge le azioni rapide della schermata iniziale\n• Corregge i bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン3.4.1\n\n• ホーム画面のクイックアクションを追加\n• バグの修正とインターフェイスの改善"
+            "value" : "バージョン3.4.1\n2025年7月26日\n\n• ホーム画面のクイックアクションを追加\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 3.4.1\n\n• Voegt startscherm snelle acties toe\n• Verbetert bugs en verbetert de interface"
+            "value" : "Versie 3.4.1\n26 juli 2025\n\n• Voegt startscherm snelle acties toe\n• Verbetert bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 3.4.1\n\n• Dodano szybkie akcje na ekranie głównym\n• Naprawiono błędy i ulepszono interfejs"
+            "value" : "Wersja 3.4.1\n26 lipca 2025 r.\n\n• Dodano szybkie akcje na ekranie głównym\n• Naprawiono błędy i ulepszono interfejs"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 3.4.1\n\n• Добавляет быстрые действия на главном экране\n• Исправлены ошибки и улучшен интерфейс"
+            "value" : "Версия 3.4.1\n26 июля 2025 г.\n\n• Добавляет быстрые действия на главном экране\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.4.1\n\n• Lägger till snabbåtgärder på startskärmen\n• Fixar buggar och förbättrar gränssnittet"
+            "value" : "Version 3.4.1\n26 juli 2025\n\n• Lägger till snabbåtgärder på startskärmen\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 3.4.1\n\n• 添加主屏幕快速操作\n• 修复错误并改进界面"
+            "value" : "版本 3.4.1\n2025年7月26日\n\n• 添加主屏幕快速操作\n• 修复错误并改进界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 3.4.1\n\n• 新增主畫面快速動作\n• 修正錯誤並改進介面"
+            "value" : "版本 3.4.1\n2025年7月26日\n\n• 新增主畫面快速動作\n• 修正錯誤並改進介面"
           }
         }
       }
@@ -9299,97 +9299,198 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 3.5\n\n• إضافة إدارة ملفات PDF\n• إصلاح الأخطاء وتحسين الواجهة"
+            "value" : "الإصدار 3.5\n18 أغسطس 2025\n\n• يضيف إدارة ملفات PDF\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5\n\n• Tilføjer PDF-filhåndtering\n• Rette fejl og forbedrer grænsefladen"
+            "value" : "Version 3.5\n18 august 2025\n\n• Tilføjer PDF-filhåndtering\n• Rette fejl og forbedrer grænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5\n\n• Fügt PDF-Dateiverwaltung hinzu\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
+            "value" : "Version 3.5\n18. August 2025\n\n• Fügt PDF-Dateiverwaltung hinzu\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5\n\n• Adds PDF file management\n• Fixes bugs and improves the interface"
+            "value" : "Version 3.5\nAugust 18, 2025\n\n• Adds PDF file management\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 3.5\n\n• Añade gestión de archivos PDF.\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 3.5\n18 de agosto de 2025\n\n• Añade gestión de archivos PDF.\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5\n\n• Ajoute la gestion des fichiers PDF\n• Corrige les bugs et améliore l'interface"
+            "value" : "Version 3.5\n18 août 2025\n\n• Ajoute la gestion des fichiers PDF\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.5-ös verzió\n\n• PDF-fájlok kezelésének hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "3.5-ös verzió\n2025. augusztus 18.\n\n• PDF-fájlok kezelésének hozzáadása\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 3.5\n\n• Menambahkan pengelolaan file PDF\n• Memperbaiki bug dan meningkatkan antarmuka"
+            "value" : "Versi 3.5\n18 Agustus 2025\n\n• Menambahkan pengelolaan file PDF\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 3.5\n\n• Aggiunge la gestione dei file PDF\n• Corregge bug e migliora l'interfaccia"
+            "value" : "Versione 3.5\n18 agosto 2025\n\n• Aggiunge la gestione dei file PDF\n• Corregge bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 3.5\n\n• PDF ファイルの管理機能を追加\n• バグの修正とインターフェイスの改善"
+            "value" : "バージョン 3.5\n2025年8月18日\n\n• PDF ファイルの管理機能を追加\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 3.5\n\n• Voegt PDF-bestandsbeheer toe\n• Verhelpt bugs en verbetert de interface"
+            "value" : "Versie 3.5\n18 augustus 2025\n\n• Voegt PDF-bestandsbeheer toe\n• Verhelpt bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 3.5\n\n• Dodano zarządzanie plikami PDF\n• Poprawki błędów i usprawnienia interfejsu"
+            "value" : "Wersja 3.5\n18 sierpnia 2025 r.\n\n• Dodano zarządzanie plikami PDF\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 3.5\n\n• Добавлено управление файлами PDF.\n• Исправлены ошибки и улучшен интерфейс"
+            "value" : "Версия 3.5\n18 августа 2025 г.\n\n• Добавлено управление файлами PDF.\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5\n\n• Lägger till hantering av PDF-filer\n• Fixar buggar och förbättrar gränssnittet"
+            "value" : "Version 3.5\n18 augusti 2025\n\n• Lägger till hantering av PDF-filer\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 3.5\n\n• 添加 PDF 文件管理功能\n• 修复了 bug 并改进了界面"
+            "value" : "版本 3.5\n2025年8月18日\n\n• 添加 PDF 文件管理功能\n• 修复了 bug 并改进了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 3.5\n\n• 新增 PDF 檔案管理\n• 修正錯誤並改進介面"
+            "value" : "版本 3.5\n2025年8月18日\n\n• 新增 PDF 檔案管理\n• 修正錯誤並改進介面"
+          }
+        }
+      }
+    },
+    "v3.5.1_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 3.5.1\n\n• اصلاحات الشوائب"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5.1\n\n• Fejlrettelser"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5.1\n\n• Fehlerbehebungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5.1\n\n• Bug fixes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 3.5.1\n\n• Corrección de errores"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5.1\n\n• Correction de bugs"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3.5.1-es verzió\n\n• Hibajavítások"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 3.5.1\n\n• Perbaikan bug"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 3.5.1\n\n• Correzioni di bug"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 3.5.1\n\n• バグの修正"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 3.5.1\n\n• Foutjes verbeterd"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 3.5.1\n\n• Poprawki błędów"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 3.5.1\n\n• Исправления ошибок"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 3.5.1\n\n• Buggfixar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 3.5.1\n\n• 错误修复"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 3.5.1\n\n• 錯誤修正"
           }
         }
       }
