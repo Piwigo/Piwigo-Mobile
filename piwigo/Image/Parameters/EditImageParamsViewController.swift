@@ -128,10 +128,14 @@ class EditImageParamsViewController: UIViewController
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = PwgColor.orange
         navigationController?.navigationBar.barTintColor = PwgColor.background
         navigationController?.navigationBar.backgroundColor = PwgColor.background
-        
+        if #available(iOS 26.0, *) {
+            navigationController?.navigationBar.tintColor = PwgColor.gray
+        } else {
+            navigationController?.navigationBar.tintColor = PwgColor.orange
+        }
+
         // Table view
         editImageParamsTableView?.separatorColor = PwgColor.separator
         editImageParamsTableView?.backgroundColor = PwgColor.background

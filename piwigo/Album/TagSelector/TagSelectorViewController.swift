@@ -138,9 +138,13 @@ class TagSelectorViewController: UITableViewController {
         navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = PwgColor.orange
         navigationController?.navigationBar.barTintColor = PwgColor.background
         navigationController?.navigationBar.backgroundColor = PwgColor.background
+        if #available(iOS 26.0, *) {
+            navigationController?.navigationBar.tintColor = PwgColor.gray
+        } else {
+            navigationController?.navigationBar.tintColor = PwgColor.orange
+        }
 
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator

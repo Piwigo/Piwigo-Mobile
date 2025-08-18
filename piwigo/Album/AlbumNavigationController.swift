@@ -38,11 +38,15 @@ class AlbumNavigationController: UINavigationController
     }
     
     @MainActor
-   @objc func applyColorPalette() {
+    @objc func applyColorPalette() {
         // Navigation bar appearance
         view.backgroundColor = PwgColor.background
         navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar.tintColor = PwgColor.orange
+        if #available(iOS 26.0, *) {
+            navigationBar.tintColor = PwgColor.gray
+        } else {
+            navigationBar.tintColor = PwgColor.orange
+        }
         setNeedsStatusBarAppearanceUpdate()
         
         // Toolbar appearance
