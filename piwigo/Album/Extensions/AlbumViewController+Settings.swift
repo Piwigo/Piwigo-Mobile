@@ -13,6 +13,33 @@ import piwigoKit
 // MARK: Settings Button
 extension AlbumViewController
 {
+    func settingsMenu() -> UIMenu? {
+        // Used in Discover menu since iOS 26
+        if #unavailable(iOS 26.0) { return  nil }
+        
+        // Create menu
+        let menuId = UIMenu.Identifier("org.piwigo.settingsMenu")
+        let menu = UIMenu(title: "", image: nil, identifier: menuId,
+                          options: UIMenu.Options.displayInline,
+                          children: [settingsAction()])
+        return menu
+    }
+    
+    private func settingsAction() -> UIAction {
+        // Create action
+        let actionId = UIAction.Identifier("SettingsAction")
+        let boldConfig = UIImage.SymbolConfiguration(weight: .bold)
+        let boldSettingsIcon = UIImage(systemName: "gear", withConfiguration: boldConfig)
+        let action = UIAction(title: NSLocalizedString("tabBar_preferences", comment: "Settings"),
+                              image: boldSettingsIcon,
+                              identifier: actionId, handler: { [self] action in
+            // Present tag selector
+            didTapSettingsButton()
+        })
+        action.accessibilityIdentifier = "settings"
+        return action
+    }
+
     func getSettingsBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(didTapSettingsButton))
         button.accessibilityIdentifier = "settings"

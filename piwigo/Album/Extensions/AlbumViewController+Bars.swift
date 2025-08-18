@@ -15,37 +15,72 @@ extension AlbumViewController
     // MARK: - Preview Mode
     @MainActor
     func initBarsInPreviewMode() {
-        // Left side of navigation bar
-        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-            // Button for accessing settings
-            navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
-            navigationItem.hidesBackButton = true
-        } else if categoryId == pwgSmartAlbum.search.rawValue {
-            // Search bar => No action button
-            navigationItem.setLeftBarButtonItems([], animated: true)
-        } else {
-            // Back button to parent album
-            navigationItem.setLeftBarButtonItems([], animated: true)
-            navigationItem.hidesBackButton = false
-            navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
-        }
-
-        // Right side of navigation bar
-        if categoryId == 0 {
-            // Root album => Discover menu button
-            navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-        }
-        else if categoryId == pwgSmartAlbum.search.rawValue {
-            // Search bar => No action button
-            navigationItem.setRightBarButtonItems([], animated: true)
+        if #available(iOS 26.0, *) {
+            // Left side of navigation bar
+            if [0, AlbumVars.shared.defaultCategory, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+                // No button in root, search and default albums
+                navigationItem.setLeftBarButtonItems([], animated: true)
+                navigationItem.hidesBackButton = true
+            } else {
+                // Search bar => No action button
+                // Back button to parent album
+                navigationItem.setLeftBarButtonItems([], animated: true)
+                navigationItem.hidesBackButton = false
+                navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
+            }
+            
+            // Right side of navigation bar
+            if categoryId == 0 {
+                // Root album => Discover menu button
+                navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+            }
+            else if categoryId == pwgSmartAlbum.search.rawValue {
+                // Search bar => No action button
+                navigationItem.setRightBarButtonItems([], animated: true)
+            }
+            else {
+                // Share button depends on Piwigo server version, user role and image data
+                shareBarButton = getShareBarButton()
+                // Favorites button depends on Piwigo server version, user role and image data
+                favoriteBarButton = getFavoriteBarButton()
+                // Menu for activating the selection mode and changing the way images are sorted
+                initRightSideInPreviewMode()
+            }
         }
         else {
-            // Share button depends on Piwigo server version, user role and image data
-            shareBarButton = getShareBarButton()
-            // Favorites button depends on Piwigo server version, user role and image data
-            favoriteBarButton = getFavoriteBarButton()
-            // Menu for activating the selection mode and changing the way images are sorted
-            initRightSideInPreviewMode()
+            // Fallback on previous version
+            // Left side of navigation bar
+            if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+                // Button for accessing settings
+                navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
+                navigationItem.hidesBackButton = true
+            } else if categoryId == pwgSmartAlbum.search.rawValue {
+                // Search bar => No action button
+                navigationItem.setLeftBarButtonItems([], animated: true)
+            } else {
+                // Back button to parent album
+                navigationItem.setLeftBarButtonItems([], animated: true)
+                navigationItem.hidesBackButton = false
+                navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
+            }
+
+            // Right side of navigation bar
+            if categoryId == 0 {
+                // Root album => Discover menu button
+                navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+            }
+            else if categoryId == pwgSmartAlbum.search.rawValue {
+                // Search bar => No action button
+                navigationItem.setRightBarButtonItems([], animated: true)
+            }
+            else {
+                // Share button depends on Piwigo server version, user role and image data
+                shareBarButton = getShareBarButton()
+                // Favorites button depends on Piwigo server version, user role and image data
+                favoriteBarButton = getFavoriteBarButton()
+                // Menu for activating the selection mode and changing the way images are sorted
+                initRightSideInPreviewMode()
+            }
         }
     }
     

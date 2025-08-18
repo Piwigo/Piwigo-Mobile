@@ -37,7 +37,7 @@ extension AlbumViewController
 {
     func discoverMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.discover")
-        let children = [smartAlbums(), viewOptionsMenu()]
+        let children = [smartAlbums(), viewOptionsMenu(), settingsMenu()].compactMap { $0 }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: children)
