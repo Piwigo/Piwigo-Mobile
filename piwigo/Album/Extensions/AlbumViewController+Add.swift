@@ -12,6 +12,13 @@ import piwigoKit
 
 extension AlbumViewController
 {
+    // MARK: Button (iOS 26+)
+    func getAddAlbumBarButton() -> UIBarButtonItem {
+        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateAlbum))
+        button.accessibilityIdentifier = "addAlbum"
+        return button
+    }
+    
     // MARK: - Create Sub-Album
     @MainActor
     @objc func didTapCreateAlbum() {

@@ -68,7 +68,8 @@ class AlbumViewController: UIViewController
     // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
     let minWidthForDefaultBackButton: CGFloat = 440.0
     // Bar buttons for root album
-    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
+    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()    // before iOS 26
+    lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()    // since iOS 26
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
@@ -270,13 +271,26 @@ class AlbumViewController: UIViewController
         }
 
         // Add buttons above table view and other buttons
-        view.insertSubview(addButton, aboveSubview: collectionView)
-        uploadQueueButton.layer.addSublayer(progressLayer)
-        uploadQueueButton.addSubview(nberOfUploadsLabel)
-        view.insertSubview(uploadQueueButton, belowSubview: addButton)
-        view.insertSubview(homeAlbumButton, belowSubview: addButton)
-        view.insertSubview(createAlbumButton, belowSubview: addButton)
-        view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        if #available(iOS 26.0, *) {
+            if [0, AlbumVars.shared.defaultCategory].contains(categoryId) == false {
+                view.insertSubview(addButton, aboveSubview: collectionView)
+                uploadQueueButton.layer.addSublayer(progressLayer)
+                uploadQueueButton.addSubview(nberOfUploadsLabel)
+                view.insertSubview(uploadQueueButton, belowSubview: addButton)
+                view.insertSubview(homeAlbumButton, belowSubview: addButton)
+                view.insertSubview(createAlbumButton, belowSubview: addButton)
+                view.insertSubview(uploadImagesButton, belowSubview: addButton)
+            }
+        } else {
+            // Fallback on previous version
+            view.insertSubview(addButton, aboveSubview: collectionView)
+            uploadQueueButton.layer.addSublayer(progressLayer)
+            uploadQueueButton.addSubview(nberOfUploadsLabel)
+            view.insertSubview(uploadQueueButton, belowSubview: addButton)
+            view.insertSubview(homeAlbumButton, belowSubview: addButton)
+            view.insertSubview(createAlbumButton, belowSubview: addButton)
+            view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        }
         
         // Sticky section headers
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
@@ -438,7 +452,7 @@ class AlbumViewController: UIViewController
         
         // Set navigation bar and buttons
         initBarsInPreviewMode()
-        initButtons()
+        relocateButtons()
         updateButtons()
         
         // Should we reload the collection view?

@@ -22,7 +22,6 @@ extension AlbumViewController
                 navigationItem.setLeftBarButtonItems([], animated: true)
                 navigationItem.hidesBackButton = true
             } else {
-                // Search bar => No action button
                 // Back button to parent album
                 navigationItem.setLeftBarButtonItems([], animated: true)
                 navigationItem.hidesBackButton = false
@@ -32,7 +31,8 @@ extension AlbumViewController
             // Right side of navigation bar
             if categoryId == 0 {
                 // Root album => Discover menu button
-                navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+                let items = [discoverBarButton, addAlbumBarButton].compactMap { $0 }
+                navigationItem.setRightBarButtonItems(items, animated: true)
             }
             else if categoryId == pwgSmartAlbum.search.rawValue {
                 // Search bar => No action button

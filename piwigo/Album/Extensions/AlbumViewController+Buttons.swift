@@ -14,7 +14,7 @@ import uploadKit
 extension AlbumViewController
 {
     // MARK: - Buttons Management
-    func initButtons() {
+    func relocateButtons() {
         // Buttons might have to be relocated:
         /// - when using several scenes on iPad
         /// - when launching the app in landscape mode on iPhone and returning to the root album in portrait mode
@@ -57,26 +57,25 @@ extension AlbumViewController
         // User can upload images/videos if he/she has:
         // — admin rights
         // — normal rights and upload access to the current category
-        if categoryId >= 0, user.hasUploadRights(forCatID: categoryId) {
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId),
+           user.hasUploadRights(forCatID: categoryId) {
+            if #unavailable(iOS 26.0), addButton.isHidden {
+                // Show Add button
+                showAddButton {
+                    // Show UploadQueue button if needed
+                    let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+                    let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
+                    NotificationCenter.default.post(name: .pwgLeftUploads,
+                                                    object: nil, userInfo: userInfo)
+                }
+            }
+        } else if categoryId > 0,
+                  user.hasUploadRights(forCatID: categoryId) {
             // Show Upload button if needed
             if addButton.isHidden {
                 // Show Add button
                 showAddButton { [self] in
-                    // Show button on the left of the Add button if needed
-                    if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-                        // Show Home button if not in root or default album
-                        showHomeAlbumButtonIfNeeded()
-                    } else {
-                        // Show UploadQueue button if needed
-                        let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-                        let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
-                        NotificationCenter.default.post(name: .pwgLeftUploads,
-                                                        object: nil, userInfo: userInfo)
-                    }
-                }
-            } else {
-                // Present Home button if needed and if not in root or default album
-                if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+                    // Show Home button on the left of the Add button if needed
                     showHomeAlbumButtonIfNeeded()
                 }
             }
