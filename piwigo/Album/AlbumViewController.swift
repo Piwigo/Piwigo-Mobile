@@ -85,11 +85,16 @@ class AlbumViewController: UIViewController
     let kDeg2Rad: CGFloat = 3.141592654 / 180.0
     
     lazy var addButton: UIButton = getAddButton()
+    lazy var addButtonOrange: UIButton.Configuration = getAddButtonOrangeConfiguration()
+    lazy var addButtonGray: UIButton.Configuration = getAddButtonGrayConfiguration()
     lazy var uploadQueueButton: UIButton = getUploadQueueButton()
-    lazy var homeAlbumButton: UIButton = getHomeButton()
+    lazy var homeAlbumButton: UIButton = getHomeAlbumButton()
+    
+    lazy var createAlbumOrange:UIButton.Configuration = getCreateAlbumButtonConfiguration()
     lazy var createAlbumButton: UIButton = getCreateAlbumButton()
     var createAlbumAction: UIAlertAction!
     
+    lazy var uploadImagesOrange: UIButton.Configuration = getUploadImagesButtonConfiguration()
     lazy var uploadImagesButton: UIButton = getUploadImagesButton()
     lazy var progressLayer: CAShapeLayer = getProgressLayer()
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
@@ -340,13 +345,12 @@ class AlbumViewController: UIViewController
         uploadImagesButton.layer.shadowColor = PwgColor.shadow.cgColor
         
         uploadQueueButton.layer.shadowColor = PwgColor.shadow.cgColor
-        uploadQueueButton.backgroundColor = PwgColor.rightLabel
+        uploadQueueButton.configuration = getUploadQueueButtonConfiguration()
         nberOfUploadsLabel.textColor = PwgColor.background
         progressLayer.strokeColor = PwgColor.background.cgColor
         
+        homeAlbumButton.configuration = getHomeAlbumConfiguration()
         homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
-        homeAlbumButton.backgroundColor = PwgColor.rightLabel
-        homeAlbumButton.tintColor = PwgColor.background
         
         if AppVars.shared.isDarkPaletteActive {
             addButton.layer.shadowRadius = 1.0
@@ -877,11 +881,11 @@ class AlbumViewController: UIViewController
     }
     
     @objc func setTableViewMainHeader() {
-        // Update table header only if being displayed
-//        if albumImageTableView?.window == nil { return }
+        // May be called by the notification center
 //        DispatchQueue.main.async { [self] in
+//            if albumImageTableView?.window == nil { return }
 //            // Any upload request in the queue?
-//              if UploadVars.shared.shared.nberOfUploadsToComplete == 0 {
+//            if UploadVars.shared.shared.nberOfUploadsToComplete == 0 {
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }

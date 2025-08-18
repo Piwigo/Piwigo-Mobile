@@ -60,15 +60,8 @@ extension AlbumViewController
         if categoryId >= 0, user.hasUploadRights(forCatID: categoryId) {
             // Show Upload button if needed
             if addButton.isHidden {
-                // Unhide transparent Add button
-                addButton.isHidden = false
-
-                // Animate appearance of Add button
-                UIView.animate(withDuration: 0.3, animations: { [self] in
-                    addButton.layer.opacity = 0.9
-                }) { [self] finished in
-                    // Fixes tintColor forgotten (often on iOS 9)
-                    addButton.tintColor = UIColor.white
+                // Show Add button
+                showAddButton { [self] in
                     // Show button on the left of the Add button if needed
                     if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
                         // Show Home button if not in root or default album
@@ -104,84 +97,64 @@ extension AlbumViewController
         homeAlbumButton.isHidden = true
     }
 
-    func showOptionalButtonsCompletion(_ completion: @escaping () -> Void) {
+    func showOptionalButtons(_ completion: @escaping () -> Void) {
         // Unhide transparent CreateAlbum and UploadImages buttons
-        createAlbumButton.tintColor = UIColor.white
+        createAlbumButton.alpha = 0.0
         createAlbumButton.isHidden = false
-        uploadImagesButton.tintColor = UIColor.white
+        uploadImagesButton.alpha = 0.0
         uploadImagesButton.isHidden = false
 
         // Show CreateAlbum and UploadImages buttons
-        UIView.animate(withDuration: 0.3, animations: { [self] in
+        UIView.animate(withDuration: 0.25, animations: { [self] in
             // Progressive appearance
-            createAlbumButton.layer.opacity = 0.9
-            uploadImagesButton.layer.opacity = 0.9
+            createAlbumButton.alpha = 0.9
+            uploadImagesButton.alpha = 0.9
 
             // Move buttons together
             createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: false)
             uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: false)
 
             // Rotate cross and change colour
-            let rotatedImage = UIImage(named: "addButton")?.rotated(by: .pi / 4)
-            addButton.setImage(rotatedImage, for: .normal)
-            addButton.backgroundColor = UIColor.gray
-            addButton.tintColor = UIColor.white
+            addButton.configuration = addButtonGray
+            addButton.transform = CGAffineTransform(rotationAngle: .pi/2)
         }) { finished in
             // Execute block
             completion()
         }
     }
 
-    func hideOptionalButtonsCompletion(_ completion: @escaping () -> Void) {
+    func hideOptionalButtons(_ completion: @escaping () -> Void) {
         // Hide CreateAlbum and UploadImages buttons
-        UIView.animate(withDuration: 0.3, animations: { [self] in
+        UIView.animate(withDuration: 0.25, animations: { [self] in
             // Progressive disappearance
-            createAlbumButton.layer.opacity = 0.0
-            uploadImagesButton.layer.opacity = 0.0
+            createAlbumButton.alpha = 0.0
+            uploadImagesButton.alpha = 0.0
 
             // Move buttons towards Add button
             createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: true)
             uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: true)
 
             // Rotate cross if not in root and change colour
-            if categoryId == 0 {
-                addButton.setImage(UIImage(named: "createLarge"), for: .normal)
-            } else {
-                addButton.setImage(UIImage(named: "addButton"), for: .normal)
+            if categoryId != 0 {
+                addButton.configuration = addButtonOrange
+                addButton.transform = CGAffineTransform.identity
             }
-            addButton.backgroundColor = UIColor.gray
-            addButton.tintColor = UIColor.white
         }) { [self] finished in
             // Hide transparent CreateAlbum and UploadImages buttons
             createAlbumButton.isHidden = true
             uploadImagesButton.isHidden = true
 
-            // Reset background colours
-            createAlbumButton.backgroundColor = PwgColor.orange
-            uploadImagesButton.backgroundColor = PwgColor.orange
-
             // Execute block
             completion()
         }
     }
-
+    
     
     // MARK: - "Add" button above collection view and other buttons
     func getAddButton() -> UIButton {
-        let button = UIButton(type: .system)
+        let button = UIButton(configuration: addButtonOrange)
         button.frame = getAddButtonFrame()
-        button.layer.cornerRadius = kRadius
-        button.layer.masksToBounds = false
-        button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.backgroundColor = PwgColor.orange
-        button.tintColor = UIColor.white
-        button.showsTouchWhenHighlighted = true
-        if categoryId == 0 {
-            button.setImage(UIImage(named: "createLarge"), for: .normal)
-        } else {
-            button.setImage(UIImage(named: "addButton"), for: .normal)
-        }
         button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "add"
@@ -194,74 +167,102 @@ extension AlbumViewController
         return CGRect(x: xPos, y: yPos, width: 2 * kRadius, height: 2 * kRadius)
     }
     
+    func getAddButtonOrangeConfiguration() -> UIButton.Configuration {
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .fixed
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = PwgColor.orange
+        config.background.cornerRadius = kRadius
+        if categoryId == 0 {
+            config.image = UIImage(named: "createLarge")
+        } else {
+            config.image = UIImage(named: "addButton")
+        }
+        return config
+    }
+
+    func getAddButtonGrayConfiguration() -> UIButton.Configuration {
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .fixed
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = .gray
+        config.background.cornerRadius = kRadius
+        if categoryId == 0 {
+            config.image = UIImage(named: "createLarge")
+        } else {
+            config.image = UIImage(named: "addButton")
+        }
+        return config
+    }
+
     @objc func didTapAddButton() {
         // Create album if root album shown
         if categoryId == 0 {
             // User in root album => Create album
-            addButton.backgroundColor = UIColor.gray
-            addButton.tintColor = UIColor.white
-            showCreateCategoryDialog()
+            hideAddButton { [self] in
+                showCreateCategoryDialog()
+            }
             return
         }
 
         // Hide Home button behind Add button if needed
         if homeAlbumButton.isHidden {
             // Show CreateAlbum and UploadImages albums
-            showOptionalButtonsCompletion({ [self] in
+            showOptionalButtons { [self] in
                 // Change appearance and action of Add button
                 addButton.removeTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
                 addButton.addTarget( self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
-            })
+            }
         } else {
             // Hide Home Album button
-            hideHomeAlbumButtonCompletion({ [self] in
+            hideHomeAlbumButton { [self] in
                 // Show CreateAlbum and UploadImages albums
-                showOptionalButtonsCompletion({ [self] in
+                showOptionalButtons { [self] in
                     // Change appearance and action of Add button
                     addButton.removeTarget( self, action: #selector(didTapAddButton), for: .touchUpInside)
                     addButton.addTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
-                })
-            })
+                }
+            }
         }
     }
 
     @objc func didCancelTapAddButton() {
         // User changed mind or finished job
         // First hide optional buttons
-        hideOptionalButtonsCompletion({ [self] in
+        hideOptionalButtons { [self] in
             // Reset appearance and action of Add button
-            addButton.removeTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
-            addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
-            addButton.backgroundColor = PwgColor.orange
-            addButton.tintColor = UIColor.white
+            showAddButton { [self] in
+                addButton.removeTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
+                addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+            }
 
             // Show button on the left of the Add button if needed
             if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
                 // Show Home button if not in root or default album
                 showHomeAlbumButtonIfNeeded()
             }
-        })
+        }
     }
     
-    func showAddButtonCompletion(_ completion: @escaping () -> Void) {
+    func showAddButton(_ completion: @escaping () -> Void) {
         // Show Add button
-        addButton.layer.opacity = 0.0
+        addButton.alpha = 0.0
         addButton.isHidden = false
 
         // Show Add button
-        UIView.animate(withDuration: 0.2, animations: { [self] in
-            // Progressive disappearance
-            addButton.layer.opacity = 1.0
+        UIView.animate(withDuration: 0.25, animations: { [self] in
+            // Progressive appearance
+            addButton.alpha = 0.9
         }) { finished in
             completion()
         }
     }
     
-    func hideAddButtonCompletion(_ completion: @escaping () -> Void) {
+    func hideAddButton(_ completion: @escaping () -> Void) {
         // Hide Add button
-        UIView.animate(withDuration: 0.2, animations: { [self] in
+        UIView.animate(withDuration: 0.25, animations: { [self] in
             // Progressive disappearance
-            addButton.layer.opacity = 0.0
+            addButton.alpha = 0.0
         }) { [self] finished in
             addButton.isHidden = true
             completion()
@@ -271,15 +272,12 @@ extension AlbumViewController
 
     // MARK: - "Upload Queue" button above collection view
     func getUploadQueueButton() -> UIButton {
-        let button = UIButton(type: .system)
+        let config = getUploadQueueButtonConfiguration()
+        let button = UIButton(configuration: config)
         button.frame = addButton.frame
-        button.layer.cornerRadius = kRadius
-        button.layer.masksToBounds = false
         button.layer.shadowOpacity = 0.8
-        button.showsTouchWhenHighlighted = true
         button.addTarget(self, action: #selector(didTapUploadQueueButton), for: .touchUpInside)
         button.isHidden = true
-        button.backgroundColor = UIColor.clear
         return button
     }
     
@@ -318,6 +316,15 @@ extension AlbumViewController
         }
     }
     
+    func getUploadQueueButtonConfiguration() -> UIButton.Configuration {
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .fixed
+        config.baseForegroundColor = PwgColor.background
+        config.baseBackgroundColor = PwgColor.rightLabel
+        config.background.cornerRadius = kRadius
+        return config
+    }
+    
     func getNberOfUploadsLabel() -> UILabel {
         let label = UILabel(frame: CGRect.zero)
         label.text = ""
@@ -344,17 +351,17 @@ extension AlbumViewController
         // Show button if needed
         if uploadQueueButton.isHidden {
             // Unhide transparent Upload Queue button
+            uploadQueueButton.alpha = 0.0
             uploadQueueButton.isHidden = false
         }
 
         // Animate appearance / width change of Upload Queue button
-        UIView.animate(withDuration: 0.3, animations: { [self] in
+        UIView.animate(withDuration: 0.25, animations: { [self] in
             // Progressive appearance
-            uploadQueueButton.layer.opacity = 0.8
+            uploadQueueButton.alpha = 0.9
             
             // Depends on number of upload requests and Add button visibility
             uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: false)
-            uploadQueueButton.setNeedsLayout()
         })
     }
     
@@ -363,9 +370,9 @@ extension AlbumViewController
         if uploadQueueButton.isHidden { return }
         
         // Hide Upload Queue button behind Add button
-        UIView.animate(withDuration: 0.3, animations: { [self] in
+        UIView.animate(withDuration: 0.25, animations: { [self] in
             // Progressive disappearance
-            uploadQueueButton.layer.opacity = 0.0
+            uploadQueueButton.alpha = 0.0
 
             // Animate displacement towards the Add button if needed
             uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: true)
@@ -440,17 +447,14 @@ extension AlbumViewController
 
 
     // MARK: - "Home Album" button above collection view
-    func getHomeButton() -> UIButton {
-        let button = UIButton(type: .system)
+    func getHomeAlbumButton() -> UIButton {
+        let config = getHomeAlbumConfiguration()
+        let button = UIButton(configuration: config)
         button.frame = addButton.frame
-        button.layer.cornerRadius = kRadius
-        button.layer.masksToBounds = false
-        button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.showsTouchWhenHighlighted = true
-        button.setImage(UIImage(named: "rootAlbum"), for: .normal)
         button.addTarget(self, action: #selector(returnToDefaultCategory), for: .touchUpInside)
         button.isHidden = true
+        button.accessibilityIdentifier = "home"
         return button
     }
     
@@ -471,6 +475,16 @@ extension AlbumViewController
         }
     }
     
+    func getHomeAlbumConfiguration() -> UIButton.Configuration {
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .fixed
+        config.baseForegroundColor = PwgColor.background
+        config.baseBackgroundColor = PwgColor.rightLabel
+        config.background.cornerRadius = kRadius
+        config.image = UIImage(named: "rootAlbum")
+        return config
+    }
+    
     func showHomeAlbumButtonIfNeeded() {
         // Don't present the Home button in search mode
         if categoryId == pwgSmartAlbum.search.rawValue { return }
@@ -483,12 +497,13 @@ extension AlbumViewController
            (createAlbumButton.isHidden ||
             createAlbumButton.frame.contains(addButton.frame.origin)) {
             // Unhide transparent Home Album button
+            homeAlbumButton.alpha = 0.0
             homeAlbumButton.isHidden = false
 
             // Animate appearance of Home Album button
-            UIView.animate(withDuration: 0.3, animations: { [self] in
+            UIView.animate(withDuration: 0.25, animations: { [self] in
                 // Progressive appearance
-                homeAlbumButton.layer.opacity = 0.8
+                homeAlbumButton.alpha = 0.9
 
                 // Position of Home Album button depends on user's rights
                 homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: false)
@@ -496,11 +511,11 @@ extension AlbumViewController
         }
     }
 
-    func hideHomeAlbumButtonCompletion(_ completion: @escaping () -> Void) {
+    func hideHomeAlbumButton(_ completion: @escaping () -> Void) {
         // Hide Home Album button behind Add button
-        UIView.animate(withDuration: 0.2, animations: { [self] in
+        UIView.animate(withDuration: 0.25, animations: { [self] in
             // Progressive disappearance
-            homeAlbumButton.layer.opacity = 0.0
+            homeAlbumButton.alpha = 0.0
 
             // Animate displacement towards the Add button if needed
             homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: true)
@@ -517,17 +532,10 @@ extension AlbumViewController
 
     // MARK: - "Create Album" button above collection view
     func getCreateAlbumButton() -> UIButton {
-        let button = UIButton(type: .system)
+        let button = UIButton(configuration: createAlbumOrange)
         button.frame = addButton.frame
-        button.layer.cornerRadius = 0.86 * kRadius
-        button.layer.masksToBounds = false
-        button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.backgroundColor = PwgColor.orange
-        button.tintColor = UIColor.white
-        button.showsTouchWhenHighlighted = true
-        button.setImage(UIImage(named: "create"), for: .normal)
-        button.addTarget(self, action: #selector(addAlbum), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapCreateAlbum), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "createAlbum"
         return button
@@ -544,19 +552,22 @@ extension AlbumViewController
                       width: 1.72 * kRadius, height: 1.72 * kRadius)
     }
     
+    func getCreateAlbumButtonConfiguration() -> UIButton.Configuration {
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .fixed
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = PwgColor.orange
+        config.background.cornerRadius = 0.86 * kRadius
+        config.image = UIImage(named: "create")
+        return config
+    }
     
+
     // MARK: - "Upload Images" button above collection view
     func getUploadImagesButton() -> UIButton {
-        let button = UIButton(type: .system)
+        let button = UIButton(configuration: uploadImagesOrange)
         button.frame = addButton.frame
-        button.layer.cornerRadius = 0.86 * kRadius
-        button.layer.masksToBounds = false
-        button.layer.opacity = 0.0
         button.layer.shadowOpacity = 0.8
-        button.backgroundColor = PwgColor.orange
-        button.tintColor = UIColor.white
-        button.showsTouchWhenHighlighted = true
-        button.setImage(UIImage(named: "imageUpload"), for: .normal)
         button.addTarget(self, action: #selector(didTapUploadImagesButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "addImages"
@@ -574,4 +585,13 @@ extension AlbumViewController
                       width: 1.72 * kRadius, height: 1.72 * kRadius)
     }
 
+    func getUploadImagesButtonConfiguration() -> UIButton.Configuration {
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .fixed
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = PwgColor.orange
+        config.background.cornerRadius = 0.86 * kRadius
+        config.image = UIImage(named: "imageUpload")
+        return config
+    }
 }

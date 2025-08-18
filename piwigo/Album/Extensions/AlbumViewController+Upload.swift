@@ -14,11 +14,23 @@ extension AlbumViewController
 {
     // MARK: - Upload Actions
     @objc func didTapUploadImagesButton() {
-        // Check autorisation to access Photo Library before uploading
-        checkPhotoLibraryAccess()
-
         // Hide CreateAlbum and UploadImages buttons
-        didCancelTapAddButton()
+        hideOptionalButtons { [self] in
+            // Check autorisation to access Photo Library before uploading
+            checkPhotoLibraryAccess()
+
+            // Reset appearance and action of Add button
+            showAddButton { [self] in
+                addButton.removeTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
+                addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+            }
+
+            // Show button on the left of the Add button if needed
+            if ![0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+                // Show Home button if not in root or default album
+                showHomeAlbumButtonIfNeeded()
+            }
+        }
     }
     
     func checkPhotoLibraryAccess() {

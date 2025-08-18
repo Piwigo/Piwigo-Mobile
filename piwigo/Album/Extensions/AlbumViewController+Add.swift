@@ -14,14 +14,21 @@ extension AlbumViewController
 {
     // MARK: - Create Sub-Album
     @MainActor
-    @objc func addAlbum() {
-        // Change colour of Upload Images button
-        createAlbumButton.backgroundColor = UIColor.gray
-
-        // Start creating album
-        showCreateCategoryDialog()
+    @objc func didTapCreateAlbum() {
+        // Hide CreateAlbum and UploadImages buttons
+        hideOptionalButtons { [self] in
+            // Hide Add and Home buttons
+            hideButtons()
+            
+            // Present dialog for creating album
+            showCreateCategoryDialog()
+            
+            // Reset action of Add button
+            addButton.removeTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
+            addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        }
     }
-
+    
     @MainActor
     func showCreateCategoryDialog() {
         let alert = UIAlertController(
