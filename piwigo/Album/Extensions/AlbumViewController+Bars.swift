@@ -57,7 +57,11 @@ extension AlbumViewController
             children.insert(selectMenu(), at: 0)
         }
         let menu = UIMenu(title: "", children: children.compactMap({$0}))
-        selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        if #available(iOS 26.0, *) {
+            selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        } else {
+            selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        }
         selectBarButton?.accessibilityIdentifier = "select"
         
         // Set right bar buttons
