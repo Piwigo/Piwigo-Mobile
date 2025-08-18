@@ -107,10 +107,10 @@ enum PwgColor {
     // MARK: - Other colors
     static let gray = UIColor { _ in
         AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
+        ? UIColor(red: 243 / 255.0, green: 243 / 255.0, blue: 243 / 255.0, alpha: 1.0)
         : UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
     }
-
+    
     static let whiteCream = UIColor { _ in
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
