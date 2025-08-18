@@ -14,7 +14,8 @@ extension AlbumViewController
 {
     // MARK: Button (iOS 26+)
     func getAddAlbumBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateAlbum))
+        let image = UIImage(systemName: "rectangle.stack.badge.plus")!
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
         button.accessibilityIdentifier = "addAlbum"
         return button
     }
