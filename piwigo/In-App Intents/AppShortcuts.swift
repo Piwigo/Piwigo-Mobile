@@ -14,7 +14,7 @@ import AppIntents
  makes available. The app can update the available shortcuts by calling `updateAppShortcutParameters()` as needed.
  */
 @available(iOS 16.0, *)
-class AppShortcuts: AppShortcutsProvider {
+final class AppShortcuts: AppShortcutsProvider {
     
     /// The color the system uses to display the App Shortcuts in the Shortcuts app.
     static let shortcutTileColor = ShortcutTileColor.orange
