@@ -82,6 +82,7 @@ class AlbumViewController: UIViewController
     
     
     // MARK: - Buttons
+    // Exclusively before iOS 26
     let kRadius: CGFloat = 25.0
     let kDeg2Rad: CGFloat = 3.141592654 / 180.0
     
@@ -271,18 +272,7 @@ class AlbumViewController: UIViewController
         }
 
         // Add buttons above table view and other buttons
-        if #available(iOS 26.0, *) {
-            if [0, AlbumVars.shared.defaultCategory].contains(categoryId) == false {
-                view.insertSubview(addButton, aboveSubview: collectionView)
-                uploadQueueButton.layer.addSublayer(progressLayer)
-                uploadQueueButton.addSubview(nberOfUploadsLabel)
-                view.insertSubview(uploadQueueButton, belowSubview: addButton)
-                view.insertSubview(homeAlbumButton, belowSubview: addButton)
-                view.insertSubview(createAlbumButton, belowSubview: addButton)
-                view.insertSubview(uploadImagesButton, belowSubview: addButton)
-            }
-        } else {
-            // Fallback on previous version
+        if #unavailable(iOS 26.0) {
             view.insertSubview(addButton, aboveSubview: collectionView)
             uploadQueueButton.layer.addSublayer(progressLayer)
             uploadQueueButton.addSubview(nberOfUploadsLabel)
@@ -353,47 +343,40 @@ class AlbumViewController: UIViewController
         navigationBar?.scrollEdgeAppearance = barAppearance
 
         // Buttons appearance
-        addButton.layer.shadowColor = PwgColor.shadow.cgColor
-        
-        createAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
-        uploadImagesButton.layer.shadowColor = PwgColor.shadow.cgColor
-        
-        uploadQueueButton.layer.shadowColor = PwgColor.shadow.cgColor
-        uploadQueueButton.configuration = getUploadQueueButtonConfiguration()
-        nberOfUploadsLabel.textColor = PwgColor.background
-        progressLayer.strokeColor = PwgColor.background.cgColor
-        
-        homeAlbumButton.configuration = getHomeAlbumConfiguration()
-        homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
-        
-        if AppVars.shared.isDarkPaletteActive {
-            addButton.layer.shadowRadius = 1.0
-            addButton.layer.shadowOffset = CGSize.zero
+        if #unavailable(iOS 26.0) {
+            addButton.layer.shadowColor = PwgColor.shadow.cgColor
+            createAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
+            uploadImagesButton.layer.shadowColor = PwgColor.shadow.cgColor
+            uploadQueueButton.layer.shadowColor = PwgColor.shadow.cgColor
+            uploadQueueButton.configuration = getUploadQueueButtonConfiguration()
+            nberOfUploadsLabel.textColor = PwgColor.background
+            progressLayer.strokeColor = PwgColor.background.cgColor
+            homeAlbumButton.configuration = getHomeAlbumConfiguration()
+            homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
             
-            createAlbumButton.layer.shadowRadius = 1.0
-            createAlbumButton.layer.shadowOffset = CGSize.zero
-            uploadImagesButton.layer.shadowRadius = 1.0
-            uploadImagesButton.layer.shadowOffset = CGSize.zero
-            
-            uploadQueueButton.layer.shadowRadius = 1.0
-            uploadQueueButton.layer.shadowOffset = CGSize.zero
-            
-            homeAlbumButton.layer.shadowRadius = 1.0
-            homeAlbumButton.layer.shadowOffset = CGSize.zero
-        } else {
-            addButton.layer.shadowRadius = 3.0
-            addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            
-            createAlbumButton.layer.shadowRadius = 3.0
-            createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            uploadImagesButton.layer.shadowRadius = 3.0
-            uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            
-            uploadQueueButton.layer.shadowRadius = 3.0
-            uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            
-            homeAlbumButton.layer.shadowRadius = 3.0
-            homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            if AppVars.shared.isDarkPaletteActive {
+                addButton.layer.shadowRadius = 1.0
+                addButton.layer.shadowOffset = CGSize.zero
+                createAlbumButton.layer.shadowRadius = 1.0
+                createAlbumButton.layer.shadowOffset = CGSize.zero
+                uploadImagesButton.layer.shadowRadius = 1.0
+                uploadImagesButton.layer.shadowOffset = CGSize.zero
+                uploadQueueButton.layer.shadowRadius = 1.0
+                uploadQueueButton.layer.shadowOffset = CGSize.zero
+                homeAlbumButton.layer.shadowRadius = 1.0
+                homeAlbumButton.layer.shadowOffset = CGSize.zero
+            } else {
+                addButton.layer.shadowRadius = 3.0
+                addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                createAlbumButton.layer.shadowRadius = 3.0
+                createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                uploadImagesButton.layer.shadowRadius = 3.0
+                uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                uploadQueueButton.layer.shadowRadius = 3.0
+                uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                homeAlbumButton.layer.shadowRadius = 3.0
+                homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            }
         }
         
         // Collection view
@@ -452,8 +435,10 @@ class AlbumViewController: UIViewController
         
         // Set navigation bar and buttons
         initBarsInPreviewMode()
-        relocateButtons()
-        updateButtons()
+        if #unavailable(iOS 26.0) {
+            relocateButtons()
+            updateButtons()
+        }
         
         // Should we reload the collection view?
         switch AlbumVars.shared.displayAlbumDescriptions {
@@ -651,15 +636,19 @@ class AlbumViewController: UIViewController
             switch index {
             case 0: // Root album
                 // Update position of buttons (recalculated after device rotation)
-                addButton.frame = getAddButtonFrame()
-                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                if #unavailable(iOS 26.0) {
+                    addButton.frame = getAddButtonFrame()
+                    createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                    uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                }
 
             case children.count - 2: // Parent of displayed album
                 // Update position of buttons (recalculated after device rotation)
-                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
-                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                if #unavailable(iOS 26.0) {
+                    homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                    createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                    uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                }
                 
                 // Reset title and back button
                 setTitleViewFromAlbumData() // with or without update info below the name
@@ -667,10 +656,12 @@ class AlbumViewController: UIViewController
                 
             default: // Other albums including the visible one
                 // Update position of buttons (recalculated after device rotation)
-                addButton.frame = getAddButtonFrame()
-                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
-                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                if #unavailable(iOS 26.0) {
+                    addButton.frame = getAddButtonFrame()
+                    homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                    createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                    uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
+                }
                 
                 // Reset title and back button
                 setTitleViewFromAlbumData() // with or without update info below the name
@@ -709,7 +700,9 @@ class AlbumViewController: UIViewController
         }
         
         // Hide upload button during transition
-        addButton.isHidden = true
+        if #unavailable(iOS 26.0) {
+            addButton.isHidden = true
+        }
         
         // Hide HUD if still presented
         self.navigationController?.hideHUD { }
@@ -720,7 +713,9 @@ class AlbumViewController: UIViewController
         debugPrint("••> viewDidDisappear — Album #\(categoryId): \(albumData.name)")
 
         // Make sure buttons are back to initial state
-        didCancelTapAddButton()
+        if #unavailable(iOS 26.0) {
+            didCancelTapAddButton()
+        }
     }
     
     deinit {
@@ -757,7 +752,9 @@ class AlbumViewController: UIViewController
         
         // Reset buttons and menus
         initBarsInPreviewMode()
-        updateBarsInPreviewMode()
+        if #unavailable(iOS 26.0) {
+            updateBarsInPreviewMode()
+        }
         setTitleViewFromAlbumData()
     }
     

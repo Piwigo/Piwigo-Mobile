@@ -14,6 +14,7 @@ import uploadKit
 extension AlbumViewController
 {
     // MARK: - Buttons Management
+    // Exclusively before iOS 26
     func relocateButtons() {
         // Buttons might have to be relocated:
         /// - when using several scenes on iPad
@@ -59,7 +60,8 @@ extension AlbumViewController
         // — normal rights and upload access to the current category
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId),
            user.hasUploadRights(forCatID: categoryId) {
-            if #unavailable(iOS 26.0), addButton.isHidden {
+            // Show Add Album button
+            if addButton.isHidden {
                 // Show Add button
                 showAddButton {
                     // Show UploadQueue button if needed
