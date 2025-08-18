@@ -20,9 +20,16 @@ extension AlbumViewController
 
         searchController?.searchBar.searchBarStyle = .minimal
         searchController?.searchBar.isTranslucent = false
-        searchController?.searchBar.showsCancelButton = false
+        if #available(iOS 26.0, *) {
+            // UISearchController automatically manages the Cancel button's visibility
+            // when embedded in the navigation bar.
+            // Explicitly setting showsCancelButton = true in iOS 26 is conflicting
+            // with this automatic behavior.
+        } else {
+            searchController?.searchBar.showsCancelButton = false
+            searchController?.searchBar.tintColor = PwgColor.orange
+        }
         searchController?.searchBar.showsSearchResultsButton = false
-        searchController?.searchBar.tintColor = PwgColor.orange
         searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
         definesPresentationContext = true
 
@@ -126,8 +133,13 @@ extension AlbumViewController: UISearchBarDelegate
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         debugPrint("searchBarShouldBeginEditing…")
+        
         // Animates Cancel button appearance
-        searchBar.setShowsCancelButton(true, animated: true)
+        if #available(iOS 26.0, *) {
+            // NOP — See initSearchBar() comment
+        } else {
+            searchBar.setShowsCancelButton(true, animated: true)
+        }
         return true
     }
     
@@ -170,13 +182,22 @@ extension AlbumViewController: UISearchBarDelegate
         // Stop image loader and image import
         imageProvider.userDidCancelSearch = true
 
-        // Animates Cancel button disappearance
-        searchBar.setShowsCancelButton(false, animated: true)
+        // Animates Cancel button appearance
+        if #available(iOS 26.0, *) {
+            // NOP — See initSearchBar() comment
+        } else {
+            searchBar.setShowsCancelButton(true, animated: true)
+        }
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         debugPrint("searchBarSearchButtonClicked…")
-        // Animates Cancel button disappearance
-        searchBar.setShowsCancelButton(false, animated: true)
+        
+        // Animates Cancel button appearance
+        if #available(iOS 26.0, *) {
+            // NOP — See initSearchBar() comment
+        } else {
+            searchBar.setShowsCancelButton(true, animated: true)
+        }
     }
 }
