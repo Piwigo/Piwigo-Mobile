@@ -60,7 +60,9 @@ extension PwgSession: URLSessionDelegate {
         }
 
         // Retrieve the certificate of the server
-        guard let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0)) else {
+        guard let certificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate],
+              let certificate = certificates.first
+        else {
             completionHandler(.performDefaultHandling, nil)
             return
         }
