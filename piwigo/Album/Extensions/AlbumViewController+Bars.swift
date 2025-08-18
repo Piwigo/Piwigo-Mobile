@@ -331,7 +331,7 @@ extension AlbumViewController
     @MainActor
     func setTitleViewFromAlbumData(progress: Float = 0) {
         // Title view
-        if categoryId == 0 {
+        if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
             title = NSLocalizedString("tabBar_albums", comment: "Albums")
             if #available(iOS 13.0, *) {
                 self.view?.window?.windowScene?.title = title
