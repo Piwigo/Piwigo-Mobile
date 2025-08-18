@@ -14,7 +14,13 @@ import piwigoKit
 extension AlbumViewController
 {
     func getDiscoverButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
+        var button: UIBarButtonItem!
+        if #available(iOS 26.0, *) {
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: discoverMenu())
+        } else {
+            // Fall back on previous version
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
+        }
         button.accessibilityIdentifier = "discover"
         return button
     }
