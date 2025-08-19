@@ -166,7 +166,7 @@ extension AlbumViewController
             /// - to edit image parameters
             let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
             if #available(iOS 26.0, *) {
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipis"), menu: menu)
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             } else {
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
             }
