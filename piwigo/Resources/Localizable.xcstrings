@@ -2313,7 +2313,6 @@
     },
     "categoryDiscover_title" : {
       "comment" : "Discover",
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -42398,7 +42397,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle"
+            "value" : "Vælg alle"
           }
         },
         "de" : {
@@ -42416,19 +42415,19 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Todo"
+            "value" : "Seleccionar todo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tout sélectionner"
+            "value" : "Tout sélect."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Minden kijelölése"
+            "value" : "Összes kijelölése"
           }
         },
         "id" : {
@@ -42440,7 +42439,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tutto"
+            "value" : "Seleziona tutto"
           }
         },
         "ja" : {
@@ -42452,7 +42451,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allemaal"
+            "value" : "Selecteer alles"
           }
         },
         "pl" : {
@@ -42464,13 +42463,13 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Все"
+            "value" : "Выбрать все"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alla"
+            "value" : "Markera allt"
           }
         },
         "zh-Hans" : {
@@ -47637,7 +47636,6 @@
     },
     "settings_brightness" : {
       "comment" : "Brightness",
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -47739,7 +47737,6 @@
     },
     "settings_brightnessHelp" : {
       "comment" : "In low ambient brightness, the Ambient Brightness option uses a darker color palette to make photos stand out against darker backgrounds.",
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50567,7 +50564,7 @@
       }
     },
     "settings_displayDescriptions" : {
-      "comment" : "Album Descriptions",
+      "comment" : "Album Descriptions\nDisplay Descriptions",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50669,7 +50666,6 @@
     },
     "settings_displayDescriptions>320px" : {
       "comment" : "Display Album Descriptions",
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50770,7 +50766,7 @@
       }
     },
     "settings_displayTitles" : {
-      "comment" : "Image Titles",
+      "comment" : "Image Titles\nTitles on Thumbnails",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -50872,7 +50868,6 @@
     },
     "settings_displayTitles>320px" : {
       "comment" : "Display Titles on Thumbnails",
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
