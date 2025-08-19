@@ -98,7 +98,11 @@ extension UIBarButtonItem {
     static func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
         button.setBackImage()
-        button.tintColor = PwgColor.orange
+        if #available(iOS 26.0, *) {
+            button.tintColor = PwgColor.gray
+        } else {
+            button.tintColor = PwgColor.orange
+        }
         button.accessibilityIdentifier = "back"
         return button
     }
