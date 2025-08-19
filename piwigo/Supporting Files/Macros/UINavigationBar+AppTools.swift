@@ -12,7 +12,7 @@ import UIKit
 extension UINavigationBar {
     
     @MainActor
-    func configAppearance(withLargeTitle: Bool) {
+    func configAppearance(withLargeTitles: Bool) {
         // Bar style
         barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         
@@ -44,14 +44,18 @@ extension UINavigationBar {
             .foregroundColor: titleAttributeColor,
             .font: UIFont.systemFont(ofSize: 17)
         ]
-        let attributesLarge: [NSAttributedString.Key : Any] = [
-            .foregroundColor: titleAttributeColor,
-            .font: UIFont.systemFont(ofSize: 28, weight: .black)
-        ]
         barAppearance.titleTextAttributes = attributes
-        barAppearance.largeTitleTextAttributes = attributesLarge
-        prefersLargeTitles = withLargeTitle
-        
+
+        // Large title text attributes
+        if withLargeTitles {
+            let attributesLarge: [NSAttributedString.Key : Any] = [
+                .foregroundColor: titleAttributeColor,
+                .font: UIFont.systemFont(ofSize: 28, weight: .black)
+            ]
+            barAppearance.largeTitleTextAttributes = attributesLarge
+        }
+        prefersLargeTitles = withLargeTitles
+
         // Apply the appearance
         standardAppearance = barAppearance
         compactAppearance = barAppearance // For iPhone small navigation bar in landscape.

@@ -46,7 +46,7 @@ class AlbumNavigationController: UINavigationController
         setNeedsStatusBarAppearanceUpdate()
 
         // Navigation bar
-        navigationBar.configAppearance(withLargeTitle: false)
+        navigationBar.configAppearance(withLargeTitles: false)
         
         // Toolbar
         toolbar.configAppearance()

@@ -324,7 +324,7 @@ class AlbumViewController: UIViewController
         
         // Navigation bar
         let prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
-        navigationController?.navigationBar.configAppearance(withLargeTitle: prefersLargeTitles)
+        navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
         setTitleViewFromAlbumData()
         
         // Search bar
