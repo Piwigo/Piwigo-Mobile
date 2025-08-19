@@ -16,5 +16,10 @@ extension UISearchBar {
         barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         searchTextField.textColor = PwgColor.leftLabel
         searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        if #available(iOS 26.0, *) {
+            tintColor = PwgColor.gray
+        } else {
+            tintColor = PwgColor.orange
+        }
     }
 }

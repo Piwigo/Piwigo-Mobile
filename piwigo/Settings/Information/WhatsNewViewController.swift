@@ -98,6 +98,9 @@ class WhatsNewViewController: UIViewController {
         // Background color of the view
         view.backgroundColor = PwgColor.background
 
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Text color depdends on background color
         titleLabel.textColor = PwgColor.text
         firstNewsTitle.textColor = PwgColor.text

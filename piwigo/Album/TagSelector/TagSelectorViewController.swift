@@ -131,21 +131,11 @@ class TagSelectorViewController: UITableViewController {
         view.backgroundColor = PwgColor.background
 
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.barTintColor = PwgColor.background
-        navigationController?.navigationBar.backgroundColor = PwgColor.background
-        if #available(iOS 26.0, *) {
-            navigationController?.navigationBar.tintColor = PwgColor.gray
-        } else {
-            navigationController?.navigationBar.tintColor = PwgColor.orange
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
+        // Search bar
+        searchController.searchBar.configAppearance()
+        
         // Table view
         tagsTableView?.separatorColor = PwgColor.separator
         tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

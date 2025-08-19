@@ -214,32 +214,7 @@ class SettingsViewController: UIViewController {
         view.backgroundColor = PwgColor.background
         
         // Navigation bar appearance
-        let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = PwgColor.background
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = PwgColor.orange
-        
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationBar?.titleTextAttributes = attributes
-        let attributesLarge = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
-        ]
-        navigationBar?.largeTitleTextAttributes = attributesLarge
-        navigationBar?.prefersLargeTitles = true
-        
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
-        barAppearance.titleTextAttributes = attributes
-        barAppearance.largeTitleTextAttributes = attributesLarge
-        navigationItem.standardAppearance = barAppearance
-        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-        navigationItem.scrollEdgeAppearance = barAppearance
-        navigationBar?.prefersLargeTitles = true
+        navigationController?.navigationBar.configAppearance(withLargeTitles: true)
         
         // Table view
         settingsTableView?.separatorColor = PwgColor.separator

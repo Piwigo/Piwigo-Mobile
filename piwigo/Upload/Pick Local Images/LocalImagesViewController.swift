@@ -192,26 +192,7 @@ class LocalImagesViewController: UIViewController
         view.backgroundColor = PwgColor.background
 
         // Navigation bar appearance
-        let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = PwgColor.background
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = PwgColor.orange
-
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationBar?.titleTextAttributes = attributes
-        navigationBar?.prefersLargeTitles = false
-
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
-        barAppearance.titleTextAttributes = attributes
-        navigationItem.standardAppearance = barAppearance
-        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-        navigationItem.scrollEdgeAppearance = barAppearance
-        navigationBar?.prefersLargeTitles = false
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Toolbar
         legendLabel.textColor = PwgColor.text

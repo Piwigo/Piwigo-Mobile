@@ -38,6 +38,9 @@ class DataMigrationViewController: UIViewController {
         // Background color of the view
         view.backgroundColor = PwgColor.background
         
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Change text colour according to palette colour
         piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         

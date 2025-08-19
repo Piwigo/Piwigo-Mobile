@@ -147,34 +147,11 @@ class ImageViewController: UIViewController {
         }
 
         // Navigation bar
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        setTitleViewFromImageData()
 
         // Toolbar
-        let toolbar = navigationController?.toolbar
-        toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationBar?.titleTextAttributes = attributes
-        setTitleViewFromImageData()
-        navigationBar?.prefersLargeTitles = false
-
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
-        barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
-        navigationBar?.standardAppearance = barAppearance
-        navigationBar?.compactAppearance = barAppearance
-        navigationBar?.scrollEdgeAppearance = barAppearance
-
-        let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-        toolbar?.barTintColor = PwgColor.background.withAlphaComponent(0.9)
-        toolbar?.standardAppearance = toolbarAppearance
-        toolbar?.compactAppearance = toolbarAppearance
-        toolbar?.scrollEdgeAppearance = toolbarAppearance
+        navigationController?.toolbar.configAppearance()
     }
 
     override func viewWillAppear(_ animated: Bool) {

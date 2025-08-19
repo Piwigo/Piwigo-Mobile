@@ -13,16 +13,22 @@ import UIKit
 extension TagSelectorViewController
 {
     func initSearchBar() {
+        searchController.obscuresBackgroundDuringPresentation = false
+
         searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.isTranslucent = false
-        searchController.searchBar.showsCancelButton = false
         searchController.searchBar.showsSearchResultsButton = false
-        searchController.searchBar.tintColor = PwgColor.orange
         searchController.searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-
+        if #available(iOS 26.0, *) {
+            searchController.searchBar.showsCancelButton = false
+            searchController.hidesNavigationBarDuringPresentation = false
+        } else {
+            searchController.searchBar.showsCancelButton = false
+            searchController.hidesNavigationBarDuringPresentation = true
+        }
+        
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar
     }
@@ -58,12 +64,16 @@ extension TagSelectorViewController: UISearchBarDelegate
 {
     public func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // Animates Cancel button appearance
-        searchBar.setShowsCancelButton(true, animated: true)
+        if #unavailable(iOS 26.0) {
+            searchBar.setShowsCancelButton(true, animated: true)
+        }
         return true
     }
     
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         // Animates Cancel button disappearance
-        searchBar.setShowsCancelButton(false, animated: true)
+        if #unavailable(iOS 26.0) {
+            searchBar.setShowsCancelButton(false, animated: true)
+        }
     }
 }

@@ -26,7 +26,6 @@ extension AlbumViewController
             // Explicitly setting showsCancelButton = true in iOS 26 is conflicting
             // with this automatic behavior.
             searchController?.searchBar.showsCancelButton = false
-            searchController?.searchBar.tintColor = PwgColor.orange
         }
         searchController?.searchBar.showsSearchResultsButton = false
         searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
