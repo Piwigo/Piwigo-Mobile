@@ -35,7 +35,7 @@ extension AlbumViewController
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
 
-        // Hide the search bar when scrolling
+        // Don't hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = false
     }
 }
