@@ -323,26 +323,16 @@ class AlbumViewController: UIViewController
         noAlbumLabel.textColor = PwgColor.header
         
         // Navigation bar
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationBar?.titleTextAttributes = attributes
+        let prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
+        navigationController?.navigationBar.configAppearance(withLargeTitle: prefersLargeTitles)
         setTitleViewFromAlbumData()
-        navigationBar?.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
+        
+        // Search bar
+        if categoryId == 0 {
+            searchController?.searchBar.configAppearance()
+        }
 
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.75)
-        barAppearance.shadowColor = .clear
-        navigationBar?.standardAppearance = barAppearance
-        navigationBar?.compactAppearance = barAppearance
-        navigationBar?.scrollEdgeAppearance = barAppearance
-
-        // Buttons appearance
+        // Buttons
         if #unavailable(iOS 26.0) {
             addButton.layer.shadowColor = PwgColor.shadow.cgColor
             createAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor

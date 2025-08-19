@@ -39,47 +39,20 @@ class AlbumNavigationController: UINavigationController
     
     @MainActor
     @objc func applyColorPalette() {
-        // Navigation bar appearance
+        // Background color
         view.backgroundColor = PwgColor.background
-        navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        if #available(iOS 26.0, *) {
-            navigationBar.tintColor = PwgColor.gray
-        } else {
-            navigationBar.tintColor = PwgColor.orange
-        }
-        setNeedsStatusBarAppearanceUpdate()
-        
-        // Toolbar appearance
-        let toolbar = navigationController?.toolbar
-        toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        toolbar?.tintColor = PwgColor.orange
 
-        // Title text attributes
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        let attributesLarge = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
-        ]
-        navigationBar.largeTitleTextAttributes = attributesLarge
+        // Status bar
+        setNeedsStatusBarAppearanceUpdate()
+
+        // Navigation bar
+        navigationBar.configAppearance(withLargeTitle: false)
+        
+        // Toolbar
+        toolbar.configAppearance()
         
         // Search bar
-        let searchBar = navigationItem.searchController?.searchBar
-        searchBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        searchBar?.searchTextField.textColor = PwgColor.leftLabel
-        searchBar?.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        
-        // Navigation bar
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithTransparentBackground()
-        barAppearance.backgroundColor = PwgColor.background.withAlphaComponent(0.9)
-        barAppearance.titleTextAttributes = attributes
-        barAppearance.largeTitleTextAttributes = attributesLarge
-        navigationItem.standardAppearance = barAppearance
-        navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-        navigationItem.scrollEdgeAppearance = barAppearance
+        navigationItem.searchController?.searchBar.configAppearance()
     }
 
     override func viewWillAppear(_ animated: Bool) {

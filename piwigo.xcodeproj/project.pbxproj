@@ -132,6 +132,9 @@
 		AD211A9327C15827005D5E4F /* community.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A9227C15827005D5E4F /* community.session.getStatus.swift */; };
 		AD211A9427C15827005D5E4F /* community.session.getStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD211A9227C15827005D5E4F /* community.session.getStatus.swift */; };
 		AD211A9527C16045005D5E4F /* community.session.getStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = AD211A9027C15712005D5E4F /* community.session.getStatus.json */; };
+		AD21EB7B2E54D0F7004458D7 /* UINavigationBar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */; };
+		AD21EB7D2E54D22A004458D7 /* UIToolbar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */; };
+		AD21EB7F2E54D349004458D7 /* UISearchBar+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */; };
 		AD23882328F8914A0037696E /* pwg.users.favorites.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23882228F8914A0037696E /* pwg.users.favorites.getList.swift */; };
 		AD23882728FAB4050037696E /* pwg.images.search.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23882628FAB4050037696E /* pwg.images.search.swift */; };
 		AD23882928FAB8A10037696E /* pwg.tags.getImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23882828FAB8A10037696E /* pwg.tags.getImages.swift */; };
@@ -857,6 +860,9 @@
 		AD211A8D27C14BE1005D5E4F /* pwg.session.logout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.session.logout.swift; sourceTree = "<group>"; };
 		AD211A9027C15712005D5E4F /* community.session.getStatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = community.session.getStatus.json; sourceTree = "<group>"; };
 		AD211A9227C15827005D5E4F /* community.session.getStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = community.session.getStatus.swift; sourceTree = "<group>"; };
+		AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+AppTools.swift"; sourceTree = "<group>"; };
+		AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIToolbar+AppTools.swift"; sourceTree = "<group>"; };
+		AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISearchBar+AppTools.swift"; sourceTree = "<group>"; };
 		AD23882228F8914A0037696E /* pwg.users.favorites.getList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.users.favorites.getList.swift; sourceTree = "<group>"; };
 		AD23882428F8926E0037696E /* pwg.users.favorites.getList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.users.favorites.getList.json; sourceTree = "<group>"; };
 		AD23882628FAB4050037696E /* pwg.images.search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.search.swift; sourceTree = "<group>"; };
@@ -2918,7 +2924,10 @@
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
 				AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */,
+				AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */,
+				AD21EB7E2E54D349004458D7 /* UISearchBar+AppTools.swift */,
 				AD0B62F42DEB3B60001E9684 /* UITextField+Extensions.swift */,
+				AD21EB7C2E54D22A004458D7 /* UIToolbar+AppTools.swift */,
 				AD9112732811FBF7002FB78F /* UIWindowScene+AppTools.swift */,
 				ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */,
 				AD987633262606C600B964C5 /* UIViewController+AppTools.swift */,
@@ -3833,6 +3842,7 @@
 				AD09E3032A92A05C00D8E134 /* SettingsViewController+Privacy.swift in Sources */,
 				ADBE0C2B2BE9635800F16A50 /* AlbumViewController+Share.swift in Sources */,
 				AD3DB4132773958200017542 /* ImageDetailViewController.swift in Sources */,
+				AD21EB7F2E54D349004458D7 /* UISearchBar+AppTools.swift in Sources */,
 				ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */,
 				ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */,
 				AD9697D82BE0301000520614 /* RingProgressView.swift in Sources */,
@@ -3906,6 +3916,7 @@
 				ADDB2A642B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift in Sources */,
 				AD3B2C5B2A1D29380001B8B0 /* ExternalDisplayUtilities.swift in Sources */,
 				ADACCD652E33EE66000CD033 /* SharePdfActivityItemProvider.swift in Sources */,
+				AD21EB7D2E54D22A004458D7 /* UIToolbar+AppTools.swift in Sources */,
 				AD7D132E2DFF120A00EEE90D /* AppShortcuts.swift in Sources */,
 				AD6BA0ED2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift in Sources */,
 				ADE6ADAF2DC4C20500EAE9C8 /* RenameFileInfoLabel.swift in Sources */,
@@ -3922,6 +3933,7 @@
 				ADA74B0D2C5D138600162BE0 /* LocalImagesViewController+Select.swift in Sources */,
 				AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
+				AD21EB7B2E54D0F7004458D7 /* UINavigationBar+AppTools.swift in Sources */,
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
 				ADD65C5E2BE77ACF005AC3B8 /* AlbumViewController+TransitioningDelegate.swift in Sources */,
 				AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */,
