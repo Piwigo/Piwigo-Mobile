@@ -191,6 +191,7 @@ class SettingsViewController: UIViewController {
         
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
+        doneBarButton?.tintColor = PwgColor.orange
         doneBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
