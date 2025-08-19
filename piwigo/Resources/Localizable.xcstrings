@@ -47637,6 +47637,7 @@
     },
     "settings_brightness" : {
       "comment" : "Brightness",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -47738,6 +47739,7 @@
     },
     "settings_brightnessHelp" : {
       "comment" : "In low ambient brightness, the Ambient Brightness option uses a darker color palette to make photos stand out against darker backgrounds.",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

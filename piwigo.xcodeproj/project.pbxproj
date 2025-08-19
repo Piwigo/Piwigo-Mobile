@@ -589,8 +589,6 @@
 		ADDF39812D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = ADDF39802D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel */; };
 		ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */; };
 		ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */; };
-		ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */; };
-		ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */; };
 		ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */; };
 		ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
@@ -1352,8 +1350,6 @@
 		ADDF39802D74BEDD008E2037 /* MappingModel_0F_to_0G.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0F_to_0G.xcmappingmodel; sourceTree = "<group>"; };
 		ADDFD44F27EF4C8900DB5081 /* String+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+AppTools.swift"; sourceTree = "<group>"; };
 		ADDFD45127EF4E7C00DB5081 /* UIView+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AppTools.swift"; sourceTree = "<group>"; };
-		ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewControllerOld.swift; sourceTree = "<group>"; };
-		ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ColorPaletteViewControllerOld.storyboard; sourceTree = "<group>"; };
 		ADE1AB87267E4BB0001C1EEB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.getInfo.swift; sourceTree = "<group>"; };
@@ -2702,8 +2698,6 @@
 				AD747C6725F970A00030253E /* PhoneTableViewCell.swift */,
 				AD8D218A26B20D6E0008E907 /* PadTableViewCell.swift */,
 				ADEAFB8E25F8198800EEDB1D /* ColorPaletteViewController.storyboard */,
-				ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */,
-				ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */,
 			);
 			path = Appearance;
 			sourceTree = "<group>";
@@ -3386,7 +3380,6 @@
 				ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */,
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
 				AD7000CA2E425159007B2791 /* AlbumHeaderReusableView.xib in Resources */,
-				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
 				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
 				AD3B2C5E2A250F300001B8B0 /* LaunchScreenExternal.storyboard in Resources */,
@@ -4018,7 +4011,6 @@
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
 				ADC5926C2C036BF0002B6F82 /* ImageOldHeaderReusableView.swift in Sources */,
 				ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */,
-				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				ADC115E02DC95772000EA45B /* RenameFileViewController+DateFormatSelector.swift in Sources */,
 				AD0B62FD2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift in Sources */,
 				ADB2E9422DD5A864000F3F7C /* TimeFormatSelectorViewController.swift in Sources */,
