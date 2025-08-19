@@ -165,7 +165,11 @@ extension AlbumViewController
             /// - to rotate a photo clockwise or counterclockwise,
             /// - to edit image parameters
             let menu = UIMenu(title: "", children: [albumMenu(), imagesMenu()])
-            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
+            if #available(iOS 26.0, *) {
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipis"), menu: menu)
+            } else {
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
+            }
             actionBarButton?.accessibilityIdentifier = "actions"
 
             if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
