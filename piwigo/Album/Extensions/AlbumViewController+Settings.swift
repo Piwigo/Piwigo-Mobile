@@ -40,6 +40,7 @@ extension AlbumViewController
         return action
     }
 
+    // Before iOS 26
     func getSettingsBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(didTapSettingsButton))
         button.accessibilityIdentifier = "settings"
