@@ -183,7 +183,7 @@ extension AlbumViewController: UISearchBarDelegate
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {
             // NOP — See initSearchBar() comment
-            searchBar.setShowsCancelButton(true, animated: true)
+            searchBar.setShowsCancelButton(false, animated: true)
         }
     }
     
@@ -193,7 +193,7 @@ extension AlbumViewController: UISearchBarDelegate
         // Animates Cancel button appearance
         if #unavailable(iOS 26.0) {
             // NOP — See initSearchBar() comment
-            searchBar.setShowsCancelButton(true, animated: true)
+            searchBar.setShowsCancelButton(false, animated: true)
         }
     }
 }
