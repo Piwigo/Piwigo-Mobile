@@ -175,7 +175,7 @@ extension AlbumViewController
         config.baseBackgroundColor = PwgColor.orange
         config.background.cornerRadius = kRadius
         if categoryId == 0 {
-            config.image = UIImage(named: "createLarge")
+            config.image = UIImage(systemName: "folder.badge.plus")
         } else {
             config.image = UIImage(named: "addButton")
         }
@@ -189,7 +189,7 @@ extension AlbumViewController
         config.baseBackgroundColor = .gray
         config.background.cornerRadius = kRadius
         if categoryId == 0 {
-            config.image = UIImage(named: "createLarge")
+            config.image = UIImage(systemName: "folder.badge.plus")
         } else {
             config.image = UIImage(named: "addButton")
         }
@@ -559,7 +559,7 @@ extension AlbumViewController
         config.baseForegroundColor = .white
         config.baseBackgroundColor = PwgColor.orange
         config.background.cornerRadius = 0.86 * kRadius
-        config.image = UIImage(named: "create")
+        config.image = UIImage(systemName: "folder.badge.plus")
         return config
     }
     
