@@ -254,7 +254,7 @@ extension AlbumViewController
         if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             // Invalid Piwigo or HTTP credentials
             navigationController?.showHUD(
-                withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
+                withTitle: PwgKitError.authenticationFailed.localizedDescription,
                 detail: error.localizedDescription, minWidth: 240,
                 buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
                 buttonTarget: self, buttonSelector: #selector(hideLoading),

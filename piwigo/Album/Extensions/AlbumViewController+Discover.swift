@@ -59,7 +59,7 @@ extension AlbumViewController
     
     private func favoritesAction() -> UIAction {
         let actionId = UIAction.Identifier("Favorites")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
+        let action = UIAction(title: pwgSmartAlbum.favorites.name,
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
             // Check that an album of favorites exists in cache (create it if necessary)
@@ -79,7 +79,7 @@ extension AlbumViewController
     private func taggedAction() -> UIAction {
         // Create action
         let actionId = UIAction.Identifier("Tagged")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
+        let action = UIAction(title: pwgSmartAlbum.tagged.name,
                               image: UIImage(systemName: "tag"),
                               identifier: actionId, handler: { [self] action in
             // Present tag selector
@@ -91,7 +91,7 @@ extension AlbumViewController
     
     private func mostVisitedAction() -> UIAction {
         let actionId = UIAction.Identifier("Most visited")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverVisits_title", comment: "Most visited"),
+        let action = UIAction(title: pwgSmartAlbum.visits.name,
                               image: UIImage(systemName: "person.3.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present most visited images
@@ -102,7 +102,7 @@ extension AlbumViewController
     
     private func bestRatedAction() -> UIAction {
         let actionId = UIAction.Identifier("Best rated")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverBest_title", comment: "Best rated"),
+        let action = UIAction(title: pwgSmartAlbum.best.name,
                               image: UIImage(systemName: "star.leadinghalf.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present best rated images
@@ -113,7 +113,7 @@ extension AlbumViewController
     
     private func recentAction() -> UIAction {
         let actionId = UIAction.Identifier("Recent")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent photos"),
+        let action = UIAction(title: pwgSmartAlbum.recent.name,
                               image: UIImage(systemName: "clock"),
                               identifier: actionId, handler: { [self] action in
             // Present recent images

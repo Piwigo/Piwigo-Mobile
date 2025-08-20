@@ -294,7 +294,7 @@ extension AlbumViewController
     func setTitleViewFromAlbumData(progress: Float = 0) {
         // Title view
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
             self.view?.window?.windowScene?.title = title
             return
         } else {

@@ -100,28 +100,39 @@ extension pwgImageSize {
     }
     
     // Localized name
+    // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
     public var name: String {
         switch self {
         case .square:
-            return NSLocalizedString("thumbnailSizeSquare", comment: "Square")
+            return String(localized: "thumbnailSizeSquare", bundle: piwigoKit,
+                          comment: "Square")
         case .thumb:
-            return NSLocalizedString("thumbnailSizeThumbnail", comment: "Thumbnail")
+            return String(localized: "thumbnailSizeThumbnail", bundle: piwigoKit,
+                          comment: "Thumbnail")
         case .xxSmall:
-            return NSLocalizedString("thumbnailSizeXXSmall", comment: "Tiny")
+            return String(localized: "thumbnailSizeXXSmall", bundle: piwigoKit,
+                          comment: "Tiny")
         case .xSmall:
-            return NSLocalizedString("thumbnailSizeXSmall", comment: "Extra Small")
+            return String(localized: "thumbnailSizeXSmall", bundle: piwigoKit,
+                          comment: "Extra Small")
         case .small:
-            return NSLocalizedString("thumbnailSizeSmall", comment: "Small")
+            return String(localized: "thumbnailSizeSmall", bundle: piwigoKit,
+                          comment: "Small")
         case .medium:
-            return NSLocalizedString("thumbnailSizeMedium", comment: "Medium")
+            return String(localized: "thumbnailSizeMedium", bundle: piwigoKit,
+                          comment: "Medium")
         case .large:
-            return NSLocalizedString("thumbnailSizeLarge", comment: "Large")
+            return String(localized: "thumbnailSizeLarge", bundle: piwigoKit,
+                          comment: "Large")
         case .xLarge:
-            return NSLocalizedString("thumbnailSizeXLarge", comment: "Extra Large")
+            return String(localized: "thumbnailSizeXLarge", bundle: piwigoKit,
+                          comment: "Extra Large")
         case .xxLarge:
-            return NSLocalizedString("thumbnailSizeXXLarge", comment: "Huge")
+            return String(localized: "thumbnailSizeXXLarge", bundle: piwigoKit,
+                          comment: "Huge")
         case .fullRes:
-            return NSLocalizedString("thumbnailSizexFullRes", comment: "Full Resolution")
+            return String(localized: "thumbnailSizexFullRes", bundle: piwigoKit,
+                          comment: "Full Resolution")
         }
     }
     

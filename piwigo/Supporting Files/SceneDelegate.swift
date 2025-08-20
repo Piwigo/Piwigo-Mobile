@@ -332,7 +332,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if albumIDs.contains(pwgSmartAlbum.favorites.rawValue) == false {
             quickActions.append(contentsOf: [
                 UIApplicationShortcutItem(type: ActionType.showFavoritesAction.rawValue,
-                                          localizedTitle: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
+                                          localizedTitle: pwgSmartAlbum.favorites.name,
                                           localizedSubtitle: nil,
                                           icon: UIApplicationShortcutIcon(systemImageName: "heart"))
             ])
@@ -340,7 +340,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if albumIDs.contains(pwgSmartAlbum.recent.rawValue) == false {
             quickActions.append(contentsOf: [
                 UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
-                                          localizedTitle: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
+                                          localizedTitle: pwgSmartAlbum.recent.name,
                                           localizedSubtitle: nil,
                                           icon: UIApplicationShortcutIcon(systemImageName: "clock"))
                 ])

@@ -57,8 +57,7 @@ extension UploadManager {
 
             // Error encountered, inform user
             DispatchQueue.main.async {
-                let userInfo: [String : Any] = ["message" : NSLocalizedString("CoreDataFetch_UploadCreateFailed",
-                                                                              comment: "Failed to create a new Upload object."),
+                let userInfo: [String : Any] = ["message" : PwgKitError.uploadCreationError.localizedDescription,
                                                 "errorMsg" : error.localizedDescription];
                 NotificationCenter.default.post(name: .pwgAppendAutoUploadRequestsFailed,
                                                 object: nil, userInfo: userInfo)

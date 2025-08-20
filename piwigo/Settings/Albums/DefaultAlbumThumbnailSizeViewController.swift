@@ -30,7 +30,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
 
         // Set colors, fonts, etc.
         applyColorPalette()

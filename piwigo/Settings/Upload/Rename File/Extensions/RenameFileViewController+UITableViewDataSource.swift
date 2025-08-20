@@ -19,7 +19,7 @@ extension RenameFileViewController: UITableViewDataSource
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
         else { preconditionFailure("Could not load TextFieldTableViewCell") }
         
-        let title = NSLocalizedString("Text", comment: "Text")
+        let title = RenameAction.ActionType.addText.name
         switch RenameSection(rawValue: indexPath.section) {
         case .prefix:
             cell.configure(with: title, input: prefixActions[indexPath.row - 1].style,
@@ -53,7 +53,7 @@ extension RenameFileViewController: UITableViewDataSource
         } else {
             detail = String(self.categoryId)
         }
-        cell.configure(with: NSLocalizedString("albumID", comment: "Album ID"), detail: detail)
+        cell.configure(with: RenameAction.ActionType.addAlbum.name, detail: detail)
         cell.accessoryType = .none
         cell.accessibilityIdentifier = "addAlbumID"
         return cell
@@ -63,7 +63,7 @@ extension RenameFileViewController: UITableViewDataSource
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
         
-        cell.configure(with: NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date"), detail: "")
+        cell.configure(with: RenameAction.ActionType.addDate.name, detail: "")
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "addCreationDate"
         return cell
@@ -73,7 +73,7 @@ extension RenameFileViewController: UITableViewDataSource
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
         
-        cell.configure(with: NSLocalizedString("editImageDetails_timeCreation", comment: "Creation Time"), detail: "")
+        cell.configure(with: RenameAction.ActionType.addTime.name, detail: "")
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "addCreationTime"
         return cell
@@ -83,7 +83,7 @@ extension RenameFileViewController: UITableViewDataSource
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
         
-        cell.configure(with: NSLocalizedString("Counter", comment: "Counter"), detail: "")
+        cell.configure(with: RenameAction.ActionType.addCounter.name, detail: "")
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "addCounter"
         return cell

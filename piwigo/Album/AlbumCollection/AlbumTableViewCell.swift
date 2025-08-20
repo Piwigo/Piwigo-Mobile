@@ -142,8 +142,8 @@ class AlbumTableViewCell: UITableViewCell {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = NSLocalizedString("singleImageCount", comment: "%@ photo")
-        let severalImages = NSLocalizedString("severalImagesCount", comment: "%@ photos")
+        let singleImage = String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo")
+        let severalImages = String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos")
         let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
         let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string

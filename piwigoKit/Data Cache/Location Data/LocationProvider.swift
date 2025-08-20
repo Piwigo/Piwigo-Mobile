@@ -157,7 +157,7 @@ public class LocationProvider: NSObject {
 
                     // If all images are not localised in this place, add comment
                     if region.radius < location.radius ?? kCLLocationAccuracyBestForNavigation {
-                        placeName.append(NSLocalizedString("andMore", comment: " & more"))
+                        placeName.append(String(localized: "andMore", bundle: piwigoKit, comment: " & more"))
                     }
 
                     // Log placemarks[0]

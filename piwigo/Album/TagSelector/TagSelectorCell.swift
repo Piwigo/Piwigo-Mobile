@@ -32,8 +32,8 @@ class TagSelectorCell: UITableViewCell {
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
             let nberImages: String = nber > 1 ?
-                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                String(format: String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos"), nberPhotos) :
+                String(format: String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo"), nberPhotos)
             tagLabel.text = "\(tag.tagName) (\(nberImages))"
         }
     }

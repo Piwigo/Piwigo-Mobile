@@ -30,7 +30,7 @@ extension SettingsViewController: UITableViewDelegate
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
             }
         case .albums:
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
         case .images:
             title = NSLocalizedString("severalImages", comment: "Images")
         case .videos:

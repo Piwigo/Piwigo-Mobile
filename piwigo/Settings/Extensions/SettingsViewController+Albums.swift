@@ -76,7 +76,7 @@ extension SettingsViewController: SelectCategoryDelegate {
     func defaultAlbumName() -> String {
         var rootName: String
         if view.bounds.size.width > 375 {
-            rootName = NSLocalizedString("categorySelection_root", comment: "Root Album")
+            rootName = pwgSmartAlbum.root.name
         } else {
             rootName = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
         }

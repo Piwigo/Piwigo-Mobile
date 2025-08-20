@@ -243,8 +243,7 @@ class AlbumDeletion: NSObject
                         self.topViewController.hideHUD { [self] in
                             // Display error alert after fetching album data
                             let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-                            let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
-                            self.deleteAlbumError(error, title: title, message: message)
+                            self.deleteAlbumError(error, title: title, message: error.localizedDescription)
                         }
                     }
                     return

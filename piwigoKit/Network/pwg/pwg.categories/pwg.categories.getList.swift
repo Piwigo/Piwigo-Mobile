@@ -74,7 +74,7 @@ public struct CategoriesGetListJSON: Decodable {
         else {
             // Unexpected Piwigo server error
             errorCode = -1
-            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+            errorMessage = PwgKitError.invalidParameter.localizedDescription
         }
     }
 }
@@ -146,7 +146,7 @@ public struct CategoryData: Decodable
     }
     
     public init(withId albumId: Int32,
-                albumName: String = NSLocalizedString("tabBar_albums", comment: "Albums"),
+                albumName: String = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"),
                 albumComment: String = "", albumRank: String = "",
                 parentId: String = "\(Int32.min)", parentIds: String = "",
                 nberImages: Int64 = Int64.zero, totalNberImages: Int64 = Int64.min) {

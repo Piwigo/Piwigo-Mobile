@@ -519,6 +519,8 @@
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
 		ADC339FD26A7ECF000173F8A /* AutoUploadIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntentHandler.swift */; };
+		ADC4F6CD2E55A3AC0044528B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADC4F6CC2E55A3AC0044528B /* Localizable.xcstrings */; };
+		ADC4F6D12E55CF860044528B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC4F6D02E55CF860044528B /* Constants.swift */; };
 		ADC592662C0333A2002B6F82 /* ImageHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC592652C0333A2002B6F82 /* ImageHeaderReusableView.swift */; };
 		ADC592682C0333B0002B6F82 /* ImageHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC592672C0333B0002B6F82 /* ImageHeaderReusableView.xib */; };
 		ADC5926A2C036BD9002B6F82 /* ImageOldHeaderReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC592692C036BD9002B6F82 /* ImageOldHeaderReusableView.xib */; };
@@ -1278,6 +1280,8 @@
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
 		ADC339FC26A7ECF000173F8A /* AutoUploadIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadIntentHandler.swift; sourceTree = "<group>"; };
+		ADC4F6CC2E55A3AC0044528B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		ADC4F6D02E55CF860044528B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		ADC592652C0333A2002B6F82 /* ImageHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHeaderReusableView.swift; sourceTree = "<group>"; };
 		ADC592672C0333B0002B6F82 /* ImageHeaderReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageHeaderReusableView.xib; sourceTree = "<group>"; };
 		ADC592692C036BD9002B6F82 /* ImageOldHeaderReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageOldHeaderReusableView.xib; sourceTree = "<group>"; };
@@ -1576,6 +1580,7 @@
 		AD084E3B2659846400159FE1 /* piwigoKit */ = {
 			isa = PBXGroup;
 			children = (
+				ADC4F6D02E55CF860044528B /* Constants.swift */,
 				AD94F63A266D615000EFC6A9 /* Data Cache */,
 				AD2913E826696A8300403026 /* Network */,
 				AD7F1C162B667BDD008E100E /* Resources */,
@@ -2185,6 +2190,7 @@
 			isa = PBXGroup;
 			children = (
 				ADA0049C2739C036006FE8ED /* piwigoKit.h */,
+				ADC4F6CC2E55A3AC0044528B /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3285,6 +3291,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADC4F6CD2E55A3AC0044528B /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3591,6 +3598,7 @@
 				AD6E6C412E2BE3EC00600E5A /* ImageFileType.swift in Sources */,
 				AD594C222A2CA8AC009874D5 /* UploadToUploadMigrationPolicy_09_to_0C.swift in Sources */,
 				AD594C1E2A2CA725009874D5 /* MappingModel_09_to_0C.xcmappingmodel in Sources */,
+				ADC4F6D12E55CF860044528B /* Constants.swift in Sources */,
 				ADB007FB2D7E048A004A84A7 /* AlbumToAlbumMigrationPolicy_0F_to_0H.swift in Sources */,
 				ADB007DC2D7C8682004A84A7 /* MappingModel_0F_to_0H.xcmappingmodel in Sources */,
 				ADDF397F2D74988A008E2037 /* ImageToImageMigrationPolicy_0F_to_0G.swift in Sources */,

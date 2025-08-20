@@ -505,7 +505,7 @@ class LoginViewController: UIViewController {
         var buttonSelector = #selector(hideLoading)
         if let pwgError = error as? PwgKitError, pwgError.incompatibleVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         }
         else if let pwgError = error as? PwgKitError, pwgError.failedAuthentication {
             title = NSLocalizedString("loginError_title", comment: "Login Fail")
@@ -628,8 +628,8 @@ class LoginViewController: UIViewController {
         let defaultAction = UIAlertAction(
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .cancel, handler: { action in })
-        presentPiwigoAlert(withTitle: NSLocalizedString("serverURLerror_title", comment: "Incorrect URL"),
-                           message: NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address."), actions: [defaultAction])
+        presentPiwigoAlert(withTitle: PwgKitError.wrongServerURL.localizedDescription,
+                           message: PwgKitError.invalidURL.localizedDescription, actions: [defaultAction])
     }
 
     @MainActor

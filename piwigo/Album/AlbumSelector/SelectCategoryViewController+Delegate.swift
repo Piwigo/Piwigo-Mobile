@@ -22,7 +22,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             // 1st section —> Albums containing image
             if section == 0 {
                 // Title
-                title = String(format: "%@\n", NSLocalizedString("tabBar_albums", comment:"Albums"))
+                title = String(format: "%@\n", String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums"))
                 text = inputImages.first?.albums?.count ?? 0 > 1 ?
                 NSLocalizedString("categorySelection_one", comment:"Select one of the albums containing this image") :
                 NSLocalizedString("categorySelection_current", comment:"Select the current album for this image")
@@ -37,7 +37,7 @@ extension SelectCategoryViewController: UITableViewDelegate
                 // Do we have recent albums to show?
                 title = (recentAlbums.fetchedObjects ?? []).count > 0 ?
                 NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums") :
-                NSLocalizedString("tabBar_albums", comment: "Albums")
+                String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
             } else {
                 // 2nd section
                 title = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
@@ -184,7 +184,7 @@ extension SelectCategoryViewController: UITableViewDelegate
             let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
             let message:String
             if albumData.pwgID == 0 {
-                message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), NSLocalizedString("categorySelection_root", comment: "Root Album"))
+                message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"),   pwgSmartAlbum.root.name)
             } else {
                 message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), albumData.name)
             }

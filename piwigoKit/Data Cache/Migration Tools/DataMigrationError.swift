@@ -13,10 +13,11 @@ public enum DataMigrationError: Error {
 }
 
 extension DataMigrationError: LocalizedError {
+    // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
     public var errorDescription: String? {
         switch self {
         case .timeout:
-            return NSLocalizedString("CoreData_MigrationError_timeout",
+            return String(localized: "CoreData_MigrationError_timeout", bundle: piwigoKit,
                                      comment: "The app was suspended while migrating the store. Please restart the app and try again.")
         }
     }

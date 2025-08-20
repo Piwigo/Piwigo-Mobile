@@ -114,7 +114,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
-            alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
+            alertTitle = PwgKitError.failedToPrepareDownload.localizedDescription
             alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadVideoFail_message", comment: "Failed to download video!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!

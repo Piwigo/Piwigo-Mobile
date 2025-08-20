@@ -18,7 +18,7 @@ extension AutoUploadViewController: UITableViewDelegate
         case 0:
             title = NSLocalizedString("settings_autoUploadLong", comment: "Auto Upload Photos")
         case 1:
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
         case 2:
             title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         default:

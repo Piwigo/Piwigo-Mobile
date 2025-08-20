@@ -58,7 +58,7 @@ class DateFormatSelectorViewController: UIViewController {
 
         // Header
         let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date"))
+        let title = String(format: "%@\n", RenameAction.ActionType.addDate.name)
         let titleAttributedString = NSMutableAttributedString(string: title)
         titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
                                            range: NSRange(location: 0, length: title.count))

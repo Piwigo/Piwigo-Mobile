@@ -19,23 +19,31 @@ public enum pwgSmartAlbum: Int32 {
     case tagged    = -10        // Tagged photos (offset applied to tag ID)
 }
 
+// When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
 extension pwgSmartAlbum {
     public var name: String {
         switch self {
         case .root:
-            return NSLocalizedString("categorySelection_root", comment: "Root Album")
+            return String(localized: "categorySelection_root", bundle: piwigoKit,
+                          comment: "Root Album")
         case .search:
             return ""
+        
         case .visits:
-            return NSLocalizedString("categoryDiscoverVisits_title", comment: "Most visited")
+            return String(localized: "categoryDiscoverVisits_title", bundle: piwigoKit,
+                          comment: "Most visited")
         case .best:
-            return NSLocalizedString("categoryDiscoverBest_title", comment: "Best rated")
+            return String(localized: "categoryDiscoverBest_title", bundle: piwigoKit,
+                          comment: "Best rated")
         case .recent:
-            return NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent photos")
+            return String(localized: "categoryDiscoverRecent_title", bundle: piwigoKit,
+                          comment: "Recent photos")
         case .favorites:
-            return NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites")
+            return String(localized: "categoryDiscoverFavorites_title", bundle: piwigoKit,
+                          comment: "My Favorites")
         case .tagged:
-            return NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged")
+            return String(localized: "categoryDiscoverTagged_title", bundle: piwigoKit,
+                          comment: "Tagged")
         }
     }
 }

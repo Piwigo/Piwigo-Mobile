@@ -64,7 +64,7 @@ extension AlbumViewController {
         
         let actionId = UIAction.Identifier("org.piwigo.images.sort.default")
         let isActive = sortOption == .albumDefault
-        let action = UIAction(title: NSLocalizedString("categorySort_default", comment: "Default"),
+        let action = UIAction(title: pwgImageSort.albumDefault.name,
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: actionId, handler: { [self] action in
             // Should sorting be changed?
@@ -92,7 +92,8 @@ extension AlbumViewController {
         let title = NSLocalizedString("categorySort_name", comment: "Photo Title")
         switch sortOption {
         case .nameAscending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.up"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .nameDescending
                 images.delegate = nil
@@ -101,7 +102,8 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         case .nameDescending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.down"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .nameAscending
                 images.delegate = nil
@@ -110,7 +112,7 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         default:
-            action = UIAction(title: title, image: nil,
+            action = UIAction(title: title, subtitle: nil, image: nil,
                               identifier: actionId, handler: { [self] action in
                 sortOption = .nameAscending
                 images.delegate = nil
@@ -135,7 +137,8 @@ extension AlbumViewController {
         let title = NSLocalizedString("categorySort_dateCreated", comment: "Date Created")
         switch sortOption {
         case .dateCreatedAscending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.up"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
@@ -144,7 +147,8 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         case .dateCreatedDescending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.down"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .dateCreatedAscending
                 images.delegate = nil
@@ -153,7 +157,7 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         default:
-            action = UIAction(title: title, image: nil,
+            action = UIAction(title: title, subtitle: nil, image: nil,
                               identifier: actionId, handler: { [self] action in
                 sortOption = .dateCreatedDescending
                 images.delegate = nil
@@ -178,7 +182,8 @@ extension AlbumViewController {
         let title = NSLocalizedString("categorySort_datePosted", comment: "Date Posted")
         switch sortOption {
         case .datePostedAscending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.up"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .datePostedDescending
                 images.delegate = nil
@@ -187,7 +192,8 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         case .datePostedDescending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.down"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .datePostedAscending
                 images.delegate = nil
@@ -196,7 +202,7 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         default:
-            action = UIAction(title: title, image: nil,
+            action = UIAction(title: title, subtitle: nil, image: nil,
                               identifier: actionId, handler: { [self] action in
                 sortOption = .datePostedDescending
                 images.delegate = nil
@@ -221,7 +227,8 @@ extension AlbumViewController {
         let title = NSLocalizedString("categorySort_ratingScore", comment: "Rating Score")
         switch sortOption {
         case .ratingScoreAscending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.up"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
@@ -230,7 +237,8 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         case .ratingScoreDescending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.down"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .ratingScoreAscending
                 images.delegate = nil
@@ -239,7 +247,7 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         default:
-            action = UIAction(title: title, image: nil,
+            action = UIAction(title: title, subtitle: nil, image: nil,
                               identifier: actionId, handler: { [self] action in
                 sortOption = .ratingScoreDescending
                 images.delegate = nil
@@ -264,7 +272,8 @@ extension AlbumViewController {
         let title = NSLocalizedString("categorySort_visits", comment: "Visits")
         switch sortOption {
         case .visitsAscending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.up"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .visitsDescending
                 images.delegate = nil
@@ -273,7 +282,8 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         case .visitsDescending:
-            action = UIAction(title: title, image: UIImage(systemName: "arrow.down"),
+            action = UIAction(title: title, subtitle: sortOption.shortName,
+                              image: UIImage(systemName: "checkmark"),
                               identifier: actionId, handler: { [self] action in
                 sortOption = .visitsAscending
                 images.delegate = nil
@@ -282,7 +292,7 @@ extension AlbumViewController {
                 updateCollectionAndMenu()
             })
         default:
-            action = UIAction(title: title, image: nil,
+            action = UIAction(title: title, subtitle: nil, image: nil,
                               identifier: actionId, handler: { [self] action in
                 sortOption = .visitsDescending
                 images.delegate = nil
@@ -304,7 +314,7 @@ extension AlbumViewController {
         
         let actionId = UIAction.Identifier("org.piwigo.images.sort.manual")
         let isActive = sortOption == .rankAscending
-        let action = UIAction(title: NSLocalizedString("categorySort_manual", comment: "Manual Order"),
+        let action = UIAction(title: pwgImageSort.rankAscending.name,
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
                               identifier: actionId, handler: { [self] action in
             // Should sorting be changed?

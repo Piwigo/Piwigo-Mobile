@@ -75,7 +75,8 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .date:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "dateCreation", for: indexPath) as? EditImageTextFieldTableViewCell
             else { preconditionFailure("Could not load a EditImageTextFieldTableViewCell") }
-            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date")), placeHolder: "", andImageDetail: NSAttributedString(string: getStringFrom(commonDateCreated)))
+            cell.config(withLabel: NSAttributedString(string: RenameAction.ActionType.addDate.name),
+                        placeHolder: "", andImageDetail: NSAttributedString(string: getStringFrom(commonDateCreated)))
             if shouldUpdateDateCreated {
                 cell.cellTextField.textColor = PwgColor.orange
             }

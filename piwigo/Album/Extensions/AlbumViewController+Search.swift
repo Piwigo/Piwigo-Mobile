@@ -79,7 +79,7 @@ extension AlbumViewController: UISearchControllerDelegate
         categoryId = AlbumVars.shared.defaultCategory
         
         // Title forgotten when searching immediately after launch
-        title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
         
         // Reset navigation bar
         applyColorPalette()

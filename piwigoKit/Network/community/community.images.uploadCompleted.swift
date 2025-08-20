@@ -74,7 +74,7 @@ public struct CommunityImagesUploadCompletedJSON: Decodable {
         else {
             // Unexpected Piwigo server error
             errorCode = -1
-            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+            errorMessage = PwgKitError.invalidParameter.localizedDescription
         }
     }
 }

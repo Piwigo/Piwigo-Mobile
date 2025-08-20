@@ -28,7 +28,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
         sortSelectTableView.accessibilityIdentifier = "sortSelect"
         navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
 

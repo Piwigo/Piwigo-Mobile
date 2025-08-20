@@ -125,129 +125,131 @@ extension PwgKitError {
 }
 
 extension PwgKitError: LocalizedError {
+    // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
     public var errorDescription: String? {
         switch self {
         // Server errors
         case .wrongServerURL:
-            return NSLocalizedString("serverURLerror_title", comment: "Incorrect URL")
+            return String(localized: "serverURLerror_title", bundle: piwigoKit,
+                          comment: "Incorrect URL")
         case .serverCreationError:
-            return NSLocalizedString("CoreData_ServerCreateFailed",
-                                     comment: "Failed to create a new Server object.")
+            return String(localized: "CoreData_ServerCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new Server object.")
 
         // User errors
         case .emptyUsername:
-            return NSLocalizedString("CoreDataFetch_UserMissingData",
-                                     comment: "Will discard a user account missing a valid username.")
+            return String(localized: "CoreDataFetch_UserMissingData", bundle: piwigoKit,
+                          comment: "Will discard a user account missing a valid username.")
         case .unknownUserStatus:
-            return NSLocalizedString("CoreDataFetch_UserUnknownStatus",
-                                     comment: "Failed to get Community extension parameters.\nTry logging in again.")
+            return String(localized: "CoreDataFetch_UserUnknownStatus", bundle: piwigoKit,
+                          comment: "Failed to get Community extension parameters.\nTry logging in again.")
         case .userCreationError:
-            return NSLocalizedString("CoreData_UserCreateFailed",
-                                     comment: "Failed to create a new User object.")
+            return String(localized: "CoreData_UserCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new User object.")
         
         // Album errors
         case .fetchAlbumFailed:
-            return NSLocalizedString("CoreDataFetch_AlbumError",
-                                     comment: "Fetch albums error!")
+            return String(localized: "CoreDataFetch_AlbumError", bundle: piwigoKit,
+                          comment: "Fetch albums error!")
         case .missingAlbumData:
-            return NSLocalizedString("CoreDataFetch_AlbumMissingData",
-                                     comment: "Found and will discard an album missing a valid ID or name.")
+            return String(localized: "CoreDataFetch_AlbumMissingData", bundle: piwigoKit,
+                          comment: "Found and will discard an album missing a valid ID or name.")
         case .albumCreationError:
-            return NSLocalizedString("CoreDataFetch_AlbumCreateFailed",
-                                     comment: "Failed to create a new Album object.")
+            return String(localized: "CoreDataFetch_AlbumCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new Album object.")
         case .albumNotFound:
-            return NSLocalizedString("CoreData_AlbumNotFound",
-                                     comment: "Album not in persistent cache.")
+            return String(localized: "CoreData_AlbumNotFound", bundle: piwigoKit,
+                          comment: "Album not in persistent cache.")
 
         // Image errors
         case .fetchImageFailed:
-            return NSLocalizedString("CoreDataFetch_ImageError",
-                                     comment: "Fetch photos/videos error!")
+            return String(localized: "CoreDataFetch_ImageError", bundle: piwigoKit,
+                          comment: "Fetch photos/videos error!")
         case .missingImageData:
-            return NSLocalizedString("CoreDataFetch_ImageMissingData",
-                                     comment: "Found and will discard a photo/video missing a valid ID or URL.")
+            return String(localized: "CoreDataFetch_ImageMissingData", bundle: piwigoKit,
+                          comment: "Found and will discard a photo/video missing a valid ID or URL.")
         case .creationImageError:
-            return NSLocalizedString("CoreDataFetch_ImageCreateFailed",
-                                     comment: "Failed to create a new Image object.")
+            return String(localized: "CoreDataFetch_ImageCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new Image object.")
         
         // Tag errors
         case .fetchTagFailed:
-            return NSLocalizedString("CoreDataFetch_TagError",
-                                     comment: "Fetch tags error!")
+            return String(localized: "CoreDataFetch_TagError", bundle: piwigoKit,
+                          comment: "Fetch tags error!")
         case .missingTagData:
-            return NSLocalizedString("CoreDataFetch_TagMissingData",
-                                     comment: "Found and will discard a tag missing a valid code or name.")
+            return String(localized: "CoreDataFetch_TagMissingData", bundle: piwigoKit,
+                          comment: "Found and will discard a tag missing a valid code or name.")
         case .tagCreationError:
-            return NSLocalizedString("CoreDataFetch_TagCreateFailed",
-                                     comment: "Failed to create a new Tag object.")
+            return String(localized: "CoreDataFetch_TagCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new Tag object.")
         
         // Location errors
         case .missingLocationData:
-            return NSLocalizedString("CoreDataFetch_LocationMissingData",
-                                     comment: "Found and will discard a location missing a valid identifier.")
+            return String(localized: "CoreDataFetch_LocationMissingData", bundle: piwigoKit,
+                          comment: "Found and will discard a location missing a valid identifier.")
         case .locationCreationError:
-            return NSLocalizedString("CoreDataFetch_LocationCreateFailed",
-                                     comment: "Failed to create a new Location object.")
+            return String(localized: "CoreDataFetch_LocationCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new Location object.")
 
         // Upload errors
         case .uploadCreationError:
-            return NSLocalizedString("CoreDataFetch_UploadCreateFailed",
-                                     comment: "Failed to create a new Upload object.")
+            return String(localized: "CoreDataFetch_UploadCreateFailed", bundle: piwigoKit,
+                          comment: "Failed to create a new Upload object.")
         case .uploadDeletionError:
-            return NSLocalizedString("CoreDataFetch_UploadDeleteFailed",
-                                     comment: "Failed to delete an Upload object.")
+            return String(localized: "CoreDataFetch_UploadDeleteFailed", bundle: piwigoKit,
+                          comment: "Failed to delete an Upload object.")
         case .missingUploadData:
-            return NSLocalizedString("CoreDataFetch_UploadMissingData",
-                                     comment: "Found and will discard an upload missing a valid identifier.")
+            return String(localized: "CoreDataFetch_UploadMissingData", bundle: piwigoKit,
+                          comment: "Found and will discard an upload missing a valid identifier.")
         case .missingAsset:
-            return NSLocalizedString("CoreDataFetch_UploadMissingAsset",
-                                     comment: "Failed to retrieve photo")
+            return String(localized: "CoreDataFetch_UploadMissingAsset", bundle: piwigoKit,
+                          comment: "Failed to retrieve photo")
         case .missingUploadFile:
             return ""
         
         // Network errors
         case .authenticationFailed:
-            return NSLocalizedString("sessionStatusError_message",
-                                     comment: "Failed to authenticate with server.\nTry logging in again.")
+            return String(localized: "sessionStatusError_message", bundle: piwigoKit,
+                          comment: "Failed to authenticate with server.\nTry logging in again.")
         case .invalidResponse:
-            return NSLocalizedString("PiwigoServer_invalidResponse",
-                                     comment: "Piwigo server did not return an invalid response.")
+            return String(localized: "PiwigoServer_invalidResponse", bundle: piwigoKit,
+                          comment: "Piwigo server did not return a valid response.")
         case .emptyJSONobject:
-            return NSLocalizedString("PiwigoServer_emptyJSONobject",
-                                     comment: "Piwigo server did return an empty JSON object.")
+            return String(localized: "PiwigoServer_emptyJSONobject", bundle: piwigoKit,
+                          comment: "Piwigo server did return an empty JSON object.")
         case .failedToPrepareDownload:
-            return NSLocalizedString("downloadImageFail_title",
-                                     comment: "Download Fail")
+            return String(localized: "downloadImageFail_title", bundle: piwigoKit,
+                          comment: "Download Fail")
         case .incompatiblePwgVersion:
-            return NSLocalizedString("serverVersionNotCompatible_message",
-                                     comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
+            return String(localized: "serverVersionNotCompatible_message", bundle: piwigoKit,
+                          comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
         case .invalidCredentials:
-            return NSLocalizedString("loginError_message",
-                                     comment: "The username and password don't match on the given server")
+            return String(localized: "loginError_message", bundle: piwigoKit,
+                          comment: "The username and password don't match on the given server")
         case .invalidJSONobject:
-            return NSLocalizedString("PiwigoServer_invalidJSONobject",
-                                     comment: "Piwigo server did not return a valid JSON object.")
+            return String(localized: "PiwigoServer_invalidJSONobject", bundle: piwigoKit,
+                          comment: "Piwigo server did not return a valid JSON object.")
         case .invalidMethod:
-            return NSLocalizedString("serverInvalidMethodError_message",
-                                     comment: "Failed to call server method.")
+            return String(localized: "serverInvalidMethodError_message", bundle: piwigoKit,
+                          comment: "Failed to call server method.")
         case .invalidParameter:
-            return NSLocalizedString("serverUnknownError_message",
-                                     comment: "Unexpected error encountered while calling server method with provided parameters.")
+            return String(localized: "serverUnknownError_message", bundle: piwigoKit,
+                          comment: "Unexpected error encountered while calling server method with provided parameters.")
         case .invalidURL:
-            return NSLocalizedString("serverURLerror_message",
-                                     comment: "Please correct the Piwigo web server address.")
+            return String(localized: "serverURLerror_message", bundle: piwigoKit,
+                          comment: "Please correct the Piwigo web server address.")
         case .missingParameter:
-            return NSLocalizedString("serverMissingParamError_message",
-                                     comment: "Failed to execute server method with missing parameter.")
+            return String(localized: "serverMissingParamError_message", bundle: piwigoKit,
+                          comment: "Failed to execute server method with missing parameter.")
         case .wrongJSONobject:
-            return NSLocalizedString("PiwigoServer_wrongJSONobject",
-                                     comment: "Could not digest JSON object returned by Piwigo server.")
+            return String(localized: "PiwigoServer_wrongJSONobject", bundle: piwigoKit,
+                          comment: "Could not digest JSON object returned by Piwigo server.")
         case .networkUnavailable:
-            return NSLocalizedString("internetErrorGeneral_broken",
-                                     comment: "Sorry, the communication was broken.\nTry logging in again.")
+            return String(localized: "internetErrorGeneral_broken", bundle: piwigoKit,
+                          comment: "Sorry, the communication was broken.\nTry logging in again.")
         case .wrongDataFormat:
-            return NSLocalizedString("CoreDataFetch_DigestError",
-                                     comment: "Could not digest the fetched data.")
+            return String(localized: "CoreDataFetch_DigestError", bundle: piwigoKit,
+                          comment: "Could not digest the fetched data.")
 
         // Piwigo errors
         case .pwgError(code: let code, msg: let msg):
@@ -428,8 +430,8 @@ extension PwgKitError: LocalizedError {
             fallthrough
         
         default:
-            return NSLocalizedString("serverUnknownError_message",
-                                     comment: "Unexpected error encountered while calling server method with provided parameters.")
+            return String(localized: "serverUnknownError_message", bundle: piwigoKit,
+                          comment: "Unexpected error encountered while calling server method with provided parameters.")
         }
     }
 }

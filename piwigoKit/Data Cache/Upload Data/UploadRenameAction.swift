@@ -56,18 +56,24 @@ public struct RenameAction: Hashable {
         case addTime
         case addCounter
         
+        // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
         public var name: String {
             switch self {
             case .addText:
-                return NSLocalizedString("Text", comment: "Text")
+                return String(localized: "Text", bundle: piwigoKit,
+                              comment: "Text")
             case .addAlbum:
-                return NSLocalizedString("albumID", comment: "Album ID")
+                return String(localized: "albumID", bundle: piwigoKit,
+                              comment: "Album ID")
             case .addDate:
-                return NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date")
+                return String(localized: "editImageDetails_dateCreation", bundle: piwigoKit,
+                              comment: "Creation Date")
             case .addTime:
-                return NSLocalizedString("editImageDetails_timeCreation", comment: "Creation Time")
+                return String(localized: "editImageDetails_timeCreation", bundle: piwigoKit,
+                              comment: "Creation Time")
             case .addCounter:
-                return NSLocalizedString("Counter", comment: "Counter")
+                return String(localized: "Counter", bundle: piwigoKit,
+                              comment: "Counter")
             }
         }
 

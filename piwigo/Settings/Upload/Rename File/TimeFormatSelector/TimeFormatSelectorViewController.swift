@@ -56,7 +56,7 @@ class TimeFormatSelectorViewController: UIViewController {
         
         // Header
         let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", NSLocalizedString("editImageDetails_timeCreation", comment: "Creation Time"))
+        let title = String(format: "%@\n", RenameAction.ActionType.addTime.name)
         let titleAttributedString = NSMutableAttributedString(string: title)
         titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
                                            range: NSRange(location: 0, length: title.count))

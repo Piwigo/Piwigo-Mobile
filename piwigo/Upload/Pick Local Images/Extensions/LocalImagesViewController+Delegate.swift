@@ -162,7 +162,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: NSLocalizedString("errorHUD_label", comment: "Error"),
+            return UIAction(title: String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error"),
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         

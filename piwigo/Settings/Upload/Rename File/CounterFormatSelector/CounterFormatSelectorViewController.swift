@@ -59,7 +59,7 @@ class CounterFormatSelectorViewController: UIViewController {
         
         // Header
         let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", NSLocalizedString("Counter", comment: "Counter"))
+        let title = String(format: "%@\n", RenameAction.ActionType.addCounter.name)
         let titleAttributedString = NSMutableAttributedString(string: title)
         titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
                                            range: NSRange(location: 0, length: title.count))

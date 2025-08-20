@@ -111,7 +111,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
-            alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
+            alertTitle = PwgKitError.failedToPrepareDownload.localizedDescription
             alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!

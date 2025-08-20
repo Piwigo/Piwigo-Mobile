@@ -127,7 +127,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
-            alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
+            alertTitle = PwgKitError.failedToPrepareDownload.localizedDescription
             alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!

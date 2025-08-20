@@ -358,7 +358,7 @@ extension UploadManager
             
             // Investigate next upload request?
             self.didEndPreparation()
-//            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
+//            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: pwgUploadState.formatError.stateInfo, forRetrying: false, withImage: nextImageToBeUploaded)
 
         case .video:
             upload.fileType = pwgImageFileType.video.rawValue
