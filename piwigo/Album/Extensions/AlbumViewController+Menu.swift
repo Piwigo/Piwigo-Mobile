@@ -621,9 +621,6 @@ extension AlbumViewController: ImageHeaderDelegate
             if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                 header.selectButton.setTitle(forState: sectionState)
             }
-            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.selectButton.setTitle(forState: sectionState)
-            }
         }
     }
 }

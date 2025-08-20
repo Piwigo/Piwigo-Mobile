@@ -54,9 +54,6 @@ extension AlbumViewController: UICollectionViewDelegate
                 if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageHeaderReusableView {
                     header.selectButton.setTitle(forState: selectState)
                 }
-                else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageOldHeaderReusableView {
-                    header.selectButton.setTitle(forState: selectState)
-                }
                 return
             }
             
@@ -330,8 +327,6 @@ extension AlbumViewController: UICollectionViewDelegate
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
-            } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
             }
         }
     }
@@ -364,8 +359,6 @@ extension AlbumViewController: UICollectionViewDelegate
             let selectState = self.updateSelectButton(ofSection: indexPath.section)
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
-            } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
             }
         }

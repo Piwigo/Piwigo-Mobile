@@ -261,7 +261,6 @@ class AlbumViewController: UIViewController
         collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
-        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
         collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
         
         // Initialise "no album / no photo" label
@@ -381,10 +380,6 @@ class AlbumViewController: UIViewController
                 header.applyColorPalette()
             }
             else if let header = header as? ImageHeaderReusableView {
-                header.applyColorPalette()
-                header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
-            }
-            else if let header = header as? ImageOldHeaderReusableView {
                 header.applyColorPalette()
                 header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
             }

@@ -168,9 +168,6 @@ extension AlbumViewController
                 if let header = header as? ImageHeaderReusableView {
                     header.selectButton.setTitle(forState: .select)
                 }
-                else if let header = header as? ImageOldHeaderReusableView {
-                    header.selectButton.setTitle(forState: .select)
-                }
             }
         }
     }
@@ -495,8 +492,6 @@ extension AlbumViewController: UIGestureRecognizerDelegate
             let selectState = updateSelectButton(ofSection: indexPath.section)
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
-            } else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
             }
         }

@@ -188,11 +188,6 @@ extension AlbumViewController
                     header.config(with: imagesInSection, sortKey: sortKey, section: indexPath.section, selectState: selectState)
                 }
             }
-            else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.config(with: imagesInSection, sortKey: sortKey, group: AlbumVars.shared.defaultGroup,
-                              section: indexPath.section, selectState: selectState,
-                              album: self.attributedComment(), size: self.getAlbumDescriptionSize())
-            }
         }
     }
     
