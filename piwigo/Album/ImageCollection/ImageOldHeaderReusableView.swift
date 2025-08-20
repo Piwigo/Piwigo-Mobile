@@ -100,7 +100,11 @@ class ImageOldHeaderReusableView: UICollectionReusableView
     
     @MainActor
     func applyColorPalette() {
-        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
         mainLabel.textColor = PwgColor.leftLabel
         detailLabel.textColor = PwgColor.rightLabel
         segmentedControl?.selectedSegmentTintColor = PwgColor.orange

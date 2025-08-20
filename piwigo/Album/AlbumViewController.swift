@@ -284,7 +284,11 @@ class AlbumViewController: UIViewController
         
         // Sticky section headers
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.sectionHeadersPinToVisibleBounds = true
+            if #available(iOS 26.0, *) {
+                layout.sectionHeadersPinToVisibleBounds = false
+            } else {
+                layout.sectionHeadersPinToVisibleBounds = true
+            }
         }
         
         // Refresh view

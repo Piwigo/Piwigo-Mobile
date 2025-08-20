@@ -36,7 +36,11 @@ class AlbumHeaderReusableView: UICollectionReusableView {
     }
     
     func applyColorPalette() {
-        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
         albumDesc.textColor = PwgColor.header
     }
 
