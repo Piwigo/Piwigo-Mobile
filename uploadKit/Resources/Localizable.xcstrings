@@ -108,14 +108,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "تنسيق ملف الصور غير مدعوم."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Fotofilformat understøttes ikke."
           }
         },
         "de" : {
@@ -132,8 +132,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Formato de archivo de foto no soportado."
           }
         },
         "fr" : {
@@ -144,62 +144,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "A fotó fájlformátum nem támogatott."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Format file foto tidak didukung."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Formato del file foto non supportato."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "写真のファイル形式はサポートされていません。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Fotobestandsindeling wordt niet ondersteund."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Format pliku zdjęcia nie jest obsługiwany."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Формат фотофайла не поддерживается."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "Bildfilsformat stöds inte."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "不支持照片文件格式。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Photo file format not supported."
+            "state" : "translated",
+            "value" : "不支援相片檔案格式。"
           }
         }
       }
@@ -209,14 +209,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "صيغة الملف غير معتمدة."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Filformatet understøttes ikke."
           }
         },
         "de" : {
@@ -233,8 +233,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Formato de archivo no soportado."
           }
         },
         "fr" : {
@@ -245,62 +245,163 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Fálj tipus nem támogatott."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Format file tidak di dukung."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Formato file non supportato."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "ファイル形式はサポートされていません。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Bestandsindeling niet ondersteund."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Format pliku nie jest obsługiwany."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Формат файла не поддерживается."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "Filformatet stöds inte."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "不支持文件格式。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File format not supported."
+            "state" : "translated",
+            "value" : "不支援的檔案格式。"
+          }
+        }
+      }
+    },
+    "settings_autoUploadDestinationInfo" : {
+      "comment" : "Please select the album…",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُرجى تحديد الألبوم أو الألبوم الفرعي الذي سيتم تحميل الصور ومقاطع الفيديو فيه تلقائيًا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg venligst albummet eller underalbummet, hvor fotos og videoer vil blive automatisk uploadet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte wählen Sie das Album oder das Unter-Album, in das Fotos und Videos automatisch hochgeladen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the album or sub-album into which photos and videos will be auto-uploaded."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccione el álbum o sub-álbum al que se subirán automáticamente fotos y vídeos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement transférées."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melyik albumba vagy alalbumba szeretnéd automatikusan feltölteni a fotókat és videókat."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select the album or sub-album into which photos and videos will be auto-uploaded."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona l'album o il sottoalbum in cui le foto e i video saranno caricati automaticamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真や動画を自動アップロードするアルバムまたはサブアルバムを選択してください。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecteer a. u. b het album of sub-album waarnaar welke foto's en video's automatisch worden ge-upload."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz album lub podalbum, do którego zdjęcia i filmy z twojego urządzenia będą automatycznie przesyłane."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожалуйста, выберите альбом или подальбом в который будут автоматически загружены изображения и видео."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj albumet eller underalbumet till vilka foton och videor automatiskt laddas upp."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择照片和视频自动上传到的相册或子相册。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇要作為自動上傳目標的遠端相簿或子相簿。"
           }
         }
       }
@@ -714,14 +815,14 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "تنسيق ملف الفيديو غير مدعوم."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Videofilformatet understøttes ikke."
           }
         },
         "de" : {
@@ -738,8 +839,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Videofilformat stöds inte."
           }
         },
         "fr" : {
@@ -750,62 +851,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "A videó fájlformátum nem támogatott."
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Format file video tidak didukung."
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Formato file video non supportato."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "動画ファイル形式はサポートされていません。"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Videobestandsindeling niet ondersteund."
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Format pliku wideo nie jest obsługiwany."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Формат видео файла не поддерживается."
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "Videofilformat stöds inte."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "不支持视频文件格式。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Video file format not supported."
+            "state" : "translated",
+            "value" : "不支援視訊檔案格式。"
           }
         }
       }

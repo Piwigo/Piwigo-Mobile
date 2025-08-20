@@ -209,19 +209,19 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "الإصدار 2.0.1\n26 حزيران (يونيو) 2015\n\nإعدادات جديدة:\n  - الخيار لتغيير حجم الصور عند التحميل\n    + جودة الصورة هي من مجموعة من 50 - 98٪\n  - القدرة على تعيين الافتراضي حجم معاينة الصورة\nاصلاحات الشوائب"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 2.0.1\n26 juni 2015 \n\nNye indstillinger: \n- Mulighed for at ændre størrelsen på billederne på upload \n  + Billedkvaliteten er fra en vifte af 50-98%\n- Mulighed for at sætte en standard billede preview størrelse\nFejlrettelser"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 2.0.1\n26. Juni 2015\n\nNeue Einstellungen:\n- Option, um die Größe von Fotos während des Hochladens zu ändern\n + Fotoqualität zwischen 50-98% auswählbar\n- Möglichkeit um eine Standard Miniaturfotogröße festzulegen\nFehlerbehebungen\n________________________________________"
           }
         },
@@ -233,73 +233,73 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Versión 2.0.1\n26 de junio 2015\n\nNuevos ajustes:\n - Opción de redimensionar fotos al subirlas\n   + La calidad de imagen abarca un rango de 50 - 98%\n - Posibilidad de establecer un tamaño de vista previa predeterminada\nCorrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 2.0.1\n26 juin 2015\n\nNouveaux réglages :\n - Option pour redimensionner les photos avant envoi au serveur\n  + Qualité d'image entre 50 et 98%\n - Possibilité de fixer une taille par défaut des photos affichées"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "2.0.1-es verzió\n2015 Június 25\n\nÚj beállítások:\n - Fotók átméretezésének lehetősége feltöltéskor\n   + Kép minőségi beállításai 50 - 98%-os tartományban\n - Lehetőség alapértelmezett fotó-előnézteti kép méretének beállítására\nHibajavítások"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Versi 2.0.1\n26 Juni 2015\n\nSetelan baru:\n  - Opsi untuk mengubah ukuran gambar saat diunggah\n    + Kualitas gambar dari kisaran 50 - 98%\n  - Kemampuan untuk mengatur ukuran pratinjau gambar standar\nPerbaikan bug"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Versione 2.0.1\n26 giugno 2015\n\nNuove impostazioni:\n  - Opzione per ridimensionare le immagini al caricamento\n    + La qualità dell'immagine varia da 50 a 98%\n  - Possibilità di impostare una dimensione di anteprima dell'immagine predefinita\nCorrezioni di bug"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "バージョン 2.0.1\n2015年6月26日\n\n新しい設定:\n - アップロード時に写真をリサイズするオプション\n   + 写真品質は 50 - 98% の範囲\n - 規定の写真プレビューサイズを設定する機能\nバグの修正"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Versie 2.0.1\n26 Juni 2015\n\nNieuwe instellingen‎:\n - Optie om het formaat van afbeeldingen te wijzigen bij het uploaden\n   + De beeldkwaliteit is van een bereik van 50 - 98%\n - Mogelijkheid om een standaardfotovoorbeeld in te stellen\nFoutjes verbeterd"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - możliwość zmiany rozmiaru przesyłanych zdjęć\n  + jakość zdjęcia z zakresu 50 - 98%\n - możliwość ustawienia domyślnego rozmiaru podglądu zdjęcia\nPoprawki"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Версия 2.0.1\n26 июня 2015\n\nНовые настройки:\n - Возможность изменения размера фото после загрузки\n   + Качество изображения от 50 до 98%\n - Возможность задавать размер изображения по умолчанию\nИсправления ошибок"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Version 2.0.1\n26 juni 2015\n\nNya inställningar:\n  - Alternativ för att ändra storlek på bilder vid uppladdning\n    + Bildkvaliteten är från ett område på 50 - 98%\n  - Möjlighet att ställa in en standardbildsförhandsgranskningstorlek\nBug fixar"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "版本 2.0.1\n2015年7月26日\n\n新设置：\n• 在上传时调整图像大小\n• 图像质量可选范围 50 - 98%\n• 设置默认图像预览大小\n• 错误修复"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "版本 2.0.1\n2015年6月26日\n\n新的設定:\n - 上傳時調整尺寸\n   + 照片品質可以從50-98%\n - 可以設定預設照片預覽大小\n問題修正"
           }
         }

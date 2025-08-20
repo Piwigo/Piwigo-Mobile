@@ -32,7 +32,7 @@ extension AutoUploadError: LocalizedError {
                    String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit, comment: "Please select the album…")
         case .invalidDestination:
             return UploadKitError.autoUploadDestinationInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit, comment: "Please select the album…")
+                   String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit, comment: "Please select the album…")
         case .importFailed:
             return "Could not create upload requests."
         }

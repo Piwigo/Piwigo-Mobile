@@ -25377,107 +25377,6 @@
         }
       }
     },
-    "imageUploadHeader" : {
-      "comment" : "Please select the album or sub-album from which photos and videos of your device will be uploaded.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يرجى تحديد الألبوم أو الألبوم الفرعي الذي سيتم تحميل الصور ومقاطع الفيديو الخاصة بجهازك منه."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vælg det album eller underalbum, hvorfra fotos og videoer fra din enhed vil blive uploadet."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bitte wählen Sie das Album oder das Unter-Album, von dem Fotos und Videos Ihres Geräts hochgeladen werden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please select the album or sub-album from which photos and videos of your device will be uploaded."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selecciona el álbum o subálbum desde el que se subirán fotos y vídeos de tu dispositivo."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront transférées."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Melyik albumból, vagy alalbumból szeretnéd feltölteni a fotókat és videókat?"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please select the album or sub-album from which photos and videos of your device will be uploaded."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona l'album o il sottoalbum da cui verranno caricati foto e video del tuo dispositivo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "デバイスの写真やビデオをアップロードするアルバムまたはサブアルバムを選択してください。"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selecteer a.u.b het album of sub-album van welke foto's en video's van jouw apparaat worden ge-upload."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wybierz album lub podalbum, z którego będą przesyłane zdjęcia i filmy z twojego urządzenia."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пожалуйста, выберите альбом или подальбом, из которого будут загружены изображения и видео с Вашего устройства."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Välj det album eller underalbum från vilka foton och videor på din enhet kommer att laddas upp."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请选择相册或子相册，其中的照片和视频会被上传"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請選擇要上傳照片及影片至哪個相簿或子相簿。"
-          }
-        }
-      }
-    },
     "imageUploadHeaderText_images" : {
       "comment" : "Please set the parameters to apply to the selection of photos/videos",
       "localizations" : {
@@ -38404,7 +38303,7 @@
       }
     },
     "settings_autoUploadDestinationInfo" : {
-      "comment" : "Please select the album or sub-album into which photos and videos will be auto-uploaded.",
+      "comment" : "Please select the album…",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

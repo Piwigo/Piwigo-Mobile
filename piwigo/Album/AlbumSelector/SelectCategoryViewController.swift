@@ -9,9 +9,10 @@
 //
 
 import UIKit
-import piwigoKit
 import CoreData
 import CoreMedia
+import piwigoKit
+import uploadKit
 
 enum pwgCategorySelectAction {
     case none
@@ -474,7 +475,7 @@ class SelectCategoryViewController: UIViewController {
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
+                                 text: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit, comment: "Please select the album…"))
             
         case .copyImage:
             let title = inputImages.first?.titleStr ?? ""

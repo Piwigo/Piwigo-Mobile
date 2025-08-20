@@ -238,10 +238,10 @@ extension pwgImageSort {
                           comment: "Lowest → Highest")
         
         case .visitsDescending:
-            return String(localized: "categorySort_rateDescendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_visitDescendingShort", bundle: piwigoKit,
                           comment: "Highest → Lowest")
         case .visitsAscending:
-            return String(localized: "categorySort_rateAscendingShort", bundle: piwigoKit,
+            return String(localized: "categorySort_visitAscendingShort", bundle: piwigoKit,
                           comment: "Lowest → Highest")
         
         case .rankAscending:

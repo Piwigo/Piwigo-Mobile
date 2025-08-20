@@ -261,9 +261,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // May be called from the notification center
         DispatchQueue.main.async { [self] in
             let headerView = SelectCategoryHeaderView(frame: .zero)
+            var text = String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
+                              comment: "Please select the album…")
             switch wantedAction {
             case .presentLocalAlbum:
-                var text = NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded.")
                 if ProcessInfo.processInfo.isLowPowerModeEnabled {
                     text += "\r\r⚠️ " + NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled") + " ⚠️"
                 } else if UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi {
@@ -274,8 +275,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 
             case .setAutoUploadAlbum:
                 headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
-                                     text: String(format: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
-                                                                 comment: "Please select the album…")))
+                                     text: text)
                 
             default:
                 fatalError("Action not configured in setTableViewMainHeader().")
