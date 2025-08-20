@@ -23,7 +23,11 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
     func configure(with selectState: SelectButtonState) {
         
         // General settings
-        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
 
         // Data label used when place name known
         headerLabel.textColor = PwgColor.header

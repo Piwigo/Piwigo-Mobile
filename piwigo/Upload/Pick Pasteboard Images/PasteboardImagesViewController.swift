@@ -95,10 +95,14 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Collection view — Register the cell before using it
         collectionFlowLayout?.scrollDirection = .vertical
-        collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
         localImagesCollection?.accessibilityIdentifier = "Pasteboard"
-        
+        if #available(iOS 26.0, *) {
+            collectionFlowLayout?.sectionHeadersPinToVisibleBounds = false
+        } else {
+            collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
+        }
+
         // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
         // and prevent their selection

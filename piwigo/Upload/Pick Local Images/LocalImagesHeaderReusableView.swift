@@ -30,7 +30,11 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
-        backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
 
         // Keep section for future use
         self.section = section

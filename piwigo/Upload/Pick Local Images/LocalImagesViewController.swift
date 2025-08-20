@@ -116,10 +116,14 @@ class LocalImagesViewController: UIViewController
 
         // Collection view - Register the cell before using it
         collectionFlowLayout?.scrollDirection = .vertical
-        collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
         localImagesCollection?.accessibilityIdentifier = "CameraRoll"
-        
+        if #available(iOS 26.0, *) {
+            collectionFlowLayout?.sectionHeadersPinToVisibleBounds = false
+        } else {
+            collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
+        }
+
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
