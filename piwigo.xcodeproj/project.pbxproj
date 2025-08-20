@@ -509,6 +509,7 @@
 		ADBF95A72A153D960099FFDD /* ImageToSizesMigrationPolicy_0B_to_0C.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD25374E2A14196900FBFF2A /* ImageToSizesMigrationPolicy_0B_to_0C.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
+		ADC0A1422E55EF40001E62F5 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADC0A1412E55EF40001E62F5 /* Localizable.xcstrings */; };
 		ADC0B91D2D85C6D3002436FE /* DataMigrationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC0B91C2D85C6D3002436FE /* DataMigrationError.swift */; };
 		ADC115DC2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC115DB2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard */; };
 		ADC115DE2DC91E69000EA45B /* DateFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC115DD2DC91E69000EA45B /* DateFormatSelectorViewController.swift */; };
@@ -1270,6 +1271,7 @@
 		ADBF95A52A153BF90099FFDD /* MappingModel_0B_to_0C.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = MappingModel_0B_to_0C.xcmappingmodel; sourceTree = "<group>"; };
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
 		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
+		ADC0A1412E55EF40001E62F5 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ADC0B91C2D85C6D3002436FE /* DataMigrationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationError.swift; sourceTree = "<group>"; };
 		ADC115DB2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DateFormatSelectorViewController.storyboard; sourceTree = "<group>"; };
 		ADC115DD2DC91E69000EA45B /* DateFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatSelectorViewController.swift; sourceTree = "<group>"; };
@@ -2182,6 +2184,7 @@
 			isa = PBXGroup;
 			children = (
 				AD2C623C2A4896A600671582 /* uploadKit.h */,
+				ADC0A1412E55EF40001E62F5 /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -3339,6 +3342,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADC0A1422E55EF40001E62F5 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
