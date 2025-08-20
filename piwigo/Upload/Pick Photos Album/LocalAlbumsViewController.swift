@@ -14,6 +14,7 @@ import Photos
 import PhotosUI
 import UIKit
 import piwigoKit
+import uploadKit
 
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
     func didSelectPhotoAlbum(withId: String)
@@ -273,7 +274,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 
             case .setAutoUploadAlbum:
                 headerView.configure(width: min(localAlbumsTableView.frame.size.width, pwgPadSubViewWidth),
-                                     text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
+                                     text: String(format: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
+                                                                 comment: "Please select the album…")))
                 
             default:
                 fatalError("Action not configured in setTableViewMainHeader().")

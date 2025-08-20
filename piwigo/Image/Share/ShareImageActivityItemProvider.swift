@@ -195,7 +195,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -232,7 +232,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -246,7 +246,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+            alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -258,7 +258,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+            alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -298,7 +298,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Private metadata cannot be removed")
+            alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -320,7 +320,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+            alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
         }

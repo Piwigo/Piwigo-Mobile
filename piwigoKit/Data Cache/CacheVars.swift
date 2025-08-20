@@ -55,5 +55,6 @@ public class CacheVars: NSObject, @unchecked Sendable {
     
     // MARK: - Vars in Memory
     // Variables kept in memory
-    public let optImage = "-opt"    
+    /// Name extension of thumbnails optimised for the device
+    public let optImage = "-opt"
 }

@@ -510,6 +510,8 @@
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
 		ADC0A1422E55EF40001E62F5 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = ADC0A1412E55EF40001E62F5 /* Localizable.xcstrings */; };
+		ADC0A1442E55FC8C001E62F5 /* UploadKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC0A1432E55FC8C001E62F5 /* UploadKitError.swift */; };
+		ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC0A1452E55FD5D001E62F5 /* Constants.swift */; };
 		ADC0B91D2D85C6D3002436FE /* DataMigrationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC0B91C2D85C6D3002436FE /* DataMigrationError.swift */; };
 		ADC115DC2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC115DB2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard */; };
 		ADC115DE2DC91E69000EA45B /* DateFormatSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC115DD2DC91E69000EA45B /* DateFormatSelectorViewController.swift */; };
@@ -1272,6 +1274,8 @@
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
 		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
 		ADC0A1412E55EF40001E62F5 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		ADC0A1432E55FC8C001E62F5 /* UploadKitError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadKitError.swift; sourceTree = "<group>"; };
+		ADC0A1452E55FD5D001E62F5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		ADC0B91C2D85C6D3002436FE /* DataMigrationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrationError.swift; sourceTree = "<group>"; };
 		ADC115DB2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DateFormatSelectorViewController.storyboard; sourceTree = "<group>"; };
 		ADC115DD2DC91E69000EA45B /* DateFormatSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatSelectorViewController.swift; sourceTree = "<group>"; };
@@ -1583,6 +1587,7 @@
 			isa = PBXGroup;
 			children = (
 				ADC4F6D02E55CF860044528B /* Constants.swift */,
+				ADB274722676480D0002DD09 /* PwgKitError.swift */,
 				AD94F63A266D615000EFC6A9 /* Data Cache */,
 				AD2913E826696A8300403026 /* Network */,
 				AD7F1C162B667BDD008E100E /* Resources */,
@@ -1815,10 +1820,12 @@
 		AD2C62632A48ACBA00671582 /* uploadKit */ = {
 			isa = PBXGroup;
 			children = (
+				ADC0A1452E55FD5D001E62F5 /* Constants.swift */,
 				AD3335442666CA46000A1487 /* UploadSizes.swift */,
 				AD67397A2D2EF65D00796243 /* UploadCounter.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
+				ADC0A1432E55FC8C001E62F5 /* UploadKitError.swift */,
 				AD7F1C142B667BAF008E100E /* Extensions */,
 				AD7F1C152B667BD2008E100E /* Resources */,
 				AD7DE0912A85898D00C1424E /* Supporting Files */,
@@ -2245,7 +2252,6 @@
 			isa = PBXGroup;
 			children = (
 				AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */,
-				ADB274722676480D0002DD09 /* PwgKitError.swift */,
 				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
 				ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */,
 				AD129E6328C34F4E007A2A52 /* Migration Tools */,
@@ -3203,7 +3209,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
 					AD084E452659A27100159FE1 = {
@@ -3752,8 +3758,10 @@
 				AD2C624F2A4898A200671582 /* UploadManager+Transfer.swift in Sources */,
 				AD2C62502A4898A200671582 /* UploadManager+Utilities.swift in Sources */,
 				AD2C62522A4898A200671582 /* UploadManager+Video.swift in Sources */,
+				ADC0A1442E55FC8C001E62F5 /* UploadKitError.swift in Sources */,
 				AD2C624C2A4898A200671582 /* UploadSessions.swift in Sources */,
 				AD2C62542A4898A200671582 /* VideoMetadata.swift in Sources */,
+				ADC0A1462E55FD5D001E62F5 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4812,6 +4820,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -4877,6 +4886,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";

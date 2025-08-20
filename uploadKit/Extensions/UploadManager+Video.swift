@@ -233,7 +233,8 @@ extension UploadManager {
 //                let imageBeingUploaded = self.imageUploadQueue.first as? ImageUpload
 //                if error != nil {
 //                    // Inform user and propose to cancel or continue
-//                    self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_iCloud", comment: "Could not retrieve video. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
+//                    self.showError(withTitle: "Video Upload Error",
+//                                   andMessage: error?.localizedDescription, forRetrying: true, withImage: image)
 //                    return
 //                } else if imageBeingUploaded?.stopUpload != nil {
 //                    // User wants to cancel the download
@@ -324,8 +325,7 @@ extension UploadManager {
     private func checkVideoExportability(of originalVideo: AVAsset, for upload: Upload) {
         // We cannot convert the video if it is not exportable
         if !originalVideo.isExportable {
-            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
-            didPrepareVideo(for: upload, error)
+            didPrepareVideo(for: upload, UploadKitError.cannotStripPrivateMetadata)
             return
         }
         else {

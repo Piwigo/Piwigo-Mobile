@@ -12,6 +12,7 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 import piwigoKit
+import uploadKit
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance
 class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
@@ -179,7 +180,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }

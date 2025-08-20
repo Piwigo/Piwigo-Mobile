@@ -183,7 +183,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -222,7 +222,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+            alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -248,7 +248,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -319,7 +319,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
                                                  presetName: exportPreset) else {
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+            alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
             sema.signal()
             return
         }
@@ -338,7 +338,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
             case .failed, .cancelled:
                 // Notify the delegate on the main thread that the processing is cancelled.
                 self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                self.alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+                self.alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
                 sema.signal()
             
             case .completed:
@@ -354,7 +354,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider, @unchecked Sendabl
                 
                 // Notify the delegate on the main thread that the processing is cancelled.
                 self.alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-                self.alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")
+                self.alertMessage = UploadKitError.cannotStripPrivateMetadata.localizedDescription
                 sema.signal()
             }
         }
