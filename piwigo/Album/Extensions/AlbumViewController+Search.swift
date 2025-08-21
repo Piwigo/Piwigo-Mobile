@@ -36,6 +36,14 @@ extension AlbumViewController
 
         // Don't hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = false
+        if #available(iOS 26.0, *) {
+            navigationItem.preferredSearchBarPlacement = .integratedButton
+        } else {
+            // Fallback on earlier versions
+            if #available(iOS 16.0, *) {
+                navigationItem.preferredSearchBarPlacement = .stacked
+            }
+        }
     }
 }
 

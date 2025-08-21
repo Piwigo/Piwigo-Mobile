@@ -208,89 +208,140 @@ extension ImageViewController {
     // MARK: - Title View
     @MainActor
     func setTitleViewFromImageData() {
-        // Create label programmatically
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = PwgColor.whiteCream
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.adjustsFontSizeToFitWidth = false
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.allowsDefaultTighteningForTruncation = true
-        if imageData.title.string.isEmpty == false {
-            let wholeRange = NSRange(location: 0, length: imageData.title.string.count)
-            let style = NSMutableParagraphStyle()
-            style.alignment = NSTextAlignment.center
-            let attributes = [
-                NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
-                NSAttributedString.Key.paragraphStyle: style
-            ]
-            let attTitle = NSMutableAttributedString(attributedString: imageData.title)
-            attTitle.addAttributes(attributes, range: wholeRange)
-            titleLabel.attributedText = attTitle
-        } else {
-            // No title => Use file name
-            titleLabel.text = imageData.fileName
-        }
-        titleLabel.sizeToFit()
-
-        // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if ((UIDevice.current.userInterfaceIdiom == .phone) && orientation.isLandscape) ||
-            imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
-            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
-            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
-            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
-            navigationItem.titleView = oneLineTitleView
-
-            oneLineTitleView.addSubview(titleLabel)
-            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+        if #available(iOS 26.0, *) {
+            // Get title
+            var title = AttributedString()
+            if imageData.titleStr.isEmpty {
+                // No title => Use file name
+                title = AttributedString(imageData.fileName)
+            } else {
+                title = AttributedString(imageData.title)
+            }
+            
+            // Apply attributes to title
+            title.foregroundColor = PwgColor.whiteCream
+            title.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+            
+            // Get subTitle
+            var subTitle = AttributedString()
+            if imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
+                subTitle = AttributedString("— ? —")
+            } else {
+                let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+                let dateFormatter = DateUtilities.dateFormatter
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    dateFormatter.dateStyle = .long
+                    dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+                    subTitle = AttributedString(dateFormatter.string(from: dateCreated))
+                } else {
+                    dateFormatter.dateStyle = .medium
+                    dateFormatter.timeStyle = .medium
+                    subTitle = AttributedString(dateFormatter.string(from: dateCreated))
+                }
+            }
+            
+            // Apply attributes to subTitle
+            subTitle.foregroundColor = PwgColor.whiteCream
+            subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+            
+            // Prepare button
+            var config = UIButton.Configuration.glass()
+            config.cornerStyle = .capsule
+            config.attributedTitle = title
+            config.attributedSubtitle = subTitle
+            config.titleAlignment = .center
+            config.titleLineBreakMode = .byTruncatingTail
+            config.subtitleLineBreakMode = .byTruncatingTail
+            let titleButton = UIButton(configuration: config)
+            let maxWidth = view.bounds.width * 0.40     // i.e. same as in Photos.app on iOS 26
+            titleButton.widthAnchor.constraint(lessThanOrEqualToConstant: maxWidth).isActive = true
+            navigationItem.titleView = titleButton
         }
         else {
-            let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
-            subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = PwgColor.whiteCream
-            subTitleLabel.textAlignment = .center
-            subTitleLabel.numberOfLines = 1
-            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = .systemFont(ofSize: 10)
-            subTitleLabel.adjustsFontSizeToFitWidth = false
-            subTitleLabel.lineBreakMode = .byTruncatingTail
-            subTitleLabel.allowsDefaultTighteningForTruncation = true
-            let dateFormatter = DateUtilities.dateFormatter
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                dateFormatter.dateStyle = .long
-                dateFormatter.timeStyle = .medium   // Without time zone (unknown)
-                subTitleLabel.text = dateFormatter.string(from: dateCreated)
+            // Create label programmatically
+            let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+            titleLabel.backgroundColor = UIColor.clear
+            titleLabel.textColor = PwgColor.whiteCream
+            titleLabel.textAlignment = .center
+            titleLabel.numberOfLines = 1
+            titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.adjustsFontSizeToFitWidth = false
+            titleLabel.lineBreakMode = .byTruncatingTail
+            titleLabel.allowsDefaultTighteningForTruncation = true
+            if imageData.title.string.isEmpty == false {
+                let wholeRange = NSRange(location: 0, length: imageData.title.string.count)
+                let style = NSMutableParagraphStyle()
+                style.alignment = NSTextAlignment.center
+                let attributes = [
+                    NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
+                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+                    NSAttributedString.Key.paragraphStyle: style
+                ]
+                let attTitle = NSMutableAttributedString(attributedString: imageData.title)
+                attTitle.addAttributes(attributes, range: wholeRange)
+                titleLabel.attributedText = attTitle
             } else {
-                dateFormatter.dateStyle = .medium
-                dateFormatter.timeStyle = .medium
-                subTitleLabel.text = dateFormatter.string(from: dateCreated)
+                // No title => Use file name
+                titleLabel.text = imageData.fileName
             }
-            subTitleLabel.sizeToFit()
-
-            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
-            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
-                height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            navigationItem.titleView = twoLineTitleView
-
-            twoLineTitleView.addSubview(titleLabel)
-            twoLineTitleView.addSubview(subTitleLabel)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-
-            let views = ["title": titleLabel,
-                         "subtitle": subTitleLabel]
-            twoLineTitleView.addConstraints(
-                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
-                    options: [], metrics: nil, views: views))
+            titleLabel.sizeToFit()
+            
+            // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
+            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+            if ((UIDevice.current.userInterfaceIdiom == .phone) && orientation.isLandscape) ||
+                imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
+                let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+                titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+                let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+                navigationItem.titleView = oneLineTitleView
+                
+                oneLineTitleView.addSubview(titleLabel)
+                oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+                oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+            }
+            else {
+                let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
+                let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+                subTitleLabel.backgroundColor = UIColor.clear
+                subTitleLabel.textColor = PwgColor.whiteCream
+                subTitleLabel.textAlignment = .center
+                subTitleLabel.numberOfLines = 1
+                subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+                subTitleLabel.font = .systemFont(ofSize: 10)
+                subTitleLabel.adjustsFontSizeToFitWidth = false
+                subTitleLabel.lineBreakMode = .byTruncatingTail
+                subTitleLabel.allowsDefaultTighteningForTruncation = true
+                let dateFormatter = DateUtilities.dateFormatter
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    dateFormatter.dateStyle = .long
+                    dateFormatter.timeStyle = .medium   // Without time zone (unknown)
+                    subTitleLabel.text = dateFormatter.string(from: dateCreated)
+                } else {
+                    dateFormatter.dateStyle = .medium
+                    dateFormatter.timeStyle = .medium
+                    subTitleLabel.text = dateFormatter.string(from: dateCreated)
+                }
+                subTitleLabel.sizeToFit()
+                
+                var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+                titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
+                let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                            height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+                navigationItem.titleView = twoLineTitleView
+                
+                twoLineTitleView.addSubview(titleLabel)
+                twoLineTitleView.addSubview(subTitleLabel)
+                twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+                twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+                twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+                
+                let views = ["title": titleLabel,
+                             "subtitle": subTitleLabel]
+                twoLineTitleView.addConstraints(
+                    NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                                   options: [], metrics: nil, views: views))
+            }
         }
     }
 }

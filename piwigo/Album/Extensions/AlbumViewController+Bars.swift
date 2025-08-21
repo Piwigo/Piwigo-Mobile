@@ -292,80 +292,55 @@ extension AlbumViewController
     
     @MainActor
     func setTitleViewFromAlbumData(progress: Float = 0) {
-        // Title view
-        if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-            self.view?.window?.windowScene?.title = title
-            return
-        } else {
-            title = albumData.name
-            self.view?.window?.windowScene?.title = albumData.name
-        }
-        
-        // Create label programmatically
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = PwgColor.whiteCream
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.adjustsFontSizeToFitWidth = false
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.allowsDefaultTighteningForTruncation = true
-        let wholeRange = NSRange(location: 0, length: albumData.name.count)
-        let style = NSMutableParagraphStyle()
-        style.alignment = NSTextAlignment.center
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
-            NSAttributedString.Key.paragraphStyle: style
-        ]
-        let attTitle = NSMutableAttributedString(string: albumData.name)
-        attTitle.addAttributes(attributes, range: wholeRange)
-        titleLabel.attributedText = attTitle
-        titleLabel.sizeToFit()
+        if #available(iOS 26.0, *) {
+            // Title view
+            if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+                title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+                self.view?.window?.windowScene?.title = title
+                return
+            } else {
+                title = albumData.name
+                self.view?.window?.windowScene?.title = albumData.name
+            }
 
-        // There is no subtitle in landscape mode on iPhone
-        var subtitle = ""
-        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            // Get title
+            var title = AttributedString(albumData.name)
+            
+            // Apply attributes to title
+            title.foregroundColor = PwgColor.whiteCream
+            title.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+
+            // Get subTitle
+            var subTitle = AttributedString()
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
-                    subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                    subTitle = AttributedString(NSLocalizedString("categoryUpdating", comment: "Updating…"))
                 } else {
                     let numberFormatter = NumberFormatter()
                     numberFormatter.numberStyle = NumberFormatter.Style.percent
                     let percent = numberFormatter.string(from: NSNumber(value: progress)) ?? ""
-                    subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
+                    subTitle = AttributedString(NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent)
                 }
             }
             else if inSelectionMode {
                 let nberPhotos = selectedImageIDs.count
                 switch nberPhotos {
                 case 0:
-                    subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                    subTitle = AttributedString(NSLocalizedString("selectImages", comment: "Select Photos"))
                 case 1:
-                    subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                    subTitle = AttributedString(NSLocalizedString("selectImageSelected", comment: "1 Photo Selected"))
                 case 2...nberPhotos:
-                    var nberPhotosStr = ""
-                    if #available(iOS 16, *) {
-                        nberPhotosStr = nberPhotos.formatted(.number)
-                    } else {
-                        let numberFormatter = NumberFormatter()
-                        numberFormatter.numberStyle = NumberFormatter.Style.decimal
-                        nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberPhotos)) ?? String(nberPhotos)
-                    }
-                    subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                    let nberPhotosStr = nberPhotos.formatted(.number)
+                    subTitle = AttributedString(String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr))
                 default:
-                    subtitle = ""
+                    break
                 }
             }
             else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
                 let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
                 if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
-                    subtitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                    subTitle = AttributedString(NSLocalizedString("categoryUpdatedNow", comment: "Updated just now"))
                 } else {
                     let calendar = Calendar.current
                     let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
@@ -374,55 +349,166 @@ extension AlbumViewController
                         // Album data updated today
                         let time = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .none, timeStyle: .short)
-                        subtitle = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                        subTitle = AttributedString(String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time))
                     } else {
                         // Album data updated yesterday or before
                         let date = DateFormatter.localizedString(from: dateGetImages,
                                                                  dateStyle: .short, timeStyle: .none)
-                        subtitle = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                        subTitle = AttributedString(String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date))
                     }
                 }
             }
-        }
-        
-        // Prepare sub-title
-        if subtitle.isEmpty == false {
-            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
-            subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = PwgColor.whiteCream
-            subTitleLabel.textAlignment = .center
-            subTitleLabel.numberOfLines = 1
-            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = .systemFont(ofSize: 10)
-            subTitleLabel.adjustsFontSizeToFitWidth = false
-            subTitleLabel.lineBreakMode = .byTruncatingTail
-            subTitleLabel.allowsDefaultTighteningForTruncation = true
-            subTitleLabel.text = subtitle
-            subTitleLabel.sizeToFit()
             
-            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
-            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
-                                                        height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            twoLineTitleView.addSubview(titleLabel)
-            twoLineTitleView.addSubview(subTitleLabel)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-            let views = ["title": titleLabel,
-                         "subtitle": subTitleLabel]
-            twoLineTitleView.addConstraints(
-                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
-                                               options: [], metrics: nil, views: views))
-            navigationItem.titleView = twoLineTitleView
-        } else {
-            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
-            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
-            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
-            oneLineTitleView.addSubview(titleLabel)
-            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
-            navigationItem.titleView = oneLineTitleView
+            // Apply attributes to subTitle
+            subTitle.foregroundColor = PwgColor.whiteCream
+            subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+            
+            // Prepare button
+            var config = UIButton.Configuration.glass()
+            config.cornerStyle = .capsule
+            config.attributedTitle = title
+            config.attributedSubtitle = subTitle
+            config.titleAlignment = .center
+            config.titleLineBreakMode = .byTruncatingTail
+            config.subtitleLineBreakMode = .byTruncatingTail
+            let titleButton = UIButton(configuration: config)
+            let fixedWidth = view.bounds.width * 0.40     // i.e. same as in Photos.app on iOS 26
+            titleButton.widthAnchor.constraint(equalToConstant: fixedWidth).isActive = true
+            navigationItem.titleView = titleButton
+        }
+        else {
+            // Title view
+            if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+                title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+                self.view?.window?.windowScene?.title = title
+                return
+            } else {
+                title = albumData.name
+                self.view?.window?.windowScene?.title = albumData.name
+            }
+            
+            // Create label programmatically
+            let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+            titleLabel.backgroundColor = UIColor.clear
+            titleLabel.textColor = PwgColor.whiteCream
+            titleLabel.textAlignment = .center
+            titleLabel.numberOfLines = 1
+            titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.adjustsFontSizeToFitWidth = false
+            titleLabel.lineBreakMode = .byTruncatingTail
+            titleLabel.allowsDefaultTighteningForTruncation = true
+            let wholeRange = NSRange(location: 0, length: albumData.name.count)
+            let style = NSMutableParagraphStyle()
+            style.alignment = NSTextAlignment.center
+            let attributes = [
+                NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+                NSAttributedString.Key.paragraphStyle: style
+            ]
+            let attTitle = NSMutableAttributedString(string: albumData.name)
+            attTitle.addAttributes(attributes, range: wholeRange)
+            titleLabel.attributedText = attTitle
+            titleLabel.sizeToFit()
+            
+            // There is no subtitle in landscape mode on iPhone
+            var subtitle = ""
+            let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+            if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+                if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
+                    // Inform user that the app is fetching album data
+                    if progress == 0 {
+                        subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
+                    } else {
+                        let numberFormatter = NumberFormatter()
+                        numberFormatter.numberStyle = NumberFormatter.Style.percent
+                        let percent = numberFormatter.string(from: NSNumber(value: progress)) ?? ""
+                        subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
+                    }
+                }
+                else if inSelectionMode {
+                    let nberPhotos = selectedImageIDs.count
+                    switch nberPhotos {
+                    case 0:
+                        subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                    case 1:
+                        subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                    case 2...nberPhotos:
+                        var nberPhotosStr = ""
+                        if #available(iOS 16, *) {
+                            nberPhotosStr = nberPhotos.formatted(.number)
+                        } else {
+                            let numberFormatter = NumberFormatter()
+                            numberFormatter.numberStyle = NumberFormatter.Style.decimal
+                            nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberPhotos)) ?? String(nberPhotos)
+                        }
+                        subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+                    default:
+                        subtitle = ""
+                    }
+                }
+                else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
+                    let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
+                    if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
+                        subtitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
+                    } else {
+                        let calendar = Calendar.current
+                        let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
+                        let dateDay = calendar.dateComponents([.day], from: Date())
+                        if updatedDay.day == dateDay.day {
+                            // Album data updated today
+                            let time = DateFormatter.localizedString(from: dateGetImages,
+                                                                     dateStyle: .none, timeStyle: .short)
+                            subtitle = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
+                        } else {
+                            // Album data updated yesterday or before
+                            let date = DateFormatter.localizedString(from: dateGetImages,
+                                                                     dateStyle: .short, timeStyle: .none)
+                            subtitle = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
+                        }
+                    }
+                }
+            }
+            
+            // Prepare sub-title
+            if subtitle.isEmpty == false {
+                let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+                subTitleLabel.backgroundColor = UIColor.clear
+                subTitleLabel.textColor = PwgColor.whiteCream
+                subTitleLabel.textAlignment = .center
+                subTitleLabel.numberOfLines = 1
+                subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+                subTitleLabel.font = .systemFont(ofSize: 10)
+                subTitleLabel.adjustsFontSizeToFitWidth = false
+                subTitleLabel.lineBreakMode = .byTruncatingTail
+                subTitleLabel.allowsDefaultTighteningForTruncation = true
+                subTitleLabel.text = subtitle
+                subTitleLabel.sizeToFit()
+                
+                var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+                titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
+                let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                            height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+                twoLineTitleView.addSubview(titleLabel)
+                twoLineTitleView.addSubview(subTitleLabel)
+                twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+                twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+                twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+                let views = ["title": titleLabel,
+                             "subtitle": subTitleLabel]
+                twoLineTitleView.addConstraints(
+                    NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                                   options: [], metrics: nil, views: views))
+                navigationItem.titleView = twoLineTitleView
+            } else {
+                let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+                titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+                let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+                oneLineTitleView.addSubview(titleLabel)
+                oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+                oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+                navigationItem.titleView = oneLineTitleView
+            }
         }
     }
 }
