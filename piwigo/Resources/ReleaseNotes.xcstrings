@@ -205,7 +205,6 @@
     },
     "v2.0.1_text" : {
       "extractionState" : "manual",
-      "generatesSymbol" : false,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9330,7 +9329,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5\n18 août 2025\n\n• Ajoute la gestion des fichiers PDF\n• Corrige les bugs et améliore l'interface"
+            "value" : "Version 3.5\n18 août 2025\n\n• Ajoute la gestion des fichiers PDF\n• Corrige des bugs et améliore l'interface"
           }
         },
         "hu" : {
@@ -9413,7 +9412,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
+            "value" : "Version 3.5.1\n\n• Fehlerbehebungen"
           }
         },
         "en" : {
@@ -9425,13 +9424,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 3.5.1\n\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 3.5.1\n\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Corrige les bugs et améliore l'interface"
+            "value" : "Version 3.5.1\n\n• Corrige des bugs et améliore l'interface"
           }
         },
         "hu" : {

@@ -334,7 +334,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus favoritos"
+            "value" : "Favoritos"
           }
         },
         "fr" : {
@@ -839,7 +839,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "Más antiguo → Más reciente"
           }
         },
         "fr" : {
@@ -1142,7 +1142,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "Más reciente → Más antiguo"
           }
         },
         "fr" : {
@@ -2760,7 +2760,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "Más bajo → Más alto"
           }
         },
         "fr" : {
@@ -2861,7 +2861,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "Más alto → Más bajo"
           }
         },
         "fr" : {
@@ -3151,8 +3151,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Niedrig → Hoch"
           }
         },
         "en" : {
@@ -3163,8 +3163,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Más bajo → Más alto"
           }
         },
         "fr" : {
@@ -3252,8 +3252,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Hoch → Niedrig"
           }
         },
         "en" : {
@@ -3264,8 +3264,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Más alto → Más bajo"
           }
         },
         "fr" : {
@@ -3770,7 +3770,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "No se ha podido crear un nuevo objeto de Servidor."
           }
         },
         "fr" : {
@@ -4680,7 +4680,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "No se ha podido crear un nuevo objeto de Ubicación."
           }
         },
         "fr" : {
@@ -4781,7 +4781,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "Se ha encontrado y se descartará una ubicación que no tiene un identificador válido."
           }
         },
         "fr" : {
@@ -5186,7 +5186,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se ha podido crear un nuevo objeto de carga."
+            "value" : "No se ha podido crear un nuevo objeto de Carga."
           }
         },
         "fr" : {
@@ -5287,7 +5287,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "No se ha podido suprimir un objeto de Carga."
           }
         },
         "fr" : {
@@ -5489,7 +5489,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "Se ha encontrado y se descartará una carga que no tiene un identificador válido."
           }
         },
         "fr" : {
@@ -5591,7 +5591,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Descartará una cuenta de usuario que no tenga un nombre de usuario válido."
+            "value" : "Se descartará una cuenta de usuario que no tiene un nombre de usuario válido."
           }
         },
         "fr" : {
@@ -5692,7 +5692,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se han podido obtener los parámetros de la extensión de Community. Prueba a iniciar sesión otra vez."
+            "value" : "No se han podido obtener los parámetros de la extensión de Community. Pruebe a iniciar sesión otra vez."
           }
         },
         "fr" : {
@@ -7106,7 +7106,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lo sentimos, la comunicación se ha interrumpido. Intenta iniciar sesión de nuevo."
+            "value" : "Lo sentimos, la comunicación se ha interrumpido. Intente iniciar sesión de nuevo."
           }
         },
         "fr" : {
@@ -7308,7 +7308,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El servidor Piwigo devolvió un objeto JSON vacío."
+            "value" : "El servidor Piwigo ha devuelto un objeto JSON vacío."
           }
         },
         "fr" : {
@@ -7510,7 +7510,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "El servidor Piwigo no ha devuelto una respuesta válida."
           }
         },
         "fr" : {
@@ -8520,7 +8520,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Corrige la dirección del servidor web de Piwigo."
+            "value" : "Corrija la dirección del servidor web de Piwigo."
           }
         },
         "fr" : {

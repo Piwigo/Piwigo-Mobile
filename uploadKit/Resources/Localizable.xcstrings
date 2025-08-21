@@ -32,7 +32,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lo sentimos, los archivos de audio aún no son compatibles con Piwigo Mobile."
+            "value" : "Lo sentimos, Piwigo Mobile aún no admite archivos de audio."
           }
         },
         "fr" : {
@@ -840,7 +840,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videofilformat stöds inte."
+            "value" : "Formato de archivo de vídeo no soportado."
           }
         },
         "fr" : {
