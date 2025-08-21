@@ -171,10 +171,26 @@ class ImageViewController: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
+
         coordinator.animate(alongsideTransition: { [self] _ in
             // Update image detail view
             updateNavBar()
             setTitleViewFromImageData()
+        }, completion: { [self] _ in
+            // Force reload flexible spaces (known iOS bug)
+            guard let toolbar = self.navigationController?.toolbar else { return }
+            debugPrint("••> toolbar width: \(toolbar.bounds.width), screen width: \(UIScreen.main.bounds.width)")
+            
+            // Store current items
+            let currentItems = toolbar.items
+            
+            // Temporarily clear and reset items to force recalculation
+            toolbar.setItems(nil, animated: false)
+            toolbar.setItems(currentItems, animated: false)
+            
+            // Force layout update
+            toolbar.setNeedsLayout()
+            toolbar.layoutIfNeeded()
         })
     }
 
