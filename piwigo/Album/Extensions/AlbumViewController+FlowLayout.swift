@@ -110,13 +110,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
                 if let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
                    [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey) == false {
                     // Images not sorted by date
-                    // First section shows the album description
-                    if section == 1 {
-                        return CGSize(width: collectionView.frame.size.width,
-                                      height: 10 + self.getAlbumDescriptionSize().height)
-                    } else {
-                        return CGSize.zero
-                    }
+                    return CGSize.zero
                 }
                 
                 // Images are sorted by date ► Presents menu or segmented controller
