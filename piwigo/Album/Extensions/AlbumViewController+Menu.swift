@@ -45,10 +45,14 @@ extension AlbumViewController {
     // MARK: - Sort Image
     /// - for selecting image sort options
     func sortMenu() -> UIMenu? {
+        var options: UIMenu.Options = [.singleSelection]
+        if #unavailable(iOS 26.0) {
+            options.insert(.displayInline)
+        }
         let menuId = UIMenu.Identifier("org.piwigo.images.sort")
         return UIMenu(title: NSLocalizedString("categorySort_sort", comment: "Sort Images By…"),
                       image: nil, identifier: menuId,
-                      options: UIMenu.Options.displayInline,
+                      options: options,
                       children: [defaultSortAction(), titleSortAction(),
                                  createdSortAction(), postedSortAction(),
                                  ratingSortAction(), visitsSortAction(),
