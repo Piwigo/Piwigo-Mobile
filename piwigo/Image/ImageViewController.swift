@@ -101,14 +101,6 @@ class ImageViewController: UIViewController {
         // Update server statistics
         logImageVisitIfNeeded(imageData.pwgID)
 
-        // Navigation bar
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.tintColor = PwgColor.orange
-        
-        // Toolbar
-        let toolbar = navigationController?.toolbar
-        toolbar?.tintColor = PwgColor.orange
-
         // Single taps display/hide the navigation bar, toolbar and description
         let tapOnce = UITapGestureRecognizer(target: self, action: #selector(didTapOnce))
         tapOnce.numberOfTapsRequired = 1

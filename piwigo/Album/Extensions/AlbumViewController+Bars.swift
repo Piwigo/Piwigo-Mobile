@@ -385,7 +385,7 @@ extension AlbumViewController
         navigationItem.titleView = titleButton
     }
     
-    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "For iOS 15 to 18")
+    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld(progress: Float = 0) {
         // Title view
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
