@@ -49,31 +49,27 @@ extension ImageViewController {
             
             if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
                 // Determine toolbar items
-                /// Fixed space added on both sides of play/pause button so that its global width
-                /// matches the width of the mute/unmute button.
                 var toolbarItems = [UIBarButtonItem?]()
-                if shareBarButton != nil {
-                    // [share — delete] or [share - favorite - delete]
-                    // or [share - play - mute - delete] or [share - play - favorite - mute - delete]
-                    toolbarItems.append(contentsOf: [shareBarButton, .space()])
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                    toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                    toolbarItems.append(contentsOf: [favoriteBarButton, favoriteBarButton == nil ? nil : .space()])
-                    toolbarItems.append(contentsOf: [muteBarButton, muteBarButton == nil ? nil : .space()])
-                    toolbarItems.append(deleteBarButton)
-                } else {
-                    // [favorite - delete] or [favorite - play - mute - delete]
-                    toolbarItems.append(contentsOf: [favoriteBarButton, favoriteBarButton == nil ? nil : .space()])
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                    toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
-                    toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                    toolbarItems.append(contentsOf: [muteBarButton, muteBarButton == nil ? nil : .space()])
-                    toolbarItems.append(deleteBarButton)
-                }
+                toolbarItems.append(contentsOf: [shareBarButton == nil ? nil : .space(), shareBarButton])
+                toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
+                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .space(), playBarButton])
+                toolbarItems.append(contentsOf: [muteBarButton == nil ? nil : .space(), muteBarButton])
+                toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
+                toolbarItems.append(contentsOf: [.space(), deleteBarButton])
+                // We get:
+                /// Image => [- delete] or [- share - delete] or [- share - favorite - delete]
+                /// Video => [- share - play - mute - delete] or [- share - play - mute - favorite - delete]
+                /// PDF   => [- share - goToPage - delete] or [- share - goToPage - favorite - delete]
                 
-                // We present the toolbar only if it contains buttons
-                let finalToolbarItems = toolbarItems.compactMap { $0 }
+                var finalToolbarItems = toolbarItems.compactMap { $0 }
+                if finalToolbarItems.count == 4 { finalToolbarItems.append(.space()) }
+                if finalToolbarItems.count >= 6 { finalToolbarItems.remove(at: 0) }
+                // We finally get:
+                /// Image => [- delete] or [- share - delete -] or [share - favorite - delete]
+                /// Video => [share - play - mute - delete] or [share - play - mute - favorite - delete]
+                /// PDF   => [share - goToPage - delete] or [share - goToPage - favorite - delete]
+
+                // We present the toolbar only if it contains at least two buttons
                 if finalToolbarItems.count > 2 {
                     // Show toolbar
                     isToolbarRequired = true
@@ -91,7 +87,7 @@ extension ImageViewController {
                     setToolbarItems([], animated: false)
                     navigationController?.setToolbarHidden(true, animated: true)
 
-                    // All buttons gathered in the navigation bar
+                    // Remaining buttons gathered in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
                     navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
                 }
@@ -116,76 +112,67 @@ extension ImageViewController {
     private func updateBarForStdUserOrGuest(for orientation: UIInterfaceOrientation) {
         if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            /// Fixed space added on both sides of play/pause button so that its global width
-            /// matches the width of the mute/unmute button.
+            var toolbarItems = [UIBarButtonItem?]()
+            toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
+            toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .space(), playBarButton])
+            toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
+            toolbarItems.append(contentsOf: [muteBarButton == nil ? nil : .space(), muteBarButton])
+            // We get:
+            /// Image => [] or [- favorite]
+            /// Video => [- play - mute] or [- play - favorite - mute]
+            /// PDF   => [- goToPage] or [- goToPage - favorite]
+
+            var finalToolbarItems = toolbarItems.compactMap { $0 }
+            if finalToolbarItems.count == 4 { finalToolbarItems.append(.space()) }
+            if finalToolbarItems.count == 6 { finalToolbarItems.remove(at: 0) }
+            // We finally get:
+            /// Image => [] or [- favorite]
+            /// Video => [- play - mute -] or [play - favorite - mute]
+            /// PDF   => [- goToPage] or [- goToPage - favorite -]
+
+            // Share button at right bar button?
             if shareBarButton != nil {
-                var toolbarItems = [UIBarButtonItem?]()
-                // [ play - mute ] or [play - favorite - mute]
-                toolbarItems.append(favoriteBarButton == nil ? .space() : nil)
-                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
-                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                toolbarItems.append(contentsOf: [favoriteBarButton, .space()])
-                toolbarItems.append(contentsOf: [muteBarButton, favoriteBarButton == nil ? .space() : nil])
-                
-                // Present toolbar only if it contains player controls and optionally favorite button
-                let finalToolbarItems = toolbarItems.compactMap { $0 }
-                if finalToolbarItems.count > 5 {
+                // Present the toolbar if we have enough buttons
+                if finalToolbarItems.count == 5 {
                     // Show toolbar with
                     isToolbarRequired = true
                     setToolbarItems(finalToolbarItems, animated: false)
                     let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                     navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                     
-                    // Buttons not related to video player in the navigation bar
+                    // Buttons not related to video player or PDF viewer in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                    navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton].compactMap { $0 }
+                    navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
                 }
                 else {
-                    // No toolbar
+                    // goToPage or favorite alone —> No toolbar
                     isToolbarRequired = false
                     setToolbarItems([], animated: false)
                     navigationController?.setToolbarHidden(true, animated: true)
                     
-                    // Buttons w/o player controls in the navigation bar
-                    if favoriteBarButton != nil {
-                        navigationItem.leftBarButtonItems = [backButton, goToPageButton].compactMap {$0}
-                        navigationItem.rightBarButtonItems = [shareBarButton, favoriteBarButton].compactMap { $0 }
-                    } else {
-                        navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
-                        navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton].compactMap { $0 }
-                    }
+                    // Navigation bar
+                    navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
+                    navigationItem.rightBarButtonItems = [shareBarButton, goToPageButton, favoriteBarButton].compactMap { $0 }
                 }
             }
             else {
-                // Determine toolbar items
-                /// Fixed space added on both sides of play/pause button so that its global width
-                /// matches the width of the mute/unmute button.
-                var toolbarItems = [UIBarButtonItem?]()
-                // [ play - mute ]
-                toolbarItems.append(contentsOf: [.space(), playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                toolbarItems.append(contentsOf: [playBarButton, playBarButton == nil ? nil : .space()])
-                toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .fixedSpace(4.3333)])
-                toolbarItems.append(contentsOf: [.space(), muteBarButton, .space()])
-                
                 // We present the toolbar only if it contains player controls
-                let finalToolbarItems = toolbarItems.compactMap { $0 }
-                if finalToolbarItems.isEmpty {
-                    // No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
+                if imageData.isVideo {
+                    // Show toolbar with player controls
+                    isToolbarRequired = true
+                    setToolbarItems(finalToolbarItems, animated: false)
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                     
                     // Buttons w/o player controls in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton].compactMap {$0}
                     navigationItem.rightBarButtonItems = [goToPageButton, favoriteBarButton].compactMap { $0 }
                 }
                 else {
-                    // Show toolbar with player controls
-                    isToolbarRequired = true
-                    setToolbarItems(finalToolbarItems, animated: false)
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                    // No toolbar
+                    isToolbarRequired = false
+                    setToolbarItems([], animated: false)
+                    navigationController?.setToolbarHidden(true, animated: true)
                     
                     // Buttons w/o player controls in the navigation bar
                     navigationItem.leftBarButtonItems = [backButton].compactMap {$0}

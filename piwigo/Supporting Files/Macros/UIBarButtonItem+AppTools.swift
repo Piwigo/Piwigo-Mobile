@@ -129,10 +129,9 @@ extension UIBarButtonItem {
         // NB: We do not use the SF symbols because their width difference leads
         // to a movement of the icon when switching from one to the other.
         if isMuted {
-//            if #available(iOS 13, *) {
-//                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
-//                self.image = UIImage(systemName: "speaker.slash.fill", withConfiguration: configuration)
-//            } else {
+            if #available(iOS 13, *) {
+                self.image = UIImage(systemName: "speaker.slash.fill")
+            } else {
                 let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
                 if isAppLanguageL2R {
                     self.image = UIImage(named: "mutedRight")
@@ -141,12 +140,11 @@ extension UIBarButtonItem {
                     self.image = UIImage(named: "mutedLeft")
                     self.landscapeImagePhone = UIImage(named: "mutedLeftCompact")
                 }
-//            }
+            }
         } else {
-//            if #available(iOS 13, *) {
-//                let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
-//                self.image = UIImage(systemName: "speaker.wave.2.fill", withConfiguration: configuration)
-//            } else {
+            if #available(iOS 13, *) {
+                self.image = UIImage(systemName: "speaker.wave.2.fill")
+            } else {
                 let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
                 if isAppLanguageL2R {
                     self.image = UIImage(named: "unmutedRight")
@@ -155,7 +153,7 @@ extension UIBarButtonItem {
                     self.image = UIImage(named: "unmutedLeft")
                     self.landscapeImagePhone = UIImage(named: "unmutedLeftCompact")
                 }
-//            }
+            }
         }
     }
 }

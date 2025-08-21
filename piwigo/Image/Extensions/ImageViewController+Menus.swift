@@ -33,13 +33,12 @@ extension ImageViewController
 
     // MARK: - Image Preview
     /// - for going to another album containing that image
-    /// - for going to a page of a PDF file
     @MainActor
     func goToMenu() -> UIMenu {
         return UIMenu(title: "", image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.image.goToMenu"),
                       options: UIMenu.Options.displayInline,
-                      children: [goToAlbumMenu(),goToPageAction()].compactMap({$0}))
+                      children: [goToAlbumMenu()].compactMap({$0}))
     }
 
 

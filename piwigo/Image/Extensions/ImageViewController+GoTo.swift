@@ -140,21 +140,21 @@ extension ImageViewController
 
     
     // MARK: - Go To PDF Page
-    @MainActor
-    func goToPageAction() -> UIAction? {
-        // Check that the current image is a PDF document
-        guard imageData.isPDF else { return nil }
-        
-        // Copy image to album
-        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
-                              image: UIImage(systemName: "arrow.turn.down.right"),
-                              handler: { [self] _ in
-            // Request page number
-            self.goToPage()
-        })
-        action.accessibilityIdentifier = "org.piwigo.image.goToPage"
-        return action
-    }
+//    @MainActor
+//    func goToPageAction() -> UIAction? {
+//        // Check that the current image is a PDF document
+//        guard imageData.isPDF else { return nil }
+//        
+//        // Copy image to album
+//        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
+//                              image: UIImage(systemName: "arrow.turn.down.right"),
+//                              handler: { [self] _ in
+//            // Request page number
+//            self.goToPage()
+//        })
+//        action.accessibilityIdentifier = "org.piwigo.image.goToPage"
+//        return action
+//    }
 
     @MainActor
     @objc func goToPage() {

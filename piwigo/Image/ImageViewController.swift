@@ -667,6 +667,10 @@ extension ImageViewController: UIPageViewControllerDataSource
         // Create PDF detail view
         pdfDVC.indexPath = indexPath
         pdfDVC.imageData = imageData
+        
+        // Set PDF goToPage button
+        goToPageButton = UIBarButtonItem.goToPageButton(self, action: #selector(goToPage))
+        
         return pdfDVC
     }
     
