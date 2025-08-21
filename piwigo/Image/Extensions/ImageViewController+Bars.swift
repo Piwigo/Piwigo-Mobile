@@ -53,12 +53,12 @@ extension ImageViewController {
                 toolbarItems.append(contentsOf: [shareBarButton == nil ? nil : .space(), shareBarButton])
                 toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
                 toolbarItems.append(contentsOf: [playBarButton == nil ? nil : .space(), playBarButton])
-                toolbarItems.append(contentsOf: [muteBarButton == nil ? nil : .space(), muteBarButton])
                 toolbarItems.append(contentsOf: [favoriteBarButton == nil ? nil : .space(), favoriteBarButton])
+                toolbarItems.append(contentsOf: [muteBarButton == nil ? nil : .space(), muteBarButton])
                 toolbarItems.append(contentsOf: [.space(), deleteBarButton])
                 // We get:
                 /// Image => [- delete] or [- share - delete] or [- share - favorite - delete]
-                /// Video => [- share - play - mute - delete] or [- share - play - mute - favorite - delete]
+                /// Video => [- share - play - mute - delete] or [- share - play - favorite - mute - delete]
                 /// PDF   => [- share - goToPage - delete] or [- share - goToPage - favorite - delete]
                 
                 var finalToolbarItems = toolbarItems.compactMap { $0 }
@@ -66,7 +66,7 @@ extension ImageViewController {
                 if finalToolbarItems.count >= 6 { finalToolbarItems.remove(at: 0) }
                 // We finally get:
                 /// Image => [- delete] or [- share - delete -] or [share - favorite - delete]
-                /// Video => [share - play - mute - delete] or [share - play - mute - favorite - delete]
+                /// Video => [share - play - mute - delete] or [share - play - favorite - mute - delete]
                 /// PDF   => [share - goToPage - delete] or [share - goToPage - favorite - delete]
 
                 // We present the toolbar only if it contains at least two buttons

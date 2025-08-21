@@ -9401,101 +9401,101 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 3.5.1\n\n• اصلاحات الشوائب"
+            "value" : "الإصدار 3.5.1\n\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Fejlrettelser"
+            "value" : "Version 3.5.1\n\n• Rette fejl og forbedrer grænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Fehlerbehebungen"
+            "value" : "Version 3.5.1\n\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Bug fixes"
+            "value" : "Version 3.5.1\n\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 3.5.1\n\n• Corrección de errores"
+            "value" : "Versión 3.5.1\n\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Correction de bugs"
+            "value" : "Version 3.5.1\n\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3.5.1-es verzió\n\n• Hibajavítások"
+            "value" : "3.5.1-es verzió\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 3.5.1\n\n• Perbaikan bug"
+            "value" : "Versi 3.5.1\n\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 3.5.1\n\n• Correzioni di bug"
+            "value" : "Versione 3.5.1\n\n• Corregge bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 3.5.1\n\n• バグの修正"
+            "value" : "バージョン 3.5.1\n\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 3.5.1\n\n• Foutjes verbeterd"
+            "value" : "Versie 3.5.1\n\n• Verhelpt bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 3.5.1\n\n• Poprawki błędów"
+            "value" : "Wersja 3.5.1\n\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 3.5.1\n\n• Исправления ошибок"
+            "value" : "Версия 3.5.1\n\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Buggfixar"
+            "value" : "Version 3.5.1\n\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 3.5.1\n\n• 错误修复"
+            "value" : "版本 3.5.1\n\n• 修复了 bug 并改进了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 3.5.1\n\n• 錯誤修正"
+            "value" : "版本 3.5.1\n\n• 修正錯誤並改進介面"
           }
         }
       }
     }
   },
-  "version" : "1.1"
+  "version" : "1.0"
 }
