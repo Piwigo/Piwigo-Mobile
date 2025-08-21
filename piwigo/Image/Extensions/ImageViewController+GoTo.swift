@@ -10,10 +10,11 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: Go To Actions
+// MARK: Go To
 @available(iOS 14, *)
 extension ImageViewController
-{    
+{
+    // MARK: - Menu
     @MainActor
     func goToAlbumMenu() -> UIMenu {
         return UIMenu(title: NSLocalizedString("imageOptions_goToAlbum", comment: "Go To Album…"),
@@ -22,6 +23,7 @@ extension ImageViewController
                       children: [goToAlbumActions()].compactMap({$0}))
     }
     
+    // MARK: - Go To Album
     @MainActor
     func goToAlbumActions() -> UIMenu? {
         // Get parent albums
@@ -81,21 +83,21 @@ extension ImageViewController
         }
     }
     
-    @MainActor
-    func goToPageAction() -> UIAction? {
-        // Check that the current image is a PDF document
-        guard imageData.isPDF else { return nil }
-        
-        // Copy image to album
-        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
-                              image: UIImage(systemName: "arrow.turn.down.right"),
-                              handler: { [self] _ in
-            // Request page number
-            self.goToPage()
-        })
-        action.accessibilityIdentifier = "org.piwigo.image.goToPage"
-        return action
-    }
+//    @MainActor
+//    func goToPageAction() -> UIAction? {
+//        // Check that the current image is a PDF document
+//        guard imageData.isPDF else { return nil }
+//        
+//        // Copy image to album
+//        let action = UIAction(title: NSLocalizedString("goToPage_title", comment: "Go to page…"),
+//                              image: UIImage(systemName: "arrow.turn.down.right"),
+//                              handler: { [self] _ in
+//            // Request page number
+//            self.goToPage()
+//        })
+//        action.accessibilityIdentifier = "org.piwigo.image.goToPage"
+//        return action
+//    }
 }
 
 
@@ -216,5 +218,4 @@ extension ImageViewController
             alert.view.tintColor = .piwigoColorOrange()
         }
     }
-    
 }
