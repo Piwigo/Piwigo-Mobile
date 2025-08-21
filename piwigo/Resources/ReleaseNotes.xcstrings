@@ -205,6 +205,7 @@
     },
     "v2.0.1_text" : {
       "extractionState" : "manual",
+      "generatesSymbol" : false,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9496,5 +9497,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }
