@@ -19,7 +19,11 @@ class ColorPaletteViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
     
     @MainActor
@@ -155,11 +159,11 @@ extension ColorPaletteViewController: UITableViewDelegate {
         case 1:
             height = 44.0
         default:
-            height = 0
+            break
         }
         if #available(iOS 26.0, *) {
             height += TableViewUtilities.rowOffset
         }
-        return height
+        return height + TableViewUtilities.rowOffset
     }
 }
