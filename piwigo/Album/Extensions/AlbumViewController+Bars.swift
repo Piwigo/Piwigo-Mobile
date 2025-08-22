@@ -317,6 +317,7 @@ extension AlbumViewController
         // Apply attributes to title
         title.foregroundColor = PwgColor.whiteCream
         title.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        navigationItem.attributedTitle = title
 
         // Get subTitle
         var subTitle = AttributedString()
@@ -370,19 +371,7 @@ extension AlbumViewController
         // Apply attributes to subTitle
         subTitle.foregroundColor = PwgColor.whiteCream
         subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
-        
-        // Prepare button
-        var config = UIButton.Configuration.glass()
-        config.cornerStyle = .capsule
-        config.attributedTitle = title
-        config.attributedSubtitle = subTitle
-        config.titleAlignment = .center
-        config.titleLineBreakMode = .byTruncatingTail
-        config.subtitleLineBreakMode = .byTruncatingTail
-        let titleButton = UIButton(configuration: config)
-        let fixedWidth = view.bounds.width * 0.40     // i.e. same as in Photos.app on iOS 26
-        titleButton.widthAnchor.constraint(equalToConstant: fixedWidth).isActive = true
-        navigationItem.titleView = titleButton
+        navigationItem.attributedSubtitle = subTitle
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
