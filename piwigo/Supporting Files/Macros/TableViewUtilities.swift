@@ -15,7 +15,7 @@ class TableViewUtilities: NSObject {
 
     // Constants
     let margin: CGFloat = 20.0
-    let minHeight: CGFloat = 44.0
+
     
     // MARK: - Title
     // Returns the title as an attributed string for Albums (used since iOS 26)
@@ -82,7 +82,7 @@ class TableViewUtilities: NSObject {
                                            attributes: textAttributes, context: context).height
         }
 
-        return CGFloat(fmax(minHeight, ceil(height)))
+        return CGFloat(fmax(44.0, ceil(height)))
     }
     
     func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
