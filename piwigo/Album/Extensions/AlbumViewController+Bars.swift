@@ -92,8 +92,9 @@ extension AlbumViewController
                 navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
             }
             else if categoryId == pwgSmartAlbum.search.rawValue {
-                // Search bar => No action button
+                // Search bar => No action button and no toolbar
                 navigationItem.setRightBarButtonItems([], animated: true)
+                navigationController?.setToolbarHidden(true, animated: true)
             }
             else {
                 // Share button depends on Piwigo server version, user role and image data

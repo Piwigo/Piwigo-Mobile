@@ -70,14 +70,13 @@ extension AlbumViewController: UISearchControllerDelegate
         // Adjust the interface
         if #available(iOS 26.0, *) {
             // Integrate the search bar into the toolbar
-            navigationItem.preferredSearchBarPlacement = .integrated
+            initBarsInPreviewMode()
         }
         else {
             // Hide buttons and toolbar
             hideButtons()
             initBarsInPreviewMode()
             setTitleViewFromAlbumData()
-            navigationController?.setToolbarHidden(true, animated: true)
         }
     }
     
