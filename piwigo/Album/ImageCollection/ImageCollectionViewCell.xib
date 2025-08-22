@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -39,21 +39,25 @@
                             <constraint firstAttribute="width" secondItem="sUd-zF-riA" secondAttribute="height" multiplier="75:58" id="tFM-T9-66C"/>
                         </constraints>
                     </imageView>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imageFavorite" translatesAutoresizingMaskIntoConstraints="NO" id="YCE-dL-uhM">
-                        <rect key="frame" x="3" y="100" width="17" height="17"/>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YCE-dL-uhM">
+                        <rect key="frame" x="0.0" y="101" width="21" height="18"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="YCE-dL-uhM" secondAttribute="height" multiplier="1:1" id="KWs-O4-hPh"/>
                         </constraints>
+                        <imageReference key="image" image="heart.fill" catalog="system" renderingMode="template"/>
+                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="21" scale="default" weight="regular"/>
                     </imageView>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imageFavorite" translatesAutoresizingMaskIntoConstraints="NO" id="6NV-2z-KvC">
-                        <rect key="frame" x="4" y="101" width="15" height="15"/>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6NV-2z-KvC">
+                        <rect key="frame" x="1" y="102" width="19" height="16"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="6NV-2z-KvC" secondAttribute="height" multiplier="1:1" id="Mdt-hi-88T"/>
                         </constraints>
+                        <imageReference key="image" image="heart.fill" catalog="system" renderingMode="template"/>
+                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="21" scale="default" weight="regular"/>
                     </imageView>
                     <view hidden="YES" clipsSubviews="YES" alpha="0.45000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CnI-HM-yNN">
                         <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
@@ -124,12 +128,12 @@
                     <constraint firstAttribute="trailing" secondItem="Xpg-8s-0ki" secondAttribute="trailing" id="OF3-6y-C0p"/>
                     <constraint firstItem="CnI-HM-yNN" firstAttribute="centerY" secondItem="Xpg-8s-0ki" secondAttribute="centerY" id="PJV-Z6-jkU"/>
                     <constraint firstItem="P89-cH-cSc" firstAttribute="centerX" secondItem="sUd-zF-riA" secondAttribute="centerX" id="VSt-92-7ar"/>
-                    <constraint firstAttribute="bottom" secondItem="YCE-dL-uhM" secondAttribute="bottom" constant="3" id="X4E-ia-xEh"/>
+                    <constraint firstAttribute="bottom" secondItem="YCE-dL-uhM" secondAttribute="bottom" id="X4E-ia-xEh"/>
                     <constraint firstItem="Xpg-8s-0ki" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" id="c9e-Vj-chA"/>
                     <constraint firstItem="P89-cH-cSc" firstAttribute="top" secondItem="foa-P6-jpv" secondAttribute="top" constant="3" id="eZG-lK-wHu"/>
                     <constraint firstAttribute="trailing" secondItem="rsF-Jx-0S0" secondAttribute="trailing" constant="3" id="lqC-6o-Gdl"/>
-                    <constraint firstItem="YCE-dL-uhM" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" constant="3" id="nMe-0L-S4O"/>
-                    <constraint firstItem="YCE-dL-uhM" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="5" id="ncG-Fc-ZrF"/>
+                    <constraint firstItem="YCE-dL-uhM" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" id="nMe-0L-S4O"/>
+                    <constraint firstItem="YCE-dL-uhM" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="9" id="ncG-Fc-ZrF"/>
                     <constraint firstItem="CnI-HM-yNN" firstAttribute="centerX" secondItem="Xpg-8s-0ki" secondAttribute="centerX" id="rnb-zH-7PX"/>
                     <constraint firstItem="6NV-2z-KvC" firstAttribute="centerY" secondItem="YCE-dL-uhM" secondAttribute="centerY" id="w9m-7R-Tyj"/>
                     <constraint firstItem="P89-cH-cSc" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="6" id="x50-wq-xrG"/>
@@ -165,7 +169,7 @@
     </objects>
     <resources>
         <image name="checkMark" width="25" height="25"/>
-        <image name="imageFavorite" width="26" height="26"/>
+        <image name="heart.fill" catalog="system" width="128" height="107"/>
         <image name="unknownImage" width="512" height="512"/>
         <image name="video" width="25" height="19"/>
         <systemColor name="labelColor">

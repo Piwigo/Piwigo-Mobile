@@ -230,13 +230,13 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Update horizontal constraints
-        let horOffset: CGFloat = 3.0 + self.deltaX
+        let horOffset: CGFloat = 0.0 + self.deltaX
         self.selImgRight?.constant = horOffset
         self.favLeft?.constant = horOffset
         self.playLeft?.constant = horOffset
         
         // Update vertical constraints
-        let vertOffset: CGFloat = 3.0 + self.deltaY
+        let vertOffset: CGFloat = 0.0 + self.deltaY
         self.playTop?.constant = vertOffset
         if self.bottomLayer?.isHidden ?? false {
             // Image title not displayed
@@ -244,7 +244,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
             self.selImgBot?.constant = vertOffset
         } else {
             // Image title displayed
-            let banOffset: CGFloat = max(vertOffset, bannerHeight + 3.0)
+            let banOffset: CGFloat = max(vertOffset, bannerHeight + 0.0)
             self.favBottom?.constant = banOffset
             self.selImgBot?.constant = banOffset
         }
