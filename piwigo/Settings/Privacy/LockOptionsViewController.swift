@@ -14,89 +14,76 @@ protocol LockOptionsDelegate: NSObjectProtocol {
     func didSetAppLock(toState isLocked: Bool)
 }
 
-class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class LockOptionsViewController: UIViewController {
     
     weak var delegate: LockOptionsDelegate?
     
     var context = LAContext()
     var contextErrorMsg = ""
-
+    
     @IBOutlet var lockOptionsTableView: UITableView!
     
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Set title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
         
         // Evaluate biometrics policy
         var error: NSError?
         let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
         contextErrorMsg = error?.localizedDescription ?? ""
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Table view
         lockOptionsTableView.separatorColor = PwgColor.separator
         lockOptionsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         lockOptionsTableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
+}
 
+
+// MARK: - UITableViewDataSource Methods
+extension LockOptionsViewController: UITableViewDataSource {
     
-    // MARK: - UITableView - Header
-    private func getContentOfHeader(inSection section: Int) -> String {
-        var title = ""
-        switch section {
-        default:
-            title = " "
-        }
-        return title
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
-                                                        width: tableView.frame.size.width)
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
-    }
-
-
-    // MARK: - UITableView - Rows
+    // MARK: - Sections
     func numberOfSections(in tableView: UITableView) -> Int {
         var nberOfSection = 2
         nberOfSection += context.biometryType == .none ? 0 : 1
         return nberOfSection
     }
+    
 
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0...2:
@@ -106,10 +93,6 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
 
@@ -181,9 +164,58 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
         tableViewCell.tintColor = PwgColor.orange
         return tableViewCell
     }
+}
 
 
-    // MARK: - UITableView - Footer
+// MARK: - UITableViewDelegate Methods
+extension LockOptionsViewController: UITableViewDelegate {
+    
+    // MARK: - Header
+    private func getContentOfHeader(inSection section: Int) -> String {
+        var title = ""
+        switch section {
+        default:
+            title = " "
+        }
+        return title
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+    }
+    
+    
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.rowHeight
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Change password?
+        if indexPath.section ==  1 {
+            // Display numpad for setting up a passcode
+            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
+            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
+            if AppVars.shared.appLockKey.isEmpty {
+                appLockVC.config(forAction: .enterPasscode)
+            } else {
+                appLockVC.config(forAction: .modifyPasscode)
+            }
+            navigationController?.pushViewController(appLockVC, animated: true)
+        }
+    }
+
+    
+    // MARK: - Footer
     private func getContentOfFooter(inSection section: Int) -> String {
         var footer = ""
         switch section {
@@ -223,24 +255,5 @@ class LockOptionsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter(inSection: section)
         return TableViewUtilities.shared.viewOfFooter(withText: text)
-    }
-
-    
-    // MARK: - UITableViewDelegate Methods
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        // Change password?
-        if indexPath.section ==  1 {
-            // Display numpad for setting up a passcode
-            let appLockSB = UIStoryboard(name: "AppLockViewController", bundle: nil)
-            guard let appLockVC = appLockSB.instantiateViewController(withIdentifier: "AppLockViewController") as? AppLockViewController else { return }
-            if AppVars.shared.appLockKey.isEmpty {
-                appLockVC.config(forAction: .enterPasscode)
-            } else {
-                appLockVC.config(forAction: .modifyPasscode)
-            }
-            navigationController?.pushViewController(appLockVC, animated: true)
-        }
     }
 }
