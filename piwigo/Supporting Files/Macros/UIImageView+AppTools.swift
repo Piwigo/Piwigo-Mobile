@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 // Constants
-let playRatio: CGFloat = 0.9 // was 58/75
+let playRatio: CGFloat = 1.0 // was 506:503
 
 extension UIImageView {
     
     // MARK: - Movie Icon
     func setMovieIconImage() {
-        let play = UIImage(systemName: "play.rectangle.fill")!
+        let play = UIImage(systemName: "play.square.fill")!
         self.image = play.withRenderingMode(.alwaysTemplate)
         self.tintColor = UIColor.white
         self.translatesAutoresizingMaskIntoConstraints = false

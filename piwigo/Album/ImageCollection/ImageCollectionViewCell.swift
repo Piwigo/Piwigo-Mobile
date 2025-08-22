@@ -233,11 +233,11 @@ class ImageCollectionViewCell: UICollectionViewCell {
         let horOffset: CGFloat = 0.0 + self.deltaX
         self.selImgRight?.constant = horOffset
         self.favLeft?.constant = horOffset
-        self.playLeft?.constant = horOffset
+        self.playLeft?.constant = 2.0 + horOffset
         
         // Update vertical constraints
         let vertOffset: CGFloat = 0.0 + self.deltaY
-        self.playTop?.constant = vertOffset
+        self.playTop?.constant = 2.0 + vertOffset
         if self.bottomLayer?.isHidden ?? false {
             // Image title not displayed
             self.favBottom?.constant = vertOffset
