@@ -107,7 +107,7 @@ class WhatsNewViewController: UIViewController {
         firstNewsDescription.textColor = PwgColor.text
         secondNewsTitle.textColor = PwgColor.text
         secondNewsDescription.textColor = PwgColor.text
-}
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
