@@ -301,47 +301,39 @@ extension AlbumViewController
 
     @MainActor @available(iOS 26.0, *)
     func setTitleView(progress: Float = 0) {
-        // Title view
+        // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
             title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
             self.view?.window?.windowScene?.title = title
             return
-        } else {
-            title = albumData.name
-            self.view?.window?.windowScene?.title = albumData.name
         }
-
-        // Get title
-        var title = AttributedString(albumData.name)
-        
-        // Apply attributes to title
-        title.foregroundColor = PwgColor.whiteCream
-        title.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        navigationItem.attributedTitle = title
+        title = albumData.name
+        self.view?.window?.windowScene?.title = albumData.name
+        navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(albumData.name)
 
         // Get subTitle
-        var subTitle = AttributedString()
+        var subTitle = ""
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
             // Inform user that the app is fetching album data
             if progress == 0 {
-                subTitle = AttributedString(NSLocalizedString("categoryUpdating", comment: "Updating…"))
+                subTitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
             } else {
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = NumberFormatter.Style.percent
                 let percent = numberFormatter.string(from: NSNumber(value: progress)) ?? ""
-                subTitle = AttributedString(NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent)
+                subTitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
             }
         }
         else if inSelectionMode {
             let nberPhotos = selectedImageIDs.count
             switch nberPhotos {
             case 0:
-                subTitle = AttributedString(NSLocalizedString("selectImages", comment: "Select Photos"))
+                subTitle = NSLocalizedString("selectImages", comment: "Select Photos")
             case 1:
-                subTitle = AttributedString(NSLocalizedString("selectImageSelected", comment: "1 Photo Selected"))
+                subTitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
             case 2...nberPhotos:
                 let nberPhotosStr = nberPhotos.formatted(.number)
-                subTitle = AttributedString(String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr))
+                subTitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
             default:
                 break
             }
@@ -349,7 +341,7 @@ extension AlbumViewController
         else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
             let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
             if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
-                subTitle = AttributedString(NSLocalizedString("categoryUpdatedNow", comment: "Updated just now"))
+                subTitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
             } else {
                 let calendar = Calendar.current
                 let updatedDay = calendar.dateComponents([.day], from: dateGetImages)
@@ -358,20 +350,18 @@ extension AlbumViewController
                     // Album data updated today
                     let time = DateFormatter.localizedString(from: dateGetImages,
                                                              dateStyle: .none, timeStyle: .short)
-                    subTitle = AttributedString(String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time))
+                    subTitle = String(format: NSLocalizedString("categoryUpdatedAt", comment: "Updated at…"), time)
                 } else {
                     // Album data updated yesterday or before
                     let date = DateFormatter.localizedString(from: dateGetImages,
                                                              dateStyle: .short, timeStyle: .none)
-                    subTitle = AttributedString(String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date))
+                    subTitle = String(format: NSLocalizedString("categoryUpdatedOn", comment: "Updated on…"), date)
                 }
             }
         }
         
         // Apply attributes to subTitle
-        subTitle.foregroundColor = PwgColor.whiteCream
-        subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
-        navigationItem.attributedSubtitle = subTitle
+        navigationItem.attributedSubtitle = TableViewUtilities.shared.attributedSubTitle(subTitle)
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
