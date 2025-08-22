@@ -67,14 +67,8 @@ class PadTableViewCell: UITableViewCell {
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
         
         // Update button
-        if #available(iOS 13.0, *) {
-            lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-        } else {
-            // Fallback on earlier versions
-            lightButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-            darkButton.setImage(UIImage(named: "circle"), for: .normal)
-        }
+        lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+        darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
     }
     
     @IBAction func didTapDarkMode(_ sender: Any) {
@@ -87,13 +81,7 @@ class PadTableViewCell: UITableViewCell {
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
         
         // Update button
-        if #available(iOS 13.0, *) {
-            lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-        } else {
-            // Fallback on earlier versions
-            lightButton.setImage(UIImage(named: "circle"), for: .normal)
-            darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-        }
+        lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
     }
 }
