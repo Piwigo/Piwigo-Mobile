@@ -73,7 +73,7 @@ extension SettingsViewController: UITableViewDelegate
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        return TableViewUtilities.rowHeight
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
