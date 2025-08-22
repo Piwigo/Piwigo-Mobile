@@ -202,4 +202,6 @@ class TableViewUtilities: NSObject {
             return 44.0
         }
     }()
+    
+    static let rowOffset: CGFloat = 51.0 - 44.0
 }
