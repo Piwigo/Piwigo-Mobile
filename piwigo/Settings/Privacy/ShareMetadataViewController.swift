@@ -18,119 +18,102 @@ let pwgActivityTypePostToSnapchat = UIActivity.ActivityType(rawValue: "com.toyop
 let pwgActivityTypePostToWhatsApp = UIActivity.ActivityType(rawValue: "net.whatsapp.WhatsApp.ShareExtension")
 let pwgActivityTypeOther = UIActivity.ActivityType(rawValue: "undefined.ShareExtension")
 
-class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+class ShareMetadataViewController: UIViewController {
+    
     @IBOutlet var shareMetadataTableView: UITableView!
     
     private var activitiesSharingMetadata = [UIActivity.ActivityType]()
     private var activitiesNotSharingMetadata = [UIActivity.ActivityType]()
-
+    
     private var editBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
-
-
+    
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
         
         // Buttons
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(stopEditingOptions))
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar appearence
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Table view
         shareMetadataTableView.separatorColor = PwgColor.separator
         shareMetadataTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         shareMetadataTableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Add Edit button
         navigationItem.setRightBarButton(editBarButton, animated: false)
-
+        
         // Prepare data source
         setDataSourceFromSettings()
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
+        
         // Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] _ in
             // Reload table view
             self.shareMetadataTableView.reloadData()
         })
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-
+    
     
     // MARK: - Editing mode
     @objc func stopEditingOptions() {
         // Replace "Done" button with "Edit" button
         navigationItem.setRightBarButton(editBarButton, animated: true)
-
+        
         // Refresh table to remove [+] and [-] buttons
         shareMetadataTableView.reloadData()
-
+        
         // Show back button
         navigationItem.setHidesBackButton(false, animated: true)
     }
+}
 
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader(inSection section: Int) -> (String, String) {
-        var title = "", text = ""
-        switch section {
-        case 0:
-            title = String(format: "%@\n", NSLocalizedString("shareImageMetadata_Title", comment: "Share Metadata"))
-            text = NSLocalizedString("shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
-        case 1:
-            text = NSLocalizedString("shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
-        default:
-            break
-        }
-        return (title, text)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
+// MARK: - UITableViewDataSource Methods
+extension ShareMetadataViewController: UITableViewDelegate {
     
-    // MARK: - UITableView - Rows
+    // MARK: - Sections
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
 
+
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var nberOfRows = 0
         switch section {
@@ -142,10 +125,6 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
                 break
         }
         return nberOfRows
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -171,9 +150,43 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         cell.isAccessibilityElement = true
         return cell
     }
+}
 
+// MARK: - UITableViewDelegate Methods
+extension ShareMetadataViewController: UITableViewDataSource {
     
-    // MARK: - UITableViewDelegate Methods
+    // MARK: - Header
+    private func getContentOfHeader(inSection section: Int) -> (String, String) {
+        var title = "", text = ""
+        switch section {
+        case 0:
+            title = String(format: "%@\n", NSLocalizedString("shareImageMetadata_Title", comment: "Share Metadata"))
+            text = NSLocalizedString("shareImageMetadata_subTitle1", comment: "Actions sharing images with private metadata")
+        case 1:
+            text = NSLocalizedString("shareImageMetadata_subTitle2", comment: "Actions sharing images without private metadata")
+        default:
+            break
+        }
+        return (title, text)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader(inSection: section)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader(inSection: section)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+    
+    
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.rowHeight
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -245,9 +258,12 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             return
         }
     }
+}
 
     
-    // MARK: - Utilities
+// MARK: - Utilities
+extension ShareMetadataViewController {
+    
     private func setDataSourceFromSettings() {
         
         // Empty lists
