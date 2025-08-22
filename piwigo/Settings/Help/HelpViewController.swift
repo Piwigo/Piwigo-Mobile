@@ -103,7 +103,9 @@ class HelpViewController: UIViewController {
     }
 }
 
-extension HelpViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+
+// - MARK: - UIPageViewControllerDataSource Methods
+extension HelpViewController: UIPageViewControllerDataSource {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         let currentIndex = pages.firstIndex(of: viewController)!
@@ -122,6 +124,11 @@ extension HelpViewController: UIPageViewControllerDataSource, UIPageViewControll
         let previousIndex = abs((currentIndex - 1) % pages.count)
         return pages[previousIndex]
     }
+}
+
+
+// MARK: - UIPageViewControllerDelegate Methods
+extension HelpViewController: UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
         pendingIndex = pages.firstIndex(of: pendingViewControllers.first!)
