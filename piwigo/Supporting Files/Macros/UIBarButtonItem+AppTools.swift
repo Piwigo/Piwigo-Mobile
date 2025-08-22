@@ -165,31 +165,9 @@ extension UIBarButtonItem {
         // NB: We do not use the SF symbols because their width difference leads
         // to a movement of the icon when switching from one to the other.
         if isMuted {
-            if #available(iOS 13, *) {
-                self.image = UIImage(systemName: "speaker.slash.fill")
-            } else {
-                let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-                if isAppLanguageL2R {
-                    self.image = UIImage(named: "mutedRight")
-                    self.landscapeImagePhone = UIImage(named: "mutedRightCompact")
-                } else {
-                    self.image = UIImage(named: "mutedLeft")
-                    self.landscapeImagePhone = UIImage(named: "mutedLeftCompact")
-                }
-            }
+            self.image = UIImage(systemName: "speaker.slash.fill")
         } else {
-            if #available(iOS 13, *) {
-                self.image = UIImage(systemName: "speaker.wave.2.fill")
-            } else {
-                let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-                if isAppLanguageL2R {
-                    self.image = UIImage(named: "unmutedRight")
-                    self.landscapeImagePhone = UIImage(named: "unmutedRightCompact")
-                } else {
-                    self.image = UIImage(named: "unmutedLeft")
-                    self.landscapeImagePhone = UIImage(named: "unmutedLeftCompact")
-                }
-            }
+            self.image = UIImage(systemName: "speaker.fill")
         }
     }
 }

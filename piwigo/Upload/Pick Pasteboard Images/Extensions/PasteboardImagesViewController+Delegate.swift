@@ -210,8 +210,15 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
     }
 
     private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
+        let imageUpload: UIImage?
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            imageUpload = UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            imageUpload = UIImage(named: "photo.badge.plus")
+        }
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                        image: UIImage(named: "imageUpload")) { action in
+                        image: imageUpload) { action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {
                 return
