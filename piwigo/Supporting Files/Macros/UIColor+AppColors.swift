@@ -54,39 +54,75 @@ enum PwgColor {
     
     // MARK: - Colors for Table Views
     static let header = UIColor { _ in
-        AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
-        : UIColor(red: 28 / 255.0, green: 28 / 255.0, blue: 30 / 255.0, alpha: 1.0)
+        if #available(iOS 26.0, *) {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 141 / 255.0, green: 141 / 255.0, blue: 147 / 255.0, alpha: 1.0)
+            : UIColor(red: 133 / 255.0, green: 133 / 255.0, blue: 139 / 255.0, alpha: 1.0)
+        } else {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
+            : UIColor(red: 28 / 255.0, green: 28 / 255.0, blue: 30 / 255.0, alpha: 1.0)
+        }
     }
     
     static let separator = UIColor { _ in
-        AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 62 / 255.0, green: 62 / 255.0, blue: 65 / 255.0, alpha: 1.0)
-        : UIColor(red: 198 / 255.0, green: 197 / 255.0, blue: 202 / 255.0, alpha: 1.0)
+        if #available(iOS 26.0, *) {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 56 / 255.0, green: 56 / 255.0, blue: 59 / 255.0, alpha: 1.0)
+            : UIColor(red: 232 / 255.0, green: 232 / 255.0, blue: 232 / 255.0, alpha: 1.0)
+        } else {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 62 / 255.0, green: 62 / 255.0, blue: 65 / 255.0, alpha: 1.0)
+            : UIColor(red: 198 / 255.0, green: 197 / 255.0, blue: 202 / 255.0, alpha: 1.0)
+        }
     }
     
     static let cellBackground  = UIColor { _ in
-        AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 42 / 255.0, green: 42 / 255.0, blue: 45 / 255.0, alpha: 1.0)
-        : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
+        if #available(iOS 26.0, *) {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 28 / 255.0, green: 28 / 255.0, blue: 30 / 255.0, alpha: 1.0)
+            : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
+        } else {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 42 / 255.0, green: 42 / 255.0, blue: 45 / 255.0, alpha: 1.0)
+            : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
+        }
     }
     
     static let leftLabel = UIColor { _ in
-        AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
-        : UIColor.darkText
+        if #available(iOS 26.0, *) {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1)
+            : UIColor.darkText
+        } else {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
+            : UIColor.darkText
+        }
     }
     
     static let rightLabel = UIColor { _ in
-        AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
-        : UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
+        if #available(iOS 26.0, *) {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
+            : UIColor(red: 152 / 255.0, green: 152 / 255.0, blue: 159 / 255.0, alpha: 1.0)
+        } else {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
+            : UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
+        }
     }
     
     static let placeHolder = UIColor { _ in
-        AppVars.shared.isDarkPaletteActive
-        ? UIColor(red: 80 / 255.0, green: 80 / 255.0, blue: 80 / 255.0, alpha: 1.0)
-        : UIColor(red: 195 / 255.0, green: 195 / 255.0, blue: 195 / 255.0, alpha: 1.0)
+        if #available(iOS 26.0, *) {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 101 / 255.0, green: 101 / 255.0, blue: 105 / 255.0, alpha: 1.0)
+            : UIColor(red: 197 / 255.0, green: 197 / 255.0, blue: 199 / 255.0, alpha: 1.0)
+        } else {
+            AppVars.shared.isDarkPaletteActive
+            ? UIColor(red: 80 / 255.0, green: 80 / 255.0, blue: 80 / 255.0, alpha: 1.0)
+            : UIColor(red: 195 / 255.0, green: 195 / 255.0, blue: 195 / 255.0, alpha: 1.0)
+        }
     }
     
     static let thumb = UIColor { _ in
