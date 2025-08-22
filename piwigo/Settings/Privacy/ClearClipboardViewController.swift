@@ -82,7 +82,7 @@ protocol ClearClipboardDelegate: NSObjectProtocol {
     func didSelectClearClipboardDelay(_ delay: pwgClearClipboard)
 }
 
-class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ClearClipboardViewController: UIViewController {
     
     weak var delegate: ClearClipboardDelegate?
     
@@ -90,72 +90,60 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
     
     
     // MARK: - View Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Table view
         delayTableView.separatorColor = PwgColor.separator
         delayTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         delayTableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
+        
         // Return selected album
         let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay) ?? pwgClearClipboard.never
         delegate?.didSelectClearClipboardDelay(delay)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
+}
 
+
+// MARK: - UITableViewDataSource Methods
+extension ClearClipboardViewController: UITableViewDataSource {
     
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard"))
-        let text = NSLocalizedString("settings_clearClipboardInfo", comment: "Please select the delay after which the clipboard will be cleared.")
-        return (title, text)
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
-    
-    // MARK: - UITableView - Rows
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgClearClipboard.count.rawValue
     }
@@ -181,9 +169,32 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
 
         return cell
     }
+}
 
 
-    // MARK: - UITableViewDelegate Methods
+// MARK: - UITableViewDelegate Methods
+extension ClearClipboardViewController: UITableViewDelegate {
+    
+    // MARK: - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard"))
+        let text = NSLocalizedString("settings_clearClipboardInfo", comment: "Please select the delay after which the clipboard will be cleared.")
+        return (title, text)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+    
+    
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
