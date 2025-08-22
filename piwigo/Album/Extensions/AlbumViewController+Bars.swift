@@ -41,10 +41,26 @@ extension AlbumViewController
             else {
                 // Share button depends on Piwigo server version, user role and image data
                 shareBarButton = getShareBarButton()
+                
                 // Favorites button depends on Piwigo server version, user role and image data
                 favoriteBarButton = getFavoriteBarButton()
+                
                 // Menu for activating the selection mode and changing the way images are sorted
-                initRightSideInPreviewMode()
+                var children = [sortMenu(), viewOptionsMenu()]
+                if shareBarButton != nil || favoriteBarButton != nil {
+                    children.insert(selectMenu(), at: 0)
+                }
+                if categoryId == AlbumVars.shared.defaultCategory {
+                    children.append(settingsMenu())
+                }
+                let menu = UIMenu(title: "", children: children.compactMap({$0}))
+                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+                selectBarButton?.accessibilityIdentifier = "select"
+                
+                // Set right bar buttons
+                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+                let hasImages = albumData.nbImages != 0
+                selectBarButton?.isEnabled = hasImages
             }
         }
         else {
@@ -76,35 +92,27 @@ extension AlbumViewController
             else {
                 // Share button depends on Piwigo server version, user role and image data
                 shareBarButton = getShareBarButton()
+                
                 // Favorites button depends on Piwigo server version, user role and image data
                 favoriteBarButton = getFavoriteBarButton()
+                
                 // Menu for activating the selection mode and changing the way images are sorted
-                initRightSideInPreviewMode()
+                var children = [sortMenu(), viewOptionsMenu()]
+                if shareBarButton != nil || favoriteBarButton != nil {
+                    children.insert(selectMenu(), at: 0)
+                }
+                let menu = UIMenu(title: "", children: children.compactMap({$0}))
+                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                selectBarButton?.accessibilityIdentifier = "select"
+                
+                // Set right bar buttons
+                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+                let hasImages = albumData.nbImages != 0
+                selectBarButton?.isEnabled = hasImages
             }
         }
     }
     
-    @MainActor
-    private func initRightSideInPreviewMode() {
-        // Menu for activating the selection mode and changing the way images are sorted
-        var children = [sortMenu(), viewOptionsMenu()]
-        if shareBarButton != nil || favoriteBarButton != nil {
-            children.insert(selectMenu(), at: 0)
-        }
-        let menu = UIMenu(title: "", children: children.compactMap({$0}))
-        if #available(iOS 26.0, *) {
-            selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-        } else {
-            selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-        }
-        selectBarButton?.accessibilityIdentifier = "select"
-        
-        // Set right bar buttons
-        navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-        let hasImages = albumData.nbImages != 0
-        selectBarButton?.isEnabled = hasImages
-    }
-
     @MainActor
     func updateBarsInPreviewMode() {
         // Hide toolbar unless it is displaying the image detail view
@@ -114,21 +122,40 @@ extension AlbumViewController
         }
         
         // Right side of navigation bar
-        if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            return
+        if #available(iOS 26.0, *) {
+            // Share button depends on Piwigo server version, user role and image data
+            shareBarButton = getShareBarButton()
+            
+            // Menu for activating the selection mode or change the way images are sorted
+            var children = [sortMenu(), viewOptionsMenu()]
+            if shareBarButton != nil || favoriteBarButton != nil {
+                children.insert(selectMenu(), at: 0)
+            }
+            if categoryId != 0, categoryId == AlbumVars.shared.defaultCategory {
+                children.append(settingsMenu())
+            }
+            let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
+            selectBarButton?.menu = updatedMenu
+            selectBarButton?.isEnabled = albumData.nbImages != 0
         }
-        
-        // Share button depends on Piwigo server version, user role and image data
-        shareBarButton = getShareBarButton()
-        
-        // Menu for activating the selection mode or change the way images are sorted
-        var children = [sortMenu(), viewOptionsMenu()]
-        if shareBarButton != nil || favoriteBarButton != nil {
-            children.insert(selectMenu(), at: 0)
+        else {
+            // Fallback on previous version
+            if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+                return
+            }
+            
+            // Share button depends on Piwigo server version, user role and image data
+            shareBarButton = getShareBarButton()
+            
+            // Menu for activating the selection mode or change the way images are sorted
+            var children = [sortMenu(), viewOptionsMenu()]
+            if shareBarButton != nil || favoriteBarButton != nil {
+                children.insert(selectMenu(), at: 0)
+            }
+            let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
+            selectBarButton?.menu = updatedMenu
+            selectBarButton?.isEnabled = albumData.nbImages != 0
         }
-        let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
-        selectBarButton?.menu = updatedMenu
-        selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
     
