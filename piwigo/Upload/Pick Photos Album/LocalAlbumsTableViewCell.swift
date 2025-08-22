@@ -118,7 +118,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
             }
         }
         subtitleLabel.font = .systemFont(ofSize: 13)
-        subtitleLabel.textColor = PwgColor.leftLabel
+        subtitleLabel.textColor = PwgColor.rightLabel
         subtitleLabel.text = subtitle
     }
 
