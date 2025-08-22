@@ -319,6 +319,9 @@ class SelectCategoryViewController: UIViewController {
         default:
             title = ""
         }
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
 
     @MainActor

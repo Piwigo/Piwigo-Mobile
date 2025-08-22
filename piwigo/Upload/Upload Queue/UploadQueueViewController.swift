@@ -228,10 +228,13 @@ class UploadQueueViewController: UIViewController {
         // Title
         var nberOfImagesInQueue = 0
         nberOfImagesInQueue = diffableDataSource.snapshot().numberOfItems
-        title = nberOfImagesInQueue > 1 ?
-        String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
-        String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
-        
+        title = nberOfImagesInQueue > 1
+            ? String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos"))
+            : String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Set title of current scene (iPad only)
         view.window?.windowScene?.title = title
         

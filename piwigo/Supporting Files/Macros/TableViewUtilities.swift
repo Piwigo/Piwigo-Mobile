@@ -18,8 +18,8 @@ class TableViewUtilities: NSObject {
     let minHeight: CGFloat = 44.0
     
     // MARK: - Title
-    // Returns the title as an attributed string (used since iOS 26)
-    func attributedTitle(_ title: String?) -> AttributedString {
+    // Returns the title as an attributed string for Albums (used since iOS 26)
+    func attributedTitleForAlbum(_ title: String?) -> AttributedString {
         guard let title, title.isEmpty == false else { return AttributedString("") }
         
         // Get title
@@ -29,8 +29,8 @@ class TableViewUtilities: NSObject {
         return attrTtitle
     }
 
-    // Returns the subtitle as an attributed string (used since iOS 26)
-    func attributedSubTitle(_ subtitle: String?) -> AttributedString {
+    // Returns the subtitle as an attributed string for Albums (used since iOS 26)
+    func attributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
         guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
         
         // Get title
@@ -40,6 +40,17 @@ class TableViewUtilities: NSObject {
         return attrSubtitle
     }
     
+    // Returns the title as an attributed string for Settings, etc. views (used since iOS 26)
+    func attributedTitle(_ title: String?) -> AttributedString {
+        guard let title, title.isEmpty == false else { return AttributedString("") }
+        
+        // Get title
+        var attrTtitle = AttributedString(title)
+        attrTtitle.foregroundColor = PwgColor.whiteCream
+        attrTtitle.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        return attrTtitle
+    }
+
     
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle

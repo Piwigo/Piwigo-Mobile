@@ -88,6 +88,12 @@ class TagSelectorViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
+        title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Initialise search bar
         initSearchBar()
         
