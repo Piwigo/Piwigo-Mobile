@@ -26,8 +26,12 @@ class LogsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settings_logs", comment: "Logs")
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Initialise content
         if logEntries.isEmpty { return }
         category?.text = logEntries.first?.category
