@@ -15,8 +15,8 @@ protocol DefaultAlbumThumbnailSizeDelegate: NSObjectProtocol {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: pwgImageSize)
 }
 
-class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+class DefaultAlbumThumbnailSizeViewController: UIViewController {
+    
     weak var delegate: DefaultAlbumThumbnailSizeDelegate?
     private lazy var currentThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
     private lazy var optimumSize = AlbumUtilities.optimumAlbumThumbnailSizeForDevice()
@@ -24,32 +24,35 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
     
     @IBOutlet var tableView: UITableView!
     
-
-// MARK: - View Lifecycle
-
+    
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // Title
         title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+        
         // Set colors, fonts, etc.
         applyColorPalette()
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Table view
         tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -57,49 +60,28 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         // Return selected album thumbnail size
         delegate?.didSelectAlbumDefaultThumbnailSize(currentThumbnailSize)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-    
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))
-        let text = NSLocalizedString("defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
-        return (title, text)
-    }
+}
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
+extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
     
-// MARK: - UITableView - Rows
-    
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgImageSize.allCases.count
     }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
-    }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
@@ -164,22 +146,46 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
             cell.textLabel?.text = size.name + NSLocalizedString("defaultSize_disabled",comment: " (disabled on server)")
        }
     }
+}
 
+
+extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
     
-    // MARK: - UITableView - Footer
+    // MARK: - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Albums Thumbnail File"))
+        let text = NSLocalizedString("defaultAlbumThumbnailSizeHeader", comment: "Please select an album thumbnail size")
+        return (title, text)
+    }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+    
+    
+    // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
     }
-
+    
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
-
-
-    // MARK: - UITableViewDelegate Methods
+    
+    
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.rowHeight
+    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
