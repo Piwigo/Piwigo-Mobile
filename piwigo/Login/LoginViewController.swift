@@ -284,7 +284,7 @@ class LoginViewController: UIViewController {
         if let httpAlertController = httpAlertController {
             present(httpAlertController, animated: true) {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                httpAlertController.view.tintColor = PwgColor.orange
+                httpAlertController.view.tintColor = PwgColor.tintColor
             }
         }
     }

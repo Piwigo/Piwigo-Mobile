@@ -36,7 +36,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
                    andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
         backgroundColor = PwgColor.cellBackground
-        tintColor = PwgColor.orange
+        tintColor = PwgColor.tintColor
 
         // Category data
         albumData = album
@@ -67,7 +67,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             
             self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
-            showHideSubCategoriesImage.tintColor = PwgColor.orange
+            showHideSubCategoriesImage.tintColor = PwgColor.tintColor
             showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
             if buttonState == .hideSubAlbum {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))

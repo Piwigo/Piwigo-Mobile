@@ -802,7 +802,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Tint colour
-        UIView.appearance().tintColor = PwgColor.orange
+        UIView.appearance().tintColor = PwgColor.tintColor
         
         // Activity indicator
         UIActivityIndicatorView.appearance().color = PwgColor.orange

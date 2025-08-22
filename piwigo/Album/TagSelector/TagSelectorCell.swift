@@ -18,7 +18,7 @@ class TagSelectorCell: UITableViewCell {
         
         // General settings
         backgroundColor = PwgColor.cellBackground
-        tintColor = PwgColor.orange
+        tintColor = PwgColor.tintColor
         tagLabel.font = UIFont.systemFont(ofSize: 17)
         tagLabel.textColor = PwgColor.leftLabel
 

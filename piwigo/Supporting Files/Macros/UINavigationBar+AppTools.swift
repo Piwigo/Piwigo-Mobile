@@ -17,11 +17,7 @@ extension UINavigationBar {
         barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         
         // Buttons color
-        if #available(iOS 26.0, *) {
-            tintColor = PwgColor.gray
-        } else {
-            tintColor = PwgColor.orange
-        }
+        tintColor = PwgColor.tintColor
 
         // Create appearance object
         let barAppearance = UINavigationBarAppearance()

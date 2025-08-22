@@ -152,7 +152,6 @@ class LocalImagesViewController: UIViewController
         }
         
         // Navigation bar
-        navigationController?.toolbar.tintColor = PwgColor.orange
         navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
 
         // The cancel button is used to cancel the selection of images to upload

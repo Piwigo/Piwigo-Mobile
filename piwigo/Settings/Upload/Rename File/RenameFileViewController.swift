@@ -305,14 +305,14 @@ class RenameFileViewController: UIViewController {
         }))
         
         // Present list of actions
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
         })
     }
 
@@ -397,14 +397,14 @@ class RenameFileViewController: UIViewController {
         }))
         
         // Present list of actions
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
         })
     }
     
@@ -488,14 +488,14 @@ class RenameFileViewController: UIViewController {
         }))
         
         // Present list of actions
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = tableView?.rectForFooter(inSection: section) ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
         })
     }
     

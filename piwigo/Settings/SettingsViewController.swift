@@ -191,7 +191,7 @@ class SettingsViewController: UIViewController {
         
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.tintColor = PwgColor.orange
+//        doneBarButton?.tintColor = PwgColor.orange
         doneBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
@@ -283,11 +283,11 @@ class SettingsViewController: UIViewController {
             
             alert.addAction(cancelAction)
             alert.addAction(defaultAction)
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
             alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = PwgColor.orange
+                alert.view.tintColor = PwgColor.tintColor
             })
         }
     }
@@ -428,14 +428,14 @@ class SettingsViewController: UIViewController {
         let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
         
         // Present list of actions
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = settingsTableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
         })
     }
 }

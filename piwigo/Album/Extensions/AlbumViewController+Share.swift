@@ -20,11 +20,7 @@ extension AlbumViewController
         if user.canDownloadImages() {
             let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
                                          action: #selector(shareSelection))
-            if #available(iOS 26.0, *) {
-                button.tintColor = PwgColor.gray
-            } else {
-                button.tintColor = PwgColor.orange
-            }
+            button.tintColor = PwgColor.tintColor
             return button
         } else {
             return nil

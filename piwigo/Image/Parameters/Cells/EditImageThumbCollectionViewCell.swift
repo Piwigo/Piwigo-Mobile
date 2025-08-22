@@ -201,11 +201,11 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         if let renameFileNameAction = renameFileNameAction {
             alert.addAction(renameFileNameAction)
         }
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController?.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
 

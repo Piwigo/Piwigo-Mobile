@@ -155,7 +155,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         selectedImages = .init(repeating: nil, count: pbObjects.count)
         
         // Navigation bar
-        navigationController?.toolbar.tintColor = PwgColor.orange
         navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
 
         // The cancel button is used to cancel the selection of images to upload (left side of navigation bar)

@@ -25,7 +25,7 @@ class TagTableViewCell: UITableViewCell {
     func configure(with tag: Tag, andEditOption option: pwgEditOption) {
         // General settings
         backgroundColor = PwgColor.cellBackground
-        tintColor = PwgColor.orange
+        tintColor = PwgColor.tintColor
         textLabel?.font = .systemFont(ofSize: 17)
 
         // => pwg.tags.getList returns in addition: counter, url

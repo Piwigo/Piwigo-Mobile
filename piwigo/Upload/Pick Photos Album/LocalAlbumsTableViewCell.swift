@@ -18,7 +18,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
-        tintColor = PwgColor.orange
+        tintColor = PwgColor.tintColor
 
         // Title
         titleLabel.font = .systemFont(ofSize: 17)

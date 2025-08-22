@@ -18,11 +18,19 @@ enum PwgColor {
     }
     
     
-    // MARK: - Background Color of Views
+    // MARK: - Color of Views
     static let background = UIColor { _ in
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
         : UIColor(red: 239 / 255.0, green: 239 / 255.0, blue: 244 / 255.0, alpha: 1.0)
+    }
+
+    static let tintColor = UIColor { _ in
+        if #available(iOS 26.0, *) {
+            return PwgColor.gray
+        } else {
+            return PwgColor.orange
+        }
     }
     
     

@@ -17,11 +17,7 @@ extension UIToolbar {
         barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         
         // Buttons
-        if #available(iOS 26.0, *) {
-            tintColor = PwgColor.gray
-        } else {
-            tintColor = PwgColor.orange
-        }
+        tintColor = PwgColor.tintColor
         
         // Bar
         if #available(iOS 26.0, *) {

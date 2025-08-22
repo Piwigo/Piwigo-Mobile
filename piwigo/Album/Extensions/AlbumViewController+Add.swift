@@ -88,12 +88,12 @@ extension AlbumViewController
         if let createAlbumAction = createAlbumAction {
             alert.addAction(createAlbumAction)
         }
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.view.accessibilityIdentifier = "CreateAlbum"
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = PwgColor.orange
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
 

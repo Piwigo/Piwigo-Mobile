@@ -100,12 +100,12 @@ class AlbumRenaming: NSObject
         if let renameAction = renameAction {
             renameAlert?.addAction(renameAction)
         }
-        renameAlert?.view.tintColor = PwgColor.orange
+        renameAlert?.view.tintColor = PwgColor.tintColor
         renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if let alert = renameAlert {
             topViewController.present(alert, animated: true) { [self] in
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                renameAlert?.view.tintColor = PwgColor.orange
+                renameAlert?.view.tintColor = PwgColor.tintColor
             }
         }
     }

@@ -83,7 +83,7 @@ extension UploadParametersViewController {
         }
 
         tableViewCell.backgroundColor = PwgColor.cellBackground
-        tableViewCell.tintColor = PwgColor.orange
+        tableViewCell.tintColor = PwgColor.tintColor
         return tableViewCell
     }
 }

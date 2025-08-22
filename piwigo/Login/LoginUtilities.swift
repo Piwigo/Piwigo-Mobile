@@ -518,7 +518,7 @@ class LoginUtilities: NSObject {
             style: .default, handler: loginAction)
         alert.addAction(loginAction)
 
-        alert.view.tintColor = PwgColor.orange
+        alert.view.tintColor = PwgColor.tintColor
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         return alert
     }

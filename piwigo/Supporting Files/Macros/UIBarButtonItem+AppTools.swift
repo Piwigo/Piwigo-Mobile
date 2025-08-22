@@ -21,11 +21,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .action,
                                      target: target, action: action)
         button.accessibilityIdentifier = "share"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
@@ -33,11 +29,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply,
                                      target: target, action: action)
         button.accessibilityIdentifier = "move"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
@@ -45,11 +37,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .trash,
                                      target: target, action: action)
         button.accessibilityIdentifier = "delete"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
@@ -57,11 +45,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .play,
                                      target: target, action: action)
         button.accessibilityIdentifier = "play"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
@@ -69,11 +53,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .pause,
                                      target: target, action: action)
         button.accessibilityIdentifier = "pause"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
 
@@ -81,11 +61,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "arrow.turn.down.right"),
                                      style: .plain, target: target, action: action)
         button.accessibilityIdentifier = "goToPage"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
 
@@ -95,11 +71,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
                                      style: .plain, target: target, action: action)
         button.accessibilityIdentifier = "albumThumbnail"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
@@ -109,11 +81,7 @@ extension UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: nil)
         button.setFavoriteImage(for: isFavorite)
         button.accessibilityIdentifier = "favorite"
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
@@ -130,11 +98,7 @@ extension UIBarButtonItem {
     static func backImageButton(target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
         button.setBackImage()
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         button.accessibilityIdentifier = "back"
         return button
     }
@@ -153,11 +117,7 @@ extension UIBarButtonItem {
         button.setMuteAudioImage(for: isMuted)
         button.accessibilityIdentifier = "mute"
         button.tag = isMuted ? pwgMuted : pwgNotMuted
-        if #available(iOS 26.0, *) {
-            button.tintColor = PwgColor.gray
-        } else {
-            button.tintColor = PwgColor.orange
-        }
+        button.tintColor = PwgColor.tintColor
         return button
     }
     
