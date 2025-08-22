@@ -18,18 +18,17 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
-    private var doneBarButton: UIBarButtonItem?
 
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("settings_acknowledgements", comment: "Acknowledgements")
-
-        // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.accessibilityIdentifier = "Done"
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
 
     @MainActor
@@ -66,9 +65,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
-
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -90,11 +86,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
             fixTextPositionAfterLoadingViewOnPad = false
             textView.setContentOffset(.zero, animated: false)
         }
-    }
-
-    @objc func quitSettings() {
-        // Close Settings view
-        dismiss(animated: true)
     }
 
     deinit {
