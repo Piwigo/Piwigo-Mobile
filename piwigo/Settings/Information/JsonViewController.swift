@@ -23,8 +23,12 @@ class JsonViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Initialise content
         guard let fileURL = fileURL else { return }
         let prefixCount = JSONprefix.count
