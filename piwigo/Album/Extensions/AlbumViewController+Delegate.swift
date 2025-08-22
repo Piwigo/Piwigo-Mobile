@@ -179,8 +179,15 @@ extension AlbumViewController: UICollectionViewDelegate
     }
     
     private func addPhotosAction(_ indexPath: IndexPath) -> UIAction {
+        let imageUpload: UIImage?
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            imageUpload = UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            imageUpload = UIImage(named: "photo.badge.plus")
+        }
         return UIAction(title: NSLocalizedString("categoryCellOption_addPhotos", comment: "Add Photos"),
-                        image: UIImage(named: "imageUpload")) { action in
+                        image: imageUpload) { action in
             // Push album view
             let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),

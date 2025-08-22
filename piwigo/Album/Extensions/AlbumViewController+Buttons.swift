@@ -174,11 +174,7 @@ extension AlbumViewController
         config.baseForegroundColor = .white
         config.baseBackgroundColor = PwgColor.orange
         config.background.cornerRadius = kRadius
-        if categoryId == 0 {
-            config.image = UIImage(systemName: "folder.badge.plus")
-        } else {
-            config.image = UIImage(named: "addButton")
-        }
+        config.image = getAddButtonImage()
         return config
     }
 
@@ -188,12 +184,18 @@ extension AlbumViewController
         config.baseForegroundColor = .white
         config.baseBackgroundColor = .gray
         config.background.cornerRadius = kRadius
-        if categoryId == 0 {
-            config.image = UIImage(systemName: "folder.badge.plus")
-        } else {
-            config.image = UIImage(named: "addButton")
-        }
+        config.image = getAddButtonImage()
         return config
+    }
+    
+    func getAddButtonImage() -> UIImage? {
+        if categoryId == 0 {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .semibold)
+            return UIImage(systemName: "rectangle.stack.badge.plus", withConfiguration: imageConfig)
+        } else {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+            return UIImage(systemName: "plus", withConfiguration: imageConfig)
+        }
     }
 
     @objc func didTapAddButton() {
@@ -455,7 +457,7 @@ extension AlbumViewController
         button.layer.shadowOpacity = 0.8
         button.addTarget(self, action: #selector(returnToDefaultCategory), for: .touchUpInside)
         button.isHidden = true
-        button.accessibilityIdentifier = "home"
+        button.accessibilityIdentifier = "rootAlbum"
         return button
     }
     
@@ -482,7 +484,8 @@ extension AlbumViewController
         config.baseForegroundColor = PwgColor.background
         config.baseBackgroundColor = PwgColor.rightLabel
         config.background.cornerRadius = kRadius
-        config.image = UIImage(named: "rootAlbum")
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 19, weight: .semibold)
+        config.image = UIImage(systemName: "house.fill", withConfiguration: imageConfig)
         return config
     }
     
@@ -559,7 +562,8 @@ extension AlbumViewController
         config.baseForegroundColor = .white
         config.baseBackgroundColor = PwgColor.orange
         config.background.cornerRadius = 0.86 * kRadius
-        config.image = UIImage(systemName: "folder.badge.plus")
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+        config.image = UIImage(systemName: "rectangle.stack.badge.plus", withConfiguration: imageConfig)
         return config
     }
     
@@ -592,7 +596,12 @@ extension AlbumViewController
         config.baseForegroundColor = .white
         config.baseBackgroundColor = PwgColor.orange
         config.background.cornerRadius = 0.86 * kRadius
-        config.image = UIImage(named: "imageUpload")
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            config.image = UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            config.image = UIImage(named: "photo.badge.plus")
+        }
         return config
     }
 }
