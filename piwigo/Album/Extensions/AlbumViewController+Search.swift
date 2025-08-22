@@ -37,6 +37,7 @@ extension AlbumViewController
         // Don't hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = false
         if #available(iOS 26.0, *) {
+            navigationItem.searchBarPlacementAllowsToolbarIntegration =  true
             navigationItem.preferredSearchBarPlacement = .integratedButton
         } else {
             // Fallback on earlier versions
@@ -66,11 +67,18 @@ extension AlbumViewController: UISearchControllerDelegate
         // Reload collection
         collectionView?.reloadData()
         
-        // Hide buttons and toolbar
-        hideButtons()
-        initBarsInPreviewMode()
-        setTitleViewFromAlbumData()
-        navigationController?.setToolbarHidden(true, animated: true)
+        // Adjust the interface
+        if #available(iOS 26.0, *) {
+            // Integrate the search bar into the toolbar
+            navigationItem.preferredSearchBarPlacement = .integrated
+        }
+        else {
+            // Hide buttons and toolbar
+            hideButtons()
+            initBarsInPreviewMode()
+            setTitleViewFromAlbumData()
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
     }
     
     func didPresentSearchController(_ searchController: UISearchController) {
@@ -105,7 +113,9 @@ extension AlbumViewController: UISearchControllerDelegate
         collectionView?.reloadData()
         
         // Show buttons and navigation bar
-        updateButtons()
+        if #unavailable(iOS 26.0) {
+            updateButtons()
+        }
         initBarsInPreviewMode()
         setTitleViewFromAlbumData()
     }

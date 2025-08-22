@@ -30,13 +30,19 @@ extension AlbumViewController
             
             // Right side of navigation bar
             if categoryId == 0 {
-                // Root album => Discover menu button
-                let items = [discoverBarButton, addAlbumBarButton].compactMap { $0 }
+                // Root album => Discover menu button in navigation bar
+                let items = [discoverBarButton].compactMap { $0 }
                 navigationItem.setRightBarButtonItems(items, animated: true)
+                
+                // [Search] and [Create Album] buttons in the tollbar
+                let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                let toolBarItems = [.space(), searchBarButton, addAlbumBarButton].compactMap { $0 }
+                navigationController?.setToolbarHidden(false, animated: true)
+                toolbarItems = toolBarItems
             }
             else if categoryId == pwgSmartAlbum.search.rawValue {
-                // Search bar => No action button
-                navigationItem.setRightBarButtonItems([], animated: true)
+                // Search bar => integrated into the toolbar
+                navigationItem.preferredSearchBarPlacement = .integrated
             }
             else {
                 // Share button depends on Piwigo server version, user role and image data
@@ -115,12 +121,6 @@ extension AlbumViewController
     
     @MainActor
     func updateBarsInPreviewMode() {
-        // Hide toolbar unless it is displaying the image detail view
-        if let displayedVC = navigationController?.viewControllers.last,
-           !(displayedVC is ImageViewController) {
-            navigationController?.setToolbarHidden(true, animated: true)
-        }
-        
         // Right side of navigation bar
         if #available(iOS 26.0, *) {
             // Share button depends on Piwigo server version, user role and image data
@@ -139,6 +139,12 @@ extension AlbumViewController
             selectBarButton?.isEnabled = albumData.nbImages != 0
         }
         else {
+            // Hide toolbar unless it is displaying the image detail view
+            if let displayedVC = navigationController?.viewControllers.last,
+               !(displayedVC is ImageViewController) {
+                navigationController?.setToolbarHidden(true, animated: true)
+            }
+
             // Fallback on previous version
             if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
                 return
