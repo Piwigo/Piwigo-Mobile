@@ -18,7 +18,7 @@ class TableViewUtilities: NSObject {
     let minHeight: CGFloat = 44.0
     
     // MARK: - Title
-    // Returns the title as an attributed string
+    // Returns the title as an attributed string (used since iOS 26)
     func attributedTitle(_ title: String?) -> AttributedString {
         guard let title, title.isEmpty == false else { return AttributedString("") }
         
@@ -29,7 +29,7 @@ class TableViewUtilities: NSObject {
         return attrTtitle
     }
 
-    // Returns the subtitle as an attributed string
+    // Returns the subtitle as an attributed string (used since iOS 26)
     func attributedSubTitle(_ subtitle: String?) -> AttributedString {
         guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
         
@@ -180,4 +180,15 @@ class TableViewUtilities: NSObject {
                                                              ]))
         return footer
     }
+    
+    
+    // MARK: - Rows
+    // Returns the row height
+    static let rowHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return 51.0
+        } else {
+            return 44.0
+        }
+    }()
 }
