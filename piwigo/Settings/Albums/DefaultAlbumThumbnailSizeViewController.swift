@@ -170,18 +170,6 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
     }
     
     
-    // MARK: - Footer
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
-    }
-    
-    
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return TableViewUtilities.rowHeight
@@ -198,5 +186,17 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
         tableView.cellForRow(at: IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0))?.accessoryType = .none
         currentThumbnailSize = selectedSize
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+    }
+
+    
+    // MARK: - Footer
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 }
