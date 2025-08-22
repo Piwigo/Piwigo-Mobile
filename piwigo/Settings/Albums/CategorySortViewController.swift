@@ -28,7 +28,7 @@ class CategorySortViewController: UIViewController {
         super.viewDidLoad()
         
         // Apply attributes to title
-        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+        title = NSLocalizedString("severalImages", comment: "Images")
         if #available(iOS 26.0, *) {
             navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
         }
