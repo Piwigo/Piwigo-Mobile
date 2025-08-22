@@ -62,6 +62,12 @@ class HelpViewController: UIViewController {
         pageViewController!.setViewControllers([pages[0]], direction: .forward, animated: true, completion: nil)
     }
 
+    @MainActor
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = PwgColor.background
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -71,12 +77,6 @@ class HelpViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-    }
-
-    @MainActor
-    @objc func applyColorPalette() {
-        // Background color of the view
-        view.backgroundColor = PwgColor.background
     }
 
     deinit {

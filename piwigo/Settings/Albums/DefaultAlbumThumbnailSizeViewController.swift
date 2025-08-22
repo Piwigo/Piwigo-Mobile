@@ -34,9 +34,6 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         if #available(iOS 26.0, *) {
             navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
         }
-        
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
     
     @MainActor
@@ -56,6 +53,9 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)

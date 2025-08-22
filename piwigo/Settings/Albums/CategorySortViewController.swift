@@ -36,9 +36,6 @@ class CategorySortViewController: UIViewController {
         sortSelectTableView.accessibilityIdentifier = "sortSelect"
         navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
         
-        // Set colors, fonts, etc.
-        applyColorPalette()
-        
         // This view is called only if the Piwigo version < 14
         if AlbumVars.shared.defaultSort.rawValue > pwgImageSort.random.rawValue {
             AlbumVars.shared.defaultSort = .dateCreatedAscending
@@ -61,6 +58,9 @@ class CategorySortViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),

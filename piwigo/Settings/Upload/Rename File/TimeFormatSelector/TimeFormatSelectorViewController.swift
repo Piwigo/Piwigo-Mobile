@@ -69,9 +69,6 @@ class TimeFormatSelectorViewController: UIViewController {
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
         
-        // Set colors, fonts, etc.
-        applyColorPalette()
-        
         // Enable/disable drag interactions
         navigationItem.rightBarButtonItem = editButtonItem
     }
@@ -100,7 +97,10 @@ class TimeFormatSelectorViewController: UIViewController {
         // Update example shown in header
         updateExample()
         
-        // Register palette changes
+        // Set colors, fonts, etc.
+        applyColorPalette()
+        
+       // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }

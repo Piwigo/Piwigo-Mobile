@@ -31,9 +31,6 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         super.viewDidLoad()
 
         title = NSLocalizedString("severalImages", comment: "Images")
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
 
     @MainActor
@@ -52,6 +49,9 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),

@@ -71,9 +71,6 @@ class DateFormatSelectorViewController: UIViewController {
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
-        
         // Initialise section in appropriate order
         dateSections = []
         for dateFormat in dateFormats {
@@ -117,6 +114,9 @@ class DateFormatSelectorViewController: UIViewController {
         
         // Update example shown in header
         updateExample()
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),

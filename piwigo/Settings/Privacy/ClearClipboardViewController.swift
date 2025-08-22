@@ -95,9 +95,6 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
         super.viewDidLoad()
 
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
 
     @MainActor
@@ -116,7 +113,10 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)

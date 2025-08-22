@@ -71,9 +71,6 @@ class CounterFormatSelectorViewController: UIViewController {
         headerAttributedString.append(textAttributedString)
         headerLabel.attributedText = headerAttributedString
         headerLabel.sizeToFit()
-        
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
     
     @MainActor
@@ -100,6 +97,9 @@ class CounterFormatSelectorViewController: UIViewController {
         // Update example shown in header
         updateExample()
         
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)

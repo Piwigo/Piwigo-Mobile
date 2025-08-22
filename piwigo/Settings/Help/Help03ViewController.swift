@@ -56,6 +56,15 @@ class Help03ViewController: UIViewController {
         AppVars.shared.dateOfLastHelpView = Date().timeIntervalSinceReferenceDate
     }
 
+    @MainActor
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = PwgColor.background
+        
+        // Legend color
+        legend.textColor = PwgColor.text
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -65,15 +74,6 @@ class Help03ViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-    }
-
-    @MainActor
-    @objc func applyColorPalette() {
-        // Background color of the view
-        view.backgroundColor = PwgColor.background
-        
-        // Legend color
-        legend.textColor = PwgColor.text
     }
     
     deinit {
