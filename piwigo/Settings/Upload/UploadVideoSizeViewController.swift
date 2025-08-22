@@ -41,6 +41,9 @@ class UploadVideoSizeViewController: UIViewController {
         super.viewDidLoad()
 
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
 
     @MainActor
@@ -158,7 +161,7 @@ extension UploadVideoSizeViewController: UITableViewDelegate
     
     // MARK: - UITableView - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        return TableViewUtilities.rowHeight
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
