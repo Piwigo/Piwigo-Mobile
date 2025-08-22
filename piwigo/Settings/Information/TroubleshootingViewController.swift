@@ -36,8 +36,12 @@ class TroubleshootingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settings_logs", comment: "Logs")
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Button for returning to albums/images
         clearBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteJSONfiles))
         clearBarButton?.isEnabled = false
@@ -308,7 +312,11 @@ extension TroubleshootingViewController: UITableViewDelegate
     }
     
     
-    // MARK: - Cell Management
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.rowHeight
+    }
+
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
         case 0 /* Logs */:
