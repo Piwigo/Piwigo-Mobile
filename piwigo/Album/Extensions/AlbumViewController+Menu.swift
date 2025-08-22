@@ -488,8 +488,9 @@ extension AlbumViewController {
                     albumVC.collectionView?.reloadData()
                 }
             })
+            // Update menu
             if categoryId == Int32.zero {
-                let children = [smartAlbums(), viewOptionsMenu()].compactMap({$0})
+                let children = [smartAlbums(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
                 let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
                 discoverBarButton.menu = updatedMenu
             } else {
@@ -501,11 +502,6 @@ extension AlbumViewController {
     }
 
     func showHideTitlesAction() -> UIAction? {
-        // Don't present this option in root album
-        if categoryId == Int32.zero {
-            return nil
-        }
-        
         let isActive = AlbumVars.shared.displayImageTitles
         let action = UIAction(title: NSLocalizedString("settings_displayTitles", comment: "Image Titles"),
                               image: isActive ? UIImage(systemName: "checkmark") : nil,
@@ -513,6 +509,14 @@ extension AlbumViewController {
                               handler: { [self] action in
             // Show or hide image titles
             AlbumVars.shared.displayImageTitles = !isActive
+            // Update menu
+            if categoryId == Int32.zero {
+                let children = [smartAlbums(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
+                let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
+                discoverBarButton.menu = updatedMenu
+            } else {
+                updateCollectionAndMenu()
+            }
             updateCollectionAndMenu()
         })
         action.accessibilityIdentifier = "showHideImageTitles"
