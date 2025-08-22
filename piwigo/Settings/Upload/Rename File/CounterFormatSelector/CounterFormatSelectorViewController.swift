@@ -56,7 +56,10 @@ class CounterFormatSelectorViewController: UIViewController {
         
         // Title, header and example
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Header
         let headerAttributedString = NSMutableAttributedString(string: "")
         let title = String(format: "%@\n", RenameAction.ActionType.addCounter.name)
