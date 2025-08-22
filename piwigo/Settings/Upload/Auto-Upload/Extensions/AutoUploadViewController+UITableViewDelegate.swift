@@ -55,11 +55,7 @@ extension AutoUploadViewController: UITableViewDelegate
         default:
             break
         }
-
-        if #available(iOS 26.0, *) {
-            height += TableViewUtilities.rowOffset
-        }
-        return height
+        return height + TableViewUtilities.rowExtraHeight
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {

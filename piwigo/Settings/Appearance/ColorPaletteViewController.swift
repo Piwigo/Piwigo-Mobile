@@ -161,9 +161,6 @@ extension ColorPaletteViewController: UITableViewDelegate {
         default:
             break
         }
-        if #available(iOS 26.0, *) {
-            height += TableViewUtilities.rowOffset
-        }
-        return height + TableViewUtilities.rowOffset
+        return height + TableViewUtilities.rowExtraHeight
     }
 }

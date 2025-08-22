@@ -467,7 +467,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         let isLimited = hasLimitedNberOfAlbums[albumType]!
         switch albumType {
         case .pasteboard:
-            return 44.0
+            return 44.0 + TableViewUtilities.rowExtraHeight
         case .localAlbums:
             if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
                 assetCollection = LocalAlbumsProvider.shared.localAlbums[indexPath.row]
@@ -499,13 +499,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Display [+] button at the bottom of section presenting a limited number of albums
-        guard let aCollection = assetCollection else { return 36.0 }
+        guard let aCollection = assetCollection else {
+            return 36.0 + TableViewUtilities.rowExtraHeight
+        }
         
         // Case of an album
         if let _ = aCollection.startDate, let _ = aCollection.endDate {
-            return 53.0
+            return 53.0 + TableViewUtilities.rowExtraHeight
         } else {
-            return 44.0
+            return 44.0 + TableViewUtilities.rowExtraHeight
         }
     }
 

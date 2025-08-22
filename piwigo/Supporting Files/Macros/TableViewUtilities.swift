@@ -203,5 +203,11 @@ class TableViewUtilities: NSObject {
         }
     }()
     
-    static let rowOffset: CGFloat = 51.0 - 44.0
+    static let rowExtraHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return 51.0 - 44.0
+        } else {
+            return 44.0 - 44.0
+        }
+    }()
 }
