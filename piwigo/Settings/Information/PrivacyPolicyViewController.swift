@@ -16,18 +16,17 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     @IBOutlet private weak var piwigoLogo: UIImageView!
     @IBOutlet private var textView: UITextView!
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
-    private var doneBarButton: UIBarButtonItem?
 
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("settings_privacy", comment: "Policy Privacy")
-        
-        // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.accessibilityIdentifier = "Done"
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
     
     @MainActor
@@ -58,9 +57,6 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -82,11 +78,6 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         }
     }
 
-    @objc func quitSettings() {
-        // Close Settings view
-        dismiss(animated: true)
-    }
-    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
