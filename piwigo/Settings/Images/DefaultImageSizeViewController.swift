@@ -15,90 +15,73 @@ protocol DefaultImageSizeDelegate: NSObjectProtocol {
     func didSelectImageDefaultSize(_ imageSize: pwgImageSize)
 }
 
-class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+class DefaultImageSizeViewController: UIViewController {
+    
     weak var delegate: DefaultImageSizeDelegate?
     private lazy var currentImageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     private lazy var optimumSize = ImageUtilities.optimumImageSizeForDevice()
     private lazy var scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
-
+    
     @IBOutlet var tableView: UITableView!
     
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = NSLocalizedString("severalImages", comment: "Images")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Table view
         tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
+        
         // Return selected image thumbnail size
         delegate?.didSelectImageDefaultSize(currentImageSize)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))
-        let text = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
-        return (title, text)
-    }
+}
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
+// MARK: - UITableViewDataSource Methods
+extension DefaultImageSizeViewController: UITableViewDataSource {
     
-    // MARK: - UITableView - Rows
-    
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgImageSize.allCases.count
     }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
-    }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
@@ -163,10 +146,32 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
             cell.textLabel?.text = size.name + NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)")
         }
     }
-    
+}
 
-    // MARK: - UITableView - Footer
+
+// MARK: - UITableViewDelegate Methods
+extension DefaultImageSizeViewController: UITableViewDelegate {
     
+    // MARK: - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))
+        let text = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
+        return (title, text)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+
+
+    // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
         return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
@@ -177,8 +182,11 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 
-    
-    // MARK: - UITableViewDelegate Methods
+        
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.rowHeight
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
