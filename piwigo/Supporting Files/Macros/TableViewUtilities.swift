@@ -17,6 +17,30 @@ class TableViewUtilities: NSObject {
     let margin: CGFloat = 20.0
     let minHeight: CGFloat = 44.0
     
+    // MARK: - Title
+    // Returns the title as an attributed string
+    func attributedTitle(_ title: String?) -> AttributedString {
+        guard let title, title.isEmpty == false else { return AttributedString("") }
+        
+        // Get title
+        var attrTtitle = AttributedString(title)
+        attrTtitle.foregroundColor = PwgColor.whiteCream
+        attrTtitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        return attrTtitle
+    }
+
+    // Returns the subtitle as an attributed string
+    func attributedSubTitle(_ subtitle: String?) -> AttributedString {
+        guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
+        
+        // Get title
+        var attrSubtitle = AttributedString(subtitle)
+        attrSubtitle.foregroundColor = PwgColor.whiteCream
+        attrSubtitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+        return attrSubtitle
+    }
+    
+    
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
     func heightOfHeader(withTitle title: String, text: String = "",
