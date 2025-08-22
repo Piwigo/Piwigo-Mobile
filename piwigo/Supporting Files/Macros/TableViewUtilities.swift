@@ -35,7 +35,7 @@ class TableViewUtilities: NSObject {
 
         // Add title height
         if title.isEmpty == false {
-            let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
+            let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .semibold)]
             height += title.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                          attributes: titleAttributes, context: context).height
         }
@@ -60,7 +60,7 @@ class TableViewUtilities: NSObject {
         // Add title attributed string
         if title.isEmpty == false {
             let titleAttributedString = NSMutableAttributedString(string: title)
-            titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
+            titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .semibold),
                                                range: NSRange(location: 0, length: title.count))
             headerAttributedString.append(titleAttributedString)
         }
