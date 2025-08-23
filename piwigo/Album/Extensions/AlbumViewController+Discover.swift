@@ -18,7 +18,7 @@ extension AlbumViewController
         if #available(iOS 26.0, *) {
             button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: discoverMenu())
         } else {
-            // Fall back on previous version
+            // Fallback on previous version
             button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
         }
         button.accessibilityIdentifier = "discover"

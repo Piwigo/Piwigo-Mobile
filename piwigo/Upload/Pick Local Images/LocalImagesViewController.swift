@@ -175,7 +175,12 @@ class LocalImagesViewController: UIViewController
             children.append(deleteMenu())
         }
         let menu = UIMenu(title: "", children: children.compactMap({$0}))
-        actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        if #available(iOS 26.0, *) {
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+        } else {
+            // Fallback on previous version
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+        }
         
         if UIDevice.current.userInterfaceIdiom == .pad {
             // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.

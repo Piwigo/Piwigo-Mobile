@@ -39,6 +39,7 @@ extension ImageViewController {
             if #available(iOS 26.0, *) {
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             } else {
+                // Fallback on previous version
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
             }
             actionBarButton?.accessibilityIdentifier = "actions"
