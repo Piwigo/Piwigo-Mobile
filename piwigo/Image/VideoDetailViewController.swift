@@ -49,9 +49,6 @@ class VideoDetailViewController: UIViewController
         // Initialise videoContainerView size with placeHolder size
         configVideoViews()
         
-        // Initialise video controls delegate
-        videoControls.videoControlsDelegate = self
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -67,6 +64,9 @@ class VideoDetailViewController: UIViewController
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Initialise video controls delegate
+        videoControls.videoControlsDelegate = self
         
         // Initialise video player if displayed on device
         if AppVars.shared.inSingleDisplayMode, let video = video {
