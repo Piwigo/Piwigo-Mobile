@@ -70,6 +70,7 @@ class AlbumViewController: UIViewController
     // Bar buttons for root album
     lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()    // before iOS 26
     lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()    // since iOS 26
+    lazy var addImageBarButton: UIBarButtonItem = getAddImageBarButton()    // since iOS 26
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?

@@ -33,7 +33,7 @@ extension AlbumViewController
         }
     }
     
-    func checkPhotoLibraryAccess() {
+    @objc func checkPhotoLibraryAccess() {
         PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: PHAccessLevel.readWrite, for: self, onAccess: { [self] in
             // Open local albums view controller in new navigation controller
             DispatchQueue.main.async {

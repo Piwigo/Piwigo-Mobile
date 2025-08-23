@@ -12,13 +12,21 @@ import piwigoKit
 
 extension AlbumViewController
 {
-    // MARK: Button (iOS 26+)
+    // MARK: Toolbar Buttons (iOS 26+)
     func getAddAlbumBarButton() -> UIBarButtonItem {
         let image = UIImage(systemName: "rectangle.stack.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
         button.accessibilityIdentifier = "addAlbum"
         return button
     }
+    
+    func getAddImageBarButton() -> UIBarButtonItem {
+        let image = UIImage(systemName: "photo.badge.plus")!
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(checkPhotoLibraryAccess))
+        button.accessibilityIdentifier = "addImage"
+        return button
+    }
+    
     
     // MARK: - Create Sub-Album
     @MainActor

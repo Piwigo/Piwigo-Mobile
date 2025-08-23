@@ -67,6 +67,11 @@ extension AlbumViewController
                 navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
                 let hasImages = albumData.nbImages != 0
                 selectBarButton?.isEnabled = hasImages
+                
+                // [Add Photos] and [Create Album] buttons in the tollbar
+                let toolBarItems = [.space(), addImageBarButton, addAlbumBarButton].compactMap { $0 }
+                navigationController?.setToolbarHidden(false, animated: true)
+                toolbarItems = toolBarItems
             }
         }
         else {
