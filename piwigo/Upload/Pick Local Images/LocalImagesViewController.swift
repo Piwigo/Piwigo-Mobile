@@ -159,7 +159,9 @@ class LocalImagesViewController: UIViewController
         cancelBarButton.accessibilityIdentifier = "Cancel"
         
         // The upload button is available after having selecting images
-        uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
+        uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
+                                          style: .done, target: self, action: #selector(didTapUploadButton))
+        uploadBarButton.tintColor = PwgColor.orange
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
         
