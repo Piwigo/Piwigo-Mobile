@@ -65,18 +65,25 @@ extension ImageViewController {
         // Case of users with admin or upload rights
         if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
-            let toolbarItems: [UIBarButtonItem?] = [shareBarButton,
-                                                    .space(),
-                                                    goToPageButton, playBarButton, favoriteBarButton, muteBarButton,
-                                                    .space(),
-                                                    deleteBarButton]
-            // We get:
-            /// Image => [- delete] or [share - - delete] or [share - favorite - delete]
-            /// Video => [- play mute - delete] or [- play favorite mute - delete] or [share - play mute - delete] or [share - play favorite mute - delete]
-            /// PDF   => [- goToPage favorite - delete] or [- goToPage - delete] or [share - goToPage - delete] or [share - goToPage favorite - delete]
-            let finalToolbarItems = toolbarItems.compactMap { $0 }
-            
+            var toolbarItems: [UIBarButtonItem?] = [shareBarButton, .space()]
+            let type = pwgImageFileType(rawValue: imageData.fileType) ?? .image
+            switch type {
+            case .image:
+                /// => [- delete] or [share - delete] or [- favorite delete] or [share - favorite delete]
+                toolbarItems.append(contentsOf: [favoriteBarButton, deleteBarButton])
+                
+            case .video:
+                /// => [- play mute - delete] or [- play favorite mute - delete] or [share - play mute - delete] or [share - play favorite mute - delete]
+                toolbarItems.append(contentsOf: [playBarButton, favoriteBarButton, muteBarButton, .space(),
+                                                      deleteBarButton])
+
+            case .pdf:
+                /// PDF   => [- goToPage delete] or [- goToPage favorite delete] or [share - goToPage delete] or [share - goToPage favorite - delete]
+                toolbarItems.append(contentsOf: [goToPageButton, favoriteBarButton, deleteBarButton])
+            }
+
             // We present the toolbar only if it contains at least two buttons
+            let finalToolbarItems: [UIBarButtonItem] = toolbarItems.compactMap({ $0 })
             if finalToolbarItems.count > 2 {
                 // Show toolbar
                 isToolbarRequired = true
@@ -95,7 +102,7 @@ extension ImageViewController {
                 navigationController?.setToolbarHidden(true, animated: true)
                 
                 // Remaining buttons gathered in the navigation bar
-                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+                navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
                 navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
             }
         }
@@ -106,7 +113,7 @@ extension ImageViewController {
             navigationController?.setToolbarHidden(true, animated: true)
             
             // All buttons gathered in the navigation bar
-            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton].compactMap {$0}
+            navigationItem.leftBarButtonItems = [backButton, playBarButton, muteBarButton, goToPageButton].compactMap {$0}
             navigationItem.rightBarButtonItems = [actionBarButton, deleteBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
         }
     }
