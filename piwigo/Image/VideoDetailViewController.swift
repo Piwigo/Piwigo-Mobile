@@ -121,15 +121,16 @@ class VideoDetailViewController: UIViewController
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        // Remove video player
+        // Pause video player
         if let video = video {
-            playbackController.remove(contentOfVideo: video)
+            playbackController.pause(contentOfVideo: video)
         }
     }
     
     deinit {
         // Release memory
         if let video = video {
+            playbackController.remove(contentOfVideo: video)
             playbackController.delete(video: video)
         }
         
