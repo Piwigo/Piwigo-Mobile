@@ -105,7 +105,9 @@ class VideoDetailViewController: UIViewController
             setPlaceHolderViewFrame()
             
             // Update scale, insets and offsets
-            configScrollView()
+            if let size = videoSize {
+                configScrollView(withSize: size)
+            }
         })
     }
     
@@ -174,16 +176,16 @@ class VideoDetailViewController: UIViewController
             videoAirplay.isHidden = false
             return
         }
-        
-        // Set video container view size
-        videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
-        videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
-        videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
-        
+                
         // Set scroll view scale and range
-        if videoSize != nil {
+        if let size = videoSize {
+            // Set video container view size
+            videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
+            videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
+            videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
+
             // Set zoom scale and scroll view
-            configScrollView()
+            configScrollView(withSize: size)
         }
     }
     
@@ -193,10 +195,11 @@ class VideoDetailViewController: UIViewController
      A zoom scale of less than 1 shows a zoomed-out version of the content,
      and a zoom scale greater than 1 shows the content zoomed in.
      */
-    private func configScrollView() {
+    private func configScrollView(withSize size: CGSize) {
         // Calc new zoom scale range
-        let widthScale = view.bounds.size.width / videoContainerView.bounds.size.width
-        let heightScale = view.bounds.size.height / videoContainerView.bounds.size.height
+        debugPrint(view.bounds.size, videoContainerView.bounds.size, size)
+        let widthScale = view.bounds.size.width / size.width
+        let heightScale = view.bounds.size.height / size.height
         let minScale = min(widthScale, heightScale)
         let maxScale = max(widthScale, heightScale)
         
