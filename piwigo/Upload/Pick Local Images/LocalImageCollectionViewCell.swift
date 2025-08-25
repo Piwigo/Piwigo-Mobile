@@ -18,9 +18,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     var md5sum = ""
     
     @IBOutlet weak var cellImage: UIImageView!
-    @IBOutlet weak var playBckg: UIView!
-    @IBOutlet weak var playImg: UIImageView!
-    @IBOutlet weak var selectedImage: UIImageView!
+    @IBOutlet weak var playIcon: UIView!
+    @IBOutlet weak var selectedImage: UIView!
     @IBOutlet weak var uploadedImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
     @IBOutlet weak var waitingActivity: UIActivityIndicatorView!
@@ -28,11 +27,10 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var failedUploadImage: UIImageView!
     
     private func configureIcons() {
-        // Background color and aspect
+        // Appearance
         backgroundColor = PwgColor.cellBackground
         waitingActivity?.color = UIColor.white
         uploadingProgress?.trackTintColor = UIColor.white
-        playImg?.tintColor = UIColor.white
     }
 
     func configure(with imageAsset: PHAsset, thumbnailSize: CGSize) {
@@ -66,10 +64,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
                 
                 self.changeCellImageIfNeeded(withImage: image)
                 let isVideo = imageAsset.mediaType == .video
-                if self.playImg?.isHidden == isVideo {
-                    self.playImg?.isHidden = !isVideo
-                    self.playBckg?.isHidden = !isVideo
-                }
+                self.playIcon?.isHidden = !isVideo
             }
         })
     }
@@ -85,10 +80,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         // Image: retrieve data of right size and crop image
         changeCellImageIfNeeded(withImage: image)
         let isVideo = identifier.contains("mov")
-        if self.playImg?.isHidden == isVideo {
-            self.playImg?.isHidden = !isVideo
-            self.playBckg?.isHidden = !isVideo
-        }
+        self.playIcon?.isHidden = !isVideo
     }
     
     func update(selected: Bool, state: pwgUploadState? = nil) {
