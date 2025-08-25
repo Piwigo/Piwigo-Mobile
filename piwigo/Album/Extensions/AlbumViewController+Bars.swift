@@ -28,7 +28,7 @@ extension AlbumViewController
                 navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
             }
             
-            // Right side of navigation bar
+            // Right side of navigation bar and toolbar
             if categoryId == 0 {
                 // Root album => Discover menu button in navigation bar
                 let items = [discoverBarButton].compactMap { $0 }
@@ -36,7 +36,7 @@ extension AlbumViewController
                 
                 // [Search] and [Create Album] buttons in the tollbar
                 let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                let toolBarItems = [.space(), searchBarButton, addAlbumBarButton].compactMap { $0 }
+                let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
                 navigationController?.setToolbarHidden(false, animated: true)
                 toolbarItems = toolBarItems
             }
@@ -69,7 +69,7 @@ extension AlbumViewController
                 selectBarButton?.isEnabled = hasImages
                 
                 // [Add Photos] and [Create Album] buttons in the tollbar
-                let toolBarItems = [.space(), addImageBarButton, addAlbumBarButton].compactMap { $0 }
+                let toolBarItems = [.space(), addAlbumBarButton, addImageBarButton].compactMap { $0 }
                 navigationController?.setToolbarHidden(false, animated: true)
                 toolbarItems = toolBarItems
             }
