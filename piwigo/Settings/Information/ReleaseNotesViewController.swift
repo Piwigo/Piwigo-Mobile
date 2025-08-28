@@ -99,6 +99,9 @@ class ReleaseNotesViewController: UIViewController {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
 
+        // Release 4.0.x — Bundle string
+        notesAttributedString.append(releaseNotes("v4.0.0_text", comment: "v4.0.0 Release Notes text"))
+
         // Release 3.5.x — Bundle string
         notesAttributedString.append(releaseNotes("v3.5.1_text", comment: "v3.5.1 Release Notes text"))
         notesAttributedString.append(releaseNotes("v3.5.0_text", comment: "v3.5.0 Release Notes text"))
@@ -243,6 +246,11 @@ class ReleaseNotesViewController: UIViewController {
         var vRange = NSRange(location: 0, length: vString.count)
         vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: vRange)
         vRange = NSRange(location: 0, length: (vString as NSString).range(of: "\n").location)
+        guard vRange.length != LONG_MAX
+        else {  // Missing translations are not shown
+            return NSAttributedString()
+        }
+        
         vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: vRange)
         if lineFeed {
             let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")

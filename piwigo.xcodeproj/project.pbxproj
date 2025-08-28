@@ -4919,7 +4919,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.5.1;
+				MARKETING_VERSION = 4.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=300 -Xfrontend -warn-long-expression-type-checking=50";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo";
@@ -4969,7 +4969,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.5.1;
+				MARKETING_VERSION = 4.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
