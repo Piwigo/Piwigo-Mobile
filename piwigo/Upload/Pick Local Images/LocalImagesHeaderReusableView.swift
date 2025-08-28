@@ -40,44 +40,46 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         self.section = section
         
         // Date and place name of location
-        mainLabel.textColor = PwgColor.leftLabel
-        detailLabel.textColor = PwgColor.rightLabel
+        mainLabel?.textColor = PwgColor.leftLabel
+        detailLabel?.textColor = PwgColor.rightLabel
 
         // Get date labels from images in section
         let oldest = DateUtilities.unknownDateInterval   // i.e. unknown date
         let dateIntervals = images.map { $0.creationDate?.timeIntervalSinceReferenceDate ?? oldest}
         let dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: false)
-        self.mainLabel.text = dates.0
+        self.mainLabel?.text = dates.0
 
         // Set labels from dates and place name
         if images.isEmpty {
-            self.detailLabel.text = dates.1
+            self.detailLabel?.text = dates.1
         } else {
             // Determine location from images in section
             let location = getLocation(of: images)
             LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
-                    self.detailLabel.text = dates.1
+                    self.detailLabel?.text = dates.1
                 } else if streetName.isEmpty {
-                    self.detailLabel.text = placeName
+                    self.detailLabel?.text = placeName
                 } else {
-                    self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+                    self.detailLabel?.text = String(format: "%@ • %@", placeName, streetName)
                 }
             } pending: { hash in
                 // Show date details until place name availability
-                self.detailLabel.text = dates.1
+                self.detailLabel?.text = dates.1
                 // Register location provider
                 self.locationHash = hash
                 NotificationCenter.default.addObserver(self, selector: #selector(self.updateDetailLabel(_:)),
                                                        name: Notification.Name.pwgPlaceNamesAvailable, object: nil)
             } failure: {
-                self.detailLabel.text = dates.1
+                self.detailLabel?.text = dates.1
             }
         }
 
         // Select/deselect button
         selectButton.layer.cornerRadius = 13.0
         selectButton.setTitle(forState: selectState)
+        selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
+        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.2 : 0.1
     }
 
     @objc func updateDetailLabel(_ notification: NSNotification) {

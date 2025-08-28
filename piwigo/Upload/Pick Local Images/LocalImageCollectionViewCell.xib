@@ -21,7 +21,7 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownImage" translatesAutoresizingMaskIntoConstraints="NO" id="IKS-Rx-oq3">
                         <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                     </imageView>
-                    <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gye-LY-Xsr">
+                    <view hidden="YES" alpha="0.45000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gye-LY-Xsr">
                         <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -61,6 +61,7 @@
                     </imageView>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8CN-35-v0I">
                         <rect key="frame" x="199.66666666666666" y="199.33333333333331" width="31.333333333333343" height="32"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="8CN-35-v0I" secondAttribute="height" multiplier="1:1" id="N30-op-pTE"/>
                         </constraints>
@@ -89,12 +90,14 @@
                     </imageView>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigo" translatesAutoresizingMaskIntoConstraints="NO" id="07z-ZV-xvN">
                         <rect key="frame" x="2.9999999999999982" y="197.66666666666666" width="31.333333333333329" height="31.333333333333343"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="07z-ZV-xvN" secondAttribute="height" multiplier="1:1" id="PZu-zk-eRt"/>
                         </constraints>
                     </imageView>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="M8E-Sf-Jmj">
                         <rect key="frame" x="58" y="59.333333333333314" width="116" height="113.66666666666669"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="M8E-Sf-Jmj" secondAttribute="height" multiplier="1:1" id="jqV-tg-IIt"/>

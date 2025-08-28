@@ -40,16 +40,16 @@ class ImageHeaderReusableView: UICollectionReusableView
         applyColorPalette()
 
         // Set album description label
-        albumDesc.contentSize = size
-        albumDesc.textContainerInset = .zero
-        albumDesc.textContainer.widthTracksTextView = false
-        albumDesc.textContainer.lineBreakMode = .byWordWrapping
+        albumDesc?.contentSize = size
+        albumDesc?.textContainerInset = .zero
+        albumDesc?.textContainer.widthTracksTextView = false
+        albumDesc?.textContainer.lineBreakMode = .byWordWrapping
         if size == CGSize.zero {
-            albumDesc.text = ""
-            albumDescHeight.constant = 0
+            albumDesc?.text = ""
+            albumDescHeight?.constant = 0
         } else {
-            albumDesc.attributedText = description
-            albumDescHeight.constant = size.height
+            albumDesc?.attributedText = description
+            albumDescHeight?.constant = size.height
         }
         
         // Get date labels from images in section
@@ -67,7 +67,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         }
         
         // Set labels from dates and place name
-        self.mainLabel.text = dates.0
+        self.mainLabel?.text = dates.0
         if images.isEmpty {
             self.detailLabel.text = dates.1
         } else {
@@ -75,15 +75,15 @@ class ImageHeaderReusableView: UICollectionReusableView
             let location = AlbumUtilities.getLocation(of: images)
             LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
-                    self.detailLabel.text = dates.1
+                    self.detailLabel?.text = dates.1
                 } else if streetName.isEmpty {
-                    self.detailLabel.text = placeName
+                    self.detailLabel?.text = placeName
                 } else {
-                    self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+                    self.detailLabel?.text = String(format: "%@ • %@", placeName, streetName)
                 }
             } pending: { hash in
                 // Show date details until place name availability
-                self.detailLabel.text = dates.1
+                self.detailLabel?.text = dates.1
                 // Register location provider
                 self.locationHash = hash
                 NotificationCenter.default.addObserver(self, selector: #selector(self.updateDetailLabel(_:)),
@@ -94,8 +94,8 @@ class ImageHeaderReusableView: UICollectionReusableView
         }
 
         // Select/deselect button
-        selectButton.layer.cornerRadius = 13.0
-        selectButton.setTitle(forState: selectState)
+        selectButton?.layer.cornerRadius = 13.0
+        selectButton?.setTitle(forState: selectState)
     }
     
     @MainActor
@@ -105,10 +105,12 @@ class ImageHeaderReusableView: UICollectionReusableView
         } else {
             backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
-        mainLabel.textColor = PwgColor.leftLabel
-        detailLabel.textColor = PwgColor.rightLabel
-        selectButton.backgroundColor = PwgColor.background
-        albumDesc.textColor = PwgColor.header
+        mainLabel?.textColor = PwgColor.leftLabel
+        detailLabel?.textColor = PwgColor.rightLabel
+        selectButton?.backgroundColor = PwgColor.background
+        selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
+        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.2 : 0.1
+        albumDesc?.textColor = PwgColor.header
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {
