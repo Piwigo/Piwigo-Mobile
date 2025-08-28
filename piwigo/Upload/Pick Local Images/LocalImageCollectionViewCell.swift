@@ -18,8 +18,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     var md5sum = ""
     
     @IBOutlet weak var cellImage: UIImageView!
-    @IBOutlet weak var playIcon: UIView!
-    @IBOutlet weak var selectedImage: UIView!
+    @IBOutlet weak var playIcon: UIImageView!
+    @IBOutlet weak var selectedIcon: UIImageView!
     @IBOutlet weak var uploadedImage: UIImageView!
     @IBOutlet weak var darkenView: UIView!
     @IBOutlet weak var waitingActivity: UIActivityIndicatorView!
@@ -29,6 +29,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     private func configureIcons() {
         // Appearance
         backgroundColor = PwgColor.cellBackground
+        selectedIcon?.layer.shadowColor = UIColor.white.cgColor
+        playIcon?.layer.shadowColor = UIColor.black.cgColor
         waitingActivity?.color = UIColor.white
         uploadingProgress?.trackTintColor = UIColor.white
     }
@@ -87,14 +89,14 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
 //        debugPrint("••> Update cell with ID: \(self.localIdentifier) to state: \(state?.stateInfo ?? "nil")")
         // No upload state ► selected/deselected
         guard let state = state else {
-            selectedImage?.isHidden = !selected
+            selectedIcon?.isHidden = !selected
             darkenView?.isHidden = !selected
             return
         }
         // Known upload request state
         switch state {
         case .waiting, .preparing, .prepared:
-            selectedImage?.isHidden = true
+            selectedIcon?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
@@ -103,7 +105,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .uploading:
-            selectedImage?.isHidden = true
+            selectedIcon?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
@@ -111,7 +113,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .uploaded, .finishing:
-            selectedImage?.isHidden = true
+            selectedIcon?.isHidden = true
             darkenView?.isHidden = false
             waitingActivity?.isHidden = false
             waitingActivity?.startAnimating()
@@ -120,7 +122,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         case .finished, .moderated:
-            selectedImage?.isHidden = !selected
+            selectedIcon?.isHidden = !selected
             darkenView?.isHidden = false
             waitingActivity?.isHidden = true
             waitingActivity?.stopAnimating()
@@ -129,7 +131,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             failedUploadImage?.isHidden = true
         case .preparingFail, .preparingError, .formatError,
              .uploadingError, .uploadingFail, .finishingError, .finishingFail:
-            selectedImage?.isHidden = true
+            selectedIcon?.isHidden = true
             darkenView?.isHidden = true
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
