@@ -806,6 +806,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Activity indicator
         UIActivityIndicatorView.appearance().color = PwgColor.orange
+        
+        // Navigation bar
+        UINavigationBar.appearance().tintColor = PwgColor.tintColor
+        UINavigationBar.appearance().barTintColor = PwgColor.background
 
         // Tab bars
         UITabBar.appearance().barTintColor = PwgColor.background
