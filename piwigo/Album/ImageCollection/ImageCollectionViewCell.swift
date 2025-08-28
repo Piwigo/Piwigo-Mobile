@@ -27,22 +27,20 @@ class ImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var noDataLabel: UILabel!
 
     // Icon showing that it is a movie
-    @IBOutlet weak var playImg: UIImageView!
-    @IBOutlet weak var playBckg: UIView!
-    @IBOutlet weak var playLeft: NSLayoutConstraint!
-    @IBOutlet weak var playTop: NSLayoutConstraint!
+    @IBOutlet weak var playIcon: UIView!
+    @IBOutlet weak var playIconLeading: NSLayoutConstraint!
+    @IBOutlet weak var playIconTop: NSLayoutConstraint!
     
     // Icon showing that it is a favorite
-    @IBOutlet weak var favImg: UIImageView!
-    @IBOutlet weak var favBckg: UIImageView!
-    @IBOutlet weak var favLeft: NSLayoutConstraint!
-    @IBOutlet weak var favBottom: NSLayoutConstraint!
+    @IBOutlet weak var favoriteIcon: UIImageView!
+    @IBOutlet weak var favoriteLeading: NSLayoutConstraint!
+    @IBOutlet weak var favoriteBottom: NSLayoutConstraint!
     
     // Selected images are darkened
-    @IBOutlet weak var selectedImg: UIImageView!
-    @IBOutlet weak var selImgRight: NSLayoutConstraint!
-    @IBOutlet weak var selImgBot: NSLayoutConstraint!
-    
+    @IBOutlet weak var selectedIcon: UIView!
+    @IBOutlet weak var selectedIconTrailing: NSLayoutConstraint!
+    @IBOutlet weak var selectedIconBottom: NSLayoutConstraint!
+        
     // On iPad, thumbnails are presented with native aspect ratio
     private var deltaX: CGFloat = 0.0       // Extra horizotal offset
     private var deltaY: CGFloat = 0.0       // Extra vertical offset
@@ -63,7 +61,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
         set(isSelection) {
             _isSelection = isSelection
-            selectedImg?.isHidden = !isSelection
+            selectedIcon?.isHidden = !isSelection
             darkenView?.isHidden = !isSelection
         }
     }
@@ -79,16 +77,15 @@ class ImageCollectionViewCell: UICollectionViewCell {
             // Update the vertical constraint
             if bottomLayer?.isHidden ?? false {
                 // Place icon at the bottom
-                favBottom?.constant = deltaY
+                favoriteBottom?.constant = deltaY
             } else {
                 // Place icon at the bottom but above the title
                 let height = CGFloat(fmax(bannerHeight, deltaY))
-                favBottom?.constant = height
+                favoriteBottom?.constant = height
             }
 
             // Display/hide the favorite icon
-            favBckg?.isHidden = !isFavorite
-            favImg?.isHidden = !isFavorite
+            favoriteIcon?.isHidden = !isFavorite
         }
     }
         
@@ -97,9 +94,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
         bottomLayer?.backgroundColor = PwgColor.background.withAlphaComponent(0.7)
         nameLabel?.textColor = PwgColor.leftLabel
         noDataLabel?.textColor = PwgColor.leftLabel
-        favBckg?.tintColor = UIColor(white: 0, alpha: 0.3)
-        favImg?.tintColor = UIColor.white
-        playImg?.tintColor = UIColor.white
+        selectedIcon?.layer.shadowColor = UIColor.white.cgColor
+        favoriteIcon?.layer.shadowColor = UIColor.black.cgColor
+        playIcon?.layer.shadowColor = UIColor.black.cgColor
     }
 
     func config(withImageData imageData: Image, size: pwgImageSize, sortOption: pwgImageSort) {
@@ -113,8 +110,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         isAccessibilityElement = true
 
         // Video icon
-        playImg?.isHidden = !(imageData.isVideo)
-        playBckg?.isHidden = !(imageData.isVideo)
+        playIcon?.isHidden = !(imageData.isVideo)
 
         // Title
         let title = getImageTitle(forSortOption: sortOption)
@@ -213,7 +209,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         self.cellImage?.image = image
         self.noDataLabel?.isHidden = isHidden
         
-        // Favorite image position depends on device
+        // Some icons positions depend on device
         self.deltaX = CGFloat.zero
         self.deltaY = CGFloat.zero
         let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
@@ -228,25 +224,29 @@ class ImageCollectionViewCell: UICollectionViewCell {
             self.darkImgHeight?.constant = imageHeight
             self.deltaY += max(0, (self.bounds.size.height - imageHeight) / 2.0)
         }
+        else {
+            self.darkImgWidth?.constant = self.bounds.size.width
+            self.darkImgHeight?.constant = self.bounds.size.height
+        }
         
         // Update horizontal constraints
-        let horOffset: CGFloat = 0.0 + self.deltaX
-        self.selImgRight?.constant = horOffset
-        self.favLeft?.constant = horOffset
-        self.playLeft?.constant = 2.0 + horOffset
+        let horOffset: CGFloat = 1.0 + self.deltaX
+        self.selectedIconTrailing?.constant = horOffset
+        self.favoriteLeading?.constant = horOffset
+        self.playIconLeading?.constant = horOffset
         
         // Update vertical constraints
-        let vertOffset: CGFloat = 0.0 + self.deltaY
-        self.playTop?.constant = 2.0 + vertOffset
+        let vertOffset: CGFloat = 1.0 + self.deltaY
+        self.playIconTop?.constant = vertOffset
         if self.bottomLayer?.isHidden ?? false {
             // Image title not displayed
-            self.favBottom?.constant = vertOffset
-            self.selImgBot?.constant = vertOffset
+            self.favoriteBottom?.constant = 1.0 + vertOffset
+            self.selectedIconBottom?.constant = 1.0 + vertOffset
         } else {
             // Image title displayed
-            let banOffset: CGFloat = max(vertOffset, bannerHeight + 0.0)
-            self.favBottom?.constant = banOffset
-            self.selImgBot?.constant = banOffset
+            let banOffset: CGFloat = max(vertOffset, bannerHeight + 1.0)
+            self.favoriteBottom?.constant = banOffset
+            self.selectedIconBottom?.constant = banOffset
         }
         applyColorPalette()
     }
