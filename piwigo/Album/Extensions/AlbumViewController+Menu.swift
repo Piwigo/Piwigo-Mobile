@@ -467,7 +467,7 @@ extension AlbumViewController {
     
     func showMenu() -> UIMenu? {
         // Create a menu for selecting what to show
-        let children = [showHideDescriptionsAction(), showHideTitlesAction()].compactMap({$0})
+        let children = [showHideTitlesAction(), showHideDescriptionsAction()].compactMap({$0})
         return UIMenu(title: NSLocalizedString("categoryView_show", comment: "Show…"),
                       image: nil,
                       identifier: UIMenu.Identifier("org.piwigo.images.show.main"),
