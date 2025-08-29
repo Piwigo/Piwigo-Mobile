@@ -9502,7 +9502,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.0\n\n• Compatibility with iOS 26"
+            "value" : "Version 4.0\n\n• Compatibility with iOS 26\n• Fixes bugs and improves the interface"
           }
         }
       }
