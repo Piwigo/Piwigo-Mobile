@@ -69,10 +69,21 @@ extension AlbumViewController
                 let hasImages = albumData.nbImages != 0
                 selectBarButton?.isEnabled = hasImages
                 
-                // [Add Photos] and [Create Album] buttons in the tollbar
-                let toolBarItems = [.space(), addAlbumBarButton, addImageBarButton].compactMap { $0 }
-                navigationController?.setToolbarHidden(false, animated: true)
-                toolbarItems = toolBarItems
+                // User with admin or upload rights can do everything
+                // except may be downloading images (i.e. sharing images)
+                // User without admin rights cannot set album thumbnails, delete images
+                // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+                // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+                //              This requires 'user_id' and 'added_by' values of images for checking rights
+                if user.hasUploadRights(forCatID: categoryId) {
+                    // [Add Photos] and [Create Album] buttons in the toolbar
+                    let toolBarItems = [.space(), addAlbumBarButton, addImageBarButton].compactMap { $0 }
+                    navigationController?.setToolbarHidden(false, animated: true)
+                    toolbarItems = toolBarItems
+                } else {
+                    navigationController?.setToolbarHidden(true, animated: true)
+                    toolbarItems = []
+                }
             }
         }
         else {
