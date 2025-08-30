@@ -42,17 +42,17 @@ extension AlbumViewController
                 // SHOULD BE => 'normal' user having uploaded images can only edit their images.
                 //              This requires 'user_id' and 'added_by' values of images for checking rights
                 if user.hasUploadRights(forCatID: categoryId) {
-                    // [Search] and [Create Album] buttons in the tollbar
+                    // [Search] and [Create Album] buttons in the toolbar
+                    navigationItem.preferredSearchBarPlacement = .integratedButton
                     let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
                     let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
                     navigationController?.setToolbarHidden(false, animated: true)
                     toolbarItems = toolBarItems
                 } else {
-                    // [Search] button in the tollbar
-                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                    let toolBarItems = [.space(), searchBarButton].compactMap { $0 }
+                    // [Search] bar in the toolbar
+                    navigationItem.preferredSearchBarPlacement = .integrated
                     navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
+                    toolbarItems = []
                 }
             }
             else if categoryId == pwgSmartAlbum.search.rawValue {
@@ -120,6 +120,9 @@ extension AlbumViewController
             // Right side of navigation bar
             if categoryId == 0 {
                 // Root album => Discover menu button
+                if #available(iOS 16.0, *) {
+                    navigationItem.preferredSearchBarPlacement = .stacked
+                }
                 navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
             }
             else if categoryId == pwgSmartAlbum.search.rawValue {
