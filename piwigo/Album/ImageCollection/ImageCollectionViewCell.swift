@@ -95,7 +95,9 @@ class ImageCollectionViewCell: UICollectionViewCell {
         nameLabel?.textColor = PwgColor.leftLabel
         noDataLabel?.textColor = PwgColor.leftLabel
         selectedIcon?.layer.shadowColor = UIColor.white.cgColor
+        favoriteIcon?.tintColor = .white
         favoriteIcon?.layer.shadowColor = UIColor.black.cgColor
+        playIcon?.tintColor = .white
         playIcon?.layer.shadowColor = UIColor.black.cgColor
     }
 
