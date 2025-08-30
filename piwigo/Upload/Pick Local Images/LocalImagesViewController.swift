@@ -86,6 +86,7 @@ class LocalImagesViewController: UIViewController
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
     weak var albumDelegate: AlbumViewControllerDelegate?
     var imageCollectionId: String = String()
+    var imageCollectionName: String = String()
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
@@ -104,9 +105,6 @@ class LocalImagesViewController: UIViewController
                                                     //  - for grouping by day, week or month (or not)
                                                     //  - for selecting images in the Photo Library
                                                     //  - for allowing to re-upload images
-    var legendLabel = UILabel()                     // Legend presented in the toolbar on iPhone
-    var legendBarItem: UIBarButtonItem!
-
     var reUploadAllowed = false
 
 
@@ -128,6 +126,7 @@ class LocalImagesViewController: UIViewController
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
         }
+        
 
         // Fetch a specific path of the Photo Library to reduce the workload
         // and store the fetched assets for future use
@@ -159,9 +158,15 @@ class LocalImagesViewController: UIViewController
         cancelBarButton.accessibilityIdentifier = "Cancel"
         
         // The upload button is available after having selecting images
-        uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                                          style: .done, target: self, action: #selector(didTapUploadButton))
-        uploadBarButton.tintColor = PwgColor.orange
+        if #available(iOS 17.0, *) {
+            uploadBarButton = UIBarButtonItem(image: UIImage(systemName: "arrowshape.up.fill"),
+                                              style: .plain, target: self, action: #selector(didTapUploadButton))
+        } else {
+            // Fallback on previous version
+            uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
+                                              style: .plain, target: self, action: #selector(didTapUploadButton))
+        }
+        uploadBarButton.tintColor = PwgColor.tintColor
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
         
@@ -188,10 +193,6 @@ class LocalImagesViewController: UIViewController
             // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.
             trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
             trashBarButton.isEnabled = false
-        } else {
-            // Presents the number of photos selected and the Upload button in the toolbar
-            navigationController?.isToolbarHidden = false
-            legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
         }
         actionBarButton.accessibilityIdentifier = "Action"
     }
@@ -203,13 +204,6 @@ class LocalImagesViewController: UIViewController
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
-        // Toolbar
-        legendLabel.textColor = PwgColor.text
-        legendBarItem = UIBarButtonItem(customView: legendLabel)
-        toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-        navigationController?.toolbar.barTintColor = PwgColor.background
-        navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
 
         // Collection view
         localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

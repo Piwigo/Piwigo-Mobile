@@ -562,7 +562,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             assetCollections = LocalAlbumsProvider.shared.otherAlbums
         }
         
-        // Did tap [+] button at the bottom of section —> release remaining albums
+        // Did tap "expand" button at the bottom of section —> release remaining albums
         if isLimited && indexPath.row == maxNberOfAlbumsInSection {
             // Release album list
             hasLimitedNberOfAlbums[albumType] = false
@@ -577,6 +577,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // Case of an album
         let albumID = assetCollections[indexPath.row].localIdentifier
+        let albumName = assetCollections[indexPath.row].localizedTitle ?? NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums")
         if wantedAction == .setAutoUploadAlbum {
             // Return the selected album ID
             delegate?.didSelectPhotoAlbum(withId: albumID)
@@ -589,6 +590,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             localImagesVC.categoryCurrentCounter = categoryCurrentCounter
             localImagesVC.albumDelegate = albumDelegate
             localImagesVC.imageCollectionId = albumID
+            localImagesVC.imageCollectionName = albumName
             localImagesVC.user = user
             navigationController?.pushViewController(localImagesVC, animated: true)
         }

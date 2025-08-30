@@ -15,69 +15,166 @@ extension LocalImagesViewController {
     
     @MainActor
     func updateNavBar() {
+        // Buttons
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
-        switch nberOfSelectedImages {
-        case 0:
-            // Buttons
-            cancelBarButton.isEnabled = false
-            actionBarButton.isEnabled = (queue.operationCount == 0)
-            uploadBarButton.isEnabled = false
-            
-            // Display "Back" button on the left side
-            navigationItem.leftBarButtonItems = []
-            
-            // Set buttons on the right side on iPhone
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                // Presents a single action menu
-                updateActionButton()
-                navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
-                
-                // Present the "Upload" button in the toolbar
-                legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-                legendBarItem = UIBarButtonItem(customView: legendLabel)
-                toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-            }
-            
-        default:
-            // Buttons
-            cancelBarButton.isEnabled = true
-            actionBarButton.isEnabled = (queue.operationCount == 0)
-            uploadBarButton.isEnabled = true
-            
-            // Display "Cancel" button on the left side
+        let hasSelectedImages = nberOfSelectedImages > 0
+        cancelBarButton.isEnabled = hasSelectedImages
+        actionBarButton.isEnabled = (queue.operationCount == 0)
+        uploadBarButton.isEnabled = hasSelectedImages
+        
+        // Left side of navigation bar
+        if hasSelectedImages {
+            // Display "Cancel" button
             navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
-            
-            // Set buttons on the right side on iPhone
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                // Update the number of selected photos in the toolbar
-                legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
-                legendBarItem = UIBarButtonItem(customView: legendLabel)
-                toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-                
-                // Presents a single action menu
-                updateActionButton()
-                navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
-            }
+        } else {
+            // Display "Back" button
+            navigationItem.leftBarButtonItems = []
         }
         
-        // Set buttons on the right side on iPad
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            // Update the number of selected photos in the navigation bar
-            title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+        // Title and subtitle
+        if #available(iOS 26.0, *) {
+            // Title
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(imageCollectionName)
             
-            if canDeleteUploadedImages() || canDeleteSelectedImages() {
-                trashBarButton.isEnabled = true
-                navigationItem.rightBarButtonItems = [uploadBarButton,
-                                                      actionBarButton,
-                                                      trashBarButton].compactMap { $0 }
-            } else {
-                trashBarButton.isEnabled = false
-                navigationItem.rightBarButtonItems = [uploadBarButton,
+            // Subtitle
+            if hasSelectedImages {
+                let subtitle = nberOfSelectedImages == 1
+                    ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+                    : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                navigationItem.attributedSubtitle = TableViewUtilities.shared.attributedSubTitleForAlbum(subtitle)
+            }
+            else {
+                let subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+                navigationItem.attributedSubtitle = TableViewUtilities.shared.attributedSubTitleForAlbum(subtitle)
+            }
+        } else {
+            // Fallback on previous version
+            setTitleView(withCount: nberOfSelectedImages)
+        }
+        
+        // Right side of the navigation bar
+        if #available(iOS 26.0, *) {
+            switch UIDevice.current.userInterfaceIdiom {
+            case .phone:
+                navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton].compactMap { $0 }
+            case .pad:
+                trashBarButton.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
+                navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
+                                                      actionBarButton, trashBarButton].compactMap { $0 }
+            default:
+                preconditionFailure("!!! User interface not managed !!!")
+            }
+        }
+        else {
+            switch UIDevice.current.userInterfaceIdiom {
+            case .phone:
+                // Presents a single action menu
+                updateActionButton()
+                navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
+
+            case .pad:
+                trashBarButton.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
+                navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton,
+                                                      trashBarButton].compactMap { $0 }
+            default:
+                preconditionFailure("!!! User interface not managed !!!")
             }
         }
     }
     
+    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    func setTitleView(withCount count: Int? = nil) {
+        // Create label programmatically
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = PwgColor.whiteCream
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = false
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.allowsDefaultTighteningForTruncation = true
+        let wholeRange = NSRange(location: 0, length: imageCollectionName.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
+            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let attTitle = NSMutableAttributedString(string: imageCollectionName)
+        attTitle.addAttributes(attributes, range: wholeRange)
+        titleLabel.attributedText = attTitle
+        titleLabel.sizeToFit()
+        
+        // There is no subtitle in landscape mode on iPhone
+        var subtitle = ""
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
+            switch nberOfSelectedImages {
+            case 0:
+                subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
+            case 1:
+                subtitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
+            case 2...nberOfSelectedImages:
+                var nberPhotosStr = ""
+                if #available(iOS 16, *) {
+                    nberPhotosStr = nberOfSelectedImages.formatted(.number)
+                } else {
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.numberStyle = NumberFormatter.Style.decimal
+                    nberPhotosStr = numberFormatter.string(from: NSNumber(value: nberOfSelectedImages)) ?? String(nberOfSelectedImages)
+                }
+                subtitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
+            default:
+                subtitle = ""
+            }
+        }
+        
+        // Prepare sub-title
+        if subtitle.isEmpty == false {
+            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            subTitleLabel.backgroundColor = UIColor.clear
+            subTitleLabel.textColor = PwgColor.whiteCream
+            subTitleLabel.textAlignment = .center
+            subTitleLabel.numberOfLines = 1
+            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+            subTitleLabel.font = .systemFont(ofSize: 10)
+            subTitleLabel.adjustsFontSizeToFitWidth = false
+            subTitleLabel.lineBreakMode = .byTruncatingTail
+            subTitleLabel.allowsDefaultTighteningForTruncation = true
+            subTitleLabel.text = subtitle
+            subTitleLabel.sizeToFit()
+            
+            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
+            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                        height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+            twoLineTitleView.addSubview(titleLabel)
+            twoLineTitleView.addSubview(subTitleLabel)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+            let views = ["title": titleLabel,
+                         "subtitle": subTitleLabel]
+            twoLineTitleView.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                               options: [], metrics: nil, views: views))
+            navigationItem.titleView = twoLineTitleView
+        } else {
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+            oneLineTitleView.addSubview(titleLabel)
+            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+            navigationItem.titleView = oneLineTitleView
+        }
+    }
+
     @MainActor
     func updateActionButton() {
         // Update action button

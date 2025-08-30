@@ -30,12 +30,7 @@ extension LocalImagesViewController
 
         // Fetch image collection
         let assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
-        
-        // Display album name on iPhone
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            title = assetCollections.firstObject!.localizedTitle
-        }
-        
+                
         // Fetch images in album
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
 

@@ -168,19 +168,16 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
         
-        // Configure toolbar
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            // Title
-            title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
-
-            // Presents the number of photos selected and the Upload button in the toolbar
+        // Title
+        title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+        
+        // Presents the number of photos selected and the Upload button in the toolbar
+        if #unavailable(iOS 26.0), UIDevice.current.userInterfaceIdiom == .phone {
             navigationController?.isToolbarHidden = false
             legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-        }
-
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            // Title
-            title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
         }
     }
 

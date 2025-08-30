@@ -9495,17 +9495,6 @@
           }
         }
       }
-    },
-    "v4.0.0_text" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version 4.0\n\n• Compatibility with iOS 26\n• Fixes bugs and improves the interface"
-          }
-        }
-      }
     }
   },
   "version" : "1.1"
