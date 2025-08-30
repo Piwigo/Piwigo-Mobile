@@ -35,11 +35,25 @@ extension AlbumViewController
                 let items = [discoverBarButton].compactMap { $0 }
                 navigationItem.setRightBarButtonItems(items, animated: true)
                 
-                // [Search] and [Create Album] buttons in the tollbar
-                let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                navigationController?.setToolbarHidden(false, animated: true)
-                toolbarItems = toolBarItems
+                // User with admin or upload rights can do everything
+                // except may be downloading images (i.e. sharing images)
+                // User without admin rights cannot set album thumbnails, delete images
+                // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+                // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+                //              This requires 'user_id' and 'added_by' values of images for checking rights
+                if user.hasUploadRights(forCatID: categoryId) {
+                    // [Search] and [Create Album] buttons in the tollbar
+                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                    let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
+                    navigationController?.setToolbarHidden(false, animated: true)
+                    toolbarItems = toolBarItems
+                } else {
+                    // [Search] button in the tollbar
+                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                    let toolBarItems = [.space(), searchBarButton].compactMap { $0 }
+                    navigationController?.setToolbarHidden(false, animated: true)
+                    toolbarItems = toolBarItems
+                }
             }
             else if categoryId == pwgSmartAlbum.search.rawValue {
                 // Search bar => integrated into the toolbar
@@ -221,6 +235,7 @@ extension AlbumViewController
         if #available(iOS 26.0, *) {
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
         } else {
+            // Fallback on previous version
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), menu: menu)
         }
         actionBarButton?.accessibilityIdentifier = "actions"
@@ -233,14 +248,24 @@ extension AlbumViewController
             navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
 
             // Remaining buttons in navigation toolbar
-            /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
-            /// They also disappear when coming back to portrait orientation.
-            /// [share - delete] or [ favorite - delete ] or [share - favorite - delete]
-            let toolBarItems = [shareBarButton, .space(),
-                                favoriteBarButton, favoriteBarButton == nil ? nil : .space(),
-                                deleteBarButton, shareBarButton == nil ? .space() : nil].compactMap { $0 }
-            navigationController?.setToolbarHidden(false, animated: true)
-            toolbarItems = toolBarItems
+            if #available(iOS 26.0, *) {
+                // We present the toolbar only if it contains at least two buttons
+                let toolbarItems: [UIBarButtonItem] = [shareBarButton, .space(),
+                                                       favoriteBarButton, deleteBarButton].compactMap({ $0 })
+                setToolbarItems(toolbarItems, animated: false)
+                navigationController?.setToolbarHidden(false, animated: true)
+            }
+            else {
+                // Fallback on previous version
+                /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
+                /// They also disappear when coming back to portrait orientation.
+                /// [share - delete] or [ favorite - delete ] or [share - favorite - delete]
+                let toolBarItems = [shareBarButton, .space(),
+                                    favoriteBarButton, favoriteBarButton == nil ? nil : .space(),
+                                    deleteBarButton, shareBarButton == nil ? .space() : nil].compactMap { $0 }
+                navigationController?.setToolbarHidden(false, animated: true)
+                toolbarItems = toolBarItems
+            }
         } else {
             // Left side of navigation bar
             navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
@@ -261,8 +286,7 @@ extension AlbumViewController
 
         // Right side and toolbar
         if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-            // Remaining two buttons
-            // Button on the right
+            // Remaining two buttons on the right side of the navigation bar
             navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
 
             // Hide navigation toolbar
