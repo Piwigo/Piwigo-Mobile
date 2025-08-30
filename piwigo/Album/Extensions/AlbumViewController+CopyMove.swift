@@ -16,7 +16,7 @@ extension AlbumViewController
     func imagesCopyAction() -> UIAction {
         let actionId = UIAction.Identifier("Copy")
         let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
-                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
+                              image: UIImage(systemName: "photo.on.rectangle"),
                               identifier: actionId, handler: { [self] action in
             // Disable buttons during action
             setEnableStateOfButtons(false)

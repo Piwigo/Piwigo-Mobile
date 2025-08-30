@@ -17,7 +17,7 @@ extension ImageViewController
     @MainActor
     func rotateMenu() -> UIMenu {
         return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
-                      image: nil,
+                      image: UIImage(systemName: ""),
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
                       children: [rotateRightAction(), rotateLeftAction()])
     }

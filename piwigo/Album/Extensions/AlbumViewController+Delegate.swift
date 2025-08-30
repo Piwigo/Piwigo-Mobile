@@ -215,7 +215,7 @@ extension AlbumViewController: UICollectionViewDelegate
     
     private func moveAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_move", comment: "Move Album"),
-                        image: UIImage(systemName: "arrowshape.turn.up.left")) { action in
+                        image: UIImage(systemName: "arrowshape.turn.up.right")) { action in
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
                   let albumData = try? self.mainContext.existingObject(with: objectID) as? Album,
