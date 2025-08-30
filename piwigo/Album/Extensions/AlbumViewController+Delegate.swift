@@ -108,7 +108,7 @@ extension AlbumViewController: UICollectionViewDelegate
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
         // Only admins can rename, move and delete albums
-        if let _ = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+        if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
            user.hasAdminRights {
             // Return context menu configuration
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
@@ -140,7 +140,7 @@ extension AlbumViewController: UICollectionViewDelegate
         else { return nil }
         
         // Only admins can rename, move and delete albums
-        if let _ = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+        if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
            user.hasAdminRights {
             // Return context menu configuration
             return UIContextMenuConfiguration(actionProvider: { suggestedActions in

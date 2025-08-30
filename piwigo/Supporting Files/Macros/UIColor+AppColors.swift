@@ -86,15 +86,9 @@ enum PwgColor {
     }
     
     static let cellBackground  = UIColor { _ in
-        if #available(iOS 26.0, *) {
-            AppVars.shared.isDarkPaletteActive
-            ? UIColor(red: 28 / 255.0, green: 28 / 255.0, blue: 30 / 255.0, alpha: 1.0)
-            : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
-        } else {
-            AppVars.shared.isDarkPaletteActive
-            ? UIColor(red: 42 / 255.0, green: 42 / 255.0, blue: 45 / 255.0, alpha: 1.0)
-            : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
-        }
+        AppVars.shared.isDarkPaletteActive
+        ? UIColor(red: 42 / 255.0, green: 42 / 255.0, blue: 45 / 255.0, alpha: 1.0)
+        : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
     }
     
     static let leftLabel = UIColor { _ in
