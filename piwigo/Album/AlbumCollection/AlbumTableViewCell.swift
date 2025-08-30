@@ -23,6 +23,7 @@ class AlbumTableViewCell: UITableViewCell {
     @IBOutlet weak var recentlyModified: UIImageView!
     @IBOutlet weak var binding1: UIView!
     @IBOutlet weak var binding2: UIView!
+    @IBOutlet weak var handle: UIView!
     
     func config(withAlbumData albumData: Album?) {
         // General settings
@@ -32,20 +33,25 @@ class AlbumTableViewCell: UITableViewCell {
         binding2?.backgroundColor = PwgColor.background
 
         // Album name (Piwigo orange colour)
-        albumName.text = albumData?.name ?? "—?—"
+        albumName?.text = albumData?.name ?? "—?—"
         var fontSize = fontSizeFor(label: albumName, nberLines: 2)
-        albumName.font = UIFont.systemFont(ofSize: fontSize)
+        albumName?.font = UIFont.systemFont(ofSize: fontSize)
         
         // Album description (colour depends on text content)
-        albumComment.attributedText = getDescription(fromAlbumData: albumData)
+        albumComment?.attributedText = getDescription(fromAlbumData: albumData)
         fontSize = UIFont.fontSizeFor(label: albumComment, nberLines: 3)
-        albumComment.font = UIFont.systemFont(ofSize: fontSize)
+        albumComment?.font = UIFont.systemFont(ofSize: fontSize)
 
         // Number of images and sub-albums
-        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
-        numberOfImages.textColor = PwgColor.text
-        numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
+        numberOfImages?.text = getNberOfImages(fromAlbumData: albumData)
+        numberOfImages?.textColor = PwgColor.text
+        numberOfImages?.font = UIFont.systemFont(ofSize: 10, weight: .light)
 
+        // Add renaming, moving and deleting capabilities when user has admin rights
+        if let album = albumData, let hasAdminRights = album.user?.hasAdminRights {
+            handle?.isHidden = !hasAdminRights
+        }
+        
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
@@ -53,7 +59,7 @@ class AlbumTableViewCell: UITableViewCell {
         indexOfPeriod = max(0, indexOfPeriod)
         let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
-        self.recentlyModified.isHidden = !isRecent
+        self.recentlyModified?.isHidden = !isRecent
         self.recentlyModified?.tintColor = UIColor.white
         self.recentlyModified?.layer.shadowColor = UIColor.black.cgColor
         self.recentlyModified?.layer.shadowOpacity = 1.0
@@ -69,7 +75,7 @@ class AlbumTableViewCell: UITableViewCell {
         
         // Retrieve image from cache or download it
         self.albumThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
-        let scale = max(self.albumThumbnail.traitCollection.displayScale, 1.0)
+        let scale = max(self.albumThumbnail?.traitCollection.displayScale ?? 1.0, 1.0)
         let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         imageURL = albumData?.thumbnailUrl as? URL
@@ -84,13 +90,13 @@ class AlbumTableViewCell: UITableViewCell {
                 
                 // Set backgoround image
                 DispatchQueue.main.async { [self] in
-                    self.albumThumbnail.image = cachedImage
+                    self.albumThumbnail?.image = cachedImage
                 }
             }
         } failure: { [self] _ in
             // Set backgoround image
             DispatchQueue.main.async { [self] in
-                self.albumThumbnail.image = pwgImageType.album.placeHolder
+                self.albumThumbnail?.image = pwgImageType.album.placeHolder
             }
         }
     }
@@ -217,39 +223,5 @@ class AlbumTableViewCell: UITableViewCell {
         self.albumThumbnail.image = pwgImageType.album.placeHolder
         self.numberOfImages.text = ""
         self.recentlyModified.isHidden = true
-    }
-}
-
-
-extension UIView {
-    func addInnerShadowToRoundedView() {
-        let innerShadowLayer = CAShapeLayer()
-        innerShadowLayer.frame = bounds
-        
-        // Constants
-        let cornerRadius = self.layer.cornerRadius
-        let color = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
-        let opacity: Float = AppVars.shared.isDarkPaletteActive ? 0.3 : 0.2
-
-        // Create rounded rect path
-        let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
-        let outerPath = UIBezierPath(roundedRect: bounds.insetBy(dx: -20, dy: -20), cornerRadius: cornerRadius)
-        
-        outerPath.append(path.reversing())
-
-        innerShadowLayer.path = outerPath.cgPath
-        innerShadowLayer.fillRule = .evenOdd
-        innerShadowLayer.shadowColor = color
-        innerShadowLayer.shadowOffset = CGSize(width: 0, height: 0)
-        innerShadowLayer.shadowOpacity = opacity
-        innerShadowLayer.shadowRadius = 3
-        innerShadowLayer.fillColor = color
-        
-        // Mask to the rounded bounds
-        let maskLayer = CAShapeLayer()
-        maskLayer.path = path.cgPath
-        innerShadowLayer.mask = maskLayer
-        
-        layer.addSublayer(innerShadowLayer)
     }
 }

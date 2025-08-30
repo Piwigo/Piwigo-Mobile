@@ -5,7 +5,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
         <capability name="Image references" minToolsVersion="12.0"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -93,10 +92,10 @@
                         </userDefinedRuntimeAttributes>
                     </imageView>
                     <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RqN-id-3Dx">
-                        <rect key="frame" x="154" y="24.5" width="6" height="36"/>
+                        <rect key="frame" x="154" y="28.5" width="6" height="32"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="36" id="CVD-pn-viT"/>
+                            <constraint firstAttribute="height" constant="32" id="CVD-pn-viT"/>
                             <constraint firstAttribute="width" constant="6" id="xec-yP-g0p"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
@@ -105,17 +104,30 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JRO-t8-5ml">
-                        <rect key="frame" x="154" y="96.5" width="6" height="36"/>
-                        <viewLayoutGuide key="safeArea" id="kYI-nD-47v"/>
+                    <view userInteractionEnabled="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRO-t8-5ml">
+                        <rect key="frame" x="154" y="96.5" width="6" height="32"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="36" id="KVS-rt-hKm"/>
+                            <constraint firstAttribute="height" constant="32" id="KVS-rt-hKm"/>
                             <constraint firstAttribute="width" constant="6" id="VSX-PU-97Z"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                 <integer key="value" value="3"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <view hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mk0-AJ-2tV">
+                        <rect key="frame" x="368" y="48.5" width="14" height="60"/>
+                        <color key="backgroundColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="14" id="cnp-wj-7Vy"/>
+                            <constraint firstAttribute="height" constant="60" id="jfr-qf-hwO"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="7"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
@@ -127,12 +139,14 @@
                     <constraint firstAttribute="bottom" secondItem="V5H-h5-LzC" secondAttribute="bottom" id="1RH-xB-I7e"/>
                     <constraint firstItem="exs-BR-yzJ" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" id="7vz-RF-ZsO"/>
                     <constraint firstItem="V5H-h5-LzC" firstAttribute="leading" secondItem="AYo-NF-5du" secondAttribute="leading" id="QQj-js-e4h"/>
-                    <constraint firstItem="JRO-t8-5ml" firstAttribute="centerY" secondItem="V5H-h5-LzC" secondAttribute="centerY" constant="36" id="QW1-87-h5v"/>
+                    <constraint firstItem="JRO-t8-5ml" firstAttribute="centerY" secondItem="V5H-h5-LzC" secondAttribute="centerY" constant="34" id="QW1-87-h5v"/>
                     <constraint firstAttribute="bottom" secondItem="exs-BR-yzJ" secondAttribute="bottom" id="U7a-ae-7dS"/>
-                    <constraint firstItem="RqN-id-3Dx" firstAttribute="centerY" secondItem="V5H-h5-LzC" secondAttribute="centerY" constant="-36" id="VjT-g8-p9D"/>
+                    <constraint firstItem="RqN-id-3Dx" firstAttribute="centerY" secondItem="V5H-h5-LzC" secondAttribute="centerY" constant="-34" id="VjT-g8-p9D"/>
+                    <constraint firstItem="Mk0-AJ-2tV" firstAttribute="centerY" secondItem="AYo-NF-5du" secondAttribute="centerY" id="XVG-Dc-q7d"/>
                     <constraint firstItem="RqN-id-3Dx" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="-3" id="eic-3J-UTd"/>
                     <constraint firstItem="n07-K5-K5R" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="leading" constant="8" id="iAa-tF-r2C"/>
                     <constraint firstItem="n07-K5-K5R" firstAttribute="top" secondItem="V5H-h5-LzC" secondAttribute="top" constant="8" id="pcX-Q1-FMW"/>
+                    <constraint firstAttribute="trailing" secondItem="Mk0-AJ-2tV" secondAttribute="trailing" constant="-7" id="qFW-DQ-yDl"/>
                     <constraint firstItem="V5H-h5-LzC" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" id="vED-7v-bgT"/>
                     <constraint firstItem="exs-BR-yzJ" firstAttribute="top" secondItem="AYo-NF-5du" secondAttribute="top" id="wrA-P5-Khh"/>
                 </constraints>
@@ -153,6 +167,7 @@
                 <outlet property="albumView" destination="exs-BR-yzJ" id="tNu-lz-bFP"/>
                 <outlet property="binding1" destination="RqN-id-3Dx" id="Obq-pY-Bow"/>
                 <outlet property="binding2" destination="JRO-t8-5ml" id="KcP-d1-CFE"/>
+                <outlet property="handle" destination="Mk0-AJ-2tV" id="mUZ-1b-jAX"/>
                 <outlet property="numberOfImages" destination="NCi-Af-KSb" id="1Co-g0-kPj"/>
                 <outlet property="recentlyModified" destination="n07-K5-K5R" id="QYx-bC-zug"/>
             </connections>
