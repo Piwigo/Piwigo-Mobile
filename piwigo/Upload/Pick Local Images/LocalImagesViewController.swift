@@ -166,7 +166,6 @@ class LocalImagesViewController: UIViewController
             uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
                                               style: .plain, target: self, action: #selector(didTapUploadButton))
         }
-        uploadBarButton.tintColor = PwgColor.tintColor
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
         
@@ -204,6 +203,7 @@ class LocalImagesViewController: UIViewController
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        uploadBarButton.tintColor = PwgColor.tintColor
 
         // Collection view
         localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

@@ -85,8 +85,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
     var cancelBarButton: UIBarButtonItem!               // For cancelling the selection of images
     var uploadBarButton: UIBarButtonItem!               // for uploading selected images
     var actionBarButton: UIBarButtonItem!               // For allowing to re-upload images
-    var legendLabel = UILabel()                         // Legend presented in the toolbar on iPhone
-    var legendBarItem: UIBarButtonItem!
 
 
     // MARK: - View Lifecycle
@@ -162,9 +160,14 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         cancelBarButton.accessibilityIdentifier = "Cancel"
         
         // The upload button is available after having selecting images
-        uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                                          style: .done, target: self, action: #selector(didTapUploadButton))
-        uploadBarButton.tintColor = PwgColor.orange
+        if #available(iOS 17.0, *) {
+            uploadBarButton = UIBarButtonItem(image: UIImage(systemName: "arrowshape.up.fill"),
+                                              style: .plain, target: self, action: #selector(didTapUploadButton))
+        } else {
+            // Fallback on previous version
+            uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
+                                              style: .plain, target: self, action: #selector(didTapUploadButton))
+        }
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
         
@@ -172,12 +175,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
         if #available(iOS 26.0, *) {
             navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
-        
-        // Presents the number of photos selected and the Upload button in the toolbar
-        if #unavailable(iOS 26.0), UIDevice.current.userInterfaceIdiom == .phone {
-            navigationController?.isToolbarHidden = false
-            legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
         }
     }
 
@@ -188,12 +185,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
-        // Toolbar
-        legendLabel.textColor = PwgColor.text
-        legendBarItem = UIBarButtonItem(customView: legendLabel)
-        toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-        navigationController?.toolbar.configAppearance()
+        uploadBarButton.tintColor = PwgColor.tintColor
 
         // Collection view
         localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

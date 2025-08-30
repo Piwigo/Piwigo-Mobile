@@ -53,6 +53,7 @@ extension LocalImagesViewController {
         }
         
         // Right side of the navigation bar
+        updateActionButton()
         if #available(iOS 26.0, *) {
             switch UIDevice.current.userInterfaceIdiom {
             case .phone:
@@ -69,8 +70,6 @@ extension LocalImagesViewController {
         else {
             switch UIDevice.current.userInterfaceIdiom {
             case .phone:
-                // Presents a single action menu
-                updateActionButton()
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
 
             case .pad:
