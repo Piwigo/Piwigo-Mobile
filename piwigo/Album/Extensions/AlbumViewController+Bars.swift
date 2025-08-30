@@ -382,14 +382,12 @@ extension AlbumViewController
         // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
             title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-            self.view?.window?.windowScene?.title = title
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitleForAlbum(title)
-            return
+        } else {
+            title = albumData.name
         }
-        title = albumData.name
-        self.view?.window?.windowScene?.title = albumData.name
-        navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitleForAlbum(albumData.name)
-
+        self.view?.window?.windowScene?.title = title
+        navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitleForAlbum(title)
+        
         // Get subTitle
         var subTitle = ""
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
