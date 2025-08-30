@@ -31,6 +31,7 @@ extension AlbumViewController
             // Right side of navigation bar and toolbar
             if categoryId == 0 {
                 // Root album => Discover menu button in navigation bar
+                discoverBarButton = getDiscoverButton()
                 let items = [discoverBarButton].compactMap { $0 }
                 navigationItem.setRightBarButtonItems(items, animated: true)
                 
