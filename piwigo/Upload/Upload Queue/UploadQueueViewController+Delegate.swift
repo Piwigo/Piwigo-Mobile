@@ -42,6 +42,15 @@ extension UploadQueueViewController: UITableViewDelegate
               let upload = try? self.mainContext.existingObject(with: objectID) as? Upload
         else { return nil }
         
+        // Image configuration
+        var imageConfig: UIImage.SymbolConfiguration
+        if #available(iOS 26.0, *) {
+            imageConfig = UIImage.SymbolConfiguration(pointSize: 21.0, weight: .medium)
+        } else {
+            // Fallback on previous version
+            imageConfig = UIImage.SymbolConfiguration(pointSize: 24.0, weight: .regular)
+        }
+        
         // Create retry upload action
         let retry = UIContextualAction(style: .normal, title: nil,
                                        handler: { action, view, completionHandler in
@@ -52,7 +61,7 @@ extension UploadQueueViewController: UITableViewDelegate
             completionHandler(true)
         })
         retry.backgroundColor = PwgColor.brown
-        retry.image = UIImage(named: "swipeRetry.png")
+        retry.image = UIImage(systemName: "arrow.uturn.forward", withConfiguration: imageConfig)
         
         // Create trash/cancel upload action
         let cancel = UIContextualAction(style: .normal, title: nil,
@@ -67,7 +76,7 @@ extension UploadQueueViewController: UITableViewDelegate
             completionHandler(true)
         })
         cancel.backgroundColor = .red
-        cancel.image = UIImage(named: "swipeCancel.png")
+        cancel.image = UIImage(systemName: "xmark.circle", withConfiguration: imageConfig)
 
         // Associate actions
         switch upload.state {
