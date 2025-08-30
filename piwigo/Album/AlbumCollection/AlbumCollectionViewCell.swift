@@ -18,16 +18,13 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var albumThumbnail: UIImageView!
     @IBOutlet weak var albumName: UILabel!
     @IBOutlet weak var numberOfImages: UILabel!
-    @IBOutlet weak var recentBckg: UIImageView!
-    @IBOutlet weak var recentImage: UIImageView!
+    @IBOutlet weak var recentlyModified: UIImageView!
     
     func config(withAlbumData albumData: Album?) {
         // Store album data
         self.albumData = albumData
 
         // General settings
-        recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
-        recentImage.tintColor = UIColor.white
         applyColorPalette()
         
         // Album name (Piwigo orange colour)
@@ -43,10 +40,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         indexOfPeriod = max(0, indexOfPeriod)
         let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
-        if self.recentBckg.isHidden == isRecent {
-            self.recentBckg.isHidden = !isRecent
-            self.recentImage.isHidden = !isRecent
-        }
+        self.recentlyModified.isHidden = !isRecent
 
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
@@ -91,6 +85,9 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = PwgColor.cellBackground
         albumName.textColor = PwgColor.text
         numberOfImages.textColor = PwgColor.text
+        recentlyModified?.tintColor = UIColor.white
+        recentlyModified?.layer.shadowColor = UIColor.black.cgColor
+        recentlyModified?.layer.shadowOpacity = 1.0
     }
     
     private func getNberOfImages(fromAlbumData albumData: Album?) -> String {
@@ -143,8 +140,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Reset cell
         self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         self.numberOfImages.text = ""
-        self.recentBckg.isHidden = true
-        self.recentImage.isHidden = true
+        self.recentlyModified.isHidden = true
         self.albumThumbnail.image = pwgImageType.album.placeHolder
     }
 }

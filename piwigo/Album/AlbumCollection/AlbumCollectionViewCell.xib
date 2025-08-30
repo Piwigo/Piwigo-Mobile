@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,29 +21,34 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="unknownAlbum" translatesAutoresizingMaskIntoConstraints="NO" id="lyW-T0-Pvz">
                         <rect key="frame" x="0.0" y="0.0" width="180" height="127.33333333333333"/>
                     </imageView>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lGI-u0-Vgu">
+                        <rect key="frame" x="8" y="7.0000000000000018" width="30" height="30.666666666666671"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="lGI-u0-Vgu" secondAttribute="height" multiplier="1:1" id="ASM-uC-W5u"/>
+                            <constraint firstAttribute="width" constant="30" id="foZ-E4-2jo"/>
+                        </constraints>
+                        <imageReference key="image" image="sparkles" catalog="system" renderingMode="template"/>
+                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="regular"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                <integer key="value" value="2"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                <integer key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                <size key="value" width="0.0" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DaK-hl-1ER">
                         <rect key="frame" x="8" y="150.33333333333334" width="164" height="15.666666666666657"/>
                         <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView autoresizesSubviews="NO" userInteractionEnabled="NO" alpha="0.60000002384185791" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="recentBckg" image="recentBckg" translatesAutoresizingMaskIntoConstraints="NO" id="RGo-Hl-in1" userLabel="background">
-                        <rect key="frame" x="12" y="12.000000000000002" width="25" height="29.666666666666671"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="25" id="4q5-In-uQC"/>
-                            <constraint firstAttribute="width" secondItem="RGo-Hl-in1" secondAttribute="height" multiplier="75:89" id="MmX-oF-wMS"/>
-                        </constraints>
-                    </imageView>
-                    <imageView autoresizesSubviews="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="recentImage" image="recent" translatesAutoresizingMaskIntoConstraints="NO" id="vJi-ff-s4q" userLabel="foreground">
-                        <rect key="frame" x="12" y="12.000000000000002" width="25" height="29.666666666666671"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" secondItem="vJi-ff-s4q" secondAttribute="height" multiplier="75:89" id="act-N0-4bT"/>
-                        </constraints>
-                    </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nct-Gd-tKP">
                         <rect key="frame" x="8" y="131.33333333333334" width="164" height="18"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
@@ -52,20 +58,17 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="DaK-hl-1ER" firstAttribute="top" secondItem="nct-Gd-tKP" secondAttribute="bottom" constant="1" id="9YV-KU-mTy"/>
-                    <constraint firstItem="RGo-Hl-in1" firstAttribute="top" secondItem="oko-CY-O8b" secondAttribute="top" constant="12" id="Bzf-VN-yJI"/>
                     <constraint firstItem="nct-Gd-tKP" firstAttribute="top" secondItem="lyW-T0-Pvz" secondAttribute="bottom" constant="4" id="E8S-bg-YpG"/>
-                    <constraint firstItem="vJi-ff-s4q" firstAttribute="centerY" secondItem="RGo-Hl-in1" secondAttribute="centerY" id="Goz-zw-8s5"/>
                     <constraint firstAttribute="trailing" secondItem="nct-Gd-tKP" secondAttribute="trailing" constant="8" id="QoV-R7-dYf"/>
                     <constraint firstItem="nct-Gd-tKP" firstAttribute="leading" secondItem="oko-CY-O8b" secondAttribute="leading" constant="8" id="Y7E-aj-uXv"/>
-                    <constraint firstItem="vJi-ff-s4q" firstAttribute="width" secondItem="RGo-Hl-in1" secondAttribute="width" id="aLH-vp-55g"/>
-                    <constraint firstItem="RGo-Hl-in1" firstAttribute="leading" secondItem="oko-CY-O8b" secondAttribute="leading" constant="12" id="bzm-yJ-SHF"/>
                     <constraint firstItem="DaK-hl-1ER" firstAttribute="leading" secondItem="oko-CY-O8b" secondAttribute="leading" constant="8" id="eeK-Eo-7Nu"/>
+                    <constraint firstItem="lGI-u0-Vgu" firstAttribute="leading" secondItem="lyW-T0-Pvz" secondAttribute="leading" constant="8" id="f0M-Xd-aAW"/>
                     <constraint firstAttribute="trailing" secondItem="DaK-hl-1ER" secondAttribute="trailing" constant="8" id="hIV-Ww-4Qs"/>
                     <constraint firstAttribute="bottom" secondItem="DaK-hl-1ER" secondAttribute="bottom" constant="4" id="mjj-Xn-o1F"/>
+                    <constraint firstItem="lGI-u0-Vgu" firstAttribute="top" secondItem="lyW-T0-Pvz" secondAttribute="top" constant="8" id="nSm-zr-pBY"/>
                     <constraint firstItem="lyW-T0-Pvz" firstAttribute="leading" secondItem="oko-CY-O8b" secondAttribute="leading" id="o8r-wz-1tE"/>
                     <constraint firstItem="lyW-T0-Pvz" firstAttribute="top" secondItem="oko-CY-O8b" secondAttribute="top" id="rwM-li-yLq"/>
                     <constraint firstAttribute="trailing" secondItem="lyW-T0-Pvz" secondAttribute="trailing" id="sJu-uF-jp7"/>
-                    <constraint firstItem="vJi-ff-s4q" firstAttribute="centerX" secondItem="RGo-Hl-in1" secondAttribute="centerX" id="uT8-dD-ztY"/>
                 </constraints>
             </collectionViewCellContentView>
             <userDefinedRuntimeAttributes>
@@ -77,15 +80,13 @@
                 <outlet property="albumName" destination="nct-Gd-tKP" id="SmU-98-FBz"/>
                 <outlet property="albumThumbnail" destination="lyW-T0-Pvz" id="RsX-hL-Yx4"/>
                 <outlet property="numberOfImages" destination="DaK-hl-1ER" id="EbK-CM-yzI"/>
-                <outlet property="recentBckg" destination="RGo-Hl-in1" id="K5G-ks-X6c"/>
-                <outlet property="recentImage" destination="vJi-ff-s4q" id="fG5-WU-TAw"/>
+                <outlet property="recentlyModified" destination="lGI-u0-Vgu" id="TKI-rS-oOF"/>
             </connections>
             <point key="canvasLocation" x="9.1603053435114496" y="-65.492957746478879"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="recent" width="25" height="29.666666030883789"/>
-        <image name="recentBckg" width="25" height="29.666666030883789"/>
+        <image name="sparkles" catalog="system" width="115" height="128"/>
         <image name="unknownAlbum" width="640" height="310"/>
     </resources>
 </document>
