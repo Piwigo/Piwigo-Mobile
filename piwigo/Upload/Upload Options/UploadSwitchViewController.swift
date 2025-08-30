@@ -43,12 +43,18 @@ class UploadSwitchViewController: UIViewController {
         // Bar buttons
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
-        uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                                          style: .done, target: self, action: #selector(didTapUploadButton))
-        uploadBarButton?.tintColor = PwgColor.orange
+        if #available(iOS 17.0, *) {
+            uploadBarButton = UIBarButtonItem(image: UIImage(systemName: "arrowshape.up.fill"),
+                                              style: .plain, target: self, action: #selector(didTapUploadButton))
+        } else {
+            // Fallback on previous version
+            uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
+                                              style: .plain, target: self, action: #selector(didTapUploadButton))
+        }
+        uploadBarButton?.tintColor = PwgColor.tintColor
 
         // Segmented control (choice for presenting common image parameters or upload settings)
-        switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.orange
+        switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.tintColor
         switchViewSegmentedControl.selectedSegmentIndex = 0
         switchViewSegmentedControl.addTarget(self, action: #selector(didSwitchView), for: .valueChanged)
         switchViewSegmentedControl.superview?.layer.cornerRadius = switchViewSegmentedControl.layer.cornerRadius
