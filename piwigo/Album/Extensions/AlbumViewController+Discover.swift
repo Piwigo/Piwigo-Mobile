@@ -114,7 +114,7 @@ extension AlbumViewController
     private func recentAction() -> UIAction {
         let actionId = UIAction.Identifier("Recent")
         let action = UIAction(title: pwgSmartAlbum.recent.name,
-                              image: UIImage(systemName: "clock"),
+                              image: UIImage(systemName: "sparkles"),
                               identifier: actionId, handler: { [self] action in
             // Present recent images
             discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
