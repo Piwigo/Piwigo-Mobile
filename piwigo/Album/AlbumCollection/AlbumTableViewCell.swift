@@ -54,8 +54,9 @@ class AlbumTableViewCell: UITableViewCell {
         let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
         self.recentlyModified.isHidden = !isRecent
-        self.recentlyModified?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
-        self.recentlyModified?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 1.0 : 1.0
+        self.recentlyModified?.tintColor = UIColor.white
+        self.recentlyModified?.layer.shadowColor = UIColor.black.cgColor
+        self.recentlyModified?.layer.shadowOpacity = 1.0
 
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
