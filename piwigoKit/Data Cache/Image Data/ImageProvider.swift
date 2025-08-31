@@ -129,7 +129,7 @@ public class ImageProvider: NSObject {
         switch albumId {
         case pwgSmartAlbum.search.rawValue:
             method = pwgImagesSearch
-            paramsDict["query"] = query
+            paramsDict["query"] = "*" + query + "*"
 
         case pwgSmartAlbum.visits.rawValue:
             paramsDict["recursive"] = true
