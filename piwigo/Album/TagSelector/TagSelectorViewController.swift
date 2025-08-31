@@ -191,6 +191,11 @@ class TagSelectorViewController: UITableViewController {
         return objects?.count ?? 0
     }
 
+    // Row height
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.rowHeight;
+    }
+    
     // Return cell configured with tag
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
