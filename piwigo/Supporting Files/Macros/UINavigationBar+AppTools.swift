@@ -13,9 +13,6 @@ extension UINavigationBar {
     
     @MainActor
     func configAppearance(withLargeTitles: Bool) {
-        // Bar style
-        barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        
         // Buttons color
         tintColor = PwgColor.tintColor
 

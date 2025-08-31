@@ -8,10 +8,10 @@
 
 import UIKit
 
-enum PwgColor {
+struct PwgColor {
     
     // MARK: - Text Color
-    static let text = UIColor { _ in
+    static var text: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor.lightText
         : UIColor.darkText
@@ -19,13 +19,13 @@ enum PwgColor {
     
     
     // MARK: - Color of Views
-    static let background = UIColor { _ in
+    static var background: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
         : UIColor(red: 239 / 255.0, green: 239 / 255.0, blue: 244 / 255.0, alpha: 1.0)
     }
 
-    static let tintColor = UIColor { _ in
+    static var tintColor: UIColor {
         if #available(iOS 26.0, *) {
             return PwgColor.gray
         } else {
@@ -35,7 +35,7 @@ enum PwgColor {
     
     
     // MARK: - Shadow Color of Buttons
-    static let shadow = UIColor { _ in
+    static var shadow: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor.white
         : UIColor.black
@@ -61,7 +61,7 @@ enum PwgColor {
     
     
     // MARK: - Colors for Table Views
-    static let header = UIColor { _ in
+    static var header: UIColor {
         if #available(iOS 26.0, *) {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 141 / 255.0, green: 141 / 255.0, blue: 147 / 255.0, alpha: 1.0)
@@ -73,7 +73,7 @@ enum PwgColor {
         }
     }
     
-    static let separator = UIColor { _ in
+    static var separator: UIColor {
         if #available(iOS 26.0, *) {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 56 / 255.0, green: 56 / 255.0, blue: 59 / 255.0, alpha: 1.0)
@@ -85,13 +85,13 @@ enum PwgColor {
         }
     }
     
-    static let cellBackground  = UIColor { _ in
+    static var cellBackground: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 42 / 255.0, green: 42 / 255.0, blue: 45 / 255.0, alpha: 1.0)
         : UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1.0)
     }
     
-    static let leftLabel = UIColor { _ in
+    static var leftLabel: UIColor {
         if #available(iOS 26.0, *) {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0, alpha: 1)
@@ -103,7 +103,7 @@ enum PwgColor {
         }
     }
     
-    static let rightLabel = UIColor { _ in
+    static var rightLabel: UIColor {
         if #available(iOS 26.0, *) {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
@@ -115,7 +115,7 @@ enum PwgColor {
         }
     }
     
-    static let placeHolder = UIColor { _ in
+    static var placeHolder: UIColor {
         if #available(iOS 26.0, *) {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 101 / 255.0, green: 101 / 255.0, blue: 105 / 255.0, alpha: 1.0)
@@ -127,7 +127,7 @@ enum PwgColor {
         }
     }
     
-    static let thumb = UIColor { _ in
+    static var thumb: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
         : UIColor(red: 239 / 255.0, green: 239 / 255.0, blue: 244 / 255.0, alpha: 1.0)
@@ -135,7 +135,7 @@ enum PwgColor {
     
     
     // MARK: - Colors for numkeys
-    static let numkey = UIColor { _ in
+    static var numkey: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor.black
         : UIColor.white
@@ -143,15 +143,16 @@ enum PwgColor {
     
     
     // MARK: - Other colors
-    static let gray = UIColor { _ in
+    static var gray: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 243 / 255.0, green: 243 / 255.0, blue: 243 / 255.0, alpha: 1.0)
         : UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
     }
     
-    static let whiteCream = UIColor { _ in
+    static var whiteCream: UIColor {
         AppVars.shared.isDarkPaletteActive
         ? UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
         : UIColor(red: 51 / 255.0, green: 51 / 255.0, blue: 53 / 255.0, alpha: 1.0)
     }
 }
+

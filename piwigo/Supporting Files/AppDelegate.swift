@@ -807,10 +807,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Activity indicator
         UIActivityIndicatorView.appearance().color = PwgColor.orange
         
-        // Navigation bar
-        UINavigationBar.appearance().tintColor = PwgColor.tintColor
-        UINavigationBar.appearance().barTintColor = PwgColor.background
-
         // Tab bars
         UITabBar.appearance().barTintColor = PwgColor.background
 
@@ -819,10 +815,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         {
             UITabBar.appearance().barStyle = .black
             UIToolbar.appearance().barStyle = .black
+            UINavigationBar.appearance().barStyle = .black
         }
         else {
             UITabBar.appearance().barStyle = .default
             UIToolbar.appearance().barStyle = .default
+            UINavigationBar.appearance().barStyle = .default
         }
 
         // Notify palette change to views
