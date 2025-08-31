@@ -392,7 +392,9 @@ public class ImageProvider: NSObject {
             for imageData in imagesBatch {
                 
                 // Stop importing images if user cancelled the search
-                if userDidCancelSearch { break }
+                if userDidCancelSearch {
+                    break
+                }
                 
                 // Check that this image belongs at least to the current album
                 var albums: Set<Album> = [album]
