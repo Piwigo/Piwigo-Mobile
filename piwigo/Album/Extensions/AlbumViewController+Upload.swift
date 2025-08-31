@@ -9,9 +9,106 @@
 import Foundation
 import Photos
 import UIKit
+import piwigoKit
 
 extension AlbumViewController
 {
+    // MARK: Toolbar Buttons (iOS 26+)
+    func getUploadQueueBarButton(withTitle title: String? = nil) -> UIBarButtonItem? {
+        guard let title = title
+        else { return nil }
+        
+        let button = UIBarButtonItem(title: title, style: .plain,
+                                     target: self, action: #selector(didTapUploadQueueButton))
+        button.accessibilityIdentifier = "showUploadQueue"
+        return button
+    }
+    
+
+    // MARK: - Button Management
+    @MainActor
+    func showUploadQueueButton() {
+        // Show upload queue button only in default album
+        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId)
+        else { return }
+        
+        if #available(iOS 26.0, *) {
+            // Already shown?
+            if (toolbarItems ?? []).count == 3  {
+                // Add button to toolbar
+                let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
+                toolbarItems = toolBarItems
+            }
+        } else {
+            showOldUploadQueueButton()
+        }
+    }
+    
+    @MainActor
+    func hideUploadQueueButton() {
+        if #available(iOS 26.0, *) {
+            // Currently shown?
+            var toolbarItems = toolbarItems ?? []
+            if toolbarItems.count == 4 {
+                // Remove button from toolbar
+                toolbarItems.removeFirst()
+                setToolbarItems(toolbarItems, animated: true)
+            }
+        } else {
+            hideOldUploadQueueButton()
+        }
+    }
+    
+    @MainActor
+    @objc func updateNberOfUploads(_ notification: Notification?) {
+        // Update main header if necessary
+        setTableViewMainHeader()
+
+        // Update upload queue button only in default album
+        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
+              let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int)
+        else { return }
+
+        // Upload completed?
+        if nberOfUploads <= 0 {
+            // Hide button if not already hidden
+            hideUploadQueueButton()
+            return
+        }
+        
+        // Uploading: Update button?
+        if #available(iOS 26.0, *) {
+            if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+                ProcessInfo.processInfo.isLowPowerModeEnabled {
+                if uploadQueueBarButton == nil {
+                    uploadQueueBarButton = getUploadQueueBarButton(withTitle: "⚠️")!
+                } else {
+                    uploadQueueBarButton?.title = "⚠️"
+                }
+            } else {
+                // Set number of uploads
+                let nber = String(format: "%lu", UInt(nberOfUploads))
+                if uploadQueueBarButton == nil {
+                    uploadQueueBarButton = getUploadQueueBarButton(withTitle: nber)!
+                } else if let currentTitle = uploadQueueBarButton?.title,
+                          nber.compare(currentTitle) == .orderedSame,
+                          uploadQueueBarButton?.isHidden ?? true == false {
+                    // Nothing changed ► NOP
+                    return
+                }
+                uploadQueueBarButton?.title = nber
+            }
+            
+            // Resize and show button if needed
+            showUploadQueueButton()
+        }
+        else {
+            updateOldButton(withNberOfUploads: nberOfUploads)
+        }
+    }
+    
+    
     // MARK: - Upload Actions
     @objc func didTapUploadImagesButton() {
         // Hide CreateAlbum and UploadImages buttons
@@ -72,6 +169,7 @@ extension AlbumViewController
 }
 
 
+// MARK: - AlbumViewControllerDelegate Methods
 extension AlbumViewController: AlbumViewControllerDelegate {
     func didSelectCurrentCounter(value: Int64) {
         albumData.currentCounter = value

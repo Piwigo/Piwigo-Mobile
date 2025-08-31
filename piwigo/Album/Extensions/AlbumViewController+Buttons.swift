@@ -350,7 +350,7 @@ extension AlbumViewController
         return layer
     }
     
-    func showUploadQueueButton() {
+    func showOldUploadQueueButton() {
         // Show button if needed
         if uploadQueueButton.isHidden {
             // Unhide transparent Upload Queue button
@@ -368,7 +368,7 @@ extension AlbumViewController
         })
     }
     
-    private func hideUploadQueueButton() {
+    func hideOldUploadQueueButton() {
         // Hide button if not already hidden
         if uploadQueueButton.isHidden { return }
         
@@ -386,19 +386,8 @@ extension AlbumViewController
         }
     }
 
-    @objc func updateNberOfUploads(_ notification: Notification?) {
-        // Update main header if necessary
-        setTableViewMainHeader()
-
-        // Update upload queue button only in default album
-        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) == false {
-            return
-        }
-        
-        // Check notification data
-        guard let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int) else { return }
-
-        // Only presented in the root or default album
+    @objc func updateOldButton(withNberOfUploads nberOfUploads: Int) {
+        // Only called in the root or default album
         if nberOfUploads > 0 {
             if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
                 ProcessInfo.processInfo.isLowPowerModeEnabled {
@@ -409,17 +398,17 @@ extension AlbumViewController
                 if nber.compare(nberOfUploadsLabel.text ?? "") == .orderedSame,
                    !uploadQueueButton.isHidden,
                    uploadQueueButton.frame != addButton.frame {
-                    // Nothing ► changed  NOP
+                    // Nothing changed ► NOP
                     return
                 }
                 nberOfUploadsLabel.text = String(format: "%lu", UInt(nberOfUploads))
             }
             
             // Resize and show button if needed
-            showUploadQueueButton()
+            showOldUploadQueueButton()
         } else {
             // Hide button if not already hidden
-            hideUploadQueueButton()
+            hideOldUploadQueueButton()
         }
     }
     
@@ -427,7 +416,7 @@ extension AlbumViewController
         guard let progress = notification?.userInfo?["progressFraction"] as? Float else { return }
 
         // Show button is needed
-        showUploadQueueButton()
+        showOldUploadQueueButton()
         
         // Animate progress layer of Upload Queue button
         if progress > 0.0 {

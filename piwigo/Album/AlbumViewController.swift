@@ -68,16 +68,17 @@ class AlbumViewController: UIViewController
     // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
     let minWidthForDefaultBackButton: CGFloat = 440.0
     // Bar buttons for root album
-    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()    // before iOS 26
-    lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()    // since iOS 26
-    lazy var addImageBarButton: UIBarButtonItem = getAddImageBarButton()    // since iOS 26
+    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()            // before iOS 26
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
+    lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()            // since iOS 26
+    lazy var addImageBarButton: UIBarButtonItem = getAddImageBarButton()            // since iOS 26
+    lazy var uploadQueueBarButton: UIBarButtonItem? = getUploadQueueBarButton()     // since iOS 26
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
-    // Bar button for image selection mode
+    // Bar buttons for image selection mode
     var selectBarButton: UIBarButtonItem?
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
     

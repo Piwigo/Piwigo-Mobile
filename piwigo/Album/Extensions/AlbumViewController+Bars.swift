@@ -16,142 +16,210 @@ extension AlbumViewController
     @MainActor
     func initBarsInPreviewMode() {
         if #available(iOS 26.0, *) {
-            // Left side of navigation bar
-            if [0, AlbumVars.shared.defaultCategory, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-                // No button in root, search and default albums
-                navigationItem.setLeftBarButtonItems([], animated: true)
-                navigationItem.hidesBackButton = true
-            } else {
-                // Back button to parent album
-                navigationItem.setLeftBarButtonItems([], animated: true)
-                navigationItem.hidesBackButton = false
-                navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
-            }
-            
-            // Right side of navigation bar and toolbar
-            if categoryId == 0 {
-                // Root album => Discover menu button in navigation bar
-                discoverBarButton = getDiscoverButton()
-                let items = [discoverBarButton].compactMap { $0 }
-                navigationItem.setRightBarButtonItems(items, animated: true)
-                
-                // User with admin or upload rights can do everything
-                // except may be downloading images (i.e. sharing images)
-                // User without admin rights cannot set album thumbnails, delete images
-                // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-                // SHOULD BE => 'normal' user having uploaded images can only edit their images.
-                //              This requires 'user_id' and 'added_by' values of images for checking rights
-                if user.hasUploadRights(forCatID: categoryId) {
-                    // [Search] and [Create Album] buttons in the toolbar
-                    navigationItem.preferredSearchBarPlacement = .integratedButton
-                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                    let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
-                } else {
-                    // [Search] bar in the toolbar
-                    navigationItem.preferredSearchBarPlacement = .integrated
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = []
-                }
-            }
-            else if categoryId == pwgSmartAlbum.search.rawValue {
-                // Search bar => integrated into the toolbar
-                navigationItem.preferredSearchBarPlacement = .integrated
-            }
-            else {
-                // Share button depends on Piwigo server version, user role and image data
-                shareBarButton = getShareBarButton()
-                
-                // Favorites button depends on Piwigo server version, user role and image data
-                favoriteBarButton = getFavoriteBarButton()
-                
-                // Menu for activating the selection mode and changing the way images are sorted
-                var children = [sortMenu(), viewOptionsMenu()]
-                if shareBarButton != nil || favoriteBarButton != nil {
-                    children.insert(selectMenu(), at: 0)
-                }
-                if categoryId == AlbumVars.shared.defaultCategory {
-                    children.append(settingsMenu())
-                }
-                let menu = UIMenu(title: "", children: children.compactMap({$0}))
-                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
-                selectBarButton?.accessibilityIdentifier = "select"
-                
-                // Set right bar buttons
-                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-                let hasImages = albumData.nbImages != 0
-                selectBarButton?.isEnabled = hasImages
-                
-                // User with admin or upload rights can do everything
-                // except may be downloading images (i.e. sharing images)
-                // User without admin rights cannot set album thumbnails, delete images
-                // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
-                // SHOULD BE => 'normal' user having uploaded images can only edit their images.
-                //              This requires 'user_id' and 'added_by' values of images for checking rights
-                if user.hasUploadRights(forCatID: categoryId) {
-                    // [Add Photos] and [Create Album] buttons in the toolbar
-                    let toolBarItems = [.space(), addAlbumBarButton, addImageBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
-                } else {
-                    navigationController?.setToolbarHidden(true, animated: true)
-                    toolbarItems = []
-                }
-            }
+            initNavBarsInPreviewMode()
         }
         else {
             // Fallback on previous version
-            // Left side of navigation bar
-            if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
-                // Button for accessing settings
-                navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
-                navigationItem.hidesBackButton = true
-            } else if categoryId == pwgSmartAlbum.search.rawValue {
-                // Search bar => No action button
-                navigationItem.setLeftBarButtonItems([], animated: true)
-                searchController?.searchBar.becomeFirstResponder()
-            } else {
-                // Back button to parent album
-                navigationItem.setLeftBarButtonItems([], animated: true)
-                navigationItem.hidesBackButton = false
-                navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
-            }
+            initNavBarsOldInPreviewMode()
+        }
+    }
+    
+    @MainActor @available(iOS 26.0, *)
+    private func initNavBarsInPreviewMode() {
+        // Left side of navigation bar
+        if [0, AlbumVars.shared.defaultCategory, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+            // No button in root, search and default albums
+            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.hidesBackButton = true
+        } else {
+            // Back button to parent album
+            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.hidesBackButton = false
+            navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
+        }
+        
+        // Right side of navigation bar and toolbar
+        if categoryId == 0 {
+            // Root album => Discover menu button in navigation bar
+            discoverBarButton = getDiscoverButton()
+            
+            // User with admin or upload rights can do everything
+            // except may be downloading images (i.e. sharing images)
+            // User without admin rights cannot set album thumbnails, delete images
+            // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+            // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+            //              This requires 'user_id' and 'added_by' values of images for checking rights
+            if user.hasUploadRights(forCatID: categoryId) {
+                switch view.traitCollection.userInterfaceIdiom {
+                case .phone:
+                    // Right side of the navigation bar
+                    let items = [discoverBarButton].compactMap { $0 }
+                    navigationItem.setRightBarButtonItems(items, animated: true)
+                    
+                    // Search and other buttons in the toolbar
+                    navigationItem.preferredSearchBarPlacement = .integratedButton
+                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+                    let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
+                    navigationController?.setToolbarHidden(false, animated: true)
+                    toolbarItems = toolBarItems
+                    
+                case .pad:
+                    // Right side of the navigation bar
+                    navigationItem.preferredSearchBarPlacement = .integrated
+                    let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
+                    navigationItem.setRightBarButtonItems(items, animated: true)
 
-            // Right side of navigation bar
-            if categoryId == 0 {
-                // Root album => Discover menu button
-                if #available(iOS 16.0, *) {
-                    navigationItem.preferredSearchBarPlacement = .stacked
+                    // No toolbar
+                    navigationController?.setToolbarHidden(true, animated: true)
+                    toolbarItems = []
+
+                default:
+                    preconditionFailure("!!! Interface not managed !!!")
                 }
-                navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
-            }
-            else if categoryId == pwgSmartAlbum.search.rawValue {
-                // Search bar => No action button and no toolbar
-                navigationItem.setRightBarButtonItems([], animated: true)
-                navigationController?.setToolbarHidden(true, animated: true)
             }
             else {
-                // Share button depends on Piwigo server version, user role and image data
-                shareBarButton = getShareBarButton()
+                // Navigation bar
+                switch view.traitCollection.userInterfaceIdiom {
+                case .phone:
+                    // Right side of the navigation bar
+                    navigationItem.preferredSearchBarPlacement = .integrated
+                    let items = [discoverBarButton].compactMap { $0 }
+                    navigationItem.setRightBarButtonItems(items, animated: true)
                 
-                // Favorites button depends on Piwigo server version, user role and image data
-                favoriteBarButton = getFavoriteBarButton()
-                
-                // Menu for activating the selection mode and changing the way images are sorted
-                var children = [sortMenu(), viewOptionsMenu()]
-                if shareBarButton != nil || favoriteBarButton != nil {
-                    children.insert(selectMenu(), at: 0)
+                case .pad:
+                    // Right side of the navigation bar
+                    navigationItem.preferredSearchBarPlacement = .integrated
+                    let items: [UIBarButtonItem] = [discoverBarButton].compactMap({ $0 })
+                    navigationItem.setRightBarButtonItems(items, animated: true)
+
+                default:
+                    preconditionFailure("!!! Interface not managed !!!")
                 }
-                let menu = UIMenu(title: "", children: children.compactMap({$0}))
-                selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                selectBarButton?.accessibilityIdentifier = "select"
-                
-                // Set right bar buttons
-                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
-                let hasImages = albumData.nbImages != 0
-                selectBarButton?.isEnabled = hasImages
+
+                // No toolbar
+                navigationController?.setToolbarHidden(true, animated: true)
+                toolbarItems = []
             }
+        }
+        else {
+            // Share button depends on Piwigo server version, user role and image data
+            shareBarButton = getShareBarButton()
+            
+            // Favorites button depends on Piwigo server version, user role and image data
+            favoriteBarButton = getFavoriteBarButton()
+            
+            // Menu for activating the selection mode and changing the way images are sorted
+            var children = [sortMenu(), viewOptionsMenu()]
+            if shareBarButton != nil || favoriteBarButton != nil {
+                children.insert(selectMenu(), at: 0)
+            }
+            if categoryId == AlbumVars.shared.defaultCategory {
+                children.append(settingsMenu())
+            }
+            let menu = UIMenu(title: "", children: children.compactMap({$0}))
+            selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
+            selectBarButton?.accessibilityIdentifier = "select"
+            let hasImages = albumData.nbImages != 0
+            selectBarButton?.isEnabled = hasImages
+
+            // User with admin or upload rights can do everything
+            // except may be downloading images (i.e. sharing images)
+            // User without admin rights cannot set album thumbnails, delete images
+            // WRONG =====> 'normal' user with upload access to the current category can copy, move, edit images
+            // SHOULD BE => 'normal' user having uploaded images can only edit their images.
+            //              This requires 'user_id' and 'added_by' values of images for checking rights
+            if user.hasUploadRights(forCatID: categoryId) {
+                switch view.traitCollection.userInterfaceIdiom {
+                case .phone:
+                    // Select menu on the right side of the navigation bar
+                    navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+
+                    if categoryId == pwgSmartAlbum.search.rawValue {
+                        // Keep search bar integrated to toolbar
+                        navigationItem.preferredSearchBarPlacement = .integrated
+                        toolbarItems = []
+                    }
+                    else if categoryId > 0 {
+                        // [Add Photos] and [Create Album] buttons in the toolbar
+                        let toolBarItems = [.space(), addAlbumBarButton, addImageBarButton].compactMap { $0 }
+                        navigationController?.setToolbarHidden(false, animated: true)
+                        toolbarItems = toolBarItems
+                    }
+
+                case .pad:
+                    // All buttons in the navigation bar
+                    var items: [UIBarButtonItem?] = [selectBarButton]
+                    if categoryId > 0 {
+                        items.append(contentsOf: [addImageBarButton, addAlbumBarButton])
+                    }
+                    navigationItem.setRightBarButtonItems(items.compactMap({ $0 }), animated: true)
+                    
+                    // No toolbar
+                    navigationController?.setToolbarHidden(true, animated: true)
+                    toolbarItems = []
+                    
+                default:
+                    preconditionFailure("!!! Interface not managed !!!")
+                }
+            } else {
+                // Select menu on the right side of the navigation bar
+                navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+
+                // No toolbar
+                navigationController?.setToolbarHidden(true, animated: true)
+                toolbarItems = []
+            }
+        }
+    }
+    
+    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    private func initNavBarsOldInPreviewMode() {
+        // Left side of navigation bar
+        if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
+            // Button for accessing settings
+            navigationItem.setLeftBarButtonItems([settingsBarButton].compactMap { $0 }, animated: true)
+            navigationItem.hidesBackButton = true
+        } else if categoryId == pwgSmartAlbum.search.rawValue {
+            // Search bar => No action button
+            navigationItem.setLeftBarButtonItems([], animated: true)
+        } else {
+            // Back button to parent album
+            navigationItem.setLeftBarButtonItems([], animated: true)
+            navigationItem.hidesBackButton = false
+            navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
+        }
+
+        // Right side of navigation bar
+        if categoryId == 0 {
+            // Root album => Discover menu button
+            navigationItem.setRightBarButtonItems([discoverBarButton].compactMap { $0 }, animated: true)
+        }
+        else if categoryId == pwgSmartAlbum.search.rawValue {
+            // Search mode => No action button and no toolbar
+            navigationItem.setRightBarButtonItems([], animated: true)
+            navigationController?.setToolbarHidden(true, animated: true)
+            searchController?.searchBar.becomeFirstResponder()
+        }
+        else {
+            // Share button depends on Piwigo server version, user role and image data
+            shareBarButton = getShareBarButton()
+            
+            // Favorites button depends on Piwigo server version, user role and image data
+            favoriteBarButton = getFavoriteBarButton()
+            
+            // Menu for activating the selection mode and changing the way images are sorted
+            var children = [sortMenu(), viewOptionsMenu()]
+            if shareBarButton != nil || favoriteBarButton != nil {
+                children.insert(selectMenu(), at: 0)
+            }
+            let menu = UIMenu(title: "", children: children.compactMap({$0}))
+            selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+            selectBarButton?.accessibilityIdentifier = "select"
+            
+            // Set right bar buttons
+            navigationItem.setRightBarButtonItems([selectBarButton].compactMap { $0 }, animated: true)
+            let hasImages = albumData.nbImages != 0
+            selectBarButton?.isEnabled = hasImages
         }
     }
     
@@ -159,45 +227,56 @@ extension AlbumViewController
     func updateBarsInPreviewMode() {
         // Right side of navigation bar
         if #available(iOS 26.0, *) {
-            // Share button depends on Piwigo server version, user role and image data
-            shareBarButton = getShareBarButton()
-            
-            // Menu for activating the selection mode or change the way images are sorted
-            var children = [sortMenu(), viewOptionsMenu()]
-            if shareBarButton != nil || favoriteBarButton != nil {
-                children.insert(selectMenu(), at: 0)
-            }
-            if categoryId != 0, categoryId == AlbumVars.shared.defaultCategory {
-                children.append(settingsMenu())
-            }
-            let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
-            selectBarButton?.menu = updatedMenu
-            selectBarButton?.isEnabled = albumData.nbImages != 0
+            updateRightBarInPreviewMode()
         }
         else {
-            // Hide toolbar unless it is displaying the image detail view
-            if let displayedVC = navigationController?.viewControllers.last,
-               !(displayedVC is ImageViewController) {
-                navigationController?.setToolbarHidden(true, animated: true)
-            }
-
             // Fallback on previous version
-            if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-                return
-            }
-            
-            // Share button depends on Piwigo server version, user role and image data
-            shareBarButton = getShareBarButton()
-            
-            // Menu for activating the selection mode or change the way images are sorted
-            var children = [sortMenu(), viewOptionsMenu()]
-            if shareBarButton != nil || favoriteBarButton != nil {
-                children.insert(selectMenu(), at: 0)
-            }
-            let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
-            selectBarButton?.menu = updatedMenu
-            selectBarButton?.isEnabled = albumData.nbImages != 0
+            updateRightBarOldInPreviewMode()
         }
+    }
+    
+    @MainActor @available(iOS 26.0, *)
+    private func updateRightBarInPreviewMode() {
+        // Share button depends on Piwigo server version, user role and image data
+        shareBarButton = getShareBarButton()
+        
+        // Menu for activating the selection mode or change the way images are sorted
+        var children = [sortMenu(), viewOptionsMenu()]
+        if shareBarButton != nil || favoriteBarButton != nil {
+            children.insert(selectMenu(), at: 0)
+        }
+        if categoryId != 0, categoryId == AlbumVars.shared.defaultCategory {
+            children.append(settingsMenu())
+        }
+        let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
+        selectBarButton?.menu = updatedMenu
+        selectBarButton?.isEnabled = albumData.nbImages != 0
+    }
+    
+    @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
+    private func updateRightBarOldInPreviewMode() {
+        // Hide toolbar unless it is displaying the image detail view
+        if let displayedVC = navigationController?.viewControllers.last,
+           !(displayedVC is ImageViewController) {
+            navigationController?.setToolbarHidden(true, animated: true)
+        }
+
+        // No share/select buttons in root album
+        if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+            return
+        }
+        
+        // Share button depends on Piwigo server version, user role and image data
+        shareBarButton = getShareBarButton()
+        
+        // Menu for activating the selection mode or change the way images are sorted
+        var children = [sortMenu(), viewOptionsMenu()]
+        if shareBarButton != nil || favoriteBarButton != nil {
+            children.insert(selectMenu(), at: 0)
+        }
+        let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
+        selectBarButton?.menu = updatedMenu
+        selectBarButton?.isEnabled = albumData.nbImages != 0
     }
     
     
@@ -245,15 +324,15 @@ extension AlbumViewController
         actionBarButton?.accessibilityIdentifier = "actions"
 
         if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
-            // Left side of navigation bar
-            navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
-
-            // Right side of navigation bar
-            navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
-
             // Remaining buttons in navigation toolbar
             if #available(iOS 26.0, *) {
-                // We present the toolbar only if it contains at least two buttons
+                // Left side of navigation bar
+                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+
+                // Right side of navigation bar
+                navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
+
+                // Toolbar
                 let toolbarItems: [UIBarButtonItem] = [shareBarButton, .space(),
                                                        favoriteBarButton, deleteBarButton].compactMap({ $0 })
                 setToolbarItems(toolbarItems, animated: false)
@@ -261,6 +340,13 @@ extension AlbumViewController
             }
             else {
                 // Fallback on previous version
+                // Left side of navigation bar
+                navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+
+                // Right side of navigation bar
+                navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
+
+                // Toolbar
                 /// We reset the bar button items which are not positioned correctly by iOS 15 after device rotation.
                 /// They also disappear when coming back to portrait orientation.
                 /// [share - delete] or [ favorite - delete ] or [share - favorite - delete]
@@ -274,7 +360,7 @@ extension AlbumViewController
             // Left side of navigation bar
             navigationItem.setLeftBarButtonItems([cancelBarButton, deleteBarButton].compactMap { $0 }, animated: true)
 
-            // Right side of navigation bar
+            // Right side of navigation bar (may include search bar)
             let rightBarButtonItems = [actionBarButton, favoriteBarButton, shareBarButton].compactMap { $0 }
             navigationItem.setRightBarButtonItems(rightBarButtonItems, animated: true)
 
@@ -381,9 +467,16 @@ extension AlbumViewController
     @MainActor @available(iOS 26.0, *)
     func setTitleView(progress: Float = 0) {
         // Title
-        if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
+        if categoryId == pwgSmartAlbum.search.rawValue {
+            title = nil
+            navigationItem.attributedTitle = nil
+            navigationItem.attributedSubtitle = nil
+            return
+        }
+        else if categoryId == Int32.zero {
             title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-        } else {
+        }
+        else {
             title = albumData.name
         }
         self.view?.window?.windowScene?.title = title

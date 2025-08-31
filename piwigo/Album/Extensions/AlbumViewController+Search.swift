@@ -16,19 +16,32 @@ extension AlbumViewController
     func initSearchBar() {
         searchController = UISearchController(searchResultsController: nil)
         searchController?.delegate = self
-        searchController?.hidesNavigationBarDuringPresentation = true
 
         searchController?.searchBar.searchBarStyle = .minimal
         searchController?.searchBar.isTranslucent = false
-        if #unavailable(iOS 26.0) {
+        searchController?.searchBar.showsSearchResultsButton = false
+        searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
+        if #available(iOS 26.0, *) {
             // UISearchController automatically manages the Cancel button's visibility
             // when embedded in the navigation bar.
             // Explicitly setting showsCancelButton = true in iOS 26 is conflicting
             // with this automatic behavior.
+            searchController?.hidesNavigationBarDuringPresentation = false
+        } else {
+            // Fallback on previous version
             searchController?.searchBar.showsCancelButton = false
+            searchController?.hidesNavigationBarDuringPresentation = true
+            if #available(iOS 16.0, *) {
+                switch view.traitCollection.userInterfaceIdiom {
+                case .phone:
+                    navigationItem.preferredSearchBarPlacement = .stacked
+                case .pad:
+                    navigationItem.preferredSearchBarPlacement = .inline
+                default:
+                    break
+                }
+            }
         }
-        searchController?.searchBar.showsSearchResultsButton = false
-        searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
         definesPresentationContext = true
 
         // Place the search bar in the navigation bar.
@@ -80,6 +93,9 @@ extension AlbumViewController: UISearchControllerDelegate
         debugPrint("willDismissSearchController…")
         // Deselect photos if needed
         cancelSelect()
+
+        // Re-allow fetching image data
+        imageProvider.userDidCancelSearch = false
 
         // Back to default album
         categoryId = AlbumVars.shared.defaultCategory
