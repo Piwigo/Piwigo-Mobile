@@ -21,10 +21,10 @@
                         <rect key="frame" x="248" y="11" width="200" height="32"/>
                         <segments>
                             <segment title="" width="100">
-                                <imageReference key="image" image="gobackward.minus" catalog="system" symbolScale="large" renderingMode="template"/>
+                                <imageReference key="image" image="minus.arrow.trianglehead.counterclockwise" catalog="system" symbolScale="large" renderingMode="template"/>
                             </segment>
                             <segment title="" width="100">
-                                <imageReference key="image" image="goforward.plus" catalog="system" symbolScale="large" renderingMode="template"/>
+                                <imageReference key="image" image="plus.arrow.trianglehead.clockwise" catalog="system" symbolScale="large" renderingMode="template"/>
                             </segment>
                         </segments>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -59,7 +59,7 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="gobackward.minus" catalog="system" width="119" height="128"/>
-        <image name="goforward.plus" catalog="system" width="119" height="128"/>
+        <image name="minus.arrow.trianglehead.counterclockwise" catalog="system" width="119" height="128"/>
+        <image name="plus.arrow.trianglehead.clockwise" catalog="system" width="119" height="128"/>
     </resources>
 </document>
