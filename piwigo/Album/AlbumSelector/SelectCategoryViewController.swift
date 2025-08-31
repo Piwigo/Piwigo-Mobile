@@ -293,8 +293,10 @@ class SelectCategoryViewController: UIViewController {
         }
 
         // Button for returning to albums/images collections
-        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "CancelSelect"
+        if wantedAction != .setDefaultAlbum {
+            cancelBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelSelect))
+            cancelBarButton?.accessibilityIdentifier = "CancelSelect"
+        }
 
         // Set title and buttons
         switch wantedAction {
