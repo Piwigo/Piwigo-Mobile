@@ -46,14 +46,14 @@ class PadTableViewCell: UITableViewCell {
         // Buttons
         if AppVars.shared.isDarkPaletteActive {
             lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            lightButton.tintColor = PwgColor.rightLabel
+            lightButton.imageView?.tintColor = PwgColor.rightLabel
             darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            darkButton.tintColor = PwgColor.orange
+            darkButton.imageView?.tintColor = PwgColor.orange
         } else {
             lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            lightButton.tintColor = PwgColor.orange
+            lightButton.imageView?.tintColor = PwgColor.orange
             darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            darkButton.tintColor = PwgColor.rightLabel
+            darkButton.imageView?.tintColor = PwgColor.rightLabel
         }
     }
         
