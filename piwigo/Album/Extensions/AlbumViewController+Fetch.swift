@@ -131,6 +131,15 @@ extension AlbumViewController
                     // Update smart album data
                     albumData.nbImages = totalCount
                     albumData.totalNbImages = totalCount
+                    
+                    // Limit image searches
+                    if albumData.pwgID == pwgSmartAlbum.search.rawValue {
+                        let maxPages: Int = 5
+                        newLastPage = min(newLastPage, maxPages)
+                        let maxCount = Int64(maxPages * perPage)
+                        albumData.nbImages = min(totalCount, maxCount)
+                        albumData.totalNbImages = min(totalCount, maxCount)
+                    }
                 }
             }
             
