@@ -50,7 +50,7 @@ class SettingsViewController: UIViewController {
     @IBOutlet var settingsTableView: UITableView!
     
     private var tableViewBottomConstraint: NSLayoutConstraint?
-    private var doneBarButton: UIBarButtonItem?
+    private var closeBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     
     // Remember current user's recent period index
@@ -190,9 +190,8 @@ class SettingsViewController: UIViewController {
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
         
         // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-//        doneBarButton?.tintColor = PwgColor.orange
-        doneBarButton?.accessibilityIdentifier = "Done"
+        closeBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitSettings))
+        closeBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
         if #available(iOS 26.0, *) {
@@ -235,7 +234,7 @@ class SettingsViewController: UIViewController {
         applyColorPalette()
         
         // Set navigation buttons
-        navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setLeftBarButtonItems([closeBarButton].compactMap { $0 }, animated: true)
         navigationItem.setRightBarButtonItems([helpBarButton].compactMap { $0 }, animated: true)
         
         // Register palette changes
