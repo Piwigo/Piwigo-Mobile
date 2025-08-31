@@ -161,7 +161,8 @@ extension AlbumViewController
         }
 
         // Update select buttons of section headers if needed
-        if images.sectionNameKeyPath != nil,
+        if let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+           [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey),
            let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         {
             headers.forEach { header in
