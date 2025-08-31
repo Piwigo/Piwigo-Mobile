@@ -110,6 +110,7 @@ extension AlbumViewController
             } else if categoryId == pwgSmartAlbum.search.rawValue {
                 // Search bar => No action button
                 navigationItem.setLeftBarButtonItems([], animated: true)
+                searchController?.searchBar.becomeFirstResponder()
             } else {
                 // Back button to parent album
                 navigationItem.setLeftBarButtonItems([], animated: true)
