@@ -35,9 +35,6 @@ class ShareMetadataViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
         
         // Buttons
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(stopEditingOptions))
@@ -50,7 +47,10 @@ class ShareMetadataViewController: UIViewController {
         
         // Navigation bar appearence
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Table view
         shareMetadataTableView.separatorColor = PwgColor.separator
         shareMetadataTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

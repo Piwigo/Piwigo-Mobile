@@ -56,9 +56,6 @@ class CounterFormatSelectorViewController: UIViewController {
         
         // Title, header and example
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Header
         let headerAttributedString = NSMutableAttributedString(string: "")
@@ -83,6 +80,9 @@ class CounterFormatSelectorViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Header and example
         headerLabel.textColor = PwgColor.header

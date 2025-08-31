@@ -30,9 +30,6 @@ class LockOptionsViewController: UIViewController {
         
         // Set title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
         
         // Evaluate biometrics policy
         var error: NSError?
@@ -47,7 +44,10 @@ class LockOptionsViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Table view
         lockOptionsTableView.separatorColor = PwgColor.separator
         lockOptionsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

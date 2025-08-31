@@ -25,9 +25,6 @@ class JsonViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Initialise content
         guard let fileURL = fileURL else { return }
@@ -52,6 +49,9 @@ class JsonViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Text color depdending on background color
         method?.textColor = PwgColor.text

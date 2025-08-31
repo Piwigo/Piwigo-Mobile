@@ -90,9 +90,6 @@ class TagSelectorViewController: UITableViewController {
 
         // Title
         title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Initialise search bar
         initSearchBar()
@@ -138,6 +135,9 @@ class TagSelectorViewController: UITableViewController {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Search bar
         searchController.searchBar.configAppearance()

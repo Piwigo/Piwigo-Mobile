@@ -321,9 +321,6 @@ class SelectCategoryViewController: UIViewController {
         default:
             title = ""
         }
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
 
     @MainActor
@@ -333,6 +330,9 @@ class SelectCategoryViewController: UIViewController {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Table view
         setTableViewMainHeader()

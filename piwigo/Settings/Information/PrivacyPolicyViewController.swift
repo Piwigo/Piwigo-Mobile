@@ -24,9 +24,6 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
 
         // Title
         title = NSLocalizedString("settings_privacy", comment: "Policy Privacy")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
     
     @MainActor
@@ -39,6 +36,9 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Text color depdending on background color
         textView.textColor = PwgColor.text

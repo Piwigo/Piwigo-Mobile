@@ -95,9 +95,6 @@ class ClearClipboardViewController: UIViewController {
         super.viewDidLoad()
         
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
     
     @MainActor
@@ -107,7 +104,10 @@ class ClearClipboardViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Table view
         delayTableView.separatorColor = PwgColor.separator
         delayTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

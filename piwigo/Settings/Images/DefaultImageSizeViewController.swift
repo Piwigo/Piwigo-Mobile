@@ -30,9 +30,6 @@ class DefaultImageSizeViewController: UIViewController {
         super.viewDidLoad()
         
         title = NSLocalizedString("severalImages", comment: "Images")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
     
     @MainActor
@@ -42,7 +39,10 @@ class DefaultImageSizeViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Table view
         tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

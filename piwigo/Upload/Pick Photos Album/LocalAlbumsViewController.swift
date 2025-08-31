@@ -71,9 +71,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Title
         title = NSLocalizedString("localAlbums", comment: "Photo Library")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Button for selecting Photo Library items (.limited access mode)
         selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
@@ -134,6 +131,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Table view
         setTableViewMainHeader()

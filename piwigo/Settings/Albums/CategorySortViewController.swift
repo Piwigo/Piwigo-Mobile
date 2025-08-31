@@ -29,9 +29,6 @@ class CategorySortViewController: UIViewController {
         
         // Apply attributes to title
         title = NSLocalizedString("severalImages", comment: "Images")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
         
         sortSelectTableView.accessibilityIdentifier = "sortSelect"
         navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
@@ -49,7 +46,10 @@ class CategorySortViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Table view
         sortSelectTableView.separatorColor = PwgColor.separator
         sortSelectTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

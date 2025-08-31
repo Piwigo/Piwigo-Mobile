@@ -21,9 +21,6 @@ class ColorPaletteViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
     
     @MainActor
@@ -33,6 +30,9 @@ class ColorPaletteViewController: UIViewController {
         
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
         
         // Table view
         tableView.separatorColor = PwgColor.separator

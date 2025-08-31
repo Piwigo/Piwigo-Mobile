@@ -28,9 +28,6 @@ class LogsViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("settings_logs", comment: "Logs")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Initialise content
         if logEntries.isEmpty { return }
@@ -59,6 +56,9 @@ class LogsViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Text color depdending on background color
         category?.textColor = PwgColor.text

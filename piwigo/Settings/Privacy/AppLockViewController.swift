@@ -117,15 +117,15 @@ class AppLockViewController: UIViewController {
         super.viewDidLoad()
 
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
 
     @MainActor
     @objc func applyColorPalette() {
         // Navigation bar (if any)
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
 
         // Initialise colours
         var labelsColor = PwgColor.text

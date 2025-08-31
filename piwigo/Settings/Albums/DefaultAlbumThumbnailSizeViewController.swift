@@ -31,9 +31,6 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         
         // Title
         title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
     }
     
     @MainActor
@@ -43,7 +40,10 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        
+        if #available(iOS 26.0, *) {
+            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+        }
+
         // Table view
         tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
