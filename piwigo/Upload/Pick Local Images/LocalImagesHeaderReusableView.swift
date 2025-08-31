@@ -79,7 +79,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         selectButton.layer.cornerRadius = 13.0
         selectButton.setTitle(forState: selectState)
         selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
-        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.2 : 0.1
+        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
     }
 
     @objc func updateDetailLabel(_ notification: NSNotification) {

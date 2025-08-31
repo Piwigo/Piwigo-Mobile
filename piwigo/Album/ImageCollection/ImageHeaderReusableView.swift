@@ -109,7 +109,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         detailLabel?.textColor = PwgColor.rightLabel
         selectButton?.backgroundColor = PwgColor.background
         selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
-        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.2 : 0.1
+        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
         albumDesc?.textColor = PwgColor.header
     }
     
