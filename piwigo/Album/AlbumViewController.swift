@@ -334,7 +334,17 @@ class AlbumViewController: UIViewController
         
         // Search bar
         if categoryId == 0 {
-            searchController?.searchBar.configAppearance()
+            if let searchBar = searchController?.searchBar {
+                searchBar.configAppearance()
+                let placeholder = searchBar.searchTextField.attributedPlaceholder ?? NSAttributedString(string: "")
+                let newPlaceholder = NSMutableAttributedString(attributedString: placeholder)
+                let wholeRange = NSRange(location: 0, length: placeholder.length)
+                let attributes = [
+                    NSAttributedString.Key.foregroundColor: PwgColor.rightLabel
+                ]
+                newPlaceholder.addAttributes(attributes, range: wholeRange)
+                searchBar.searchTextField.attributedPlaceholder = newPlaceholder
+            }
         }
 
         // Buttons
