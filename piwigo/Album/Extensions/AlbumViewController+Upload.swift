@@ -38,7 +38,7 @@ extension AlbumViewController
                 // Add button to toolbar
                 let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
                 let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                toolbarItems = toolBarItems
+                setToolbarItems(toolBarItems, animated: true)
             }
         } else {
             showOldUploadQueueButton()

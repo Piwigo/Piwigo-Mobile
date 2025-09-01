@@ -61,7 +61,7 @@ extension AlbumViewController
                     let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
                     let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
                     navigationController?.setToolbarHidden(false, animated: true)
-                    toolbarItems = toolBarItems
+                    setToolbarItems(toolBarItems, animated: true)
                     
                 case .pad:
                     // Right side of the navigation bar
@@ -71,7 +71,7 @@ extension AlbumViewController
 
                     // No toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
-                    toolbarItems = []
+                    setToolbarItems(nil, animated: false)
 
                 default:
                     preconditionFailure("!!! Interface not managed !!!")
@@ -98,7 +98,7 @@ extension AlbumViewController
 
                 // No toolbar
                 navigationController?.setToolbarHidden(true, animated: true)
-                toolbarItems = []
+                setToolbarItems(nil, animated: false)
             }
         }
         else {
@@ -137,13 +137,13 @@ extension AlbumViewController
                     if categoryId == pwgSmartAlbum.search.rawValue {
                         // Keep search bar integrated to toolbar
                         navigationItem.preferredSearchBarPlacement = .integrated
-                        toolbarItems = []
+                        setToolbarItems(nil, animated: true)
                     }
                     else if categoryId > 0 {
                         // [Add Photos] and [Create Album] buttons in the toolbar
                         let toolBarItems = [.space(), addAlbumBarButton, addImageBarButton].compactMap { $0 }
                         navigationController?.setToolbarHidden(false, animated: true)
-                        toolbarItems = toolBarItems
+                        setToolbarItems(toolBarItems, animated: true)
                     }
 
                 case .pad:
@@ -156,8 +156,8 @@ extension AlbumViewController
                     
                     // No toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
-                    toolbarItems = []
-                    
+                    setToolbarItems(nil, animated: false)
+
                 default:
                     preconditionFailure("!!! Interface not managed !!!")
                 }
@@ -167,7 +167,7 @@ extension AlbumViewController
 
                 // No toolbar
                 navigationController?.setToolbarHidden(true, animated: true)
-                toolbarItems = []
+                setToolbarItems(nil, animated: false)
             }
         }
     }
@@ -335,7 +335,7 @@ extension AlbumViewController
                 // Toolbar
                 let toolbarItems: [UIBarButtonItem] = [shareBarButton, .space(),
                                                        favoriteBarButton, deleteBarButton].compactMap({ $0 })
-                setToolbarItems(toolbarItems, animated: false)
+                setToolbarItems(toolbarItems, animated: true)
                 navigationController?.setToolbarHidden(false, animated: true)
             }
             else {
@@ -354,7 +354,7 @@ extension AlbumViewController
                                     favoriteBarButton, favoriteBarButton == nil ? nil : .space(),
                                     deleteBarButton, shareBarButton == nil ? .space() : nil].compactMap { $0 }
                 navigationController?.setToolbarHidden(false, animated: true)
-                toolbarItems = toolBarItems
+                setToolbarItems(toolBarItems, animated: true)
             }
         } else {
             // Left side of navigation bar
@@ -366,6 +366,7 @@ extension AlbumViewController
 
             // Hide toolbar
             navigationController?.setToolbarHidden(true, animated: true)
+            setToolbarItems(nil, animated: false)
         }
     }
     
