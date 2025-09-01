@@ -44,6 +44,7 @@ class ImageDescriptionView: UIVisualEffectView {
             ]
             let desc = NSMutableAttributedString(attributedString: image.comment)
             desc.addAttributes(attributes, range: wholeRange)
+            descTextView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
             descTextView.attributedText = desc
         } else {
             // Hide the description view
