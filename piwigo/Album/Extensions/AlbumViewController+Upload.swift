@@ -47,6 +47,10 @@ extension AlbumViewController
     
     @MainActor
     func hideUploadQueueButton() {
+        // The upload queue button is only presented in the default album
+        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId)
+        else { return }
+        
         if #available(iOS 26.0, *) {
             // Currently shown?
             var toolbarItems = toolbarItems ?? []
