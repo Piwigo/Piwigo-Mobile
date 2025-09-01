@@ -75,16 +75,13 @@
                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="black"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
-                                <integer key="value" value="2"/>
+                                <real key="value" value="0.5"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
                                 <integer key="value" value="1"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
                                 <size key="value" width="0.0" height="0.0"/>
-                            </userDefinedRuntimeAttribute>
-                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="4"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </imageView>
@@ -166,10 +163,10 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="checkmark.circle.fill" catalog="system" width="128" height="123"/>
-        <image name="exclamationmark.triangle" catalog="system" width="128" height="109"/>
+        <image name="checkmark.circle.fill" catalog="system" width="32" height="32"/>
+        <image name="exclamationmark.triangle" catalog="system" width="32" height="32"/>
         <image name="piwigo" width="25" height="25"/>
-        <image name="play.square.fill" catalog="system" width="128" height="114"/>
+        <image name="play.square.fill" catalog="system" width="32" height="32"/>
         <image name="unknownImage" width="512" height="512"/>
     </resources>
 </document>
