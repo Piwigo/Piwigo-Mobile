@@ -9400,20 +9400,20 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "الإصدار 3.5.1\n\n• إصلاح الأخطاء وتحسين الواجهة"
+            "state" : "translated",
+            "value" : "الإصدار 3.5.1\n23 أغسطس 2025\n\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 3.5.1\n\n• Rette fejl og forbedrer grænsefladen"
+            "state" : "translated",
+            "value" : "Version 3.5.1\n23 august 2025\n\n• Rette fejl og forbedrer grænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 3.5.1\n\n• Fehlerbehebungen"
+            "state" : "translated",
+            "value" : "Version 3.5.1\n23. August 2025\n\n• Fehlerbehebungen"
           }
         },
         "en" : {
@@ -9424,74 +9424,74 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versión 3.5.1\n\n• Corrección de errores"
+            "state" : "translated",
+            "value" : "Versión 3.5.1\n23 de agosto de 2025\n\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 3.5.1\n\n• Corrige des bugs et améliore l'interface"
+            "state" : "translated",
+            "value" : "Version 3.5.1\n23 août 2025\n\n• Corrige des bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "3.5.1-es verzió\n\n• Hibajavítások és a kezelőfelület javítása"
+            "state" : "translated",
+            "value" : "3.5.1-es verzió\n2025. augusztus 23.\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versi 3.5.1\n\n• Memperbaiki bug dan meningkatkan antarmuka"
+            "state" : "translated",
+            "value" : "Versi 3.5.1\n23 Agustus 2025\n\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versione 3.5.1\n\n• Corregge bug e migliora l'interfaccia"
+            "state" : "translated",
+            "value" : "Versione 3.5.1\n23 agosto 2025\n\n• Corregge bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "バージョン 3.5.1\n\n• バグの修正とインターフェイスの改善"
+            "state" : "translated",
+            "value" : "バージョン 3.5.1\n2025年8月23日\n\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Versie 3.5.1\n\n• Verhelpt bugs en verbetert de interface"
+            "state" : "translated",
+            "value" : "Versie 3.5.1\n23 augustus 2025\n\n• Verhelpt bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wersja 3.5.1\n\n• Poprawki błędów i usprawnienia interfejsu"
+            "state" : "translated",
+            "value" : "Wersja 3.5.1\n23 sierpnia 2025 r.\n\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Версия 3.5.1\n\n• Исправлены ошибки и улучшен интерфейс"
+            "state" : "translated",
+            "value" : "Версия 3.5.1\n23 августа 2025 г.\n\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Version 3.5.1\n\n• Fixar buggar och förbättrar gränssnittet"
+            "state" : "translated",
+            "value" : "Version 3.5.1\n23 augusti 2025\n\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 3.5.1\n\n• 修复了 bug 并改进了界面"
+            "state" : "translated",
+            "value" : "版本 3.5.1\n2025年8月23日\n\n• 修复了 bug 并改进了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "版本 3.5.1\n\n• 修正錯誤並改進介面"
+            "state" : "translated",
+            "value" : "版本 3.5.1\n2025年8月23日\n\n• 修正錯誤並改進介面"
           }
         }
       }
@@ -9499,10 +9499,100 @@
     "v4.0.0_text" : {
       "extractionState" : "manual",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.0\n\n• توافق iOS 26\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.0\n\n• iOS 26 kompabilitet\n• Mindre fejl rettet og forbedringer af brugerflade"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 2.4.3\n\n• iOS 26-Kompatibilität\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Version 4.0\n\n• iOS 26 compatibility\n• Minor bug fixes and improvements of the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 2.4.3\n\n• Compatibilidad con iOS 26\n• Corrección de errores menores y mejoras en la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.0\n\n• Compatibilité avec iOS 26\n• Corrige des bugs mineurs et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.0-as verzió\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.0\n\n• Kompatibilitas iOS 26\n• Perbaikan bug minor dan perbaikan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.0\n\n• Compatibilità iOS 26\n• Correzioni di bug minori e miglioramenti dell'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.0\n\n• iOS 26の互換性\n• 軽微なバグの修正とインタフェースの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.0\n\n• iOS 26-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.0\n\n• Kompatybilność z iOS 26\n• Drobne poprawki błędów i ulepszenia interfejsu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.0\n\n• совместимость с iOS 26\n• Исправления и улучшения интерфейса"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.0\n\n• iOS 26-kompatibilitet\n• Mindre bugfixar och förbättringar av gränssnittet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本4.0\n\n• 支持iOS 26\n• 错误修复和界面改进"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.0\n\n• 支援iOS 26\n• 小型錯誤修正及介面改進"
           }
         }
       }
