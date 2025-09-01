@@ -3145,8 +3145,8 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Laveste → Højeste"
           }
         },
         "de" : {
@@ -3175,62 +3175,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Legalacsonyabb → Legmagasabb"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Terendah → Tertinggi"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Più Basso → Più Alto"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "最低 → 最高"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Laagste → Hoogste"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Najniższy → Najwyższy"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Наименьший → Наивысший"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "Lägsta → Högsta"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "最低 → 最高"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "最低 → 最高"
           }
         }
       }
@@ -3246,8 +3246,8 @@
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Højeste → Laveste"
           }
         },
         "de" : {
@@ -3276,62 +3276,62 @@
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Legmagasabb → Legalacsonyabb"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Tertinggi → Terendah"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Più Alta → Più Bassa"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "最高 → 最低"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Hoogste → Laagste"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Najwyższy → Najniższy"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Высочайший | Самый низкий"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "Högsta → Lägsta"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "最高 → 最低"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "最高 → 最低"
           }
         }
       }

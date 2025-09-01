@@ -9400,98 +9400,109 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الإصدار 3.5.1\n\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 3.5.1\n\n• Rette fejl og forbedrer grænsefladen"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 3.5.1\n\n• Fehlerbehebungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 3.5.1\n\n• Fixes bugs and improves the interface"
+            "value" : "Version 3.5.1\nAugust 23, 2025\n\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versión 3.5.1\n\n• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 3.5.1\n\n• Corrige des bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "3.5.1-es verzió\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versi 3.5.1\n\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versione 3.5.1\n\n• Corregge bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "バージョン 3.5.1\n\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versie 3.5.1\n\n• Verhelpt bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wersja 3.5.1\n\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Версия 3.5.1\n\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 3.5.1\n\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 3.5.1\n\n• 修复了 bug 并改进了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 3.5.1\n\n• 修正錯誤並改進介面"
+          }
+        }
+      }
+    },
+    "v4.0.0_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.0\n\n• iOS 26 compatibility\n• Minor bug fixes and improvements of the interface"
           }
         }
       }
