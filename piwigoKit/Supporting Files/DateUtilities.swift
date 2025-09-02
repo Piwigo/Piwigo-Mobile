@@ -83,6 +83,7 @@ public class DateUtilities: NSObject {
         let formatter = DateFormatter()
         formatter.locale = .current
         formatter.timeZone = TimeZone(abbreviation: "UTC")!
+        formatter.doesRelativeDateFormatting = true
         return formatter
     }()
     

@@ -522,11 +522,11 @@ class AlbumUtilities: NSObject {
             if arePwgDates {
                 switch UIScreen.main.bounds.size.width {
                 case 0..<400:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                    optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
                 case 400...600:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm")
+                    optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
                 default:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm:ss")
+                    optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
                 }
             } else {
                 optFormatter.setLocalizedDateFormatFromTemplate("eeee")
@@ -548,7 +548,7 @@ class AlbumUtilities: NSObject {
                     if arePwgDates {
                         let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
                         optFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
-                        optionalDateLabelText += " - " + optFormatter.string(from: endDate)
+                        optionalDateLabelText += " — " + optFormatter.string(from: endDate)
                     }
                     return (dateLabelText, optionalDateLabelText)
                 }
@@ -575,7 +575,7 @@ class AlbumUtilities: NSObject {
                     if arePwgDates {
                         switch UIScreen.main.bounds.size.width {
                         case 0..<400:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                            optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
                         case 400..<600:
                             optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
                         default:
@@ -612,7 +612,7 @@ class AlbumUtilities: NSObject {
                 if arePwgDates {
                     switch UIScreen.main.bounds.size.width {
                     case 0..<400:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
+                        optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
                     case 400..<600:
                         optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
                     default:
