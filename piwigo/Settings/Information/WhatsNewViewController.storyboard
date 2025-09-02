@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="iPad13_0rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <accessibilityOverrides boldText="YES"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,11 +16,10 @@
             <objects>
                 <viewController storyboardIdentifier="WhatsNewViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="WhatsNewViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1032" height="1376"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="What's New in Piwigo" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULD-Bw-142">
-                                <rect key="frame" x="60" y="148" width="273" height="76.666666666666686"/>
+                                <rect key="frame" x="266" y="104" width="500" height="50.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="180" id="nqv-aO-SQq">
                                         <variation key="heightClass=compact-widthClass=regular" constant="400"/>
@@ -45,13 +44,13 @@
                                 </variation>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Lbm-xL-FQe">
-                                <rect key="frame" x="40" y="378.33333333333331" width="313" height="145.66666666666669"/>
+                                <rect key="frame" x="266" y="577.5" width="500" height="200"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="waY-KD-pQs">
-                                        <rect key="frame" x="0.0" y="0.0" width="313" height="42.666666666666664"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="500" height="60"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ofx-vJ-Gvf">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="42.666666666666664"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="60"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="t7h-dM-o5J"/>
@@ -60,10 +59,10 @@
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                             </imageView>
                                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="jUo-i2-eB3">
-                                                <rect key="frame" x="60" y="0.0" width="253" height="42.666666666666664"/>
+                                                <rect key="frame" x="60" y="0.0" width="440" height="60"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PDF Files" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6CT-Fq-rLJ">
-                                                        <rect key="frame" x="0.0" y="0.0" width="253" height="20.333333333333332"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="440" height="29"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -75,7 +74,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Read and share PDF files directly" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-U7-rmr">
-                                                        <rect key="frame" x="0.0" y="22.333333333333371" width="253" height="20.333333333333329"/>
+                                                        <rect key="frame" x="0.0" y="31" width="440" height="29"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -91,10 +90,10 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qAs-yp-B32">
-                                        <rect key="frame" x="0.0" y="82.666666666666686" width="313" height="63"/>
+                                        <rect key="frame" x="0.0" y="140" width="500" height="60"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFA-Xb-eXV">
-                                                <rect key="frame" x="0.0" y="-4.6666666666666714" width="40" height="75"/>
+                                                <rect key="frame" x="0.0" y="-5.5" width="40" height="72.5"/>
                                                 <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="rK1-QG-eNb"/>
@@ -103,10 +102,10 @@
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="semibold"/>
                                             </imageView>
                                             <stackView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="yMr-f9-CrM">
-                                                <rect key="frame" x="60" y="0.0" width="253" height="63"/>
+                                                <rect key="frame" x="60" y="0.0" width="440" height="60"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Stability" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-hT-eGE">
-                                                        <rect key="frame" x="0.0" y="0.0" width="253" height="20.333333333333332"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="440" height="29"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -118,7 +117,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bug fixes and improvement of the interface" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrZ-50-HHl">
-                                                        <rect key="frame" x="0.0" y="22.333333333333311" width="253" height="40.666666666666657"/>
+                                                        <rect key="frame" x="0.0" y="31" width="440" height="29"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -140,7 +139,7 @@
                                 <variation key="heightClass=regular-widthClass=regular" spacing="80"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GMb-yE-rVt">
-                                <rect key="frame" x="40" y="702" width="313" height="52"/>
+                                <rect key="frame" x="366" y="1199" width="300" height="52"/>
                                 <color key="backgroundColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="NBm-PU-q4o">
@@ -185,6 +184,7 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Lbm-xL-FQe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5EZ-qb-Rvc" secondAttribute="leading" constant="80" id="2gG-la-Tpq"/>
                             <constraint firstItem="ULD-Bw-142" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="40" id="CUF-qv-fpY">
                                 <variation key="heightClass=regular-widthClass=compact" constant="60"/>
                             </constraint>
@@ -196,13 +196,13 @@
                             </constraint>
                             <constraint firstItem="ULD-Bw-142" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="Jtq-yS-1LR"/>
                             <constraint firstItem="Lbm-xL-FQe" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="NCl-nl-Xfi"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Lbm-xL-FQe" secondAttribute="trailing" constant="80" id="Qj5-Fm-2bD"/>
                             <constraint firstItem="Lbm-xL-FQe" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="40" id="RnH-yL-I26"/>
                             <constraint firstItem="GMb-yE-rVt" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="Z3Y-G7-Hqb"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Lbm-xL-FQe" secondAttribute="trailing" constant="40" id="ajA-Kl-uQ1"/>
                             <constraint firstItem="GMb-yE-rVt" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="40" id="c3a-WN-rx5"/>
                             <constraint firstItem="Lbm-xL-FQe" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" id="cX3-dF-9zl"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="GMb-yE-rVt" secondAttribute="trailing" constant="40" id="d8i-ak-8SW"/>
-                            <constraint firstItem="Lbm-xL-FQe" firstAttribute="width" secondItem="GMb-yE-rVt" secondAttribute="width" id="mVM-mJ-Giu"/>
                             <constraint firstItem="ULD-Bw-142" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="40" id="mk1-eE-pwE">
                                 <variation key="heightClass=compact-widthClass=compact" constant="10"/>
                                 <variation key="heightClass=compact-widthClass=regular" constant="20"/>
@@ -215,12 +215,13 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="ajA-Kl-uQ1"/>
                                 <exclude reference="d8i-ak-8SW"/>
+                                <exclude reference="ajA-Kl-uQ1"/>
                                 <exclude reference="umV-zr-yW4"/>
                                 <exclude reference="CUF-qv-fpY"/>
+                                <exclude reference="Qj5-Fm-2bD"/>
+                                <exclude reference="2gG-la-Tpq"/>
                                 <exclude reference="RnH-yL-I26"/>
-                                <exclude reference="mVM-mJ-Giu"/>
                                 <exclude reference="c3a-WN-rx5"/>
                             </mask>
                         </variation>
@@ -228,6 +229,12 @@
                             <mask key="constraints">
                                 <include reference="ajA-Kl-uQ1"/>
                                 <include reference="RnH-yL-I26"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="Qj5-Fm-2bD"/>
+                                <include reference="2gG-la-Tpq"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=compact">
@@ -240,7 +247,6 @@
                             <mask key="constraints">
                                 <exclude reference="ajA-Kl-uQ1"/>
                                 <exclude reference="RnH-yL-I26"/>
-                                <include reference="mVM-mJ-Giu"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -249,11 +255,6 @@
                                 <include reference="umV-zr-yW4"/>
                                 <include reference="CUF-qv-fpY"/>
                                 <include reference="c3a-WN-rx5"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=regular-widthClass=regular">
-                            <mask key="constraints">
-                                <include reference="mVM-mJ-Giu"/>
                             </mask>
                         </variation>
                     </view>
@@ -274,6 +275,7 @@
             <point key="canvasLocation" x="61.832061068702288" y="-34.507042253521128"/>
         </scene>
     </scenes>
+    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="document.pdf" width="40" height="38"/>
         <image name="ladybug.slash" catalog="system" width="124" height="128"/>

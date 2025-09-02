@@ -13,7 +13,7 @@ import piwigoKit
 // Constants
 /// - Preferred popover view width on iPad
 let pwgPadSubViewWidth = CGFloat(375.0)
-///- Preferred Settings view width on iPad
+/// - Preferred Settings view width on iPad
 let pwgPadSettingsWidth = CGFloat(512.0)
 
 

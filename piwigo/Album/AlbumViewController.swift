@@ -530,19 +530,35 @@ class AlbumViewController: UIViewController
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
                 guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
                 else { preconditionFailure("Could not load WhatsNewViewController") }
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
+                if view.traitCollection.userInterfaceIdiom == .phone {
+                    whatsNewVC.modalPresentationStyle = .pageSheet
+                    whatsNewVC.isModalInPresentation = true
+                    if let sheet = whatsNewVC.sheetPresentationController {
+                        sheet.detents = [.medium(), .large()]
+                        sheet.selectedDetentIdentifier = .medium
+                        sheet.prefersGrabberVisible = true
+                        sheet.preferredCornerRadius = 40
+                    }
                     present(whatsNewVC, animated: true)
-                } else {
+                }
+                else {
                     whatsNewVC.modalTransitionStyle = .coverVertical
-                    whatsNewVC.modalPresentationStyle = .formSheet
-                    let mainScreenBounds = UIScreen.main.bounds
+                    whatsNewVC.modalPresentationStyle = .pageSheet
+                    whatsNewVC.isModalInPresentation = true
+                    let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+                    if let sheet = whatsNewVC.sheetPresentationController {
+                        sheet.detents = [.medium(), .large()]
+                        if orientation == .landscapeLeft || orientation == .landscapeRight {
+                            sheet.selectedDetentIdentifier = .large
+                        } else {
+                            sheet.selectedDetentIdentifier = .medium
+                        }
+                        sheet.prefersGrabberVisible = false
+                        sheet.preferredCornerRadius = 40
+                    }
                     whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
-                        x: mainScreenBounds.midX, y: mainScreenBounds.midY,
+                        x: view.bounds.midX, y: view.bounds.midY,
                         width: 0, height: 0)
-                    whatsNewVC.preferredContentSize = CGSize(
-                        width: pwgPadSettingsWidth,
-                        height: ceil(CGFloat(mainScreenBounds.size.height) * 2 / 3))
                     present(whatsNewVC, animated: true)
                 }
                 return
