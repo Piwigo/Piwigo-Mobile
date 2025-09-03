@@ -93,9 +93,9 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
 //            debugPrint("••> getAlbumCellSize: \(albumWidth) x 156.5 points")
             return CGSize(width: albumWidth, height: 156.5)
         } else {
-            let albumWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: CGFloat(200))
-            let albumHeight = albumWidth * 2 / 3 + 50
-//            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
+            let albumWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: albumMaxWidth)
+            let albumHeight = albumWidth * 2 / 3 + albumLabelsHeight
+            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
             return CGSize(width: albumWidth, height: albumHeight)
         }
     }

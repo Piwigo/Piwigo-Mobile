@@ -122,6 +122,8 @@ class AlbumViewController: UIViewController
     // MARK: - Cached Values
     var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+    lazy var albumLabelsHeight: CGFloat = CGFloat(50)
+    lazy var albumMaxWidth: CGFloat = CGFloat(200)
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
     
     var updateOperations = [BlockOperation]()
@@ -256,6 +258,9 @@ class AlbumViewController: UIViewController
         debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
         
+        // Initialise album width and height
+        applyFontChanges()
+        
         // Register classes before using them
         collectionView?.isPrefetchingEnabled = true
         collectionView?.register(UINib(nibName: "AlbumHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
@@ -319,6 +324,9 @@ class AlbumViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyFontChanges),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
@@ -421,6 +429,56 @@ class AlbumViewController: UIViewController
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
         collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
+    }
+    
+    @objc func applyFontChanges() {
+        let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
+
+        // Set extra height according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        switch contentSizeCategory {
+        case .extraSmall:
+            albumLabelsHeight = 46.0
+            albumMaxWidth = 200.0
+        case .small:
+            albumLabelsHeight = 47.0
+            albumMaxWidth = 200.0
+        case .medium:
+            albumLabelsHeight = 48.0
+            albumMaxWidth = 200.0
+        case .large:    // Default: Headline -> 17 pnts, Footnote -> 13 pnts (see XIB)
+            albumLabelsHeight = 50.0
+            albumMaxWidth = 200.0
+        case .extraLarge:
+            albumLabelsHeight = 54.0
+            albumMaxWidth = 216.0
+        case .extraExtraLarge:
+            albumLabelsHeight = 58.0
+            albumMaxWidth = 232.0
+        case .extraExtraExtraLarge:
+            albumLabelsHeight = 62.0
+            albumMaxWidth = 248.0
+        case .accessibilityMedium:
+            albumLabelsHeight = 71.0
+            albumMaxWidth = 284.0
+        case .accessibilityLarge:
+            albumLabelsHeight = 80.0
+            albumMaxWidth = 320.0
+        case .accessibilityExtraLarge:
+            albumLabelsHeight = 93.0
+            albumMaxWidth = 372.0
+        case .accessibilityExtraExtraLarge:
+            albumLabelsHeight = 105.0
+            albumMaxWidth = 420.0
+        case .accessibilityExtraExtraExtraLarge:
+            albumLabelsHeight = 117.0
+            albumMaxWidth = 468.0
+        case .unspecified:
+            fallthrough
+        default:
+            albumLabelsHeight = 50.0
+            albumMaxWidth = 200.0
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
