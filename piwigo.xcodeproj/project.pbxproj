@@ -445,6 +445,7 @@
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
 		ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */; };
 		ADA74B0D2C5D138600162BE0 /* LocalImagesViewController+Select.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */; };
+		ADA78AFE2E6B6D100049198A /* piwigo.icon in Resources */ = {isa = PBXBuildFile; fileRef = ADA78AFD2E6B6D100049198A /* piwigo.icon */; };
 		ADABA2AF2A48194E006A1380 /* LoginViewController+UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
@@ -1196,6 +1197,7 @@
 		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = piwigo/Info.plist; sourceTree = SOURCE_ROOT; };
 		ADA74B0A2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+FlowLayout.swift"; sourceTree = "<group>"; };
 		ADA74B0C2C5D138600162BE0 /* LocalImagesViewController+Select.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalImagesViewController+Select.swift"; sourceTree = "<group>"; };
+		ADA78AFD2E6B6D100049198A /* piwigo.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = piwigo.icon; sourceTree = "<group>"; };
 		ADABA2AE2A48194E006A1380 /* LoginViewController+UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginViewController+UITextField.swift"; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
 		ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -2966,6 +2968,7 @@
 				AD56B7BB266905ED001D4E21 /* release.entitlements */,
 				ADAC8D122E150211002ECAEA /* LaunchScreen.storyboard */,
 				AD3B2C5C2A20F6AE0001B8B0 /* LaunchScreenExternal.storyboard */,
+				ADA78AFD2E6B6D100049198A /* piwigo.icon */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
 				AD9D684727DFE6DF00517261 /* VerificationFailed.ahap */,
 				AD8D214D26B0A53C0008E907 /* Images */,
@@ -3450,6 +3453,7 @@
 				ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */,
 				AD8A1E81288478FA00752948 /* help08-bot.png in Resources */,
 				ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */,
+				ADA78AFE2E6B6D100049198A /* piwigo.icon in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
 				AD96981E2BE6408600520614 /* AlbumViewController.storyboard in Resources */,
@@ -4892,7 +4896,7 @@
 		D82B8CDF1A67820A000E47CA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = piwigo;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = piwigo/Resources/debug.entitlements;
@@ -4943,7 +4947,7 @@
 		D82B8CE01A67820A000E47CA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = piwigo;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = piwigo/Resources/release.entitlements;
