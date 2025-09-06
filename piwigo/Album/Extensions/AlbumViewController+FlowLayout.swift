@@ -90,12 +90,12 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         // Calculate album cell size
         if AlbumVars.shared.displayAlbumDescriptions {
             let albumWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: CGFloat(384))
-//            debugPrint("••> getAlbumCellSize: \(albumWidth) x 156.5 points")
-            return CGSize(width: albumWidth, height: 156.5)
+//            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(oldAlbumHeight) points")
+            return CGSize(width: albumWidth, height: oldAlbumHeight)
         } else {
             let albumWidth = AlbumUtilities.albumWidth(forSafeAreaSize: safeAreaSize, maxCellWidth: albumMaxWidth)
             let albumHeight = albumWidth * 2 / 3 + albumLabelsHeight
-            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
+//            debugPrint("••> getAlbumCellSize: \(albumWidth) x \(albumHeight) points")
             return CGSize(width: albumWidth, height: albumHeight)
         }
     }
@@ -162,15 +162,14 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     {
         // Album or image?
         if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
-           index == section {       /* Album collection */
-            if AlbumVars.shared.displayAlbumDescriptions {
-                return UIEdgeInsets.zero
-            } else {
-                let margin = AlbumUtilities.kAlbumMarginsSpacing
-                return UIEdgeInsets(top: CGFloat.zero, left: margin,
-                                    bottom: CGFloat.zero, right: margin)
-            }
-        } else {                    /* Image collection */
+           index == section {
+            // Album collection
+            let margin = AlbumUtilities.kAlbumMarginsSpacing
+            return UIEdgeInsets(top: CGFloat.zero, left: margin,
+                                bottom: CGFloat.zero, right: margin)
+        }
+        else {
+            // Image collection
             return UIEdgeInsets.zero
         }
     }
@@ -178,13 +177,12 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         // Album or image?
         if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
-           index == section {       /* Album collection */
-            if AlbumVars.shared.displayAlbumDescriptions {
-                return 0.0
-            } else {
-                return AlbumUtilities.kAlbumCellVertSpacing
-            }
-        } else {                    /* Image collection */
+           index == section {
+            // Album collection
+            return AlbumUtilities.kAlbumCellVertSpacing
+        }
+        else {
+            // Image collection
             return AlbumUtilities.imageCellVerticalSpacing(forCollectionType: .full)
         }
     }
@@ -192,13 +190,12 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         // Album or image?
         if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
-           index == section {       /* Album collection */
-            if AlbumVars.shared.displayAlbumDescriptions {
-                return AlbumUtilities.kAlbumOldCellSpacing
-            } else {
-                return AlbumUtilities.kAlbumCellSpacing
-            }
-        } else {                    /* Image collection */
+           index == section {
+            // Album collection
+            return AlbumUtilities.kAlbumCellSpacing
+        }
+        else {
+            // Image collection
             return AlbumUtilities.imageCellHorizontalSpacing(forCollectionType: .full)
         }
     }

@@ -26,8 +26,6 @@ class AlbumUtilities: NSObject {
     static let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
     static let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
     static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
-    static let kAlbumOldCellSpacing = CGFloat(4)            // Horizontal spacing between old album cells
-//    static let kAlbumOldCellVertSpacing = CGFloat(0)        // Vertical spacing between old album cells
     
     static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
@@ -331,15 +329,9 @@ class AlbumUtilities: NSObject {
     static func albumWidth(forSafeAreaSize size: CGSize, maxCellWidth: CGFloat) -> CGFloat
     {
         // Collection view margins and spacings
-        var margins: CGFloat, spacing: CGFloat
-        if AlbumVars.shared.displayAlbumDescriptions {
-            margins = 0.0
-            spacing = kAlbumOldCellSpacing
-        } else {
-            margins = 2 * kAlbumMarginsSpacing
-            spacing = kAlbumCellSpacing
-        }
-
+        let margins: CGFloat = 2 * kAlbumMarginsSpacing
+        let spacing: CGFloat = kAlbumCellSpacing
+        
         // Number of albums per row in portrait
         let widthInPortrait = min(size.width, size.height)
         let numerator = widthInPortrait + spacing - margins

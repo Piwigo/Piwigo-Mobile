@@ -656,7 +656,6 @@
 		ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */; };
 		ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */ = {isa = PBXBuildFile; fileRef = ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */; };
 		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
-		ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */; };
 		ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD445268A2952001F00E8 /* Upload+CoreDataProperties.swift */; };
 		ADFFD448268A2953001F00E8 /* Upload+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD446268A2953001F00E8 /* Upload+CoreDataClass.swift */; };
 		ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD449268A29E6001F00E8 /* Location+CoreDataClass.swift */; };
@@ -1422,7 +1421,6 @@
 		ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ShareMetadataViewController.storyboard; sourceTree = "<group>"; };
 		ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.uploadCompleted.json; sourceTree = "<group>"; };
 		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
-		ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+AppFonts.swift"; sourceTree = "<group>"; };
 		ADFD63762C1A040800FBA514 /* DataModel 0F (None).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0F (None).xcdatamodel"; sourceTree = "<group>"; };
 		ADFFD445268A2952001F00E8 /* Upload+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Upload+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		ADFFD446268A2953001F00E8 /* Upload+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Upload+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -2932,7 +2930,6 @@
 				AD7A0CC12C10FF4A008AB50F /* UIButton+AppTools.swift */,
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
-				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
 				AD1BFE3D2745A15800858145 /* UIImageView+AppTools.swift */,
 				AD21EB7A2E54D0F7004458D7 /* UINavigationBar+AppTools.swift */,
@@ -4037,7 +4034,6 @@
 				AD7E9AE72A6D7AEA0079BE8F /* PlayerViewControllerCoordinator.swift in Sources */,
 				AD07CAC226DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift in Sources */,
 				ADF29DC72BCEA6CE0012FF66 /* ImageFooterReusableView.swift in Sources */,
-				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
 				ADB49D8A295B90C700EE377A /* SelectCategoryViewController+Images.swift in Sources */,
 				ADC115E02DC95772000EA45B /* RenameFileViewController+DateFormatSelector.swift in Sources */,
 				AD0B62FD2DEB5A5C001E9684 /* UploadParametersViewController+UITextViewDelegate.swift in Sources */,

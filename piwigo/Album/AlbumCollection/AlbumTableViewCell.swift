@@ -15,7 +15,6 @@ class AlbumTableViewCell: UITableViewCell {
     
     var imageURL: URL?
 
-    @IBOutlet weak var albumView: UIView!
     @IBOutlet weak var albumName: UILabel!
     @IBOutlet weak var albumComment: UILabel!
     @IBOutlet weak var albumThumbnail: UIImageView!
@@ -28,24 +27,19 @@ class AlbumTableViewCell: UITableViewCell {
     func config(withAlbumData albumData: Album?) {
         // General settings
         selectionStyle = UITableViewCell.SelectionStyle.none
-        albumView?.backgroundColor = PwgColor.cellBackground
+        contentView.backgroundColor = PwgColor.cellBackground
         binding1?.backgroundColor = PwgColor.background
         binding2?.backgroundColor = PwgColor.background
 
         // Album name (Piwigo orange colour)
         albumName?.text = albumData?.name ?? "—?—"
-        var fontSize = fontSizeFor(label: albumName, nberLines: 2)
-        albumName?.font = UIFont.systemFont(ofSize: fontSize)
         
         // Album description (colour depends on text content)
         albumComment?.attributedText = getDescription(fromAlbumData: albumData)
-        fontSize = UIFont.fontSizeFor(label: albumComment, nberLines: 3)
-        albumComment?.font = UIFont.systemFont(ofSize: fontSize)
 
         // Number of images and sub-albums
         numberOfImages?.text = getNberOfImages(fromAlbumData: albumData)
-        numberOfImages?.textColor = PwgColor.text
-        numberOfImages?.font = UIFont.systemFont(ofSize: 10, weight: .light)
+        numberOfImages?.textColor = PwgColor.rightLabel
 
         // Add renaming, moving and deleting capabilities when user has admin rights
         if let album = albumData, let hasAdminRights = album.user?.hasAdminRights {
@@ -113,21 +107,21 @@ class AlbumTableViewCell: UITableViewCell {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: PwgColor.text,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.foregroundColor: PwgColor.leftLabel,
+                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
         }
         else if albumData?.user?.hasAdminRights ?? false {
-//            let noDesc = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
-            desc = NSMutableAttributedString(string: "")
+            let noDesc = NSLocalizedString("createNewAlbumDescription_noDescription", comment: "no description")
+            desc = NSMutableAttributedString(string: noDesc)
             let wholeRange = NSRange(location: 0, length: desc.string.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: PwgColor.rightLabel,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.foregroundColor: PwgColor.placeHolder,
+                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
@@ -165,7 +159,7 @@ class AlbumTableViewCell: UITableViewCell {
             text = (albumData?.totalNbImages ?? Int64.zero > 1)
                 ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
                 : String.localizedStringWithFormat(singleImage, nberImages ?? "")
-            text += ", "
+            text += " • "
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
             text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
                 ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
@@ -174,41 +168,6 @@ class AlbumTableViewCell: UITableViewCell {
         return text
     }
     
-    private func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
-        // Check label is not nil
-        guard let label = label else { return 17.0 }
-        let font = UIFont.systemFont(ofSize: 17)
-        
-        // Check that we can adjust the font
-        if (label.adjustsFontSizeToFitWidth == false) ||
-            (label.minimumScaleFactor >= 1.0) {
-            // Font adjustment is disabled
-            return font.pointSize
-        }
-
-        // Should we scale the font?
-        var unadjustedWidth: CGFloat = 1.0
-        if let text = label.text {
-            unadjustedWidth = text.size(withAttributes: [NSAttributedString.Key.font: font]).width
-        }
-        let width: CGFloat = label.frame.size.width
-        let height: CGFloat = unadjustedWidth / CGFloat(nberLines)
-        var scaleFactor: CGFloat = width / height
-        if scaleFactor >= 1.0 {
-            // The text already fits at full font size
-            return font.pointSize
-        }
-
-        // Respect minimumScaleFactor
-        scaleFactor = fmax(scaleFactor, label.minimumScaleFactor)
-        let newFontSize: CGFloat = font.pointSize * scaleFactor
-
-        // Uncomment this if you insist on integer font sizes
-        //newFontSize = floor(newFontSize);
-
-        return newFontSize
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
         

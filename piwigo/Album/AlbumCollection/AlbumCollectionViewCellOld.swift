@@ -102,7 +102,7 @@ extension AlbumCollectionViewCellOld: UITableViewDataSource
 extension AlbumCollectionViewCellOld: UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 148.5 // see XIB file
+        return contentView.bounds.height   // see XIB file
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
