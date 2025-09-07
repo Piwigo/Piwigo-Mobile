@@ -536,13 +536,6 @@ class AlbumViewController: UIViewController
         
         // Reload visible cells, headers, and footers
         collectionView.reloadData()
-
-        (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter) ?? []).forEach { footer in
-            if let footer = footer as? ImageFooterReusableView {
-                footer.setNeedsLayout()
-                footer.layoutIfNeeded()
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
