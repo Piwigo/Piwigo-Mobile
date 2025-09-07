@@ -96,9 +96,9 @@ extension UploadPhotoSizeViewController: UITableViewDataSource
         // Name of the image size
         cell.backgroundColor = PwgColor.cellBackground
         cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
         cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.adjustsFontSizeToFitWidth = false
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         cell.textLabel?.text = indexPath.row == 0 ? pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
 
         // Add checkmark in front of selected item
@@ -137,7 +137,7 @@ extension UploadPhotoSizeViewController: UITableViewDelegate
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -111,19 +111,55 @@ class TableViewUtilities: NSObject {
     
     // MARK: - Rows
     // Returns the row height
+    static let defaultRowHeight = CGFloat(53)
+    static let defaultOldRowHeight = CGFloat(44)
     static let rowHeight: CGFloat = {
         if #available(iOS 26.0, *) {
-            return 53.0
+            return defaultRowHeight
         } else {
-            return 44.0
+            return defaultOldRowHeight
         }
     }()
     
+    func rowHeightForContentSizeCategory(_ contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+        let rowHeight = TableViewUtilities.rowHeight
+        switch contentSizeCategory {
+        case .extraSmall:
+            return rowHeight - 3.0
+        case .small:
+            return rowHeight - 2.0
+        case .medium:
+            return rowHeight - 1.0
+        case .large:
+            return rowHeight
+        case .extraLarge:
+            return rowHeight + 2.0
+        case .extraExtraLarge:
+            return rowHeight + 4.0
+        case .extraExtraExtraLarge:
+            return rowHeight + 6.0
+        case .accessibilityMedium:
+            return rowHeight + 11.0
+        case .accessibilityLarge:
+            return rowHeight + 16.0
+        case .accessibilityExtraLarge:
+            return rowHeight + 23.0
+        case .accessibilityExtraExtraLarge:
+            return rowHeight + 30.0
+        case .accessibilityExtraExtraExtraLarge:
+            return rowHeight + 36.0
+        case .unspecified:
+            fallthrough
+        default:
+            return rowHeight
+        }
+    }
+    
     static let rowExtraHeight: CGFloat = {
         if #available(iOS 26.0, *) {
-            return 53.0 - 44.0
+            return defaultRowHeight - defaultOldRowHeight
         } else {
-            return 44.0 - 44.0
+            return 0.0
         }
     }()
 

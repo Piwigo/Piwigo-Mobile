@@ -21,12 +21,14 @@ class TextFieldTableViewCell: UITableViewCell {
         backgroundColor = PwgColor.cellBackground
 
         // Text field name
-        leftLabel.font = .systemFont(ofSize: 17)
+        leftLabel.font = .preferredFont(forTextStyle: .body)
+        leftLabel.adjustsFontForContentSizeCategory = true
         leftLabel.textColor = PwgColor.leftLabel
         leftLabel.text = name
 
         // Text field
-        rightTextField.font = .systemFont(ofSize: 17)
+        rightTextField.font = .preferredFont(forTextStyle: .body)
+        rightTextField.adjustsFontForContentSizeCategory = true
         rightTextField.textColor = PwgColor.rightLabel
         rightTextField.text = input
         rightTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default

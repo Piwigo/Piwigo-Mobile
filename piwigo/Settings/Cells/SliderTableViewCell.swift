@@ -37,7 +37,8 @@ class SliderTableViewCell: UITableViewCell {
         backgroundColor = PwgColor.cellBackground
 
         // Slider title
-        sliderName.font = .systemFont(ofSize: 17)
+        sliderName.font = .preferredFont(forTextStyle: .body)
+        sliderName.adjustsFontForContentSizeCategory = true
         sliderName.textColor = PwgColor.leftLabel
         sliderName.text = title
 
@@ -50,7 +51,8 @@ class SliderTableViewCell: UITableViewCell {
         slider.thumbTintColor = PwgColor.thumb
 
         // Slider value
-        sliderValue.font = .systemFont(ofSize: 17)
+        sliderValue.font = .preferredFont(forTextStyle: .body)
+        sliderValue.adjustsFontForContentSizeCategory = true
         sliderValue.textColor = PwgColor.rightLabel
         valuePrefix = prefix
         valueSuffix = suffix

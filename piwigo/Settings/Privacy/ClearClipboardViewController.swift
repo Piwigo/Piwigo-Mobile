@@ -153,7 +153,8 @@ extension ClearClipboardViewController: UITableViewDataSource {
 
         cell.backgroundColor = PwgColor.cellBackground
         cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         cell.textLabel?.textColor = PwgColor.leftLabel
         cell.textLabel?.text = delayChoice?.delayText
         cell.textLabel?.minimumScaleFactor = 0.5
@@ -194,7 +195,7 @@ extension ClearClipboardViewController: UITableViewDelegate {
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -237,6 +237,9 @@ extension TroubleshootingViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "subtitle")
+        cell.textLabel?.textColor = PwgColor.leftLabel
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         
         switch indexPath.section {
         case 0 /* Logs */:
@@ -246,6 +249,9 @@ extension TroubleshootingViewController: UITableViewDataSource
             } else if let entry = pwgLogs[indexPath.row].first {
                 cell.textLabel?.text = entry.category
                 cell.detailTextLabel?.text = DateUtilities.pwgDateFormatter.string(from: entry.date)
+                cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
+                cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+                cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             } else {
                 cell.textLabel?.text = "None"
@@ -261,9 +267,15 @@ extension TroubleshootingViewController: UITableViewDataSource
                 if let pos = fileName.lastIndex(of: " ") {
                     cell.textLabel?.text = String(fileName[pos...].dropFirst())
                     cell.detailTextLabel?.text = String(fileName[...pos]) + " | " + fileURL.fileSizeString
+                    cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
+                    cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+                    cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 } else {
                     cell.textLabel?.text = fileName
                     cell.detailTextLabel?.text = fileURL.fileSizeString
+                    cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
+                    cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+                    cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
@@ -311,7 +323,7 @@ extension TroubleshootingViewController: UITableViewDelegate
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {

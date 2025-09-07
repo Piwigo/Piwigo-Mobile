@@ -22,11 +22,13 @@ class ShareMetadataCell: UITableViewCell {
         // General settings
         backgroundColor = PwgColor.cellBackground
         tintColor = PwgColor.orange
-        textLabel?.font = .systemFont(ofSize: 17)
+        textLabel?.font = .preferredFont(forTextStyle: .body)
+        textLabel?.adjustsFontSizeToFitWidth = true
 
         // Activity name
         leftLabel.text = activityName ?? "Unknown Activity"
-        leftLabel.font = .systemFont(ofSize: 17)
+        leftLabel.font = .preferredFont(forTextStyle: .body)
+        leftLabel.adjustsFontSizeToFitWidth = true
         leftLabel.textColor = PwgColor.leftLabel
 
         // Change image according to state

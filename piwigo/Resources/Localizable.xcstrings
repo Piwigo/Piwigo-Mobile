@@ -10097,7 +10097,7 @@
       }
     },
     "defaultAlbumThumbnailFile>414px" : {
-      "comment" : "Album Thumbnail File\nAlbums Thumbnail File",
+      "comment" : "Albums Thumbnail File",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -10805,6 +10805,7 @@
     },
     "defaultImageSort" : {
       "comment" : "Sort",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11108,6 +11109,7 @@
     },
     "defaultNberOfThumbnails" : {
       "comment" : "Number",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11310,6 +11312,7 @@
     },
     "defaultNberOfThumbnails>414px" : {
       "comment" : "Number per Row",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11411,6 +11414,7 @@
     },
     "defaultPreviewFile" : {
       "comment" : "Preview",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11916,6 +11920,7 @@
     },
     "defaultThumbnailFile" : {
       "comment" : "Thumbnail",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -12117,7 +12122,7 @@
       }
     },
     "defaultThumbnailFile>414px" : {
-      "comment" : "Image Thumbnail File\nImages Thumbnail File",
+      "comment" : "Images Thumbnail File",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -30026,6 +30031,7 @@
     },
     "maxNberOfRecentAlbums" : {
       "comment" : "Recent",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -30228,6 +30234,7 @@
     },
     "maxNberOfRecentAlbums>414px" : {
       "comment" : "Number of Recent Albums",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -47599,6 +47606,7 @@
     },
     "settings_shareGPSdata>375px" : {
       "comment" : "Share with Private Metadata",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

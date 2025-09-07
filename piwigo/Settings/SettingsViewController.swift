@@ -227,6 +227,16 @@ class SettingsViewController: UIViewController {
         settingsTableView?.reloadData()
     }
     
+    @MainActor
+    @objc func applyFontChanges() {
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
+        // Animated update for smoother experience
+        settingsTableView?.beginUpdates()
+        settingsTableView?.endUpdates()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -241,6 +251,10 @@ class SettingsViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
         
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyFontChanges),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+
         // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
                                                name: Notification.Name.pwgAutoUploadChanged, object: nil)

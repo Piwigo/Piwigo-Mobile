@@ -97,9 +97,9 @@ extension UploadVideoSizeViewController: UITableViewDataSource
         // Name of the image size
         cell.backgroundColor = PwgColor.cellBackground
         cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = indexPath.row == 0 ? pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
 
         // Add checkmark in front of selected item
@@ -138,7 +138,7 @@ extension UploadVideoSizeViewController: UITableViewDelegate
     
     // MARK: - UITableView - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

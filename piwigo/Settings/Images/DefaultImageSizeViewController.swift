@@ -87,7 +87,7 @@ extension DefaultImageSizeViewController: UITableViewDataSource {
         // Name of the image size
         cell.backgroundColor = PwgColor.cellBackground
         cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
         // Add checkmark in front of selected item
@@ -170,7 +170,7 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
