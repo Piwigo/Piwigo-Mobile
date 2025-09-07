@@ -111,6 +111,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
         selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
         albumDesc?.textColor = PwgColor.header
+        albumDesc?.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {
