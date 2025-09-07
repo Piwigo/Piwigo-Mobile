@@ -465,7 +465,7 @@ class AlbumViewController: UIViewController
             albumLabelsHeight = defaultAlbumLabelsHeight
             albumMaxWidth = defaultAlbumMaxWidth
             // Album w/ description: Headline 17 pnts + 4x Footnote 13 pnts + Caption2 11 pnts (see XIB)
-            oldAlbumHeight = 147.0
+            oldAlbumHeight = defaultOldAlbumHeight
         case .extraLarge:
             // Album w/o description: Headline 19 pnts + Footnote 15 pnts
             albumLabelsHeight = defaultAlbumLabelsHeight + 2.0 + 2.0
@@ -517,9 +517,9 @@ class AlbumViewController: UIViewController
         case .unspecified:
             fallthrough
         default:
-            albumLabelsHeight = 50.0
-            albumMaxWidth = 200.0
-            oldAlbumHeight = 147.0
+            albumLabelsHeight = defaultAlbumLabelsHeight
+            albumMaxWidth = defaultAlbumMaxWidth
+            oldAlbumHeight = defaultOldAlbumHeight
         }
     }
     
