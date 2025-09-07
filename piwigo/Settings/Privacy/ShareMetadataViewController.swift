@@ -47,9 +47,6 @@ class ShareMetadataViewController: UIViewController {
         
         // Navigation bar appearence
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         shareMetadataTableView.separatorColor = PwgColor.separator

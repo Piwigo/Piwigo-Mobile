@@ -15,7 +15,7 @@ extension UINavigationBar {
     func configAppearance(withLargeTitles: Bool) {
         // Buttons color
         tintColor = PwgColor.tintColor
-
+        
         // Create appearance object
         let barAppearance = UINavigationBarAppearance()
         barAppearance.configureWithTransparentBackground()
@@ -38,17 +38,39 @@ extension UINavigationBar {
             .font: UIFont.preferredFont(forTextStyle: .headline)
         ]
         barAppearance.titleTextAttributes = attributes
-
+        
         // Large title text attributes
         if withLargeTitles {
-            let attributesLarge: [NSAttributedString.Key : Any] = [
+            // Get adopted size category
+            let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
+
+            // Title
+            let largeTitleTextAttributes: [NSAttributedString.Key : Any] = [
                 .foregroundColor: titleAttributeColor,
-                .font: largeTitleFontForPreferredContenSizeCategory()
+                .font: largeTitleFontForPreferredContenSizeCategory(contentSizeCategory)
             ]
-            barAppearance.largeTitleTextAttributes = attributesLarge
+            barAppearance.largeTitleTextAttributes = largeTitleTextAttributes
         }
         prefersLargeTitles = withLargeTitles
-
+        
+        // Subtitle
+        if #available(iOS 26.0, *) {
+            let subtitleAttributeColor: UIColor = PwgColor.rightLabel
+            let subtitleAttributes: [NSAttributedString.Key : Any] = [
+                .foregroundColor: subtitleAttributeColor,
+                .font: UIFont.preferredFont(forTextStyle: .caption2)
+            ]
+            barAppearance.subtitleTextAttributes = subtitleAttributes
+            
+            if withLargeTitles {
+                let subtitleLargeAttributes: [NSAttributedString.Key : Any] = [
+                    .foregroundColor: PwgColor.rightLabel,
+                    .font: UIFont.preferredFont(forTextStyle: .subheadline)
+                ]
+                barAppearance.largeSubtitleTextAttributes = subtitleLargeAttributes
+            }
+        }
+        
         // Apply the appearance
         standardAppearance = barAppearance
         compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
@@ -57,9 +79,7 @@ extension UINavigationBar {
     }
     
     @MainActor
-    private func largeTitleFontForPreferredContenSizeCategory() -> UIFont {
-        let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
-        
+    private func largeTitleFontForPreferredContenSizeCategory(_ contentSizeCategory: UIContentSizeCategory) -> UIFont {
         // Set font size according to the selected category
         /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
         switch contentSizeCategory {

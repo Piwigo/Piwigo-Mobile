@@ -38,9 +38,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Text color depdending on background color
         authorsLabel.textColor = PwgColor.text

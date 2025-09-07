@@ -182,9 +182,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
         uploadBarButton.tintColor = PwgColor.tintColor
 
         // Collection view

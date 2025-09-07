@@ -135,9 +135,6 @@ class TagSelectorViewController: UITableViewController {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Search bar
         searchController.searchBar.configAppearance()

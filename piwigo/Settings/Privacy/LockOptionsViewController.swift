@@ -28,7 +28,7 @@ class LockOptionsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set title
+        // Title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
         
         // Evaluate biometrics policy
@@ -44,9 +44,6 @@ class LockOptionsViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         lockOptionsTableView.separatorColor = PwgColor.separator

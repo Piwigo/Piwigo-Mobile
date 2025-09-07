@@ -131,9 +131,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         setTableViewMainHeader()

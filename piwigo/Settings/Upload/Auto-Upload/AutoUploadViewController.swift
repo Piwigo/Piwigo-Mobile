@@ -60,6 +60,7 @@ class AutoUploadViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
     }
 
@@ -70,9 +71,6 @@ class AutoUploadViewController: UIViewController {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         autoUploadTableView.separatorColor = PwgColor.separator

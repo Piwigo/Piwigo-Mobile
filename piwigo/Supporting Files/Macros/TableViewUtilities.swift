@@ -17,41 +17,17 @@ class TableViewUtilities: NSObject {
     let margin: CGFloat = 20.0
 
     
-    // MARK: - Title
-    // Returns the title as an attributed string for Albums
+    // MARK: - Title & Subtitle
+    // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
     @available(iOS 26.0, *)
-    func attributedTitleForAlbum(_ title: String?) -> AttributedString {
-        guard let title, title.isEmpty == false else { return AttributedString("") }
-        
-        // Get title
-        var attrTtitle = AttributedString(title)
-        attrTtitle.foregroundColor = PwgColor.gray
-        attrTtitle.font = UIFont.preferredFont(forTextStyle: .headline)
-        return attrTtitle
-    }
-
-    // Returns the subtitle as an attributed string for Albums
-    @available(iOS 26.0, *)
-    func attributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
+    func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
         guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
-        
+
         // Get title
         var attrSubtitle = AttributedString(subtitle)
         attrSubtitle.foregroundColor = PwgColor.rightLabel
-        attrSubtitle.font = UIFont.preferredFont(forTextStyle: .caption2)
+        attrSubtitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
         return attrSubtitle
-    }
-    
-    // Returns the title as an attributed string for Settings, etc. views
-    @available(iOS 26.0, *)
-    func attributedTitle(_ title: String?) -> AttributedString {
-        guard let title, title.isEmpty == false else { return AttributedString("") }
-        
-        // Get title
-        var attrTtitle = AttributedString(title)
-        attrTtitle.foregroundColor = PwgColor.gray
-        attrTtitle.font = UIFont.preferredFont(forTextStyle: .headline)
-        return attrTtitle
     }
 
     

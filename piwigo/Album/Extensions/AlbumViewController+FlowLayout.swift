@@ -31,8 +31,7 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
         let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumUtilities.kAlbumMarginsSpacing
-        let headerRect = desc.boundingRect(with: CGSize(width: maxWidth,
-                                                        height: CGFloat.greatestFiniteMagnitude),
+        let headerRect = desc.boundingRect(with: CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude),
                                            options: .usesLineFragmentOrigin, context: context)
         return CGSize(width: maxWidth + 4.0, height: ceil(headerRect.size.height + 4.0))
     }
@@ -145,15 +144,15 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         
         // Get number of images and status
         let footer = getImageCount()
-        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light)]
+        let attributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
+        let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumUtilities.kAlbumMarginsSpacing
         let footerRect = footer.boundingRect(
-            with: CGSize(width: collectionView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude),
+            with: CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude),
             options: .usesLineFragmentOrigin,
             attributes: attributes, context: context)
-        return CGSize(width: collectionView.frame.size.width - 30.0,
-                      height: ceil(footerRect.size.height + 8.0))
+        return CGSize(width: maxWidth + 4.0, height: ceil(footerRect.size.height + 8.0))
     }
     
     

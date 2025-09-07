@@ -479,7 +479,6 @@ extension AlbumViewController
             title = albumData.name
         }
         self.view?.window?.windowScene?.title = title
-        navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitleForAlbum(title)
         
         // No subTitle when using acessibility category
         let contenSizeCategory = traitCollection.preferredContentSizeCategory
@@ -534,9 +533,12 @@ extension AlbumViewController
                 }
             }
         }
-        
-        // Apply attributes to subTitle
-        navigationItem.attributedSubtitle = TableViewUtilities.shared.attributedSubTitleForAlbum(subTitle)
+        navigationItem.subtitle = subTitle
+
+        // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
+        if prefersLargeTitles {
+            navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
+        }
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")

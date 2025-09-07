@@ -136,6 +136,12 @@ class AlbumViewController: UIViewController
         return user.canManageFavorites()
     }()
     
+    lazy var prefersLargeTitles: Bool = {
+        // Adopts large title only when showing the default album
+        return categoryId == AlbumVars.shared.defaultCategory
+    }()
+    
+    
     // MARK: - Image Animated Transitioning
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
     var animatedCell: ImageCollectionViewCell?
@@ -340,7 +346,6 @@ class AlbumViewController: UIViewController
         noAlbumLabel.textColor = PwgColor.header
         
         // Navigation bar
-        let prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
         navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
         setTitleViewFromAlbumData()
         
@@ -521,6 +526,23 @@ class AlbumViewController: UIViewController
             albumMaxWidth = defaultAlbumMaxWidth
             oldAlbumHeight = defaultOldAlbumHeight
         }
+        
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
+        setTitleViewFromAlbumData()
+
+        // Invalidate layout to recalculate cell sizes
+        collectionView.collectionViewLayout.invalidateLayout()
+        
+        // Reload visible cells, headers, and footers
+        collectionView.reloadData()
+
+        (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter) ?? []).forEach { footer in
+            if let footer = footer as? ImageFooterReusableView {
+                footer.setNeedsLayout()
+                footer.layoutIfNeeded()
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -533,6 +555,7 @@ class AlbumViewController: UIViewController
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
         navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationItem.largeTitleDisplayMode = prefersLargeTitles ? .always : .never
         navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
 
         // Set navigation bar and buttons
@@ -543,15 +566,10 @@ class AlbumViewController: UIViewController
         }
         
         // Should we reload the collection view?
-        switch AlbumVars.shared.displayAlbumDescriptions {
-        case true:
-            if collectionView.visibleCells.first is AlbumCollectionViewCell {
-                collectionView?.reloadData()
-            }
-        case false:
-            if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
-                collectionView?.reloadData()
-            }
+        if collectionView.visibleCells.first is AlbumCollectionViewCell {
+            collectionView?.reloadData()
+        } else if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
+            collectionView?.reloadData()
         }
         
         // Set colors, fonts, etc. and title view

@@ -40,6 +40,7 @@ class UploadVideoSizeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
     }
 
@@ -50,9 +51,6 @@ class UploadVideoSizeViewController: UIViewController {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         tableView.separatorColor = PwgColor.separator

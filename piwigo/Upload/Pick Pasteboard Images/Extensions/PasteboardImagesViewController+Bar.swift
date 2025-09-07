@@ -33,19 +33,18 @@ extension PasteboardImagesViewController {
         // Title and subtitle
         if #available(iOS 26.0, *) {
             // Title
-            let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
+            title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
             
             // Subtitle
             if hasSelectedImages {
                 let subtitle = nberOfSelectedImages == 1
                     ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
                     : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
-                navigationItem.attributedSubtitle = TableViewUtilities.shared.attributedSubTitleForAlbum(subtitle)
+                navigationItem.subtitle = subtitle
             }
             else {
                 let subtitle = NSLocalizedString("selectImages", comment: "Select Photos")
-                navigationItem.attributedSubtitle = TableViewUtilities.shared.attributedSubTitleForAlbum(subtitle)
+                navigationItem.subtitle = subtitle
             }
         } else {
             // Fallback on previous version

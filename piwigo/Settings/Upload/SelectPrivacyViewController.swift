@@ -46,9 +46,6 @@ class SelectPrivacyViewController: UIViewController {
 
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         privacyTableView.separatorColor = PwgColor.separator

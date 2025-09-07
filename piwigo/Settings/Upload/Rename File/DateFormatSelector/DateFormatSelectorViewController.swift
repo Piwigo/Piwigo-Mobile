@@ -98,9 +98,6 @@ class DateFormatSelectorViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Header and example
         headerLabel.textColor = PwgColor.header

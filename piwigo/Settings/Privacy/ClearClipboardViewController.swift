@@ -94,6 +94,7 @@ class ClearClipboardViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
     }
     
@@ -104,9 +105,6 @@ class ClearClipboardViewController: UIViewController {
         
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        if #available(iOS 26.0, *) {
-            navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitle(title)
-        }
 
         // Table view
         delayTableView.separatorColor = PwgColor.separator
