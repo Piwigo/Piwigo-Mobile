@@ -30,11 +30,11 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
         let desc = attributedComment()
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let headerRect = desc.boundingRect(with: CGSize(width: collectionView.frame.size.width - 30.0,
+        let maxWidth = collectionView.frame.width - 30.0 - 2 * AlbumUtilities.kAlbumMarginsSpacing
+        let headerRect = desc.boundingRect(with: CGSize(width: maxWidth,
                                                         height: CGFloat.greatestFiniteMagnitude),
                                            options: .usesLineFragmentOrigin, context: context)
-        return CGSize(width: collectionView.frame.size.width - 30.0,
-                      height: ceil(headerRect.size.height + 4.0))
+        return CGSize(width: maxWidth + 4.0, height: ceil(headerRect.size.height + 4.0))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
