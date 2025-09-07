@@ -107,7 +107,7 @@ class AlbumTableViewCell: UITableViewCell {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: PwgColor.leftLabel,
+                NSAttributedString.Key.foregroundColor: PwgColor.gray,
                 NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
                 NSAttributedString.Key.paragraphStyle: style
             ]

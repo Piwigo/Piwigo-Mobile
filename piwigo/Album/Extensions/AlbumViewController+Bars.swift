@@ -35,7 +35,6 @@ extension AlbumViewController
             // Back button to parent album
             navigationItem.setLeftBarButtonItems([], animated: true)
             navigationItem.hidesBackButton = false
-            navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
         }
         
         // Right side of navigation bar and toolbar
@@ -186,7 +185,6 @@ extension AlbumViewController
             // Back button to parent album
             navigationItem.setLeftBarButtonItems([], animated: true)
             navigationItem.hidesBackButton = false
-            navigationItem.backButtonDisplayMode = view.bounds.size.width > minWidthForDefaultBackButton ? .default : .generic
         }
 
         // Right side of navigation bar
@@ -558,7 +556,7 @@ extension AlbumViewController
         titleLabel.textColor = PwgColor.whiteCream
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
@@ -568,7 +566,7 @@ extension AlbumViewController
         style.alignment = NSTextAlignment.center
         let attributes = [
             NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline),
             NSAttributedString.Key.paragraphStyle: style
         ]
         let attTitle = NSMutableAttributedString(string: albumData.name)
@@ -581,8 +579,8 @@ extension AlbumViewController
         var subtitle = ""
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
-        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) || !isAccessibilityCategory {
-            if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
+        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !isAccessibilityCategory {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
                     subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
@@ -593,7 +591,7 @@ extension AlbumViewController
                     subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
                 }
             }
-            else if inSelectionMode {
+            else if inSelectionMode && !isAccessibilityCategory {
                 let nberPhotos = selectedImageIDs.count
                 switch nberPhotos {
                 case 0:
@@ -641,11 +639,11 @@ extension AlbumViewController
         if subtitle.isEmpty == false {
             let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = PwgColor.whiteCream
+            subTitleLabel.textColor = PwgColor.rightLabel
             subTitleLabel.textAlignment = .center
             subTitleLabel.numberOfLines = 1
             subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = .systemFont(ofSize: 10)
+            subTitleLabel.font = .preferredFont(forTextStyle: .caption2)
             subTitleLabel.adjustsFontSizeToFitWidth = false
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
@@ -653,7 +651,7 @@ extension AlbumViewController
             subTitleLabel.sizeToFit()
             
             var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0) * 0.4)
+            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0 - 100.0))
             let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
                                                         height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
             twoLineTitleView.addSubview(titleLabel)
@@ -668,7 +666,7 @@ extension AlbumViewController
                                                options: [], metrics: nil, views: views))
             navigationItem.titleView = twoLineTitleView
         } else {
-            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
+            let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width - 100.0))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
             oneLineTitleView.addSubview(titleLabel)

@@ -18,36 +18,39 @@ class TableViewUtilities: NSObject {
 
     
     // MARK: - Title
-    // Returns the title as an attributed string for Albums (used since iOS 26)
+    // Returns the title as an attributed string for Albums
+    @available(iOS 26.0, *)
     func attributedTitleForAlbum(_ title: String?) -> AttributedString {
         guard let title, title.isEmpty == false else { return AttributedString("") }
         
         // Get title
         var attrTtitle = AttributedString(title)
-        attrTtitle.foregroundColor = PwgColor.whiteCream
-        attrTtitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        attrTtitle.foregroundColor = PwgColor.gray
+        attrTtitle.font = UIFont.preferredFont(forTextStyle: .headline)
         return attrTtitle
     }
 
-    // Returns the subtitle as an attributed string for Albums (used since iOS 26)
+    // Returns the subtitle as an attributed string for Albums
+    @available(iOS 26.0, *)
     func attributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
         guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
         
         // Get title
         var attrSubtitle = AttributedString(subtitle)
-        attrSubtitle.foregroundColor = PwgColor.whiteCream
-        attrSubtitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+        attrSubtitle.foregroundColor = PwgColor.rightLabel
+        attrSubtitle.font = UIFont.preferredFont(forTextStyle: .caption2)
         return attrSubtitle
     }
     
-    // Returns the title as an attributed string for Settings, etc. views (used since iOS 26)
+    // Returns the title as an attributed string for Settings, etc. views
+    @available(iOS 26.0, *)
     func attributedTitle(_ title: String?) -> AttributedString {
         guard let title, title.isEmpty == false else { return AttributedString("") }
         
         // Get title
         var attrTtitle = AttributedString(title)
-        attrTtitle.foregroundColor = PwgColor.whiteCream
-        attrTtitle.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        attrTtitle.foregroundColor = PwgColor.gray
+        attrTtitle.font = UIFont.preferredFont(forTextStyle: .headline)
         return attrTtitle
     }
 

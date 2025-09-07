@@ -533,7 +533,8 @@ class AlbumViewController: UIViewController
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
         navigationController?.setNavigationBarHidden(false, animated: true)
-        
+        navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
+
         // Set navigation bar and buttons
         initBarsInPreviewMode()
         if #unavailable(iOS 26.0) {
@@ -769,7 +770,6 @@ class AlbumViewController: UIViewController
                 
                 // Reset title and back button
                 setTitleViewFromAlbumData() // with or without update info below the name
-                navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
                 
             default: // Other albums including the visible one
                 // Update position of buttons (recalculated after device rotation)
@@ -782,7 +782,6 @@ class AlbumViewController: UIViewController
                 
                 // Reset title and back button
                 setTitleViewFromAlbumData() // with or without update info below the name
-                navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
             }
         })
     }

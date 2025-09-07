@@ -83,8 +83,8 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     func applyColorPalette() {
         backgroundColor = PwgColor.background
         contentView.backgroundColor = PwgColor.cellBackground
-        albumName.textColor = PwgColor.text
-        numberOfImages.textColor = PwgColor.text
+        albumName.textColor = PwgColor.gray
+        numberOfImages.textColor = PwgColor.rightLabel
         recentlyModified?.tintColor = UIColor.white
         recentlyModified?.layer.shadowColor = UIColor.black.cgColor
         recentlyModified?.layer.shadowOpacity = 1.0
