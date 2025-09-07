@@ -651,7 +651,8 @@ extension AlbumViewController
             subTitleLabel.sizeToFit()
             
             var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, (navigationController?.view.bounds.size.width ?? 0.0 - 100.0))
+            titleWidth = fmin(titleWidth, view.bounds.size.width - 100.0)
+            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
                                                         height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
             twoLineTitleView.addSubview(titleLabel)
