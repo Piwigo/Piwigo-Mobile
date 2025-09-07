@@ -107,6 +107,25 @@ class TableViewUtilities: NSObject {
                                                              ]))
         return header
     }
+    
+    
+    // MARK: - Rows
+    // Returns the row height
+    static let rowHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return 53.0
+        } else {
+            return 44.0
+        }
+    }()
+    
+    static let rowExtraHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return 53.0 - 44.0
+        } else {
+            return 44.0 - 44.0
+        }
+    }()
 
 
     // MARK: - Footers
@@ -170,23 +189,4 @@ class TableViewUtilities: NSObject {
                                                              ]))
         return footer
     }
-    
-    
-    // MARK: - Rows
-    // Returns the row height
-    static let rowHeight: CGFloat = {
-        if #available(iOS 26.0, *) {
-            return 51.0
-        } else {
-            return 44.0
-        }
-    }()
-    
-    static let rowExtraHeight: CGFloat = {
-        if #available(iOS 26.0, *) {
-            return 51.0 - 44.0
-        } else {
-            return 44.0 - 44.0
-        }
-    }()
 }
