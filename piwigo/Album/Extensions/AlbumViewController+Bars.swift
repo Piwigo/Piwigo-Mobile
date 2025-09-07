@@ -483,6 +483,10 @@ extension AlbumViewController
         self.view?.window?.windowScene?.title = title
         navigationItem.attributedTitle = TableViewUtilities.shared.attributedTitleForAlbum(title)
         
+        // No subTitle when using acessibility category
+        guard traitCollection.preferredContentSizeCategory.isAccessibilityCategory == false
+        else { return }
+        
         // Get subTitle
         var subTitle = ""
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
