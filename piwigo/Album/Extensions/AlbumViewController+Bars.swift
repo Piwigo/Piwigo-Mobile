@@ -577,9 +577,11 @@ extension AlbumViewController
         titleLabel.sizeToFit()
         
         // There is no subtitle in landscape mode on iPhone
+        // nor when using acessibility category
         var subtitle = ""
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+        let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) || !isAccessibilityCategory {
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
@@ -612,7 +614,7 @@ extension AlbumViewController
                     subtitle = ""
                 }
             }
-            else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
+            else if albumData.dateGetImages > TimeInterval(86400) && !isAccessibilityCategory { // i.e. a day after minimum date
                 let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
                 if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
                     subtitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")
