@@ -20,7 +20,7 @@
                         <constraint firstAttribute="height" constant="30" id="KKl-JX-ltz"/>
                     </constraints>
                     <color key="textColor" systemColor="labelColor"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" lookupSuggestion="YES"/>
                 </textView>

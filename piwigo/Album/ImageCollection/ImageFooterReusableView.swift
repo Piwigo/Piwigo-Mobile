@@ -24,7 +24,7 @@ class ImageFooterReusableView: UICollectionReusableView {
         nberImagesLabel?.adjustsFontSizeToFitWidth = false
         nberImagesLabel?.lineBreakMode = .byWordWrapping
         nberImagesLabel?.textAlignment = .center
-        nberImagesLabel?.font = .preferredFont(forTextStyle: .footnote)
+        nberImagesLabel?.font = .preferredFont(forTextStyle: .subheadline)
         nberImagesLabel?.adjustsFontForContentSizeCategory = true
         nberImagesLabel?.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
 

@@ -154,7 +154,7 @@ extension AlbumViewController
             style.alignment = NSTextAlignment.center
             let attributes = [
                 NSAttributedString.Key.foregroundColor: PwgColor.header,
-                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
+                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .subheadline),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)

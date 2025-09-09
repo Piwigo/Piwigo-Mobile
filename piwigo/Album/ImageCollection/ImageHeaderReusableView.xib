@@ -21,7 +21,7 @@
                         <constraint firstAttribute="height" constant="24" id="YhD-mA-Ghp"/>
                     </constraints>
                     <color key="textColor" systemColor="labelColor"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" lookupSuggestion="YES"/>
                 </textView>
