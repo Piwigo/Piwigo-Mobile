@@ -474,7 +474,8 @@ class AlbumUtilities: NSObject {
     }
     
     // MARK: - Album/Images Collections | Image Section
-    static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool) -> (String, String) {
+    static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool,
+                              inWidth width: CGFloat) -> (String, String) {
         // Creation date of images (or of availability)
         let refDate = DateUtilities.unknownDateInterval     // i.e. unknown date
         var dateLabelText = " "                             // Displayed when there is no date available
@@ -506,13 +507,19 @@ class AlbumUtilities: NSObject {
             let startDate = Date(timeIntervalSinceReferenceDate: lowest)
             
             // Display date/month/year by default, will add weekday/time in the absence of location data
-            let dateStyle: DateFormatter.Style = UIScreen.main.bounds.size.width > 400 ? .long : .medium
-            dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
+            switch width {
+            case ...0:
+                dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .short, timeStyle: .none)
+            case 1..<400:
+                dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
+            default:
+                dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
+            }
             
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
             let optFormatter = DateUtilities.dateFormatter
             if arePwgDates {
-                switch UIScreen.main.bounds.size.width {
+                switch width {
                 case 0..<400:
                     optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
                 case 400...600:
@@ -538,7 +545,7 @@ class AlbumUtilities: NSObject {
                     // => Keep dateLabel as already set
                     // => Add ending time to optional string
                     if arePwgDates {
-                        let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
+                        let timeStyle = width > 600 ? "HH:mm:ss" : "HH:mm"
                         optFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
                         optionalDateLabelText += " — " + optFormatter.string(from: endDate)
                     }
@@ -552,8 +559,10 @@ class AlbumUtilities: NSObject {
                     // Images taken during the same month => Display days of month
                     let dateFormatter = DateIntervalFormatter()
                     dateFormatter.timeStyle = .none
-                    switch UIScreen.main.bounds.size.width {
-                    case 0..<400:
+                    switch width {
+                    case ...0:
+                        dateFormatter.dateStyle = .short
+                    case 1..<400:
                         dateFormatter.dateStyle = .medium
                     default:
                         dateFormatter.dateStyle = .long
@@ -565,7 +574,7 @@ class AlbumUtilities: NSObject {
                     let optFormatter = DateUtilities.dateFormatter
                     optFormatter.locale = .current
                     if arePwgDates {
-                        switch UIScreen.main.bounds.size.width {
+                        switch width {
                         case 0..<400:
                             optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
                         case 400..<600:
@@ -574,7 +583,7 @@ class AlbumUtilities: NSObject {
                             optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
                         }
                     } else {
-                        switch UIScreen.main.bounds.size.width {
+                        switch width {
                         case 0..<400:
                             optFormatter.setLocalizedDateFormatFromTemplate("eee d")
                         default:
@@ -588,7 +597,7 @@ class AlbumUtilities: NSObject {
                 // => Images not taken the same month => Display day/month of year
                 let dateFormatter = DateUtilities.dateIntervalFormatter
                 dateFormatter.timeStyle = .none
-                switch UIScreen.main.bounds.size.width {
+                switch width {
                 case 0..<400:
                     dateFormatter.dateTemplate = "YYMMdd"
                 case 400..<600:
@@ -602,7 +611,7 @@ class AlbumUtilities: NSObject {
                 // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
                 let optFormatter = DateUtilities.dateFormatter
                 if arePwgDates {
-                    switch UIScreen.main.bounds.size.width {
+                    switch width {
                     case 0..<400:
                         optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
                     case 400..<600:
@@ -611,7 +620,7 @@ class AlbumUtilities: NSObject {
                         optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
                     }
                 } else {
-                    switch UIScreen.main.bounds.size.width {
+                    switch width {
                     case 0..<400:
                         optFormatter.setLocalizedDateFormatFromTemplate("eee d")
                     default:

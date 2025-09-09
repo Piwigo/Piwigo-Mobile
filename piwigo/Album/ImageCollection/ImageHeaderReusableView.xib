@@ -25,15 +25,15 @@
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" lookupSuggestion="YES"/>
                 </textView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDz-SW-5Hc">
-                    <rect key="frame" x="8" y="32" width="76.333333333333329" height="18"/>
-                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDz-SW-5Hc">
+                    <rect key="frame" x="8" y="32" width="74.333333333333329" height="18"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-Ur-qXZ">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Itr-Ur-qXZ">
                     <rect key="frame" x="8" y="50" width="60" height="16"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -64,6 +64,7 @@
             <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
             <accessibility key="accessibilityConfiguration" identifier="sortOption"/>
             <constraints>
+                <constraint firstAttribute="bottom" secondItem="Itr-Ur-qXZ" secondAttribute="bottom" constant="4" id="In0-dd-mf2"/>
                 <constraint firstAttribute="trailing" secondItem="9lo-4D-NyW" secondAttribute="trailing" constant="15" id="SZT-mP-H4G"/>
                 <constraint firstAttribute="trailing" secondItem="cU4-a8-hx4" secondAttribute="trailing" constant="8" id="YFg-Tf-g18"/>
                 <constraint firstItem="Itr-Ur-qXZ" firstAttribute="leading" secondItem="48f-AC-xRm" secondAttribute="leading" constant="8" id="dyK-nd-mhz"/>
@@ -86,7 +87,7 @@
                 <outlet property="mainLabel" destination="fDz-SW-5Hc" id="8zV-Hh-aVr"/>
                 <outlet property="selectButton" destination="cU4-a8-hx4" id="HXv-tu-Oda"/>
             </connections>
-            <point key="canvasLocation" x="-354.19847328244271" y="351.40845070422534"/>
+            <point key="canvasLocation" x="-1365" y="306"/>
         </view>
     </objects>
     <resources>

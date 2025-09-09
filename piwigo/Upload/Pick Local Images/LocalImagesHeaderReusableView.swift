@@ -43,16 +43,27 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         mainLabel?.textColor = PwgColor.leftLabel
         detailLabel?.textColor = PwgColor.rightLabel
 
+        // Determine width available
+        var width: CGFloat = bounds.width
+        let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+        if isAccessibilityCategory {
+            width = 0.0
+        }
+        
         // Get date labels from images in section
         let oldest = DateUtilities.unknownDateInterval   // i.e. unknown date
         let dateIntervals = images.map { $0.creationDate?.timeIntervalSinceReferenceDate ?? oldest}
-        let dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: false)
+        let dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: false, inWidth: width)
         self.mainLabel?.text = dates.0
 
         // Set labels from dates and place name
-        if images.isEmpty {
+        if isAccessibilityCategory {
+            self.detailLabel?.text = nil
+        }
+        else if images.isEmpty {
             self.detailLabel?.text = dates.1
-        } else {
+        }
+        else {
             // Determine location from images in section
             let location = getLocation(of: images)
             LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in

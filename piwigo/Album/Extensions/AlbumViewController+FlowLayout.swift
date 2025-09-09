@@ -73,9 +73,9 @@ extension AlbumViewController: UICollectionViewDelegateFlowLayout
             let hasAlbumSection = self.diffableDataSource.snapshot().sectionIdentifiers.contains(pwgAlbumGroup.none.sectionKey)
             if section == 0, hasAlbumSection == false {
                 return CGSize(width: collectionView.frame.size.width,
-                              height: 49 + self.getAlbumDescriptionSize().height)
+                              height: imageHeaderHeight + self.getAlbumDescriptionSize().height)
             } else {
-                return CGSize(width: collectionView.frame.size.width, height: 49)
+                return CGSize(width: collectionView.frame.size.width, height: imageHeaderHeight)
             }
         }
     }

@@ -79,7 +79,9 @@ class LocalImagesViewController: UIViewController
 
     var uploadsToDelete = [Upload]()
     lazy var imageCellSize: CGSize = getImageCellSize()
-    
+    let defaultImageHeaderHeight: CGFloat = 54.0
+    lazy var imageHeaderHeight: CGFloat = defaultImageHeaderHeight
+
 
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
@@ -210,6 +212,66 @@ class LocalImagesViewController: UIViewController
         localImagesCollection.reloadData()
     }
 
+    @objc func applyFontChanges() {
+        // Constants
+        let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
+
+        // Set cell size according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        switch contentSizeCategory {
+        case .extraSmall:
+            // Image section header height: Subhead 12 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 3.0 - 1.0
+        case .small:
+            // Image section header height: Subhead 13 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 2.0 - 1.0
+        case .medium:
+            // Image section header height: Subhead 14 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 1.0 - 1.0
+        case .large:    // default style
+            // Image section header height: Subhead 15 pnts + Footnote 13 pnts
+            imageHeaderHeight = defaultImageHeaderHeight
+        case .extraLarge:
+            // Image section header height: Subhead 17 pnts + Footnote 15 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 2.0 + 2.0
+        case .extraExtraLarge:
+            // Image section header height: Subhead 19 pnts + Footnote 17 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 4.0 + 4.0
+        case .extraExtraExtraLarge:
+            // Image section header height: Subhead 21 pnts + Footnote 19 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 6.0 + 6.0
+        case .accessibilityMedium:
+            // Image section header height: Subhead 25 pnts + Footnote 23 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 10.0 - 17.0
+        case .accessibilityLarge:
+            // Image section header height: Subhead 30 pnts + Footnote 27 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 15.0 - 17.0
+        case .accessibilityExtraLarge:
+            // Image section header height: Subhead 36 pnts + Footnote 33 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 21.0 - 17.0
+        case .accessibilityExtraExtraLarge:
+            // Image section header height: Subhead 42 pnts + Footnote 38 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 27.0 - 17.0
+        case .accessibilityExtraExtraExtraLarge:
+            // Image section header height: Subhead 49 pnts + Footnote 44 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 34.0 - 17.0
+        case .unspecified:
+            fallthrough
+        default:
+            imageHeaderHeight = defaultImageHeaderHeight
+        }
+        
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        updateNavBar()
+
+        // Invalidate layout to recalculate cell sizes
+        localImagesCollection.collectionViewLayout.invalidateLayout()
+        
+        // Reload visible cells, headers, and footers
+        localImagesCollection.reloadData()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -230,6 +292,10 @@ class LocalImagesViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
                                                name: Notification.Name.pwgUploadProgress, object: nil)
         
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyFontChanges),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+
         // Prevent device from sleeping if uploads are in progress
         let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
                                            .uploading, .uploaded, .finishing]

@@ -44,20 +44,20 @@
                                         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QkP-DX-w4M">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mainLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
-                                                    <rect key="frame" x="8" y="10" width="72.5" height="18"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="mainLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
+                                                    <rect key="frame" x="8" y="4" width="70.5" height="20"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
-                                                    <rect key="frame" x="8" y="28" width="60" height="16"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
+                                                    <rect key="frame" x="8" y="24" width="60" height="16"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
-                                                    <rect key="frame" x="349" y="13.5" width="57" height="27"/>
+                                                    <rect key="frame" x="349" y="9.5" width="57" height="27"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="27" id="bdo-M7-fBu"/>
@@ -85,10 +85,11 @@
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="baseline" id="8gB-0u-eKB"/>
                                                 <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="E5G-dL-Ipw"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="H2a-jo-2YV"/>
-                                                <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" id="cdc-8q-Liq"/>
+                                                <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" constant="4" id="cdc-8q-Liq"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
                                                 <constraint firstAttribute="trailing" secondItem="Lfe-Kd-abT" secondAttribute="trailing" constant="8" id="n8v-KW-Fd2"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IuZ-Ot-NeB" secondAttribute="trailing" constant="10" id="pAn-ka-Tj4"/>
+                                                <constraint firstItem="IuZ-Ot-NeB" firstAttribute="top" secondItem="QkP-DX-w4M" secondAttribute="top" constant="4" id="qHg-EX-Cif"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NIO-n9-bqf" secondAttribute="trailing" constant="10" id="wpv-JQ-p9X"/>
                                             </constraints>
                                         </view>
