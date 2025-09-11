@@ -42,7 +42,6 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         albumData = album
         
         // Is this a sub-category?
-        albumLabel.font = .systemFont(ofSize: 17)
         albumLabel.textColor = PwgColor.leftLabel
         albumLabel.text = albumData.name
         if depth == 0 {
