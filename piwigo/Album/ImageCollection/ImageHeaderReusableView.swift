@@ -52,22 +52,19 @@ class ImageHeaderReusableView: UICollectionReusableView
             albumDescHeight?.constant = size.height
         }
         
-        // Determine width available
-        var width: CGFloat = bounds.width
-        let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
-        if isAccessibilityCategory {
-            width = 0.0
-        }
-        
         // Get date labels from images in section
         var dates = ("", "")
         switch sortKey {
         case #keyPath(Image.dateCreated):
             let dateIntervals = images.map {$0.dateCreated}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true, inWidth: width)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true,
+                                                 preferredContenSize: traitCollection.preferredContentSizeCategory,
+                                                 width: bounds.width)
         case #keyPath(Image.datePosted):
             let dateIntervals = images.map {$0.datePosted}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true, inWidth: width)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true,
+                                                 preferredContenSize: traitCollection.preferredContentSizeCategory,
+                                                 width: bounds.width)
         default:
             dates = (" ", " ")
             break
@@ -75,7 +72,7 @@ class ImageHeaderReusableView: UICollectionReusableView
         
         // Set labels from dates and place name
         self.mainLabel?.text = dates.0
-        if isAccessibilityCategory {
+        if traitCollection.preferredContentSizeCategory >= .accessibilityMedium {
             self.detailLabel.text = nil
         }
         else if images.isEmpty {

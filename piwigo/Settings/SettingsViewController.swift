@@ -44,7 +44,7 @@ class SettingsViewController: UIViewController {
     enum TextFieldTag : Int {
         case author
     }
-
+    
     weak var settingsDelegate: ChangedSettingsDelegate?
     
     @IBOutlet var settingsTableView: UITableView!
@@ -62,7 +62,7 @@ class SettingsViewController: UIViewController {
     // The image sort type is returned with album data since Piwigo 14.0.
     lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
-        
+    
     // For displaying cache sizes
     var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
         didSet {
@@ -158,7 +158,7 @@ class SettingsViewController: UIViewController {
                               let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
                               index != self.oldRecentPeriodIndex
                         else { return }
-
+                        
                         // Update current index and reload corresponding cell
                         DispatchQueue.main.async { [self] in
                             self.user.id = usersData.id ?? Int16.zero
@@ -185,7 +185,7 @@ class SettingsViewController: UIViewController {
         queue.maxConcurrentOperationCount = .max
         queue.qualityOfService = .userInitiated
         queue.addOperations(operations, waitUntilFinished: false)
-                
+        
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
         
@@ -227,16 +227,6 @@ class SettingsViewController: UIViewController {
         settingsTableView?.reloadData()
     }
     
-    @MainActor
-    @objc func applyFontChanges() {
-        // Navigation bar
-        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
-        // Animated update for smoother experience
-        settingsTableView?.beginUpdates()
-        settingsTableView?.endUpdates()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -252,9 +242,9 @@ class SettingsViewController: UIViewController {
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
         
         // Register font changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyFontChanges),
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
-
+        
         // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
                                                name: Notification.Name.pwgAutoUploadChanged, object: nil)
@@ -279,7 +269,7 @@ class SettingsViewController: UIViewController {
         let now: Double = Date().timeIntervalSinceReferenceDate
         // Comment the below line and uncomment the next one for debugging
         let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + 3 * AppVars.shared.pwgOneMonth
-//        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
+        //        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
         if now > dueDate, ["ar","da","hu","id","it","ja","nl","ru","sv"].contains(langCode) {
             // Store date of last translation request
             AppVars.shared.dateOfLastTranslationRequest = now
@@ -304,7 +294,7 @@ class SettingsViewController: UIViewController {
             })
         }
     }
-        
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -408,7 +398,7 @@ class SettingsViewController: UIViewController {
             // Show HUD
             let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
             self.navigationController?.showHUD(withTitle: title)
-
+            
             // Perform Logout
             PwgSession.shared.sessionLogout {
                 // Close session
@@ -451,7 +441,27 @@ class SettingsViewController: UIViewController {
             alert.view.tintColor = PwgColor.tintColor
         })
     }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+//        guard let info = notification.userInfo,
+//              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+//        else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Animated update for smoother experience
+            self.settingsTableView?.beginUpdates()
+            self.settingsTableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+        }
+    }
 }
+
 
 // MARK: - MFMailComposeViewControllerDelegate
 extension SettingsViewController: MFMailComposeViewControllerDelegate {

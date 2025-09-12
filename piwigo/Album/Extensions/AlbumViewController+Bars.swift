@@ -481,9 +481,12 @@ extension AlbumViewController
         self.view?.window?.windowScene?.title = title
         
         // No subTitle when using acessibility category
-        let contenSizeCategory = traitCollection.preferredContentSizeCategory
-        guard contenSizeCategory != .extraExtraExtraLarge || contenSizeCategory.isAccessibilityCategory == false
-        else { return }
+        guard traitCollection.preferredContentSizeCategory < .accessibilityMedium
+        else {
+            navigationItem.subtitle = nil
+            navigationItem.largeSubtitle = nil
+            return
+        }
         
         // Get subTitle
         var subTitle = ""
@@ -581,10 +584,9 @@ extension AlbumViewController
         // nor when using acessibility category
         var subtitle = ""
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        let contenSizeCategory = traitCollection.preferredContentSizeCategory
-        let titleTooLarge = contenSizeCategory.isAccessibilityCategory || contenSizeCategory == .extraExtraExtraLarge
+        let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
         if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
-            if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !titleTooLarge {
+            if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !isAccessibilityCategory {
                 // Inform user that the app is fetching album data
                 if progress == 0 {
                     subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…")
@@ -595,7 +597,7 @@ extension AlbumViewController
                     subtitle = NSLocalizedString("categoryUpdating", comment: "Updating…") + " " + percent
                 }
             }
-            else if inSelectionMode && !titleTooLarge {
+            else if inSelectionMode && !isAccessibilityCategory {
                 let nberPhotos = selectedImageIDs.count
                 switch nberPhotos {
                 case 0:
@@ -616,7 +618,7 @@ extension AlbumViewController
                     subtitle = ""
                 }
             }
-            else if albumData.dateGetImages > TimeInterval(86400) && !titleTooLarge { // i.e. a day after minimum date
+            else if albumData.dateGetImages > TimeInterval(86400) && !isAccessibilityCategory { // i.e. a day after minimum date
                 let dateGetImages = Date(timeIntervalSinceReferenceDate: albumData.dateGetImages)
                 if Date().timeIntervalSinceReferenceDate - albumData.dateGetImages < 60 {
                     subtitle = NSLocalizedString("categoryUpdatedNow", comment: "Updated just now")

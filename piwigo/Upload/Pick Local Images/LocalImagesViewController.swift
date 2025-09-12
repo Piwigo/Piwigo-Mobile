@@ -31,7 +31,7 @@ class LocalImagesViewController: UIViewController
         }
         return context
     }()
-
+    
     // MARK: - Core Data Providers
     lazy var uploadProvider: UploadProvider = {
         let provider = UploadProvider.shared
@@ -44,7 +44,7 @@ class LocalImagesViewController: UIViewController
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true))
         fetchRequest.sortDescriptors = sortDescriptors
-
+        
         // Retrieves upload requests
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
@@ -52,7 +52,7 @@ class LocalImagesViewController: UIViewController
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         return fetchRequest
     }()
-
+    
     public lazy var uploads: NSFetchedResultsController<Upload> = {
         let uploads = NSFetchedResultsController(fetchRequest: fetchUploadRequest,
                                                  managedObjectContext: self.mainContext,
@@ -62,7 +62,7 @@ class LocalImagesViewController: UIViewController
         return uploads
     }()
     
-
+    
     // MARK: - Variables and Cached Values
     let queue = OperationQueue()                    // Queue used to sort and cache things
     var fetchedImages: PHFetchResult<PHAsset>!      // Collection of images in selected non-empty local album
@@ -70,26 +70,26 @@ class LocalImagesViewController: UIViewController
     var indexOfImageSortedByMonth: [IndexSet] = []  // Indices of images sorted by month
     var indexOfImageSortedByWeek: [IndexSet] = []   // Indices of images sorted week
     var indexOfImageSortedByDay: [IndexSet] = []    // Indices of images sorted day
-
+    
     var indexedUploadsInQueue = [(String,pwgUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
     var selectedImages = [UploadProperties?]()      // Array of images selected for upload
     var selectedSections = [SelectButtonState]()    // State of Select buttons
     var imagesBeingTouched = [IndexPath]()          // Array of indexPaths of touched images
     var uploadRequests = [UploadProperties]()       // Array of images to upload
-
+    
     var uploadsToDelete = [Upload]()
     lazy var imageCellSize: CGSize = getImageCellSize()
-    let defaultImageHeaderHeight: CGFloat = 54.0
+    let defaultImageHeaderHeight: CGFloat = 42.0
     lazy var imageHeaderHeight: CGFloat = defaultImageHeaderHeight
-
-
+    
+    
     // MARK: - View
     var categoryId: Int32 = AlbumVars.shared.defaultCategory
     var categoryCurrentCounter: Int64 = UploadVars.shared.categoryCounterInit
     weak var albumDelegate: AlbumViewControllerDelegate?
     var imageCollectionId: String = String()
     var imageCollectionName: String = String()
-
+    
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
     
@@ -97,23 +97,26 @@ class LocalImagesViewController: UIViewController
     var uploadBarButton: UIBarButtonItem!           // for uploading selected images
     var trashBarButton: UIBarButtonItem!            // For deleting uploaded images on iPad
     var actionBarButton: UIBarButtonItem!           // on iPhone:
-                                                    //  - for reversing the sort order
-                                                    //  - for grouping by day, week or month (or not)
-                                                    //  - for deleting uploaded images
-                                                    //  - for selecting images in the Photo Library
-                                                    //  - for allowing to re-upload images
-                                                    // on iPad:
-                                                    //  - for reversing the sort order
-                                                    //  - for grouping by day, week or month (or not)
-                                                    //  - for selecting images in the Photo Library
-                                                    //  - for allowing to re-upload images
+    //  - for reversing the sort order
+    //  - for grouping by day, week or month (or not)
+    //  - for deleting uploaded images
+    //  - for selecting images in the Photo Library
+    //  - for allowing to re-upload images
+    // on iPad:
+    //  - for reversing the sort order
+    //  - for grouping by day, week or month (or not)
+    //  - for selecting images in the Photo Library
+    //  - for allowing to re-upload images
     var reUploadAllowed = false
-
-
+    
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // Initialise headers height
+        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
+        
         // Collection view - Register the cell before using it
         collectionFlowLayout?.scrollDirection = .vertical
         localImagesCollection?.register(UINib(nibName: "LocalImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "LocalImageCollectionViewCell")
@@ -123,13 +126,13 @@ class LocalImagesViewController: UIViewController
         } else {
             collectionFlowLayout?.sectionHeadersPinToVisibleBounds = true
         }
-
+        
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
         }
         
-
+        
         // Fetch a specific path of the Photo Library to reduce the workload
         // and store the fetched assets for future use
         fetchImagesByCreationDate()
@@ -146,7 +149,7 @@ class LocalImagesViewController: UIViewController
         } catch {
             debugPrint("Error: \(error)")
         }
-                                                                                        
+        
         // Sort images in background
         DispatchQueue.global(qos: .userInitiated).async {
             self.sortImagesAndIndexUploads()
@@ -154,7 +157,7 @@ class LocalImagesViewController: UIViewController
         
         // Navigation bar
         navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
-
+        
         // The cancel button is used to cancel the selection of images to upload
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton.accessibilityIdentifier = "Cancel"
@@ -197,25 +200,130 @@ class LocalImagesViewController: UIViewController
         }
         actionBarButton.accessibilityIdentifier = "Action"
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         uploadBarButton.tintColor = PwgColor.tintColor
-
+        
         // Collection view
         localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
+        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
+        
+        // Update navigation bar and title
+        updateNavBar()
+        
+        // Register Photo Library changes
+        PHPhotoLibrary.shared().register(self)
+        
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Register upload progress
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
+                                               name: Notification.Name.pwgUploadProgress, object: nil)
+        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
+        // Prevent device from sleeping if uploads are in progress
+        let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
+                                           .uploading, .uploaded, .finishing]
+        let uploadsToPerform = (uploads.fetchedObjects ?? [])
+            .map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +)
+        if uploadsToPerform > 0 {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        // Save position of collection view
+        if localImagesCollection.visibleCells.count > 0,
+           let cell = localImagesCollection.visibleCells.first {
+            if let indexPath = localImagesCollection.indexPath(for: cell) {
+                // Reload collection with appropriate cell sizes
+                coordinator.animate(alongsideTransition: { [self] _ in
+                    self.updateNavBar()
+                    self.imageCellSize = self.getImageCellSize()
+                    self.localImagesCollection.reloadData()
+                    
+                    // Scroll to previous position
+                    self.localImagesCollection.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+                })
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Cancel operations if needed
+        queue.cancelAllOperations()
+        
+        // Allow device to sleep
+        UIApplication.shared.isIdleTimerDisabled = false
+        
+        // Resume upload operations in background queue
+        // and update badge and upload button of album navigator
+        UploadManager.shared.backgroundQueue.async {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.isExecutingBackgroundUploadTask = false
+            UploadManager.shared.findNextImageToUpload()
+        }
+    }
+    
+    deinit {
+        // Unregister Photo Library changes
+        PHPhotoLibrary.shared().unregisterChangeObserver(self)
+        
+        // Unregister all observers
+        NotificationCenter.default.removeObserver(self)
+    }
+    
 
-    @objc func applyFontChanges() {
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        guard let info = notification.userInfo,
+              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+        else { return }
+        updateContentSizes(for: contentSizeCategory)
+        
+        // Apply modifications
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            
+            // Invalidate layout to recalculate cell sizes
+            self.localImagesCollection.collectionViewLayout.invalidateLayout()
+            
+            // Reload visible cells, headers, and footers
+            self.localImagesCollection.reloadData()
+            
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+            self.updateNavBar()
+        }
+    }
+    
+    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
         // Constants
         let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
-
+        
         // Set cell size according to the selected category
         /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
         switch contentSizeCategory {
@@ -260,95 +368,5 @@ class LocalImagesViewController: UIViewController
         default:
             imageHeaderHeight = defaultImageHeaderHeight
         }
-        
-        // Navigation bar
-        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        updateNavBar()
-
-        // Invalidate layout to recalculate cell sizes
-        localImagesCollection.collectionViewLayout.invalidateLayout()
-        
-        // Reload visible cells, headers, and footers
-        localImagesCollection.reloadData()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
-        // Update navigation bar and title
-        updateNavBar()
-
-        // Register Photo Library changes
-        PHPhotoLibrary.shared().register(self)
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: Notification.Name.pwgPaletteChanged, object: nil)
-        
-        // Register upload progress
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
-                                               name: Notification.Name.pwgUploadProgress, object: nil)
-        
-        // Register font changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyFontChanges),
-                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
-
-        // Prevent device from sleeping if uploads are in progress
-        let uploading: [pwgUploadState] = [.waiting, .preparing, .prepared,
-                                           .uploading, .uploaded, .finishing]
-        let uploadsToPerform = (uploads.fetchedObjects ?? [])
-            .map({uploading.contains($0.state) ? 1 : 0}).reduce(0, +)
-        if uploadsToPerform > 0 {
-            UIApplication.shared.isIdleTimerDisabled = true
-        }
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-
-        // Save position of collection view
-        if localImagesCollection.visibleCells.count > 0,
-           let cell = localImagesCollection.visibleCells.first {
-            if let indexPath = localImagesCollection.indexPath(for: cell) {
-                // Reload collection with appropriate cell sizes
-                coordinator.animate(alongsideTransition: { [self] _ in
-                    self.updateNavBar()
-                    self.imageCellSize = self.getImageCellSize()
-                    self.localImagesCollection.reloadData()
-
-                    // Scroll to previous position
-                    self.localImagesCollection.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
-                })
-            }
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        // Cancel operations if needed
-        queue.cancelAllOperations()
-
-        // Allow device to sleep
-        UIApplication.shared.isIdleTimerDisabled = false
-
-        // Resume upload operations in background queue
-        // and update badge and upload button of album navigator
-        UploadManager.shared.backgroundQueue.async {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.isExecutingBackgroundUploadTask = false
-            UploadManager.shared.findNextImageToUpload()
-        }
-    }
-    
-    deinit {
-        // Unregister Photo Library changes
-        PHPhotoLibrary.shared().unregisterChangeObserver(self)
-
-        // Unregister all observers
-        NotificationCenter.default.removeObserver(self)
     }
 }

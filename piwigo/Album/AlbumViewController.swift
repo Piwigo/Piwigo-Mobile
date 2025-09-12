@@ -271,7 +271,7 @@ class AlbumViewController: UIViewController
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
         
         // Initialise album width and height
-        applyFontChanges()
+        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
         
         // Register classes before using them
         collectionView?.isPrefetchingEnabled = true
@@ -337,7 +337,7 @@ class AlbumViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
         // Register font changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyFontChanges),
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
@@ -440,129 +440,6 @@ class AlbumViewController: UIViewController
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
         collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
-    }
-    
-    @objc func applyFontChanges() {
-        // Constants
-        let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
-
-        // Set cell size according to the selected category
-        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
-        switch contentSizeCategory {
-        case .extraSmall:
-            // Album w/o description: Headline 14 pnts + Footnote 12 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight - 3.0 - 1.0
-            albumMaxWidth = defaultAlbumMaxWidth
-            // Album w/ description: Headline 14 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
-            oldAlbumHeight = defaultOldAlbumHeight - 3.0 - 4 * 1.0 - 0.0
-            // Image section header height: Subhead 12 pnts + Footnote 12 pnts
-            imageHeaderHeight = defaultImageHeaderHeight - 3.0 - 1.0
-        case .small:
-            // Album w/o description: Headline 15 pnts + Footnote 12 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight - 2.0 - 1.0
-            albumMaxWidth = defaultAlbumMaxWidth
-            // Album w/ description: Headline 15 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
-            oldAlbumHeight = defaultOldAlbumHeight - 2.0 - 4 * 1.0 - 0.0
-            // Image section header height: Subhead 13 pnts + Footnote 12 pnts
-            imageHeaderHeight = defaultImageHeaderHeight - 2.0 - 1.0
-        case .medium:
-            // Album w/o description: Headline 16 pnts + Footnote 12 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight - 1.0 - 1.0
-            albumMaxWidth = defaultAlbumMaxWidth
-            // Album w/ description: Headline 16 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
-            oldAlbumHeight = defaultOldAlbumHeight - 1.0 - 4 * 1.0 - 0.0
-            // Image section header height: Subhead 14 pnts + Footnote 12 pnts
-            imageHeaderHeight = defaultImageHeaderHeight - 1.0 - 1.0
-        case .large:    // default style
-            // Album w/o description: Headline 17 pnts + Footnote 13 pnts (see XIB)
-            albumLabelsHeight = defaultAlbumLabelsHeight
-            albumMaxWidth = defaultAlbumMaxWidth
-            // Album w/ description: Headline 17 pnts + 4x Footnote 13 pnts + Caption2 11 pnts (see XIB)
-            oldAlbumHeight = defaultOldAlbumHeight
-            // Image section header height: Subhead 15 pnts + Footnote 13 pnts
-            imageHeaderHeight = defaultImageHeaderHeight
-        case .extraLarge:
-            // Album w/o description: Headline 19 pnts + Footnote 15 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 2.0 + 2.0
-            albumMaxWidth = defaultAlbumMaxWidth + 16.0
-            // Album w/ description: Headline 19 pnts + 4x Footnote 15 pnts + Caption2 13 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 2.0 + 4 * 2.0 + 2.0
-            // Image section header height: Subhead 17 pnts + Footnote 15 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 2.0 + 2.0
-        case .extraExtraLarge:
-            // Album w/o description: Headline 21 pnts + Footnote 17 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 4.0 + 4.0
-            albumMaxWidth = defaultAlbumMaxWidth + 32.0
-            // Album w/ description: Headline 21 pnts + 4x Footnote 17 pnts + Caption2 15 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 4.0 + 4 * 4.0 + 4.0
-            // Image section header height: Subhead 19 pnts + Footnote 17 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 4.0 + 4.0
-        case .extraExtraExtraLarge:
-            // Album w/o description: Headline 23 pnts + Footnote 19 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 6.0 + 6.0
-            albumMaxWidth = defaultAlbumMaxWidth + 48.0
-            // Album w/ description: Headline 23 pnts + 4x Footnote 19 pnts + Caption2 17 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 6.0 + 4 * 6.0 + 6.0
-            // Image section header height: Subhead 21 pnts + Footnote 19 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 6.0 + 6.0
-        case .accessibilityMedium:
-            // Album w/o description: Headline 28 pnts + Footnote 23 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 11.0 + 10.0
-            albumMaxWidth = defaultAlbumMaxWidth + 84.0
-            // Album w/ description: Headline 28 pnts + 4x Footnote 23 pnts + Caption2 20 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 11.0 + 4 * 10.0 + 9.0
-            // Image section header height: Subhead 25 pnts + Footnote 23 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 10.0 - 17.0
-        case .accessibilityLarge:
-            // Album w/o description: Headline 33 pnts + Footnote 27 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 16.0 + 14.0
-            albumMaxWidth = defaultAlbumMaxWidth + 120.0
-            // Album w/ description: Headline 33 pnts + 4x Footnote 27 pnts + Caption2 24 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 16.0 + 4 * 14.0 + 13.0
-            // Image section header height: Subhead 30 pnts + Footnote 27 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 15.0 - 17.0
-        case .accessibilityExtraLarge:
-            // Album w/o description: Headline 40 pnts + Footnote 33 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 23.0 + 20.0
-            albumMaxWidth = defaultAlbumMaxWidth + 172.0
-            // Album w/ description: Headline 40 pnts + 4x Footnote 33 pnts + Caption2 29 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 23.0 + 4 * 20.0 + 18.0
-            // Image section header height: Subhead 36 pnts + Footnote 33 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 21.0 - 17.0
-        case .accessibilityExtraExtraLarge:
-            // Album w/o description: Headline 47 pnts + Footnote 38 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 30.0 + 25.0
-            albumMaxWidth = defaultAlbumMaxWidth + 220.0
-            // Album w/ description: Headline 47 pnts + 4x Footnote 38 pnts + Caption2 34 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 30.0 + 4 * 25.0 + 23.0
-            // Image section header height: Subhead 42 pnts + Footnote 38 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 27.0 - 17.0
-        case .accessibilityExtraExtraExtraLarge:
-            // Album w/o description: Headline 53 pnts + Footnote 44 pnts
-            albumLabelsHeight = defaultAlbumLabelsHeight + 36.0 + 31.0
-            albumMaxWidth = defaultAlbumMaxWidth + 268.0
-            // Album w/ description: Headline 53 pnts + 4x Footnote 44 pnts + Caption2 40 pnts
-            oldAlbumHeight = defaultOldAlbumHeight + 36.0 + 4 * 31.0 + 29.0
-            // Image section header height: Subhead 49 pnts + Footnote 44 pnts
-            imageHeaderHeight = defaultImageHeaderHeight + 34.0 - 17.0
-        case .unspecified:
-            fallthrough
-        default:
-            albumLabelsHeight = defaultAlbumLabelsHeight
-            albumMaxWidth = defaultAlbumMaxWidth
-            oldAlbumHeight = defaultOldAlbumHeight
-            imageHeaderHeight = defaultImageHeaderHeight
-        }
-        
-        // Navigation bar
-        navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
-        setTitleViewFromAlbumData()
-
-        // Invalidate layout to recalculate cell sizes
-        collectionView.collectionViewLayout.invalidateLayout()
-        
-        // Reload visible cells, headers, and footers
-        collectionView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -1025,6 +902,141 @@ class AlbumViewController: UIViewController
         }
     }
 
+
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply new content size
+        guard let info = notification.userInfo,
+              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+        else { return }
+        updateContentSizes(for: contentSizeCategory)
+        
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            // Invalidate layout to recalculate cell sizes
+            self.collectionView.collectionViewLayout.invalidateLayout()
+            
+            // Reload visible cells, headers, and footers
+            self.collectionView.reloadData()
+            
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
+            self.setTitleViewFromAlbumData()
+        }
+    }
+    
+    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
+        // Set cell size according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        switch contentSizeCategory {
+        case .extraSmall:
+            // Album w/o description: Headline 14 pnts + Footnote 12 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight - 3.0 - 1.0
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 14 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
+            oldAlbumHeight = defaultOldAlbumHeight - 3.0 - 4 * 1.0 - 0.0
+            // Image section header height: Subhead 12 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 3.0 - 1.0
+        case .small:
+            // Album w/o description: Headline 15 pnts + Footnote 12 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight - 2.0 - 1.0
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 15 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
+            oldAlbumHeight = defaultOldAlbumHeight - 2.0 - 4 * 1.0 - 0.0
+            // Image section header height: Subhead 13 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 2.0 - 1.0
+        case .medium:
+            // Album w/o description: Headline 16 pnts + Footnote 12 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight - 1.0 - 1.0
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 16 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
+            oldAlbumHeight = defaultOldAlbumHeight - 1.0 - 4 * 1.0 - 0.0
+            // Image section header height: Subhead 14 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 1.0 - 1.0
+        case .large:    // default style
+            // Album w/o description: Headline 17 pnts + Footnote 13 pnts (see XIB)
+            albumLabelsHeight = defaultAlbumLabelsHeight
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 17 pnts + 4x Footnote 13 pnts + Caption2 11 pnts (see XIB)
+            oldAlbumHeight = defaultOldAlbumHeight
+            // Image section header height: Subhead 15 pnts + Footnote 13 pnts
+            imageHeaderHeight = defaultImageHeaderHeight
+        case .extraLarge:
+            // Album w/o description: Headline 19 pnts + Footnote 15 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 2.0 + 2.0
+            albumMaxWidth = defaultAlbumMaxWidth + 16.0
+            // Album w/ description: Headline 19 pnts + 4x Footnote 15 pnts + Caption2 13 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 2.0 + 4 * 2.0 + 2.0
+            // Image section header height: Subhead 17 pnts + Footnote 15 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 2.0 + 2.0
+        case .extraExtraLarge:
+            // Album w/o description: Headline 21 pnts + Footnote 17 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 4.0 + 4.0
+            albumMaxWidth = defaultAlbumMaxWidth + 32.0
+            // Album w/ description: Headline 21 pnts + 4x Footnote 17 pnts + Caption2 15 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 4.0 + 4 * 4.0 + 4.0
+            // Image section header height: Subhead 19 pnts + Footnote 17 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 4.0 + 4.0
+        case .extraExtraExtraLarge:
+            // Album w/o description: Headline 23 pnts + Footnote 19 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 6.0 + 6.0
+            albumMaxWidth = defaultAlbumMaxWidth + 48.0
+            // Album w/ description: Headline 23 pnts + 4x Footnote 19 pnts + Caption2 17 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 6.0 + 4 * 6.0 + 6.0
+            // Image section header height: Subhead 21 pnts + Footnote 19 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 6.0 + 6.0
+        case .accessibilityMedium:
+            // Album w/o description: Headline 28 pnts + Footnote 23 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 11.0 + 10.0
+            albumMaxWidth = defaultAlbumMaxWidth + 84.0
+            // Album w/ description: Headline 28 pnts + 4x Footnote 23 pnts + Caption2 20 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 11.0 + 4 * 10.0 + 9.0
+            // Image section header height: Subhead 25 pnts + Footnote 23 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 10.0 - 17.0
+        case .accessibilityLarge:
+            // Album w/o description: Headline 33 pnts + Footnote 27 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 16.0 + 14.0
+            albumMaxWidth = defaultAlbumMaxWidth + 120.0
+            // Album w/ description: Headline 33 pnts + 4x Footnote 27 pnts + Caption2 24 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 16.0 + 4 * 14.0 + 13.0
+            // Image section header height: Subhead 30 pnts + Footnote 27 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 15.0 - 17.0
+        case .accessibilityExtraLarge:
+            // Album w/o description: Headline 40 pnts + Footnote 33 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 23.0 + 20.0
+            albumMaxWidth = defaultAlbumMaxWidth + 172.0
+            // Album w/ description: Headline 40 pnts + 4x Footnote 33 pnts + Caption2 29 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 23.0 + 4 * 20.0 + 18.0
+            // Image section header height: Subhead 36 pnts + Footnote 33 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 21.0 - 17.0
+        case .accessibilityExtraExtraLarge:
+            // Album w/o description: Headline 47 pnts + Footnote 38 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 30.0 + 25.0
+            albumMaxWidth = defaultAlbumMaxWidth + 220.0
+            // Album w/ description: Headline 47 pnts + 4x Footnote 38 pnts + Caption2 34 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 30.0 + 4 * 25.0 + 23.0
+            // Image section header height: Subhead 42 pnts + Footnote 38 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 27.0 - 17.0
+        case .accessibilityExtraExtraExtraLarge:
+            // Album w/o description: Headline 53 pnts + Footnote 44 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 36.0 + 31.0
+            albumMaxWidth = defaultAlbumMaxWidth + 268.0
+            // Album w/ description: Headline 53 pnts + 4x Footnote 44 pnts + Caption2 40 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 36.0 + 4 * 31.0 + 29.0
+            // Image section header height: Subhead 49 pnts + Footnote 44 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 34.0 - 17.0
+        case .unspecified:
+            fallthrough
+        default:
+            albumLabelsHeight = defaultAlbumLabelsHeight
+            albumMaxWidth = defaultAlbumMaxWidth
+            oldAlbumHeight = defaultOldAlbumHeight
+            imageHeaderHeight = defaultImageHeaderHeight
+        }
+    }
+    
 
     // MARK: - Utilities
     func nberOfAlbums() -> Int {

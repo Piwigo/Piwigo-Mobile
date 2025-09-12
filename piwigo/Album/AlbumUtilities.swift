@@ -475,7 +475,8 @@ class AlbumUtilities: NSObject {
     
     // MARK: - Album/Images Collections | Image Section
     static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool,
-                              inWidth width: CGFloat) -> (String, String) {
+                              preferredContenSize: UIContentSizeCategory, width: CGFloat) -> (String, String) {
+        debugPrint("getDateLabels for \(preferredContenSize)")
         // Creation date of images (or of availability)
         let refDate = DateUtilities.unknownDateInterval     // i.e. unknown date
         var dateLabelText = " "                             // Displayed when there is no date available
@@ -502,133 +503,442 @@ class AlbumUtilities: NSObject {
         }
         
         // Determine if images of this section were all taken after "1900-01-08 00:00:00 UTC"
-        if lowest > DateUtilities.weekAfterInterval, lowest < TimeInterval.greatestFiniteMagnitude {
+        guard lowest > DateUtilities.weekAfterInterval,
+              lowest < TimeInterval.greatestFiniteMagnitude
+        else { return (dateLabelText, optionalDateLabelText) }
+        
+        // Get starting date
+        let startDate = Date(timeIntervalSinceReferenceDate: lowest)
+        
+        // Get ending date
+        let endDate: Date
+        if greatest > DateUtilities.weekAfterInterval, greatest != lowest {
             // Get correspondig date
-            let startDate = Date(timeIntervalSinceReferenceDate: lowest)
-            
-            // Display date/month/year by default, will add weekday/time in the absence of location data
-            switch width {
-            case ...0:
-                dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .short, timeStyle: .none)
-            case 1..<400:
-                dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
-            default:
-                dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-            }
-            
+            endDate = Date(timeIntervalSinceReferenceDate: greatest)
+        } else {
+            endDate = startDate
+        }
+        
+        // Single date?
+        if startDate == endDate {
+            // Display day/month/year above and weekday/time below if possible
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-            let optFormatter = DateUtilities.dateFormatter
-            if arePwgDates {
-                switch width {
-                case 0..<400:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
-                case 400...600:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
-                default:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                if arePwgDates {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute() .second())
+                } else {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday())
                 }
-            } else {
-                optFormatter.setLocalizedDateFormatFromTemplate("eeee")
-            }
-            optionalDateLabelText = optFormatter.string(from: startDate)
-            
-            // Get creation date of last image and check that it is after "1900-01-08 00:00:00"
-            if greatest > DateUtilities.weekAfterInterval, greatest != lowest {
-                // Get correspondig date
-                let endDate = Date(timeIntervalSinceReferenceDate: greatest)
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                }
+                if arePwgDates {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute())
+                } else {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday())
+                }
 
-                // Images taken the same day?
-                let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
-                let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
-                if firstImageDay == lastImageDay {
-                    // Images were taken the same day
-                    // => Keep dateLabel as already set
-                    // => Add ending time to optional string
-                    if arePwgDates {
-                        let timeStyle = width > 600 ? "HH:mm:ss" : "HH:mm"
-                        optFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
-                        optionalDateLabelText += " — " + optFormatter.string(from: endDate)
-                    }
-                    return (dateLabelText, optionalDateLabelText)
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                optionalDateLabelText = ""
+
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+ 
+        // Images taken the same day?
+        let dateRange = startDate..<endDate
+        let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+        let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
+        if firstImageDay == lastImageDay {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) .hour() .minute() .second())
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
                 }
                 
-                // => Images taken the same month?
-                let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
-                let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
-                if firstImageMonth == lastImageMonth {
-                    // Images taken during the same month => Display days of month
-                    let dateFormatter = DateIntervalFormatter()
-                    dateFormatter.timeStyle = .none
-                    switch width {
-                    case ...0:
-                        dateFormatter.dateStyle = .short
-                    case 1..<400:
-                        dateFormatter.dateStyle = .medium
-                    default:
-                        dateFormatter.dateStyle = .long
-                    }
-                    dateLabelText = dateFormatter.string(from: startDate, to: endDate)
-                    
-                    // Define optional string with day/time values
-                    // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                    let optFormatter = DateUtilities.dateFormatter
-                    optFormatter.locale = .current
-                    if arePwgDates {
-                        switch width {
-                        case 0..<400:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
-                        case 400..<600:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
-                        default:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
-                        }
-                    } else {
-                        switch width {
-                        case 0..<400:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eee d")
-                        default:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d")
-                        }
-                    }
-                    optionalDateLabelText = optFormatter.string(from: startDate) + " — " + optFormatter.string(from: endDate)
-                    return (dateLabelText, optionalDateLabelText)
-                }
-                
-                // => Images not taken the same month => Display day/month of year
-                let dateFormatter = DateUtilities.dateIntervalFormatter
-                dateFormatter.timeStyle = .none
+            case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
-                case 0..<400:
-                    dateFormatter.dateTemplate = "YYMMdd"
-                case 400..<600:
-                    dateFormatter.dateStyle = .medium
+                case ...375:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                case 376...402:
+                    fallthrough
                 default:
-                    dateFormatter.dateStyle = .long
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
                 }
-                dateLabelText = dateFormatter.string(from: startDate, to: endDate)
-                
-                // Define optional string with day/time values
-                // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                let optFormatter = DateUtilities.dateFormatter
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.abbreviated) .hour() .minute())
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                }
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                optionalDateLabelText = ""
+
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+
+        // Images taken the same week?
+        let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: startDate)
+        let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: endDate)
+        if firstImageWeek == lastImageWeek {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
                 if arePwgDates {
                     switch width {
-                    case 0..<400:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eee d HH:mm")
-                    case 400..<600:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.short) .hour() .minute())
+                    case 376...402:
+                        fallthrough
                     default:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute()))
                     }
                 } else {
-                    switch width {
-                    case 0..<400:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eee d")
-                    default:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d")
-                    }
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
                 }
-                optionalDateLabelText = optFormatter.string(from: startDate) + " — " + optFormatter.string(from: endDate)
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.abbreviated) .year())
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.wide) .year())
+                }
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.wide))
+                    case 376...402:
+                        fallthrough
+                    default:
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute()))
+                    }
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                optionalDateLabelText = ""
+
+            default:
+                break
             }
+            return (dateLabelText, optionalDateLabelText)
+        }
+
+        // Images taken the same month?
+        let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
+        let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
+        if firstImageMonth == lastImageMonth {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.abbreviated) .hour() .minute())
+                    case 376...402:
+                        fallthrough
+                    default:
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute()))
+                    }
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                }
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.abbreviated) .year())
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.wide) .year())
+                }
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.narrow) .hour())
+                    case 376...402:
+                        fallthrough
+                    default:
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute()))
+                    }
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                optionalDateLabelText = ""
+
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+        
+        // Images taken the same year?
+        let firstImageYear = Calendar.current.dateComponents([.year], from: startDate)
+        let lastImageYear = Calendar.current.dateComponents([.year], from: endDate)
+        if firstImageYear == lastImageYear {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) .day())
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                }
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.twoDigits) .year())
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.abbreviated))
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated))
+                optionalDateLabelText = ""
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits))
+                optionalDateLabelText = ""
+                
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+
+        // Images not taken the same year
+        switch preferredContenSize {
+        case .extraSmall, .small, .medium, .large:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+            }
+            if arePwgDates {
+                optionalDateLabelText = startDate.formatted(.dateTime
+                    .weekday(.wide) .hour() .minute())
+                optionalDateLabelText.append(" - ")
+                optionalDateLabelText.append(endDate.formatted(.dateTime
+                    .weekday(.wide) .hour() .minute()))
+            } else {
+                optionalDateLabelText = dateRange.formatted(.interval
+                    .weekday(.wide))
+            }
+            
+        case .extraLarge:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.twoDigits) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            }
+            if arePwgDates {
+                switch width {
+                case ...375:
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                case 376...402:
+                    fallthrough
+                default:
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute())
+                    optionalDateLabelText.append(" - ")
+                    optionalDateLabelText.append(endDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute()))
+                }
+            } else {
+                optionalDateLabelText = dateRange.formatted(.interval
+                    .weekday(.wide) )
+            }
+
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            }
+            if arePwgDates {
+                switch width {
+                case ...375:
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                case 376...402:
+                    fallthrough
+                default:
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute())
+                    optionalDateLabelText.append(" - ")
+                    optionalDateLabelText.append(endDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute()))
+                }
+            } else {
+                optionalDateLabelText = dateRange.formatted(.interval
+                    .weekday(.wide) )
+            }
+
+        case .accessibilityMedium:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+            }
+            optionalDateLabelText = ""
+
+        case .accessibilityLarge, .accessibilityExtraLarge:
+            dateLabelText = dateRange.formatted(.interval
+                .year())
+            optionalDateLabelText = ""
+
+        case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            switch width {
+            case ...375:
+                dateLabelText = startDate.formatted(.dateTime
+                    .year(.twoDigits))
+                dateLabelText.append(" - ")
+                dateLabelText.append(endDate.formatted(.dateTime
+                    .year(.twoDigits)))
+                optionalDateLabelText = ""
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .year())
+            }
+
+        default:
+            break
         }
         return (dateLabelText, optionalDateLabelText)
     }
