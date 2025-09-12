@@ -20,12 +20,10 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
         tintColor = PwgColor.tintColor
 
         // Title
-        titleLabel.font = .systemFont(ofSize: 17)
         titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = .systemFont(ofSize: 13)
         numberLabel.textColor = PwgColor.rightLabel
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal

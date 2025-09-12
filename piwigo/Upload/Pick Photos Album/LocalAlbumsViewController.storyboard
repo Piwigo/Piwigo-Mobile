@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,20 +26,20 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Album" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BnN-g8-f0Q">
-                                            <rect key="frame" x="20" y="5.5" width="49" height="20.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <rect key="frame" x="20" y="7.5" width="49" height="20.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5c7-XQ-ioO">
-                                            <rect key="frame" x="319.5" y="16" width="16" height="16"/>
-                                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
+                                            <rect key="frame" x="317.5" y="15" width="18" height="18"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="23 May" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kqj-Hv-fCp">
-                                            <rect key="frame" x="20" y="25.5" width="44" height="16"/>
-                                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
+                                            <rect key="frame" x="20" y="27.5" width="45" height="16"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -47,9 +47,9 @@
                                     <constraints>
                                         <constraint firstItem="5c7-XQ-ioO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="BnN-g8-f0Q" secondAttribute="trailing" constant="20" id="6SW-Cu-Ayq"/>
                                         <constraint firstAttribute="trailing" secondItem="5c7-XQ-ioO" secondAttribute="trailing" constant="8" id="H9F-15-BS8"/>
-                                        <constraint firstItem="BnN-g8-f0Q" firstAttribute="bottom" secondItem="5c7-XQ-ioO" secondAttribute="top" constant="10" id="LBh-Rg-43w"/>
                                         <constraint firstItem="kqj-Hv-fCp" firstAttribute="leading" secondItem="xFI-FN-dAg" secondAttribute="leading" constant="20" id="ZmX-Gc-ane"/>
                                         <constraint firstItem="5c7-XQ-ioO" firstAttribute="centerY" secondItem="xFI-FN-dAg" secondAttribute="centerY" id="m4a-H3-OaG"/>
+                                        <constraint firstItem="BnN-g8-f0Q" firstAttribute="bottom" secondItem="5c7-XQ-ioO" secondAttribute="centerY" constant="4" id="mrl-Ik-hrp"/>
                                         <constraint firstItem="kqj-Hv-fCp" firstAttribute="firstBaseline" secondItem="BnN-g8-f0Q" secondAttribute="baseline" constant="16.5" symbolType="layoutAnchor" id="qKS-6A-q4p"/>
                                         <constraint firstItem="BnN-g8-f0Q" firstAttribute="leading" secondItem="xFI-FN-dAg" secondAttribute="leading" constant="20" id="qkg-fc-vkT"/>
                                         <constraint firstItem="5c7-XQ-ioO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="kqj-Hv-fCp" secondAttribute="trailing" constant="20" id="tCt-0D-KpK"/>
@@ -70,13 +70,13 @@
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Album" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Waj-P7-Tae">
                                             <rect key="frame" x="20" y="15.5" width="49" height="20.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acn-R5-kLy">
-                                            <rect key="frame" x="319.5" y="17.5" width="16" height="16"/>
-                                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
+                                            <rect key="frame" x="317.5" y="16.5" width="18" height="18"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>

@@ -21,12 +21,10 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         tintColor = PwgColor.tintColor
 
         // Title
-        titleLabel.font = .systemFont(ofSize: 17)
         titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = .systemFont(ofSize: 13)
         numberLabel.textColor = PwgColor.rightLabel
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
@@ -117,7 +115,6 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 subtitle.append(String(format: "%@", startString))
             }
         }
-        subtitleLabel.font = .systemFont(ofSize: 13)
         subtitleLabel.textColor = PwgColor.rightLabel
         subtitleLabel.text = subtitle
     }
