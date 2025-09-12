@@ -59,6 +59,8 @@
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
+		AD0F4E5D2E74B88500D05C4C /* LocalAlbumsViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F4E5C2E74B88500D05C4C /* LocalAlbumsViewController+DataSource.swift */; };
+		AD0F4E5F2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F4E5E2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift */; };
 		AD0F70222946262D008F1394 /* SettingsViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */; };
 		AD0F7024294629BD008F1394 /* SettingsViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */; };
 		AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */; };
@@ -791,6 +793,8 @@
 		AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
+		AD0F4E5C2E74B88500D05C4C /* LocalAlbumsViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalAlbumsViewController+DataSource.swift"; sourceTree = "<group>"; };
+		AD0F4E5E2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalAlbumsViewController+Delegate.swift"; sourceTree = "<group>"; };
 		AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Albums.swift"; sourceTree = "<group>"; };
 		AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Images.swift"; sourceTree = "<group>"; };
 		AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help09ViewController.swift; sourceTree = "<group>"; };
@@ -2059,6 +2063,8 @@
 			children = (
 				ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */,
 				AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */,
+				AD0F4E5C2E74B88500D05C4C /* LocalAlbumsViewController+DataSource.swift */,
+				AD0F4E5E2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift */,
 				ADEC6B042455BC6F0011527C /* LocalAlbumsTableViewCell.swift */,
 				ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */,
 				ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */,
@@ -3964,6 +3970,7 @@
 				AD6BA1042BA5ED1A00755257 /* LocalImagePreviewViewController.swift in Sources */,
 				AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
+				AD0F4E5F2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift in Sources */,
 				AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */,
 				ADD65C562BE775F9005AC3B8 /* AlbumViewController+Bars.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
@@ -4058,6 +4065,7 @@
 				AD91127E28154CC2002FB78F /* SceneDelegate+StateRestoration.swift in Sources */,
 				ADD511A6285F7D0700AD3FEC /* TagsViewController+Search.swift in Sources */,
 				ADFA31672E5216730019FC4B /* PasteboardImagesViewController+Bar.swift in Sources */,
+				AD0F4E5D2E74B88500D05C4C /* LocalAlbumsViewController+DataSource.swift in Sources */,
 				AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,
