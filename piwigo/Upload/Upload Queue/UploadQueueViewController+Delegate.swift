@@ -32,7 +32,7 @@ extension UploadQueueViewController: UITableViewDelegate
 
     // MARK: - UITableView - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight
+        return uploadCellHeight
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -80,7 +80,12 @@ extension UploadQueueViewController: UITableViewDelegate
             completionHandler(true)
         })
         cancel.backgroundColor = .red
-        cancel.image = UIImage(systemName: "xmark.circle", withConfiguration: imageConfig)
+        if #available(iOS 26.0, *) {
+            cancel.image = UIImage(systemName: "xmark", withConfiguration: imageConfig)
+        } else {
+            // Fallback on previous version
+            cancel.image = UIImage(systemName: "xmark.circle.fill", withConfiguration: imageConfig)
+        }
 
         // Associate actions
         switch upload.state {

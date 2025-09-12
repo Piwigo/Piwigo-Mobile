@@ -59,6 +59,12 @@ class UploadImageTableViewCell: UITableViewCell {
         // Image info label
         imageInfoLabel.textColor = PwgColor.rightLabel
         
+        // Prepare image view
+        if #unavailable(iOS 26.0) {
+            cellImage.layer.cornerRadius = 10 - 3
+            cellImage.layer.masksToBounds = true
+        }
+        
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
@@ -134,9 +140,6 @@ class UploadImageTableViewCell: UITableViewCell {
         if let currentImage = cellImage.image, !currentImage.isEqual(finalImage) {
             cellImage.image = finalImage
         }
-        if cellImage.layer.cornerRadius != 7 {
-            cellImage.layer.cornerRadius = 10 - 3
-        }
 
         // Image available
         var text = ""
@@ -200,9 +203,6 @@ class UploadImageTableViewCell: UITableViewCell {
                 }
 
                 self.changeCellImageIfNeeded(withImage: image)
-                if self.cellImage.layer.cornerRadius != 7 {
-                    self.cellImage.layer.cornerRadius = 10 - 3
-                }
             }
         })
         
