@@ -470,6 +470,8 @@ extension AlbumViewController
             title = nil
             navigationItem.attributedTitle = nil
             navigationItem.attributedSubtitle = nil
+            navigationItem.subtitle = nil
+            navigationItem.largeSubtitle = nil
             return
         }
         else if categoryId == Int32.zero {
