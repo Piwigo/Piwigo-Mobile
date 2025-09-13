@@ -60,9 +60,13 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.nbSubAlbums)) ?? "0"
-            subCategoriesLabel.text = albumData.nbSubAlbums > 1 ?
-                String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
-                String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
+            if traitCollection.preferredContentSizeCategory < .extraLarge {
+                subCategoriesLabel.text = albumData.nbSubAlbums > 1 ?
+                    String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
+                    String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
+            } else {
+                subCategoriesLabel.text = nberAlbums
+            }
             
             self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false

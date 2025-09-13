@@ -349,6 +349,10 @@ class SelectCategoryViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
         // Display albums
         categoriesTableView?.reloadData()
     }
@@ -546,6 +550,23 @@ class SelectCategoryViewController: UIViewController {
             self.mainContext.saveIfNeeded()
             // Dismiss the view
             self.dismiss(animated: true, completion: {})
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setTableViewMainHeader()
+
+            // Animated update for smoother experience
+            self.categoriesTableView?.beginUpdates()
+            self.categoriesTableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
         }
     }
 }
