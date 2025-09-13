@@ -84,31 +84,31 @@ extension UINavigationBar {
         /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
         switch contentSizeCategory {
         case .extraSmall:
-            return UIFont.systemFont(ofSize: 28, weight: .bold)
+            return UIFont.systemFont(ofSize: 31, weight: .bold)
         case .small:
-            return UIFont.systemFont(ofSize: 28, weight: .bold)
+            return UIFont.systemFont(ofSize: 32, weight: .bold)
         case .medium:
-            return UIFont.systemFont(ofSize: 30, weight: .bold)
+            return UIFont.systemFont(ofSize: 33, weight: .bold)
         case .large:    // default style
             return UIFont.systemFont(ofSize: 34, weight: .bold)
         case .extraLarge:
-            return UIFont.systemFont(ofSize: 34, weight: .bold)
+            return UIFont.systemFont(ofSize: 36, weight: .bold)
         case .extraExtraLarge:
-            return UIFont.systemFont(ofSize: 36, weight: .bold)
+            return UIFont.systemFont(ofSize: 38, weight: .bold)
         case .extraExtraExtraLarge:
-            return UIFont.systemFont(ofSize: 36, weight: .bold)
+            return UIFont.systemFont(ofSize: 40, weight: .bold)
         case .accessibilityMedium:
-            return UIFont.systemFont(ofSize: 40, weight: .bold)
+            return UIFont.systemFont(ofSize: 44, weight: .bold)
         case .accessibilityLarge:
-            return UIFont.systemFont(ofSize: 40, weight: .bold)
+            return UIFont.systemFont(ofSize: 48, weight: .bold)
         case .accessibilityExtraLarge:
-            return UIFont.systemFont(ofSize: 44, weight: .bold)
+            return UIFont.systemFont(ofSize: 52, weight: .bold)
         case .accessibilityExtraExtraLarge:
-            return UIFont.systemFont(ofSize: 44, weight: .bold)
+            return UIFont.systemFont(ofSize: 56, weight: .bold)
         case .accessibilityExtraExtraExtraLarge:
-            return UIFont.systemFont(ofSize: 44, weight: .bold)
+            return UIFont.systemFont(ofSize: 60, weight: .bold)
         case .unspecified:
-            return UIFont.systemFont(ofSize: 34, weight: .bold)
+            fallthrough
         default:
             return UIFont.systemFont(ofSize: 34, weight: .bold)
         }
