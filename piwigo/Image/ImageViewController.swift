@@ -122,6 +122,9 @@ class ImageViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
         // Register video player changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
                                                name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
@@ -499,6 +502,24 @@ class ImageViewController: UIViewController {
     }
 
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply new content size
+//        guard let info = notification.userInfo,
+//              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+//        else { return }
+        
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+            self.setTitleViewFromImageData()
+        }
+    }
+
+
     // MARK: - Push Views
     func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
         if UIDevice.current.userInterfaceIdiom == .pad

@@ -373,15 +373,28 @@ extension ImageViewController {
             title = AttributedString(imageData.title)
         }
         
-        // Apply attributes to title
+        // Apply title attributes
         title.foregroundColor = PwgColor.whiteCream
-        title.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        switch traitCollection.preferredContentSizeCategory {
+        case .extraSmall, .small, .medium, .large:
+            title.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        case .extraLarge:
+            title.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        case .extraExtraLarge:
+            title.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        case .extraExtraExtraLarge:
+            title.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        case .accessibilityMedium:
+            title.font = UIFont.systemFont(ofSize: 19, weight: .semibold)
+        case .accessibilityLarge:
+            title.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        default:
+            title.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
+        }
         
         // Get subTitle
         var subTitle = AttributedString()
-        if imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
-            subTitle = AttributedString("— ? —")
-        } else {
+        if imageData.dateCreated > DateUtilities.weekAfterInterval { // i.e. a week after unknown date
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let dateFormatter = DateUtilities.dateFormatter
             if UIDevice.current.userInterfaceIdiom == .pad {
@@ -393,11 +406,10 @@ extension ImageViewController {
                 dateFormatter.timeStyle = .medium
                 subTitle = AttributedString(dateFormatter.string(from: dateCreated))
             }
+            // Apply subtitle attributes
+            subTitle.foregroundColor = PwgColor.whiteCream
+            subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
         }
-        
-        // Apply attributes to subTitle
-        subTitle.foregroundColor = PwgColor.whiteCream
-        subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
         
         // Prepare button
         var config = UIButton.Configuration.glass()
@@ -408,7 +420,7 @@ extension ImageViewController {
         config.titleLineBreakMode = .byTruncatingTail
         config.subtitleLineBreakMode = .byTruncatingTail
         let titleButton = UIButton(configuration: config)
-        let maxWidth = view.bounds.width * 0.40     // i.e. same as in Photos.app on iOS 26
+        let maxWidth = view.bounds.width * 0.60
         titleButton.widthAnchor.constraint(lessThanOrEqualToConstant: maxWidth).isActive = true
         navigationItem.titleView = titleButton
     }
