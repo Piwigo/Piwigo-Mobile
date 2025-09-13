@@ -197,7 +197,6 @@
 		AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */; };
 		AD3335432666B6D4000A1487 /* AppVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335422666B6D4000A1487 /* AppVars.swift */; };
 		AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */; };
-		AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */; };
 		AD33B51428EE182A00CC5A03 /* ImageSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD33B51328EE182A00CC5A03 /* ImageSize.swift */; };
 		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
 		AD35C2112849CB8300FCBDD1 /* pwg.categories.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35C2102849CB8300FCBDD1 /* pwg.categories.add.swift */; };
@@ -929,7 +928,6 @@
 		AD3335422666B6D4000A1487 /* AppVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVars.swift; sourceTree = "<group>"; };
 		AD3335442666CA46000A1487 /* UploadSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSizes.swift; sourceTree = "<group>"; };
 		AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectorViewController.swift; sourceTree = "<group>"; };
-		AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectorCell.swift; sourceTree = "<group>"; };
 		AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagSelectorViewController.storyboard; sourceTree = "<group>"; };
 		AD33B51328EE182A00CC5A03 /* ImageSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSize.swift; sourceTree = "<group>"; };
 		AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+CommonConstraints.swift"; sourceTree = "<group>"; };
@@ -2298,7 +2296,6 @@
 		AD98FB942843A28700F6C0C5 /* TagSelector */ = {
 			isa = PBXGroup;
 			children = (
-				AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */,
 				AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */,
 				AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */,
 				ADC69F24285DF50C009BF9AF /* TagSelectorViewController+Search.swift */,
@@ -3984,7 +3981,6 @@
 				AD43733F2B432862009BC454 /* SettingsViewController+UITableViewDelegate.swift in Sources */,
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
 				AD7E9AE92A6D7B330079BE8F /* Video.swift in Sources */,
-				AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */,
 				AD9112742811FBF7002FB78F /* UIWindowScene+AppTools.swift in Sources */,
 				ADEA269E285F909F00B6C9A0 /* ImageViewController+Edit.swift in Sources */,
 				AD9697D52BDE4B8900520614 /* PiwigoHUD.swift in Sources */,

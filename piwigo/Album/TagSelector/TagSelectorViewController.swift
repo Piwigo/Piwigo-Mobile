@@ -190,15 +190,28 @@ class TagSelectorViewController: UITableViewController {
 
     // Row height
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.rowHeight;
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
     
     // Return cell configured with tag
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagSelectorCell", for: indexPath) as? TagSelectorCell
-        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!") }
-        cell.configure(with: tags.object(at: indexPath))
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
+        
+        // => pwg.tags.getList returns in addition: counter, url
+        let tag = tags.object(at: indexPath)
+        let nber: Int64 = tag.numberOfImagesUnderTag
+        if (nber == Int64.zero) || (nber == Int64.max) {
+            // Unknown number of images
+            cell.configure(with: tag.tagName, detail: "")
+        } else {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
+            cell.configure(with: tag.tagName, detail: nberPhotos)
+        }
+        
         return cell
     }
 
