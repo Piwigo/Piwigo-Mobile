@@ -38,7 +38,7 @@
                                                 <constraint firstAttribute="width" secondItem="zWH-dn-Nuv" secondAttribute="height" multiplier="1:1" id="mxw-1t-Urj"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F5m-b5-6AC">
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F5m-b5-6AC">
                                             <rect key="frame" x="20" y="10" width="96.5" height="23.5"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="23.5" id="dzy-5F-3Kc"/>
