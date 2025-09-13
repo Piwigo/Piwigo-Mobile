@@ -52,6 +52,9 @@ class VideoDetailViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
@@ -304,7 +307,19 @@ class VideoDetailViewController: UIViewController
         }
     }
     
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
 
+            // Configure the description view before layouting subviews
+            self.descContainer.config(withImage: self.imageData, inViewController: self, forVideo: true)
+        }
+    }
+    
+    
     // MARK: - External Video Management
     @MainActor
     private func configExternalVideoViews() {

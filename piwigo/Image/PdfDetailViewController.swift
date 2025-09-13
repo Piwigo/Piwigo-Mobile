@@ -48,6 +48,9 @@ class PdfDetailViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
@@ -242,6 +245,18 @@ class PdfDetailViewController: UIViewController
         // Hide/show the description view with the navigation bar
         if descContainer.descTextView.text.isEmpty == false {
             descContainer.isHidden = navigationController?.isNavigationBarHidden ?? false
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            // Configure the description view before layouting subviews
+            self.descContainer.config(withImage: self.imageData, inViewController: self, forVideo: false)
         }
     }
     

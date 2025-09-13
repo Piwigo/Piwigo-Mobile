@@ -504,11 +504,6 @@ class ImageViewController: UIViewController {
     
     // MARK: - Content Sizes
     @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
-        // Apply new content size
-//        guard let info = notification.userInfo,
-//              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
-//        else { return }
-        
         // Apply changes
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }

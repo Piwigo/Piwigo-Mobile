@@ -15,12 +15,12 @@ class ImageDescriptionView: UIVisualEffectView {
     @IBOutlet weak var descHeight: NSLayoutConstraint!
     @IBOutlet weak var descOffset: NSLayoutConstraint!
     @IBOutlet weak var descTextView: UITextView!
-
+    
     override func awakeFromNib() {
         // Initialization code
         super.awakeFromNib()
     }
-
+    
     @MainActor
     func applyColorPalette() {
         descTextView.textColor = PwgColor.text
@@ -37,9 +37,10 @@ class ImageDescriptionView: UIVisualEffectView {
             let wholeRange = NSRange(location: 0, length: image.comment.string.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
+            let footNoteFont = UIFont.preferredFont(forTextStyle: .footnote)
             let attributes: [NSAttributedString.Key : Any] = [
                 NSAttributedString.Key.foregroundColor: PwgColor.text,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: footNoteFont.pointSize, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             let desc = NSMutableAttributedString(attributedString: image.comment)
@@ -56,7 +57,7 @@ class ImageDescriptionView: UIVisualEffectView {
         // Don't show the description only when the bar is hidden
         let navController = viewController.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
-
+        
         // Calculate the available width
         var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
         if let root = navController?.topViewController {
@@ -67,8 +68,7 @@ class ImageDescriptionView: UIVisualEffectView {
         // Calc the height required to display the text, corners'width deducted
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let lineHeight = (descTextView.font ?? UIFont.systemFont(ofSize: 13)).lineHeight
-        let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
+        let cornerRadius: CGFloat = 20.0
         let rect = descTextView.attributedText.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius,
                                                                          height: CGFloat.greatestFiniteMagnitude),
                                                             options: [.usesLineFragmentOrigin, .usesFontLeading],
@@ -85,7 +85,7 @@ class ImageDescriptionView: UIVisualEffectView {
             maxHeight = 0.23 * height
         }
         
-        // Can the description be presented on 3 lines maximum?
+        // Can the description be presented in the provided height?
         if textHeight < maxHeight {
             // Calculate the height (the width should be < safeAreaWidth)
             let requiredHeight = ceil(descTextView.textContainerInset.top + textHeight + descTextView.textContainerInset.bottom)
@@ -94,16 +94,26 @@ class ImageDescriptionView: UIVisualEffectView {
                                                         height: requiredHeight))
             descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
-            descOffset.constant = forVideo ? 12 : 4
-            self.layer.cornerRadius = cornerRadius
+            if #available(iOS 26.0, *) {
+                descOffset.constant = forVideo ? 12 : 8
+            } else {
+                // Fallback on previous version
+                descOffset.constant = forVideo ? 12 : 4
+            }
+            self.layer.cornerRadius = min(cornerRadius, descHeight.constant/2)
             self.layer.masksToBounds = true
         }
         else if rect.width < safeAreaWidth - 4*cornerRadius {
             // Several short lines but the width is smaller than screen width
             descWidth.constant = rect.width + cornerRadius   // Add space taken by corners
             descHeight.constant = min(maxHeight, rect.height)
-            descOffset.constant = forVideo ? 12 : 4
-            self.layer.cornerRadius = cornerRadius
+            if #available(iOS 26.0, *) {
+                descOffset.constant = forVideo ? 12 : 8
+            } else {
+                // Fallback on previous version
+                descOffset.constant = forVideo ? 12 : 4
+            }
+            self.layer.cornerRadius = min(cornerRadius, descHeight.constant/2)
             self.layer.masksToBounds = true
             
             // Scroll text to the top
