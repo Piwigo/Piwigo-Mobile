@@ -46,16 +46,16 @@ extension AutoUploadViewController: UITableViewDelegate
         case 2:
             switch indexPath.row {
             case 0:
-                height = 78.0
+                height = 78.0 + TableViewUtilities.rowExtraHeight
             case 1:
-                height = 428.0
+                height = 428.0 + TableViewUtilities.rowExtraHeight
             default:
                 break
             }
         default:
-            break
+            height = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
         }
-        return height + TableViewUtilities.rowExtraHeight
+        return height
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {

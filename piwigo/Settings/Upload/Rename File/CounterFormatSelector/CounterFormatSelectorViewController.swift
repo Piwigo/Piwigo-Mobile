@@ -58,19 +58,7 @@ class CounterFormatSelectorViewController: UIViewController {
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
 
         // Header
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", RenameAction.ActionType.addCounter.name)
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
-                                           range: NSRange(location: 0, length: title.count))
-        headerAttributedString.append(titleAttributedString)
-        let text = NSLocalizedString("settings_renameCounterHeader", comment: "Please select a counter format…")
-        let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
-                                          range: NSRange(location: 0, length: text.count))
-        headerAttributedString.append(textAttributedString)
-        headerLabel.attributedText = headerAttributedString
-        headerLabel.sizeToFit()
+        setMainHeader()
     }
     
     @MainActor
@@ -103,6 +91,10 @@ class CounterFormatSelectorViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -118,6 +110,41 @@ class CounterFormatSelectorViewController: UIViewController {
     }
     
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setMainHeader()
+            self.updateExample()
+            
+            // Animated update for smoother experience
+            self.tableView?.beginUpdates()
+            self.tableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        }
+    }
+    
+    private func setMainHeader() {
+        let headerAttributedString = NSMutableAttributedString(string: "")
+        let title = String(format: "%@\n", RenameAction.ActionType.addCounter.name)
+        let titleAttributedString = NSMutableAttributedString(string: title)
+        titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
+                                           range: NSRange(location: 0, length: title.count))
+        headerAttributedString.append(titleAttributedString)
+        let text = NSLocalizedString("settings_renameCounterHeader", comment: "Please select a counter format…")
+        let textAttributedString = NSMutableAttributedString(string: text)
+        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
+                                          range: NSRange(location: 0, length: text.count))
+        headerAttributedString.append(textAttributedString)
+        headerLabel.attributedText = headerAttributedString
+        headerLabel.sizeToFit()
+    }
+
+
     // MARK: - Counter Format Update
     func updateExample() {
         // Look for the counter format stored in default settings

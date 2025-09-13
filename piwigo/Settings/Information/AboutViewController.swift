@@ -78,11 +78,14 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     }
     
     override func viewDidLayoutSubviews() {
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             textView.setContentOffset(.zero, animated: false)
         }
+        
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
 
     deinit {
@@ -97,13 +100,13 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let aboutAttributedString = NSMutableAttributedString(string: "")
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
         let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-        spacerAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: spacerRange)
+        spacerAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: spacerRange)
 
         // Translators — Bundle string
         let translatorsString = NSLocalizedString("translators_text", tableName: "About", bundle: Bundle.main, value: "", comment: "Translators text")
         let translatorsAttributedString = NSMutableAttributedString(string: translatorsString)
         let translatorsRange = NSRange(location: 0, length: translatorsString.count)
-        translatorsAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: translatorsRange)
+        translatorsAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: translatorsRange)
         aboutAttributedString.append(translatorsAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -111,9 +114,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mitString = NSLocalizedString("licenceMIT_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
         let mitAttributedString = NSMutableAttributedString(string: mitString)
         var mitTitleRange = NSRange(location: 0, length: mitString.count)
-        mitAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: mitTitleRange)
+        mitAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: mitTitleRange)
         mitTitleRange = NSRange(location: 0, length: (mitString as NSString).range(of: "\n").location)
-        mitAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: mitTitleRange)
+        mitAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline), range: mitTitleRange)
         aboutAttributedString.append(mitAttributedString)
 
         return aboutAttributedString

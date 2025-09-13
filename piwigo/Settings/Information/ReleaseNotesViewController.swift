@@ -78,11 +78,21 @@ class ReleaseNotesViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             textView.setContentOffset(.zero, animated: false)
         }
+
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Back to large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     deinit {
@@ -241,18 +251,18 @@ class ReleaseNotesViewController: UIViewController {
                                         bundle: Bundle.main, value: "", comment: comment)
         let vAttributedString = NSMutableAttributedString(string: vString)
         var vRange = NSRange(location: 0, length: vString.count)
-        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: vRange)
         vRange = NSRange(location: 0, length: (vString as NSString).range(of: "\n").location)
         guard vRange.length != LONG_MAX
         else {  // Missing translations are not shown
             return NSAttributedString()
         }
         
-        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline), range: vRange)
         if lineFeed {
             let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
             let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-            spacerAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 10), range: spacerRange)
+            spacerAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .caption2), range: spacerRange)
             vAttributedString.append(spacerAttributedString)
         }
         return vAttributedString

@@ -55,19 +55,7 @@ class TimeFormatSelectorViewController: UIViewController {
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
 
         // Header
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", RenameAction.ActionType.addTime.name)
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
-                                           range: NSRange(location: 0, length: title.count))
-        headerAttributedString.append(titleAttributedString)
-        let text = NSLocalizedString("settings_renameTimeHeader", comment: "Please select a time format…")
-        let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
-                                          range: NSRange(location: 0, length: text.count))
-        headerAttributedString.append(textAttributedString)
-        headerLabel.attributedText = headerAttributedString
-        headerLabel.sizeToFit()
+        setMainHeader()
         
         // Enable/disable drag interactions
         navigationItem.rightBarButtonItem = editButtonItem
@@ -103,6 +91,10 @@ class TimeFormatSelectorViewController: UIViewController {
        // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -118,6 +110,41 @@ class TimeFormatSelectorViewController: UIViewController {
     }
     
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setMainHeader()
+            self.updateExample()
+            
+            // Animated update for smoother experience
+            self.tableView?.beginUpdates()
+            self.tableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        }
+    }
+    
+    private func setMainHeader() {
+        let headerAttributedString = NSMutableAttributedString(string: "")
+        let title = String(format: "%@\n", RenameAction.ActionType.addTime.name)
+        let titleAttributedString = NSMutableAttributedString(string: title)
+        titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
+                                           range: NSRange(location: 0, length: title.count))
+        headerAttributedString.append(titleAttributedString)
+        let text = NSLocalizedString("settings_renameTimeHeader", comment: "Please select a time format…")
+        let textAttributedString = NSMutableAttributedString(string: text)
+        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
+                                          range: NSRange(location: 0, length: text.count))
+        headerAttributedString.append(textAttributedString)
+        headerLabel.attributedText = headerAttributedString
+        headerLabel.sizeToFit()
+    }
+
+
     // MARK: - Time Format Utilities
     func indexPathsOfOptions(in section: Int) -> [IndexPath] {
         // Determine the current number of displayed options

@@ -67,12 +67,21 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     }
 
     override func viewDidLayoutSubviews() {
-
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             textView.setContentOffset(.zero, animated: false)
         }
+
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Back to large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     deinit {
@@ -86,13 +95,13 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Privacy policy attributed string
         let privacyAttributedString = NSMutableAttributedString(string: "\n")
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n", attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
 
         // Privcy policy string — Bundle string
         let firstString = NSLocalizedString("privacy_text", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Privacy policy text")
         let firstAttributedString = NSMutableAttributedString(string: firstString, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(firstAttributedString)
         privacyAttributedString.append(spacerAttributedString)
@@ -100,42 +109,42 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Introduction — Bundle string
         let introTitle = NSLocalizedString("intro_title", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Introduction title")
         let introAttributedTitle = NSMutableAttributedString(string: introTitle, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)
         ])
         privacyAttributedString.append(introAttributedTitle)
         privacyAttributedString.append(spacerAttributedString)
 
         let introString1 = NSLocalizedString("intro_text1", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Introduction text1")
         let introAttributedString1 = NSMutableAttributedString(string: introString1, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(introAttributedString1)
         privacyAttributedString.append(spacerAttributedString)
 
         let introString2 = NSLocalizedString("intro_text2", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Introduction text2")
         let introAttributedString2 = NSMutableAttributedString(string: introString2, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(introAttributedString2)
         privacyAttributedString.append(spacerAttributedString)
 
         let introString3 = NSLocalizedString("intro_text3", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Introduction text3")
         let introAttributedString3 = NSMutableAttributedString(string: introString3, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(introAttributedString3)
         privacyAttributedString.append(spacerAttributedString)
 
         let introString4 = NSLocalizedString("intro_text4", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Introduction text4")
         let introAttributedString4 = NSMutableAttributedString(string: introString4, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(introAttributedString4)
         privacyAttributedString.append(spacerAttributedString)
 
         let introString5 = NSLocalizedString("intro_text5", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Introduction text5")
         let introAttributedString5 = NSMutableAttributedString(string: introString5, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(introAttributedString5)
         privacyAttributedString.append(spacerAttributedString)
@@ -143,63 +152,63 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // What data is processed and stored? — Bundle string
         let whatTitle = NSLocalizedString("what_title", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "What title")
         let whatAttributedTitle = NSMutableAttributedString(string: whatTitle, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)
         ])
         privacyAttributedString.append(whatAttributedTitle)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatSubtitle1 = NSLocalizedString("what_subTitle1", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "What sub-title1")
         let whatAttributedSubtitle1 = NSMutableAttributedString(string: whatSubtitle1, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)
         ])
         privacyAttributedString.append(whatAttributedSubtitle1)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatString1a = NSLocalizedString("what_subText1a", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "what sub-text1a")
         let whatAttributedString1a = NSMutableAttributedString(string: whatString1a, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(whatAttributedString1a)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatSubtitle2 = NSLocalizedString("what_subTitle2", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "What sub-title2")
         let whatAttributedSubtitle2 = NSMutableAttributedString(string: whatSubtitle2, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)
         ])
         privacyAttributedString.append(whatAttributedSubtitle2)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatString2a = NSLocalizedString("what_subText2a", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "what sub-text2a")
         let whatAttributedString2a = NSMutableAttributedString(string: whatString2a, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(whatAttributedString2a)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatSubtitle3 = NSLocalizedString("what_subTitle3", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "What sub-title3")
         let whatAttributedSubtitle3 = NSMutableAttributedString(string: whatSubtitle3, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)
         ])
         privacyAttributedString.append(whatAttributedSubtitle3)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatString3a = NSLocalizedString("what_subText3a", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "what sub-text3a")
         let whatAttributedString3a = NSMutableAttributedString(string: whatString3a, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(whatAttributedString3a)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatSubtitle4 = NSLocalizedString("what_subTitle4", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "What sub-title4")
         let whatAttributedSubtitle4 = NSMutableAttributedString(string: whatSubtitle4, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)
         ])
         privacyAttributedString.append(whatAttributedSubtitle4)
         privacyAttributedString.append(spacerAttributedString)
 
         let whatString4a = NSLocalizedString("what_subText4a", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "what sub-text4a")
         let whatAttributedString4a = NSMutableAttributedString(string: whatString4a, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(whatAttributedString4a)
         privacyAttributedString.append(spacerAttributedString)
@@ -207,21 +216,21 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Why does the mobile app store data? — Bundle string
         let whyTitle = NSLocalizedString("why_title", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Why title")
         let whyAttributedTitle = NSMutableAttributedString(string: whyTitle, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)
         ])
         privacyAttributedString.append(whyAttributedTitle)
         privacyAttributedString.append(spacerAttributedString)
 
         let whyString1 = NSLocalizedString("why_text1", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Why text1")
         let whyAttributedString1 = NSMutableAttributedString(string: whyString1, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(whyAttributedString1)
         privacyAttributedString.append(spacerAttributedString)
 
         let whyString2 = NSLocalizedString("why_text2", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Why text2")
         let whyAttributedString2 = NSMutableAttributedString(string: whyString2, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(whyAttributedString2)
         privacyAttributedString.append(spacerAttributedString)
@@ -229,21 +238,21 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // How is the data protected? — Bundle string
         let howTitle = NSLocalizedString("how_title", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "How title")
         let howAttributedTitle = NSMutableAttributedString(string: howTitle, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)
         ])
         privacyAttributedString.append(howAttributedTitle)
         privacyAttributedString.append(spacerAttributedString)
 
         let howString1 = NSLocalizedString("how_text1", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "How text1")
         let howAttributedString1 = NSMutableAttributedString(string: howString1, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(howAttributedString1)
         privacyAttributedString.append(spacerAttributedString)
 
         let howString2 = NSLocalizedString("how_text2", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "How text2")
         let howAttributedString2 = NSMutableAttributedString(string: howString2, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(howAttributedString2)
         privacyAttributedString.append(spacerAttributedString)
@@ -251,14 +260,14 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Security of your information — Bundle string
         let securityTitle = NSLocalizedString("security_title", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Security title")
         let securityAttributedTitle = NSMutableAttributedString(string: securityTitle, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)
         ])
         privacyAttributedString.append(securityAttributedTitle)
         privacyAttributedString.append(spacerAttributedString)
 
         let securityString1 = NSLocalizedString("security_text", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Security text")
         let securityAttributedString1 = NSMutableAttributedString(string: securityString1, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(securityAttributedString1)
         privacyAttributedString.append(spacerAttributedString)
@@ -266,21 +275,21 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Contact Us — Bundle string
         let contactTitle = NSLocalizedString("contact_title", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact title")
         let contactAttributedTitle = NSMutableAttributedString(string: contactTitle, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)
         ])
         privacyAttributedString.append(contactAttributedTitle)
         privacyAttributedString.append(spacerAttributedString)
 
         let contactString1 = NSLocalizedString("contact_text", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact text")
         let contactAttributedString1 = NSMutableAttributedString(string: contactString1, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(contactAttributedString1)
         privacyAttributedString.append(spacerAttributedString)
 
         let contactString2 = NSLocalizedString("contact_address", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact address")
         let contactAttributedString2 = NSMutableAttributedString(string: contactString2, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)
         ])
         privacyAttributedString.append(contactAttributedString2)
         privacyAttributedString.append(spacerAttributedString)
@@ -293,7 +302,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         var contactAttributedString3: NSMutableAttributedString? = nil
         if let url = URL(string: mailTo) {
             contactAttributedString3 = NSMutableAttributedString(string: contactString3, attributes: [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13),
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
             NSAttributedString.Key.link: url
         ])
         }

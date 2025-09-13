@@ -60,20 +60,8 @@ class RenameFileViewController: UIViewController {
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
         
         // Header
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", NSLocalizedString("settings_renameFileLong", comment: "Rename File Before Upload"))
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
-                                           range: NSRange(location: 0, length: title.count))
-        headerAttributedString.append(titleAttributedString)
-        let text = NSLocalizedString("settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
-        let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
-                                          range: NSRange(location: 0, length: text.count))
-        headerAttributedString.append(textAttributedString)
-        headerLabel.attributedText = headerAttributedString
-        headerLabel.sizeToFit()
-
+        setMainHeader()
+        
         // Enable/disable drag and delete interactions
         navigationItem.rightBarButtonItem = editButtonItem
 
@@ -111,6 +99,10 @@ class RenameFileViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
         
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
@@ -239,6 +231,41 @@ class RenameFileViewController: UIViewController {
     }
     
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setMainHeader()
+            self.updateExample()
+            
+            // Animated update for smoother experience
+            self.tableView?.beginUpdates()
+            self.tableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        }
+    }
+    
+    private func setMainHeader() {
+        let headerAttributedString = NSMutableAttributedString(string: "")
+        let title = String(format: "%@\n", NSLocalizedString("settings_renameFileLong", comment: "Rename File Before Upload"))
+        let titleAttributedString = NSMutableAttributedString(string: title)
+        titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
+                                           range: NSRange(location: 0, length: title.count))
+        headerAttributedString.append(titleAttributedString)
+        let text = NSLocalizedString("settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
+        let textAttributedString = NSMutableAttributedString(string: text)
+        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
+                                          range: NSRange(location: 0, length: text.count))
+        headerAttributedString.append(textAttributedString)
+        headerLabel.attributedText = headerAttributedString
+        headerLabel.sizeToFit()
+    }
+
+
     // MARK: - All Actions
     func unusedActions() -> Set<RenameAction.ActionType> {
         let usedActions = Set((prefixActions + replaceActions + suffixActions).map(\.self.type))

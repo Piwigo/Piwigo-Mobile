@@ -110,6 +110,9 @@ class TroubleshootingViewController: UIViewController {
         
         // Cancel operations (with HUD shown, should never be needed)
         queue.cancelAllOperations()
+
+        // Back to large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     deinit {

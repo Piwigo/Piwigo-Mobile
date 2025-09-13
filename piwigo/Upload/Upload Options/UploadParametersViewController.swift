@@ -72,6 +72,7 @@ class UploadParametersViewController: UITableViewController {
     }
 }
 
+
 // MARK: - SelectPrivacyDelegate Methods
 extension UploadParametersViewController: SelectPrivacyDelegate {
     func didSelectPrivacyLevel(_ privacyLevel: pwgPrivacy) {
@@ -86,6 +87,7 @@ extension UploadParametersViewController: SelectPrivacyDelegate {
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }
+
 
 // MARK: - TagsViewControllerDelegate Methods
 extension UploadParametersViewController: TagsViewControllerDelegate {

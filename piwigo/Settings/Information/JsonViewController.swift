@@ -39,7 +39,20 @@ class JsonViewController: UIViewController {
             dateTime?.text = fileURL.fileSizeString
         }
         let content = try? Data(contentsOf: fileURL, options: .alwaysMapped)
-        fileContent?.text = String(decoding: content ?? Data(), as: UTF8.self)
+        let msg = String(decoding: content ?? Data(), as: UTF8.self)
+        let attributedMsg = NSMutableAttributedString(string: msg)
+        let wholeRange = NSRange(location: 0, length: msg.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.left
+        style.lineSpacing = 0
+        style.paragraphSpacing = 9
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: PwgColor.header,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        attributedMsg.addAttributes(attributes, range: wholeRange)
+        fileContent?.attributedText = attributedMsg
     }
     
     @MainActor
@@ -78,11 +91,14 @@ class JsonViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             fileContent?.setContentOffset(.zero, animated: false)
         }
+
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     deinit {

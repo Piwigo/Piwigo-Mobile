@@ -42,7 +42,7 @@ class LogsViewController: UIViewController {
         style.paragraphSpacing = 9
         let attributes = [
             NSAttributedString.Key.foregroundColor: PwgColor.header,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
             NSAttributedString.Key.paragraphStyle: style
         ]
         attributedMsg.addAttributes(attributes, range: wholeRange)
@@ -85,11 +85,14 @@ class LogsViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             messages?.setContentOffset(.zero, animated: false)
         }
+
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     deinit {

@@ -21,6 +21,9 @@ class ColorPaletteViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
+
+        // Disable large titles
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     @MainActor
@@ -152,12 +155,12 @@ extension ColorPaletteViewController: UITableViewDelegate {
         var height: CGFloat = 0.0
         switch indexPath.row {
         case 0:
-            height = 214.0
+            height = 214.0 + TableViewUtilities.rowExtraHeight
         case 1:
-            height = 44.0
+            height = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
         default:
             break
         }
-        return height + TableViewUtilities.rowExtraHeight
+        return height
     }
 }
