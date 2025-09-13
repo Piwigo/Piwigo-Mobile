@@ -476,7 +476,7 @@ class AlbumUtilities: NSObject {
     // MARK: - Album/Images Collections | Image Section
     static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool,
                               preferredContenSize: UIContentSizeCategory, width: CGFloat) -> (String, String) {
-        debugPrint("getDateLabels for \(preferredContenSize)")
+//        debugPrint("getDateLabels for \(preferredContenSize)")
         // Creation date of images (or of availability)
         let refDate = DateUtilities.unknownDateInterval     // i.e. unknown date
         var dateLabelText = " "                             // Displayed when there is no date available

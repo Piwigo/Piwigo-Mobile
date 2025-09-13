@@ -89,7 +89,7 @@ extension UINavigationBar {
             return UIFont.systemFont(ofSize: 32, weight: .bold)
         case .medium:
             return UIFont.systemFont(ofSize: 33, weight: .bold)
-        case .large:    // default style
+        case .large:    // default style -> Large Title, bold
             return UIFont.systemFont(ofSize: 34, weight: .bold)
         case .extraLarge:
             return UIFont.systemFont(ofSize: 36, weight: .bold)

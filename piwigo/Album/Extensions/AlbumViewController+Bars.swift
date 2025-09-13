@@ -466,7 +466,8 @@ extension AlbumViewController
     @MainActor @available(iOS 26.0, *)
     func setTitleView(progress: Float = 0) {
         // Title
-        if categoryId == pwgSmartAlbum.search.rawValue {
+        guard categoryId != pwgSmartAlbum.search.rawValue
+        else {
             title = nil
             navigationItem.attributedTitle = nil
             navigationItem.attributedSubtitle = nil
@@ -474,24 +475,30 @@ extension AlbumViewController
             navigationItem.largeSubtitle = nil
             return
         }
-        else if categoryId == Int32.zero {
-            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-        }
-        else {
-            title = albumData.name
-        }
+        
+        let title: String = categoryId == Int32.zero
+            ? String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+            : albumData.name
         self.view?.window?.windowScene?.title = title
         
-        // No subTitle when using acessibility category
-        guard traitCollection.preferredContentSizeCategory < .accessibilityMedium
-        else {
-            navigationItem.subtitle = nil
-            navigationItem.largeSubtitle = nil
+        // No subtitle when using acessibility category or on iPhone in landscape mode
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+        let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
+        if (tooLargeFont && categoryId != AlbumVars.shared.defaultCategory) ||
+            (UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            // Set title and subtitle
+            if prefersLargeTitles {
+                navigationItem.title = title
+                navigationItem.subtitle = nil
+            } else {
+                navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
+                                                        subtitle: "", subTitleColor: PwgColor.rightLabel)
+            }
             return
         }
         
-        // Get subTitle
-        var subTitle = ""
+        // Subtitle
+        var subTitle: String = ""
         if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) {
             // Inform user that the app is fetching album data
             if progress == 0 {
@@ -510,11 +517,9 @@ extension AlbumViewController
                 subTitle = NSLocalizedString("selectImages", comment: "Select Photos")
             case 1:
                 subTitle = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
-            case 2...nberPhotos:
+            default:
                 let nberPhotosStr = nberPhotos.formatted(.number)
                 subTitle = String(format: NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), nberPhotosStr)
-            default:
-                break
             }
         }
         else if albumData.dateGetImages > TimeInterval(86400) { // i.e. a day after minimum date
@@ -538,49 +543,29 @@ extension AlbumViewController
                 }
             }
         }
-        navigationItem.subtitle = subTitle
-
-        // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
+        
+        // Set title and subtitle
         if prefersLargeTitles {
+            navigationItem.title = title
+            navigationItem.subtitle = subTitle
             navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
+        } else {
+            navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
+                                                    subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
         }
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld(progress: Float = 0) {
-        // Title view
+        // Title
         if [0, pwgSmartAlbum.search.rawValue].contains(categoryId) {
-            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
-            self.view?.window?.windowScene?.title = title
+            self.title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+            self.view?.window?.windowScene?.title = self.title
             return
-        } else {
-            title = albumData.name
-            self.view?.window?.windowScene?.title = albumData.name
         }
         
-        // Create label programmatically
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = PwgColor.whiteCream
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.adjustsFontSizeToFitWidth = false
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.allowsDefaultTighteningForTruncation = true
-        let wholeRange = NSRange(location: 0, length: albumData.name.count)
-        let style = NSMutableParagraphStyle()
-        style.alignment = NSTextAlignment.center
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline),
-            NSAttributedString.Key.paragraphStyle: style
-        ]
-        let attTitle = NSMutableAttributedString(string: albumData.name)
-        attTitle.addAttributes(attributes, range: wholeRange)
-        titleLabel.attributedText = attTitle
-        titleLabel.sizeToFit()
+        let title = albumData.name
+        self.view?.window?.windowScene?.title = albumData.name
         
         // There is no subtitle in landscape mode on iPhone
         // nor when using acessibility category
@@ -643,45 +628,85 @@ extension AlbumViewController
             }
         }
         
-        // Prepare sub-title
-        if subtitle.isEmpty == false {
-            let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
-            subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = PwgColor.rightLabel
-            subTitleLabel.textAlignment = .center
-            subTitleLabel.numberOfLines = 1
-            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = .preferredFont(forTextStyle: .caption2)
-            subTitleLabel.adjustsFontSizeToFitWidth = false
-            subTitleLabel.lineBreakMode = .byTruncatingTail
-            subTitleLabel.allowsDefaultTighteningForTruncation = true
-            subTitleLabel.text = subtitle
-            subTitleLabel.sizeToFit()
-            
-            var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, view.bounds.size.width - 100.0)
-            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
-            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
-                                                        height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            twoLineTitleView.addSubview(titleLabel)
-            twoLineTitleView.addSubview(subTitleLabel)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-            let views = ["title": titleLabel,
-                         "subtitle": subTitleLabel]
-            twoLineTitleView.addConstraints(
-                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
-                                               options: [], metrics: nil, views: views))
-            navigationItem.titleView = twoLineTitleView
-        } else {
+        // Set title view
+        navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.whiteCream,
+                                                subtitle: subtitle, subTitleColor: PwgColor.rightLabel)
+    }
+    
+    // The font size of the title is not updated automatically
+    // for larger accessibility type sizes on iOS 26.0
+    private func getTitleView(withTitle title: String, titleColor: UIColor,
+                              subtitle: String, subTitleColor: UIColor) -> UIView {
+        // Create title label programmatically
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = PwgColor.whiteCream
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = false
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.allowsDefaultTighteningForTruncation = true
+        let wholeRange = NSRange(location: 0, length: title.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: titleColor,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        let attTitle = NSMutableAttributedString(string: title)
+        attTitle.addAttributes(attributes, range: wholeRange)
+        titleLabel.attributedText = attTitle
+        titleLabel.sizeToFit()
+        
+        // No subtitle?
+        guard subtitle.isEmpty == false
+        else {
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width - 100.0))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
             let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
             oneLineTitleView.addSubview(titleLabel)
             oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
             oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
-            navigationItem.titleView = oneLineTitleView
+            return oneLineTitleView
         }
+
+        // Create subtitle label programmatically
+        let subTitleLabel = UILabel(frame: CGRect(x: 0.0, y: titleLabel.frame.size.height, width: 0, height: 0))
+        subTitleLabel.backgroundColor = UIColor.clear
+        subTitleLabel.textColor = subTitleColor
+        subTitleLabel.textAlignment = .center
+        subTitleLabel.numberOfLines = 1
+        subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        if traitCollection.preferredContentSizeCategory < .extraExtraExtraLarge {
+            subTitleLabel.font = .preferredFont(forTextStyle: .caption2)
+        } else {
+            subTitleLabel.font = .systemFont(ofSize: 15.0)  // instead of 17.0
+        }
+        subTitleLabel.adjustsFontSizeToFitWidth = false
+        subTitleLabel.lineBreakMode = .byTruncatingTail
+        subTitleLabel.allowsDefaultTighteningForTruncation = true
+        subTitleLabel.text = subtitle
+        subTitleLabel.sizeToFit()
+        
+        // Create two-line title view
+        var titleWidth = CGFloat(fmax(subTitleLabel.bounds.size.width, titleLabel.bounds.size.width))
+        titleWidth = fmin(titleWidth, view.bounds.size.width - 100.0)
+        titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+        let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                                                    height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+        twoLineTitleView.addSubview(titleLabel)
+        twoLineTitleView.addSubview(subTitleLabel)
+        twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+        twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+        twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+        let views = ["title": titleLabel,
+                     "subtitle": subTitleLabel]
+        twoLineTitleView.addConstraints(
+            NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                                           options: [], metrics: nil, views: views))
+        return twoLineTitleView
     }
 }
