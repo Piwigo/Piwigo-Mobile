@@ -29,6 +29,12 @@ extension UploadSettingsViewController {
         return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
+
+    // MARK: - UITableView - Rows
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    }
+    
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         var row = indexPath.row
         row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0

@@ -18,6 +18,7 @@ enum pwgEditOption : Int {
 }
 
 class TagTableViewCell: UITableViewCell {
+    
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var rightAddImage: UIImageView!
     @IBOutlet weak var rightRemoveImage: UIImageView!
@@ -26,7 +27,6 @@ class TagTableViewCell: UITableViewCell {
         // General settings
         backgroundColor = PwgColor.cellBackground
         tintColor = PwgColor.tintColor
-        textLabel?.font = .systemFont(ofSize: 17)
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag
@@ -43,7 +43,6 @@ class TagTableViewCell: UITableViewCell {
                 String(format: String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo"), nberPhotos)
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
-        leftLabel.font = .systemFont(ofSize: 17)
         leftLabel.textColor = PwgColor.leftLabel
 
         // Change image according to state
