@@ -163,7 +163,18 @@ class TableViewUtilities: NSObject {
         }
     }()
 
+    // Returns the row corner radius
+    static let defaultCornerRadius = CGFloat(26)
+    static let defaultOldRCornerRadius = CGFloat(10)
+    static let rowCornerRadius: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultCornerRadius
+        } else {
+            return defaultOldRCornerRadius
+        }
+    }()
 
+    
     // MARK: - Footers
     // Returns the height of a footer containing some text
     func heightOfFooter(withText text: String,

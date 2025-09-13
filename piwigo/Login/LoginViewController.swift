@@ -20,9 +20,13 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var piwigoLogo: UIButton!
     @IBOutlet weak var serverTextField: UITextField!
+    @IBOutlet weak var serverTextFiledHeight: NSLayoutConstraint!
     @IBOutlet weak var userTextField: UITextField!
+    @IBOutlet weak var userTextFieldHeight: NSLayoutConstraint!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var passwordTextFieldHeight: NSLayoutConstraint!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var loginButtonHeight: NSLayoutConstraint!
     @IBOutlet weak var websiteNotSecure: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
@@ -57,22 +61,33 @@ class LoginViewController: UIViewController {
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
         serverTextField.text = NetworkVars.shared.service
+        serverTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
 
         // Username text field
         userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
         userTextField.text = NetworkVars.shared.username
         userTextField.textContentType = .username
+        userTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Password text field
         passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
         passwordTextField.text = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
                                                             account: NetworkVars.shared.username)
         passwordTextField.textContentType = .password
+        passwordTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Login button
         loginButton.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)
         loginButton.addTarget(self, action: #selector(launchLogin), for: .touchUpInside)
-
+        loginButton.layer.cornerRadius = TableViewUtilities.rowCornerRadius
+        if #available(iOS 26.0, *) {
+            let cornerRadius = UICornerRadius.fixed(TableViewUtilities.rowCornerRadius)
+            loginButton.cornerConfiguration = .corners(radius: cornerRadius)
+        }
+        
+        // Text fields and button heights
+        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
+        
         // Website not secure info
         websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
         
@@ -87,7 +102,9 @@ class LoginViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -158,7 +175,34 @@ class LoginViewController: UIViewController {
     }
 
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        guard let info = notification.userInfo,
+              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+        else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update text fields and button sizes
+            updateContentSizes(for: contentSizeCategory)
+            
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+        }
+    }
+
+    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
+        // Set cell size according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        let fieldHeight = TableViewUtilities.shared.rowHeightForContentSizeCategory(contentSizeCategory)
+        serverTextFiledHeight.constant = fieldHeight
+        userTextFieldHeight.constant = fieldHeight
+        passwordTextFieldHeight.constant = fieldHeight
+        loginButtonHeight.constant = fieldHeight
+    }
     
+
     // MARK: - Login business
     @MainActor
     @objc func launchLogin() {
