@@ -83,6 +83,10 @@ class LocalAlbumsViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
         
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
         // Register app becoming active for updating the pasteboard
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -281,6 +285,24 @@ class LocalAlbumsViewController: UIViewController {
                 fatalError("Action not configured in setTableViewMainHeader().")
             }
             localAlbumsTableView.tableHeaderView = headerView
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setTableViewMainHeader()
+            
+            // Animated update for smoother experience
+            self.localAlbumsTableView?.beginUpdates()
+            self.localAlbumsTableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
         }
     }
 }
