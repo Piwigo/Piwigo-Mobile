@@ -30,7 +30,7 @@ extension ImageViewController
     
     func moveAction() -> UIAction {
         let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
-                              image: UIImage(systemName: "arrowshape.turn.up.right"),
+                              image: UIImage(systemName: "arrow.forward"),
                               handler: { [self] _ in
             // Disable buttons during action
             setEnableStateOfButtons(false)
