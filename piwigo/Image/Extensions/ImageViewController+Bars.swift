@@ -427,13 +427,31 @@ extension ImageViewController {
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     func setTitleViewOld() {
+        // Font according to content size category
+        var titleFont: UIFont
+        switch traitCollection.preferredContentSizeCategory {
+        case .extraSmall, .small, .medium, .large:
+            titleFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        case .extraLarge:
+            titleFont = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        case .extraExtraLarge:
+            titleFont = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        case .extraExtraExtraLarge:
+            titleFont = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        case .accessibilityMedium:
+            titleFont = UIFont.systemFont(ofSize: 19, weight: .semibold)
+        case .accessibilityLarge:
+            titleFont = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        default:
+            titleFont = UIFont.systemFont(ofSize: 23, weight: .semibold)
+        }
+
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
         titleLabel.textColor = PwgColor.whiteCream
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.adjustsFontSizeToFitWidth = false
         titleLabel.lineBreakMode = .byTruncatingTail
@@ -444,14 +462,15 @@ extension ImageViewController {
             style.alignment = NSTextAlignment.center
             let attributes = [
                 NSAttributedString.Key.foregroundColor: PwgColor.whiteCream,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold),
+                NSAttributedString.Key.font: titleFont,
                 NSAttributedString.Key.paragraphStyle: style
-            ]
+            ] as [NSAttributedString.Key : Any]
             let attTitle = NSMutableAttributedString(attributedString: imageData.title)
             attTitle.addAttributes(attributes, range: wholeRange)
             titleLabel.attributedText = attTitle
         } else {
             // No title => Use file name
+            titleLabel.font = titleFont
             titleLabel.text = imageData.fileName
         }
         titleLabel.sizeToFit()
