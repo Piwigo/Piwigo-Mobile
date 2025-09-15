@@ -342,7 +342,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
                                           localizedTitle: pwgSmartAlbum.recent.name,
                                           localizedSubtitle: nil,
-                                          icon: UIApplicationShortcutIcon(systemImageName: "clock"))
+                                          icon: UIApplicationShortcutIcon(systemImageName: "sparkles"))
                 ])
         }
         UIApplication.shared.shortcutItems = quickActions
