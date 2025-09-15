@@ -25,8 +25,6 @@ class SwitchTableViewCell: UITableViewCell {
         backgroundColor = PwgColor.cellBackground
 
         // Switch name
-        switchName.font = .preferredFont(forTextStyle: .body)
-        switchName.adjustsFontForContentSizeCategory = true
         switchName.textColor = PwgColor.leftLabel
         switchName.text = title
 

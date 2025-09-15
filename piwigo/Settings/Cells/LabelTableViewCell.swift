@@ -21,14 +21,10 @@ class LabelTableViewCell: UITableViewCell {
         backgroundColor = PwgColor.cellBackground
 
         // Left side: title
-        titleLabel.font = .preferredFont(forTextStyle: .body)
-        titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
         
         // Right side: detail
-        detailLabel.font = .preferredFont(forTextStyle: .body)
-        detailLabel.adjustsFontForContentSizeCategory = true
         detailLabel.textColor = PwgColor.rightLabel
         detailLabel.text = detail
     }

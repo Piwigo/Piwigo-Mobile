@@ -20,8 +20,6 @@ class ButtonTableViewCell: UITableViewCell {
         backgroundColor = PwgColor.cellBackground
 
         // Button title
-        buttonLabel.font = .preferredFont(forTextStyle: .title2)
-        buttonLabel.adjustsFontForContentSizeCategory = true
         buttonLabel.textColor = PwgColor.orange
         buttonLabel.text = title
     }
