@@ -127,36 +127,186 @@ extension SettingsViewController: UITableViewDelegate
             }
         case .accessibilityMedium:
             switch activeSection(indexPath.section) {
+            case .server, .privacy, .appearance, .cache, .about, .troubleshoot:
+                return defaultHeight + 11.0 + 10.0 + 28.0
             case .clear, .logout :
                 return defaultHeight + 12.0
+            case .albums:
+                switch indexPath.row {
+                    case 0,1:
+                        return defaultHeight + 11.0 + 10.0 + 28.0
+                default:
+                    return defaultHeight + 11.0
+                }
+            case .images:
+                let row = indexPath.row + (defaultSortUnknown ? 0 : 1)
+                switch row {
+                    case 0,1,3:
+                        return defaultHeight + 11.0 + 10.0 + 28.0
+                default:
+                    return defaultHeight + 11.0
+                }
+            case .imageUpload:
+                var row = indexPath.row
+                row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+                row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+                row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+                row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+                row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
+                switch row {
+                    case 1,4,5,8,10:
+                        return defaultHeight + 11.0 + 10.0 + 28.0
+                default:
+                    return defaultHeight + 11.0
+                }
             default:
                 return defaultHeight + 11.0
             }
         case .accessibilityLarge:
             switch activeSection(indexPath.section) {
+            case .server, .privacy, .appearance, .cache, .about, .troubleshoot:
+                return defaultHeight + 16.0 + 10.0 + 33.0
             case .clear, .logout :
                 return defaultHeight + 17.0
+            case .albums:
+                switch indexPath.row {
+                    case 0,1:
+                        return defaultHeight + 16.0 + 10.0 + 33.0
+                default:
+                    return defaultHeight + 16.0
+                }
+            case .images:
+                let row = indexPath.row + (defaultSortUnknown ? 0 : 1)
+                switch row {
+                    case 0,1,3:
+                        return defaultHeight + 16.0 + 10.0 + 33.0
+                default:
+                    return defaultHeight + 16.0
+                }
+            case .imageUpload:
+                var row = indexPath.row
+                row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+                row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+                row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+                row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+                row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
+                switch row {
+                    case 1,4,5,8,10:
+                        return defaultHeight + 16.0 + 10.0 + 33.0
+                default:
+                    return defaultHeight + 16.0
+                }
             default:
                 return defaultHeight + 16.0
             }
         case .accessibilityExtraLarge:
             switch activeSection(indexPath.section) {
+            case .server, .privacy, .appearance, .cache, .about, .troubleshoot:
+                return defaultHeight + 23.0 + 10.0 + 40.0
             case .clear, .logout :
                 return defaultHeight + 22.0
+            case .albums:
+                switch indexPath.row {
+                    case 0,1:
+                        return defaultHeight + 23.0 + 10.0 + 40.0
+                default:
+                    return defaultHeight + 23.0
+                }
+            case .images:
+                let row = indexPath.row + (defaultSortUnknown ? 0 : 1)
+                switch row {
+                    case 0,1,3:
+                        return defaultHeight + 23.0 + 10.0 + 40.0
+                default:
+                    return defaultHeight + 23.0
+                }
+            case .imageUpload:
+                var row = indexPath.row
+                row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+                row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+                row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+                row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+                row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
+                switch row {
+                    case 1,4,5,8,10:
+                        return defaultHeight + 23.0 + 10.0 + 40.0
+                default:
+                    return defaultHeight + 23.0
+                }
             default:
                 return defaultHeight + 23.0
             }
         case .accessibilityExtraExtraLarge:
             switch activeSection(indexPath.section) {
+            case .server, .privacy, .appearance, .cache, .about, .troubleshoot:
+                return defaultHeight + 30.0 + 10.0 + 47.0
             case .clear, .logout :
                 return defaultHeight + 28.0
+            case .albums:
+                switch indexPath.row {
+                case 0,1:
+                        return defaultHeight + 30.0 + 10.0 + 47.0
+                default:
+                    return defaultHeight + 30.0
+                }
+            case .images:
+                let row = indexPath.row + (defaultSortUnknown ? 0 : 1)
+                switch row {
+                case 0,1,3:
+                        return defaultHeight + 30.0 + 10.0 + 47.0
+                default:
+                    return defaultHeight + 30.0
+                }
+            case .imageUpload:
+                var row = indexPath.row
+                row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+                row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+                row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+                row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+                row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
+                switch row {
+                    case 1,4,5,8,10:
+                        return defaultHeight + 30.0 + 10.0 + 47.0
+                default:
+                    return defaultHeight + 30.0
+                }
             default:
                 return defaultHeight + 30.0
             }
         case .accessibilityExtraExtraExtraLarge:
             switch activeSection(indexPath.section) {
+            case .server, .privacy, .appearance, .cache, .about, .troubleshoot:
+                return defaultHeight + 36.0 + 10.0 + 53.0
             case .clear, .logout :
                 return defaultHeight + 34.0
+            case .albums:
+                switch indexPath.row {
+                case 0,1:
+                        return defaultHeight + 36.0 + 10.0 + 53.0
+                default:
+                    return defaultHeight + 36.0
+                }
+            case .images:
+                let row = indexPath.row + (defaultSortUnknown ? 0 : 1)
+                switch row {
+                case 0,1,3:
+                        return defaultHeight + 36.0 + 10.0 + 53.0
+                default:
+                    return defaultHeight + 36.0
+                }
+            case .imageUpload:
+                var row = indexPath.row
+                row += (!user.hasAdminRights && (row > 0)) ? 1 : 0
+                row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 2 : 0
+                row += (!UploadVars.shared.compressImageOnUpload && (row > 6)) ? 1 : 0
+                row += (!UIDevice.current.hasCellular && (row > 8)) ? 1 : 0
+                row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
+                switch row {
+                    case 1,4,5,8,10:
+                        return defaultHeight + 36.0 + 10.0 + 53.0
+                default:
+                    return defaultHeight + 36.0
+                }
             default:
                 return defaultHeight + 36.0
             }

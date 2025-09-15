@@ -25,12 +25,14 @@
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UYC-L2-kIJ">
                                             <rect key="frame" x="20" y="15.5" width="62.5" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L13-m0-nbo">
                                             <rect key="frame" x="291.5" y="15.5" width="62.5" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -50,8 +52,94 @@
                                     <outlet property="titleLabel" destination="UYC-L2-kIJ" id="5cn-6O-sxJ"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell2" rowHeight="70" id="27y-6L-2xs" userLabel="LabelTableViewCell2" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="106.5" width="374" height="70"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="27y-6L-2xs" id="dSR-82-Nj0">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="70"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6wx-CY-BLI">
+                                            <rect key="frame" x="0.0" y="14" width="374" height="42.5"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gl3-sX-6Ko">
+                                                    <rect key="frame" x="20" y="0.0" width="334" height="21"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kCj-Zr-02F">
+                                                    <rect key="frame" x="20" y="21.5" width="334" height="21"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstItem="kCj-Zr-02F" firstAttribute="leading" secondItem="6wx-CY-BLI" secondAttribute="leading" constant="20" symbolic="YES" id="7FL-Md-cnJ"/>
+                                                <constraint firstItem="gl3-sX-6Ko" firstAttribute="leading" secondItem="6wx-CY-BLI" secondAttribute="leading" constant="20" symbolic="YES" id="7Q4-pq-g9g"/>
+                                                <constraint firstAttribute="trailing" secondItem="gl3-sX-6Ko" secondAttribute="trailing" constant="20" symbolic="YES" id="7YB-Wx-RmP"/>
+                                                <constraint firstAttribute="bottom" secondItem="kCj-Zr-02F" secondAttribute="bottom" id="YkB-ga-Rhc"/>
+                                                <constraint firstItem="gl3-sX-6Ko" firstAttribute="top" secondItem="6wx-CY-BLI" secondAttribute="top" id="aUZ-EO-Wix"/>
+                                                <constraint firstAttribute="trailing" secondItem="kCj-Zr-02F" secondAttribute="trailing" constant="20" symbolic="YES" id="oTZ-PY-bnW"/>
+                                                <constraint firstItem="kCj-Zr-02F" firstAttribute="baseline" secondItem="gl3-sX-6Ko" secondAttribute="firstBaseline" constant="22" symbolType="layoutAnchor" id="ywp-65-yiq"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="6wx-CY-BLI" firstAttribute="centerY" secondItem="dSR-82-Nj0" secondAttribute="centerY" id="GDP-Yq-CSI"/>
+                                        <constraint firstAttribute="trailing" secondItem="6wx-CY-BLI" secondAttribute="trailing" id="fld-EJ-mRk"/>
+                                        <constraint firstItem="6wx-CY-BLI" firstAttribute="leading" secondItem="dSR-82-Nj0" secondAttribute="leading" id="pxn-0N-e7o"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="detailLabel" destination="kCj-Zr-02F" id="wfL-A0-AMe"/>
+                                    <outlet property="titleLabel" destination="gl3-sX-6Ko" id="nt2-Ot-gUe"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell3" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell3" rowHeight="70" id="RoW-tq-TEQ" userLabel="LabelTableViewCell3" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="176.5" width="374" height="70"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="RoW-tq-TEQ" id="t80-vc-oyI">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="70"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ufn-kE-UE0">
+                                            <rect key="frame" x="20" y="25" width="334" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gNi-yt-bvG">
+                                            <rect key="frame" x="20" y="24.5" width="334" height="21"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="gNi-yt-bvG" firstAttribute="centerY" secondItem="t80-vc-oyI" secondAttribute="centerY" id="1zx-xt-hj6"/>
+                                        <constraint firstItem="gNi-yt-bvG" firstAttribute="leading" secondItem="t80-vc-oyI" secondAttribute="leading" constant="20" symbolic="YES" id="9Ii-dl-iKN"/>
+                                        <constraint firstItem="ufn-kE-UE0" firstAttribute="centerY" secondItem="t80-vc-oyI" secondAttribute="centerY" id="E0d-aS-3Dc"/>
+                                        <constraint firstAttribute="trailing" secondItem="gNi-yt-bvG" secondAttribute="trailing" constant="20" symbolic="YES" id="Kp9-bx-jCS"/>
+                                        <constraint firstAttribute="trailing" secondItem="ufn-kE-UE0" secondAttribute="trailing" constant="20" symbolic="YES" id="iW4-QZ-eT4"/>
+                                        <constraint firstItem="ufn-kE-UE0" firstAttribute="leading" secondItem="t80-vc-oyI" secondAttribute="leading" constant="20" symbolic="YES" id="ucG-WI-L9g"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="detailLabel" destination="gNi-yt-bvG" id="hnu-cf-YIA"/>
+                                    <outlet property="titleLabel" destination="ufn-kE-UE0" id="pCh-zG-Chh"/>
+                                </connections>
+                            </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ButtonTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ButtonTableViewCell" id="TTp-Kd-QjL" customClass="ButtonTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="106.5" width="374" height="51"/>
+                                <rect key="frame" x="20" y="246.5" width="374" height="51"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="TTp-Kd-QjL" id="IwA-qY-LvA">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="51"/>
@@ -74,7 +162,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SliderTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SliderTableViewCell" id="ae5-2K-hsb" customClass="SliderTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="157.5" width="374" height="51"/>
+                                <rect key="frame" x="20" y="297.5" width="374" height="51"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ae5-2K-hsb" id="NFO-ao-Tua">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="51"/>
@@ -118,7 +206,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" id="XL0-X9-ShJ" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="208.5" width="374" height="51"/>
+                                <rect key="frame" x="20" y="348.5" width="374" height="51"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XL0-X9-ShJ" id="5yg-ZI-Wsd">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="51"/>
@@ -152,7 +240,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell" id="02L-mx-m8f" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="259.5" width="374" height="51"/>
+                                <rect key="frame" x="20" y="399.5" width="374" height="51"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="02L-mx-m8f" id="5qy-WC-3ZU">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="51"/>
