@@ -20,12 +20,12 @@ extension PwgSession
               let imageURL = imageURL, imageURL.isFileURL == false,
               let serverID = serverID, serverID.isEmpty == false
         else {
-            failure(PwgSessionError.failedToPrepareDownload)
+            failure(PwgKitError.failedToPrepareDownload)
             return
         }
         
         // Determine URL of image in cache
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         let fileURL = cacheDir.appendingPathComponent(imageSize.path)
             .appendingPathComponent(String(imageID))
 

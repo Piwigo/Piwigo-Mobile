@@ -40,38 +40,20 @@ class UploadVideoSizeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
     }
 
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        tableView.separatorColor = .piwigoColorSeparator()
+        tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
@@ -113,11 +95,11 @@ extension UploadVideoSizeViewController: UITableViewDataSource
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         // Name of the image size
-        cell.backgroundColor = .piwigoColorCellBackground()
-        cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .systemFont(ofSize: 17)
-        cell.textLabel?.textColor = .piwigoColorLeftLabel()
-        cell.textLabel?.adjustsFontSizeToFitWidth = false
+        cell.backgroundColor = PwgColor.cellBackground
+        cell.tintColor = PwgColor.orange
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        cell.textLabel?.textColor = PwgColor.leftLabel
         cell.textLabel?.text = indexPath.row == 0 ? pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
 
         // Add checkmark in front of selected item
@@ -156,7 +138,7 @@ extension UploadVideoSizeViewController: UITableViewDelegate
     
     // MARK: - UITableView - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -20,9 +20,13 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var piwigoLogo: UIButton!
     @IBOutlet weak var serverTextField: UITextField!
+    @IBOutlet weak var serverTextFiledHeight: NSLayoutConstraint!
     @IBOutlet weak var userTextField: UITextField!
+    @IBOutlet weak var userTextFieldHeight: NSLayoutConstraint!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var passwordTextFieldHeight: NSLayoutConstraint!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var loginButtonHeight: NSLayoutConstraint!
     @IBOutlet weak var websiteNotSecure: UILabel!
     @IBOutlet weak var versionLabel: UILabel!
     
@@ -31,12 +35,7 @@ class LoginViewController: UIViewController {
     var httpLoginAction: UIAlertAction?
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        if #available(iOS 13.0, *) {
-            return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
-        } else {
-            // Fallback on earlier versions
-            return .lightContent
-        }
+        return AppVars.shared.isDarkPaletteActive ? .lightContent : .darkContent
     }
 
     
@@ -62,22 +61,33 @@ class LoginViewController: UIViewController {
         // Server URL text field
         serverTextField.placeholder = NSLocalizedString("login_serverPlaceholder", comment: "example.com")
         serverTextField.text = NetworkVars.shared.service
+        serverTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
 
         // Username text field
         userTextField.placeholder = NSLocalizedString("login_userPlaceholder", comment: "Username (optional)")
         userTextField.text = NetworkVars.shared.username
         userTextField.textContentType = .username
+        userTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Password text field
         passwordTextField.placeholder = NSLocalizedString("login_passwordPlaceholder", comment: "Password (optional)")
         passwordTextField.text = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
                                                             account: NetworkVars.shared.username)
         passwordTextField.textContentType = .password
+        passwordTextField.layer.cornerRadius = TableViewUtilities.rowCornerRadius
         
         // Login button
         loginButton.setTitle(NSLocalizedString("login", comment: "Login"), for: .normal)
         loginButton.addTarget(self, action: #selector(launchLogin), for: .touchUpInside)
-
+        loginButton.layer.cornerRadius = TableViewUtilities.rowCornerRadius
+        if #available(iOS 26.0, *) {
+            let cornerRadius = UICornerRadius.fixed(TableViewUtilities.rowCornerRadius)
+            loginButton.cornerConfiguration = .corners(radius: cornerRadius)
+        }
+        
+        // Text fields and button heights
+        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
+        
         // Website not secure info
         websiteNotSecure.text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
         
@@ -92,7 +102,11 @@ class LoginViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-        
+
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -103,45 +117,24 @@ class LoginViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
-        contentView.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
+        contentView.backgroundColor = PwgColor.background
+
+        // Status bar
+        setNeedsStatusBarAppearanceUpdate()
 
         // Change text colour according to palette colour
-        if #available(iOS 13.0, *) {
-            piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
-
-        // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        piwigoLogo.imageView?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Text color depdending on background color
-        serverTextField.textColor = .piwigoColorText()
-        serverTextField.backgroundColor = .piwigoColorCellBackground()
-        userTextField.textColor = .piwigoColorText()
-        userTextField.backgroundColor = .piwigoColorCellBackground()
-        passwordTextField.textColor = .piwigoColorText()
-        passwordTextField.backgroundColor = .piwigoColorCellBackground()
-        versionLabel.textColor = .piwigoColorText()
-        websiteNotSecure.textColor = .piwigoColorText()
+        serverTextField.textColor = PwgColor.text
+        serverTextField.backgroundColor = PwgColor.cellBackground
+        userTextField.textColor = PwgColor.text
+        userTextField.backgroundColor = PwgColor.cellBackground
+        passwordTextField.textColor = PwgColor.text
+        passwordTextField.backgroundColor = PwgColor.cellBackground
+        versionLabel.textColor = PwgColor.text
+        websiteNotSecure.textColor = PwgColor.text
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -161,22 +154,18 @@ class LoginViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = NSLocalizedString("login", comment: "Login")
-        }
+        view.window?.windowScene?.title = NSLocalizedString("login", comment: "Login")
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
+        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
         }
     }
 
@@ -188,7 +177,34 @@ class LoginViewController: UIViewController {
     }
 
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        guard let info = notification.userInfo,
+              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+        else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update text fields and button sizes
+            updateContentSizes(for: contentSizeCategory)
+            
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+        }
+    }
+
+    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
+        // Set cell size according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        let fieldHeight = TableViewUtilities.shared.rowHeightForContentSizeCategory(contentSizeCategory)
+        serverTextFiledHeight.constant = fieldHeight
+        userTextFieldHeight.constant = fieldHeight
+        passwordTextFieldHeight.constant = fieldHeight
+        loginButtonHeight.constant = fieldHeight
+    }
     
+
     // MARK: - Login business
     @MainActor
     @objc func launchLogin() {
@@ -212,12 +228,7 @@ class LoginViewController: UIViewController {
         }
 
         // Display HUD during login
-        var buttonTitle = ""
-        if #available(iOS 13.0, *) {
-            buttonTitle = NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection")
-        } else {
-            buttonTitle = " " + NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection") + " "
-        }
+        let buttonTitle = NSLocalizedString("internetCancelledConnection_button", comment: "Cancel Connection")
         showHUD(withTitle: NSLocalizedString("login_loggingIn", comment: "Logging In..."),
                 detail: NSLocalizedString("login_connecting", comment: "Connecting"),
                 buttonTitle: buttonTitle,
@@ -319,7 +330,7 @@ class LoginViewController: UIViewController {
         if let httpAlertController = httpAlertController {
             present(httpAlertController, animated: true) {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                httpAlertController.view.tintColor = UIColor.piwigoColorOrange()
+                httpAlertController.view.tintColor = PwgColor.tintColor
             }
         }
     }
@@ -424,8 +435,8 @@ class LoginViewController: UIViewController {
                 }
             } failure: { [self] error in
                 // Inform user that server failed to retrieve Community parameters
-                isAlreadyTryingToLogin = false
                 DispatchQueue.main.async { [self] in
+                    self.isAlreadyTryingToLogin = false
                     self.logging(inConnectionError: error)
                 }
             }
@@ -449,7 +460,7 @@ class LoginViewController: UIViewController {
                     // Piwigo update required ► Close login or re-login view and inform user
                     isAlreadyTryingToLogin = false
                     // Display error message
-                    logging(inConnectionError: PwgSessionError.incompatiblePwgVersion)
+                    logging(inConnectionError: PwgKitError.incompatiblePwgVersion)
                     return
                 }
                 
@@ -473,9 +484,11 @@ class LoginViewController: UIViewController {
                 }
             }
         } failure: { [self] error in
-            isAlreadyTryingToLogin = false
-            // Display error message
-            logging(inConnectionError: error)
+            DispatchQueue.main.async { [self] in
+                self.isAlreadyTryingToLogin = false
+                // Display error message
+                self.logging(inConnectionError: error)
+            }
         }
     }
 
@@ -488,7 +501,8 @@ class LoginViewController: UIViewController {
         let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
         // Check image size availabilities
-        LoginUtilities.checkAvailableSizes()
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+        LoginUtilities.checkAvailableSizes(forScale: scale)
 
         // Present Album/Images view and resume uploads
         guard let window = self.view.window,
@@ -535,13 +549,11 @@ class LoginViewController: UIViewController {
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
-        if let pwgError = error as? PwgSessionError,
-           pwgError == PwgSessionError.incompatiblePwgVersion {
+        if let pwgError = error as? PwgKitError, pwgError.incompatibleVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         }
-        else if let pwgError = error as? PwgSessionError,
-                pwgError == PwgSessionError.invalidCredentials {
+        else if let pwgError = error as? PwgKitError, pwgError.failedAuthentication {
             title = NSLocalizedString("loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
         }
@@ -662,8 +674,8 @@ class LoginViewController: UIViewController {
         let defaultAction = UIAlertAction(
             title: NSLocalizedString("alertOkButton", comment: "OK"),
             style: .cancel, handler: { action in })
-        presentPiwigoAlert(withTitle: NSLocalizedString("serverURLerror_title", comment: "Incorrect URL"),
-                           message: NSLocalizedString("serverURLerror_message", comment: "Please correct the Piwigo web server address."), actions: [defaultAction])
+        presentPiwigoAlert(withTitle: PwgKitError.wrongServerURL.localizedDescription,
+                           message: PwgKitError.invalidURL.localizedDescription, actions: [defaultAction])
     }
 
     @MainActor

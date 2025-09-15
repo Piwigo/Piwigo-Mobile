@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import piwigoKit
 
-@available(iOS 15, *)
 class JsonViewController: UIViewController {
     
     @IBOutlet weak var method: UILabel!
@@ -24,8 +23,9 @@ class JsonViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settings_JSONinvalid", comment: "Invalid JSON data")
-        
+
         // Initialise content
         guard let fileURL = fileURL else { return }
         let prefixCount = JSONprefix.count
@@ -39,39 +39,35 @@ class JsonViewController: UIViewController {
             dateTime?.text = fileURL.fileSizeString
         }
         let content = try? Data(contentsOf: fileURL, options: .alwaysMapped)
-        fileContent?.text = String(decoding: content ?? Data(), as: UTF8.self)
+        let msg = String(decoding: content ?? Data(), as: UTF8.self)
+        let attributedMsg = NSMutableAttributedString(string: msg)
+        let wholeRange = NSRange(location: 0, length: msg.count)
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment.left
+        style.lineSpacing = 0
+        style.paragraphSpacing = 9
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: PwgColor.header,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
+            NSAttributedString.Key.paragraphStyle: style
+        ]
+        attributedMsg.addAttributes(attributes, range: wholeRange)
+        fileContent?.attributedText = attributedMsg
     }
     
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-        
-        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-        /// which by default produces a transparent background, to all navigation bars.
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithOpaqueBackground()
-        barAppearance.backgroundColor = .piwigoColorBackground()
-        navigationController?.navigationBar.standardAppearance = barAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Text color depdending on background color
-        method?.textColor = .piwigoColorText()
-        dateTime?.textColor = .piwigoColorText()
-        fileContent?.textColor = .piwigoColorText()
-        fileContent?.backgroundColor = .piwigoColorBackground()
+        method?.textColor = PwgColor.text
+        dateTime?.textColor = PwgColor.text
+        fileContent?.textColor = PwgColor.text
+        fileContent?.backgroundColor = PwgColor.background
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,11 +91,14 @@ class JsonViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             fileContent?.setContentOffset(.zero, animated: false)
         }
+
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     deinit {
@@ -124,7 +123,6 @@ class JsonViewController: UIViewController {
 
 
 // MARK: - UIActivityItemSource
-@available(iOS 15.0, *)
 extension JsonViewController: UIActivityItemSource
 {
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {

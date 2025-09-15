@@ -21,14 +21,11 @@ class UploadQueueViewController: UIViewController {
     
     
     // MARK: - Core Data Source
-    @available(iOS 13.0, *)
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
-    @available(iOS 13.0, *)
     typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "private var diffableDataSource: DataSource!" replaced by below lines
     private var _diffableDataSource: NSObject? = nil
-    @available(iOS 13.0, *)
     var diffableDataSource: DataSource {
         if _diffableDataSource == nil {
             _diffableDataSource = configDataSource()
@@ -71,41 +68,34 @@ class UploadQueueViewController: UIViewController {
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
     
+    let defaultUploadCellHeight: CGFloat = 60.0
+    lazy var uploadCellHeight: CGFloat = defaultUploadCellHeight
+
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Initialise headers height
+        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
+
         // Register section header view before using it
         queueTableView?.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
         
-        // Buttons
-        if #available(iOS 14.0, *) {
-            // Menu
-            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
+        // Menu & button
+        if #available(iOS 26.0, *) {
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(didTapActionButton))
         } else {
-            // Fallback on earlier versions
-            actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+            // Fallback on previous version
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), landscapeImagePhone: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(didTapActionButton))
         }
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
+        doneBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
         
-        // No extra space above tableView
-        if #available(iOS 13.0, *) {
-            // NOP
-        } else {
-            // Fallback on earlier versions
-            queueTableView.contentInsetAdjustmentBehavior = .never
-        }
-        
         // Initialise dataSource
-        if #available(iOS 13.0, *) {
-            _diffableDataSource = configDataSource()
-        } else {
-            // Fallback on earlier versions
-        }
+        _diffableDataSource = configDataSource()
         
-        // Fetch data (setting up the initial snapshot on iOS 13+)
+        // Fetch data (setting up the initial snapshot)
         do {
             try uploads.performFetch()
         }
@@ -138,18 +128,6 @@ class UploadQueueViewController: UIViewController {
                                                name: Notification.Name.pwgUploadProgress, object: nil)
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        if #available(iOS 13.0, *) {
-            // NOP
-        } else {
-            // Fallback on earlier versions
-            guard let header = queueTableView.tableHeaderView else { return }
-            header.frame.size.height = header.systemLayoutSizeFitting(CGSize(width: view.bounds.width - 32.0, height: 0)).height
-        }
-    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -170,32 +148,13 @@ class UploadQueueViewController: UIViewController {
     
     private func applyColorPaletteToInitialViews() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-        
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Table view
-        queueTableView.separatorColor = .piwigoColorSeparator()
+        queueTableView.separatorColor = PwgColor.separator
         queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
@@ -207,14 +166,14 @@ class UploadQueueViewController: UIViewController {
         // Table view items
         let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
         visibleCells.forEach { (cell) in
-            cell.backgroundColor = .piwigoColorCellBackground()
-            cell.uploadInfoLabel.textColor = .piwigoColorLeftLabel()
-            cell.imageInfoLabel.textColor = .piwigoColorRightLabel()
+            cell.backgroundColor = PwgColor.cellBackground
+            cell.uploadInfoLabel.textColor = PwgColor.leftLabel
+            cell.imageInfoLabel.textColor = PwgColor.rightLabel
         }
         for section in 0..<queueTableView.numberOfSections {
             let header = queueTableView.headerView(forSection: section) as? UploadImageHeaderView
-            header?.headerLabel.textColor = .piwigoColorHeader()
-            header?.headerBckg.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+            header?.headerLabel.textColor = PwgColor.header
+            header?.headerBckg.backgroundColor = PwgColor.background.withAlphaComponent(0.75)
         }
     }
     
@@ -222,9 +181,7 @@ class UploadQueueViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = title
-        }
+        view.window?.windowScene?.title = title
         
         // Header informing user on network status
         setTableViewMainHeader()
@@ -241,7 +198,7 @@ class UploadQueueViewController: UIViewController {
                 queueTableView.tableHeaderView = nil
                 UIApplication.shared.isIdleTimerDisabled = false
             }
-            else if !NetworkVars.shared.isConnectedToWiFi() && UploadVars.shared.wifiOnlyUploading {
+            else if !NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = TableHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
@@ -281,39 +238,22 @@ class UploadQueueViewController: UIViewController {
     func updateNavBar() {
         // Title
         var nberOfImagesInQueue = 0
-        if #available(iOS 13.0, *) {
-            nberOfImagesInQueue = diffableDataSource.snapshot().numberOfItems
-        } else {
-            // Fallback on earlier versions
-            nberOfImagesInQueue = (uploads.fetchedObjects ?? []).count
-        }
-        title = nberOfImagesInQueue > 1 ?
-        String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
-        String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
+        nberOfImagesInQueue = diffableDataSource.snapshot().numberOfItems
+        title = nberOfImagesInQueue > 1
+        ? String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos"))
+        : String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Set title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = title
-        }
+        view.window?.windowScene?.title = title
         
         // Action menu
         var hasImpossibleUploadsSection = false
         var hasFailedUploadsSection = false
-        if #available(iOS 13.0, *) {
-            if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
-                hasImpossibleUploadsSection = true
-            }
-            if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
-                hasFailedUploadsSection = true
-            }
-        } else {
-            // Fallback on earlier versions
-            let impossible: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-            let impossibleUploads: Int = (uploads.fetchedObjects ?? []).map({ impossible.contains($0.state) ? 1 : 0}).reduce(0, +)
-            hasImpossibleUploadsSection = impossibleUploads != 0
-            let resumable: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-            let failedUploads: Int = (uploads.fetchedObjects ?? []).map({ resumable.contains($0.state) ? 1 : 0}).reduce(0, +)
-            hasFailedUploadsSection = failedUploads > 0
+        if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
+            hasImpossibleUploadsSection = true
+        }
+        if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
+            hasFailedUploadsSection = true
         }
         if hasImpossibleUploadsSection || hasFailedUploadsSection {
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
@@ -330,33 +270,15 @@ class UploadQueueViewController: UIViewController {
         alert.addAction(cancelAction)
         
         // Resume upload requests in section 2
-        if #available(iOS 13.0, *) {
-            if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
-                let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
-                if failedUploads > 0 {
-                    let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
-                    let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-                        UploadManager.shared.backgroundQueue.async {
-                            // Resume all failed uploads
-                            UploadManager.shared.resumeAllFailedUploads()
-                            // Relaunch uploads
-                            UploadManager.shared.findNextImageToUpload()
-                        }
-                    })
-                    alert.addAction(resumeAction)
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            let resumable: [pwgUploadState] = [.preparingError, .uploadingError, .finishingError]
-            let failedUploads = (uploads.fetchedObjects ?? []).filter({ resumable.contains($0.state) == true })
-            if failedUploads.isEmpty == false {
-                let failedCount = failedUploads.count
-                let titleResume = failedCount > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedCount), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+        if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
+            let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
+            if failedUploads > 0 {
+                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-                    // Resume failed uploads
                     UploadManager.shared.backgroundQueue.async {
+                        // Resume all failed uploads
                         UploadManager.shared.resumeAllFailedUploads()
+                        // Relaunch uploads
                         UploadManager.shared.findNextImageToUpload()
                     }
                 })
@@ -365,35 +287,14 @@ class UploadQueueViewController: UIViewController {
         }
         
         // Clear impossible upload requests in section 1
-        if #available(iOS 13.0, *) {
-            if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
-                let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
-                if impossibleUploads > 0 {
-                    let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
-                    let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-                        UploadManager.shared.backgroundQueue.async {
-                            // Delete all impossible upload requests
-                            UploadManager.shared.deleteImpossibleUploads()
-                        }
-                    })
-                    alert.addAction(clearAction)
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            let impossible: [pwgUploadState] = [.preparingFail, .formatError, .uploadingFail, .finishingFail]
-            let impossibleUploads = (uploads.fetchedObjects ?? []).filter({ impossible.contains($0.state) == true})
-            if impossibleUploads.isEmpty == false {
-                let impossibleCount = impossibleUploads.count
-                let titleClear = impossibleCount > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleCount), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+        if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
+            let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
+            if impossibleUploads > 0 {
+                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-                    // Delete failed uploads
-                    impossibleUploads.forEach({ self.mainContext.delete($0) })
-                    self.mainContext.saveIfNeeded()
-                    // Resume failed uploads
                     UploadManager.shared.backgroundQueue.async {
-                        // Update number of uploads
-                        UploadManager.shared.updateNberOfUploadsToComplete()
+                        // Delete all impossible upload requests
+                        UploadManager.shared.deleteImpossibleUploads()
                     }
                 })
                 alert.addAction(clearAction)
@@ -407,21 +308,89 @@ class UploadQueueViewController: UIViewController {
         }
         
         // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
     
     @objc func quitUpload() {
         // Leave Upload action and return to Albums and Images
         dismiss(animated: true)
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        guard let info = notification.userInfo,
+              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+        else { return }
+        updateContentSizes(for: contentSizeCategory)
+        
+        // Apply modifications
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+                        
+            // Reload visible cells, headers, and footers
+            self.queueTableView.reloadData()
+            
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+            self.updateNavBar()
+        }
+    }
+    
+    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
+        // Constants
+        let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
+        
+        // Set cell size according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        switch contentSizeCategory {
+        case .extraSmall:
+            // Image section header height: Subhead 12 pnts + Caption1 11 pnts
+            uploadCellHeight = defaultUploadCellHeight - 3.0 - 1.0
+        case .small:
+            // Image section header height: Subhead 13 pnts + Caption1 11 pnts
+            uploadCellHeight = defaultUploadCellHeight - 2.0 - 1.0
+        case .medium:
+            // Image section header height: Subhead 14 pnts + Caption1 11 pnts
+            uploadCellHeight = defaultUploadCellHeight - 1.0 - 1.0
+        case .large:    // default style
+            // Image section header height: Subhead 15 pnts + Caption1 12 pnts
+            uploadCellHeight = defaultUploadCellHeight
+        case .extraLarge:
+            // Image section header height: Subhead 17 pnts + Caption1 14 pnts
+            uploadCellHeight = defaultUploadCellHeight + 2.0 + 2.0
+        case .extraExtraLarge:
+            // Image section header height: Subhead 19 pnts + Caption1 16 pnts
+            uploadCellHeight = defaultUploadCellHeight + 4.0 + 4.0
+        case .extraExtraExtraLarge:
+            // Image section header height: Subhead 21 pnts + Caption1 18 pnts
+            uploadCellHeight = defaultUploadCellHeight + 6.0 + 6.0
+        case .accessibilityMedium:
+            // Image section header height: Subhead 25 pnts + Caption1 22 pnts
+            uploadCellHeight = defaultUploadCellHeight + 10.0 + 10.0
+        case .accessibilityLarge:
+            // Image section header height: Subhead 30 pnts + Caption1 26 pnts
+            uploadCellHeight = defaultUploadCellHeight + 15.0 + 14.0
+        case .accessibilityExtraLarge:
+            // Image section header height: Subhead 36 pnts + Caption1 32 pnts
+            uploadCellHeight = defaultUploadCellHeight + 21.0 + 20.0
+        case .accessibilityExtraExtraLarge:
+            // Image section header height: Subhead 42 pnts + Caption1 37 pnts
+            uploadCellHeight = defaultUploadCellHeight + 27.0 + 25.0
+        case .accessibilityExtraExtraExtraLarge:
+            // Image section header height: Subhead 49 pnts + Caption1 43 pnts
+            uploadCellHeight = defaultUploadCellHeight + 34.0 + 21.0
+        case .unspecified:
+            fallthrough
+        default:
+            uploadCellHeight = defaultUploadCellHeight
+        }
     }
 }

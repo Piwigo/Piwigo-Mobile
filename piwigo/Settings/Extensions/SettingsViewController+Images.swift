@@ -83,8 +83,7 @@ extension SettingsViewController: DefaultImageSizeDelegate {
         ImageVars.shared.defaultImagePreviewSize = imageSize.rawValue
 
         // Refresh settings
-        var offset = defaultSortUnknown ? 1 : 0
-        offset += showOptions ? 1 : 0
+        let offset = defaultSortUnknown ? 1 : 0
         let indexPath = IndexPath(row: 2 + offset, section: SettingsSection.images.rawValue)
         if let indexPaths = settingsTableView.indexPathsForVisibleRows, indexPaths.contains(indexPath),
            let cell = settingsTableView.cellForRow(at: indexPath) as? LabelTableViewCell {

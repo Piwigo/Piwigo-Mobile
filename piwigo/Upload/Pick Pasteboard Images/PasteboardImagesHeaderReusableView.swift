@@ -23,10 +23,14 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
     func configure(with selectState: SelectButtonState) {
         
         // General settings
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
 
         // Data label used when place name known
-        headerLabel.textColor = .piwigoColorHeader()
+        headerLabel.textColor = PwgColor.header
         headerLabel.text = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
 
         // Select/deselect button
@@ -44,6 +48,6 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
         headerLabel.text = ""
         selectButton.setTitle("", for: .normal)
-        selectButton.backgroundColor = .piwigoColorBackground()
+        selectButton.backgroundColor = PwgColor.background
     }
 }

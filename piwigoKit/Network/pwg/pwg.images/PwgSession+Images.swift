@@ -13,22 +13,18 @@ public extension PwgSession {
     
     func getIDofImage(withMD5 md5sum: String,
                       completion: @escaping (Int64?) -> Void,
-                      failure: @escaping (Error?) -> Void) {
+                      failure: @escaping (PwgKitError) -> Void) {
         // Launch request
         let paramDict: [String : Any] = ["md5sum_list": md5sum]
         postRequest(withMethod: pwgImagesExist, paramDict: paramDict,
                     jsonObjectClientExpectsToReceive: ImagesExistJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { jsonData in
-            do {
-                // Decode the JSON into codable type ImagesExistJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesExistJSON.self, from: jsonData)
-
+                    countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
 
@@ -37,35 +33,27 @@ public extension PwgSession {
                 } else {
                     completion(nil)
                 }
-            }
-            catch {
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
-                return
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 
     func setInfos(with paramsDict: [String: Any],
                   completion: @escaping () -> Void,
-                  failure: @escaping (Error) -> Void) {
+                  failure: @escaping (PwgKitError) -> Void) {
         postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { jsonData in
-            // Decode the JSON object and check if image data were updated on server.
-            do {
-                // Decode the JSON into codable type ImagesSetInfoJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
-                
+                    countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -76,17 +64,15 @@ public extension PwgSession {
                 }
                 else {
                     // Could not set image parameters
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

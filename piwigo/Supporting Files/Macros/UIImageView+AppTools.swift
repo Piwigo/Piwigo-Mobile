@@ -10,18 +10,13 @@ import Foundation
 import UIKit
 
 // Constants
-let playRatio: CGFloat = 0.9 // was 58/75
+let playRatio: CGFloat = 1.0 // was 506:503
 
 extension UIImageView {
     
     // MARK: - Movie Icon
     func setMovieIconImage() {
-        var play = UIImage()
-        if #available(iOS 13.0, *) {
-            play = UIImage(systemName: "play.rectangle.fill")!
-        } else {
-            play = UIImage(named: "video")!
-        }
+        let play = UIImage(systemName: "play.square.fill")!
         self.image = play.withRenderingMode(.alwaysTemplate)
         self.tintColor = UIColor.white
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -32,12 +27,7 @@ extension UIImageView {
 
     // MARK: - Favorite Icon
     func setFavoriteIconImage() {
-        var play = UIImage()
-        if #available(iOS 13.0, *) {
-            play = UIImage(systemName: "heart.fill")!
-        } else {
-            play = UIImage(named: "imageFavorite")!
-        }
+        let play = UIImage(systemName: "heart.fill")!
         self.image = play.withRenderingMode(.alwaysTemplate)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.contentMode = .scaleAspectFit

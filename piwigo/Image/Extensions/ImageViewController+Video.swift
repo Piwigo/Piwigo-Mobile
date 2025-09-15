@@ -30,12 +30,16 @@ extension ImageViewController
         }
         if let isPlaying = notification.userInfo?["playing"] as? Bool {
             // Set play/pause button according to player status
-            if isPlaying, playBarButton?.accessibilityIdentifier ?? "" != "pause" {
-                playBarButton = UIBarButtonItem.pauseImageButton(self, action: #selector(pauseVideo))
-                didChangeButton = true
-            } else if !isPlaying, playBarButton?.accessibilityIdentifier ?? "" != "play" {
-                playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
-                didChangeButton = true
+            if isPlaying {
+                if playBarButton?.accessibilityIdentifier ?? "" != "pause" {
+                    playBarButton = UIBarButtonItem.pauseImageButton(self, action: #selector(pauseVideo))
+                    didChangeButton = true
+                }
+            } else {
+                if playBarButton?.accessibilityIdentifier ?? "" != "play" {
+                    playBarButton = UIBarButtonItem.playImageButton(self, action: #selector(playVideo))
+                    didChangeButton = true
+                }
             }
         }
         if let isMuted = notification.userInfo?["muted"] as? Bool {

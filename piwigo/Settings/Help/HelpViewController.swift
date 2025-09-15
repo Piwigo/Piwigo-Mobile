@@ -55,13 +55,17 @@ class HelpViewController: UIViewController {
         pageViewController = children[0] as? UIPageViewController
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
-        if #available(iOS 14.0, *) {
-            pageControl.allowsContinuousInteraction = true
-        }
+        pageControl.allowsContinuousInteraction = true
         
         // Display first page
         pageDisplayed = 0
         pageViewController!.setViewControllers([pages[0]], direction: .forward, animated: true, completion: nil)
+    }
+
+    @MainActor
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = PwgColor.background
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -73,12 +77,6 @@ class HelpViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
-    }
-
-    @MainActor
-    @objc func applyColorPalette() {
-        // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
     }
 
     deinit {
@@ -105,7 +103,9 @@ class HelpViewController: UIViewController {
     }
 }
 
-extension HelpViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+
+// - MARK: - UIPageViewControllerDataSource Methods
+extension HelpViewController: UIPageViewControllerDataSource {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         let currentIndex = pages.firstIndex(of: viewController)!
@@ -124,6 +124,11 @@ extension HelpViewController: UIPageViewControllerDataSource, UIPageViewControll
         let previousIndex = abs((currentIndex - 1) % pages.count)
         return pages[previousIndex]
     }
+}
+
+
+// MARK: - UIPageViewControllerDelegate Methods
+extension HelpViewController: UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
         pendingIndex = pages.firstIndex(of: pendingViewControllers.first!)

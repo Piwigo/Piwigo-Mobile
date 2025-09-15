@@ -75,18 +75,15 @@ extension UploadManager {
         let creationDate = DateUtilities.string(from: upload.creationDate)
 
         // Prepare parameters for setting the image/video data
-        let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
-        let author = PwgSession.utf8mb3String(from: upload.author)
-        let comment = PwgSession.utf8mb3String(from: upload.comment)
         let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
         let paramsDict: [String : Any] = [
             "image_id"            : "\(NSNumber(value: upload.imageId))",
             "file"                : upload.fileName,
-            "name"                : imageTitle,
-            "author"              : author,
+            "name"                : upload.imageName.utf8mb3Encoded,
+            "author"              : upload.author.utf8mb3Encoded,
             "date_creation"       : creationDate,
             "level"               : "\(NSNumber(value: upload.privacyLevel))",
-            "comment"             : comment,
+            "comment"             : upload.comment.utf8mb3Encoded,
             "tag_ids"             : tagIDs,
             "single_value_mode"   : "replace",
             "multiple_value_mode" : "replace"]
@@ -95,18 +92,15 @@ extension UploadManager {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { [self] jsonData in
+                                countOfBytesClientExpectsToReceive: 1000) { [self] result in
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
             }
-            // Decode the JSON object
-            do {
-                // Decode the JSON into codable type ImagesSetInfoJSON.
-                let pwgData = try self.decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
-
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     self.didFinishTransfer(for: upload, error: error)
                     return
                 }
@@ -118,19 +112,15 @@ extension UploadManager {
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
-                    self.didFinishTransfer(for: upload, error: PwgSessionError.unexpectedError)
-                    return
+                    self.didFinishTransfer(for: upload, error: PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested, upload still ready for finish
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 self.didFinishTransfer(for: upload, error: error)
-                return
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            self.didFinishTransfer(for: upload, error: error)
         }
     }
 
@@ -168,7 +158,7 @@ extension UploadManager {
 
     func processImages(withIds imageIds: String,
                        inCategory categoryId: Int32,
-                       completionHandler: @escaping (Error?) -> Void) -> (Void) {
+                       completion: @escaping (PwgKitError?) -> Void) -> (Void) {
         // Launch request
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
@@ -176,42 +166,35 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
-                                countOfBytesClientExpectsToReceive: 2500) { [self] jsonData in
+                                countOfBytesClientExpectsToReceive: 2500) { result in
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("processImages() in \(queueName(), privacy: .public) after calling postRequest")
             }
-            do {
-                // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                let pwgData = try self.decoder.decode(ImagesUploadCompletedJSON.self, from: jsonData)
-
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    completionHandler(error)
+                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
-
+                
                 if pwgData.success {
-                    completionHandler(nil)
+                    completion(nil)
                 } else {
-                    completionHandler(UploadError.wrongJSONobject)
+                    completion(PwgKitError.wrongJSONobject)
                 }
+                
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                completion(error)
             }
-            catch {
-                // Will retry later
-                completionHandler(error)
-                return
-            }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completionHandler(error)
         }
     }
 
-    private func didFinishTransfer(for upload: Upload, error: Error?) {
+    private func didFinishTransfer(for upload: Upload, error: PwgKitError?) {
         // Error?
         if let error = error {
             upload.setState(.finishingError, error: error, save: false)
@@ -246,18 +229,16 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { [self] jsonData in
+                                countOfBytesClientExpectsToReceive: 1000) { result in
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public) after calling postRequest")
             }
-            do {
-                // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                let pwgData = try self.decoder.decode(CommunityImagesUploadCompletedJSON.self, from: jsonData)
-
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
                     // Will retry later
-                    let error = PwgSessionError.otherError(code: pwgData.errorCode, msg: pwgData.errorMessage)
+                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     debugPrint("••> moderateImages(): \(error.localizedDescription)")
                     completionHandler(false, [])
                     return
@@ -272,17 +253,13 @@ extension UploadManager {
                     }
                 }
                 completionHandler(true, validatedIDs)
-            }
-            catch {
-                // Will retry later
+
+            case .failure:
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 completionHandler(false, [])
-                return
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completionHandler(false, [])
         }
     }
 }

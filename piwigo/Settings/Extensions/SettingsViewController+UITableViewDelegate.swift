@@ -30,7 +30,7 @@ extension SettingsViewController: UITableViewDelegate
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
             }
         case .albums:
-            title = NSLocalizedString("tabBar_albums", comment: "Albums")
+            title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
         case .images:
             title = NSLocalizedString("severalImages", comment: "Images")
         case .videos:
@@ -73,7 +73,98 @@ extension SettingsViewController: UITableViewDelegate
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        let defaultHeight = TableViewUtilities.rowHeight
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
+        switch contentSizeCategory {
+        case .extraSmall:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight - 3.0
+            default:
+                return defaultHeight - 3.0
+            }
+        case .small:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight - 2.0
+            default:
+                return defaultHeight - 2.0
+            }
+        case .medium:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight - 1.0
+            default:
+                return defaultHeight - 1.0
+            }
+        case .large:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight
+            default:
+                return defaultHeight
+            }
+        case .extraLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 2.0
+            default:
+                return defaultHeight + 2.0
+            }
+        case .extraExtraLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 4.0
+            default:
+                return defaultHeight + 4.0
+            }
+        case .extraExtraExtraLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 6.0
+            default:
+                return defaultHeight + 6.0
+            }
+        case .accessibilityMedium:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 12.0
+            default:
+                return defaultHeight + 11.0
+            }
+        case .accessibilityLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 17.0
+            default:
+                return defaultHeight + 16.0
+            }
+        case .accessibilityExtraLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 22.0
+            default:
+                return defaultHeight + 23.0
+            }
+        case .accessibilityExtraExtraLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 28.0
+            default:
+                return defaultHeight + 30.0
+            }
+        case .accessibilityExtraExtraExtraLarge:
+            switch activeSection(indexPath.section) {
+            case .clear, .logout :
+                return defaultHeight + 34.0
+            default:
+                return defaultHeight + 36.0
+            }
+        case .unspecified:
+            fallthrough
+        default:
+            return defaultHeight
+        }
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -87,10 +178,9 @@ extension SettingsViewController: UITableViewDelegate
             
         // MARK: Albums
         case .albums /* Albums */:
-            var row = indexPath.row
-            row += (!showOptions && (row > 1)) ? 1 : 0
-            switch row {
-            case 0 /* Default album */, 1 /* Default Thumbnail File */:
+            switch indexPath.row {
+            case 0 /* Default album */,
+                 1 /* Thumbnail File */:
                 result = true
             default:
                 result = false
@@ -100,11 +190,10 @@ extension SettingsViewController: UITableViewDelegate
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */,
-                1 /* Default Thumbnail File */,
-                4 /* Default Size of Previewed Images */:
+                 1 /* Thumbnail File */,
+                 3 /* Preview File */:
                 result = true
             default:
                 result = false
@@ -166,13 +255,7 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            var row = indexPath.row
-            if #available(iOS 15, *) {
-                // LogStore available
-            } else {
-                row += 1
-            }
-            switch row {
+            switch indexPath.row {
             case 0 /* Error Logs */,
                 1 /* Support Forum */:
                 result = true
@@ -231,9 +314,7 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Albums
         case .albums /* Albums */:
-            var row = indexPath.row
-            row += (!showOptions && (row > 1)) ? 1 : 0
-            switch row {
+            switch indexPath.row {
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
@@ -258,7 +339,6 @@ extension SettingsViewController: UITableViewDelegate
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
@@ -272,7 +352,7 @@ extension SettingsViewController: UITableViewDelegate
                 else { preconditionFailure("Could not load DefaultImageThumbnailSizeViewController") }
                 defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-            case 4 /* Image file selection */:
+            case 3 /* Preview file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
                 guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController
                 else { preconditionFailure("Could not load DefaultImageSizeViewController") }
@@ -373,17 +453,10 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Appearance
         case .appearance /* Appearance */:
-            if #available(iOS 13.0, *) {
-                let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController
-                else { preconditionFailure("Could not load ColorPaletteViewController") }
-                navigationController?.pushViewController(colorPaletteVC, animated: true)
-            } else {
-                let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewControllerOld", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld
-                else { preconditionFailure("Could not load ColorPaletteViewControllerOld") }
-                navigationController?.pushViewController(colorPaletteVC, animated: true)
-            }
+            let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
+            guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController
+            else { preconditionFailure("Could not load ColorPaletteViewController") }
+            navigationController?.pushViewController(colorPaletteVC, animated: true)
 
         // MARK: Cache
         case .clear /* Cache Clear */:
@@ -395,18 +468,14 @@ extension SettingsViewController: UITableViewDelegate
 
                 // Present list of actions
                 let alert = getClearCacheAlert()
-                alert.view.tintColor = .piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
+                alert.view.tintColor = PwgColor.tintColor
+                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 alert.popoverPresentationController?.sourceView = settingsTableView
                 alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
                 present(alert, animated: true, completion: {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = .piwigoColorOrange()
+                    alert.view.tintColor = PwgColor.tintColor
                 })
             default:
                 break
@@ -449,20 +518,12 @@ extension SettingsViewController: UITableViewDelegate
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            var row = indexPath.row
-            if #available(iOS 15, *) {
-                // LogStore available
-            } else {
-                row += 1
-            }
-            switch row {
+            switch indexPath.row {
             case 0 /* Open Logs page */:
-                if #available(iOS 15, *) {
-                    let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
-                    guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
-                    else { preconditionFailure("Could not load TroubleshootingViewController") }
-                    navigationController?.pushViewController(errorLogsVC, animated: true)
-                }
+                let errorLogsSB = UIStoryboard(name: "TroubleshootingViewController", bundle: nil)
+                guard let errorLogsVC = errorLogsSB.instantiateViewController(withIdentifier: "TroubleshootingViewController") as? TroubleshootingViewController
+                else { preconditionFailure("Could not load TroubleshootingViewController") }
+                navigationController?.pushViewController(errorLogsVC, animated: true)
             case 1 /* Open Piwigo support forum webpage with default browser */:
                 if let url = URL(string: NSLocalizedString("settings_pwgForumURL", comment: "http://piwigo.org/forum")) {
                     UIApplication.shared.open(url)
@@ -471,7 +532,7 @@ extension SettingsViewController: UITableViewDelegate
                 if MFMailComposeViewController.canSendMail() {
                     let composeVC = MFMailComposeViewController()
                     composeVC.mailComposeDelegate = self
-                    composeVC.view.tintColor = .piwigoColorOrange()
+                    composeVC.view.tintColor = PwgColor.tintColor
 
                     // Configure the fields of the interface.
                     composeVC.setToRecipients([

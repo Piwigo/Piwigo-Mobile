@@ -69,13 +69,7 @@ class ExternalDisplayViewController: UIViewController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        if #available(iOS 13.0, *) {
-            return .darkContent
-        } else {
-            // Fallback on earlier versions
-            view.backgroundColor = .black
-            return .default
-        }
+        return .darkContent
     }
     
     @MainActor

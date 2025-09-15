@@ -9,7 +9,7 @@
 import os
 import CoreData
 
-class AlbumToAlbumMigrationPolicy_0K_to_0L: NSEntityMigrationPolicy {
+final class AlbumToAlbumMigrationPolicy_0K_to_0L: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Album 0K ► Album 0L"
     let numberFormatter: NumberFormatter = {

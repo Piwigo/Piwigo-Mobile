@@ -9,22 +9,13 @@
 import Foundation
 import UIKit
 
-@available(iOS 13.0, *)
 extension UIWindowScene {
     func rootViewController() -> UIViewController? {
         // Determine top most view controller of a UIWindowScene
         var rootViewController: UIViewController? = nil
-        // Determine top most view controller of a UIWindowScene
-        if #available(iOS 15, *) {
-            // Get the key window associated with the scene
-            rootViewController = self
-                .keyWindow?.rootViewController
-        }
-        else {
-            // Get the key window associated with the scene
-            rootViewController = self
-                .windows.first(where: {$0.isKeyWindow})?.rootViewController
-        }
+        // Get the key window associated with the scene
+        rootViewController = self
+            .keyWindow?.rootViewController
         return rootViewController
     }
     

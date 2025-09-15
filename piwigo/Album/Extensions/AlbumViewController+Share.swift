@@ -20,7 +20,7 @@ extension AlbumViewController
         if user.canDownloadImages() {
             let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
                                          action: #selector(shareSelection))
-            button.tintColor = UIColor.piwigoColorOrange()
+            button.tintColor = PwgColor.tintColor
             return button
         } else {
             return nil
@@ -35,35 +35,20 @@ extension AlbumViewController
 
     func checkPhotoLibraryAccessBeforeSharing(imagesWithID imageIDs: Set<Int64>, contextually: Bool) {
         // Check autorisation to access Photo Library (camera roll)
-        if #available(iOS 14, *) {
-            PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(
-                for: PHAccessLevel.addOnly, for: self,
-                onAccess: { [self] in
-                    // User allowed to save image in camera roll
-                    DispatchQueue.main.async {
-                        self.shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
-                    }
-                },
-                onDeniedAccess: { [self] in
-                    // User not allowed to save image in camera roll
-                    DispatchQueue.main.async {
-                        self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
-                    }
-                })
-        } else {
-            // Fallback on earlier versions
-            PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil) { [self] in
+        PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(
+            for: PHAccessLevel.addOnly, for: self,
+            onAccess: { [self] in
                 // User allowed to save image in camera roll
                 DispatchQueue.main.async {
                     self.shareImages(withID: imageIDs, withCameraRollAccess: true, contextually: contextually)
                 }
-            } onDeniedAccess: { [self] in
+            },
+            onDeniedAccess: { [self] in
                 // User not allowed to save image in camera roll
                 DispatchQueue.main.async {
                     self.shareImages(withID: imageIDs, withCameraRollAccess: false, contextually: contextually)
                 }
-            }
-        }
+            })
     }
 
     @MainActor
@@ -81,12 +66,13 @@ extension AlbumViewController
 
         // Loop over images
 //        timeCounter = CFAbsoluteTimeGetCurrent()
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         for imageID in imageIDs {
             autoreleasepool {
                 if let image = (images.fetchedObjects ?? []).first(where: {$0.pwgID == imageID}) {
                     if image.isVideo {
                         // Case of a video
-                        let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: image, contextually: contextually)
+                        let videoItemProvider = ShareVideoActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         videoItemProvider.delegate = self
@@ -104,7 +90,7 @@ extension AlbumViewController
                     }
                     else if image.isPDF {
                         // Case of a PDF file
-                        let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: image, contextually: contextually)
+                        let pdfItemProvider = SharePdfActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         pdfItemProvider.delegate = self
@@ -124,7 +110,7 @@ extension AlbumViewController
                     }
                     else {
                         // Case of an image
-                        let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: image, contextually: contextually)
+                        let imageItemProvider = ShareImageActivityItemProvider(imageData: image, scale: scale, contextually: contextually)
                         
                         // Use delegation to monitor the progress of the item method
                         imageItemProvider.delegate = self

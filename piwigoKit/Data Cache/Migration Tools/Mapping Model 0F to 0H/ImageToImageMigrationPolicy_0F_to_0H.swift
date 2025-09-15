@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
+final class ImageToImageMigrationPolicy_0F_to_0H: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Image 0F ► Image 0H"
     let numberFormatter: NumberFormatter = {

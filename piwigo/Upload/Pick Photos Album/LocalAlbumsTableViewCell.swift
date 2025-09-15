@@ -17,17 +17,15 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     func configure(with title: String, nberPhotos: Int64, startDate: Date?, endDate: Date?) -> Void {
 
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.tintColor
 
         // Title
-        titleLabel.font = .systemFont(ofSize: 17)
-        titleLabel.textColor = .piwigoColorLeftLabel()
+        titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = .systemFont(ofSize: 13)
-        numberLabel.textColor = .piwigoColorRightLabel()
+        numberLabel.textColor = PwgColor.rightLabel
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         if nberPhotos != Int64.min {
@@ -117,8 +115,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 subtitle.append(String(format: "%@", startString))
             }
         }
-        subtitleLabel.font = .systemFont(ofSize: 13)
-        subtitleLabel.textColor = .piwigoColorLeftLabel()
+        subtitleLabel.textColor = PwgColor.rightLabel
         subtitleLabel.text = subtitle
     }
 

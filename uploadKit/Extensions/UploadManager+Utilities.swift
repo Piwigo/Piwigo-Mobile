@@ -69,7 +69,7 @@ extension UploadManager {
         
         // Determine MD5 checksum of image file to upload
         let error: Error?
-        (upload.md5Sum, error) = fileURL.MD5checksum()
+        (upload.md5Sum, error) = fileURL.MD5checksum
          if error != nil {
             // Could not determine the MD5 checksum
             failure(error)
@@ -78,24 +78,13 @@ extension UploadManager {
 
         // Get MIME type from file extension
         let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
-        if #available(iOS 14, *) {
-            guard let uti = UTType(filenameExtension: fileExt),
-                  let mimeType = uti.preferredMIMEType
-            else {
-                failure(UploadError.missingAsset)
-                return
-            }
-            upload.mimeType = mimeType
-        } else {
-            // Fallback on previous version
-            guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue(),
-                  let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String?
-            else {
-                failure(UploadError.missingAsset)
-                return
-            }
-            upload.mimeType = mimeType
+        guard let uti = UTType(filenameExtension: fileExt),
+              let mimeType = uti.preferredMIMEType
+        else {
+            failure(PwgKitError.missingAsset)
+            return
         }
+        upload.mimeType = mimeType
 
         // Done -> append file size to counter
         countOfBytesPrepared += UInt64(fileURL.fileSize)

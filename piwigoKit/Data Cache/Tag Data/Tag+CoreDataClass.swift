@@ -15,6 +15,7 @@ import CoreData
     - Each instance belongs to a Server.
     - Instances are associated to Images and Upload requests.
  */
+@objc(Tag)
 public class Tag: NSManagedObject {
 
     /**
@@ -24,16 +25,15 @@ public class Tag: NSManagedObject {
         
         // Update the tag only if the Id and Name properties have values.
         // NB: Only the ID and the url are returned by pwg.categories.getImages
-        guard let newId = tagProperties.id?.int32Value else {
-                throw TagError.missingData
-        }
+        guard let newId = tagProperties.id?.int32Value
+        else { throw PwgKitError.missingTagData }
         if tagId != newId {
             tagId = newId
         }
         
         // Update name if prrovided
         if let newName = tagProperties.name, newName.isEmpty == false {
-            let newTagName = PwgSession.utf8mb4String(from: tagProperties.name)
+            let newTagName = newName.utf8mb4Encoded
             if tagName != newTagName {
                 tagName = newTagName
             }

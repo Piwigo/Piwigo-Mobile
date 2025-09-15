@@ -10,18 +10,20 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: - Rotate Image Actions
-@available(iOS 14, *)
+// MARK: Rotate Image
 extension ImageViewController
 {
+    // MARK: - Menu
     @MainActor
     func rotateMenu() -> UIMenu {
         return UIMenu(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
-                      image: nil,
+                      image: UIImage(systemName: ""),
                       identifier: UIMenu.Identifier("org.piwigo.piwigoImage.rotate"),
                       children: [rotateRightAction(), rotateLeftAction()])
     }
     
+
+    // MARK: - Actions
     @MainActor
     func rotateRightAction() -> UIAction {
         // Rotate image right
@@ -47,12 +49,8 @@ extension ImageViewController
         action.accessibilityIdentifier = "Rotate Left"
         return action
     }
-}
 
 
-@available(iOS 13.0, *)
-extension ImageViewController
-{
     // MARK: - Rotate Image
     @MainActor
     @objc func rotateImage(by angle: CGFloat) {
@@ -111,8 +109,7 @@ extension ImageViewController
     @MainActor
     private func rotateImageInDatabaseError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -122,8 +119,7 @@ extension ImageViewController
             // Plugin rotateImage installed?
             let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
             var message = ""
-            if let pwgError = error as? PwgSessionError,
-               pwgError == .otherError(code: 501, msg: "") {
+            if let pwgError = error as? PwgKitError, pwgError.pluginMissing {
                 message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
             }
             else {

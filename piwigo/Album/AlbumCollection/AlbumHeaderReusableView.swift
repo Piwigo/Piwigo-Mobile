@@ -36,8 +36,13 @@ class AlbumHeaderReusableView: UICollectionReusableView {
     }
     
     func applyColorPalette() {
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        albumDesc.textColor = .piwigoColorHeader()
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
+        albumDesc.textColor = PwgColor.header
+        albumDesc.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
     }
 
     override func prepareForReuse() {

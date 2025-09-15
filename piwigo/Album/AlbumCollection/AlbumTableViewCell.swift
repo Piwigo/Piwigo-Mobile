@@ -15,54 +15,37 @@ class AlbumTableViewCell: UITableViewCell {
     
     var imageURL: URL?
 
-    @IBOutlet weak var backgroundImage: UIImageView!
-    @IBOutlet weak var topCut: UIButton!
-    @IBOutlet weak var bottomCut: UIButton!
     @IBOutlet weak var albumName: UILabel!
     @IBOutlet weak var albumComment: UILabel!
+    @IBOutlet weak var albumThumbnail: UIImageView!
     @IBOutlet weak var numberOfImages: UILabel!
-    @IBOutlet weak var handleButton: UIButton!
-    @IBOutlet weak var recentBckg: UIImageView!
-    @IBOutlet weak var recentImage: UIImageView!
+    @IBOutlet weak var recentlyModified: UIImageView!
+    @IBOutlet weak var binding1: UIView!
+    @IBOutlet weak var binding2: UIView!
+    @IBOutlet weak var handle: UIView!
     
     func config(withAlbumData albumData: Album?) {
         // General settings
-        backgroundColor = UIColor.piwigoColorBackground()
-        contentView.backgroundColor = UIColor.piwigoColorCellBackground()
         selectionStyle = UITableViewCell.SelectionStyle.none
-        topCut.backgroundColor = UIColor.piwigoColorBackground()
-        bottomCut.backgroundColor = UIColor.piwigoColorBackground()
-        recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
-        recentImage.tintColor = UIColor.white
+        contentView.backgroundColor = PwgColor.cellBackground
+        binding1?.backgroundColor = PwgColor.background
+        binding2?.backgroundColor = PwgColor.background
 
         // Album name (Piwigo orange colour)
-        albumName.text = albumData?.name ?? "—?—"
-        var fontSize = fontSizeFor(label: albumName, nberLines: 2)
-        albumName.font = UIFont.systemFont(ofSize: fontSize)
+        albumName?.text = albumData?.name ?? "—?—"
         
         // Album description (colour depends on text content)
-        albumComment.attributedText = getDescription(fromAlbumData: albumData)
-        fontSize = UIFont.fontSizeFor(label: albumComment, nberLines: 3)
-        albumComment.font = UIFont.systemFont(ofSize: fontSize)
+        albumComment?.attributedText = getDescription(fromAlbumData: albumData)
 
         // Number of images and sub-albums
-        numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
-        numberOfImages.textColor = UIColor.piwigoColorText()
-        numberOfImages.font = UIFont.systemFont(ofSize: 10, weight: .light)
+        numberOfImages?.text = getNberOfImages(fromAlbumData: albumData)
+        numberOfImages?.textColor = PwgColor.rightLabel
 
         // Add renaming, moving and deleting capabilities when user has admin rights
-        if albumData != nil, handleButton.isHidden == (albumData?.user?.hasAdminRights ?? false) {
-            handleButton.isHidden = !(albumData?.user?.hasAdminRights ?? false)
+        if let album = albumData, let hasAdminRights = album.user?.hasAdminRights {
+            handle?.isHidden = !hasAdminRights
         }
-
-        // Added "0 day" option in version 3.1.2 for allowing user to disable "recent" icon
-        if CacheVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
-           let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           version.compare(CacheVars.shared.recentPeriodListChangedInVersion312) == .orderedSame {
-            CacheVars.shared.recentPeriodIndex += 1
-            CacheVars.shared.recentPeriodIndexCorrectedInVersion321 = true
-        }
-
+        
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
@@ -70,10 +53,10 @@ class AlbumTableViewCell: UITableViewCell {
         indexOfPeriod = max(0, indexOfPeriod)
         let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
-        if self.recentBckg.isHidden == isRecent {
-            self.recentBckg.isHidden = !isRecent
-            self.recentImage.isHidden = !isRecent
-        }
+        self.recentlyModified?.isHidden = !isRecent
+        self.recentlyModified?.tintColor = UIColor.white
+        self.recentlyModified?.layer.shadowColor = UIColor.black.cgColor
+        self.recentlyModified?.layer.shadowOpacity = 1.0
 
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
@@ -85,9 +68,9 @@ class AlbumTableViewCell: UITableViewCell {
         }
         
         // Retrieve image from cache or download it
-        self.backgroundImage.layoutIfNeeded()   // Ensure imageView in its final size
-        let scale = max(self.backgroundImage.traitCollection.displayScale, 1.0)
-        let cellSize = CGSizeMake(self.backgroundImage.bounds.size.width * scale, self.backgroundImage.bounds.size.height * scale)
+        self.albumThumbnail.layoutIfNeeded()   // Ensure imageView in its final size
+        let scale = max(self.albumThumbnail?.traitCollection.displayScale ?? 1.0, 1.0)
+        let cellSize = CGSizeMake(self.albumThumbnail.bounds.size.width * scale, self.albumThumbnail.bounds.size.height * scale)
         let thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
         imageURL = albumData?.thumbnailUrl as? URL
         PwgSession.shared.getImage(withID: albumData?.thumbnailId, ofSize: thumbSize, type: .album,
@@ -101,13 +84,13 @@ class AlbumTableViewCell: UITableViewCell {
                 
                 // Set backgoround image
                 DispatchQueue.main.async { [self] in
-                    self.backgroundImage.image = cachedImage
+                    self.albumThumbnail?.image = cachedImage
                 }
             }
         } failure: { [self] _ in
             // Set backgoround image
             DispatchQueue.main.async { [self] in
-                self.backgroundImage.image = pwgImageType.album.placeHolder
+                self.albumThumbnail?.image = pwgImageType.album.placeHolder
             }
         }
     }
@@ -124,8 +107,8 @@ class AlbumTableViewCell: UITableViewCell {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.foregroundColor: PwgColor.gray,
+                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
@@ -137,8 +120,8 @@ class AlbumTableViewCell: UITableViewCell {
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorRightLabel(),
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.foregroundColor: PwgColor.placeHolder,
+                NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             desc.addAttributes(attributes, range: wholeRange)
@@ -150,8 +133,8 @@ class AlbumTableViewCell: UITableViewCell {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = NSLocalizedString("singleImageCount", comment: "%@ photo")
-        let severalImages = NSLocalizedString("severalImagesCount", comment: "%@ photos")
+        let singleImage = String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo")
+        let severalImages = String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos")
         let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
         let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string
@@ -176,7 +159,7 @@ class AlbumTableViewCell: UITableViewCell {
             text = (albumData?.totalNbImages ?? Int64.zero > 1)
                 ? String.localizedStringWithFormat(severalImages, nberImages ?? "")
                 : String.localizedStringWithFormat(singleImage, nberImages ?? "")
-            text += ", "
+            text += " • "
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData?.nbSubAlbums ?? 0))
             text += (albumData?.nbSubAlbums ?? Int32.zero > 1)
                 ? String.localizedStringWithFormat(severalSubAlbums, nberAlbums ?? "")
@@ -185,41 +168,6 @@ class AlbumTableViewCell: UITableViewCell {
         return text
     }
     
-    private func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
-        // Check label is not nil
-        guard let label = label else { return 17.0 }
-        let font = UIFont.systemFont(ofSize: 17)
-        
-        // Check that we can adjust the font
-        if (label.adjustsFontSizeToFitWidth == false) ||
-            (label.minimumScaleFactor >= 1.0) {
-            // Font adjustment is disabled
-            return font.pointSize
-        }
-
-        // Should we scale the font?
-        var unadjustedWidth: CGFloat = 1.0
-        if let text = label.text {
-            unadjustedWidth = text.size(withAttributes: [NSAttributedString.Key.font: font]).width
-        }
-        let width: CGFloat = label.frame.size.width
-        let height: CGFloat = unadjustedWidth / CGFloat(nberLines)
-        var scaleFactor: CGFloat = width / height
-        if scaleFactor >= 1.0 {
-            // The text already fits at full font size
-            return font.pointSize
-        }
-
-        // Respect minimumScaleFactor
-        scaleFactor = fmax(scaleFactor, label.minimumScaleFactor)
-        let newFontSize: CGFloat = font.pointSize * scaleFactor
-
-        // Uncomment this if you insist on integer font sizes
-        //newFontSize = floor(newFontSize);
-
-        return newFontSize
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -231,9 +179,8 @@ class AlbumTableViewCell: UITableViewCell {
         // Reset cell
         self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         self.albumComment.attributedText = NSAttributedString()
+        self.albumThumbnail.image = pwgImageType.album.placeHolder
         self.numberOfImages.text = ""
-        self.recentBckg.isHidden = true
-        self.recentImage.isHidden = true
-        self.backgroundImage.image = pwgImageType.album.placeHolder
+        self.recentlyModified.isHidden = true
     }
 }

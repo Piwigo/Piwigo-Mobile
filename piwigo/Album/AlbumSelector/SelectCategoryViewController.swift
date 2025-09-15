@@ -9,9 +9,10 @@
 //
 
 import UIKit
-import piwigoKit
 import CoreData
 import CoreMedia
+import piwigoKit
+import uploadKit
 
 enum pwgCategorySelectAction {
     case none
@@ -64,7 +65,6 @@ class SelectCategoryViewController: UIViewController {
 
     
     // MARK: - Core Data Source
-    @available(iOS 13.0, *)
     typealias DataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "private var diffableDataSource: DataSource!" replaced by below lines
@@ -293,8 +293,10 @@ class SelectCategoryViewController: UIViewController {
         }
 
         // Button for returning to albums/images collections
-        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "CancelSelect"
+        if wantedAction != .setDefaultAlbum {
+            cancelBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelSelect))
+            cancelBarButton?.accessibilityIdentifier = "CancelSelect"
+        }
 
         // Set title and buttons
         switch wantedAction {
@@ -324,33 +326,14 @@ class SelectCategoryViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
         setTableViewMainHeader()
-        categoriesTableView?.separatorColor = .piwigoColorSeparator()
+        categoriesTableView?.separatorColor = PwgColor.separator
         categoriesTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
 
@@ -366,6 +349,10 @@ class SelectCategoryViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
         // Display albums
         categoriesTableView?.reloadData()
     }
@@ -406,8 +393,7 @@ class SelectCategoryViewController: UIViewController {
     private func didFetchAlbumsWithError(error: Error) {
         navigationController?.hideHUD { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }
@@ -495,7 +481,7 @@ class SelectCategoryViewController: UIViewController {
 
         case .setAutoUploadAlbum:
             headerView.configure(width: min(categoriesTableView.frame.size.width, pwgPadSettingsWidth),
-                                 text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
+                                 text: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit, comment: "Please select the album…"))
             
         case .copyImage:
             let title = inputImages.first?.titleStr ?? ""
@@ -525,8 +511,7 @@ class SelectCategoryViewController: UIViewController {
     @MainActor
     func showError(_ error: Error?) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -565,6 +550,23 @@ class SelectCategoryViewController: UIViewController {
             self.mainContext.saveIfNeeded()
             // Dismiss the view
             self.dismiss(animated: true, completion: {})
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setTableViewMainHeader()
+
+            // Animated update for smoother experience
+            self.categoriesTableView?.beginUpdates()
+            self.categoriesTableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
         }
     }
 }

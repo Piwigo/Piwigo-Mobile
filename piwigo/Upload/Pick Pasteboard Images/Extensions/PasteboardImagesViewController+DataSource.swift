@@ -8,11 +8,8 @@
 
 import MobileCoreServices
 import UIKit
+import UniformTypeIdentifiers
 import piwigoKit
-
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
 
 // MARK: UICollectionViewDataSource Methods
 extension PasteboardImagesViewController: UICollectionViewDataSource
@@ -100,17 +97,10 @@ extension PasteboardImagesViewController: UICollectionViewDataSource
             md5sum = pbObjects[index].md5Sum
         }
         else {
-            var imageType = ""
-            if #available(iOS 14.0, *) {
-                imageType = UTType.image.identifier
-            } else {
-                // Fallback on earlier version
-                imageType = kUTTypeImage as String
-            }
-            if let data = UIPasteboard.general.data(forPasteboardType: imageType,
+            if let data = UIPasteboard.general.data(forPasteboardType: UTType.image.identifier,
                                                     inItemSet: IndexSet(integer: index))?.first {
                 image = UIImage(data: data) ?? pwgImageType.image.placeHolder
-                md5sum = data.MD5checksum()
+                md5sum = data.MD5checksum
             }
         }
         return (image, md5sum)

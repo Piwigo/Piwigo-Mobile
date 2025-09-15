@@ -11,7 +11,6 @@ import UIKit
 import piwigoKit
 
 // MARK: - UITableView - Diffable Data Source
-@available(iOS 13.0, *)
 extension SelectCategoryViewController
 {
 //    func configDataSource() -> DataSource {
@@ -116,7 +115,7 @@ extension SelectCategoryViewController: UITableViewDataSource
             // The current default category is not selectable
             if albumData.pwgID == inputAlbum.pwgID {
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
+                cell.albumLabel.textColor = PwgColor.rightLabel
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if hasRecentAlbums && (indexPath.section == 0) {
@@ -133,7 +132,7 @@ extension SelectCategoryViewController: UITableViewDataSource
                 // Is the root album parent of the input album?
                 if inputAlbum.parentId == 0 {
                     // Yes => Change text colour
-                    cell.albumLabel.textColor = .piwigoColorRightLabel()
+                    cell.albumLabel.textColor = PwgColor.rightLabel
                 }
             }
             else if hasRecentAlbums && (indexPath.section == 0) {
@@ -143,13 +142,13 @@ extension SelectCategoryViewController: UITableViewDataSource
             else if albumData.pwgID == inputAlbum.parentId {
                 // This album is the parent of the input album => Change text colour
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
+                cell.albumLabel.textColor = PwgColor.rightLabel
             }
             else if albumData.upperIds.components(separatedBy: ",")
                 .compactMap({Int32($0)}).contains(inputAlbum.pwgID) {
                 // This album is a sub-album of the input album => No button
                 cell.configure(with: albumData, atDepth: depth, andButtonState: .none)
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
+                cell.albumLabel.textColor = PwgColor.rightLabel
             } else {
                 // Not a parent of a sub-album of the input album
                 cell.configure(with: albumData, atDepth: depth, andButtonState: buttonState)
@@ -177,7 +176,7 @@ extension SelectCategoryViewController: UITableViewDataSource
             }
             // Albums containing the image are not selectable
             if commonCatIDs.contains(albumData.pwgID) {
-                cell.albumLabel.textColor = .piwigoColorRightLabel()
+                cell.albumLabel.textColor = PwgColor.rightLabel
             }
 
         default:

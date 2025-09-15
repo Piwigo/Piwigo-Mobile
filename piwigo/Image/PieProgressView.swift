@@ -27,7 +27,7 @@ class PieProgressView: UIView {
         
         // Initialisation
         let radius = frame.size.width / 2
-        self.backgroundColor = UIColor.piwigoColorWhiteCream().withAlphaComponent(0.3)
+        self.backgroundColor = PwgColor.whiteCream.withAlphaComponent(0.3)
         self.layer.cornerRadius = radius
 
         // Progress layer

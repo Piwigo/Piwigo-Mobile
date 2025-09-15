@@ -109,14 +109,14 @@ extension AutoUploadViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load a EditImageTagsTableViewCell!") }
                 // Retrieve tags and switch to old cache data format
                 let tags = tagProvider.getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)
-                cell.config(withList: tags, inColor: UIColor.piwigoColorRightLabel())
+                cell.config(withList: tags, inColor: PwgColor.rightLabel)
                 tableViewCell = cell
 
             case 1 /* Comments */ :
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell
                 else { preconditionFailure("Could not load a EditImageTextViewTableViewCell!") }
                 cell.config(withText: NSAttributedString(string: UploadVars.shared.autoUploadComments),
-                            inColor: UIColor.piwigoColorRightLabel())
+                            inColor: PwgColor.rightLabel)
                 cell.textView.delegate = self
                 tableViewCell = cell
 
@@ -128,8 +128,8 @@ extension AutoUploadViewController: UITableViewDataSource
             break
         }
 
-        tableViewCell.backgroundColor = .piwigoColorCellBackground()
-        tableViewCell.tintColor = .piwigoColorOrange()
+        tableViewCell.backgroundColor = PwgColor.cellBackground
+        tableViewCell.tintColor = PwgColor.orange
         return tableViewCell
     }
 }

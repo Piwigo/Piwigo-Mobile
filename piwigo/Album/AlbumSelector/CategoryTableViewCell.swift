@@ -35,15 +35,14 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     func configure(with album: Album, atDepth depth:Int,
                    andButtonState buttonState:pwgCategoryCellButtonState) {
         // General settings
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.tintColor
 
         // Category data
         albumData = album
         
         // Is this a sub-category?
-        albumLabel.font = .systemFont(ofSize: 17)
-        albumLabel.textColor = .piwigoColorLeftLabel()
+        albumLabel.textColor = PwgColor.leftLabel
         albumLabel.text = albumData.name
         if depth == 0 {
             // Categories in root album or root album itself
@@ -61,19 +60,18 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             let nberAlbums = numberFormatter.string(from: NSNumber(value: albumData.nbSubAlbums)) ?? "0"
-            subCategoriesLabel.text = albumData.nbSubAlbums > 1 ?
-                String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
-                String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
+            if traitCollection.preferredContentSizeCategory < .extraLarge {
+                subCategoriesLabel.text = albumData.nbSubAlbums > 1 ?
+                    String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
+                    String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
+            } else {
+                subCategoriesLabel.text = nberAlbums
+            }
             
             self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
-            showHideSubCategoriesImage.tintColor = .piwigoColorOrange()  // required on iOS 9
-            if #available(iOS 13.0, *) {
-                showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
-            } else {
-                // Fallback on earlier versions
-                showHideSubCategoriesImage.image = UIImage(named: "openClose")
-            }
+            showHideSubCategoriesImage.tintColor = PwgColor.orange
+            showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
             if buttonState == .hideSubAlbum {
                 self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))
             } else {

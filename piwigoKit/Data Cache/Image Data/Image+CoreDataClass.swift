@@ -11,10 +11,7 @@ import os
 import CoreData
 import Foundation
 import MobileCoreServices
-
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
+import UniformTypeIdentifiers
 
 /* Image instances represent photos and videos of a Piwigo server.
     - Each instance belongs to a Server.
@@ -38,7 +35,7 @@ public class Image: NSManagedObject {
         
         // Update the image only if the Id has a value.
         guard let newPwgID = imageData.id else {
-            throw ImageError.missingData
+            throw PwgKitError.missingImageData
         }
         if uuid.isEmpty {
             uuid = UUID().uuidString
@@ -48,25 +45,25 @@ public class Image: NSManagedObject {
         }
         
         // Image title (required)
-        let newTitleStr = PwgSession.utf8mb4String(from: imageData.title)
+        let newTitleStr = imageData.title?.utf8mb4Encoded ?? ""
         if titleStr != newTitleStr {
             titleStr = newTitleStr
         }
-        let newTitle = newTitleStr.attributedPlain()
+        let newTitle = newTitleStr.attributedPlain
         if newTitle != title {
             title = newTitle
         }
         
         // Image description (required)
-        let newCommentStr = PwgSession.utf8mb4String(from: imageData.comment)
+        let newCommentStr = imageData.comment?.utf8mb4Encoded ?? ""
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }
-        let newComment = newCommentStr.attributedPlain()
+        let newComment = newCommentStr.attributedPlain
         if comment != newComment {
             comment = newComment
         }
-        let newCommentHTML = newCommentStr.attributedHTML()
+        let newCommentHTML = newCommentStr.attributedHTML
         if newCommentHTML != commentHTML {
             commentHTML = newCommentHTML
         }
@@ -101,48 +98,29 @@ public class Image: NSManagedObject {
             // Delete cache files to force a reload
             self.deleteCachedFiles()
         }
-        let newFile = PwgSession.utf8mb4String(from: imageData.fileName ?? "")
+        let newFile = imageData.fileName?.utf8mb4Encoded ?? ""
         if newFile.isEmpty == false {
             if fileName != newFile {
                 fileName = newFile
             }
             let fileExt = URL(fileURLWithPath: newFile).pathExtension.lowercased()
             if fileExt.isEmpty == false {
-                if #available(iOS 14.0, *) {
-                    if let uti = UTType(filenameExtension: fileExt) {
-                        if uti.conforms(to: .movie) {
-                            if fileType != pwgImageFileType.video.rawValue {
-                                fileType = pwgImageFileType.video.rawValue
-                            }
-                        } else if uti.conforms(to: .pdf) {
-                            if fileType != pwgImageFileType.pdf.rawValue {
-                                fileType = pwgImageFileType.pdf.rawValue
-                            }
-                        } else {
-                            if fileType != pwgImageFileType.image.rawValue {
-                                fileType = pwgImageFileType.image.rawValue
-                            }
+                if let uti = UTType(filenameExtension: fileExt) {
+                    if uti.conforms(to: .movie) {
+                        if fileType != pwgImageFileType.video.rawValue {
+                            fileType = pwgImageFileType.video.rawValue
                         }
-                    } else if fileType != pwgImageFileType.image.rawValue {
-                        fileType = pwgImageFileType.image.rawValue
-                    }
-                } else {
-                    // Fallback to previous version
-                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() {
-                        if UTTypeConformsTo(uti, kUTTypeMovie) {
-                            if fileType != pwgImageFileType.video.rawValue {
-                                fileType = pwgImageFileType.video.rawValue
-                            }
-                        } else if UTTypeConformsTo(uti, kUTTypePDF) {
-                            if fileType != pwgImageFileType.pdf.rawValue {
-                                fileType = pwgImageFileType.pdf.rawValue
-                            }
-                        } else if fileType != pwgImageFileType.image.rawValue {
+                    } else if uti.conforms(to: .pdf) {
+                        if fileType != pwgImageFileType.pdf.rawValue {
+                            fileType = pwgImageFileType.pdf.rawValue
+                        }
+                    } else {
+                        if fileType != pwgImageFileType.image.rawValue {
                             fileType = pwgImageFileType.image.rawValue
                         }
-                    } else if fileType != pwgImageFileType.image.rawValue {
-                        fileType = pwgImageFileType.image.rawValue
                     }
+                } else if fileType != pwgImageFileType.image.rawValue {
+                    fileType = pwgImageFileType.image.rawValue
                 }
             }
         }
@@ -171,7 +149,7 @@ public class Image: NSManagedObject {
         
         // Author
         if let newAuthor = imageData.author {
-           let newAuthorUTF8 = PwgSession.utf8mb4String(from: newAuthor)
+            let newAuthorUTF8 = newAuthor.utf8mb4Encoded
             if author != newAuthorUTF8 {
                 author = newAuthorUTF8
             }
@@ -357,7 +335,7 @@ public class Image: NSManagedObject {
         let IDopt = ID + CacheVars.shared.optImage
         guard let serverUUID = self.server?.uuid else { return }
         let fm = FileManager.default
-        let cacheUrl = DataDirectories.shared.cacheDirectory
+        let cacheUrl = DataDirectories.cacheDirectory
             .appendingPathComponent(serverUUID)
 
         // Loop over image sizes

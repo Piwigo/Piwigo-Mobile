@@ -13,7 +13,7 @@ import piwigoKit
 // Constants
 /// - Preferred popover view width on iPad
 let pwgPadSubViewWidth = CGFloat(375.0)
-///- Preferred Settings view width on iPad
+/// - Preferred Settings view width on iPad
 let pwgPadSettingsWidth = CGFloat(512.0)
 
 
@@ -21,7 +21,7 @@ class AppVars: NSObject {
     
     // Singleton
     static let shared = AppVars()
-
+    
     // Remove deprecated stored objects if needed
     override init() {
         // Deprecated data?
@@ -31,11 +31,11 @@ class AppVars: NSObject {
         if let _ = UserDefaults.standard.object(forKey: "diskCache") {
             UserDefaults.standard.removeObject(forKey: "diskCache")
         }
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
+        //        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
+        //            UserDefaults.dataSuite.removeObject(forKey: "test")
+        //        }
     }
-
+    
     // MARK: - Vars in UserDefaults / Standard
     // Application variables stored in UserDefaults / Standard
     /// - App color palette (adopts light/dark modes as from iOS 13)
@@ -61,7 +61,7 @@ class AppVars: NSObject {
     /// — Clear clipboard after delay option (never by default)
     @UserDefault("clearClipboardDelay", defaultValue: pwgClearClipboard.never.rawValue)
     var clearClipboardDelay: Int
-
+    
     /// - Remember which help views were watched
     @UserDefault("didWatchHelpViews", defaultValue: 0b00000000_00000000)
     var didWatchHelpViews: UInt16
@@ -82,12 +82,12 @@ class AppVars: NSObject {
     /// - Remember when the first '-opt' cached image was produced with version 3.2.3
     @UserDefault("dateOfFirstOptImageV323", defaultValue: Date.distantFuture.timeIntervalSinceReferenceDate)
     var dateOfFirstOptImageV323: TimeInterval
-
+    
     
     // MARK: - Vars in UserDefaults / App Group
     // Application variables stored in UserDefaults / App Group
     /// - None
-
+    
     
     // MARK: - Vars in Memory
     // Application variables kept in memory
@@ -96,7 +96,7 @@ class AppVars: NSObject {
     
     /// - Check for haptics compatibility at the app’s launch
     var supportsHaptics: Bool = false
-
+    
     /// - App Lock status
     var isAppUnlocked: Bool = false
     
@@ -114,4 +114,7 @@ class AppVars: NSObject {
     
     /// - To prevent Core Data usage until the database migration is finished.
     var isMigrationRunning: Bool = false
+    
+    /// - To remember the natural scale associated with the integrated screen for future initialisations
+    var currentDeviceScale = CGFloat.zero
 }

@@ -13,7 +13,7 @@ public extension PwgSession {
     
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
-                      failure: @escaping (Error) -> Void) {
+                      failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             #if DEBUG
             PwgSession.logger.notice("Open session for \(username, privacy: .public).")
@@ -27,57 +27,45 @@ public extension PwgSession {
         // Launch request
         postRequest(withMethod: pwgSessionLogin, paramDict: paramsDict,
                     jsonObjectClientExpectsToReceive: SessionLoginJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { jsonData in
-            // Decode the JSON object and check if the login was successful
-            do {
-                // Decode the JSON into codable type SessionLoginJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(SessionLoginJSON.self, from: jsonData)
-                
+                    countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { result in
+            switch result {
+            case .success(let pwgData):
+                // Decode the JSON object and check if the login was successful
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 // Login successful
                 completion()
-            }
-            catch {
-                // Data cannot be digested
+
+            case .failure (let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
-                                 failure: @escaping (Error) -> Void) {
+                                 failure: @escaping (PwgKitError) -> Void) {
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { jsonData in
-            // Decode the JSON object and retrieve the status
-            do {
-                // Decode the JSON into codable type SessionGetStatusJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(SessionGetStatusJSON.self, from: jsonData)
-
+                    countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 // No status returned?
                 guard let data = pwgData.data else {
-                    failure(PwgSessionError.authenticationFailed)
+                    failure(PwgKitError.authenticationFailed)
                     return
                 }
 
@@ -171,7 +159,7 @@ public extension PwgSession {
                         NetworkVars.shared.userStatus = userStatus
                     }
                 } else {
-                    failure(UserError.unknownUserStatus)
+                    failure(PwgKitError.unknownUserStatus)
                     return
                 }
 
@@ -190,53 +178,42 @@ public extension PwgSession {
                 NetworkVars.shared.saveVisits = data.saveVisits ?? false
 
                 completion(data.userName ?? "")
-            }
-            catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 
     func sessionLogout(completion: @escaping () -> Void,
-                              failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Close session.")
         }
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
-                    countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { jsonData in
-            // Decode the JSON object and check if the logout was successful
-            do {
-                // Decode the JSON into codable type SessionLogoutJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(SessionLogoutJSON.self, from: jsonData)
-
+                    countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
 
                 // Logout successful
                 completion()
-            }
-            catch {
-                // Data cannot be digested
+
+            case .failure (let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

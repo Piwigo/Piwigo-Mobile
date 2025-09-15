@@ -8,12 +8,17 @@
 
 import os
 import Foundation
+import UniformTypeIdentifiers
 
-#if canImport(UniformTypeIdentifiers)
-import UniformTypeIdentifiers        // Requires iOS 14
-#endif
+//@globalActor
+//public actor NetworkActor {
+//    public static let shared = NetworkActor()
+//    
+//    private init() { }
+//}
 
-public class PwgSession: NSObject {
+//@NetworkActor
+public final class PwgSession: NSObject { //}, Sendable {
     
     // Logs networking activities
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
@@ -23,7 +28,7 @@ public class PwgSession: NSObject {
     // Singleton
     public static let shared = PwgSession()
     
-    // Create single instance
+    // Create single session
     public lazy var dataSession: URLSession = {
         let config = URLSessionConfiguration.default
         
@@ -34,9 +39,7 @@ public class PwgSession: NSObject {
         config.waitsForConnectivity = true
         
         /// Connections should use the network when the user has specified Low Data Mode
-        //        if #available(iOSApplicationExtension 13.0, *) {
-        //            config.allowsConstrainedNetworkAccess = true
-        //        }
+        // config.allowsConstrainedNetworkAccess = true
         
         /// Indicates that the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true
@@ -69,19 +72,14 @@ public class PwgSession: NSObject {
     // Active downloads
     lazy var activeDownloads: [URL : ImageDownload] = [ : ]
     
-    // Remember if the session was opened with a WiFi
-    lazy var wasConnectedToWifi = NetworkVars.shared.isConnectedToWiFi()
+    // Will tell if the network connection has changed
+    lazy var hasNetworkConnectionChanged = false
     
     // Will accept the image formats supported by UIImage
     lazy var acceptedTypes: String = {
-        var acceptedTypes = ""
-        if #available(iOS 14.0, *) {
-            let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
-            acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
-        } else {
-            // Fallback on earlier versions
-            acceptedTypes = "image/heic, image/heif, image/vnd.microsoft.icon, image/png, image/gif, image/jpeg, image/jpg, image/webp, image/tiff, image/bmp, image/svg+xml, "
-        }
+        // Image types
+        let imageTypes = [UTType.heic, UTType.heif, UTType.ico, UTType.icns, UTType.png, UTType.gif, UTType.jpeg, UTType.webP, UTType.tiff, UTType.bmp, UTType.svg, UTType.rawImage].compactMap {$0.tags[.mimeType]}.flatMap({$0})
+        var acceptedTypes = imageTypes.map({$0 + " ,"}).reduce("", +)
         
         // Add text types for handling Piwigo errors and redirects
         acceptedTypes += "text/plain, text/html"

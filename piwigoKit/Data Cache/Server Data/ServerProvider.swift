@@ -53,7 +53,7 @@ public class ServerProvider: NSObject {
                 // Create a Server object on the current queue context.
                 guard let server = NSEntityDescription.insertNewObject(forEntityName: "Server",
                                                                        into: taskContext) as? Server else {
-                    debugPrint(ServerError.creationError.localizedDescription)
+                    debugPrint(PwgKitError.serverCreationError.localizedDescription)
                     return
                 }
                 
@@ -62,9 +62,9 @@ public class ServerProvider: NSObject {
                     try server.update(withPath: path)
                     currentServer = server
                 }
-                catch ServerError.wrongURL {
+                catch PwgKitError.wrongServerURL {
                     // Delete invalid Server from the private queue context.
-                    debugPrint(ServerError.wrongURL.localizedDescription)
+                    debugPrint(PwgKitError.wrongServerURL.localizedDescription)
                     taskContext.delete(server)
                 }
                 catch {

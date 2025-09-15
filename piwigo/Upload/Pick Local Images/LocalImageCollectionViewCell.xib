@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,46 +21,85 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownImage" translatesAutoresizingMaskIntoConstraints="NO" id="IKS-Rx-oq3">
                         <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                     </imageView>
-                    <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gye-LY-Xsr">
+                    <view hidden="YES" alpha="0.45000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gye-LY-Xsr">
                         <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                    </view>
-                    <view hidden="YES" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jQ9-Pn-7da">
-                        <rect key="frame" x="2.9999999999999982" y="3" width="29.333333333333329" height="23"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                 <integer key="value" value="3"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <imageView hidden="YES" clipsSubviews="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="Xhr-ZF-3Zi">
-                        <rect key="frame" x="3.9999999999999982" y="4" width="27.333333333333329" height="21"/>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Bwe-fq-kS8">
+                        <rect key="frame" x="0.99999999999999822" y="2.6666666666666643" width="31.333333333333329" height="28.333333333333336"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="Xhr-ZF-3Zi" secondAttribute="height" multiplier="75:58" id="o0a-2H-Ua4"/>
+                            <constraint firstAttribute="width" secondItem="Bwe-fq-kS8" secondAttribute="height" multiplier="1:1" id="Ich-99-qls"/>
                         </constraints>
+                        <imageReference key="image" image="play.square.fill" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                <integer key="value" value="2"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                <integer key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                <size key="value" width="0.0" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </imageView>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkMark" translatesAutoresizingMaskIntoConstraints="NO" id="fra-Ps-jm0">
-                        <rect key="frame" x="205.66666666666666" y="205.66666666666666" width="23.333333333333343" height="23.333333333333343"/>
-                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8CN-35-v0I">
+                        <rect key="frame" x="199.66666666666666" y="199.33333333333331" width="31.333333333333343" height="32"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="fra-Ps-jm0" secondAttribute="height" multiplier="1:1" id="VNv-qk-JDp"/>
+                            <constraint firstAttribute="width" secondItem="8CN-35-v0I" secondAttribute="height" multiplier="1:1" id="N30-op-pTE"/>
                         </constraints>
+                        <imageReference key="image" image="checkmark.circle.fill" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="black"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                <real key="value" value="0.5"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                <integer key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                <size key="value" width="0.0" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </imageView>
                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigo" translatesAutoresizingMaskIntoConstraints="NO" id="07z-ZV-xvN">
-                        <rect key="frame" x="3" y="206.66666666666666" width="22.333333333333332" height="22.333333333333343"/>
+                        <rect key="frame" x="2.9999999999999982" y="197.66666666666666" width="31.333333333333329" height="31.333333333333343"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="07z-ZV-xvN" secondAttribute="height" multiplier="1:1" id="PZu-zk-eRt"/>
                         </constraints>
                     </imageView>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warning" translatesAutoresizingMaskIntoConstraints="NO" id="M8E-Sf-Jmj">
-                        <rect key="frame" x="58" y="58" width="116" height="116"/>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="M8E-Sf-Jmj">
+                        <rect key="frame" x="58" y="59.333333333333314" width="116" height="113.66666666666669"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="M8E-Sf-Jmj" secondAttribute="height" multiplier="1:1" id="jqV-tg-IIt"/>
                         </constraints>
+                        <imageReference key="image" image="exclamationmark.triangle" catalog="system" renderingMode="template"/>
                     </imageView>
                     <activityIndicatorView hidden="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Atg-G2-7jp">
                         <rect key="frame" x="58" y="58" width="116" height="116"/>
@@ -83,31 +123,27 @@
                     <constraint firstItem="Atg-G2-7jp" firstAttribute="centerX" secondItem="rz3-La-BgO" secondAttribute="centerX" id="4AV-s1-Yj0"/>
                     <constraint firstItem="gye-LY-Xsr" firstAttribute="leading" secondItem="rz3-La-BgO" secondAttribute="leading" id="6IX-6o-ZoI"/>
                     <constraint firstItem="M8E-Sf-Jmj" firstAttribute="centerX" secondItem="rz3-La-BgO" secondAttribute="centerX" id="8nG-99-2gq"/>
+                    <constraint firstItem="Bwe-fq-kS8" firstAttribute="width" secondItem="rz3-La-BgO" secondAttribute="width" multiplier="0.1" constant="8" id="8sS-ws-Kpi"/>
                     <constraint firstAttribute="bottom" secondItem="3Bq-gM-TNR" secondAttribute="bottom" constant="10" id="A58-vP-zl4"/>
                     <constraint firstItem="Atg-G2-7jp" firstAttribute="width" secondItem="IKS-Rx-oq3" secondAttribute="width" multiplier="0.5" id="GWg-Ax-HGW"/>
                     <constraint firstItem="IKS-Rx-oq3" firstAttribute="leading" secondItem="rz3-La-BgO" secondAttribute="leading" id="JYr-cd-dBh"/>
                     <constraint firstAttribute="bottom" secondItem="IKS-Rx-oq3" secondAttribute="bottom" id="KtR-56-uYY"/>
                     <constraint firstAttribute="trailing" secondItem="3Bq-gM-TNR" secondAttribute="trailing" constant="10" id="M9C-kt-6XT"/>
                     <constraint firstAttribute="bottom" secondItem="gye-LY-Xsr" secondAttribute="bottom" id="NL3-rK-ipZ"/>
-                    <constraint firstItem="fra-Ps-jm0" firstAttribute="height" secondItem="rz3-La-BgO" secondAttribute="height" multiplier="0.04" constant="14" id="QFb-8p-Eyw"/>
+                    <constraint firstAttribute="trailing" secondItem="8CN-35-v0I" secondAttribute="trailing" constant="1" id="QXp-ER-PIk"/>
                     <constraint firstItem="M8E-Sf-Jmj" firstAttribute="width" secondItem="rz3-La-BgO" secondAttribute="width" multiplier="0.5" id="RYL-GM-epj"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="width" secondItem="Xhr-ZF-3Zi" secondAttribute="width" constant="2" id="RZy-fe-R0Q"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="centerY" secondItem="Xhr-ZF-3Zi" secondAttribute="centerY" id="SKB-LH-AEJ"/>
                     <constraint firstItem="Atg-G2-7jp" firstAttribute="centerY" secondItem="rz3-La-BgO" secondAttribute="centerY" id="T8L-iZ-dy3"/>
-                    <constraint firstAttribute="bottom" secondItem="fra-Ps-jm0" secondAttribute="bottom" constant="3" id="UaH-S6-5a1"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="height" secondItem="Xhr-ZF-3Zi" secondAttribute="height" constant="2" id="WM5-tk-peH"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="top" secondItem="rz3-La-BgO" secondAttribute="top" constant="3" id="X2M-Mk-Koc"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="width" secondItem="IKS-Rx-oq3" secondAttribute="width" multiplier="0.1" constant="6" id="YDu-S5-TTU"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="leading" secondItem="rz3-La-BgO" secondAttribute="leading" constant="3" id="kgR-ho-baI"/>
-                    <constraint firstAttribute="trailing" secondItem="fra-Ps-jm0" secondAttribute="trailing" constant="3" id="lNF-LB-Gfi"/>
+                    <constraint firstItem="Bwe-fq-kS8" firstAttribute="leading" secondItem="rz3-La-BgO" secondAttribute="leading" constant="1" id="UPK-P7-yP9"/>
+                    <constraint firstItem="8CN-35-v0I" firstAttribute="width" secondItem="rz3-La-BgO" secondAttribute="width" multiplier="0.1" constant="8" id="Xtc-lt-eWc"/>
+                    <constraint firstItem="Bwe-fq-kS8" firstAttribute="top" secondItem="rz3-La-BgO" secondAttribute="top" constant="1" id="dJs-9B-D3j"/>
                     <constraint firstItem="gye-LY-Xsr" firstAttribute="top" secondItem="rz3-La-BgO" secondAttribute="top" id="lcQ-iZ-cbV"/>
                     <constraint firstAttribute="trailing" secondItem="gye-LY-Xsr" secondAttribute="trailing" id="lkl-5l-Rgp"/>
                     <constraint firstAttribute="bottom" secondItem="07z-ZV-xvN" secondAttribute="bottom" constant="3" id="loC-A2-4ee"/>
                     <constraint firstItem="IKS-Rx-oq3" firstAttribute="top" secondItem="rz3-La-BgO" secondAttribute="top" id="lvt-Q6-JpF"/>
-                    <constraint firstItem="jQ9-Pn-7da" firstAttribute="centerX" secondItem="Xhr-ZF-3Zi" secondAttribute="centerX" id="mB8-G7-lKP"/>
                     <constraint firstAttribute="trailing" secondItem="IKS-Rx-oq3" secondAttribute="trailing" id="npF-Aj-QBN"/>
                     <constraint firstItem="3Bq-gM-TNR" firstAttribute="leading" secondItem="rz3-La-BgO" secondAttribute="leading" constant="10" id="r9y-Hc-fQY"/>
-                    <constraint firstItem="07z-ZV-xvN" firstAttribute="height" secondItem="rz3-La-BgO" secondAttribute="height" multiplier="0.04" constant="13" id="sg6-Yr-3Iw"/>
+                    <constraint firstItem="07z-ZV-xvN" firstAttribute="height" secondItem="rz3-La-BgO" secondAttribute="height" multiplier="0.1" constant="8" id="sg6-Yr-3Iw"/>
+                    <constraint firstAttribute="bottom" secondItem="8CN-35-v0I" secondAttribute="bottom" constant="1" id="w9L-9J-vzT"/>
                     <constraint firstItem="07z-ZV-xvN" firstAttribute="leading" secondItem="rz3-La-BgO" secondAttribute="leading" constant="3" id="y3E-8c-zDb"/>
                 </constraints>
             </collectionViewCellContentView>
@@ -117,21 +153,20 @@
                 <outlet property="cellImage" destination="IKS-Rx-oq3" id="SwA-1F-Lxw"/>
                 <outlet property="darkenView" destination="gye-LY-Xsr" id="58L-kx-Epf"/>
                 <outlet property="failedUploadImage" destination="M8E-Sf-Jmj" id="3pU-ZG-nhH"/>
-                <outlet property="playBckg" destination="jQ9-Pn-7da" id="e9f-9X-ZIR"/>
-                <outlet property="playImg" destination="Xhr-ZF-3Zi" id="EfX-lw-Hpq"/>
-                <outlet property="selectedImage" destination="fra-Ps-jm0" id="b9s-TA-rSs"/>
+                <outlet property="playIcon" destination="Bwe-fq-kS8" id="HeQ-al-yvE"/>
+                <outlet property="selectedIcon" destination="8CN-35-v0I" id="Q0l-ix-Ou3"/>
                 <outlet property="uploadedImage" destination="07z-ZV-xvN" id="cLt-ny-jVR"/>
                 <outlet property="uploadingProgress" destination="3Bq-gM-TNR" id="2tf-Gs-2Nt"/>
                 <outlet property="waitingActivity" destination="Atg-G2-7jp" id="zVs-ft-tKZ"/>
             </connections>
-            <point key="canvasLocation" x="-298" y="-32"/>
+            <point key="canvasLocation" x="-765" y="-439"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="checkMark" width="25" height="25"/>
+        <image name="checkmark.circle.fill" catalog="system" width="32" height="32"/>
+        <image name="exclamationmark.triangle" catalog="system" width="32" height="32"/>
         <image name="piwigo" width="25" height="25"/>
+        <image name="play.square.fill" catalog="system" width="32" height="32"/>
         <image name="unknownImage" width="512" height="512"/>
-        <image name="video" width="25" height="19.333333969116211"/>
-        <image name="warning" width="37" height="37"/>
     </resources>
 </document>

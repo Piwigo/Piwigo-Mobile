@@ -8,13 +8,11 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
 enum SceneConfiguration: String {
     case `default`  = "Default Configuration"
     case `external` = "External Display"
 }
 
-@available(iOS 13.0, *)
 enum ActivityType: String {
     case album = "piwigo.album"
     case external = "piwigo.external"

@@ -79,18 +79,19 @@ public class DateUtilities: NSObject {
     }
     
     // Return date formatter in UTC time
-    public static func dateFormatter() -> DateFormatter {
+    public static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = .current
         formatter.timeZone = TimeZone(abbreviation: "UTC")!
+        formatter.doesRelativeDateFormatting = true
         return formatter
-    }
+    }()
     
     // Return date interval formatter in UTC time
-    public static func dateIntervalFormatter() -> DateIntervalFormatter {
+    public static let dateIntervalFormatter: DateIntervalFormatter = {
         let formatter = DateIntervalFormatter()
         formatter.locale = .current
         formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
-    }
+    }()
 }

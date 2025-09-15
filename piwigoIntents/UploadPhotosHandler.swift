@@ -80,7 +80,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         for idx in 0..<selectedFiles.count {
             // Determine MD5 checksum
             let error: Error?, md5Sum: String!
-            (md5Sum, error) = selectedFiles[idx].MD5checksum()
+            (md5Sum, error) = selectedFiles[idx].MD5checksum
             if let error = error {
                 // Could not determine the MD5 checksum
                 completion(UploadPhotosIntentResponse.failure(error: error.localizedDescription))
@@ -187,7 +187,8 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             
             // Error encountered…
             DispatchQueue.main.async {
-                let errorMsg = String(format: "%@: %@", NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), error.localizedDescription)
+                let msg = PwgKitError.uploadCreationError.localizedDescription
+                let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
                 completion(UploadPhotosIntentResponse.failure(error: errorMsg))
             }
         }

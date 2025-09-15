@@ -72,7 +72,7 @@ class AppLockViewController: UIViewController {
         case .verifyPasscode:
             passcodeToVerify = password
         case .unlockApp:
-            passcodeToVerify = AppVars.shared.appLockKey.decrypted()
+            passcodeToVerify = AppVars.shared.appLockKey.decrypted
         }
     }
 
@@ -116,44 +116,26 @@ class AppLockViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
     }
 
     @MainActor
     @objc func applyColorPalette() {
         // Navigation bar (if any)
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
-                
         // Initialise colours
-        var labelsColor = UIColor.piwigoColorText()
+        var labelsColor = PwgColor.text
         var digitBorderColor = UIColor.clear.cgColor
-        var buttonTitleColor = UIColor.piwigoColorRightLabel()
-        var buttonBckgColor = UIColor.piwigoColorCellBackground()
+        var buttonTitleColor = PwgColor.rightLabel
+        var buttonBckgColor = PwgColor.cellBackground
         var buttonBorderColor = UIColor.clear.cgColor
         if wantedAction == .unlockApp {
             if UIAccessibility.isReduceTransparencyEnabled {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
                 /// —> No blur effect, fixed colour background
-                view.backgroundColor = UIColor.piwigoColorBrown()
+                view.backgroundColor = PwgColor.brown
                 blurEffectView.effect = .none
                 vibrancyEffectView.effect = .none
                 labelsColor = .white
@@ -173,12 +155,12 @@ class AppLockViewController: UIViewController {
                 vibrancyEffectView.effect = UIVibrancyEffect(blurEffect: blurEffect)
                 labelsColor = .white
                 buttonBckgColor = .clear
-                buttonTitleColor = UIColor.piwigoColorNumkey()
+                buttonTitleColor = PwgColor.numkey
                 buttonBorderColor = buttonTitleColor.cgColor
                 digitBorderColor = buttonTitleColor.cgColor
             }
         } else {    // Enter or Verify passcode
-            view.backgroundColor = .piwigoColorBackground()
+            view.backgroundColor = PwgColor.background
             blurEffectView.effect = .none
             vibrancyEffectView.effect = .none
         }
@@ -288,12 +270,7 @@ class AppLockViewController: UIViewController {
         }
 
         // Get device orientation
-        var orientation: UIInterfaceOrientation
-        if #available(iOS 13.0, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
 
         // Initialise constants
         let margin: CGFloat =  16
@@ -361,14 +338,14 @@ class AppLockViewController: UIViewController {
     @IBAction func touchDown(_ sender: UIButton) {
         // Apply darker backgroud colour while pressing key (reveals the glowing number).
         if wantedAction != .unlockApp {
-            sender.backgroundColor = UIColor.piwigoColorRightLabel()
+            sender.backgroundColor = PwgColor.rightLabel
         }
     }
 
     @IBAction func touchUpInside(_ sender: UIButton) {
         // Re-apply normal background colour when the key is released
         if wantedAction != .unlockApp {
-            sender.backgroundColor = UIColor.piwigoColorCellBackground()
+            sender.backgroundColor = PwgColor.cellBackground
         }
 
         // No more than 6 digits
@@ -408,7 +385,7 @@ class AppLockViewController: UIViewController {
             }
             
             // Store encrypted passcode
-            AppVars.shared.appLockKey = passcode.encrypted()
+            AppVars.shared.appLockKey = passcode.encrypted
             
             // Return to the Settings view
             if let vc = navigationController?.children.filter({ $0 is LockOptionsViewController}).first {
@@ -455,15 +432,15 @@ class AppLockViewController: UIViewController {
         let nberOfDigits = passcode.count
         
         // Digit background colour
-        var digitKnownColor = UIColor.piwigoColorOrange()
-        var digitUnknowColor = UIColor.piwigoColorCellBackground()
+        var digitKnownColor = PwgColor.orange
+        var digitUnknowColor = PwgColor.cellBackground
         if wantedAction == .unlockApp {
             if UIAccessibility.isReduceTransparencyEnabled {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is enabled
                 digitUnknowColor = .init(white: 0.8, alpha: 1.0)
             } else {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
-                digitKnownColor = UIColor.piwigoColorNumkey()
+                digitKnownColor = PwgColor.numkey
                 digitUnknowColor = .clear
             }
         }
@@ -478,10 +455,10 @@ class AppLockViewController: UIViewController {
         if nberOfDigits == 0 {
             buttonBackSpace.setTitleColor(.clear, for: .normal)
         } else {
-            var digitTitleColor = UIColor.piwigoColorRightLabel()
+            var digitTitleColor = PwgColor.rightLabel
             if wantedAction == .unlockApp, !UIAccessibility.isReduceTransparencyEnabled {
                 // Settings ▸ Accessibility ▸ Display & Text Size ▸ Reduce Transparency is disabled
-                digitTitleColor = UIColor.piwigoColorNumkey()
+                digitTitleColor = PwgColor.numkey
             }
             buttonBackSpace.setTitleColor(digitTitleColor, for: .normal)
         }
@@ -498,8 +475,6 @@ class AppLockViewController: UIViewController {
         }
         
         // If the device supports Core Haptics, exploit it.
-        if #available(iOS 13.0, *) {
-            HapticUtilities.playHapticsFile(named: "VerificationFailed")
-        }
+        HapticUtilities.playHapticsFile(named: "VerificationFailed")
     }
 }

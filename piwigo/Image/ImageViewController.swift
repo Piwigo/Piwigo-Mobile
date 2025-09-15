@@ -50,17 +50,12 @@ class ImageViewController: UIViewController {
 
     
     // MARK: - Navigation Bar & Toolbar Buttons
-    var actionBarButton: UIBarButtonItem?               // iPhone & iPad until iOS 13:
-                                                        // - for editing image properties
-                                                        // iPhone & iPad as from iOS 14:
-                                                        // - for copying or moving images to other albums
+    var actionBarButton: UIBarButtonItem?               // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
     lazy var backButton: UIBarButtonItem = {
         return UIBarButtonItem.backImageButton(target: self, action: #selector(returnToAlbum))
     }()
-    lazy var setThumbnailBarButton: UIBarButtonItem = getSetThumbnailBarButton()
-    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
@@ -106,14 +101,6 @@ class ImageViewController: UIViewController {
         // Update server statistics
         logImageVisitIfNeeded(imageData.pwgID)
 
-        // Navigation bar
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.tintColor = .piwigoColorOrange()
-        
-        // Toolbar
-        let toolbar = navigationController?.toolbar
-        toolbar?.tintColor = .piwigoColorOrange()
-
         // Single taps display/hide the navigation bar, toolbar and description
         let tapOnce = UITapGestureRecognizer(target: self, action: #selector(didTapOnce))
         tapOnce.numberOfTapsRequired = 1
@@ -135,6 +122,9 @@ class ImageViewController: UIViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
         // Register video player changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangePlaybackStatus),
                                                name: Notification.Name.pwgVideoPlaybackStatus, object: nil)
@@ -148,47 +138,15 @@ class ImageViewController: UIViewController {
         if navigationController?.isNavigationBarHidden ?? false {
             view.backgroundColor = .black
         } else {
-            view.backgroundColor = .piwigoColorBackground()
+            view.backgroundColor = PwgColor.background
         }
 
         // Navigation bar
-        let navigationBar = navigationController?.navigationBar
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        setTitleViewFromImageData()
 
         // Toolbar
-        let toolbar = navigationController?.toolbar
-        toolbar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationBar?.titleTextAttributes = attributes
-        setTitleViewFromImageData()
-        navigationBar?.prefersLargeTitles = false
-
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.shadowColor = AppVars.shared.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
-            navigationBar?.standardAppearance = barAppearance
-            navigationBar?.compactAppearance = barAppearance
-            navigationBar?.scrollEdgeAppearance = barAppearance
-
-            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.9)
-            toolbar?.standardAppearance = toolbarAppearance
-            toolbar?.compactAppearance = toolbarAppearance
-            if #available(iOS 15.0, *) {
-                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-                /// which by default produces a transparent background, to all navigation bars.
-                toolbar?.scrollEdgeAppearance = toolbarAppearance
-            }
-        } else {
-            navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
-            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
-        }
+        navigationController?.toolbar.configAppearance()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -235,33 +193,29 @@ class ImageViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
 
         // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
+        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
         }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         // Was this image displayed on the external screen?
-        if #available(iOS 13.0, *) {
-            var wantedRole: UISceneSession.Role!
-            if #available(iOS 16.0, *) {
-                wantedRole = .windowExternalDisplayNonInteractive
-            } else {
-                // Fallback on earlier versions
-                wantedRole = .windowExternalDisplay
-            }
-            let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
-            guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate
-                else { return }
-            
-            // Return to basic screen sharing
-            sceneDelegate.window?.windowScene = nil
+        var wantedRole: UISceneSession.Role!
+        if #available(iOS 16.0, *) {
+            wantedRole = .windowExternalDisplayNonInteractive
+        } else {
+            // Fallback on earlier versions
+            wantedRole = .windowExternalDisplay
         }
+        let scenes = UIApplication.shared.connectedScenes.filter({$0.session.role == wantedRole})
+        guard let sceneDelegate = scenes.first?.delegate as? ExternalDisplaySceneDelegate
+            else { return }
+        
+        // Return to basic screen sharing
+        sceneDelegate.window?.windowScene = nil
     }
     
     deinit {
@@ -444,8 +398,7 @@ class ImageViewController: UIViewController {
     @MainActor
     private func retrieveImageDataError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -464,10 +417,8 @@ class ImageViewController: UIViewController {
                 } failure: { [self] error in
                     // Session logout required?
                     DispatchQueue.main.async { [self] in
-                        if let pwgError = error as? PwgSessionError,
-                           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                            .contains(pwgError) {
-                            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                        if error.requiresLogout {
+                            ClearCache.closeSessionWithPwgError(from: self, error: error)
                             return
                         }
                     }
@@ -477,8 +428,7 @@ class ImageViewController: UIViewController {
         } failure: { [self] error in
             // Session logout required?
             DispatchQueue.main.async { [self] in
-                if let pwgError = error as? PwgSessionError,
-                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+                if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                     return
                 }
@@ -518,7 +468,7 @@ class ImageViewController: UIViewController {
         if navigationController?.isNavigationBarHidden ?? false {
             view.backgroundColor = .black
         } else {
-            view.backgroundColor = .piwigoColorBackground()
+            view.backgroundColor = PwgColor.background
         }
     }
     
@@ -541,12 +491,7 @@ class ImageViewController: UIViewController {
     
     // Display/hide status bar
     override var prefersStatusBarHidden: Bool {
-        let orientation: UIInterfaceOrientation
-        if #available(iOS 14, *) {
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         let phoneInLandscape = UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape
         return phoneInLandscape || navigationController?.isNavigationBarHidden ?? false
     }
@@ -557,6 +502,19 @@ class ImageViewController: UIViewController {
     }
 
     
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+            self.setTitleViewFromImageData()
+        }
+    }
+
+
     // MARK: - Push Views
     func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
         if UIDevice.current.userInterfaceIdiom == .pad

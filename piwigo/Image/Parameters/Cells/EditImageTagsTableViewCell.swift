@@ -37,7 +37,7 @@ class EditImageTagsTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         // Cell background
-        backgroundColor = .piwigoColorBackground()
+        backgroundColor = PwgColor.background
 
         // Cell label
         tagsLabel.text = NSLocalizedString("editImageDetails_tags", comment: "Tags")
@@ -48,7 +48,7 @@ class EditImageTagsTableViewCell: UITableViewCell {
 
     func config(withList tags: Set<Tag>, inColor color: UIColor?) {
         // Set colours
-        tagsLabel.textColor = UIColor.piwigoColorLeftLabel()
+        tagsLabel.textColor = PwgColor.leftLabel
         tagsList.textColor = color
 
         // Compile list of tags

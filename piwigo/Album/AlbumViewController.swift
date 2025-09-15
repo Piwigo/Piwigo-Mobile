@@ -68,29 +68,37 @@ class AlbumViewController: UIViewController
     // i.e. smaller than iPhone 16 Pro Max screen width (https://iosref.com/res)
     let minWidthForDefaultBackButton: CGFloat = 440.0
     // Bar buttons for root album
-    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()
+    lazy var settingsBarButton: UIBarButtonItem = getSettingsBarButton()            // before iOS 26
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
+    lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()            // since iOS 26
+    lazy var addImageBarButton: UIBarButtonItem = getAddImageBarButton()            // since iOS 26
+    lazy var uploadQueueBarButton: UIBarButtonItem? = getUploadQueueBarButton()     // since iOS 26
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
-    lazy var moveBarButton: UIBarButtonItem = getMoveBarButton()
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
     var shareBarButton: UIBarButtonItem?
     var favoriteBarButton: UIBarButtonItem?
-    // Bar button for image selection mode
+    // Bar buttons for image selection mode
     var selectBarButton: UIBarButtonItem?
     lazy var cancelBarButton: UIBarButtonItem = getCancelBarButton()
     
     
     // MARK: - Buttons
+    // Exclusively before iOS 26
     let kRadius: CGFloat = 25.0
     let kDeg2Rad: CGFloat = 3.141592654 / 180.0
     
     lazy var addButton: UIButton = getAddButton()
+    lazy var addButtonOrange: UIButton.Configuration = getAddButtonOrangeConfiguration()
+    lazy var addButtonGray: UIButton.Configuration = getAddButtonGrayConfiguration()
     lazy var uploadQueueButton: UIButton = getUploadQueueButton()
-    lazy var homeAlbumButton: UIButton = getHomeButton()
+    lazy var homeAlbumButton: UIButton = getHomeAlbumButton()
+    
+    lazy var createAlbumOrange:UIButton.Configuration = getCreateAlbumButtonConfiguration()
     lazy var createAlbumButton: UIButton = getCreateAlbumButton()
     var createAlbumAction: UIAlertAction!
     
+    lazy var uploadImagesOrange: UIButton.Configuration = getUploadImagesButtonConfiguration()
     lazy var uploadImagesButton: UIButton = getUploadImagesButton()
     lazy var progressLayer: CAShapeLayer = getProgressLayer()
     lazy var nberOfUploadsLabel: UILabel = getNberOfUploadsLabel()
@@ -114,13 +122,27 @@ class AlbumViewController: UIViewController
     // MARK: - Cached Values
     var timeCounter = CFAbsoluteTime(0)
     lazy var thumbSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
+    let defaultAlbumLabelsHeight: CGFloat = 50.0
+    lazy var albumLabelsHeight: CGFloat = defaultAlbumLabelsHeight
+    let defaultAlbumMaxWidth: CGFloat = 200.0
+    lazy var albumMaxWidth: CGFloat = defaultAlbumMaxWidth
+    let defaultOldAlbumHeight: CGFloat = 147.0
+    lazy var oldAlbumHeight: CGFloat = defaultOldAlbumHeight
     lazy var imageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+    let defaultImageHeaderHeight: CGFloat = 49.0
+    lazy var imageHeaderHeight: CGFloat = defaultImageHeaderHeight
     
     var updateOperations = [BlockOperation]()
     lazy var hasFavorites: Bool = {
         // pwg.users.favorites… methods available from Piwigo version 2.10
         return user.canManageFavorites()
     }()
+    
+    lazy var prefersLargeTitles: Bool = {
+        // Adopts large title only when showing the default album
+        return categoryId == AlbumVars.shared.defaultCategory
+    }()
+    
     
     // MARK: - Image Animated Transitioning
     // See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
@@ -162,14 +184,11 @@ class AlbumViewController: UIViewController
     
     
     // MARK: - Core Data Source
-    @available(iOS 13.0, *)
     typealias DataSource = UICollectionViewDiffableDataSource<String, NSManagedObjectID>
-    @available(iOS 13.0, *)
     typealias Snaphot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
     /// Stored properties cannot be marked potentially unavailable with '@available'.
     // "var diffableDataSource: DataSource!" replaced by below lines
     var _diffableDataSource: NSObject? = nil
-    @available(iOS 13.0, *)
     var diffableDataSource: DataSource {
         if _diffableDataSource == nil {
             _diffableDataSource = configDataSource()
@@ -251,6 +270,9 @@ class AlbumViewController: UIViewController
         debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
         
+        // Initialise album width and height
+        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
+        
         // Register classes before using them
         collectionView?.isPrefetchingEnabled = true
         collectionView?.register(UINib(nibName: "AlbumHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeaderReusableView")
@@ -258,7 +280,6 @@ class AlbumViewController: UIViewController
         collectionView?.register(AlbumCollectionViewCellOld.self, forCellWithReuseIdentifier: "AlbumCollectionViewCellOld")
         collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ImageCollectionViewCell")
         collectionView?.register(UINib(nibName: "ImageHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageHeaderReusableView")
-        collectionView?.register(UINib(nibName: "ImageOldHeaderReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ImageOldHeaderReusableView")
         collectionView?.register(ImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "ImageFooterReusableView")
         
         // Initialise "no album / no photo" label
@@ -269,17 +290,23 @@ class AlbumViewController: UIViewController
         }
 
         // Add buttons above table view and other buttons
-        view.insertSubview(addButton, aboveSubview: collectionView)
-        uploadQueueButton.layer.addSublayer(progressLayer)
-        uploadQueueButton.addSubview(nberOfUploadsLabel)
-        view.insertSubview(uploadQueueButton, belowSubview: addButton)
-        view.insertSubview(homeAlbumButton, belowSubview: addButton)
-        view.insertSubview(createAlbumButton, belowSubview: addButton)
-        view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        if #unavailable(iOS 26.0) {
+            view.insertSubview(addButton, aboveSubview: collectionView)
+            uploadQueueButton.layer.addSublayer(progressLayer)
+            uploadQueueButton.addSubview(nberOfUploadsLabel)
+            view.insertSubview(uploadQueueButton, belowSubview: addButton)
+            view.insertSubview(homeAlbumButton, belowSubview: addButton)
+            view.insertSubview(createAlbumButton, belowSubview: addButton)
+            view.insertSubview(uploadImagesButton, belowSubview: addButton)
+        }
         
         // Sticky section headers
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.sectionHeadersPinToVisibleBounds = true
+            if #available(iOS 26.0, *) {
+                layout.sectionHeadersPinToVisibleBounds = false
+            } else {
+                layout.sectionHeadersPinToVisibleBounds = true
+            }
         }
         
         // Refresh view
@@ -288,13 +315,9 @@ class AlbumViewController: UIViewController
         collectionView?.refreshControl = refreshControl
         
         // Initialise dataSource
-        if #available(iOS 13.0, *) {
-            _diffableDataSource = configDataSource()
-        } else {
-            // Fallback on earlier versions
-        }
+        _diffableDataSource = configDataSource()
         
-        // Fetch data (setting up the initial snapshot on iOS 13+)
+        // Fetch data, setting up the initial snapshot
         do {
             if categoryId >= Int32.zero {
                 try albums.performFetch()
@@ -313,75 +336,81 @@ class AlbumViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
-        noAlbumLabel.textColor = UIColor.piwigoColorHeader()
+        view.backgroundColor = PwgColor.background
+        noAlbumLabel.textColor = PwgColor.header
         
-        // Navigation bar title
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
         setTitleViewFromAlbumData()
-        navigationController?.navigationBar.prefersLargeTitles = (categoryId == AlbumVars.shared.defaultCategory)
         
-        // Buttons appearance
-        addButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        
-        createAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadImagesButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        
-        uploadQueueButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        uploadQueueButton.backgroundColor = UIColor.piwigoColorRightLabel()
-        nberOfUploadsLabel.textColor = UIColor.piwigoColorBackground()
-        progressLayer.strokeColor = UIColor.piwigoColorBackground().cgColor
-        
-        homeAlbumButton.layer.shadowColor = UIColor.piwigoColorShadow().cgColor
-        homeAlbumButton.backgroundColor = UIColor.piwigoColorRightLabel()
-        homeAlbumButton.tintColor = UIColor.piwigoColorBackground()
-        
-        if AppVars.shared.isDarkPaletteActive {
-            addButton.layer.shadowRadius = 1.0
-            addButton.layer.shadowOffset = CGSize.zero
+        // Search bar
+        if categoryId == 0 {
+            if let searchBar = searchController?.searchBar {
+                searchBar.configAppearance()
+                let placeholder = searchBar.searchTextField.attributedPlaceholder ?? NSAttributedString(string: "")
+                let newPlaceholder = NSMutableAttributedString(attributedString: placeholder)
+                let wholeRange = NSRange(location: 0, length: placeholder.length)
+                let attributes = [
+                    NSAttributedString.Key.foregroundColor: PwgColor.rightLabel
+                ]
+                newPlaceholder.addAttributes(attributes, range: wholeRange)
+                searchBar.searchTextField.attributedPlaceholder = newPlaceholder
+            }
+        }
+
+        // Buttons
+        if #unavailable(iOS 26.0) {
+            addButton.layer.shadowColor = PwgColor.shadow.cgColor
+            createAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
+            uploadImagesButton.layer.shadowColor = PwgColor.shadow.cgColor
+            uploadQueueButton.layer.shadowColor = PwgColor.shadow.cgColor
+            uploadQueueButton.configuration = getUploadQueueButtonConfiguration()
+            nberOfUploadsLabel.textColor = PwgColor.background
+            progressLayer.strokeColor = PwgColor.background.cgColor
+            homeAlbumButton.configuration = getHomeAlbumConfiguration()
+            homeAlbumButton.layer.shadowColor = PwgColor.shadow.cgColor
             
-            createAlbumButton.layer.shadowRadius = 1.0
-            createAlbumButton.layer.shadowOffset = CGSize.zero
-            uploadImagesButton.layer.shadowRadius = 1.0
-            uploadImagesButton.layer.shadowOffset = CGSize.zero
-            
-            uploadQueueButton.layer.shadowRadius = 1.0
-            uploadQueueButton.layer.shadowOffset = CGSize.zero
-            
-            homeAlbumButton.layer.shadowRadius = 1.0
-            homeAlbumButton.layer.shadowOffset = CGSize.zero
-        } else {
-            addButton.layer.shadowRadius = 3.0
-            addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            
-            createAlbumButton.layer.shadowRadius = 3.0
-            createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            uploadImagesButton.layer.shadowRadius = 3.0
-            uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            
-            uploadQueueButton.layer.shadowRadius = 3.0
-            uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
-            
-            homeAlbumButton.layer.shadowRadius = 3.0
-            homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            if AppVars.shared.isDarkPaletteActive {
+                addButton.layer.shadowRadius = 1.0
+                addButton.layer.shadowOffset = CGSize.zero
+                createAlbumButton.layer.shadowRadius = 1.0
+                createAlbumButton.layer.shadowOffset = CGSize.zero
+                uploadImagesButton.layer.shadowRadius = 1.0
+                uploadImagesButton.layer.shadowOffset = CGSize.zero
+                uploadQueueButton.layer.shadowRadius = 1.0
+                uploadQueueButton.layer.shadowOffset = CGSize.zero
+                homeAlbumButton.layer.shadowRadius = 1.0
+                homeAlbumButton.layer.shadowOffset = CGSize.zero
+            } else {
+                addButton.layer.shadowRadius = 3.0
+                addButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                createAlbumButton.layer.shadowRadius = 3.0
+                createAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                uploadImagesButton.layer.shadowRadius = 3.0
+                uploadImagesButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                uploadQueueButton.layer.shadowRadius = 3.0
+                uploadQueueButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+                homeAlbumButton.layer.shadowRadius = 3.0
+                homeAlbumButton.layer.shadowOffset = CGSize(width: 0.0, height: 0.5)
+            }
         }
         
         // Collection view
-        collectionView?.backgroundColor = UIColor.piwigoColorBackground()
+        collectionView?.backgroundColor = PwgColor.background
         collectionView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader) ?? []).forEach { header in
             if let header = header as? AlbumHeaderReusableView {
                 header.applyColorPalette()
             }
             else if let header = header as? ImageHeaderReusableView {
-                header.applyColorPalette()
-                header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
-            }
-            else if let header = header as? ImageOldHeaderReusableView {
                 header.applyColorPalette()
                 header.selectButton.setTitle(forState: selectedSections[header.section] ?? .none)
             }
@@ -399,15 +428,15 @@ class AlbumViewController: UIViewController
         }
         (collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter) ?? []).forEach { footer in
             if let footer = footer as? ImageFooterReusableView {
-                footer.nberImagesLabel?.textColor = UIColor.piwigoColorHeader()
+                footer.nberImagesLabel?.textColor = PwgColor.header
             }
         }
         
         // Refresh controller
-        collectionView?.refreshControl?.backgroundColor = UIColor.piwigoColorBackground()
-        collectionView?.refreshControl?.tintColor = UIColor.piwigoColorHeader()
+        collectionView?.refreshControl?.backgroundColor = PwgColor.background
+        collectionView?.refreshControl?.tintColor = PwgColor.header
         let attributesRefresh = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorHeader(),
+            NSAttributedString.Key.foregroundColor: PwgColor.header,
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .light)
         ]
         collectionView?.refreshControl?.attributedTitle = NSAttributedString(string: NSLocalizedString("pullToRefresh", comment: "Reload Photos"), attributes: attributesRefresh)
@@ -423,22 +452,21 @@ class AlbumViewController: UIViewController
         // Always open this view with a navigation bar
         // (might have been hidden during Image Previewing)
         navigationController?.setNavigationBarHidden(false, animated: true)
-        
+        navigationItem.largeTitleDisplayMode = prefersLargeTitles ? .always : .never
+        navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
+
         // Set navigation bar and buttons
         initBarsInPreviewMode()
-        initButtons()
-        updateButtons()
+        if #unavailable(iOS 26.0) {
+            relocateButtons()
+            updateButtons()
+        }
         
         // Should we reload the collection view?
-        switch AlbumVars.shared.displayAlbumDescriptions {
-        case true:
-            if collectionView.visibleCells.first is AlbumCollectionViewCell {
-                collectionView?.reloadData()
-            }
-        case false:
-            if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
-                collectionView?.reloadData()
-            }
+        if collectionView.visibleCells.first is AlbumCollectionViewCell {
+            collectionView?.reloadData()
+        } else if collectionView.visibleCells.first is AlbumCollectionViewCellOld {
+            collectionView?.reloadData()
         }
         
         // Set colors, fonts, etc. and title view
@@ -504,18 +532,6 @@ class AlbumViewController: UIViewController
             revealImageOfInteret()
         }
         
-        // Inform user why the app crashed at start
-        if CacheVars.shared.couldNotMigrateCoreDataStore {
-            dismissPiwigoError(
-                withTitle: NSLocalizedString("CoreDataStore_WarningTitle", comment: "Warning"),
-                message: NSLocalizedString("CoreDataStore_WarningMessage", comment: "A serious application error occurred…"),
-                errorMessage: "") {
-                    // Reset flag
-                    CacheVars.shared.couldNotMigrateCoreDataStore = false
-                }
-            return
-        }
-        
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
@@ -530,19 +546,35 @@ class AlbumViewController: UIViewController
                 let whatsNewSB = UIStoryboard(name: "WhatsNewViewController", bundle: nil)
                 guard let whatsNewVC = whatsNewSB.instantiateViewController(withIdentifier: "WhatsNewViewController") as? WhatsNewViewController 
                 else { preconditionFailure("Could not load WhatsNewViewController") }
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    whatsNewVC.popoverPresentationController?.permittedArrowDirections = .up
+                if view.traitCollection.userInterfaceIdiom == .phone {
+                    whatsNewVC.modalPresentationStyle = .pageSheet
+                    whatsNewVC.isModalInPresentation = true
+                    if let sheet = whatsNewVC.sheetPresentationController {
+                        sheet.detents = [.medium(), .large()]
+                        sheet.selectedDetentIdentifier = .medium
+                        sheet.prefersGrabberVisible = true
+                        sheet.preferredCornerRadius = 40
+                    }
                     present(whatsNewVC, animated: true)
-                } else {
+                }
+                else {
                     whatsNewVC.modalTransitionStyle = .coverVertical
-                    whatsNewVC.modalPresentationStyle = .formSheet
-                    let mainScreenBounds = UIScreen.main.bounds
+                    whatsNewVC.modalPresentationStyle = .pageSheet
+                    whatsNewVC.isModalInPresentation = true
+                    let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
+                    if let sheet = whatsNewVC.sheetPresentationController {
+                        sheet.detents = [.medium(), .large()]
+                        if orientation == .landscapeLeft || orientation == .landscapeRight {
+                            sheet.selectedDetentIdentifier = .large
+                        } else {
+                            sheet.selectedDetentIdentifier = .medium
+                        }
+                        sheet.prefersGrabberVisible = false
+                        sheet.preferredCornerRadius = 40
+                    }
                     whatsNewVC.popoverPresentationController?.sourceRect = CGRect(
-                        x: mainScreenBounds.midX, y: mainScreenBounds.midY,
+                        x: view.bounds.midX, y: view.bounds.midY,
                         width: 0, height: 0)
-                    whatsNewVC.preferredContentSize = CGSize(
-                        width: pwgPadSettingsWidth,
-                        height: ceil(CGFloat(mainScreenBounds.size.height) * 2 / 3))
                     present(whatsNewVC, animated: true)
                 }
                 return
@@ -568,8 +600,7 @@ class AlbumViewController: UIViewController
             if (AppVars.shared.didWatchHelpViews & 0b00000000_00000100) == 0 {
                 displayHelpPagesWithID.append(3) // i.e. management of albums w/ description
             }
-            if #available(iOS 13, *),
-               (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
+            if (AppVars.shared.didWatchHelpViews & 0b00000001_00000000) == 0 {
                 displayHelpPagesWithID.append(9) // i.e. management of albums w/o description
             }
         }
@@ -638,44 +669,34 @@ class AlbumViewController: UIViewController
             switch index {
             case 0: // Root album
                 // Update position of buttons (recalculated after device rotation)
-                addButton.frame = getAddButtonFrame()
-                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                if #unavailable(iOS 26.0) {
+                    addButton.frame = getAddButtonFrame()
+                    createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                    uploadQueueButton.frame = getUploadQueueButtonFrame(isHidden: uploadQueueButton.isHidden)
+                }
 
             case children.count - 2: // Parent of displayed album
                 // Update position of buttons (recalculated after device rotation)
-                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
-                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
-                
-                // Reset title and back button
-                if #available(iOS 14.0, *) {
-                    setTitleViewFromAlbumData() // with or without update info below the name
-                    navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
-                } else {
-                    // Fallback on earlier versions
-                    if size.width <= minWidthForDefaultBackButton, title?.count ?? 0 > 10 {
-                        // Will reset back button item
-                        title = nil
-                    } else {
-                        setTitleViewFromAlbumData()
-                    }
+                if #unavailable(iOS 26.0) {
+                    homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                    createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                    uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
                 }
-                
-            default: // Other albums including the visible one
-                // Update position of buttons (recalculated after device rotation)
-                addButton.frame = getAddButtonFrame()
-                homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
-                createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
-                uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
                 
                 // Reset title and back button
                 setTitleViewFromAlbumData() // with or without update info below the name
-                if #available(iOS 14.0, *) {
-                    navigationItem.backButtonDisplayMode = size.width > minWidthForDefaultBackButton ? .default : .generic
-                } else {
-                    // Fallback on earlier versions
+                
+            default: // Other albums including the visible one
+                // Update position of buttons (recalculated after device rotation)
+                if #unavailable(iOS 26.0) {
+                    addButton.frame = getAddButtonFrame()
+                    homeAlbumButton.frame = getHomeAlbumButtonFrame(isHidden: homeAlbumButton.isHidden)
+                    createAlbumButton.frame = getCreateAlbumButtonFrame(isHidden: createAlbumButton.isHidden)
+                    uploadImagesButton.frame = getUploadImagesButtonFrame(isHidden: uploadImagesButton.isHidden)
                 }
+                
+                // Reset title and back button
+                setTitleViewFromAlbumData() // with or without update info below the name
             }
         })
     }
@@ -683,14 +704,12 @@ class AlbumViewController: UIViewController
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        // Should we update user interface based on the appearance?
-        if #available(iOS 13.0, *) {
-            let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
-                AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                appDelegate?.screenBrightnessChanged()
-            }
+        // Should we update the user interface based on the appearance?
+        let isSystemDarkModeActive = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        if AppVars.shared.isSystemDarkModeActive != isSystemDarkModeActive {
+            AppVars.shared.isSystemDarkModeActive = isSystemDarkModeActive
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
         }
     }
     
@@ -698,17 +717,6 @@ class AlbumViewController: UIViewController
         super.viewWillDisappear(animated)
         debugPrint("••> viewWillDisappear — Album #\(categoryId): \(albumData.name)")
 
-        // Keep title small when the screen width is small
-        if #available(iOS 14.0, *) {
-            // backButtonDisplayMode already set
-        } else {
-            // Fallback on earlier versions
-            if view.bounds.size.width <= minWidthForDefaultBackButton, title?.count ?? 0 > 10 {
-                // Will reset back button item
-                title = nil
-            }
-        }
-        
         // Cancel remaining tasks
         let catIDstr = String(self.categoryId)
         PwgSession.shared.dataSession.getAllTasks { tasks in
@@ -723,7 +731,9 @@ class AlbumViewController: UIViewController
         }
         
         // Hide upload button during transition
-        addButton.isHidden = true
+        if #unavailable(iOS 26.0) {
+            addButton.isHidden = true
+        }
         
         // Hide HUD if still presented
         self.navigationController?.hideHUD { }
@@ -734,7 +744,9 @@ class AlbumViewController: UIViewController
         debugPrint("••> viewDidDisappear — Album #\(categoryId): \(albumData.name)")
 
         // Make sure buttons are back to initial state
-        didCancelTapAddButton()
+        if #unavailable(iOS 26.0) {
+            didCancelTapAddButton()
+        }
     }
     
     deinit {
@@ -771,7 +783,9 @@ class AlbumViewController: UIViewController
         
         // Reset buttons and menus
         initBarsInPreviewMode()
-        updateBarsInPreviewMode()
+        if #unavailable(iOS 26.0) {
+            updateBarsInPreviewMode()
+        }
         setTitleViewFromAlbumData()
     }
     
@@ -797,9 +811,11 @@ class AlbumViewController: UIViewController
         }
         
         // Fetch album data and then image data
-        PwgSession.checkSession(ofUser: self.user, systematically: true) { [self] in
-            self.fetchAlbumsAndImages { [self] in
-                self.fetchCompleted()
+        PwgSession.checkSession(ofUser: self.user) { [self] in
+            DispatchQueue.main.async { [self] in
+                self.fetchAlbumsAndImages { [self] in
+                    self.fetchCompleted()
+                }
             }
         } failure: { [self] error in
             DispatchQueue.main.async { [self] in
@@ -807,9 +823,7 @@ class AlbumViewController: UIViewController
                 self.collectionView?.refreshControl?.endRefreshing()
                 
                 // Session logout required?
-                if let pwgError = error as? PwgSessionError,
-                   [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-                    .contains(pwgError) {
+                if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
                     ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                     return
                 }
@@ -827,6 +841,8 @@ class AlbumViewController: UIViewController
         // Already being fetching album data?
         if AlbumVars.shared.isFetchingAlbumData.intersection([0, categoryId]).isEmpty == false {
             debugPrint("••> Still fetching data in albums with IDs: \(AlbumVars.shared.isFetchingAlbumData.debugDescription) (wanted \(categoryId))")
+            // End animated refresh if needed
+            self.collectionView?.refreshControl?.endRefreshing()
             return
         }
         
@@ -887,42 +903,166 @@ class AlbumViewController: UIViewController
     }
 
 
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply new content size
+        guard let info = notification.userInfo,
+              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+        else { return }
+        updateContentSizes(for: contentSizeCategory)
+        
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            // Invalidate layout to recalculate cell sizes
+            self.collectionView.collectionViewLayout.invalidateLayout()
+            
+            // Reload visible cells, headers, and footers
+            self.collectionView.reloadData()
+            
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: prefersLargeTitles)
+            self.setTitleViewFromAlbumData()
+        }
+    }
+    
+    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
+        // Set cell size according to the selected category
+        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
+        switch contentSizeCategory {
+        case .extraSmall:
+            // Album w/o description: Headline 14 pnts + Footnote 12 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight - 3.0 - 1.0
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 14 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
+            oldAlbumHeight = defaultOldAlbumHeight - 3.0 - 4 * 1.0 - 0.0
+            // Image section header height: Subhead 12 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 3.0 - 1.0
+        case .small:
+            // Album w/o description: Headline 15 pnts + Footnote 12 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight - 2.0 - 1.0
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 15 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
+            oldAlbumHeight = defaultOldAlbumHeight - 2.0 - 4 * 1.0 - 0.0
+            // Image section header height: Subhead 13 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 2.0 - 1.0
+        case .medium:
+            // Album w/o description: Headline 16 pnts + Footnote 12 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight - 1.0 - 1.0
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 16 pnts + 4x Footnote 12 pnts + Caption2 11 pnts
+            oldAlbumHeight = defaultOldAlbumHeight - 1.0 - 4 * 1.0 - 0.0
+            // Image section header height: Subhead 14 pnts + Footnote 12 pnts
+            imageHeaderHeight = defaultImageHeaderHeight - 1.0 - 1.0
+        case .large:    // default style
+            // Album w/o description: Headline 17 pnts + Footnote 13 pnts (see XIB)
+            albumLabelsHeight = defaultAlbumLabelsHeight
+            albumMaxWidth = defaultAlbumMaxWidth
+            // Album w/ description: Headline 17 pnts + 4x Footnote 13 pnts + Caption2 11 pnts (see XIB)
+            oldAlbumHeight = defaultOldAlbumHeight
+            // Image section header height: Subhead 15 pnts + Footnote 13 pnts
+            imageHeaderHeight = defaultImageHeaderHeight
+        case .extraLarge:
+            // Album w/o description: Headline 19 pnts + Footnote 15 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 2.0 + 2.0
+            albumMaxWidth = defaultAlbumMaxWidth + 16.0
+            // Album w/ description: Headline 19 pnts + 4x Footnote 15 pnts + Caption2 13 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 2.0 + 4 * 2.0 + 2.0
+            // Image section header height: Subhead 17 pnts + Footnote 15 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 2.0 + 2.0
+        case .extraExtraLarge:
+            // Album w/o description: Headline 21 pnts + Footnote 17 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 4.0 + 4.0
+            albumMaxWidth = defaultAlbumMaxWidth + 32.0
+            // Album w/ description: Headline 21 pnts + 4x Footnote 17 pnts + Caption2 15 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 4.0 + 4 * 4.0 + 4.0
+            // Image section header height: Subhead 19 pnts + Footnote 17 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 4.0 + 4.0
+        case .extraExtraExtraLarge:
+            // Album w/o description: Headline 23 pnts + Footnote 19 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 6.0 + 6.0
+            albumMaxWidth = defaultAlbumMaxWidth + 48.0
+            // Album w/ description: Headline 23 pnts + 4x Footnote 19 pnts + Caption2 17 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 6.0 + 4 * 6.0 + 6.0
+            // Image section header height: Subhead 21 pnts + Footnote 19 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 6.0 + 6.0
+        case .accessibilityMedium:
+            // Album w/o description: Headline 28 pnts + Footnote 23 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 11.0 + 10.0
+            albumMaxWidth = defaultAlbumMaxWidth + 84.0
+            // Album w/ description: Headline 28 pnts + 4x Footnote 23 pnts + Caption2 20 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 11.0 + 4 * 10.0 + 9.0
+            // Image section header height: Subhead 25 pnts + Footnote 23 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 10.0 - 17.0
+        case .accessibilityLarge:
+            // Album w/o description: Headline 33 pnts + Footnote 27 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 16.0 + 14.0
+            albumMaxWidth = defaultAlbumMaxWidth + 120.0
+            // Album w/ description: Headline 33 pnts + 4x Footnote 27 pnts + Caption2 24 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 16.0 + 4 * 14.0 + 13.0
+            // Image section header height: Subhead 30 pnts + Footnote 27 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 15.0 - 17.0
+        case .accessibilityExtraLarge:
+            // Album w/o description: Headline 40 pnts + Footnote 33 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 23.0 + 20.0
+            albumMaxWidth = defaultAlbumMaxWidth + 172.0
+            // Album w/ description: Headline 40 pnts + 4x Footnote 33 pnts + Caption2 29 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 23.0 + 4 * 20.0 + 18.0
+            // Image section header height: Subhead 36 pnts + Footnote 33 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 21.0 - 17.0
+        case .accessibilityExtraExtraLarge:
+            // Album w/o description: Headline 47 pnts + Footnote 38 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 30.0 + 25.0
+            albumMaxWidth = defaultAlbumMaxWidth + 220.0
+            // Album w/ description: Headline 47 pnts + 4x Footnote 38 pnts + Caption2 34 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 30.0 + 4 * 25.0 + 23.0
+            // Image section header height: Subhead 42 pnts + Footnote 38 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 27.0 - 17.0
+        case .accessibilityExtraExtraExtraLarge:
+            // Album w/o description: Headline 53 pnts + Footnote 44 pnts
+            albumLabelsHeight = defaultAlbumLabelsHeight + 36.0 + 31.0
+            albumMaxWidth = defaultAlbumMaxWidth + 268.0
+            // Album w/ description: Headline 53 pnts + 4x Footnote 44 pnts + Caption2 40 pnts
+            oldAlbumHeight = defaultOldAlbumHeight + 36.0 + 4 * 31.0 + 29.0
+            // Image section header height: Subhead 49 pnts + Footnote 44 pnts
+            imageHeaderHeight = defaultImageHeaderHeight + 34.0 - 17.0
+        case .unspecified:
+            fallthrough
+        default:
+            albumLabelsHeight = defaultAlbumLabelsHeight
+            albumMaxWidth = defaultAlbumMaxWidth
+            oldAlbumHeight = defaultOldAlbumHeight
+            imageHeaderHeight = defaultImageHeaderHeight
+        }
+    }
+    
+
     // MARK: - Utilities
     func nberOfAlbums() -> Int {
         var nberOfAlbums = Int.zero
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
-                nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
-            }
-        } else {
-            // Fallback on earlier versions
-            nberOfAlbums = (albums.fetchedObjects ?? []).count
+        let snapshot = diffableDataSource.snapshot() as Snaphot
+        if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+            nberOfAlbums = snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
         return nberOfAlbums
     }
     
     func nberOfImages() -> Int {
-        var nberOfImages = Int.zero
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            nberOfImages = diffableDataSource.snapshot().numberOfItems
-            if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
-                nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
-            }
-        } else {
-            // Fallback on earlier versions
-            nberOfImages = (images.fetchedObjects ?? []).count
+        let snapshot = diffableDataSource.snapshot() as Snaphot
+        var nberOfImages = diffableDataSource.snapshot().numberOfItems
+        if let _ = snapshot.indexOfSection(pwgAlbumGroup.none.sectionKey) {
+            nberOfImages -= snapshot.numberOfItems(inSection: pwgAlbumGroup.none.sectionKey)
         }
         return nberOfImages
     }
     
     @objc func setTableViewMainHeader() {
-        // Update table header only if being displayed
-//        if albumImageTableView?.window == nil { return }
+        // May be called by the notification center
 //        DispatchQueue.main.async { [self] in
+//            if albumImageTableView?.window == nil { return }
 //            // Any upload request in the queue?
-//              if UploadVars.shared.shared.nberOfUploadsToComplete == 0 {
+//            if UploadVars.shared.shared.nberOfUploadsToComplete == 0 {
 //                albumImageTableView.tableHeaderView = nil
 //                UIApplication.shared.isIdleTimerDisabled = false
 //            }
@@ -957,11 +1097,7 @@ class AlbumViewController: UIViewController
         if UIDevice.current.userInterfaceIdiom == .pad {
             viewController.modalPresentationStyle = .popover
             if viewController is SelectCategoryViewController {
-                if #available(iOS 14.0, *) {
-                    viewController.popoverPresentationController?.barButtonItem = actionBarButton
-                } else {
-                    viewController.popoverPresentationController?.barButtonItem = moveBarButton
-                }
+                viewController.popoverPresentationController?.barButtonItem = actionBarButton
                 viewController.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(viewController, animated: true)
             }

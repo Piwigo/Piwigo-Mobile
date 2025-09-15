@@ -12,7 +12,6 @@ import Photos
 import piwigoKit
 import uploadKit
 
-@available(iOS 14.0, *)
 class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
 
     // MARK: - Core Data Object Contexts
@@ -106,7 +105,8 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 
                 // Error encountered…
                 DispatchQueue.main.async {
-                    let errorMsg = String(format: "%@: %@", NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), error.localizedDescription)
+                    let msg = PwgKitError.uploadCreationError.localizedDescription
+                    let errorMsg = String(format: "%@: %@", msg, error.localizedDescription)
                     completion(AutoUploadIntentResponse.failure(error: errorMsg))
                 }
             }

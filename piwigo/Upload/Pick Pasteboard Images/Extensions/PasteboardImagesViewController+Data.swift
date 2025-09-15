@@ -41,7 +41,7 @@ extension PasteboardImagesViewController {
                 let indexSet = IndexSet(integer: idx)
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
-                if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
+                if UIPasteboard.general.contains(pasteboardTypes: [UTType.movie.identifier], inItemSet: indexSet) {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
                                         pbDateTime, UploadManager.shared.kMovieSuffix, idx)
                 } else {
@@ -75,7 +75,8 @@ extension PasteboardImagesViewController {
         }
 
         // Create an instance of the preparation method
-        let preparer = ObjectPreparation(pbObject, at: indexPath.item)
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+        let preparer = ObjectPreparation(pbObject, at: indexPath.item, scale: scale)
       
         // Refresh the thumbnail of the cell and update upload cache
         preparer.completionBlock = {

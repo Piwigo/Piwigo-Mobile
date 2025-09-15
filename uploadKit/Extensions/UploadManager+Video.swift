@@ -82,14 +82,14 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: upload, error)
                 return
             }
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: upload, error)
                 return
             }
@@ -114,33 +114,21 @@ extension UploadManager {
             
             // Get MIME type
             let fileExt = originalFileURL.pathExtension.lowercased()
-            if #available(iOS 14, *) {
-                guard let uti = UTType(filenameExtension: fileExt),
-                      let mimeType = uti.preferredMIMEType
-                else {
-                    let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.didPrepareVideo(for: upload, error)
-                    return
-                }
-                upload.mimeType = mimeType
-            } else {
-                // Fallback on previous version
-                guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue(),
-                      let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String?
-                else {
-                    let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.didPrepareVideo(for: upload, error)
-                    return
-                }
-                upload.mimeType = mimeType
+            guard let uti = UTType(filenameExtension: fileExt),
+                  let mimeType = uti.preferredMIMEType
+            else {
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
+                self.didPrepareVideo(for: upload, error)
+                return
             }
+            upload.mimeType = mimeType
 
             // Prepare URL of temporary file
             let fileURL = self.getUploadFileURL(from: upload, deleted: true)
 
             // Determine MD5 checksum
             let error: Error?
-            (upload.md5Sum, error) = originalFileURL.MD5checksum()
+            (upload.md5Sum, error) = originalFileURL.MD5checksum
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: upload, error)
@@ -176,15 +164,13 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
                 return
             }
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
                 return
             }
 
@@ -247,7 +233,8 @@ extension UploadManager {
 //                let imageBeingUploaded = self.imageUploadQueue.first as? ImageUpload
 //                if error != nil {
 //                    // Inform user and propose to cancel or continue
-//                    self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_iCloud", comment: "Could not retrieve video. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
+//                    self.showError(withTitle: "Video Upload Error",
+//                                   andMessage: error?.localizedDescription, forRetrying: true, withImage: image)
 //                    return
 //                } else if imageBeingUploaded?.stopUpload != nil {
 //                    // User wants to cancel the download
@@ -338,8 +325,7 @@ extension UploadManager {
     private func checkVideoExportability(of originalVideo: AVAsset, for upload: Upload) {
         // We cannot convert the video if it is not exportable
         if !originalVideo.isExportable {
-            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
-            didPrepareVideo(for: upload, error)
+            didPrepareVideo(for: upload, UploadKitError.cannotStripPrivateMetadata)
             return
         }
         else {
@@ -394,7 +380,7 @@ extension UploadManager {
             // Get export session
             guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                            presetName: exportPreset) else {
-                didPrepareVideo(for: upload, UploadError.missingAsset)
+                didPrepareVideo(for: upload, PwgKitError.missingAsset)
                 return
             }
             
@@ -451,9 +437,10 @@ extension UploadManager {
                     do {
                         try FileManager.default.removeItem(at: exportSession.outputURL!)
                     } catch {
+                        
                     }
                     // Report error
-                    self.didPrepareVideo(for: upload, UploadError.missingAsset)
+                    self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
                     return
                 }
 

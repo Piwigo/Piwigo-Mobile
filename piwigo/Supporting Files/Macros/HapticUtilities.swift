@@ -12,8 +12,7 @@ import AVFoundation
 import CoreHaptics
 import Foundation
 
-@available(iOS 13.0, *)
-class HapticUtilities {
+final class HapticUtilities {
     
     // A haptic engine manages the connection to the haptic server.
     @MainActor

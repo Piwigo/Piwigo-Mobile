@@ -15,116 +15,54 @@ extension AlbumViewController: UICollectionViewDelegate
 {
     // MARK: - Present Album or Image
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if #available(iOS 13.0, *) {
-            // Retrieve object ID
-            guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath)
-            else { return }
-            
-            // Album or image?
-            if let album = try? self.mainContext.existingObject(with: objectID) as? Album {
-                // Push new album view
-                let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
-                guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
-                else { preconditionFailure("Could not load AlbumViewController") }
-                subAlbumVC.categoryId = album.pwgID
-                pushAlbumView(subAlbumVC, completion: {_ in })
-            }
-            else if let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
-                // Action depends on mode
-                if inSelectionMode {
-                    // Check image ID
-                    guard let imageData = selectedCell.imageData,
-                          imageData.pwgID != 0
-                    else { return }
-                    
-                    // Selection mode active => add/remove image from selection
-                    if !selectedImageIDs.contains(imageData.pwgID) {
-                        selectImage(imageData, isFavorite: selectedCell.isFavorite)
-                        selectedCell.isSelection = true
-                    } else {
-                        deselectImages(withIDs: Set([imageData.pwgID]))
-                        selectedCell.isSelection = false
-                    }
-                    
-                    // Update nav buttons
-                    updateBarsInSelectMode()
-                    
-                    // Update state of Select button if needed
-                    let selectState = updateSelectButton(ofSection: indexPath.section)
-                    let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
-                    if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageHeaderReusableView {
-                        header.selectButton.setTitle(forState: selectState)
-                    }
-                    else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageOldHeaderReusableView {
-                        header.selectButton.setTitle(forState: selectState)
-                    }
-                    return
-                }
-                
-                // Add category ID to list of recently used albums
-                let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
-                NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
-                
-                // Selection mode not active => display full screen image
-                presentImage(ofCell: selectedCell, at: indexPath, animated: true)
-            }
+        // Retrieve object ID
+        guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath)
+        else { return }
+        
+        // Album or image?
+        if let album = try? self.mainContext.existingObject(with: objectID) as? Album {
+            // Push new album view
+            let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
+            guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
+            else { preconditionFailure("Could not load AlbumViewController") }
+            subAlbumVC.categoryId = album.pwgID
+            pushAlbumView(subAlbumVC, completion: {_ in })
         }
-        else {
-            // Fallback on earlier versions
-            switch indexPath.section {
-            case 0 /* Albums */:
-                // Push new album view
-                let albumData = albums.object(at: indexPath)
-                let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
-                guard let subAlbumVC = albumSB.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
-                else { preconditionFailure("Could not load AlbumViewController") }
-                subAlbumVC.categoryId = albumData.pwgID
-                pushAlbumView(subAlbumVC, completion: {_ in })
-                
-            default /* Images */:
-                // Check data
-                guard let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell,
-                      indexPath.item >= 0, indexPath.item < nberOfImages()
+        else if let selectedCell = collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+            // Action depends on mode
+            if inSelectionMode {
+                // Check image ID
+                guard let imageData = selectedCell.imageData,
+                      imageData.pwgID != 0
                 else { return }
                 
-                // Action depends on mode
-                if inSelectionMode {
-                    // Check image ID
-                    guard let imageData = selectedCell.imageData,
-                          imageData.pwgID != 0
-                    else { return }
-                    
-                    // Selection mode active => add/remove image from selection
-                    if !selectedImageIDs.contains(imageData.pwgID) {
-                        selectImage(imageData, isFavorite: selectedCell.isFavorite)
-                        selectedCell.isSelection = true
-                    } else {
-                        deselectImages(withIDs: Set([imageData.pwgID]))
-                        selectedCell.isSelection = false
-                    }
-                    
-                    // Update nav buttons
-                    updateBarsInSelectMode()
-                    
-                    // Update state of Select button if needed
-                    let selectState = updateSelectButton(ofSection: indexPath.section)
-                    let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
-                    if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageHeaderReusableView {
-                        header.selectButton.setTitle(forState: selectState)
-                    }
-                    else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageOldHeaderReusableView {
-                        header.selectButton.setTitle(forState: selectState)
-                    }
-                    return
+                // Selection mode active => add/remove image from selection
+                if !selectedImageIDs.contains(imageData.pwgID) {
+                    selectImage(imageData, isFavorite: selectedCell.isFavorite)
+                    selectedCell.isSelection = true
+                } else {
+                    deselectImages(withIDs: Set([imageData.pwgID]))
+                    selectedCell.isSelection = false
                 }
                 
-                // Add category ID to list of recently used albums
-                let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
-                NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+                // Update nav buttons
+                updateBarsInSelectMode()
                 
-                // Selection mode not active => display full screen image
-                presentImage(ofCell: selectedCell, at: indexPath, animated: true)
+                // Update state of Select button if needed
+                let selectState = updateSelectButton(ofSection: indexPath.section)
+                let indexPathOfHeader = IndexPath(item: 0, section: indexPath.section)
+                if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfHeader) as? ImageHeaderReusableView {
+                    header.selectButton.setTitle(forState: selectState)
+                }
+                return
             }
+            
+            // Add category ID to list of recently used albums
+            let userInfo = ["categoryId": NSNumber(value: albumData.pwgID)]
+            NotificationCenter.default.post(name: .pwgAddRecentAlbum, object: nil, userInfo: userInfo)
+            
+            // Selection mode not active => display full screen image
+            presentImage(ofCell: selectedCell, at: indexPath, animated: true)
         }
     }
     
@@ -136,18 +74,12 @@ extension AlbumViewController: UICollectionViewDelegate
         imageDetailView.user = user
         imageDetailView.categoryId = albumData.pwgID
         imageDetailView.images = images
-        if #available(iOS 13.0, *) {
-            if let firstSectionID = diffableDataSource.snapshot().sectionIdentifiers.first,
-               firstSectionID == pwgAlbumGroup.none.sectionKey {
-                let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
-                imageDetailView.indexPath = imageIndexPath
-            } else {
-                imageDetailView.indexPath = indexPath
-            }
-        } else {
-            // Fallback on earlier versions
+        if let firstSectionID = diffableDataSource.snapshot().sectionIdentifiers.first,
+           firstSectionID == pwgAlbumGroup.none.sectionKey {
             let imageIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
             imageDetailView.indexPath = imageIndexPath
+        } else {
+            imageDetailView.indexPath = indexPath
         }
         imageDetailView.imgDetailDelegate = self
         
@@ -176,7 +108,7 @@ extension AlbumViewController: UICollectionViewDelegate
                         contextMenuConfigurationForItemAt indexPath: IndexPath,
                         point: CGPoint) -> UIContextMenuConfiguration? {
         // Only admins can rename, move and delete albums
-        if let _ = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+        if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
            user.hasAdminRights {
             // Return context menu configuration
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
@@ -208,7 +140,7 @@ extension AlbumViewController: UICollectionViewDelegate
         else { return nil }
         
         // Only admins can rename, move and delete albums
-        if let _ = collectionView.cellForItem(at: indexPath) as? AlbumCollectionViewCell,
+        if collectionView.cellForItem(at: indexPath) is AlbumCollectionViewCell,
            user.hasAdminRights {
             // Return context menu configuration
             return UIContextMenuConfiguration(actionProvider: { suggestedActions in
@@ -232,7 +164,6 @@ extension AlbumViewController: UICollectionViewDelegate
     
     
     // MARK: - Album Context Menu
-    @available(iOS 13.0, *)
     private func albumContextMenu(_ indexPath: IndexPath) -> UIMenu {
         let addPhotos = self.addPhotosMenu(indexPath)
         let rename = self.renameAlbumAction(indexPath)
@@ -241,17 +172,22 @@ extension AlbumViewController: UICollectionViewDelegate
         return UIMenu(title: "", children: [addPhotos, rename, move, delete])
     }
     
-    @available(iOS 13.0, *)
     private func addPhotosMenu(_ indexPath: IndexPath) -> UIMenu {
         let addPhotos = addPhotosAction(indexPath)
         let menuId = UIMenu.Identifier("org.piwigo.addPhotos")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [addPhotos])
     }
     
-    @available(iOS 13.0, *)
     private func addPhotosAction(_ indexPath: IndexPath) -> UIAction {
+        let imageUpload: UIImage?
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            imageUpload = UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            imageUpload = UIImage(named: "photo.badge.plus")
+        }
         return UIAction(title: NSLocalizedString("categoryCellOption_addPhotos", comment: "Add Photos"),
-                        image: UIImage(named: "imageUpload")) { action in
+                        image: imageUpload) { action in
             // Push album view
             let albumSB = UIStoryboard(name: "AlbumViewController", bundle: nil)
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
@@ -264,7 +200,6 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func renameAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_rename", comment: "Rename Album"),
                         image: UIImage(systemName: "character.cursor.ibeam")) { action in
@@ -278,10 +213,9 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func moveAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_move", comment: "Move Album"),
-                        image: UIImage(systemName: "arrowshape.turn.up.left")) { action in
+                        image: UIImage(systemName: "arrow.forward")) { action in
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
             guard let objectID = self.diffableDataSource.itemIdentifier(for: indexPath),
                   let albumData = try? self.mainContext.existingObject(with: objectID) as? Album,
@@ -294,14 +228,12 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func deleteAlbumMenu(_ indexPath: IndexPath) -> UIMenu {
         let delete = deleteAlbumAction(indexPath)
         let menuId = UIMenu.Identifier("org.piwigo.deleteAlbum")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
     }
     
-    @available(iOS 13.0, *)
     private func deleteAlbumAction(_ indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryCellOption_delete", comment: "Delete Album"),
                         image: UIImage(systemName: "trash"),
@@ -318,7 +250,6 @@ extension AlbumViewController: UICollectionViewDelegate
     
     
     // MARK: - Image Context Menu
-    @available(iOS 13.0, *)
     private func imageContextMenu(forCell cell: ImageCollectionViewCell, imageData: Image,
                                   at indexPath: IndexPath) -> UIMenu {
         var children = [UIMenuElement]()
@@ -357,7 +288,6 @@ extension AlbumViewController: UICollectionViewDelegate
         return UIMenu(title: "", children: children)
     }
     
-    @available(iOS 13.0, *)
     private func shareImageAction(withID imageID: Int64) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryImageList_share", comment: "Share"),
                         image: UIImage(systemName: "square.and.arrow.up")) { _ in
@@ -365,7 +295,6 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func favoriteImageAction(withID imageID: Int64) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryImageList_favorite", comment: "Favorite"),
                         image: UIImage(systemName: "heart")) { _ in
@@ -373,7 +302,6 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func unfavoriteImageAction(withID imageID: Int64) -> UIAction {
         return UIAction(title: NSLocalizedString("categoryImageList_unfavorite", comment: "Unfavorite"),
                         image: UIImage(systemName: "heart.slash")) { _ in
@@ -381,7 +309,6 @@ extension AlbumViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func selectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image not selected ► Propose to select it
         return UIAction(title: NSLocalizedString("categoryImageList_selectButton", comment: "Select"),
@@ -407,13 +334,10 @@ extension AlbumViewController: UICollectionViewDelegate
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
-            } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
             }
         }
     }
     
-    @available(iOS 13.0, *)
     private func deselectImageAction(forCell cell: ImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         // Image selected ► Propose to deselect it
         var image: UIImage?
@@ -443,20 +367,16 @@ extension AlbumViewController: UICollectionViewDelegate
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
-            } else if let header = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
             }
         }
     }
     
-    @available(iOS 13.0, *)
     private func deleteImageMenu(forImageID imageID: Int64) -> UIMenu {
         let delete = deleteImageAction(forImageID: imageID)
         let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
     }
     
-    @available(iOS 13.0, *)
     private func deleteImageAction(forImageID imageID: Int64) -> UIAction {
         // Image selected ► Propose to deselect it
         return UIAction(title: NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo"),

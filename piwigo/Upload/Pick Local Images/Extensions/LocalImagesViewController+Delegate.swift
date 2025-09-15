@@ -128,7 +128,7 @@ extension LocalImagesViewController: UICollectionViewDelegate
             return UIContextMenuConfiguration(identifier: identifier,
                 previewProvider: { [self] in
                     // Create preview view controller
-                    let scale = view.window?.screen.scale ?? 1.0
+                    let scale = self.view.traitCollection.displayScale
                     let maxPixelSize = CGSize(width: view.bounds.width * scale, height: view.bounds.height * scale)
                     return LocalImagePreviewViewController(imageAsset: imageAsset, pixelSize: maxPixelSize)
                 }, actionProvider: { suggestedActions in
@@ -159,11 +159,10 @@ extension LocalImagesViewController: UICollectionViewDelegate
         return nil
     }
     
-    @available(iOS 13.0, *)
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: NSLocalizedString("errorHUD_label", comment: "Error"),
+            return UIAction(title: String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error"),
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         
@@ -182,7 +181,6 @@ extension LocalImagesViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
                               index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
@@ -206,7 +204,6 @@ extension LocalImagesViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
                                 index: Int, inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
@@ -234,10 +231,16 @@ extension LocalImagesViewController: UICollectionViewDelegate
         }
     }
 
-    @available(iOS 13.0, *)
     private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
+        let imageUpload: UIImage?
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            imageUpload = UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            imageUpload = UIImage(named: "photo.badge.plus")
+        }
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                        image: UIImage(named: "imageUpload")) { action in
+                        image: imageUpload) { action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? [])
                 .filter({$0.localIdentifier == cell.localIdentifier}).first != nil {
@@ -285,14 +288,12 @@ extension LocalImagesViewController: UICollectionViewDelegate
         }
     }
 
-    @available(iOS 13.0, *)
     private func deleteMenu(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIMenu {
         let delete = deleteAction(forCell: cell, at: indexPath)
         let menuId = UIMenu.Identifier("org.piwigo.removeFromCameraRoll")
         return UIMenu(identifier: menuId, options: UIMenu.Options.displayInline, children: [delete])
     }
     
-    @available(iOS 13.0, *)
     private func deleteAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
         return UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
                         image: UIImage(systemName: "trash"), attributes: .destructive) { action in

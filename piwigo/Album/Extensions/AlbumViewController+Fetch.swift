@@ -13,13 +13,13 @@ import uploadKit
 extension AlbumViewController
 {
     // MARK: - Fetch Album Data in the Background
+    @MainActor
     func fetchAlbumsAndImages(completion: @escaping () -> Void) {
         // Remember query and which images belong to the album
         // from main context before calling background tasks
         /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
         /// - takes 51 ms for 2584 photos on iPhone 14 Pro with derivatives in Sizes instances
 //        var oldImageIDs = Set<Int64>()
-//        if #available(iOS 13.0, *) {
 //            let snapshot = self.diffableDataSource.snapshot() as Snaphot
 //            oldImageIDs = Set(snapshot.itemIdentifiers
 //                .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
@@ -29,10 +29,6 @@ extension AlbumViewController
 //                    .compactMap({ try? self.mainContext.existingObject(with: $0) as? Image})
 //                    .compactMap({ $0.pwgID })) )
 //            }
-//        } else {
-//            // Fallback on earlier versions
-//            oldImageIDs = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
-//        }
         let oldImageIDs = Set((images.fetchedObjects ?? []).map({$0.pwgID}))
         let query = albumData.query
 
@@ -49,7 +45,7 @@ extension AlbumViewController
                     completion()
                 }
             } else {
-                fetchAlbums(withInitialImageIds: oldImageIDs, query: query) {
+                self.fetchAlbums(withInitialImageIds: oldImageIDs, query: query) {
                     completion()
                 }
             }
@@ -135,6 +131,15 @@ extension AlbumViewController
                     // Update smart album data
                     albumData.nbImages = totalCount
                     albumData.totalNbImages = totalCount
+                    
+                    // Limit image searches
+                    if albumData.pwgID == pwgSmartAlbum.search.rawValue {
+                        let maxPages: Int = 5
+                        newLastPage = min(newLastPage, maxPages)
+                        let maxCount = Int64(maxPages * perPage)
+                        albumData.nbImages = min(totalCount, maxCount)
+                        albumData.totalNbImages = min(totalCount, maxCount)
+                    }
                 }
             }
             
@@ -199,7 +204,7 @@ extension AlbumViewController
             completion()
             return
         }
-        failed: { error in
+        failure: { error in
             DispatchQueue.main.async { [self] in
                 // Done fetching images
                 // ► Remove current album from list of album being fetched
@@ -255,18 +260,16 @@ extension AlbumViewController
         }
         
         // Returns to login view only when credentials are rejected
-        if [NSURLErrorUserAuthenticationRequired, 401, 403].contains((error as NSError).code) ||
-            NetworkVars.shared.didFailHTTPauthentication {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             // Invalid Piwigo or HTTP credentials
             navigationController?.showHUD(
-                withTitle: NSLocalizedString("sessionStatusError_message", comment: "Failed to authenticate…."),
+                withTitle: PwgKitError.authenticationFailed.localizedDescription,
                 detail: error.localizedDescription, minWidth: 240,
                 buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
                 buttonTarget: self, buttonSelector: #selector(hideLoading),
                 inMode: .text)
         }
-        else if let err = error as? PwgSessionError,
-                err == PwgSessionError.missingParameter {
+        else if let pwgError = error as? PwgKitError, pwgError.hasMissingParameter {
             // Hide HUD
             navigationController?.hideHUD() { [self] in
                 // End refreshing if needed
@@ -355,7 +358,7 @@ extension AlbumViewController
             DispatchQueue.main.async { [self] in
                 self.mainContext.saveIfNeeded()
             }
-        } failed: { error in
+        } failure: { error in
             // Remove favorite album from list of album being fetched
             AlbumVars.shared.isFetchingAlbumData.remove(pwgSmartAlbum.favorites.rawValue)
         }

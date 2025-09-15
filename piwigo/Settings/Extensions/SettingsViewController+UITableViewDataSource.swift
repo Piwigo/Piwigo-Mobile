@@ -51,13 +51,9 @@ extension SettingsViewController: UITableViewDataSource
             nberOfRows = 1
         case .albums:
             nberOfRows = 4
-            // Present album description option before iOS 14.0
-            nberOfRows += showOptions ? 1 : 0
         case .images:
             // Present default image sort option only when Piwigo server version < 14.0
-            // Present image title option before iOS 14.0
             nberOfRows = 3 + (defaultSortUnknown ? 1 : 0)
-            nberOfRows += showOptions ? 1 : 0
         case .videos:
             nberOfRows = 2
         case .imageUpload:
@@ -77,12 +73,7 @@ extension SettingsViewController: UITableViewDataSource
         case .about:
             nberOfRows = 6
         case .troubleshoot:
-            // LogStore requires iOS 15.0+
-            if #available(iOS 15, *) {
-                nberOfRows = 3
-            } else {
-                nberOfRows = 2
-            }
+            nberOfRows = 3
         default:
             break
         }
@@ -129,9 +120,7 @@ extension SettingsViewController: UITableViewDataSource
         
         // MARK: Albums
         case .albums /* Albums */:
-            var row = indexPath.row
-            row += (!showOptions && (row > 1)) ? 1 : 0
-            switch row {
+            switch indexPath.row {
             case 0 /* Default album */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
@@ -144,48 +133,14 @@ extension SettingsViewController: UITableViewDataSource
             case 1 /* Thumbnail file */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
-                // See https://iosref.com/res
-                var title: String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    title = NSLocalizedString("defaultAlbumThumbnailFile>414px", comment: "Album Thumbnail File")
-                } else if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhone SE, 11 Pro screen width
-                    title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
-                } else {
-                    title = NSLocalizedString("defaultThumbnailFile", comment: "Thumbnail")
-                }
+                let title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
                 let albumImageSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
                 cell.configure(with: title, detail: albumImageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultAlbumThumbnailFile"
                 tableViewCell = cell
-
-            case 2 /* Display Descriptions — iOS 12-13 only */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-                else { preconditionFailure("Could not load SwitchTableViewCell") }
-                // See https://iosref.com/res
-                if view.bounds.size.width > 320 {
-                    cell.configure(with: NSLocalizedString("settings_displayDescriptions>320px", comment: "Display Album Descriptions"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_displayDescriptions", comment: "Display Descriptions"))
-                }
                 
-                // Switch status
-                cell.cellSwitch.setOn(AlbumVars.shared.displayAlbumDescriptions, animated: true)
-                cell.cellSwitch.accessibilityIdentifier = "switchAlbumDescriptions"
-                cell.cellSwitchBlock = { [self] switchState in
-                    // Only called when running on iOS 12 - 13
-                    AlbumVars.shared.displayAlbumDescriptions = switchState
-                    if let navController = presentingViewController as? AlbumNavigationController,
-                       let albumVC = navController.viewControllers.first as? AlbumViewController {
-                        albumVC.collectionView?.reloadData()
-                    }
-                }
-                cell.accessibilityIdentifier = "displayAlbumDescriptions"
-                tableViewCell = cell
-                
-            case 3 /* Number of recent albums */:
+            case 2 /* Number of recent albums */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
@@ -193,16 +148,7 @@ extension SettingsViewController: UITableViewDataSource
 
                 // Slider configuration
                 // See https://iosref.com/res
-                var title: String = ""
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 8+, 11 screen width
-                    title = NSLocalizedString("maxNberOfRecentAlbums>414px", comment: "Number of Recent Albums")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 6, 7 screen width
-                    title = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
-                } else {
-                    title = NSLocalizedString("maxNberOfRecentAlbums", comment: "Recent")
-                }
+                let title = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
                 cell.configure(with: title, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
@@ -211,7 +157,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell
 
-            case 4 /* Recent period */:
+            case 3 /* Recent period */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value is the index of kRecentPeriods
@@ -243,22 +189,12 @@ extension SettingsViewController: UITableViewDataSource
         case .images /* Images */:
             var row = indexPath.row
             row += defaultSortUnknown ? 0 : 1
-            row += (!showOptions && (row > 2)) ? 1 : 0
             switch row {
             case 0 /* Default Sort */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                var title: String
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    title = NSLocalizedString("defaultImageSort>414px", comment: "Default Sort of Images")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("defaultImageSort>320px", comment: "Default Sort")
-                } else {
-                    title = NSLocalizedString("defaultImageSort", comment: "Sort")
-                }
+                let title = NSLocalizedString("defaultImageSort>320px", comment: "Default Sort")
                 cell.configure(with: title, detail: AlbumVars.shared.defaultSort.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultSort"
@@ -268,16 +204,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                var title: String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    title = NSLocalizedString("defaultThumbnailFile>414px", comment: "Image Thumbnail File")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
-                } else {
-                    title = NSLocalizedString("defaultThumbnailFile", comment: "Thumbnail")
-                }
+                let title = NSLocalizedString("defaultThumbnailFile>320px", comment: "Thumbnail File")
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
                 cell.configure(with: title, detail: thumbnailSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -289,7 +216,8 @@ extension SettingsViewController: UITableViewDataSource
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
-                let defaultWidth = thumbnailSize.minPoints
+                let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
+                let defaultWidth = thumbnailSize.minPoints(forScale: scale)
                 let minNberOfImages = Float(AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: defaultWidth))
 
                 // Slider value, chek that default number fits inside selected range
@@ -303,16 +231,7 @@ extension SettingsViewController: UITableViewDataSource
 
                 // Slider configuration
                 // See https://iosref.com/res
-                var title: String
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    title = NSLocalizedString("defaultNberOfThumbnails>414px", comment: "Number per Row")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("defaultNberOfThumbnails>320px", comment: "Number/Row")
-                } else {
-                    title = NSLocalizedString("defaultNberOfThumbnails", comment: "Number")
-                }
+                let title = NSLocalizedString("defaultNberOfThumbnails>320px", comment: "Number/Row")
                 cell.configure(with: title, value: value, increment: 1, minValue: minNberOfImages, maxValue: minNberOfImages * 2, prefix: "", suffix: "/\(Int(minNberOfImages * 2))")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
@@ -321,39 +240,11 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
                 
-            case 3 /* Display titles on thumbnails — iOS 12-13 only */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-                else { preconditionFailure("Could not load SwitchTableViewCell") }
-                // See https://iosref.com/res
-                if view.bounds.size.width > 320 {
-                    cell.configure(with: NSLocalizedString("settings_displayTitles>320px", comment: "Display Titles on Thumbnails"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_displayTitles", comment: "Titles on Thumbnails"))
-                }
-                
-                // Switch status
-                cell.cellSwitch.setOn(AlbumVars.shared.displayImageTitles, animated: true)
-                cell.cellSwitch.accessibilityIdentifier = "switchImageTitles"
-                cell.cellSwitchBlock = { switchState in
-                    AlbumVars.shared.displayImageTitles = switchState
-                }
-                cell.accessibilityIdentifier = "displayImageTitles"
-                tableViewCell = cell
-                
-            case 4 /* Default Size of Previewed Images */:
+            case 3 /* Preview File */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                var title: String
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    title = NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File")
-                } else if view.bounds.size.width > 320 {
-                    // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("defaultPreviewFile>320px", comment: "Preview File")
-                } else {
-                    title = NSLocalizedString("defaultPreviewFile", comment: "Preview")
-                }
+                let title = NSLocalizedString("defaultPreviewFile>320px", comment: "Preview File")
                 let imageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
                 cell.configure(with: title, detail: imageSize.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -659,12 +550,7 @@ extension SettingsViewController: UITableViewDataSource
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 // See https://iosref.com/res
-                if view.bounds.size.width > 430 {
-                    // i.e. larger than iPhone 14 Pro Max screen width
-                    cell.configure(with: NSLocalizedString("settings_shareGPSdata>375px", comment: "Share with Private Metadata"), detail: "")
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
-                }
+                cell.configure(with: NSLocalizedString("settings_shareGPSdata", comment: "Share Private Metadata"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultShareOptions"
                 tableViewCell = cell
@@ -814,13 +700,7 @@ extension SettingsViewController: UITableViewDataSource
 
         // MARK: Troubleshoot
         case .troubleshoot /* Troubleshoot */:
-            var row = indexPath.row
-            if #available(iOS 15, *) {
-                // LogStore available
-            } else {
-                row += 1
-            }
-            switch row {
+            switch indexPath.row {
             case 0 /* Logs */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell")}
@@ -843,7 +723,7 @@ extension SettingsViewController: UITableViewDataSource
                 cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 if !MFMailComposeViewController.canSendMail() {
-                    cell.titleLabel.textColor = .piwigoColorRightLabel()
+                    cell.titleLabel.textColor = PwgColor.rightLabel
                 }
                 cell.accessibilityIdentifier = "mailContact"
                 tableViewCell = cell

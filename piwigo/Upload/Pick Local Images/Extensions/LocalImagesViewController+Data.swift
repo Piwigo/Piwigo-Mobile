@@ -30,12 +30,7 @@ extension LocalImagesViewController
 
         // Fetch image collection
         let assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
-        
-        // Display album name on iPhone as from iOS 14
-        if #available(iOS 14.0, *), UIDevice.current.userInterfaceIdiom == .phone {
-            title = assetCollections.firstObject!.localizedTitle
-        }
-        
+                
         // Fetch images in album
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
 
@@ -83,20 +78,6 @@ extension LocalImagesViewController
             } else {
                 self.selectedImages = []
                 self.selectedSections = [.none]
-            }
-        }
-        sortOperation.completionBlock = {
-            // Allow sort options and refresh section headers
-            DispatchQueue.main.async {
-                if #available(iOS 14, *) {
-                    // NOP
-                } else {
-                    // Enable segments
-                    self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.month.rawValue)
-                    self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.week.rawValue)
-                    self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.day.rawValue)
-                    self.segmentedControl.selectedSegmentIndex = Int(self.sortType.rawValue)
-                }
             }
         }
         

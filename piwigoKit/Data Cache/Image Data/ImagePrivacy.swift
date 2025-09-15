@@ -19,18 +19,24 @@ public enum pwgPrivacy : Int16, CaseIterable {
 }
 
 extension pwgPrivacy {
+    // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
     public var name: String {
         switch self {
         case .everybody:
-            return NSLocalizedString("privacyLevel_everybody", comment: "Everybody")
+            return String(localized: "privacyLevel_everybody", bundle: piwigoKit,
+                          comment: "Everybody")
         case .adminsFamilyFriendsContacts:
-            return NSLocalizedString("privacyLevel_adminsFamilyFriendsContacts", comment: "Admins, Family, Friends, Contacts")
+            return String(localized: "privacyLevel_adminsFamilyFriendsContacts", bundle: piwigoKit,
+                          comment: "Admins, Family, Friends, Contacts")
         case .adminsFamilyFriends:
-            return NSLocalizedString("privacyLevel_adminsFamilyFriends", comment: "Admins, Family, Friends")
+            return String(localized: "privacyLevel_adminsFamilyFriends", bundle: piwigoKit,
+                          comment: "Admins, Family, Friends")
         case .adminsFamily:
-            return NSLocalizedString("privacyLevel_adminFamily", comment: "Admins, Family")
+            return String(localized: "privacyLevel_adminFamily", bundle: piwigoKit,
+                          comment: "Admins, Family")
         case .admins:
-            return NSLocalizedString("privacyLevel_admin", comment: "Admins")
+            return String(localized: "privacyLevel_admin", bundle: piwigoKit,
+                          comment: "Admins")
         default:
             return ""
         }

@@ -18,16 +18,13 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var albumThumbnail: UIImageView!
     @IBOutlet weak var albumName: UILabel!
     @IBOutlet weak var numberOfImages: UILabel!
-    @IBOutlet weak var recentBckg: UIImageView!
-    @IBOutlet weak var recentImage: UIImageView!
+    @IBOutlet weak var recentlyModified: UIImageView!
     
     func config(withAlbumData albumData: Album?) {
         // Store album data
         self.albumData = albumData
 
         // General settings
-        recentBckg.tintColor = UIColor(white: 0, alpha: 0.3)
-        recentImage.tintColor = UIColor.white
         applyColorPalette()
         
         // Album name (Piwigo orange colour)
@@ -36,14 +33,6 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Number of images and sub-albums
         numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
 
-        // Added "0 day" option in version 3.1.2 for allowing user to disable "recent" icon
-        if CacheVars.shared.recentPeriodIndexCorrectedInVersion321 == false,
-           let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           version.compare(CacheVars.shared.recentPeriodListChangedInVersion312) == .orderedSame {
-            CacheVars.shared.recentPeriodIndex += 1
-            CacheVars.shared.recentPeriodIndexCorrectedInVersion321 = true
-        }
-                
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
         var indexOfPeriod: Int = CacheVars.shared.recentPeriodIndex
@@ -51,10 +40,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         indexOfPeriod = max(0, indexOfPeriod)
         let periodInDays: Int = CacheVars.shared.recentPeriodList[indexOfPeriod]
         let isRecent = timeSinceLastUpload < TimeInterval(24*3600*periodInDays)
-        if self.recentBckg.isHidden == isRecent {
-            self.recentBckg.isHidden = !isRecent
-            self.recentImage.isHidden = !isRecent
-        }
+        self.recentlyModified.isHidden = !isRecent
 
         // Can we add a representative if needed?
         if albumData?.thumbnailUrl == nil || albumData?.thumbnailId == Int64.zero,
@@ -95,18 +81,21 @@ class AlbumCollectionViewCell: UICollectionViewCell {
 
     @MainActor
     func applyColorPalette() {
-        backgroundColor = UIColor.piwigoColorBackground()
-        contentView.backgroundColor = UIColor.piwigoColorCellBackground()
-        albumName.textColor = UIColor.piwigoColorText()
-        numberOfImages.textColor = UIColor.piwigoColorText()
+        backgroundColor = PwgColor.background
+        contentView.backgroundColor = PwgColor.cellBackground
+        albumName.textColor = PwgColor.gray
+        numberOfImages.textColor = PwgColor.rightLabel
+        recentlyModified?.tintColor = UIColor.white
+        recentlyModified?.layer.shadowColor = UIColor.black.cgColor
+        recentlyModified?.layer.shadowOpacity = 1.0
     }
     
     private func getNberOfImages(fromAlbumData albumData: Album?) -> String {
         // Constants
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        let singleImage = NSLocalizedString("singleImageCount", comment: "%@ photo")
-        let severalImages = NSLocalizedString("severalImagesCount", comment: "%@ photos")
+        let singleImage = String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo")
+        let severalImages = String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos")
         let singleSubAlbum = NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album")
         let severalSubAlbums = NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums")
         // Determine string
@@ -151,8 +140,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Reset cell
         self.albumName.text = NSLocalizedString("loadingHUD_label", comment: "Loading…")
         self.numberOfImages.text = ""
-        self.recentBckg.isHidden = true
-        self.recentImage.isHidden = true
+        self.recentlyModified.isHidden = true
         self.albumThumbnail.image = pwgImageType.album.placeHolder
     }
 }

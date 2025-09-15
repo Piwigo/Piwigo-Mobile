@@ -18,15 +18,15 @@ enum pwgEditOption : Int {
 }
 
 class TagTableViewCell: UITableViewCell {
+    
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var rightAddImage: UIImageView!
     @IBOutlet weak var rightRemoveImage: UIImageView!
 
     func configure(with tag: Tag, andEditOption option: pwgEditOption) {
         // General settings
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
-        textLabel?.font = .systemFont(ofSize: 17)
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.tintColor
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag
@@ -39,12 +39,11 @@ class TagTableViewCell: UITableViewCell {
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
             let nberImages = nber > 1 ?
-                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                String(format: String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos"), nberPhotos) :
+                String(format: String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo"), nberPhotos)
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
-        leftLabel.font = .systemFont(ofSize: 17)
-        leftLabel.textColor = .piwigoColorLeftLabel()
+        leftLabel.textColor = PwgColor.leftLabel
 
         // Change image according to state
         switch option {

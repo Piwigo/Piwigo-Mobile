@@ -12,6 +12,7 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 import piwigoKit
+import uploadKit
 
 // Warning: class must restate inherited '@unchecked Sendable' conformance
 class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable {
@@ -47,9 +48,9 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
     
     
     // MARK: - Placeholder Image
-    init(placeholderImage: Image, contextually: Bool) {
+    init(imageData: Image, scale: CGFloat, contextually: Bool) {
         // Store Piwigo image data for future use
-        self.imageData = placeholderImage
+        self.imageData = imageData
         
         // Remember if this video is shared from a contextual menu
         self.contextually = contextually
@@ -69,7 +70,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
         
         // Retrieve image in cache
         if let cachedImage = UIImage(contentsOfFile: imageFileURL.path) {
-            let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true)
+            let resizedImage = cachedImage.resize(to: CGFloat(70.0), opaque: true, scale: scale)
             super.init(placeholderItem: resizedImage)
         } else {
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
@@ -111,7 +112,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled
-            alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
+            alertTitle = PwgKitError.failedToPrepareDownload.localizedDescription
             alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadPdfFail_message", comment: "Failed to download PDF file!\n%@"), "")
             preprocessingDidEnd()
             return placeholderItem!
@@ -179,7 +180,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata"), error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }
@@ -237,14 +238,9 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        if #available(iOS 14.0, *) {
-            return UTType.pdf.identifier
-        } else {
-            return kUTTypePDF as String
-        }
+        return UTType.pdf.identifier
     }
     
-    @available(iOS 13.0, *)
     override func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
         // Initialisation
         let linkMetaData = LPLinkMetadata()

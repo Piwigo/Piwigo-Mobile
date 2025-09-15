@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -23,13 +23,13 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="Xr2-bY-mvB">
                                     <size key="itemSize" width="128" height="128"/>
-                                    <size key="headerReferenceSize" width="50" height="44"/>
+                                    <size key="headerReferenceSize" width="50" height="42"/>
                                     <size key="footerReferenceSize" width="50" height="34"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" restorationIdentifier="LocalImageCollectionViewCell" reuseIdentifier="LocalImageCollectionViewCell" id="IPO-AG-My3" customClass="LocalImageCollectionViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44" width="128" height="128"/>
+                                        <rect key="frame" x="0.0" y="42" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="x8W-Bh-xRx">
                                             <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
@@ -38,26 +38,27 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="LocalImagesHeaderReusableView" preservesSuperviewLayoutMargins="YES" reuseIdentifier="LocalImagesHeaderReusableView" id="80M-ek-Ose" customClass="LocalImagesHeaderReusableView" customModule="piwigo" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="42"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QkP-DX-w4M">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="42"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mainLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
-                                                    <rect key="frame" x="8" y="10" width="72.5" height="18"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mainLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
+                                                    <rect key="frame" x="8" y="4" width="71" height="18"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
-                                                    <rect key="frame" x="8" y="28" width="60" height="16"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
+                                                    <rect key="frame" x="8" y="22" width="60" height="16"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
-                                                    <rect key="frame" x="349" y="13.5" width="57" height="27"/>
+                                                <button contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
+                                                    <rect key="frame" x="349" y="7.5" width="57" height="27"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="27" id="bdo-M7-fBu"/>
                                                     </constraints>
@@ -65,6 +66,14 @@
                                                     <state key="normal" title="Select All">
                                                         <color key="titleColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     </state>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                                            <real key="value" value="0.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                                            <size key="value" width="0.0" height="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
                                                     <connections>
                                                         <action selector="tappedSelectButton:" destination="80M-ek-Ose" eventType="touchUpInside" id="RUO-Gh-Bfs"/>
                                                     </connections>
@@ -76,10 +85,11 @@
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="baseline" id="8gB-0u-eKB"/>
                                                 <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="E5G-dL-Ipw"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="H2a-jo-2YV"/>
-                                                <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" id="cdc-8q-Liq"/>
+                                                <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" constant="4" id="cdc-8q-Liq"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
                                                 <constraint firstAttribute="trailing" secondItem="Lfe-Kd-abT" secondAttribute="trailing" constant="8" id="n8v-KW-Fd2"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IuZ-Ot-NeB" secondAttribute="trailing" constant="10" id="pAn-ka-Tj4"/>
+                                                <constraint firstItem="IuZ-Ot-NeB" firstAttribute="top" secondItem="QkP-DX-w4M" secondAttribute="top" constant="4" id="qHg-EX-Cif"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NIO-n9-bqf" secondAttribute="trailing" constant="10" id="wpv-JQ-p9X"/>
                                             </constraints>
                                         </view>
@@ -97,7 +107,7 @@
                                     </connections>
                                 </collectionReusableView>
                                 <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="LocalImagesFooterReusableView" preservesSuperviewLayoutMargins="YES" reuseIdentifier="LocalImagesFooterReusableView" id="abx-zd-WA3" customClass="LocalImagesFooterReusableView" customModule="piwigo" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="172" width="414" height="34"/>
+                                    <rect key="frame" x="0.0" y="170" width="414" height="34"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Jb-2n-dGI">
@@ -134,32 +144,6 @@
                                     <outlet property="delegate" destination="0bN-Jj-8Z5" id="MhR-8A-JR2"/>
                                 </connections>
                             </collectionView>
-                            <view opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5z-6S-nIy">
-                                <rect key="frame" x="105.5" y="845" width="203" height="31"/>
-                                <subviews>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
-                                        <rect key="frame" x="0.0" y="0.0" width="203" height="32"/>
-                                        <segments>
-                                            <segment title="" image="imageMonth" width="50"/>
-                                            <segment title="" image="imageWeek" width="50"/>
-                                            <segment title="" image="imageDay" width="50"/>
-                                            <segment title="" image="imageAll" width="50"/>
-                                        </segments>
-                                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <action selector="didChangeGroupOption:" destination="0bN-Jj-8Z5" eventType="valueChanged" id="DUC-rV-Zya"/>
-                                        </connections>
-                                    </segmentedControl>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="dLb-To-65V" secondAttribute="width" id="EH0-7D-RJd"/>
-                                    <constraint firstItem="dLb-To-65V" firstAttribute="centerY" secondItem="f5z-6S-nIy" secondAttribute="centerY" id="SZi-NG-ePn"/>
-                                    <constraint firstItem="dLb-To-65V" firstAttribute="centerX" secondItem="f5z-6S-nIy" secondAttribute="centerX" id="kOG-9e-cuw"/>
-                                    <constraint firstAttribute="height" secondItem="dLb-To-65V" secondAttribute="height" id="pTr-fd-3Me"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="JwU-ke-ivs"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -167,17 +151,13 @@
                         <constraints>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="leading" secondItem="3Qu-Pn-VGf" secondAttribute="leading" id="Tmx-Qf-73z"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="bottom" secondItem="3Qu-Pn-VGf" secondAttribute="bottom" id="VbM-g1-xUQ"/>
-                            <constraint firstAttribute="bottom" secondItem="f5z-6S-nIy" secondAttribute="bottom" constant="20" id="aoF-f5-ug4"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="trailing" secondItem="3Qu-Pn-VGf" secondAttribute="trailing" id="jrK-pA-Y2m"/>
-                            <constraint firstItem="f5z-6S-nIy" firstAttribute="centerX" secondItem="JwU-ke-ivs" secondAttribute="centerX" id="w6B-LD-Lqd"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="top" secondItem="3Qu-Pn-VGf" secondAttribute="top" id="y6L-7G-U7y"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="collectionFlowLayout" destination="Xr2-bY-mvB" id="OSP-xm-XOI"/>
                         <outlet property="localImagesCollection" destination="oEF-HO-Dv3" id="Owc-A1-PVl"/>
-                        <outlet property="segmentedControl" destination="dLb-To-65V" id="I89-tM-huk"/>
-                        <outlet property="sortOptionsView" destination="f5z-6S-nIy" id="j0d-uA-8KU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uQz-uh-sKD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -186,10 +166,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="imageAll" width="27" height="23"/>
-        <image name="imageDay" width="25" height="23"/>
-        <image name="imageMonth" width="25" height="23"/>
-        <image name="imageWeek" width="25" height="23"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

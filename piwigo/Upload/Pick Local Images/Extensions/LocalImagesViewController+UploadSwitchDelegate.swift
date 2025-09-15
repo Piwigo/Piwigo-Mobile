@@ -109,7 +109,8 @@ extension LocalImagesViewController: UploadSwitchDelegate
                     return
                 }
                 DispatchQueue.main.async {
-                    self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {
+                    let title = PwgKitError.uploadCreationError.localizedDescription
+                    self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
                         // Restart UploadManager activities
                         UploadManager.shared.backgroundQueue.async {
                             UploadManager.shared.isPaused = false
@@ -144,13 +145,11 @@ extension LocalImagesViewController: UploadSwitchDelegate
         if (AppVars.shared.didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithID.append(6)     // i.e. manage upload requests in queue
         }
-        if #available(iOS 13, *),
-           NetworkVars.shared.usesUploadAsync,
+        if NetworkVars.shared.usesUploadAsync,
            (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithID.append(2)     // i.e. use background uploading
         }
-        if #available(iOS 14, *),
-           NetworkVars.shared.usesUploadAsync,
+        if NetworkVars.shared.usesUploadAsync,
            (AppVars.shared.didWatchHelpViews & 0b00000000_01000000) == 0 {
             displayHelpPagesWithID.append(7)     // i.e. use auto-uploading
         }

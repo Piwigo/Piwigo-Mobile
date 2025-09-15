@@ -137,11 +137,10 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         return nil
     }
 
-    @available(iOS 13.0, *)
     private func statusAction(_ upload: Upload?) -> UIAction {
         // Check if an upload request exists (should never happen)
         guard let upload = upload else {
-            return UIAction(title: NSLocalizedString("errorHUD_label", comment: "Error"),
+            return UIAction(title: String(localized: "errorHUD_label", bundle: piwigoKit, comment: "Error"),
                             image: UIImage(systemName: "exclamationmark.triangle"), handler: { _ in })
         }
         
@@ -160,7 +159,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func selectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
                               inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
@@ -184,7 +182,6 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
     
-    @available(iOS 13.0, *)
     private func deselectAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath,
                                 inUploadSate uploadState: pwgUploadState?) -> UIAction
     {
@@ -212,10 +209,16 @@ extension PasteboardImagesViewController: UICollectionViewDelegate
         }
     }
 
-    @available(iOS 13.0, *)
     private func uploaAction(forCell cell: LocalImageCollectionViewCell, at indexPath: IndexPath) -> UIAction {
+        let imageUpload: UIImage?
+        if #available(iOS 17.0, *) {
+            let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            imageUpload = UIImage(systemName: "photo.badge.plus", withConfiguration: imageConfig)
+        } else {
+            imageUpload = UIImage(named: "photo.badge.plus")
+        }
         return UIAction(title: NSLocalizedString("tabBar_upload", comment: "Upload"),
-                        image: UIImage(named: "imageUpload")) { action in
+                        image: imageUpload) { action in
             // Check that an upload request does not exist for that image (should never happen)
             if (self.uploads.fetchedObjects ?? []).filter({$0.md5Sum == cell.md5sum}).first != nil {
                 return

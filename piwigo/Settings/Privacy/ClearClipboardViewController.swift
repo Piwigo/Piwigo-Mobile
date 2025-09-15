@@ -82,7 +82,7 @@ protocol ClearClipboardDelegate: NSObjectProtocol {
     func didSelectClearClipboardDelay(_ delay: pwgClearClipboard)
 }
 
-class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ClearClipboardViewController: UIViewController {
     
     weak var delegate: ClearClipboardDelegate?
     
@@ -90,91 +90,58 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
     
     
     // MARK: - View Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // Title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
-
+        view.backgroundColor = PwgColor.background
+        
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        delayTableView.separatorColor = .piwigoColorSeparator()
+        delayTableView.separatorColor = PwgColor.separator
         delayTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         delayTableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
+        
         // Return selected album
         let delay = pwgClearClipboard(rawValue: AppVars.shared.clearClipboardDelay) ?? pwgClearClipboard.never
         delegate?.didSelectClearClipboardDelay(delay)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
+}
 
+
+// MARK: - UITableViewDataSource Methods
+extension ClearClipboardViewController: UITableViewDataSource {
     
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard"))
-        let text = NSLocalizedString("settings_clearClipboardInfo", comment: "Please select the delay after which the clipboard will be cleared.")
-        return (title, text)
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
-    
-    // MARK: - UITableView - Rows
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgClearClipboard.count.rawValue
     }
@@ -184,10 +151,11 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let delayChoice = pwgClearClipboard(rawValue: indexPath.row)
 
-        cell.backgroundColor = .piwigoColorCellBackground()
-        cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .systemFont(ofSize: 17)
-        cell.textLabel?.textColor = .piwigoColorLeftLabel()
+        cell.backgroundColor = PwgColor.cellBackground
+        cell.tintColor = PwgColor.orange
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        cell.textLabel?.textColor = PwgColor.leftLabel
         cell.textLabel?.text = delayChoice?.delayText
         cell.textLabel?.minimumScaleFactor = 0.5
         cell.textLabel?.adjustsFontSizeToFitWidth = true
@@ -200,9 +168,36 @@ class ClearClipboardViewController: UIViewController, UITableViewDelegate, UITab
 
         return cell
     }
+}
 
 
-    // MARK: - UITableViewDelegate Methods
+// MARK: - UITableViewDelegate Methods
+extension ClearClipboardViewController: UITableViewDelegate {
+    
+    // MARK: - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("settings_clearClipboard", comment: "Clear Clipboard"))
+        let text = NSLocalizedString("settings_clearClipboardInfo", comment: "Please select the delay after which the clipboard will be cleared.")
+        return (title, text)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
+    }
+    
+    
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 

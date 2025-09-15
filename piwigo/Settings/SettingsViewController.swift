@@ -44,13 +44,13 @@ class SettingsViewController: UIViewController {
     enum TextFieldTag : Int {
         case author
     }
-
+    
     weak var settingsDelegate: ChangedSettingsDelegate?
     
     @IBOutlet var settingsTableView: UITableView!
     
     private var tableViewBottomConstraint: NSLayoutConstraint?
-    private var doneBarButton: UIBarButtonItem?
+    private var closeBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
     
     // Remember current user's recent period index
@@ -62,15 +62,6 @@ class SettingsViewController: UIViewController {
     // The image sort type is returned with album data since Piwigo 14.0.
     lazy var defaultSortUnknown: Bool = NetworkVars.shared.pwgVersion
         .compare("14.0", options: .numeric) == .orderedAscending
-    
-    // Present image title and album description options on iOS 12.0 - 13.x
-    lazy var showOptions: Bool = {
-        if #available(iOS 14, *) {
-            return false
-        } else {
-            return true
-        }
-    }()
     
     // For displaying cache sizes
     var dataCacheSize: String = NSLocalizedString("loadingHUD_label", comment: "Loading…") {
@@ -167,7 +158,7 @@ class SettingsViewController: UIViewController {
                               let index = CacheVars.shared.recentPeriodList.firstIndex(of: nberOfDays),
                               index != self.oldRecentPeriodIndex
                         else { return }
-
+                        
                         // Update current index and reload corresponding cell
                         DispatchQueue.main.async { [self] in
                             self.user.id = usersData.id ?? Int16.zero
@@ -194,20 +185,21 @@ class SettingsViewController: UIViewController {
         queue.maxConcurrentOperationCount = .max
         queue.qualityOfService = .userInitiated
         queue.addOperations(operations, waitUntilFinished: false)
-                
+        
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
         
         // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.accessibilityIdentifier = "Done"
+        closeBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitSettings))
+        closeBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
-        if #available(iOS 15.0, *) {
+        if #available(iOS 26.0, *) {
+            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark"), style: .plain,
+                                            target: self, action: #selector(displayHelp))
+        } else {
             helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"),
                                             style: .plain, target: self, action: #selector(displayHelp))
-        } else {
-            helpBarButton = UIBarButtonItem(image: UIImage(named: "help"), landscapeImagePhone: UIImage(named: "helpCompact"), style: .plain, target: self, action: #selector(displayHelp))
         }
         helpBarButton?.accessibilityIdentifier = "Help"
         
@@ -224,40 +216,13 @@ class SettingsViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar appearance
-        let navigationBar = navigationController?.navigationBar
-        navigationController?.view.backgroundColor = UIColor.piwigoColorBackground()
-        navigationBar?.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = UIColor.piwigoColorOrange()
-        
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationBar?.titleTextAttributes = attributes
-        let attributesLarge = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 28, weight: .black)
-        ]
-        navigationBar?.largeTitleTextAttributes = attributesLarge
-        navigationBar?.prefersLargeTitles = true
-        
-        if #available(iOS 13.0, *) {
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithTransparentBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.9)
-            barAppearance.titleTextAttributes = attributes
-            barAppearance.largeTitleTextAttributes = attributesLarge
-            navigationItem.standardAppearance = barAppearance
-            navigationItem.compactAppearance = barAppearance // For iPhone small navigation bar in landscape.
-            navigationItem.scrollEdgeAppearance = barAppearance
-            navigationBar?.prefersLargeTitles = true
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: true)
         
         // Table view
-        settingsTableView?.separatorColor = .piwigoColorSeparator()
+        settingsTableView?.separatorColor = PwgColor.separator
         settingsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
@@ -269,12 +234,16 @@ class SettingsViewController: UIViewController {
         applyColorPalette()
         
         // Set navigation buttons
-        navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setLeftBarButtonItems([closeBarButton].compactMap { $0 }, animated: true)
         navigationItem.setRightBarButtonItems([helpBarButton].compactMap { $0 }, animated: true)
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
         
         // Register auto-upload option enabled/disabled
         NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
@@ -293,16 +262,14 @@ class SettingsViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Update title of current scene (iPad only)
-        if #available(iOS 13.0, *) {
-            view.window?.windowScene?.title = title
-        }
+        view.window?.windowScene?.title = title
         
         // Invite user to translate the app
         let langCode: String = NSLocale.current.languageCode ?? "en"
         let now: Double = Date().timeIntervalSinceReferenceDate
         // Comment the below line and uncomment the next one for debugging
         let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest + 3 * AppVars.shared.pwgOneMonth
-//        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
+        //        let dueDate: Double = AppVars.shared.dateOfLastTranslationRequest
         if now > dueDate, ["ar","da","hu","id","it","ja","nl","ru","sv"].contains(langCode) {
             // Store date of last translation request
             AppVars.shared.dateOfLastTranslationRequest = now
@@ -319,19 +286,15 @@ class SettingsViewController: UIViewController {
             
             alert.addAction(cancelAction)
             alert.addAction(defaultAction)
-            alert.view.tintColor = .piwigoColorOrange()
-            if #available(iOS 13.0, *) {
-                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-            } else {
-                // Fallback on earlier versions
-            }
+            alert.view.tintColor = PwgColor.tintColor
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = .piwigoColorOrange()
+                alert.view.tintColor = PwgColor.tintColor
             })
         }
     }
-        
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -375,16 +338,10 @@ class SettingsViewController: UIViewController {
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
-            if #available(iOS 14, *) {
-                if NetworkVars.shared.usesUploadAsync {
-                    helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
-                } else {
-                    helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
-                }
-            } else if #available(iOS 13, *) {
-                helpVC.displayHelpPagesWithID = [1,5,6,2,4,3,9]
+            if NetworkVars.shared.usesUploadAsync {
+                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
             } else {
-                helpVC.displayHelpPagesWithID = [1,5,6,4,3]
+                helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
             }
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
@@ -441,7 +398,7 @@ class SettingsViewController: UIViewController {
             // Show HUD
             let title = NSLocalizedString("login_closeSession", comment: "Closing Session...")
             self.navigationController?.showHUD(withTitle: title)
-
+            
             // Perform Logout
             PwgSession.shared.sessionLogout {
                 // Close session
@@ -474,21 +431,37 @@ class SettingsViewController: UIViewController {
         let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
         
         // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = settingsTableView
         alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         })
     }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+//        guard let info = notification.userInfo,
+//              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
+//        else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Animated update for smoother experience
+            self.settingsTableView?.beginUpdates()
+            self.settingsTableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+        }
+    }
 }
+
 
 // MARK: - MFMailComposeViewControllerDelegate
 extension SettingsViewController: MFMailComposeViewControllerDelegate {

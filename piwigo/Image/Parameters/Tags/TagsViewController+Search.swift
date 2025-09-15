@@ -13,17 +13,17 @@ import UIKit
 extension TagsViewController
 {
     func initSearchBar() {
+        searchController.obscuresBackgroundDuringPresentation = false
+
         searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.isTranslucent = false
-        searchController.searchBar.showsCancelButton = false
         searchController.searchBar.showsSearchResultsButton = false
-        searchController.searchBar.tintColor = UIColor.piwigoColorOrange()
         searchController.searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
-
+        searchController.searchBar.showsCancelButton = false
+        
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar
     }

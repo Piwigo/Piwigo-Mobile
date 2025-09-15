@@ -12,16 +12,39 @@ import piwigoKit
 
 extension AlbumViewController
 {
+    // MARK: Toolbar Buttons (iOS 26+)
+    func getAddAlbumBarButton() -> UIBarButtonItem {
+        let image = UIImage(systemName: "rectangle.stack.badge.plus")!
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
+        button.accessibilityIdentifier = "addAlbum"
+        return button
+    }
+    
+    func getAddImageBarButton() -> UIBarButtonItem {
+        let image = UIImage(systemName: "photo.badge.plus")!
+        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(checkPhotoLibraryAccess))
+        button.accessibilityIdentifier = "addImage"
+        return button
+    }
+    
+    
     // MARK: - Create Sub-Album
     @MainActor
-    @objc func addAlbum() {
-        // Change colour of Upload Images button
-        createAlbumButton.backgroundColor = UIColor.gray
-
-        // Start creating album
-        showCreateCategoryDialog()
+    @objc func didTapCreateAlbum() {
+        // Hide CreateAlbum and UploadImages buttons
+        hideOptionalButtons { [self] in
+            // Hide Add and Home buttons
+            hideButtons()
+            
+            // Present dialog for creating album
+            showCreateCategoryDialog()
+            
+            // Reset action of Add button
+            addButton.removeTarget(self, action: #selector(didCancelTapAddButton), for: .touchUpInside)
+            addButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        }
     }
-
+    
     @MainActor
     func showCreateCategoryDialog() {
         let alert = UIAlertController(
@@ -73,14 +96,12 @@ extension AlbumViewController
         if let createAlbumAction = createAlbumAction {
             alert.addAction(createAlbumAction)
         }
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = PwgColor.tintColor
         alert.view.accessibilityIdentifier = "CreateAlbum"
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
 
@@ -129,8 +150,7 @@ extension AlbumViewController
     private func addCategoryError(_ error: Error) {
         self.hideHUD() { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgSessionError,
-               [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+            if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
                 ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
                 return
             }

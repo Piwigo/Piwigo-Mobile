@@ -45,10 +45,12 @@ class PendingOperations {
 class ObjectPreparation : Operation, @unchecked Sendable {
     let pbObject: PasteboardObject
     let index: Int
+    let scale: CGFloat
 
-    init(_ pbObject: PasteboardObject, at index:Int) {
+    init(_ pbObject: PasteboardObject, at index:Int, scale: CGFloat) {
         self.pbObject = pbObject
         self.index = index
+        self.scale = scale
     }
     
     override func main () {
@@ -69,7 +71,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
             }
             
             // Update object
-            pbObject.md5Sum = movieData.MD5checksum()
+            pbObject.md5Sum = movieData.MD5checksum
             pbObject.identifier.append(".\(fileExt)")
 
             // Store movie data
@@ -83,7 +85,7 @@ class ObjectPreparation : Operation, @unchecked Sendable {
             }
 
             // Update object
-            pbObject.md5Sum = imageData.MD5checksum()
+            pbObject.md5Sum = imageData.MD5checksum
             pbObject.identifier.append(".\(fileExt)")
 
             // Store image data
@@ -197,12 +199,12 @@ class ObjectPreparation : Operation, @unchecked Sendable {
                 pbObject.image = AVURLAsset(url: fileURL)
                     .extractedImage()
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
-                    .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
+                    .resize(to: AlbumUtilities.kThumbnailFileSize, opaque: true, scale: scale)
             } else {
                 pbObject.image = (UIImage(data: data) ?? pwgImageType.image.placeHolder)
                     .fixOrientation()
                     .crop(width: 1.0, height: 1.0) ?? pwgImageType.image.placeHolder
-                    .resize(to: AlbumUtilities.kThumbnailFileSize * UIScreen.main.scale, opaque: true)
+                    .resize(to: AlbumUtilities.kThumbnailFileSize, opaque: true, scale: scale)
             }
         }
         catch let error {

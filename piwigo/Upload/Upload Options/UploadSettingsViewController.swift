@@ -59,10 +59,10 @@ class UploadSettingsViewController: UITableViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Table view
-        settingsTableView.separatorColor = .piwigoColorSeparator()
+        settingsTableView.separatorColor = PwgColor.separator
         settingsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }

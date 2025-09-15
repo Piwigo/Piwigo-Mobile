@@ -57,23 +57,8 @@ class DateFormatSelectorViewController: UIViewController {
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
 
         // Header
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date"))
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
-                                           range: NSRange(location: 0, length: title.count))
-        headerAttributedString.append(titleAttributedString)
-        let text = NSLocalizedString("settings_renameDateHeader", comment: "Please select a date format…")
-        let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
-                                          range: NSRange(location: 0, length: text.count))
-        headerAttributedString.append(textAttributedString)
-        headerLabel.attributedText = headerAttributedString
-        headerLabel.sizeToFit()
+        setMainHeader()
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
-        
         // Initialise section in appropriate order
         dateSections = []
         for dateFormat in dateFormats {
@@ -97,36 +82,17 @@ class DateFormatSelectorViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-        
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
-        
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Header and example
-        headerLabel.textColor = .piwigoColorHeader()
-        exampleLabel.textColor = .piwigoColorText()
+        headerLabel.textColor = PwgColor.header
+        exampleLabel.textColor = PwgColor.text
 
         // Table view
-        tableView.separatorColor = .piwigoColorSeparator()
+        tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
@@ -137,9 +103,16 @@ class DateFormatSelectorViewController: UIViewController {
         // Update example shown in header
         updateExample()
         
+        // Set colors, fonts, etc.
+        applyColorPalette()
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -154,6 +127,41 @@ class DateFormatSelectorViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Update content sizes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Update header
+            self.setMainHeader()
+            self.updateExample()
+            
+            // Animated update for smoother experience
+            self.tableView?.beginUpdates()
+            self.tableView?.endUpdates()
+
+            // Update navigation bar
+            self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+        }
+    }
+    
+    private func setMainHeader() {
+        let headerAttributedString = NSMutableAttributedString(string: "")
+        let title = String(format: "%@\n", RenameAction.ActionType.addDate.name)
+        let titleAttributedString = NSMutableAttributedString(string: title)
+        titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
+                                           range: NSRange(location: 0, length: title.count))
+        headerAttributedString.append(titleAttributedString)
+        let text = NSLocalizedString("settings_renameDateHeader", comment: "Please select a date format…")
+        let textAttributedString = NSMutableAttributedString(string: text)
+        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
+                                          range: NSRange(location: 0, length: text.count))
+        headerAttributedString.append(textAttributedString)
+        headerLabel.attributedText = headerAttributedString
+        headerLabel.sizeToFit()
+    }
+
 
     // MARK: - Date Format Utilities
     func indexPathsOfOptions(in section: Int) -> [IndexPath] {

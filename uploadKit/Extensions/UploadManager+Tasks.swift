@@ -23,7 +23,7 @@ extension UploadManager
     ///        and setting all parameters like pwg.images.setInfo.
     ///
     /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
-    ///   and the BackgroundTasks farmework (iOS 13+)
+    ///   and the BackgroundTasks farmework
     public func findNextImageToUpload() -> Void {
         // for debugging background tasks
 //        return
@@ -52,7 +52,7 @@ extension UploadManager
         /// - Wi-Fi required but unavailable
         if isPaused || isExecutingBackgroundUploadTask ||
             ProcessInfo.processInfo.isLowPowerModeEnabled ||
-            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi()) {
+            (UploadVars.shared.wifiOnlyUploading && !NetworkVars.shared.isConnectedToWiFi) {
             return
         }
         
@@ -62,7 +62,7 @@ extension UploadManager
         if !isFinishing, finishing.count > 0 {
             // Transfers encountered an error
             finishing.forEach({ upload in
-                upload.setState(.finishingError, error: PwgSessionError.networkUnavailable, save: false)
+                upload.setState(.finishingError, error: PwgKitError.networkUnavailable, save: false)
             })
             uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
@@ -74,7 +74,7 @@ extension UploadManager
             for upload in uploading {
                 if isUploading.contains(upload.objectID) == false {
                     // Transfer encountered an error
-                    upload.setState(.uploadingError, error: PwgSessionError.networkUnavailable, save: true)
+                    upload.setState(.uploadingError, error: PwgKitError.networkUnavailable, save: true)
                     findNextImageToUpload()
                 }
             }
@@ -85,7 +85,7 @@ extension UploadManager
         if isPreparing == false, preparing.count > 0 {
             // Preparations encountered an error
             preparing.forEach { upload in
-                upload.setState(.preparingError, error: UploadError.missingAsset, save: false)
+                upload.setState(.preparingError, error: PwgKitError.missingAsset, save: false)
             }
             uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
@@ -223,7 +223,7 @@ extension UploadManager
      - getUploadRequests() returns a series of upload requests to deal with
      - photos and videos are prepared sequentially to reduce the memory needs
      - uploads are launched in the background with the method pwg.images.uploadAsync
-     and the BackgroundTasks farmework (iOS 13+)
+       and the BackgroundTasks farmework
      - The number of bytes to be transferred is calculated and limited.
      - A delay is set between series of upload tasks to prevent server overloads
      - Failing tasks are automatically retried by iOS

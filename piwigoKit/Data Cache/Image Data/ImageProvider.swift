@@ -116,8 +116,8 @@ public class ImageProvider: NSObject {
      */
     public func fetchImages(ofAlbumWithId albumId: Int32, withQuery query: String,
                             sort: pwgImageSort, fromPage page:Int, perPage: Int,
-                            completed: @escaping (Set<Int64>, Int64, Bool) -> Void,
-                            failed: @escaping (Error) -> Void) {
+                            completion: @escaping (Set<Int64>, Int64, Bool) -> Void,
+                            failure: @escaping (PwgKitError) -> Void) {
         debugPrint("••> Fetch images of album \(albumId) at page \(page)…")
         // Prepare parameters for collecting image data
         var method = pwgCategoriesGetImages
@@ -129,7 +129,7 @@ public class ImageProvider: NSObject {
         switch albumId {
         case pwgSmartAlbum.search.rawValue:
             method = pwgImagesSearch
-            paramsDict["query"] = query
+            paramsDict["query"] = "*" + query + "*"
 
         case pwgSmartAlbum.visits.rawValue:
             paramsDict["recursive"] = true
@@ -164,25 +164,17 @@ public class ImageProvider: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: method, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesGetImagesJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
-            // Decode the JSON object and import it into Core Data.
-            DispatchQueue.global(qos: .background).async { [self] in
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
+            switch result {
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
+                    return
+                }
+                
+                // Import image data into Core Data.
                 do {
-                    // Initialisation
-                    var totalCount = Int64.zero
-                    
-                    // Decode the JSON into codable type CategoriesGetImagesJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(CategoriesGetImagesJSON.self, from: jsonData)
-                    
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        failed(error)
-                        return
-                    }
-                    
-                    // Import the imageJSON into Core Data.
                     if [.rankAscending, .random].contains(sort) {
                         let startRank = Int64(page * perPage)
                         try self.importImages(pwgData.data, inAlbum: albumId,
@@ -192,6 +184,7 @@ public class ImageProvider: NSObject {
                     }
                     
                     // Retrieve total number of images
+                    var totalCount = Int64.zero
                     if albumId == pwgSmartAlbum.favorites.rawValue {
                         totalCount = pwgData.paging?.count ?? Int64.zero
                     } else {
@@ -215,18 +208,21 @@ public class ImageProvider: NSObject {
                        pwgData.data.firstIndex(where: { $0.downloadUrl == nil }) == nil {
                         hasDownloadRight = true
                     }
-                    completed(fetchedImageIds, totalCount, hasDownloadRight)
-                    
-                } catch {
-                    // Alert the user if data cannot be digested.
-                    failed(error)
+                    completion(fetchedImageIds, totalCount, hasDownloadRight)
                 }
+                catch let error as DecodingError {
+                    failure(.decodingFailed(innerError: error))
+                }
+                catch {
+                    failure(.otherError(innerError: error))
+                }
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failed(error)
         }
     }
     
@@ -244,7 +240,7 @@ public class ImageProvider: NSObject {
      */
     public func getInfos(forID imageId: Int64, inCategoryId albumId: Int32,
                          completion: @escaping () -> Void,
-                         failure: @escaping (Error) -> Void) {
+                         failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id" : imageId]
         
@@ -252,35 +248,35 @@ public class ImageProvider: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesGetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesGetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 50000) { jsonData in
-            // Decode the JSON object and store image data in cache.
-            do {
-                // Decode the JSON into codable type ImagesGetInfoJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 50000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 // Import the imageJSON into Core Data
                 // The provided sort option will not change the rankManual/rankRandom values.
-                try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
-                
-                completion()
-            }
-            catch {
-                // Data cannot be digested
+                do {
+                    try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
+                    
+                    completion()
+                }
+                catch let error as DecodingError {
+                    failure(.decodingFailed(innerError: error))
+                }
+                catch {
+                    failure(.otherError(innerError: error))
+                }
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
@@ -396,7 +392,9 @@ public class ImageProvider: NSObject {
             for imageData in imagesBatch {
                 
                 // Stop importing images if user cancelled the search
-                if userDidCancelSearch { break }
+                if userDidCancelSearch {
+                    break
+                }
                 
                 // Check that this image belongs at least to the current album
                 var albums: Set<Album> = [album]
@@ -425,9 +423,9 @@ public class ImageProvider: NSObject {
                                                        sort: sort, rank: rank,
                                                        user: user, albums: albums)
                     }
-                    catch ImageError.missingData {
+                    catch PwgKitError.missingImageData {
                         // Could not perform the update
-                        debugPrint(ImageError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingImageData.localizedDescription)
                     }
                     catch {
                         debugPrint(error.localizedDescription)
@@ -437,14 +435,14 @@ public class ImageProvider: NSObject {
                     // Create a Sizes managed object on the private queue context.
                     guard let sizes = NSEntityDescription.insertNewObject(forEntityName: "Sizes",
                                                                           into: bckgContext) as? Sizes else {
-                        debugPrint(ImageError.creationError.localizedDescription)
+                        debugPrint(PwgKitError.creationImageError.localizedDescription)
                         return
                     }
 
                     // Create an Image managed object on the private queue context.
                     guard let image = NSEntityDescription.insertNewObject(forEntityName: "Image",
                                                                           into: bckgContext) as? Image else {
-                        debugPrint(ImageError.creationError.localizedDescription)
+                        debugPrint(PwgKitError.creationImageError.localizedDescription)
                         return
                     }
                     
@@ -463,9 +461,9 @@ public class ImageProvider: NSObject {
                             }
                         }
                     }
-                    catch ImageError.missingData {
+                    catch PwgKitError.missingImageData {
                         // Delete invalid Image from the private queue context.
-                        debugPrint(ImageError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingImageData.localizedDescription)
                         bckgContext.delete(image)
                     }
                     catch {

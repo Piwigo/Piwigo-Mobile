@@ -20,7 +20,7 @@ class LoginUtilities: NSObject {
     
     // MARK: - Login Business
     @MainActor
-    static func checkAvailableSizes() {
+    static func checkAvailableSizes(forScale scale: CGFloat) {
         // Check that the actual default album thumbnail size is available
         // and select the next available size in case of unavailability
         switch pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) {
@@ -316,7 +316,9 @@ class LoginUtilities: NSObject {
         }
 
         // Calculate number of thumbnails per row for that selection
-        let minNberOfImages: Int = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: (pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb).minPoints)
+        let albumThumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
+        let albumThmbnailWidth = albumThumbnailSize.minPoints(forScale: scale)
+        let minNberOfImages: Int = AlbumUtilities.imagesPerRowInPortrait(forMaxWidth: albumThmbnailWidth)
 
         // Make sure that default number fits inside selected range
         AlbumVars.shared.thumbnailsPerRowInPortrait = max(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);
@@ -516,10 +518,8 @@ class LoginUtilities: NSObject {
             style: .default, handler: loginAction)
         alert.addAction(loginAction)
 
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         return alert
     }
 }

@@ -11,8 +11,42 @@ import UIKit
 
 extension String
 {    
+    // MARK: - UTF-8 encoding on 3 and 4 bytes
+    public var utf8mb4Encoded: String {
+        // Return empty string if nothing provided
+        guard self.isEmpty == false
+        else { return "" }
+        
+        // Convert string to UTF-8 encoding
+        let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
+        if let strData = self.data(using: serverEncoding, allowLossyConversion: true) {
+            return String(data: strData, encoding: .utf8) ?? self
+        }
+        return ""
+    }
+
+    public var utf8mb3Encoded: String {
+        // Return empty string if nothing provided
+        guard self.isEmpty == false
+        else { return "" }
+
+        // Replace characters encoded on 4 bytes
+        var utf8mb3String = ""
+        for char in self {
+            if char.utf8.count > 3 {
+                // 4-byte char => Not handled by Piwigo Server
+                utf8mb3String.append("\u{FFFD}")  // Use the Unicode replacement character
+            } else {
+                // Up to 3-byte char
+                utf8mb3String.append(char)
+            }
+        }
+        return utf8mb3String
+    }
+
+    
     // MARK: - HTML Conversion
-    public func attributedPlain() -> NSAttributedString {
+    public var attributedPlain: NSAttributedString {
         // Remove any white space or newline located at the beginning or end
         // and then spaces located at the beginning or end of each line
         let trimmedText = self.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -28,7 +62,7 @@ extension String
         return NSAttributedString(string: trimmedText)
     }
 
-    public func containsHTML() -> Bool {
+    public var containsHTML: Bool {
         let lowerCaseText = self.lowercased()
         if lowerCaseText.hasPrefix("<!doctype html") ||
             lowerCaseText.hasPrefix("<html") ||
@@ -38,7 +72,7 @@ extension String
         return false
     }
     
-    public func attributedHTML() -> NSAttributedString {
+    public var attributedHTML: NSAttributedString {
         // Remove any white space or newline located at the beginning or end
         let trimmedText = self.trimmingCharacters(in: .whitespacesAndNewlines)
         
@@ -47,7 +81,7 @@ extension String
         else { return NSAttributedString() }
         
         // Detect if its contains HTML text
-        guard trimmedText.containsHTML()
+        guard trimmedText.containsHTML
         else { return NSAttributedString() }
         
         // Decode HTML code if possible

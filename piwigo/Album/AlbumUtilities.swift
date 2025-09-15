@@ -26,8 +26,6 @@ class AlbumUtilities: NSObject {
     static let kAlbumCellSpacing = CGFloat(8)               // Horizontal spacing between album cells
     static let kAlbumCellVertSpacing = CGFloat(8)           // Vertical spacing between album cells
     static let kAlbumMarginsSpacing = CGFloat(4)            // Left and right margins for albums
-    static let kAlbumOldCellSpacing = CGFloat(4)            // Horizontal spacing between old album cells
-//    static let kAlbumOldCellVertSpacing = CGFloat(0)        // Vertical spacing between old album cells
     
     static let kImageCellSpacing4iPhone = CGFloat(1)        // Spacing between images (horizontally and vertically)
     static let kImageCellHorSpacing4iPad = CGFloat(8)
@@ -42,92 +40,10 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Piwigo Server Methods
-    //    static func getAlbums(completion: @escaping (Bool) -> Void,
-    //                          failure: @escaping (NSError) -> Void) {
-    //
-    //        // Prepare parameters for setting album thumbnail
-    //        let paramsDict: [String : Any] = [
-    //            "cat_id"            : 0,
-    //            "recursive"         : true,
-    //            "faked_by_community": NetworkVars.shared.usesCommunityPluginV29 ? "false" : "true",
-    //            "thumbnail_size"    : thumbnailSizeArg()
-    //        ]
-    //
-    //        let JSONsession = PwgSession.shared
-    //        JSONsession.postRequest(withMethod: pwgCategoriesGetList, paramDict: paramsDict,
-    //                                jsonObjectClientExpectsToReceive: CategoriesGetListJSON.self,
-    //                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-    //            // Decode the JSON object and update the category cache.
-    //            do {
-    //                // Decode the JSON into codable type CategoriesGetListJSON.
-    //                let decoder = JSONDecoder()
-    //                let uploadJSON = try decoder.decode(CategoriesGetListJSON.self, from: jsonData)
-    //
-    //                // Piwigo error?
-    //                if uploadJSON.errorCode != 0 {
-    //                    let error = PwgSession.shared.error(for: uploadJSON.errorCode,
-    //                                                                 errorMessage: uploadJSON.errorMessage)
-    //                    failure(error as NSError)
-    //                    return
-    //                }
-    //
-    //                // Extract albums data from JSON message
-    //                let albums = parseAlbumJSON(uploadJSON.data)
-    //
-    //                // Update Categories Data cache
-    //                let didUpdateCats = CategoriesData.sharedInstance().replaceAllCategories(albums)
-    //
-    //                // Check whether the auto-upload category still exists
-    //                let autoUploadCatId = UploadVars.shared.autoUploadCategoryId
-    //                let indexOfAutoUpload = albums.firstIndex(where: {$0.albumId == autoUploadCatId})
-    //                if indexOfAutoUpload == Int32.min {
-    //                    UploadManager.shared.disableAutoUpload()
-    //                }
-    //
-    //                // Check whether the default album still exists
-    //                let defaultCatId = AlbumVars.shared.defaultCategory
-    //                if defaultCatId != 0 {
-    //                    let indexOfDefault = albums.firstIndex(where: {$0.albumId == defaultCatId})
-    //                    if indexOfDefault == Int32.min {
-    //                        AlbumVars.shared.defaultCategory = 0    // Back to root album
-    //                    }
-    //                }
-    //
-    //                // Update albums if Community extension installed (not needed for admins)
-    //                if !NetworkVars.shared.hasAdminRights,
-    //                   NetworkVars.shared.usesCommunityPluginV29 {
-    //                    getCommunityAlbums { comAlbums in
-    //                        // Loop over Community albums
-    //                        for comAlbum in comAlbums {
-    //                            CategoriesData.sharedInstance().addCommunityCategory(withUploadRights: comAlbum)
-    //                        }
-    //                        // Return albums
-    //                        completion(didUpdateCats)
-    //                        return
-    //                    } failure: { _ in
-    //                        // Continue without Community albums
-    //                    }
-    //                } else {
-    //                    completion(didUpdateCats)
-    //                }
-    //            }
-    //            catch {
-    //                // Data cannot be digested
-    //                let error = error as NSError
-    //                failure(error)
-    //            }
-    //        } failure: { error in
-    //            /// - Network communication errors
-    //            /// - Returned JSON data is empty
-    //            /// - Cannot decode data returned by Piwigo server
-    //            failure(error)
-    //        }
-    //    }
-    
     static func create(withName name:String, description: String, status: String,
                        inAlbumWithId parentAlbumId: Int32,
                        completion: @escaping (Int32) -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["name"    : name,
@@ -138,17 +54,12 @@ class AlbumUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 1040) { jsonData in
-            // Decode the JSON object and update the category in cache.
-            do {
-                // Decode the JSON into codable type CategoriesAddJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CategoriesAddJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1040) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -162,23 +73,21 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not create album
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func setInfos(_ albumId: Int32, withName name:String, description: String,
                          completion: @escaping () -> Void,
-                         failure: @escaping (Error) -> Void) {
+                         failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
@@ -188,17 +97,12 @@ class AlbumUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and update the category in cache.
-            do {
-                // Decode the JSON into codable type CategoriesSetInfoJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CategoriesSetInfoJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -209,23 +113,21 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album data
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func move(_ albumId: Int32, intoAlbumWithId newParentId: Int32,
                      completion: @escaping () -> Void,
-                     failure: @escaping (Error) -> Void) {
+                     failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "parent"      : newParentId,
@@ -234,17 +136,12 @@ class AlbumUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesMove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and update the category in cache.
-            do {
-                // Decode the JSON into codable type CategoriesMoveJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CategoriesMoveJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -255,66 +152,57 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not move album
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func calcOrphans(_ catID: Int32,
                             completion: @escaping (Int64) -> Void,
-                            failure: @escaping (Error) -> Void) {
+                            failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id": catID]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesCalcOrphans, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesCalcOrphansJSON.self,
-                                countOfBytesClientExpectsToReceive: 2100) { jsonData in
-            // Decode the JSON object and update the category in cache.
-            do {
-                // Decode the JSON into codable type CategoriesCalcOrphansJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CategoriesCalcOrphansJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 2100) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
                 // Data retrieved successfully?
                 guard let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan else {
                     // Could not retrieve number of orphans
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                     return
                 }
                 
                 completion(nberOrphans)
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func delete(_ catID: Int32, inMode mode: pwgAlbumDeletionMode,
                        completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id"         : catID,
                                           "photo_deletion_mode" : mode.pwgArg,
@@ -323,17 +211,12 @@ class AlbumUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and update the category in cache.
-            do {
-                // Decode the JSON into codable type CategoriesDeleteJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CategoriesDeleteJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -347,23 +230,21 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not delete album
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+                
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func setRepresentative(_ albumData: Album, with imageData: Image,
                                   completion: @escaping () -> Void,
-                                  failure: @escaping (Error) -> Void) {
+                                  failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for setting album thumbnail
         let paramsDict: [String : Any] = ["category_id" : albumData.pwgID,
                                           "image_id"    : imageData.pwgID]
@@ -371,17 +252,12 @@ class AlbumUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetRepresentative, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: CategoriesSetRepresentativeJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and update the category in cache.
-            do {
-                // Decode the JSON into codable type CategoriesSetRepresentativeJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CategoriesSetRepresentativeJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -395,17 +271,15 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album thumbnail
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
@@ -430,13 +304,7 @@ class AlbumUtilities: NSObject {
     
     static func viewWidth(for view: UIView, pageSize: CGSize) -> CGFloat {
         // Available width in portrait mode
-        var orientation: UIInterfaceOrientation = .portrait
-        if #available(iOS 13, *) {
-            // Interface depends on device and orientation
-            orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         return orientation == .portrait ? pageSize.width : pageSize.height
     }
     
@@ -445,14 +313,13 @@ class AlbumUtilities: NSObject {
     static func optimumAlbumThumbnailSizeForDevice() -> pwgImageSize {
         // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
         let albumThumbnailSize: CGFloat = 144
-//        if #available(iOS 13.0, *) {
-//            albumThumbnailSize *= pwgImageSize.maxSaliencyScale
-//        }
+//        albumThumbnailSize *= pwgImageSize.maxSaliencyScale
         
         // Loop over all sizes
+        let scale = AppVars.shared.currentDeviceScale
         let sizes = pwgImageSize.allCases.dropLast(1)
         for size in sizes {
-            if size.minPoints >= albumThumbnailSize {
+            if size.minPoints(forScale: scale) >= albumThumbnailSize {
                 return size
             }
         }
@@ -462,15 +329,9 @@ class AlbumUtilities: NSObject {
     static func albumWidth(forSafeAreaSize size: CGSize, maxCellWidth: CGFloat) -> CGFloat
     {
         // Collection view margins and spacings
-        var margins: CGFloat, spacing: CGFloat
-        if AlbumVars.shared.displayAlbumDescriptions {
-            margins = 0.0
-            spacing = kAlbumOldCellSpacing
-        } else {
-            margins = 2 * kAlbumMarginsSpacing
-            spacing = kAlbumCellSpacing
-        }
-
+        let margins: CGFloat = 2 * kAlbumMarginsSpacing
+        let spacing: CGFloat = kAlbumCellSpacing
+        
         // Number of albums per row in portrait
         let widthInPortrait = min(size.width, size.height)
         let numerator = widthInPortrait + spacing - margins
@@ -501,8 +362,9 @@ class AlbumUtilities: NSObject {
         // Returns the lowest size of sufficient resolution
         // to display the minimum number of thumbnails on the device.
         let sizes = pwgImageSize.allCases.dropLast(1)   // Avoids full resolution
+        let scale = AppVars.shared.currentDeviceScale
         for size in sizes {
-            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPoints)
+            let nbImages = imagesPerRowInPortrait(forMaxWidth: size.minPoints(forScale: scale))
             if nbImages <= minNberOfImagesPerRow {
                 return size
             }
@@ -612,7 +474,9 @@ class AlbumUtilities: NSObject {
     }
     
     // MARK: - Album/Images Collections | Image Section
-    static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool) -> (String, String) {
+    static func getDateLabels(for timeIntervals: [TimeInterval], arePwgDates: Bool,
+                              preferredContenSize: UIContentSizeCategory, width: CGFloat) -> (String, String) {
+//        debugPrint("getDateLabels for \(preferredContenSize)")
         // Creation date of images (or of availability)
         let refDate = DateUtilities.unknownDateInterval     // i.e. unknown date
         var dateLabelText = " "                             // Displayed when there is no date available
@@ -639,125 +503,442 @@ class AlbumUtilities: NSObject {
         }
         
         // Determine if images of this section were all taken after "1900-01-08 00:00:00 UTC"
-        if lowest > DateUtilities.weekAfterInterval, lowest < TimeInterval.greatestFiniteMagnitude {
+        guard lowest > DateUtilities.weekAfterInterval,
+              lowest < TimeInterval.greatestFiniteMagnitude
+        else { return (dateLabelText, optionalDateLabelText) }
+        
+        // Get starting date
+        let startDate = Date(timeIntervalSinceReferenceDate: lowest)
+        
+        // Get ending date
+        let endDate: Date
+        if greatest > DateUtilities.weekAfterInterval, greatest != lowest {
             // Get correspondig date
-            let startDate = Date(timeIntervalSinceReferenceDate: lowest)
-            
-            // Display date/month/year by default, will add weekday/time in the absence of location data
-            let dateStyle: DateFormatter.Style = UIScreen.main.bounds.size.width > 400 ? .long : .medium
-            dateLabelText = DateFormatter.localizedString(from: startDate, dateStyle: dateStyle, timeStyle: .none)
-            
+            endDate = Date(timeIntervalSinceReferenceDate: greatest)
+        } else {
+            endDate = startDate
+        }
+        
+        // Single date?
+        if startDate == endDate {
+            // Display day/month/year above and weekday/time below if possible
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-            let optFormatter = DateUtilities.dateFormatter()
-            if arePwgDates {
-                switch UIScreen.main.bounds.size.width {
-                case 0..<400:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
-                case 400...600:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm")
-                default:
-                    optFormatter.setLocalizedDateFormatFromTemplate("eeee HH:mm:ss")
-                }
-            } else {
-                optFormatter.setLocalizedDateFormatFromTemplate("eeee")
-            }
-            optionalDateLabelText = optFormatter.string(from: startDate)
-            
-            // Get creation date of last image and check that it is after "1900-01-08 00:00:00"
-            if greatest > DateUtilities.weekAfterInterval, greatest != lowest {
-                // Get correspondig date
-                let endDate = Date(timeIntervalSinceReferenceDate: greatest)
-
-                // Images taken the same day?
-                let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
-                let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
-                if firstImageDay == lastImageDay {
-                    // Images were taken the same day
-                    // => Keep dateLabel as already set
-                    // => Add ending time to optional string
-                    if arePwgDates {
-                        let timeStyle = UIScreen.main.bounds.size.width > 600 ? "HH:mm:ss" : "HH:mm"
-                        optFormatter.setLocalizedDateFormatFromTemplate(timeStyle)
-                        optionalDateLabelText += " - " + optFormatter.string(from: endDate)
-                    }
-                    return (dateLabelText, optionalDateLabelText)
-                }
-                
-                // => Images taken the same month?
-                let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
-                let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
-                if firstImageMonth == lastImageMonth {
-                    // Images taken during the same month => Display days of month
-                    let dateFormatter = DateIntervalFormatter()
-                    dateFormatter.timeStyle = .none
-                    switch UIScreen.main.bounds.size.width {
-                    case 0..<400:
-                        dateFormatter.dateStyle = .medium
-                    default:
-                        dateFormatter.dateStyle = .long
-                    }
-                    dateLabelText = dateFormatter.string(from: startDate, to: endDate)
-                    
-                    // Define optional string with day/time values
-                    // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                    let optFormatter = DateUtilities.dateFormatter()
-                    optFormatter.locale = .current
-                    if arePwgDates {
-                        switch UIScreen.main.bounds.size.width {
-                        case 0..<400:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
-                        case 400..<600:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
-                        default:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
-                        }
-                    } else {
-                        switch UIScreen.main.bounds.size.width {
-                        case 0..<400:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eee d")
-                        default:
-                            optFormatter.setLocalizedDateFormatFromTemplate("eeee d")
-                        }
-                    }
-                    optionalDateLabelText = optFormatter.string(from: startDate) + " — " + optFormatter.string(from: endDate)
-                    return (dateLabelText, optionalDateLabelText)
-                }
-                
-                // => Images not taken the same month => Display day/month of year
-                let dateFormatter = DateUtilities.dateIntervalFormatter()
-                dateFormatter.timeStyle = .none
-                switch UIScreen.main.bounds.size.width {
-                case 0..<400:
-                    dateFormatter.dateTemplate = "YYMMdd"
-                case 400..<600:
-                    dateFormatter.dateStyle = .medium
-                default:
-                    dateFormatter.dateStyle = .long
-                }
-                dateLabelText = dateFormatter.string(from: startDate, to: endDate)
-                
-                // Define optional string with day/time values
-                // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
-                let optFormatter = DateUtilities.dateFormatter()
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
                 if arePwgDates {
-                    switch UIScreen.main.bounds.size.width {
-                    case 0..<400:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eee HH:mm")
-                    case 400..<600:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm")
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute() .second())
+                } else {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday())
+                }
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                }
+                if arePwgDates {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute())
+                } else {
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday())
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                optionalDateLabelText = ""
+
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+ 
+        // Images taken the same day?
+        let dateRange = startDate..<endDate
+        let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+        let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
+        if firstImageDay == lastImageDay {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) .hour() .minute() .second())
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                }
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                }
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.abbreviated) .hour() .minute())
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                }
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                optionalDateLabelText = ""
+
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+
+        // Images taken the same week?
+        let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: startDate)
+        let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: endDate)
+        if firstImageWeek == lastImageWeek {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.short) .hour() .minute())
+                    case 376...402:
+                        fallthrough
                     default:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d HH:mm:ss")
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute()))
                     }
                 } else {
-                    switch UIScreen.main.bounds.size.width {
-                    case 0..<400:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eee d")
-                    default:
-                        optFormatter.setLocalizedDateFormatFromTemplate("eeee d")
-                    }
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
                 }
-                optionalDateLabelText = optFormatter.string(from: startDate) + " — " + optFormatter.string(from: endDate)
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.abbreviated) .year())
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.wide) .year())
+                }
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.wide))
+                    case 376...402:
+                        fallthrough
+                    default:
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute()))
+                    }
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                optionalDateLabelText = ""
+
+            default:
+                break
             }
+            return (dateLabelText, optionalDateLabelText)
+        }
+
+        // Images taken the same month?
+        let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
+        let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
+        if firstImageMonth == lastImageMonth {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.abbreviated) .hour() .minute())
+                    case 376...402:
+                        fallthrough
+                    default:
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.wide) .hour() .minute()))
+                    }
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                }
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.abbreviated) .year())
+                case 376...402:
+                    fallthrough
+                default:
+                    dateLabelText = dateRange.formatted(.interval
+                        .day() .month(.wide) .year())
+                }
+                if arePwgDates {
+                    switch width {
+                    case ...375:
+                        optionalDateLabelText = dateRange.formatted(.interval
+                            .weekday(.narrow) .hour())
+                    case 376...402:
+                        fallthrough
+                    default:
+                        optionalDateLabelText = startDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateLabelText.append(" - ")
+                        optionalDateLabelText.append(endDate.formatted(.dateTime
+                            .weekday(.abbreviated) .hour() .minute()))
+                    }
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                optionalDateLabelText = ""
+
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                optionalDateLabelText = ""
+
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+        
+        // Images taken the same year?
+        let firstImageYear = Calendar.current.dateComponents([.year], from: startDate)
+        let lastImageYear = Calendar.current.dateComponents([.year], from: endDate)
+        if firstImageYear == lastImageYear {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) .day())
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                }
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.twoDigits) .year())
+                if arePwgDates {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.abbreviated))
+                } else {
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide) )
+                }
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated))
+                optionalDateLabelText = ""
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits))
+                optionalDateLabelText = ""
+                
+            default:
+                break
+            }
+            return (dateLabelText, optionalDateLabelText)
+        }
+
+        // Images not taken the same year
+        switch preferredContenSize {
+        case .extraSmall, .small, .medium, .large:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+            }
+            if arePwgDates {
+                optionalDateLabelText = startDate.formatted(.dateTime
+                    .weekday(.wide) .hour() .minute())
+                optionalDateLabelText.append(" - ")
+                optionalDateLabelText.append(endDate.formatted(.dateTime
+                    .weekday(.wide) .hour() .minute()))
+            } else {
+                optionalDateLabelText = dateRange.formatted(.interval
+                    .weekday(.wide))
+            }
+            
+        case .extraLarge:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.twoDigits) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            }
+            if arePwgDates {
+                switch width {
+                case ...375:
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                case 376...402:
+                    fallthrough
+                default:
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute())
+                    optionalDateLabelText.append(" - ")
+                    optionalDateLabelText.append(endDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute()))
+                }
+            } else {
+                optionalDateLabelText = dateRange.formatted(.interval
+                    .weekday(.wide) )
+            }
+
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            }
+            if arePwgDates {
+                switch width {
+                case ...375:
+                    optionalDateLabelText = dateRange.formatted(.interval
+                        .weekday(.wide))
+                case 376...402:
+                    fallthrough
+                default:
+                    optionalDateLabelText = startDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute())
+                    optionalDateLabelText.append(" - ")
+                    optionalDateLabelText.append(endDate.formatted(.dateTime
+                        .weekday(.wide) .hour() .minute()))
+                }
+            } else {
+                optionalDateLabelText = dateRange.formatted(.interval
+                    .weekday(.wide) )
+            }
+
+        case .accessibilityMedium:
+            switch width {
+            case ...375:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+            }
+            optionalDateLabelText = ""
+
+        case .accessibilityLarge, .accessibilityExtraLarge:
+            dateLabelText = dateRange.formatted(.interval
+                .year())
+            optionalDateLabelText = ""
+
+        case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            switch width {
+            case ...375:
+                dateLabelText = startDate.formatted(.dateTime
+                    .year(.twoDigits))
+                dateLabelText.append(" - ")
+                dateLabelText.append(endDate.formatted(.dateTime
+                    .year(.twoDigits)))
+                optionalDateLabelText = ""
+            case 376...402:
+                fallthrough
+            default:
+                dateLabelText = dateRange.formatted(.interval
+                    .year())
+            }
+
+        default:
+            break
         }
         return (dateLabelText, optionalDateLabelText)
     }
@@ -765,11 +946,7 @@ class AlbumUtilities: NSObject {
     static func getLocation(of images: [Image]) -> CLLocation {
         // Initialise location of section with invalid location
         var verticalAccuracy = CLLocationAccuracy.zero
-        if #available(iOS 14, *) {
-            verticalAccuracy = kCLLocationAccuracyReduced
-        } else {
-            verticalAccuracy = kCLLocationAccuracyThreeKilometers
-        }
+        verticalAccuracy = kCLLocationAccuracyReduced
         var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
                                             altitude: CLLocationDistance(0.0),
                                             horizontalAccuracy: kCLLocationAccuracyBest,

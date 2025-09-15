@@ -154,15 +154,13 @@ class TagsViewController: UITableViewController {
     @MainActor
     private func didFetchTagsWithError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-            .contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
 
         // Report error
-        let title = TagError.fetchFailed.localizedDescription
+        let title = PwgKitError.tagCreationError.localizedDescription
         self.dismissPiwigoError(withTitle: title,
                                 message: error.localizedDescription) { }
     }
@@ -170,22 +168,16 @@ class TagsViewController: UITableViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
+        // Search bar
+        searchController.searchBar.configAppearance()
+        
         // Table view
-        tagsTableView?.separatorColor = .piwigoColorSeparator()
+        tagsTableView?.separatorColor = PwgColor.separator
         tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
@@ -412,9 +404,6 @@ extension TagsViewController: NSFetchedResultsControllerDelegate
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the tag list is not presented.
-        if #available(iOS 13, *), view.window == nil { return }
-        
         // Perform all updates
         tagsTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }

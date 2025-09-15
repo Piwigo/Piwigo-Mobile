@@ -157,7 +157,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
 
         // Fade out album view content
         let fadeView = UIView(frame: containerView.bounds)
-        fadeView.backgroundColor = .piwigoColorBackground()
+        fadeView.backgroundColor = PwgColor.background
         fadeView.alpha = 0
 
         // Fade in image preview navigation bar
@@ -234,7 +234,7 @@ final class ImageAnimatedTransitioning: NSObject, UIViewControllerAnimatedTransi
         
         // Add blank subview to display it in the container
         let toView = UIView(frame: containerView.bounds)
-        toView.backgroundColor = .piwigoColorBackground()
+        toView.backgroundColor = PwgColor.background
         containerView.addSubview(toView)
 
         // Calc frame of images at the start of the animation

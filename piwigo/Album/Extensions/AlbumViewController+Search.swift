@@ -16,20 +16,38 @@ extension AlbumViewController
     func initSearchBar() {
         searchController = UISearchController(searchResultsController: nil)
         searchController?.delegate = self
-        searchController?.hidesNavigationBarDuringPresentation = true
 
         searchController?.searchBar.searchBarStyle = .minimal
         searchController?.searchBar.isTranslucent = false
-        searchController?.searchBar.showsCancelButton = false
         searchController?.searchBar.showsSearchResultsButton = false
-        searchController?.searchBar.tintColor = UIColor.piwigoColorOrange()
         searchController?.searchBar.delegate = self // Monitor when the search button is tapped.
+        if #available(iOS 26.0, *) {
+            // UISearchController automatically manages the Cancel button's visibility
+            // when embedded in the navigation bar.
+            // Explicitly setting showsCancelButton = true in iOS 26 is conflicting
+            // with this automatic behavior.
+            searchController?.hidesNavigationBarDuringPresentation = false
+        } else {
+            // Fallback on previous version
+            searchController?.searchBar.showsCancelButton = false
+            searchController?.hidesNavigationBarDuringPresentation = true
+            if #available(iOS 16.0, *) {
+                switch view.traitCollection.userInterfaceIdiom {
+                case .phone:
+                    navigationItem.preferredSearchBarPlacement = .stacked
+                case .pad:
+                    navigationItem.preferredSearchBarPlacement = .inline
+                default:
+                    break
+                }
+            }
+        }
         definesPresentationContext = true
 
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
 
-        // Hide the search bar when scrolling
+        // Don't hide the search bar when scrolling
         navigationItem.hidesSearchBarWhenScrolling = false
     }
 }
@@ -53,11 +71,17 @@ extension AlbumViewController: UISearchControllerDelegate
         // Reload collection
         collectionView?.reloadData()
         
-        // Hide buttons and toolbar
-        hideButtons()
-        initBarsInPreviewMode()
-        setTitleViewFromAlbumData()
-        navigationController?.setToolbarHidden(true, animated: true)
+        // Adjust the interface
+        if #available(iOS 26.0, *) {
+            // Integrate the search bar into the toolbar
+            initBarsInPreviewMode()
+        }
+        else {
+            // Hide buttons and toolbar
+            hideButtons()
+            initBarsInPreviewMode()
+            setTitleViewFromAlbumData()
+        }
     }
     
     func didPresentSearchController(_ searchController: UISearchController) {
@@ -70,11 +94,14 @@ extension AlbumViewController: UISearchControllerDelegate
         // Deselect photos if needed
         cancelSelect()
 
+        // Re-allow fetching image data
+        imageProvider.userDidCancelSearch = false
+
         // Back to default album
         categoryId = AlbumVars.shared.defaultCategory
         
         // Title forgotten when searching immediately after launch
-        title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
         
         // Reset navigation bar
         applyColorPalette()
@@ -92,7 +119,9 @@ extension AlbumViewController: UISearchControllerDelegate
         collectionView?.reloadData()
         
         // Show buttons and navigation bar
-        updateButtons()
+        if #unavailable(iOS 26.0) {
+            updateButtons()
+        }
         initBarsInPreviewMode()
         setTitleViewFromAlbumData()
     }
@@ -126,8 +155,12 @@ extension AlbumViewController: UISearchBarDelegate
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         debugPrint("searchBarShouldBeginEditing…")
+        
         // Animates Cancel button appearance
-        searchBar.setShowsCancelButton(true, animated: true)
+        if #unavailable(iOS 26.0) {
+            // NOP — See initSearchBar() comment
+            searchBar.setShowsCancelButton(true, animated: true)
+        }
         return true
     }
     
@@ -170,21 +203,20 @@ extension AlbumViewController: UISearchBarDelegate
         // Stop image loader and image import
         imageProvider.userDidCancelSearch = true
 
-        // Animates Cancel button disappearance
-        searchBar.setShowsCancelButton(false, animated: true)
+        // Animates Cancel button appearance
+        if #unavailable(iOS 26.0) {
+            // NOP — See initSearchBar() comment
+            searchBar.setShowsCancelButton(false, animated: true)
+        }
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         debugPrint("searchBarSearchButtonClicked…")
-        // Animates Cancel button disappearance
-        searchBar.setShowsCancelButton(false, animated: true)
-
-        // Dismiss seach bar on iOS 12 only
-        if #available(iOS 13, *) {
-            // NOP
-        } else {
-            navigationController?.navigationBar.prefersLargeTitles = false
-            searchController?.dismiss(animated: true, completion: nil)
+        
+        // Animates Cancel button appearance
+        if #unavailable(iOS 26.0) {
+            // NOP — See initSearchBar() comment
+            searchBar.setShowsCancelButton(false, animated: true)
         }
     }
 }

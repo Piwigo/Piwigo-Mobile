@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class LocalImagesFooterReusableView: UICollectionReusableView {
 
@@ -15,7 +16,7 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
     func configure(with nberOfImages: Int) -> Void {
         
         // Appearance
-        nberOfImagesLabel.textColor = .piwigoColorHeader()
+        nberOfImagesLabel.textColor = PwgColor.header
         nberOfImagesLabel.font = .systemFont(ofSize: 17, weight: .light)
         
         // Number of images
@@ -28,8 +29,8 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
             numberFormatter.numberStyle = .decimal
             let nberPhotos = (numberFormatter.string(from: NSNumber(value: nberOfImages)) ?? "0") as String
             nberOfImagesLabel.text = nberOfImages > 1 ?
-                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                String(format: String(localized: "severalImagesCount", bundle: piwigoKit, comment: "%@ photos"), nberPhotos) :
+                String(format: String(localized: "singleImageCount", bundle: piwigoKit, comment: "%@ photo"), nberPhotos)
         }
     }
 }

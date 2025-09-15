@@ -16,6 +16,7 @@ import CoreData
     - an UUID which is later used to store images in cache,
     - the server path e.g. "mywebsite.com/piwigo".
  */
+@objc(Server)
 public class Server: NSManagedObject {
 
     /**
@@ -27,7 +28,7 @@ public class Server: NSManagedObject {
         // Server path
         guard path.isEmpty == false,
               let _ = URL(string: NetworkVars.shared.serverProtocol + path) else {
-            throw ServerError.wrongURL
+            throw PwgKitError.wrongServerURL
         }
         if self.path != path {
             self.path = path
@@ -55,7 +56,7 @@ public class Server: NSManagedObject {
     // MARK: - Cache Management
     public func getAlbumImageCount() -> String {
         // WAL checkpointing is not controllable ► not an appropriate solution
-//        let dataURL = DataDirectories.shared.appGroupDirectory
+//        let dataURL = DataDirectories.appGroupDirectory
 //        let folderSize = dataURL.folderSize
 //        return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
         
@@ -79,7 +80,7 @@ public class Server: NSManagedObject {
 
     public func getCacheSize(forImageSizes sizes: Set<pwgImageSize>) -> String {
         var folderSize = UInt64.zero
-        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let serverUrl = DataDirectories.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach({ size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
             if size == .fullRes {
@@ -92,14 +93,14 @@ public class Server: NSManagedObject {
     }
 
     public func getCacheSizeOfVideos() -> String {
-        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let serverUrl = DataDirectories.cacheDirectory.appendingPathComponent(self.uuid)
         let cacheUrl = serverUrl.appendingPathComponent(pwgImageSize.fullRes.path)
         let folderSize = cacheUrl.videoFolderSize
         return ByteCountFormatter.string(fromByteCount: Int64(folderSize), countStyle: .file)
     }
 
     public func clearCachedImages(ofSizes sizes: Set<pwgImageSize>, exceptVideos: Bool) {
-        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let serverUrl = DataDirectories.cacheDirectory.appendingPathComponent(self.uuid)
         sizes.forEach { size in
             let cacheUrl = serverUrl.appendingPathComponent(size.path)
             if size == .fullRes, exceptVideos {
@@ -115,7 +116,7 @@ public class Server: NSManagedObject {
     }
     
     public func clearCachedVideos() {
-        let serverUrl = DataDirectories.shared.cacheDirectory.appendingPathComponent(self.uuid)
+        let serverUrl = DataDirectories.cacheDirectory.appendingPathComponent(self.uuid)
         let cacheUrl = serverUrl.appendingPathComponent(pwgImageSize.fullRes.path)
         let contents = try? FileManager.default.contentsOfDirectory(at: cacheUrl, includingPropertiesForKeys: nil)
         let onlyVideos = (contents ?? []).filter({$0.pathExtension == "mov"})

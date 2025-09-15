@@ -50,18 +50,10 @@ class VideoControlsView: UIVisualEffectView {
     
     @MainActor
     func applyColorPalette() {
-        if #available(iOS 13.0, *) {
-            startLabel.textColor = .piwigoColorText()
-            endLabel.textColor = .piwigoColorText()
-            timeSlider.thumbTintColor = .piwigoColorThumb()
-            timeSlider.maximumTrackTintColor = .piwigoColorThumb()
-        } else {
-            backgroundColor = .piwigoColorBackground()
-            startLabel.textColor = .piwigoColorText()
-            endLabel.textColor = .piwigoColorText()
-            timeSlider.thumbTintColor = .piwigoColorThumb()
-            timeSlider.maximumTrackTintColor = .piwigoColorThumb()
-        }
+        startLabel.textColor = PwgColor.text
+        endLabel.textColor = PwgColor.text
+        timeSlider.thumbTintColor = PwgColor.thumb
+        timeSlider.maximumTrackTintColor = PwgColor.thumb
     }
     
     func config(currentTime: TimeInterval, duration: TimeInterval) {

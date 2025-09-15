@@ -111,16 +111,12 @@ class AlbumDeletion: NSObject
         }
         
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = PwgColor.tintColor
         alert.view.accessibilityIdentifier = "DeleteAlbum"
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyle.dark : UIUserInterfaceStyle.light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyle.dark : UIUserInterfaceStyle.light
         topViewController.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
     
@@ -164,15 +160,11 @@ class AlbumDeletion: NSObject
         if let deleteAction = deleteAction {
             alert.addAction(deleteAction)
         }
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
     
@@ -251,8 +243,7 @@ class AlbumDeletion: NSObject
                         self.topViewController.hideHUD { [self] in
                             // Display error alert after fetching album data
                             let title = NSLocalizedString("loadingHUD_label", comment: "Loading…")
-                            let message = NSLocalizedString("CoreDataFetch_AlbumError", comment: "Fetch albums error!")
-                            self.deleteAlbumError(error, title: title, message: message)
+                            self.deleteAlbumError(error, title: title, message: error.localizedDescription)
                         }
                     }
                     return
@@ -271,8 +262,7 @@ class AlbumDeletion: NSObject
     @MainActor
     private func deleteAlbumError(_ error: Error, title: String, message: String) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
             return
         }

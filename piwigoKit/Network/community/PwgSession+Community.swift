@@ -12,24 +12,19 @@ import Foundation
 public extension PwgSession {
     
     func communityGetStatus(completion: @escaping () -> Void,
-                            failure: @escaping (Error) -> Void) {
+                            failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Retrieve community status.")
         }
         // Launch request
         postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
-                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { jsonData in
-            // Decode the JSON object and retrieve the status
-            do {
-                // Decode the JSON into codable type CommunitySessionGetStatusJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(CommunitySessionGetStatusJSON.self, from: jsonData)
-
+                    countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -37,22 +32,18 @@ public extension PwgSession {
                 guard pwgData.realUser.isEmpty == false,
                       let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
                 else {
-                    failure(UserError.unknownUserStatus)
+                    failure(PwgKitError.unknownUserStatus)
                     return
                 }
                 NetworkVars.shared.userStatus = userStatus
                 completion()
-            }
-            catch {
-                // Data cannot be digested
-                let error = error
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

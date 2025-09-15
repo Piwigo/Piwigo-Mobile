@@ -40,16 +40,16 @@ class ImageHeaderReusableView: UICollectionReusableView
         applyColorPalette()
 
         // Set album description label
-        albumDesc.contentSize = size
-        albumDesc.textContainerInset = .zero
-        albumDesc.textContainer.widthTracksTextView = false
-        albumDesc.textContainer.lineBreakMode = .byWordWrapping
+        albumDesc?.contentSize = size
+        albumDesc?.textContainerInset = .zero
+        albumDesc?.textContainer.widthTracksTextView = false
+        albumDesc?.textContainer.lineBreakMode = .byWordWrapping
         if size == CGSize.zero {
-            albumDesc.text = ""
-            albumDescHeight.constant = 0
+            albumDesc?.text = ""
+            albumDescHeight?.constant = 0
         } else {
-            albumDesc.attributedText = description
-            albumDescHeight.constant = size.height
+            albumDesc?.attributedText = description
+            albumDescHeight?.constant = size.height
         }
         
         // Get date labels from images in section
@@ -57,33 +57,41 @@ class ImageHeaderReusableView: UICollectionReusableView
         switch sortKey {
         case #keyPath(Image.dateCreated):
             let dateIntervals = images.map {$0.dateCreated}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true,
+                                                 preferredContenSize: traitCollection.preferredContentSizeCategory,
+                                                 width: bounds.width)
         case #keyPath(Image.datePosted):
             let dateIntervals = images.map {$0.datePosted}
-            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true)
+            dates = AlbumUtilities.getDateLabels(for: dateIntervals, arePwgDates: true,
+                                                 preferredContenSize: traitCollection.preferredContentSizeCategory,
+                                                 width: bounds.width)
         default:
             dates = (" ", " ")
             break
         }
         
         // Set labels from dates and place name
-        self.mainLabel.text = dates.0
-        if images.isEmpty {
+        self.mainLabel?.text = dates.0
+        if traitCollection.preferredContentSizeCategory >= .accessibilityMedium {
+            self.detailLabel.text = nil
+        }
+        else if images.isEmpty {
             self.detailLabel.text = dates.1
-        } else {
+        }
+        else {
             // Determine location from images in section
             let location = AlbumUtilities.getLocation(of: images)
             LocationProvider.shared.getPlaceName(for: location) { [self] placeName, streetName in
                 if placeName.isEmpty {
-                    self.detailLabel.text = dates.1
+                    self.detailLabel?.text = dates.1
                 } else if streetName.isEmpty {
-                    self.detailLabel.text = placeName
+                    self.detailLabel?.text = placeName
                 } else {
-                    self.detailLabel.text = String(format: "%@ • %@", placeName, streetName)
+                    self.detailLabel?.text = String(format: "%@ • %@", placeName, streetName)
                 }
             } pending: { hash in
                 // Show date details until place name availability
-                self.detailLabel.text = dates.1
+                self.detailLabel?.text = dates.1
                 // Register location provider
                 self.locationHash = hash
                 NotificationCenter.default.addObserver(self, selector: #selector(self.updateDetailLabel(_:)),
@@ -94,17 +102,24 @@ class ImageHeaderReusableView: UICollectionReusableView
         }
 
         // Select/deselect button
-        selectButton.layer.cornerRadius = 13.0
-        selectButton.setTitle(forState: selectState)
+        selectButton?.layer.cornerRadius = 13.0
+        selectButton?.setTitle(forState: selectState)
     }
     
     @MainActor
     func applyColorPalette() {
-        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
-        mainLabel.textColor = .piwigoColorLeftLabel()
-        detailLabel.textColor = .piwigoColorRightLabel()
-        selectButton.backgroundColor = .piwigoColorBackground()
-        albumDesc.textColor = .piwigoColorHeader()
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+        } else {
+            backgroundColor = PwgColor.background.withAlphaComponent(0.75)
+        }
+        mainLabel?.textColor = PwgColor.leftLabel
+        detailLabel?.textColor = PwgColor.rightLabel
+        selectButton?.backgroundColor = PwgColor.background
+        selectButton?.layer.shadowColor = AppVars.shared.isDarkPaletteActive ? UIColor.white.cgColor : UIColor.black.cgColor
+        selectButton?.layer.shadowOpacity = AppVars.shared.isDarkPaletteActive ? 0.7 : 0.3
+        albumDesc?.textColor = PwgColor.header
+        albumDesc?.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
     }
     
     @objc func updateDetailLabel(_ notification: NSNotification) {

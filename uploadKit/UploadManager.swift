@@ -37,28 +37,19 @@ public class UploadManager: NSObject {
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/system-declared_uniform_type_identifiers
     lazy var acceptedImageExtensions: [String] = {
-        if #available(iOS 14.0, *) {
-            let utiTypes = [UTType.gif, .jpeg, .tiff, .png, .icns, .bmp, .ico, .rawImage, .svg, .heif, .heic, .webP]
-            var fileExtensions = utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-            if #available(iOS 14.3, *) {
-                fileExtensions.append("dng")    // i.e. Apple ProRAW
-                return fileExtensions
-            } else {
-                // Fallback on earlier version
-                return fileExtensions
-            }
-        } else {
-            // Fallback on earlier version
-            return ["heic","heif","png","gif","jpg","jpeg","webp","tif","tiff","bmp","raw","ico","icns"]
+        var utiTypes: [UTType] = [.ico, .icns,
+                                  .png, .gif, .jpeg, .webP, .tiff, .bmp, .svg, .rawImage,
+                                  .heic, .heif]
+        if #available(iOS 18.2, *) {
+            utiTypes += [.jpegxl]
         }
+        return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
     }()
     lazy var acceptedMovieExtensions: [String] = {
-        if #available(iOS 14.0, *) {
-            let utiTypes = [UTType.quickTimeMovie, .mpeg, .mpeg2Video, .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
-            return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
-        } else {
-            return ["mov","mpg","mpeg","mpeg2","mp4","avi"]
-        }
+        let utiTypes: [UTType] = [.quickTimeMovie,
+                                  .mpeg, .mpeg2Video, .mpeg2TransportStream,
+                                  .mpeg4Movie, .appleProtectedMPEG4Video, .avi]
+        return utiTypes.flatMap({$0.tags[.filenameExtension] ?? []})
     }()
     
     // For producing filename suffixes
@@ -110,7 +101,7 @@ public class UploadManager: NSObject {
     }()
     
     /// Uploads directory, sessions and JSON decoder
-    public let uploadsDirectory: URL = DataDirectories.shared.appUploadsDirectory
+    public let uploadsDirectory: URL = DataDirectories.appUploadsDirectory
     public let frgdSession: URLSession = UploadSessions.shared.frgdSession
     public let bckgSession: URLSession = UploadSessions.shared.bckgSession
     let decoder = JSONDecoder()

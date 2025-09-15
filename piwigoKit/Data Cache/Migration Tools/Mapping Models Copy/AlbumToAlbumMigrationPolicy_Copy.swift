@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class AlbumToAlbumMigrationPolicy_Copy: NSEntityMigrationPolicy {
+final class AlbumToAlbumMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Album ► Album (Copy)"
     let numberFormatter: NumberFormatter = {

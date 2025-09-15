@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class GroupToGroupMigrationPolicy_Copy: NSEntityMigrationPolicy {
+final class GroupToGroupMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "Group ► Group (Copy)"
     let numberFormatter: NumberFormatter = {

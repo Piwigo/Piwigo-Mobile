@@ -56,18 +56,24 @@ public struct RenameAction: Hashable {
         case addTime
         case addCounter
         
+        // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
         public var name: String {
             switch self {
             case .addText:
-                return NSLocalizedString("Text", comment: "Text")
+                return String(localized: "Text", bundle: piwigoKit,
+                              comment: "Text")
             case .addAlbum:
-                return NSLocalizedString("albumID", comment: "Album ID")
+                return String(localized: "albumID", bundle: piwigoKit,
+                              comment: "Album ID")
             case .addDate:
-                return NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date")
+                return String(localized: "editImageDetails_dateCreation", bundle: piwigoKit,
+                              comment: "Creation Date")
             case .addTime:
-                return NSLocalizedString("editImageDetails_timeCreation", comment: "Creation Time")
+                return String(localized: "editImageDetails_timeCreation", bundle: piwigoKit,
+                              comment: "Creation Time")
             case .addCounter:
-                return NSLocalizedString("Counter", comment: "Counter")
+                return String(localized: "Counter", bundle: piwigoKit,
+                              comment: "Counter")
             }
         }
 
@@ -255,7 +261,7 @@ public extension String {
         }
         
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        self = PwgSession.utf8mb3String(from: fileName)
+        self = fileName.utf8mb3Encoded
     }
     
     /// Assuming the current string is base64 encoded, this property returns a String

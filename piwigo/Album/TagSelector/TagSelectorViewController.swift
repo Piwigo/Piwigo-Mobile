@@ -88,6 +88,9 @@ class TagSelectorViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
+        title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
+
         // Initialise search bar
         initSearchBar()
         
@@ -115,37 +118,29 @@ class TagSelectorViewController: UITableViewController {
     @MainActor
     private func didFetchTagsWithError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed]
-            .contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
 
         // Report error
-        let title = TagError.fetchFailed.localizedDescription
+        let title = PwgKitError.tagCreationError.localizedDescription
         self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
     }
     
     @MainActor
     @objc private func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
+        // Search bar
+        searchController.searchBar.configAppearance()
+        
         // Table view
-        tagsTableView?.separatorColor = .piwigoColorSeparator()
+        tagsTableView?.separatorColor = PwgColor.separator
         tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
@@ -193,12 +188,30 @@ class TagSelectorViewController: UITableViewController {
         return objects?.count ?? 0
     }
 
+    // Row height
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    }
+    
     // Return cell configured with tag
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagSelectorCell", for: indexPath) as? TagSelectorCell
-        else { preconditionFailure("Error: tableView.dequeueReusableCell does not return a TagSelectorCell!") }
-        cell.configure(with: tags.object(at: indexPath))
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
+        
+        // => pwg.tags.getList returns in addition: counter, url
+        let tag = tags.object(at: indexPath)
+        let nber: Int64 = tag.numberOfImagesUnderTag
+        if (nber == Int64.zero) || (nber == Int64.max) {
+            // Unknown number of images
+            cell.configure(with: tag.tagName, detail: "")
+        } else {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
+            cell.configure(with: tag.tagName, detail: nberPhotos)
+        }
+        
         return cell
     }
 
@@ -210,8 +223,8 @@ class TagSelectorViewController: UITableViewController {
         let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
-            String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberAsStr) :
-            String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberAsStr)
+            String(format: String(localized: "severalTagsCount", bundle: piwigoKit, comment: "%@ tags"), nberAsStr) :
+            String(format: String(localized: "singleTagCount", bundle: piwigoKit, comment: "%@ tag"), nberAsStr)
         return footer
     }
 
@@ -306,9 +319,6 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Do not update items if the tag list is not presented.
-        if #available(iOS 13, *), view.window == nil { return }
-        
         // Perform all updates
         tagsTableView?.performBatchUpdates { [weak self] in
             self?.updateOperations.forEach { $0.start() }

@@ -10,6 +10,7 @@
 import Foundation
 import CoreData
 
+@objc(UserGroup)
 public class UserGroup: NSManagedObject {
 
 }

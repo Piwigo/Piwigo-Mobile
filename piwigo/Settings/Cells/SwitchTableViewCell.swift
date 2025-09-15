@@ -22,16 +22,17 @@ class SwitchTableViewCell: UITableViewCell {
     func configure(with title:String) {
 
         // Background color and aspect
-        backgroundColor = .piwigoColorCellBackground()
+        backgroundColor = PwgColor.cellBackground
 
         // Switch name
-        switchName.font = .systemFont(ofSize: 17)
-        switchName.textColor = .piwigoColorLeftLabel()
+        switchName.font = .preferredFont(forTextStyle: .body)
+        switchName.adjustsFontForContentSizeCategory = true
+        switchName.textColor = PwgColor.leftLabel
         switchName.text = title
 
         // Switch appearance and action
-        cellSwitch.thumbTintColor = .piwigoColorThumb()
-        cellSwitch.onTintColor = .piwigoColorOrange()
+        cellSwitch.thumbTintColor = PwgColor.thumb
+        cellSwitch.onTintColor = PwgColor.orange
     }
 
     @IBAction func switchChanged(_ sender: Any) {

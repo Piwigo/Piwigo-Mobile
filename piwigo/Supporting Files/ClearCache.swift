@@ -14,12 +14,12 @@ import uploadKit
 class ClearCache: NSObject {
     
     @MainActor
-    static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgSessionError) {
+    static func closeSessionWithPwgError(from viewController: UIViewController, error: PwgKitError) {
         var title = "", message = ""
         switch error {
         case .incompatiblePwgVersion:
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            message = String.localizedStringWithFormat(NSLocalizedString("serverVersionNotCompatible_message", comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile."), NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
@@ -54,65 +54,59 @@ class ClearCache: NSObject {
             
             // Display login view
             DispatchQueue.main.async {
-                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                if #available(iOS 13.0, *) {
-                    // Get all scenes
-                    var connectedScenes = UIApplication.shared.connectedScenes
-                    
-                    // Disconnect inactive scenes
-                    let scenesInBackground = connectedScenes
-                        .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
-                    for scene in scenesInBackground {
+                // Get all scenes
+                var connectedScenes = UIApplication.shared.connectedScenes
+                
+                // Disconnect inactive scenes
+                let scenesInBackground = connectedScenes
+                    .filter({[.background, .unattached, .foregroundInactive].contains($0.activationState)})
+                for scene in scenesInBackground {
+                    UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                    connectedScenes.remove(scene)
+                }
+                
+                // Clear external displays
+                var externalScenes = [UIScene]()
+                if #available(iOS 16.0, *) {
+                    externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplayNonInteractive})
+                } else {
+                    // Fallback to previous versions
+                    externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplay})
+                }
+                externalScenes.forEach { scene in
+                    if let scene = scene as? UIWindowScene,
+                       let imageVC = scene.rootViewController() as? ExternalDisplayViewController {
+                        imageVC.imageData = nil
+                        imageVC.imageView.image = nil
+                        imageVC.video = nil
+                    }
+                }
+                
+                // Disconnect supplementary active scenes except the one(s) displaying Settings
+                connectedScenes.forEach { scene in
+                    if let window = (scene.delegate as? SceneDelegate)?.window,
+                       let topMostVC = window.windowScene?.topMostViewController(),
+                       (topMostVC is SettingsViewController) == false {
                         UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
                         connectedScenes.remove(scene)
                     }
-                    
-                    // Clear external displays
-                    var externalScenes = [UIScene]()
-                    if #available(iOS 16.0, *) {
-                        externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplayNonInteractive})
-                    } else {
-                        // Fallback to previous versions
-                        externalScenes = connectedScenes.filter({$0.session.role == .windowExternalDisplay})
-                    }
-                    externalScenes.forEach { scene in
-                        if let scene = scene as? UIWindowScene,
-                           let imageVC = scene.rootViewController() as? ExternalDisplayViewController {
-                            imageVC.imageData = nil
-                            imageVC.imageView.image = nil
-                            imageVC.video = nil
-                        }
-                    }
-                    
-                    // Disconnect supplementary active scenes except the one(s) displaying Settings
-                    connectedScenes.forEach { scene in
-                        if let window = (scene.delegate as? SceneDelegate)?.window,
-                           let topMostVC = window.windowScene?.topMostViewController(),
-                           (topMostVC is SettingsViewController) == false {
-                            UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                            connectedScenes.remove(scene)
-                        }
-                    }
+                }
 
-                    // In case there are scenes left
-                    while connectedScenes.count > 1 {
-                        if let scene = connectedScenes.first {
-                            UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                            connectedScenes.removeFirst()
-                        }
+                // In case there are scenes left
+                while connectedScenes.count > 1 {
+                    if let scene = connectedScenes.first {
+                        UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                        connectedScenes.removeFirst()
                     }
-                    
-                    // Dismiss current view and present login view in the remaining scene
-                    if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window,
-                       let topMostVC = window.windowScene?.topMostViewController() {
-                        topMostVC.dismiss(animated: true) {
-                            appDelegate?.loadLoginView(in: window)
-                        }
+                }
+                
+                // Dismiss current view and present login view in the remaining scene
+                if let window = (connectedScenes.first?.delegate as? SceneDelegate)?.window,
+                   let topMostVC = window.windowScene?.topMostViewController() {
+                    topMostVC.dismiss(animated: true) {
+                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                        appDelegate?.loadLoginView(in: window)
                     }
-                } else {
-                    // Fallback on earlier versions
-                    let window = UIApplication.shared.keyWindow
-                    appDelegate?.loadLoginView(in: window)
                 }
             }
         }

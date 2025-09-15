@@ -137,10 +137,8 @@ extension AlbumViewController
         }
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if inSelectionMode, contextually == false {
             alert.popoverPresentationController?.barButtonItem = deleteBarButton
         } else if let imageID = imageIDs.first,
@@ -150,7 +148,7 @@ extension AlbumViewController
         }
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
 
@@ -215,8 +213,7 @@ extension AlbumViewController
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>,
                               total: Float, error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -254,8 +251,10 @@ extension AlbumViewController
     /// For calling Piwigo server in version +14.0
     private func dissociateImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>) {
         // Send request to Piwigo server
+        let albumID = albumData.pwgID
+        let imageIDs = toRemove.map({ $0.pwgID })
         PwgSession.checkSession(ofUser: user) { [self] in
-            ImageUtilities.setCategory(albumData, forImages: toRemove, withAction: .dissociate) {
+            ImageUtilities.setCategory(albumID, forImageIDs: imageIDs, withAction: .dissociate) {
                 DispatchQueue.main.async { [self] in
                     // Remove images from album
                     self.albumData.removeFromImages(toRemove)
@@ -282,8 +281,7 @@ extension AlbumViewController
     @MainActor
     private func dissociateImagesError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -366,8 +364,7 @@ extension AlbumViewController
     @MainActor
     private func deleteImagesError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }

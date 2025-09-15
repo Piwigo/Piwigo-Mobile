@@ -10,7 +10,9 @@
 import Foundation
 import SystemConfiguration
 
-public class NetworkVars: NSObject {
+// Mark NetworkVars as Sendable since Apple documents UserDefaults as thread-safe
+// and pwgUserStatus is Sendable
+public class NetworkVars: NSObject, @unchecked Sendable {
     
     // Singleton
     public static let shared = NetworkVars()
@@ -19,19 +21,7 @@ public class NetworkVars: NSObject {
         let strURL = "\(serverProtocol)\(serverPath)"
         return URL(string: strURL)?.host ?? ""
     }
-    
-    public func isConnectedToWiFi() -> Bool {
-        guard let reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault,
-                                                                     domain()) else { return false }
-        var flags: SCNetworkReachabilityFlags = []
-        if !SCNetworkReachabilityGetFlags(reachability, &flags) { return false }
         
-        let isReachable = flags.contains(.reachable)
-        let cellular = flags.contains(.isWWAN)
-        let needsConnection = flags.contains(.connectionRequired)
-        return (isReachable && !cellular && !needsConnection)
-    }
-    
     // Remove deprecated stored objects if needed
     //    override init() {
     //        // Deprecated data?
@@ -48,7 +38,6 @@ public class NetworkVars: NSObject {
     /// - Request server update once a month max
     @UserDefault("dateOfLastUpdateRequest", defaultValue: Date().timeIntervalSinceReferenceDate)
     public var dateOfLastUpdateRequest: TimeInterval
-
 
     
     // MARK: - Vars in UserDefaults / App Group
@@ -128,6 +117,9 @@ public class NetworkVars: NSObject {
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
+    /// - Remembers whether the device is connected to Wi-FI
+    public var isConnectedToWiFi: Bool = false
+
     /// - Disconnects and asks to update Piwigo server if version is lower than:
     public let pwgMinVersion = "2.10.0"
 

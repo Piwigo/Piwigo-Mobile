@@ -12,6 +12,21 @@ import UIKit
 // MARK: UICollectionViewDelegateFlowLayout Methods
 extension LocalImagesViewController: UICollectionViewDelegateFlowLayout
 {
+    // MARK: - Headers
+    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        if (elementKind == UICollectionView.elementKindSectionHeader) ||
+            (elementKind == UICollectionView.elementKindSectionFooter) {
+            view.layer.zPosition = 0 // Below scroll indicator
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
+    {
+        return CGSize(width: collectionView.frame.size.width, height: imageHeaderHeight)
+    }
+    
+
+    // MARK: - Cells
     func getImageCellSize() -> CGSize {
         // Get safe area width
         let safeAreaSize = AlbumUtilities.getSafeAreaSize(ofNavigationViewController: navigationController?.topViewController)
@@ -23,19 +38,14 @@ extension LocalImagesViewController: UICollectionViewDelegateFlowLayout
         return CGSize(width: size, height: size)
     }
 
-    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        if (elementKind == UICollectionView.elementKindSectionHeader) ||
-            (elementKind == UICollectionView.elementKindSectionFooter) {
-            view.layer.zPosition = 0 // Below scroll indicator
-        }
-    }
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return imageCellSize
     }
 
+
+    // MARK: - Inset & Spacing for Sections
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: CGFloat(10), left: CGFloat.zero, bottom: CGFloat(10), right: CGFloat.zero)
+        return UIEdgeInsets.zero
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

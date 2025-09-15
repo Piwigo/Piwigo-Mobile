@@ -20,7 +20,7 @@ class SelectCategoryHeaderView: UIView {
         backgroundColor = UIColor.clear
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13)
+        label.font = .preferredFont(forTextStyle: .footnote)
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .center
@@ -37,7 +37,7 @@ class SelectCategoryHeaderView: UIView {
     func configure(width: CGFloat, text: String) {
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
         var titleRect = text.boundingRect(with: CGSize(width: width - 2 * margin,
                                                        height: CGFloat.greatestFiniteMagnitude),
                                           options: .usesLineFragmentOrigin,
@@ -45,7 +45,7 @@ class SelectCategoryHeaderView: UIView {
         titleRect.size.height += 16
         self.frame = titleRect
         label.text = text
-        label.textColor = .piwigoColorLeftLabel()
+        label.textColor = PwgColor.leftLabel
     }
 
     required init?(coder aDecoder: NSCoder) {

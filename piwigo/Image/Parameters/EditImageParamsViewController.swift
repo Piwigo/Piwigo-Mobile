@@ -118,23 +118,14 @@ class EditImageParamsViewController: UIViewController
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-        
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Table view
-        editImageParamsTableView?.separatorColor = .piwigoColorSeparator()
-        editImageParamsTableView?.backgroundColor = .piwigoColorBackground()
+        editImageParamsTableView?.separatorColor = PwgColor.separator
+        editImageParamsTableView?.backgroundColor = PwgColor.background
         editImageParamsTableView?.reloadData()
     }
     
@@ -281,7 +272,9 @@ class EditImageParamsViewController: UIViewController
         // Update all images
         let index = 0
         PwgSession.checkSession(ofUser: user) { [self] in
-            updateImageProperties(fromIndex: index)
+            DispatchQueue.main.async { [self] in
+                self.updateImageProperties(fromIndex: index)
+            }
         } failure: { [self] error in
             // Display error
             DispatchQueue.main.async { [self] in
@@ -332,8 +325,7 @@ class EditImageParamsViewController: UIViewController
     private func showUpdatePropertiesError(_ error: Error, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -366,12 +358,12 @@ class EditImageParamsViewController: UIViewController
                                           "multiple_value_mode" : "replace"]
         // Update image title?
         if shouldUpdateTitle {
-            paramsDict["name"] = PwgSession.utf8mb3String(from: commonTitle)
+            paramsDict["name"] = commonTitle.utf8mb3Encoded
         }
 
         // Update image author? (We should never set NSNotFound in the database)
         if shouldUpdateAuthor || imageData.author == "NSNotFound" {
-            paramsDict["author"] = PwgSession.utf8mb3String(from: commonAuthor)
+            paramsDict["author"] = commonAuthor.utf8mb3Encoded
         }
 
         // Update image creation date?
@@ -406,7 +398,7 @@ class EditImageParamsViewController: UIViewController
 
         // Update image description?
         if shouldUpdateComment {
-            paramsDict["comment"] = PwgSession.utf8mb3String(from: commonComment)
+            paramsDict["comment"] = commonComment.utf8mb4Encoded
         }
         
         // Send request to Piwigo server
@@ -416,8 +408,8 @@ class EditImageParamsViewController: UIViewController
                     // Update image title?
                     if shouldUpdateTitle,
                        let newTitle = paramsDict["name"] as? String {
-                        imageData.titleStr = PwgSession.utf8mb4String(from: newTitle)
-                        imageData.title = imageData.titleStr.attributedPlain()
+                        imageData.titleStr = newTitle.utf8mb4Encoded
+                        imageData.title = imageData.titleStr.attributedPlain
                     }
                     
                     // Update image author? (We should never set NSNotFound in the database)
@@ -477,9 +469,9 @@ class EditImageParamsViewController: UIViewController
                     // Update image description?
                     if shouldUpdateComment,
                        let newComment = paramsDict["comment"] as? String {
-                        imageData.commentStr = PwgSession.utf8mb4String(from: newComment)
-                        imageData.comment = imageData.commentStr.attributedPlain()
-                        imageData.commentHTML = imageData.commentStr.attributedHTML()
+                        imageData.commentStr = newComment.utf8mb4Encoded
+                        imageData.comment = imageData.commentStr.attributedPlain
+                        imageData.commentHTML = imageData.commentStr.attributedHTML
                     }
                     
                     // Save changes

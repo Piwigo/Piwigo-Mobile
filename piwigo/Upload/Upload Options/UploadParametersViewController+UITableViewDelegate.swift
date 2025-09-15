@@ -37,7 +37,7 @@ extension UploadParametersViewController {
         var row = indexPath.row
         row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
 
-        var height: CGFloat = 44.0
+        var height: CGFloat = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
         switch EditImageDetailsOrder(rawValue: row) {
             case .privacy, .tags:
                 height = 78.0

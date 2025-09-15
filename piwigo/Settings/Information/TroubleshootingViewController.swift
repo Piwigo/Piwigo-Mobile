@@ -12,7 +12,6 @@ import UIKit
 import piwigoKit
 import uploadKit
 
-@available(iOS 15, *)
 class TroubleshootingViewController: UIViewController {
     
     @IBOutlet private weak var piwigoLogo: UIImageView!
@@ -37,8 +36,9 @@ class TroubleshootingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Title
         title = NSLocalizedString("settings_logs", comment: "Logs")
-        
+
         // Button for returning to albums/images
         clearBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteJSONfiles))
         clearBarButton?.isEnabled = false
@@ -51,34 +51,17 @@ class TroubleshootingViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-        
-        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-        /// which by default produces a transparent background, to all navigation bars.
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.configureWithOpaqueBackground()
-        barAppearance.backgroundColor = .piwigoColorBackground()
-        navigationController?.navigationBar.standardAppearance = barAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Text color depdending on background color
-        authorsLabel?.textColor = .piwigoColorText()
-        versionLabel?.textColor = .piwigoColorText()
+        authorsLabel?.textColor = PwgColor.text
+        versionLabel?.textColor = PwgColor.text
         
         // Table view
-        tableView?.separatorColor = .piwigoColorSeparator()
+        tableView?.separatorColor = PwgColor.separator
         tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView?.reloadData()
     }
@@ -127,6 +110,9 @@ class TroubleshootingViewController: UIViewController {
         
         // Cancel operations (with HUD shown, should never be needed)
         queue.cancelAllOperations()
+
+        // Back to large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     deinit {
@@ -233,7 +219,6 @@ class TroubleshootingViewController: UIViewController {
 
 
 // MARK: - UITableViewDataSource Methods
-@available(iOS 15, *)
 extension TroubleshootingViewController: UITableViewDataSource
 {
     // MARK: - Sections
@@ -255,6 +240,9 @@ extension TroubleshootingViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "subtitle")
+        cell.textLabel?.textColor = PwgColor.leftLabel
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         
         switch indexPath.section {
         case 0 /* Logs */:
@@ -264,6 +252,9 @@ extension TroubleshootingViewController: UITableViewDataSource
             } else if let entry = pwgLogs[indexPath.row].first {
                 cell.textLabel?.text = entry.category
                 cell.detailTextLabel?.text = DateUtilities.pwgDateFormatter.string(from: entry.date)
+                cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
+                cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+                cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             } else {
                 cell.textLabel?.text = "None"
@@ -279,9 +270,15 @@ extension TroubleshootingViewController: UITableViewDataSource
                 if let pos = fileName.lastIndex(of: " ") {
                     cell.textLabel?.text = String(fileName[pos...].dropFirst())
                     cell.detailTextLabel?.text = String(fileName[...pos]) + " | " + fileURL.fileSizeString
+                    cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
+                    cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+                    cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 } else {
                     cell.textLabel?.text = fileName
                     cell.detailTextLabel?.text = fileURL.fileSizeString
+                    cell.detailTextLabel?.font = .preferredFont(forTextStyle: .footnote)
+                    cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+                    cell.detailTextLabel?.textColor = PwgColor.rightLabel
                 }
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             }
@@ -294,7 +291,6 @@ extension TroubleshootingViewController: UITableViewDataSource
 
 
 // MARK: - UITableViewDelegate Methods
-@available(iOS 15, *)
 extension TroubleshootingViewController: UITableViewDelegate
 {
     // MARK: - Headers
@@ -328,7 +324,11 @@ extension TroubleshootingViewController: UITableViewDelegate
     }
     
     
-    // MARK: - Cell Management
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    }
+
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
         case 0 /* Logs */:

@@ -102,7 +102,7 @@ extension AlbumCollectionViewCellOld: UITableViewDataSource
 extension AlbumCollectionViewCellOld: UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 148.5 // see XIB file
+        return contentView.bounds.height   // see XIB file
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -134,6 +134,15 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             } failure: { _ in }
         }
 
+        // Image configuration
+        var imageConfig: UIImage.SymbolConfiguration
+        if #available(iOS 26.0, *) {
+            imageConfig = UIImage.SymbolConfiguration(pointSize: 21.0, weight: .medium)
+        } else {
+            // Fallback on previous version
+            imageConfig = UIImage.SymbolConfiguration(pointSize: 24.0, weight: .regular)
+        }
+        
         // Album deletion
         let trash = UIContextualAction(style: .normal, title: nil,
                                        handler: { _, _, completionHandler in
@@ -142,7 +151,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             delete.displayAlert(completion: completionHandler)
         })
         trash.backgroundColor = .red
-        trash.image = UIImage(named: "swipeTrash.png")
+        trash.image = UIImage(systemName: "trash", withConfiguration: imageConfig)
         
         // Album move
         let move = UIContextualAction(style: .normal, title: nil,
@@ -154,8 +163,8 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
                 self.pushAlbumDelegate?.pushAlbumView(moveVC, completion: completionHandler)
             }
         })
-        move.backgroundColor = .piwigoColorBrown()
-        move.image = UIImage(named: "swipeMove.png")
+        move.backgroundColor = PwgColor.brown
+        move.image = UIImage(systemName: "rectangle.stack", withConfiguration: imageConfig)
         
         // Album renaming
         let rename = UIContextualAction(style: .normal, title: nil,
@@ -164,8 +173,8 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
                                        topViewController: topViewController)
             rename.displayAlert(completion: completionHandler)
         })
-        rename.backgroundColor = .piwigoColorOrange()
-        rename.image = UIImage(named: "swipeRename.png")
+        rename.backgroundColor = PwgColor.orange
+        rename.image = UIImage(systemName: "character.cursor.ibeam", withConfiguration: imageConfig)
 
         // Disallow user to delete the active auto-upload destination album
         if (UploadVars.shared.autoUploadCategoryId == Int(albumData.pwgID)),

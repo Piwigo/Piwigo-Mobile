@@ -10,7 +10,7 @@ import os
 import CoreData
 import Foundation
 
-class UserToUserMigrationPolicy_Copy: NSEntityMigrationPolicy {
+final class UserToUserMigrationPolicy_Copy: NSEntityMigrationPolicy {
     // Constants
     let logPrefix = "User ► User (Copy)"
     let numberFormatter: NumberFormatter = {

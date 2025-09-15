@@ -13,7 +13,7 @@ extension UploadParametersViewController: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         shouldUpdateComment = true
-        textView.textColor = .piwigoColorOrange()
+        textView.textColor = PwgColor.orange
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

@@ -20,14 +20,16 @@ class ShareMetadataCell: UITableViewCell {
     
     func configure(with activityName: String?, andEditOption option: cellIconType) {
         // General settings
-        backgroundColor = .piwigoColorCellBackground()
-        tintColor = .piwigoColorOrange()
-        textLabel?.font = .systemFont(ofSize: 17)
+        backgroundColor = PwgColor.cellBackground
+        tintColor = PwgColor.orange
+        textLabel?.font = .preferredFont(forTextStyle: .body)
+        textLabel?.adjustsFontSizeToFitWidth = true
 
         // Activity name
         leftLabel.text = activityName ?? "Unknown Activity"
-        leftLabel.font = .systemFont(ofSize: 17)
-        leftLabel.textColor = .piwigoColorLeftLabel()
+        leftLabel.font = .preferredFont(forTextStyle: .body)
+        leftLabel.adjustsFontSizeToFitWidth = true
+        leftLabel.textColor = PwgColor.leftLabel
 
         // Change image according to state
         switch option {

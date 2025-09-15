@@ -40,34 +40,18 @@ extension ImageViewController
         }
 
         // Check autorisation to access Photo Library (camera roll) if needed
-        if #available(iOS 14, *) {
-            PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
-                onAccess: { [self] in
-                    // User allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: true)
-                    }
-            }, onDeniedAccess: { [self] in
-                    // User not allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: false)
-                    }
-                })
-        } else {
-            // Fallback on earlier versions
-            PhotosFetch.shared.checkPhotoLibraryAccessForViewController(nil,
-                onAuthorizedAccess: { [self] in
-                    // User allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: true)
-                    }
-            }, onDeniedAccess: { [self] in
-                    // User not allowed to save image in camera roll
-                    DispatchQueue.main.async { [self] in
-                        self.presentShareImageViewController(withCameraRollAccess: false)
-                    }
-                })
-        }
+        PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .addOnly, for: self,
+            onAccess: { [self] in
+                // User allowed to save image in camera roll
+                DispatchQueue.main.async { [self] in
+                    self.presentShareImageViewController(withCameraRollAccess: true)
+                }
+        }, onDeniedAccess: { [self] in
+                // User not allowed to save image in camera roll
+                DispatchQueue.main.async { [self] in
+                    self.presentShareImageViewController(withCameraRollAccess: false)
+                }
+            })
     }
 
     @MainActor
@@ -79,10 +63,11 @@ extension ImageViewController
         guard let imageData = imageData else { return }
         
         // Create new activity provider item to pass to the activity view controller
+        let scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
         var itemsToShare: [AnyHashable] = []
         if imageData.isVideo {
             // Case of a video
-            let videoItemProvider = ShareVideoActivityItemProvider(placeholderImage: imageData, contextually: false)
+            let videoItemProvider = ShareVideoActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self
@@ -99,7 +84,7 @@ extension ImageViewController
         }
         else if imageData.isPDF {
             // Case of a PDF file
-            let pdfItemProvider = SharePdfActivityItemProvider(placeholderImage: imageData, contextually: false)
+            let pdfItemProvider = SharePdfActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             pdfItemProvider.delegate = self
@@ -118,7 +103,7 @@ extension ImageViewController
         }
         else {
             // Case of an image
-            let imageItemProvider = ShareImageActivityItemProvider(placeholderImage: imageData, contextually: false)
+            let imageItemProvider = ShareImageActivityItemProvider(imageData: imageData, scale: scale, contextually: false)
 
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self

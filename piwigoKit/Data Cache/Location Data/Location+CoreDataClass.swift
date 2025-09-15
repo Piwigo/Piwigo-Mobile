@@ -17,6 +17,7 @@ import CoreLocation
     - an UUID which is later used to store images in cache,
     - the server path e.g. "mywebsite.com/piwigo".
  */
+@objc(Location)
 public class Location: NSManagedObject {
 
     /**
@@ -27,7 +28,7 @@ public class Location: NSManagedObject {
         // Update the location only if the latitude and longitude properties have values.
         guard let newLatitude = locationProperties.latitude,
               let newLongitude = locationProperties.longitude else {
-                throw LocationError.missingData
+                throw PwgKitError.missingLocationData
         }
         latitude = newLatitude as Double
         longitude = newLongitude as Double

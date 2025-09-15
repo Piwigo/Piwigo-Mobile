@@ -13,69 +13,16 @@ import piwigoKit
 // MARK: Buttons
 extension AlbumViewController
 {
-    // MARK: - Cancel Buttons
+    // MARK: - Cancel Button
     func getCancelBarButton() -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         button.accessibilityIdentifier = "Cancel"
         return button
     }
-    
-    func getActionBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
-        button.accessibilityIdentifier = "Action"
-        return button
-    }
-    
-    func getEditBarButton() -> UIBarButtonItem {
-        let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editSelection))
-        button.accessibilityIdentifier = "Edit"
-        return button
-    }
-
-    
-    // MARK: - Edit/Rotate Images
-    /// - for selecting image sort options
-    @objc func didTapActionButton() {
-        let alert = UIAlertController(title: NSLocalizedString("rotateImage_rotate", comment: "Rotate 90°…"),
-                                      message: nil, preferredStyle: .actionSheet)
-        
-        // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                         style: .cancel, handler: { action in })
-        alert.addAction(cancelAction)
-        
-        // Rotate clockwise
-        var title = NSLocalizedString("rotateImage_right", comment: "Clockwise")
-        let rotateRightAction = UIAlertAction(title: title, style: .default) { [self] _ in
-            self.rotateSelectionRight()
-        }
-        alert.addAction(rotateRightAction)
-        
-        // Rotate counterclockwise
-        title = NSLocalizedString("rotateImage_left", comment: "Counterclockwise")
-        let rotateLeftAction = UIAlertAction(title: title, style: .default) { [self] _ in
-            self.rotateSelectionLeft()
-        }
-        alert.addAction(rotateLeftAction)
-        
-        // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = actionBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
-        }
-    }
 }
 
 
 // MARK: - Menus
-@available(iOS 14, *)
 extension AlbumViewController
 {
     // MARK: - Select Menu
@@ -214,14 +161,12 @@ extension AlbumViewController
         }
 
         // Update select buttons of section headers if needed
-        if images.sectionNameKeyPath != nil,
+        if let sortKey = images.fetchRequest.sortDescriptors?.first?.key,
+           [#keyPath(Image.dateCreated), #keyPath(Image.datePosted)].contains(sortKey),
            let headers = collectionView?.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionHeader)
         {
             headers.forEach { header in
                 if let header = header as? ImageHeaderReusableView {
-                    header.selectButton.setTitle(forState: .select)
-                }
-                else if let header = header as? ImageOldHeaderReusableView {
                     header.selectButton.setTitle(forState: .select)
                 }
             }
@@ -251,28 +196,16 @@ extension AlbumViewController
         }
 
         // Album section?
-        if #available(iOS 13.0, *) {
-            // Album or image?
-            if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
-               index == section {
-                return .none
-            }
-        } else {
-            if section == 0 {
-                return .none
-            }
+        if let index = diffableDataSource.snapshot().indexOfSection(pwgAlbumGroup.none.sectionKey),
+           index == section {
+            return .none
         }
         
         // Number of images in section
         var nberOfImagesInSection = Int.zero
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            let sectionID = snapshot.sectionIdentifiers[section]
-            nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
-        } else {
-            // Fallback on earlier versions
-            nberOfImagesInSection = collectionView?.numberOfItems(inSection: section) ?? 0
-        }
+        let snapshot = diffableDataSource.snapshot() as Snaphot
+        let sectionID = snapshot.sectionIdentifiers[section]
+        nberOfImagesInSection = snapshot.numberOfItems(inSection: sectionID)
         if nberOfImagesInSection == 0 {
             selectedSections[section] = SelectButtonState.none
             return .none
@@ -280,22 +213,10 @@ extension AlbumViewController
 
         // Number of selected images
         var nberOfSelectedImagesInSection = 0
-        if #available(iOS 13.0, *) {
-            let snapshot = diffableDataSource.snapshot() as Snaphot
-            let sectionID = snapshot.sectionIdentifiers[section]
-            snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
-                if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
-                   selectedImageIDs.contains(image.pwgID) {
-                    nberOfSelectedImagesInSection += 1
-                }
-            }
-        } else {
-            // Fallback on earlier versions
-            for item in 0..<nberOfImagesInSection {
-                let imageIndexPath = IndexPath(item: item, section: section - 1)
-                if selectedImageIDs.contains(images.object(at: imageIndexPath).pwgID) {
-                    nberOfSelectedImagesInSection += 1
-                }
+        snapshot.itemIdentifiers(inSection: sectionID).forEach { objectID in
+            if let image = try? self.mainContext.existingObject(with: objectID) as? Image,
+               selectedImageIDs.contains(image.pwgID) {
+                nberOfSelectedImagesInSection += 1
             }
         }
         
@@ -431,8 +352,10 @@ extension AlbumViewController
             
             // Retrieve image data if needed
             PwgSession.checkSession(ofUser: user) {  [self] in
-                retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
-                             beforeAction: action, contextually: contextually)
+                DispatchQueue.main.async { [self] in
+                    self.retrieveData(ofImagesWithID: imageIDsToRetrieve, among: imageIDs,
+                                      beforeAction: action, contextually: contextually)
+                }
             } failure: { [self] error in
                 DispatchQueue.main.async { [self] in
                     retrieveImageDataError(error, contextually: contextually)
@@ -441,19 +364,18 @@ extension AlbumViewController
         }
     }
     
+    @MainActor
     private func retrieveData(ofImagesWithID someIDs: Set<Int64>, among imageIDs: Set<Int64>,
                               beforeAction action:pwgImageAction, contextually: Bool) {
         // Get image ID if any
         var remainingIDs = someIDs
         guard let imageID = remainingIDs.first else {
-            DispatchQueue.main.async { [self] in
-                if action == .share {
-                    // Update or display HUD
-                    self.performAction(action, withImageIDs: imageIDs, contextually: contextually)
-                } else {
-                    self.navigationController?.hideHUD() { [self] in
-                        performAction(action, withImageIDs: imageIDs, contextually: contextually)
-                    }
+            if action == .share {
+                // Update or display HUD
+                self.performAction(action, withImageIDs: imageIDs, contextually: contextually)
+            } else {
+                self.navigationController?.hideHUD() { [self] in
+                    performAction(action, withImageIDs: imageIDs, contextually: contextually)
                 }
             }
             return
@@ -461,18 +383,18 @@ extension AlbumViewController
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         imageProvider.getInfos(forID: imageID, inCategoryId: self.albumData.pwgID) { [self] in
-            // Image info retrieved
-            remainingIDs.remove(imageID)
-
-            // Update HUD
             DispatchQueue.main.async { [self] in
+                // Image info retrieved
+                remainingIDs.remove(imageID)
+                
+                // Update HUD
                 let progress: Float = Float(1) - Float(remainingIDs.count) / Float(imageIDs.count)
                 self.navigationController?.updateHUD(withProgress: progress)
-            }
 
-            // Next image
-            retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
-                         beforeAction: action, contextually: contextually)
+                // Next image
+                retrieveData(ofImagesWithID: remainingIDs, among: imageIDs,
+                             beforeAction: action, contextually: contextually)
+            }
         } failure: { [self] error in
             DispatchQueue.main.async { [self] in
                 retrieveImageDataError(error, contextually: contextually)
@@ -483,8 +405,7 @@ extension AlbumViewController
     @MainActor
     private func retrieveImageDataError(_ error: Error, contextually: Bool) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed] .contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -573,8 +494,6 @@ extension AlbumViewController: UIGestureRecognizerDelegate
             let indexPath = IndexPath(item: 0, section: indexPath.section)
             if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageHeaderReusableView {
                 header.selectButton.setTitle(forState: selectState)
-            } else if let header = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? ImageOldHeaderReusableView {
-                header.selectButton.setTitle(forState: selectState)
             }
         }
         //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
@@ -587,24 +506,15 @@ extension AlbumViewController: UIGestureRecognizerDelegate
 extension AlbumViewController: ImageDetailDelegate
 {
     func didSelectImage(atIndexPath indexPath: IndexPath) {
-        // Correspondinng collection view index path
-        var collIndexPath = IndexPath()
-        if #available(iOS 13.0, *) {
-            collIndexPath = indexPath
-        } else {
-            // Fallback on earlier versions
-            collIndexPath = IndexPath(item: indexPath.item, section: indexPath.section + 1)
-        }
-        
         // Scroll view to center image
-        if collectionView?.numberOfSections ?? 0 > collIndexPath.section,
-           collectionView?.numberOfItems(inSection: collIndexPath.section) ?? 0 > collIndexPath.item {
+        if collectionView?.numberOfSections ?? 0 > indexPath.section,
+           collectionView?.numberOfItems(inSection: indexPath.section) ?? 0 > indexPath.item {
             
-            imageOfInterest = collIndexPath
-            collectionView?.scrollToItem(at: collIndexPath, at: .centeredVertically, animated: true)
+            imageOfInterest = indexPath
+            collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
             
             // Prepare variables for transitioning delegate
-            if let selectedCell = collectionView?.cellForItem(at: collIndexPath) as? ImageCollectionViewCell {
+            if let selectedCell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
                 animatedCell = selectedCell
                 albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
                 cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)

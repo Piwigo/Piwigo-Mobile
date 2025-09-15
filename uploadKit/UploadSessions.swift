@@ -40,9 +40,7 @@ public class UploadSessions: NSObject {
 //        config.waitsForConnectivity = NetworkVars.shared.usesUploadAsync
         
         /// Connections should not use the network when the user has specified Low Data Mode
-//        if #available(iOS 13.0, *) {
-//            config.allowsConstrainedNetworkAccess = false
-//        }
+//        config.allowsConstrainedNetworkAccess = false
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
@@ -223,7 +221,9 @@ extension UploadSessions: URLSessionDelegate {
         }
 
         // Retrieve the certificate of the server
-        guard let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0)) else {
+        guard let certificates = SecTrustCopyCertificateChain(serverTrust) as? [SecCertificate],
+              let certificate = certificates.first
+        else {
             completionHandler(.performDefaultHandling, nil)
             return
         }

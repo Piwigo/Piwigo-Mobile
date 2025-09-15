@@ -36,17 +36,18 @@ class DataMigrationViewController: UIViewController {
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
         
+        // Navigation bar
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
+
         // Change text colour according to palette colour
-        if #available(iOS 13.0, *) {
-            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         
         // Text color depdending on background color
-        migrationLabel.textColor = .piwigoColorText()
-        pleaseWaitLabel.textColor = .piwigoColorText()
-        piwigoUrlLabel.textColor = .piwigoColorText()
+        migrationLabel.textColor = PwgColor.text
+        pleaseWaitLabel.textColor = PwgColor.text
+        piwigoUrlLabel.textColor = PwgColor.text
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -101,110 +102,92 @@ class DataMigrationViewController: UIViewController {
                         errorMsg = ""
                     }
                     
-                    if #available(iOS 13.0, *) {
-                        let activeScenes = UIApplication.shared.connectedScenes
-                            .filter({ $0.activationState == .foregroundActive })
-                            .filter({ $0.session.role == .windowApplication})
-                        if let scene = activeScenes.first as? UIWindowScene {
-                            scene.topMostViewController()?.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg) {
-                                return
-                            }
+                    let activeScenes = UIApplication.shared.connectedScenes
+                        .filter({ $0.activationState == .foregroundActive })
+                        .filter({ $0.session.role == .windowApplication})
+                    if let scene = activeScenes.first as? UIWindowScene {
+                        scene.topMostViewController()?.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg) {
+                            return
                         }
-                    } else {
-                        // Fallback on earlier version
-                        if UIApplication.shared.keyWindow?.rootViewController != nil {
-                            UIApplication.shared.keyWindow?.rootViewController?.dismissPiwigoError(withTitle: title, message: message, errorMessage: errorMsg) {
-                                return
-                            }
-                        }
-                        return
                     }
                 }
             }
             
             // Present login and/or album views
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async {
                 guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 else { return }
                 
-                if #available(iOS 13.0, *) {
-                    // Get all scenes
-                    let connectedScenes = UIApplication.shared.connectedScenes
-                    
-                    // Restore scenes if possible
-                    var restoredScenes = Set<UIScene>()
-                    var hasProtectedActiveScene: Bool = false
-                    connectedScenes.forEach { scene in
-                        if let sceneDelegate = (scene.delegate as? SceneDelegate),
-                           let window = sceneDelegate.window {
-                            if let userActivity =  scene.userActivity ?? scene.session.stateRestorationActivity,
-                               sceneDelegate.configure(window: window, session: scene.session, with: userActivity) {
-                                debugPrint("••> \(scene.session.persistentIdentifier): Restore scene after migration")
-                                // Collect restored scenes
-                                restoredScenes.insert(scene)
-                                // Remember this activity for later when this app quits or suspends.
-                                scene.userActivity = userActivity
-                                // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
-                                scene.title = userActivity.title
-                                // Blur views if the App Lock is enabled
-                                if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
-                                    sceneDelegate.addPrivacyProtection(toFirstScene: true)
-                                    hasProtectedActiveScene = true
-                                } else {
-                                    sceneDelegate.addPrivacyProtection(toFirstScene: false)
-                                }
-                                // Manages privacy protection and resume uploads
-                                sceneDelegate.sceneDidBecomeActive(scene)
+                // Get all scenes
+                let connectedScenes = UIApplication.shared.connectedScenes
+                
+                // Restore scenes if possible
+                var restoredScenes = Set<UIScene>()
+                var hasProtectedActiveScene: Bool = false
+                connectedScenes.forEach { scene in
+                    if let sceneDelegate = (scene.delegate as? SceneDelegate),
+                       let window = sceneDelegate.window {
+                        if let userActivity =  scene.userActivity ?? scene.session.stateRestorationActivity,
+                           sceneDelegate.configure(window: window, session: scene.session, with: userActivity) {
+                            debugPrint("••> \(scene.session.persistentIdentifier): Restore scene after migration")
+                            // Collect restored scenes
+                            restoredScenes.insert(scene)
+                            // Remember this activity for later when this app quits or suspends.
+                            scene.userActivity = userActivity
+                            // Set the title for this scene to allow the system to differentiate multiple scenes for the user.
+                            scene.title = userActivity.title
+                            // Blur views if the App Lock is enabled
+                            if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
+                                sceneDelegate.addPrivacyProtection(toFirstScene: true)
+                                hasProtectedActiveScene = true
+                            } else {
+                                sceneDelegate.addPrivacyProtection(toFirstScene: false)
                             }
+                            // Manages privacy protection and resume uploads
+                            sceneDelegate.sceneDidBecomeActive(scene)
                         }
                     }
-                    
-                    // Load login album view controller
-                    let otherScenes = connectedScenes.subtracting(restoredScenes)
-                    if otherScenes.count == connectedScenes.count {
-                        otherScenes.forEach { scene in
-                            if let sceneDelegate = (scene.delegate as? SceneDelegate),
-                               let window = sceneDelegate.window {
-                                debugPrint("••> \(scene.session.persistentIdentifier): Present Login view after migration")
-                                if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
-                                    // Replace migration with login view controller
-                                    appDelegate.loadLoginView(in: window)
-                                    // Blur views if the App Lock is enabled
-                                    sceneDelegate.addPrivacyProtection(toFirstScene: true)
-                                    hasProtectedActiveScene = true
-                                    // Manages privacy protection and resume uploads
-                                    sceneDelegate.sceneDidBecomeActive(scene)
-                                } else {
-                                    sceneDelegate.window?.rootViewController = nil
-                                    UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                                }
-                            }
-                        }
-                    } else {
-                        // Some scenes was created during the migration ► Present Album navigator
-                        otherScenes.forEach { scene in
-                            if let sceneDelegate = (scene.delegate as? SceneDelegate),
-                               let window = sceneDelegate.window {
-                                debugPrint("••> \(scene.session.persistentIdentifier): Present Album view after migration")
+                }
+                
+                // Load login album view controller
+                let otherScenes = connectedScenes.subtracting(restoredScenes)
+                if otherScenes.count == connectedScenes.count {
+                    otherScenes.forEach { scene in
+                        if let sceneDelegate = (scene.delegate as? SceneDelegate),
+                           let window = sceneDelegate.window {
+                            debugPrint("••> \(scene.session.persistentIdentifier): Present Login view after migration")
+                            if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
                                 // Replace migration with login view controller
-                                appDelegate.loadNavigation(in: window)
+                                appDelegate.loadLoginView(in: window)
                                 // Blur views if the App Lock is enabled
-                                if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
-                                    sceneDelegate.addPrivacyProtection(toFirstScene: true)
-                                    hasProtectedActiveScene = true
-                                } else {
-                                    sceneDelegate.addPrivacyProtection(toFirstScene: false)
-                                }
+                                sceneDelegate.addPrivacyProtection(toFirstScene: true)
+                                hasProtectedActiveScene = true
                                 // Manages privacy protection and resume uploads
                                 sceneDelegate.sceneDidBecomeActive(scene)
+                            } else {
+                                sceneDelegate.window?.rootViewController = nil
+                                UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
                             }
                         }
                     }
                 } else {
-                    // Fallback on earlier version
-                    if let window = self.view.window {
-                        appDelegate.loadLoginView(in: window)
-                        appDelegate.addPrivacyProtectionIfNeeded()
+                    // Some scenes was created during the migration ► Present Album navigator
+                    otherScenes.forEach { scene in
+                        if let sceneDelegate = (scene.delegate as? SceneDelegate),
+                           let window = sceneDelegate.window {
+                            debugPrint("••> \(scene.session.persistentIdentifier): Present Album view after migration")
+                            // Replace migration with login view controller
+                            appDelegate.loadNavigation(in: window)
+                            // Blur views if the App Lock is enabled
+                            if scene.activationState == .foregroundActive, hasProtectedActiveScene == false {
+                                sceneDelegate.addPrivacyProtection(toFirstScene: true)
+                                hasProtectedActiveScene = true
+                            } else {
+                                sceneDelegate.addPrivacyProtection(toFirstScene: false)
+                            }
+                            // Manages privacy protection and resume uploads
+                            sceneDelegate.sceneDidBecomeActive(scene)
+                        }
                     }
                 }
             }

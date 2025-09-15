@@ -7,18 +7,14 @@
 //
 
 import AVFoundation
+import BackgroundTasks
 import CoreData
 import LocalAuthentication
 import UIKit
 
-#if canImport(BackgroundTasks)
-import BackgroundTasks        // Requires iOS 13
-#endif
-
 import piwigoKit
 import uploadKit
 
-@available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
@@ -78,7 +74,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // For debugging purposes | Force a migration
                 // Restore the database from the files available in the AppGroup Piwigo folder
 //                let SQLfileName = "DataModel.sqlite"
-//                let storeURL = DataDirectories.shared.appGroupDirectory
+//                let storeURL = DataDirectories.appGroupDirectory
 //                    .appendingPathComponent(SQLfileName)
 //                migrator.restoreStore(storeURL: storeURL)
 #endif
@@ -214,6 +210,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene is about to begin running in the foreground and become visible to the user.
         // Use this method to undo the changes made on entering the background.
         
+        // Start network monitoring
+        Task { @MainActor in
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            await appDelegate?.networkMonitor?.startMonitoring()
+        }
+
         // Flag used to prevent background tasks from running when the app is active
         AppVars.shared.applicationIsActive = true
         
@@ -330,7 +332,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if albumIDs.contains(pwgSmartAlbum.favorites.rawValue) == false {
             quickActions.append(contentsOf: [
                 UIApplicationShortcutItem(type: ActionType.showFavoritesAction.rawValue,
-                                          localizedTitle: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
+                                          localizedTitle: pwgSmartAlbum.favorites.name,
                                           localizedSubtitle: nil,
                                           icon: UIApplicationShortcutIcon(systemImageName: "heart"))
             ])
@@ -338,7 +340,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if albumIDs.contains(pwgSmartAlbum.recent.rawValue) == false {
             quickActions.append(contentsOf: [
                 UIApplicationShortcutItem(type: ActionType.showRecentPhotosAction.rawValue,
-                                          localizedTitle: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
+                                          localizedTitle: pwgSmartAlbum.recent.name,
                                           localizedSubtitle: nil,
                                           icon: UIApplicationShortcutIcon(systemImageName: "clock"))
                 ])
@@ -380,6 +382,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Reset list of albums being fetched
         AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
+
+        // Stop network monitoring
+        Task { @MainActor in
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            await appDelegate?.networkMonitor?.stopMonitoring()
+        }
     }
     
     
@@ -476,7 +484,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 // MARK: - AppLockDelegate Methods
-@available(iOS 13.0, *)
 extension SceneDelegate: AppLockDelegate {
     func loginOrReloginAndResumeUploads() {
         debugPrint("••> \(window?.windowScene?.session.persistentIdentifier ?? "UNKNOWN"): Scene presents the login view or resume uploads.")

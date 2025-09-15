@@ -9,15 +9,13 @@
 import Foundation
 
 extension URL {
-    // Return the MD5 checksum of a file
+    // Returns the MD5 checksum of a file
     /// https://developer.apple.com/forums/thread/115401
-    public func MD5checksum() -> (String, Error?) {
+    public var MD5checksum: (String, Error?) {
         var fileData: Data = Data()
         do {
             try fileData = NSData(contentsOf: self, options: .alwaysMapped) as Data
-            
-            // Determine MD5 checksum of video file to upload
-            let md5Checksum = fileData.MD5checksum()
+            let md5Checksum = fileData.MD5checksum
             return (md5Checksum, nil)
         }
         catch let error {

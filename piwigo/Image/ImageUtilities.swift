@@ -17,7 +17,7 @@ class ImageUtilities: NSObject {
     // MARK: - Piwigo Server Methods
     static func rotate(_ image: Image, by angle: Double,
                        completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for rotating image
         let paramsDict: [String : Any] = ["image_id"  : image.pwgID,
                                           "angle"     : angle * 180.0 / .pi,
@@ -27,17 +27,12 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImageRotate, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON if successful.
-            do {
-                // Decode the JSON into codable type ImageRotateJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImageRotateJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -51,45 +46,37 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not rotate image
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
-    static func setCategory(_ album: Album, forImages images: Set<Image>,
+    static func setCategory(_ albumID: Int32, forImageIDs listOfImageIds: [Int64],
                             withAction action: pwgImagesSetCategoryAction,
                             completion: @escaping () -> Void,
-                            failure: @escaping (Error) -> Void) {
+                            failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
-        let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"    : listOfImageIds,
-                                          "category_id" : album.pwgID,
+                                          "category_id" : albumID,
                                           "action"      : action.rawValue,
                                           "pwg_token"   : NetworkVars.shared.pwgToken]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesSetCategory, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetCategoryJSON.self,
-                                countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { jsonData in
-            // Decode the JSON and delete image from cache if successful.
-            do {
-                // Decode the JSON into codable type ImagesSetCategoryJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesSetCategoryJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -100,23 +87,21 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not associate/dissociate/move images
-                    failure(PwgSessionError.unexpectedError as Error)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 
     static func delete(_ images: Set<Image>,
                        completion: @escaping () -> Void,
-                       failure: @escaping (Error) -> Void) {
+                       failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let listOfImageIds: [Int64] = images.map({ $0.pwgID })
         let paramsDict: [String : Any] = ["image_id"  : listOfImageIds,
@@ -125,17 +110,12 @@ class ImageUtilities: NSObject {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesDelete, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON and delete image from cache if successful.
-            do {
-                // Decode the JSON into codable type ImagesDeleteJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesDeleteJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -148,40 +128,33 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func addToFavorites(_ imageData: Image,
                                completion: @escaping () -> Void,
-                               failure: @escaping (Error) -> Void) {
+                               failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgUsersFavoritesAdd, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and add image to favorites.
-            do {
-                // Decode the JSON into codable type FavoritesAddRemoveJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -192,41 +165,33 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
-                let error = error
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
     static func removeFromFavorites(_ imageData: Image,
                                     completion: @escaping () -> Void,
-                                    failure: @escaping (Error) -> Void) {
+                                    failure: @escaping (PwgKitError) -> Void) {
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["image_id"  : imageData.pwgID]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgUsersFavoritesRemove, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and remove image from faborites.
-            do {
-                // Decode the JSON into codable type FavoritesAddRemoveJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
-                
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -237,17 +202,15 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgSessionError.unexpectedError)
+                    failure(PwgKitError.unexpectedError)
                 }
-            } catch {
-                // Data cannot be digested
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
     
@@ -306,95 +269,37 @@ class ImageUtilities: NSObject {
             }
         }
         
-        // Downsample and save the returned thumbnail if necessary
-        if #available(iOS 15, *) {
-            // Retrieve image
-            guard let image = UIImage(contentsOfFile: imageURL.path)
-            else {
-                // Delete corrupted cached image file if any
-                try? FileManager.default.removeItem(at: imageURL)
-                return type.placeHolder
-            }
-            // Downsample image if needed
-            guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
-                  let downsampledImage = image.preparingThumbnail(of: optSize)
-            else {
-                return image
-            }
-            // Save the downsampled image in cache
-            saveDownsampledImage(downsampledImage, atPath: filePath)
-            return downsampledImage
-        }
+        // Retrieve image
+        guard let image = UIImage(contentsOfFile: imageURL.path)
         else {
-            // Retrieve the image source
-            let options = [kCGImageSourceShouldCache: false] as CFDictionary
-            guard let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, options),
-                  let downsampledImage = downsampledImage(from: imageSource, to: pointSize)
-            else {
-                // Can we use the downloaded file?
-                if let image = UIImage(contentsOfFile: imageURL.path) {
-                    return image
-                } else {
-                    // Delete corrupted cached image file
-                    try? FileManager.default.removeItem(at: imageURL)
-                    return type.placeHolder
-                }
-            }
-            saveDownsampledImage(downsampledImage, atPath: filePath)
-            return downsampledImage
+            // Delete corrupted cached image file if any
+            try? FileManager.default.removeItem(at: imageURL)
+            return type.placeHolder
         }
+        
+        // Downsample image if needed
+        guard let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+              let downsampledImage = image.preparingThumbnail(of: optSize)
+        else {
+            return image
+        }
+        
+        // Save the downsampled image in cache
+        saveDownsampledImage(downsampledImage, atPath: filePath)
+        return downsampledImage
     }
     
     static func downsample(image: UIImage, to pointSize: CGSize) -> UIImage {
         autoreleasepool {
             // Downsample image if needed
-            if #available(iOS 15, *) {
-                if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
-                   let downsampledImage = image.preparingThumbnail(of: optSize) {
-                    return downsampledImage
-                }
-            }
-            
-            // Fallback on earlier versions
-            let options = [kCGImageSourceShouldCache: false] as CFDictionary
-            if let imageData = image.jpegData(compressionQuality: 1.0),
-               let imageSource = CGImageSourceCreateWithData(imageData as CFData, options),
-               let downsampledImage = downsampledImage(from: imageSource, to: pointSize) {
+            if let optSize = optimumSize(ofImage: image, forPointSize: pointSize),
+               let downsampledImage = image.preparingThumbnail(of: optSize) {
                 return downsampledImage
             }
             
             // Return original image
             return image
         }
-    }
-    
-    static func downsampledImage(from imageSource: CGImageSource, to pointSize: CGSize) -> UIImage? {
-        // Check that it is possible to downsample the image
-        // by checking if it is possible to create a CGImaage from the image.
-        let index = CGImageSourceGetPrimaryImageIndex(imageSource)
-        let options = [kCGImageSourceShouldCache: false,
-                       kCGImagePropertyPixelWidth: true,
-                       kCGImagePropertyPixelHeight: true] as CFDictionary
-        if let imageRef = CGImageSourceCreateImageAtIndex(imageSource, index, options),
-           supportsPixelFormat(ofCGImage: imageRef) == false {
-            return nil
-        }
-        
-        // Downsample image if needed
-        if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(imageSource, index, options) as? [CFString : CFNumber],
-           let width = imageMetadata[kCGImagePropertyPixelWidth] as? CGFloat,
-           let height = imageMetadata[kCGImagePropertyPixelHeight] as? CGFloat,
-           let size = reducedSize(from: CGSizeMake(width, height), to: pointSize) {
-            let maxPixelSize = max(size.width, size.height)
-            let downsampleOptions = [kCGImageSourceShouldAllowFloat              : true,
-                                     kCGImageSourceShouldCacheImmediately        : true,
-                                     kCGImageSourceCreateThumbnailWithTransform  : true,
-                                     kCGImageSourceCreateThumbnailFromImageAlways: true,
-                                     kCGImageSourceThumbnailMaxPixelSize         : maxPixelSize] as [CFString : Any]
-            let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, index, downsampleOptions as CFDictionary)
-            return downsampledImage == nil ? nil : UIImage(cgImage: downsampledImage!)
-        }
-        return nil
     }
     
     private static func saveDownsampledImage(_ downSampledImage: UIImage, atPath filePath: String) {
@@ -486,25 +391,26 @@ class ImageUtilities: NSObject {
         // See https://www.apple.com/iphone/compare/ and https://www.apple.com/ipad/compare/
         let screenSize = UIScreen.main.bounds.size
         let screenWidth = fmin(screenSize.width, screenSize.height) * pwgImageSize.maxZoomScale
-        
+        let scale = AppVars.shared.currentDeviceScale
+
         switch screenWidth {
-        case 0...pwgImageSize.square.minPoints:
+        case 0...pwgImageSize.square.minPoints(forScale: scale):
             return .square
-        case pwgImageSize.square.minPoints+1...pwgImageSize.thumb.minPoints:
+        case pwgImageSize.square.minPoints(forScale: scale)+1...pwgImageSize.thumb.minPoints(forScale: scale):
             return .thumb
-        case pwgImageSize.thumb.minPoints+1...pwgImageSize.xxSmall.minPoints:
+        case pwgImageSize.thumb.minPoints(forScale: scale)+1...pwgImageSize.xxSmall.minPoints(forScale: scale):
             return .xxSmall
-        case pwgImageSize.xxSmall.minPoints+1...pwgImageSize.xSmall.minPoints:
+        case pwgImageSize.xxSmall.minPoints(forScale: scale)+1...pwgImageSize.xSmall.minPoints(forScale: scale):
             return .xSmall
-        case pwgImageSize.xSmall.minPoints+1...pwgImageSize.small.minPoints:
+        case pwgImageSize.xSmall.minPoints(forScale: scale)+1...pwgImageSize.small.minPoints(forScale: scale):
             return .small
-        case pwgImageSize.small.minPoints+1...pwgImageSize.medium.minPoints:
+        case pwgImageSize.small.minPoints(forScale: scale)+1...pwgImageSize.medium.minPoints(forScale: scale):
             return .medium
-        case pwgImageSize.medium.minPoints+1...pwgImageSize.large.minPoints:
+        case pwgImageSize.medium.minPoints(forScale: scale)+1...pwgImageSize.large.minPoints(forScale: scale):
             return .large
-        case pwgImageSize.large.minPoints+1...pwgImageSize.xLarge.minPoints:
+        case pwgImageSize.large.minPoints(forScale: scale)+1...pwgImageSize.xLarge.minPoints(forScale: scale):
             return .xLarge
-        case pwgImageSize.xLarge.minPoints+1...pwgImageSize.xxLarge.minPoints:
+        case pwgImageSize.xLarge.minPoints(forScale: scale)+1...pwgImageSize.xxLarge.minPoints(forScale: scale):
             return .xxLarge
         default:
             return .fullRes
@@ -641,7 +547,7 @@ class ImageUtilities: NSObject {
     static func rotateThumbnailsOfImage(_ imageData: Image, by angle: CGFloat) {
         // Initialisation
         guard let serverID = imageData.server?.uuid else { return }
-        let cacheDir = DataDirectories.shared.cacheDirectory.appendingPathComponent(serverID)
+        let cacheDir = DataDirectories.cacheDirectory.appendingPathComponent(serverID)
         let fm = FileManager.default
 
         // Loop over all sizes

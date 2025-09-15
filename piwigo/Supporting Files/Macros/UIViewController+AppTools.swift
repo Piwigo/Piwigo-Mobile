@@ -189,27 +189,21 @@ extension UIViewController {
     }
 
     @MainActor
-    func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
-        DispatchQueue.main.async {
-            // Create alert view controller
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    func presentPiwigoAlert(withTitle title: String, message: String, actions: [UIAlertAction]) {
+        // Create alert view controller
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
-            // Add actions
-            for action in actions {
-                alert.addAction(action)
-            }
-            
-            // Present alert
-            alert.view.tintColor = .piwigoColorOrange()
-            if #available(iOS 13.0, *) {
-                alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-            } else {
-                // Fallback on earlier versions
-            }
-            self.present(alert, animated: true) {
-                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = .piwigoColorOrange()
-            }
+        // Add actions
+        for action in actions {
+            alert.addAction(action)
+        }
+        
+        // Present alert
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        self.present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
 }

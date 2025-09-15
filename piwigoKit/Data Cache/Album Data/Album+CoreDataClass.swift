@@ -26,7 +26,7 @@ public class Album: NSManagedObject {
         // Update the album only if the Id and Name properties have values.
         guard let newPwgId = albumData.id,
               let newName = albumData.name else {
-            throw AlbumError.missingData
+            throw PwgKitError.missingAlbumData
         }
         if uuid.isEmpty {
             uuid = UUID().uuidString
@@ -36,21 +36,21 @@ public class Album: NSManagedObject {
         }
         
         // Album name (required)
-        let newNameUTF8 = PwgSession.utf8mb4String(from: newName)
+        let newNameUTF8 = newName.utf8mb4Encoded
         if name != newNameUTF8 {
             name = newNameUTF8
         }
 
         // Album description (required)
-        let newCommentStr = PwgSession.utf8mb4String(from: albumData.comment)
+        let newCommentStr = albumData.comment?.utf8mb4Encoded ?? ""
         if commentStr != newCommentStr {
             commentStr = newCommentStr
         }
-        let newComment = newCommentStr.attributedPlain()
+        let newComment = newCommentStr.attributedPlain
         if comment != newComment {
             comment = newComment
         }
-        let newCommentHTML = newCommentStr.attributedHTML()
+        let newCommentHTML = newCommentStr.attributedHTML
         if newCommentHTML != commentHTML {
             commentHTML = newCommentHTML
         }

@@ -15,20 +15,15 @@ class ImageDescriptionView: UIVisualEffectView {
     @IBOutlet weak var descHeight: NSLayoutConstraint!
     @IBOutlet weak var descOffset: NSLayoutConstraint!
     @IBOutlet weak var descTextView: UITextView!
-
+    
     override func awakeFromNib() {
         // Initialization code
         super.awakeFromNib()
     }
-
+    
     @MainActor
     func applyColorPalette() {
-        if #available(iOS 13.0, *) {
-            descTextView.textColor = .piwigoColorText()
-        } else {
-            backgroundColor = .piwigoColorBackground()
-            descTextView.textColor = .piwigoColorText()
-        }
+        descTextView.textColor = PwgColor.text
     }
     
     func config(withImage image: Image,
@@ -42,13 +37,15 @@ class ImageDescriptionView: UIVisualEffectView {
             let wholeRange = NSRange(location: 0, length: image.comment.string.count)
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.center
+            let footNoteFont = UIFont.preferredFont(forTextStyle: .footnote)
             let attributes: [NSAttributedString.Key : Any] = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .light),
+                NSAttributedString.Key.foregroundColor: PwgColor.text,
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: footNoteFont.pointSize, weight: .light),
                 NSAttributedString.Key.paragraphStyle: style
             ]
             let desc = NSMutableAttributedString(attributedString: image.comment)
             desc.addAttributes(attributes, range: wholeRange)
+            descTextView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: PwgColor.orange]
             descTextView.attributedText = desc
         } else {
             // Hide the description view
@@ -60,7 +57,7 @@ class ImageDescriptionView: UIVisualEffectView {
         // Don't show the description only when the bar is hidden
         let navController = viewController.navigationController
         self.isHidden = navController?.isNavigationBarHidden ?? false
-
+        
         // Calculate the available width
         var safeAreaWidth: CGFloat = UIScreen.main.bounds.size.width
         if let root = navController?.topViewController {
@@ -71,8 +68,7 @@ class ImageDescriptionView: UIVisualEffectView {
         // Calc the height required to display the text, corners'width deducted
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let lineHeight = (descTextView.font ?? UIFont.systemFont(ofSize: 13)).lineHeight
-        let cornerRadius = descTextView.textContainerInset.top + lineHeight/2
+        let cornerRadius: CGFloat = 20.0
         let rect = descTextView.attributedText.boundingRect(with: CGSize(width: safeAreaWidth - 2*cornerRadius,
                                                                          height: CGFloat.greatestFiniteMagnitude),
                                                             options: [.usesLineFragmentOrigin, .usesFontLeading],
@@ -81,21 +77,15 @@ class ImageDescriptionView: UIVisualEffectView {
         
         // Determine the max height according to device and orientation
         let maxHeight: CGFloat!
-        let orientation: UIInterfaceOrientation
-        if #available(iOS 14, *) {
-            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
+        let orientation = viewController.view.window?.windowScene?.interfaceOrientation ?? .portrait
         let height = window?.bounds.height ?? UIScreen.main.bounds.height
-        switch orientation {
-        case .landscapeLeft, .landscapeRight:
+        if orientation.isLandscape {
             maxHeight = 0.20 * height
-        default:
+        } else {
             maxHeight = 0.23 * height
         }
         
-        // Can the description be presented on 3 lines maximum?
+        // Can the description be presented in the provided height?
         if textHeight < maxHeight {
             // Calculate the height (the width should be < safeAreaWidth)
             let requiredHeight = ceil(descTextView.textContainerInset.top + textHeight + descTextView.textContainerInset.bottom)
@@ -104,16 +94,26 @@ class ImageDescriptionView: UIVisualEffectView {
                                                         height: requiredHeight))
             descWidth.constant = size.width + cornerRadius   // Add space taken by corners
             descHeight.constant = size.height
-            descOffset.constant = forVideo ? 12 : 4
-            self.layer.cornerRadius = cornerRadius
+            if #available(iOS 26.0, *) {
+                descOffset.constant = forVideo ? 12 : 8
+            } else {
+                // Fallback on previous version
+                descOffset.constant = forVideo ? 12 : 4
+            }
+            self.layer.cornerRadius = min(cornerRadius, descHeight.constant/2)
             self.layer.masksToBounds = true
         }
         else if rect.width < safeAreaWidth - 4*cornerRadius {
             // Several short lines but the width is smaller than screen width
             descWidth.constant = rect.width + cornerRadius   // Add space taken by corners
             descHeight.constant = min(maxHeight, rect.height)
-            descOffset.constant = forVideo ? 12 : 4
-            self.layer.cornerRadius = cornerRadius
+            if #available(iOS 26.0, *) {
+                descOffset.constant = forVideo ? 12 : 8
+            } else {
+                // Fallback on previous version
+                descOffset.constant = forVideo ? 12 : 4
+            }
+            self.layer.cornerRadius = min(cornerRadius, descHeight.constant/2)
             self.layer.masksToBounds = true
             
             // Scroll text to the top

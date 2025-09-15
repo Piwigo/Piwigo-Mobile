@@ -128,22 +128,17 @@ class PlayerViewControllerCoordinator: NSObject {
                         playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: scale),
                                         completionHandler: nil)
                         
-                        // Add title and artwork
-                        if #available(iOS 12.2, *) {
-                            // Any title?
-                            let titleItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
-                                                                          filteredByIdentifier: .commonIdentifierTitle)
-                            if titleItems.isEmpty {
-                                playerItem.externalMetadata.append(metadataItemForMediaTitle())
-                            }
-                            let artworkItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
-                                                                            filteredByIdentifier: .commonIdentifierArtwork)
-                            if artworkItems.isEmpty {
-                                let item = metadataItemForMediaArtwork()
-                                playerItem.externalMetadata.append(item)
-                            }
-                        } else {
-                            // Fallback on earlier versions
+                        // Add title and artwork if any
+                        let titleItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
+                                                                      filteredByIdentifier: .commonIdentifierTitle)
+                        if titleItems.isEmpty {
+                            playerItem.externalMetadata.append(metadataItemForMediaTitle())
+                        }
+                        let artworkItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
+                                                                        filteredByIdentifier: .commonIdentifierArtwork)
+                        if artworkItems.isEmpty {
+                            let item = metadataItemForMediaArtwork()
+                            playerItem.externalMetadata.append(item)
                         }
                         
                         // Create player minimizing stalling

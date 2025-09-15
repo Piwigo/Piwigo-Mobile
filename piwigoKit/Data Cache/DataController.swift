@@ -10,7 +10,7 @@ import os
 import Foundation
 import CoreData
 
-public class DataController: NSObject {
+public final class DataController: NSObject {
 
     // MARK: - Singleton
     public static let shared = DataController()
@@ -31,7 +31,7 @@ public class DataController: NSObject {
         let model = NSManagedObjectModel.managedObjectModel(forVersion: DataMigrationVersion.current)
         let persistentContainer = NSPersistentContainer(name: "DataModel", managedObjectModel: model)
         let description = persistentContainer.persistentStoreDescriptions.first
-        description?.url = DataDirectories.shared.appGroupDirectory.appendingPathComponent("DataModel.sqlite")
+        description?.url = DataDirectories.appGroupDirectory.appendingPathComponent("DataModel.sqlite")
         description?.shouldAddStoreAsynchronously = false
         description?.shouldInferMappingModelAutomatically = false
         description?.shouldMigrateStoreAutomatically = false
@@ -41,7 +41,7 @@ public class DataController: NSObject {
     
     public lazy var mainContext: NSManagedObjectContext = {
         let context = self.persistentContainer.viewContext
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         context.shouldDeleteInaccessibleFaults = true
         context.name = "View context"
@@ -50,7 +50,7 @@ public class DataController: NSObject {
     
     public func newTaskContext() -> NSManagedObjectContext {
         let context = self.persistentContainer.newBackgroundContext()
-        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.shouldDeleteInaccessibleFaults = true
         return context
     }

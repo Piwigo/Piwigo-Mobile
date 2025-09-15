@@ -55,7 +55,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             title.addAttributes(attributes, range: wholeRange)
             cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_title", comment: "Title")), placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"), andImageDetail: title)
             if shouldUpdateTitle {
-                cell.cellTextField.textColor = .piwigoColorOrange()
+                cell.cellTextField.textColor = PwgColor.orange
             }
             cell.cellTextField.tag = indexPath.row
             cell.cellTextField.delegate = self
@@ -66,7 +66,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load a EditImageTextFieldTableViewCell") }
             cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_author", comment: "Author")), placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"), andImageDetail: NSAttributedString(string: commonAuthor))
             if shouldUpdateAuthor {
-                cell.cellTextField.textColor = .piwigoColorOrange()
+                cell.cellTextField.textColor = PwgColor.orange
             }
             cell.cellTextField.tag = indexPath.row
             cell.cellTextField.delegate = self
@@ -75,9 +75,10 @@ extension EditImageParamsViewController: UITableViewDataSource
         case .date:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "dateCreation", for: indexPath) as? EditImageTextFieldTableViewCell
             else { preconditionFailure("Could not load a EditImageTextFieldTableViewCell") }
-            cell.config(withLabel: NSAttributedString(string: NSLocalizedString("editImageDetails_dateCreation", comment: "Creation Date")), placeHolder: "", andImageDetail: NSAttributedString(string: getStringFrom(commonDateCreated)))
+            cell.config(withLabel: NSAttributedString(string: RenameAction.ActionType.addDate.name),
+                        placeHolder: "", andImageDetail: NSAttributedString(string: getStringFrom(commonDateCreated)))
             if shouldUpdateDateCreated {
-                cell.cellTextField.textColor = .piwigoColorOrange()
+                cell.cellTextField.textColor = PwgColor.orange
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -105,7 +106,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell 
             else { preconditionFailure("Could not load a EditImageTagsTableViewCell") }
             cell.config(withList: commonTags,
-                        inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                        inColor: shouldUpdateTags ? PwgColor.orange : PwgColor.rightLabel)
             tableViewCell = cell
             
         case .privacy:
@@ -113,7 +114,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load a EditImagePrivacyTableViewCell") }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
             cell.setPrivacyLevel(with: pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody,
-                                 inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
+                                 inColor: shouldUpdatePrivacyLevel ? PwgColor.orange : PwgColor.rightLabel)
             tableViewCell = cell
 
         case .desc:
@@ -129,10 +130,10 @@ extension EditImageParamsViewController: UITableViewDataSource
             let detail = NSMutableAttributedString(string: commonComment)
             detail.addAttributes(attributes, range: wholeRange)
             cell.config(withText: detail,
-                        inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
+                        inColor: shouldUpdateTags ? PwgColor.orange : PwgColor.rightLabel)
             // Piwigo does not manage HTML descriptions.
             // So we disable the editor to prevent a mess when the description contains HTML.
-            if commonComment.containsHTML() {
+            if commonComment.containsHTML {
                 cell.textView.isEditable = false
             } else {
                 cell.textView.isEditable = true
@@ -145,8 +146,8 @@ extension EditImageParamsViewController: UITableViewDataSource
             break
         }
 
-        tableViewCell.backgroundColor = .piwigoColorCellBackground()
-        tableViewCell.tintColor = .piwigoColorOrange()
+        tableViewCell.backgroundColor = PwgColor.cellBackground
+        tableViewCell.tintColor = PwgColor.orange
         return tableViewCell
     }
 
@@ -154,7 +155,7 @@ extension EditImageParamsViewController: UITableViewDataSource
         var dateStr = ""
         var timeStr = ""
         if let date = date, date > DateUtilities.weekAfter {
-            let dateFormatter = DateUtilities.dateFormatter()
+            let dateFormatter = DateUtilities.dateFormatter
             if view.bounds.size.width > 430 {
                 // i.e. larger than iPhone 14 Pro Max screen width
                 dateFormatter.dateStyle = .long

@@ -22,17 +22,17 @@ extension UIButton
         switch state {
         case .select:
             title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
-            bckgColor = .piwigoColorCellBackground()
+            bckgColor = PwgColor.cellBackground
         case .deselect:
             title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
-            bckgColor = .piwigoColorCellBackground()
+            bckgColor = PwgColor.cellBackground
         case .none:
             title = ""
             bckgColor = .clear
         }
         self.backgroundColor = bckgColor
         self.setTitle(title, for: .normal)
-        self.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
+        self.setTitleColor(PwgColor.whiteCream, for: .normal)
         self.accessibilityIdentifier = "SelectAll"
     }
 }

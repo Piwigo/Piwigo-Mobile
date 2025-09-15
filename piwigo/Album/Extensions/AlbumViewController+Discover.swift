@@ -10,17 +10,16 @@ import Foundation
 import UIKit
 import piwigoKit
 
-// MARK: "Discover" menu/button
+// MARK: Discover Button
 extension AlbumViewController
 {
     func getDiscoverButton() -> UIBarButtonItem {
         var button: UIBarButtonItem!
-        if #available(iOS 14.0, *) {
-            // Menu
-            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
+        if #available(iOS 26.0, *) {
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: discoverMenu())
         } else {
-            // Fallback on earlier versions
-            button = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(discoverMenuOld))
+            // Fallback on previous version
+            button = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: discoverMenu())
         }
         button.accessibilityIdentifier = "discover"
         return button
@@ -28,18 +27,17 @@ extension AlbumViewController
 }
 
 
-// MARK: - Discover Menu (iOS 14+)
+// MARK: - Discover Menu
 /// - for presenting favorite images if logged in
 /// - for presenting the tag selector and then tagged images
 /// - for presenting most visited images
 /// - for presenting best rated images
 /// - for presenting recent images
-@available(iOS 14.0, *)
 extension AlbumViewController
 {
     func discoverMenu() -> UIMenu {
         let menuId = UIMenu.Identifier("org.piwigo.discover")
-        let children = [smartAlbums(), viewOptionsMenu()]
+        let children = [smartAlbums(), viewOptionsMenu(), settingsMenu()].compactMap { $0 }
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: children)
@@ -61,7 +59,7 @@ extension AlbumViewController
     
     private func favoritesAction() -> UIAction {
         let actionId = UIAction.Identifier("Favorites")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
+        let action = UIAction(title: pwgSmartAlbum.favorites.name,
                               image: UIImage(systemName: "heart"),
                               identifier: actionId, handler: { [self] action in
             // Check that an album of favorites exists in cache (create it if necessary)
@@ -81,7 +79,7 @@ extension AlbumViewController
     private func taggedAction() -> UIAction {
         // Create action
         let actionId = UIAction.Identifier("Tagged")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
+        let action = UIAction(title: pwgSmartAlbum.tagged.name,
                               image: UIImage(systemName: "tag"),
                               identifier: actionId, handler: { [self] action in
             // Present tag selector
@@ -93,7 +91,7 @@ extension AlbumViewController
     
     private func mostVisitedAction() -> UIAction {
         let actionId = UIAction.Identifier("Most visited")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverVisits_title", comment: "Most visited"),
+        let action = UIAction(title: pwgSmartAlbum.visits.name,
                               image: UIImage(systemName: "person.3.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present most visited images
@@ -104,7 +102,7 @@ extension AlbumViewController
     
     private func bestRatedAction() -> UIAction {
         let actionId = UIAction.Identifier("Best rated")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverBest_title", comment: "Best rated"),
+        let action = UIAction(title: pwgSmartAlbum.best.name,
                               image: UIImage(systemName: "star.leadinghalf.fill"),
                               identifier: actionId, handler: { [self] action in
             // Present best rated images
@@ -115,95 +113,13 @@ extension AlbumViewController
     
     private func recentAction() -> UIAction {
         let actionId = UIAction.Identifier("Recent")
-        let action = UIAction(title: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent photos"),
-                              image: UIImage(systemName: "clock"),
+        let action = UIAction(title: pwgSmartAlbum.recent.name,
+                              image: UIImage(systemName: "sparkles"),
                               identifier: actionId, handler: { [self] action in
             // Present recent images
             discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
         })
         return action
-    }
-}
-
-
-// MARK: - Discover Menu (iOS 9.3 to 13.x)
-extension AlbumViewController
-{
-    @objc func discoverMenuOld() {
-        /// - for presenting favorite images
-        /// - for presenting the tag selector and then tagged images
-        /// - for presenting most visited images
-        /// - for presenting best rated images
-        /// - for presenting recent images
-        let alert = UIAlertController(title: nil,
-                                      message: NSLocalizedString("categoryDiscover_title", comment: "Discover"),
-                                      preferredStyle: .actionSheet)
-        
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-            style: .cancel, handler: { action in })
-        
-        let favoritesSelectorAction = UIAlertAction(
-            title: NSLocalizedString("categoryDiscoverFavorites_title", comment: "My Favorites"),
-            style: .default, handler: { [self] action in
-                // Check that an album of favorites exists in cache (create it if necessary)
-                guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.favorites.rawValue) else {
-                    return
-                }
-                
-                // Present favorite images
-                guard let favoritesVC = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as? AlbumViewController
-                else { preconditionFailure("Could not load AlbumImageTableViewController") }
-                favoritesVC.categoryId = pwgSmartAlbum.favorites.rawValue
-                navigationController?.pushViewController(favoritesVC, animated: true)
-            })
-        
-        let tagSelectorAction = UIAlertAction(
-            title: NSLocalizedString("categoryDiscoverTagged_title", comment: "Tagged"),
-            style: .default, handler: { [self] action in
-                discoverImagesByTag()
-            })
-        
-        let mostVisitedAction = UIAlertAction(
-            title: NSLocalizedString("categoryDiscoverVisits_title", comment: "Most visited"),
-            style: .default, handler: { [self] action in
-                discoverImages(inCategoryId: pwgSmartAlbum.visits.rawValue)
-            })
-        
-        let bestRatedAction = UIAlertAction(
-            title: NSLocalizedString("categoryDiscoverBest_title", comment: "Best rated"),
-            style: .default, handler: { [self] action in
-                discoverImages(inCategoryId: pwgSmartAlbum.best.rawValue)
-            })
-        
-        let recentAction = UIAlertAction(
-            title: NSLocalizedString("categoryDiscoverRecent_title", comment: "Recent Photos"),
-            style: .default, handler: { [self] action in
-                discoverImages(inCategoryId: pwgSmartAlbum.recent.rawValue)
-            })
-        
-        // Add actions
-        alert.addAction(cancelAction)
-        if "2.10.0".compare(NetworkVars.shared.pwgVersion, options: .numeric) != .orderedDescending {
-            alert.addAction(favoritesSelectorAction)
-        }
-        alert.addAction(tagSelectorAction)
-        alert.addAction(mostVisitedAction)
-        alert.addAction(bestRatedAction)
-        alert.addAction(recentAction)
-        
-        // Present list of Discover views
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = discoverBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
     }
 }
     

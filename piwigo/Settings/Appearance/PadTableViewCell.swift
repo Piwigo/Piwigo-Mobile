@@ -39,36 +39,21 @@ class PadTableViewCell: UITableViewCell {
 
         // Labels
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
-        lightLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
+        lightLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         darkLabel.setTitle(NSLocalizedString("settings_darkColor", comment: "Dark"), for: .normal)
-        darkLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
+        darkLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         
         // Buttons
-        if #available(iOS 13.0, *) {
-            if AppVars.shared.isDarkPaletteActive {
-                lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                lightButton.tintColor = .piwigoColorRightLabel()
-                darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                darkButton.tintColor = .piwigoColorOrange()
-            } else {
-                lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                lightButton.tintColor = .piwigoColorOrange()
-                darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                darkButton.tintColor = .piwigoColorRightLabel()
-            }
+        if AppVars.shared.isDarkPaletteActive {
+            lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            lightButton.imageView?.tintColor = PwgColor.rightLabel
+            darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+            darkButton.imageView?.tintColor = PwgColor.orange
         } else {
-            // Fallback on earlier versions
-            if AppVars.shared.isDarkPaletteActive {
-                lightButton.setImage(UIImage(named: "circle"), for: .normal)
-                lightButton.tintColor = .piwigoColorRightLabel()
-                darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-                darkButton.tintColor = .piwigoColorOrange()
-            } else {
-                lightButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-                lightButton.tintColor = .piwigoColorOrange()
-                darkButton.setImage(UIImage(named: "circle"), for: .normal)
-                darkButton.tintColor = .piwigoColorRightLabel()
-            }
+            lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+            lightButton.imageView?.tintColor = PwgColor.orange
+            darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
+            darkButton.imageView?.tintColor = PwgColor.rightLabel
         }
     }
         
@@ -82,14 +67,8 @@ class PadTableViewCell: UITableViewCell {
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
         
         // Update button
-        if #available(iOS 13.0, *) {
-            lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-        } else {
-            // Fallback on earlier versions
-            lightButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-            darkButton.setImage(UIImage(named: "circle"), for: .normal)
-        }
+        lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+        darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
     }
     
     @IBAction func didTapDarkMode(_ sender: Any) {
@@ -102,13 +81,7 @@ class PadTableViewCell: UITableViewCell {
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
         
         // Update button
-        if #available(iOS 13.0, *) {
-            lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-            darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-        } else {
-            // Fallback on earlier versions
-            lightButton.setImage(UIImage(named: "circle"), for: .normal)
-            darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-        }
+        lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
+        darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
     }
 }

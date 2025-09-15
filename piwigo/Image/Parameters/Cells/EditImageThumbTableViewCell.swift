@@ -39,7 +39,7 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
         images = imageSelection
 
         // Collection of images
-        backgroundColor = .piwigoColorCellBackground()
+        backgroundColor = PwgColor.cellBackground
         if editImageThumbCollectionView == nil {
             editImageThumbCollectionView = UICollectionView(frame: CGRect.zero,
                                                             collectionViewLayout: UICollectionViewFlowLayout())

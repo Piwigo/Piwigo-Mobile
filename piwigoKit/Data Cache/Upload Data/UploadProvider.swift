@@ -76,7 +76,6 @@ public class UploadProvider: NSObject {
         completionHandler(nil)
     }
 
-    @available(iOS 13.0, *)
     public func importUploads(from uploadRequest: [UploadProperties]) async throws -> Int {
         
         guard uploadRequest.isEmpty == false
@@ -166,9 +165,9 @@ public class UploadProvider: NSObject {
                                                        taskContext: bckgContext)
                         try cachedUploads[index].update(with: uploadData, tags: tags, forUser: user)
                     }
-                    catch UploadError.missingData {
+                    catch PwgKitError.missingUploadData {
                         // Could not perform the update
-                        debugPrint(UploadError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingUploadData.localizedDescription)
                     }
                     catch {
                         debugPrint(error.localizedDescription)
@@ -176,7 +175,7 @@ public class UploadProvider: NSObject {
                 } else {
                     // Create an Upload managed object on the private queue context.
                     guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: bckgContext) as? Upload else {
-                        debugPrint(UploadError.creationError.localizedDescription)
+                        debugPrint(PwgKitError.uploadCreationError.localizedDescription)
                         return
                     }
                     
@@ -186,9 +185,9 @@ public class UploadProvider: NSObject {
                                                        taskContext: bckgContext)
                         try upload.update(with: uploadData, tags: tags, forUser: user)
                     }
-                    catch UploadError.missingData {
+                    catch PwgKitError.missingUploadData {
                         // Delete invalid Upload from the private queue context.
-                        debugPrint(UploadError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingUploadData.localizedDescription)
                         bckgContext.delete(upload)
                     }
                     catch {
@@ -311,7 +310,7 @@ public class UploadProvider: NSObject {
         
         // Create the queue context.
         guard let taskContext = uploadRequests.first?.managedObjectContext else {
-            completion(UploadError.deletionError)
+            completion(PwgKitError.uploadDeletionError)
             return
         }
         
@@ -336,7 +335,7 @@ public class UploadProvider: NSObject {
             
             // Stop the entire deletion if any batch is unsuccessful.
             if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
-                completion(UploadError.deletionError)
+                completion(PwgKitError.uploadDeletionError)
             }
         }
         completion(nil)

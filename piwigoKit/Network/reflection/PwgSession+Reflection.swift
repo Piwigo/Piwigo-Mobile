@@ -12,24 +12,19 @@ import Foundation
 public extension PwgSession {
     
     func getMethods(completion: @escaping () -> Void,
-                    failure: @escaping (Error) -> Void) {
+                    failure: @escaping (PwgKitError) -> Void) {
         if #available(iOSApplicationExtension 14.0, *) {
             PwgSession.logger.notice("Retrieve methods.")
         }
         // Launch request
         postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
                     jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
-                    countOfBytesClientExpectsToReceive: kReflectionGetMethodListBytes) { jsonData in
-            // Decode the JSON object and set variables.
-            do {
-                // Decode the JSON into codable type ReflectionGetMethodListJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ReflectionGetMethodListJSON.self, from: jsonData)
-                
+                    countOfBytesClientExpectsToReceive: kReflectionGetMethodListBytes) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    failure(error)
+                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
                 
@@ -52,16 +47,13 @@ public extension PwgSession {
                     PwgSession.logger.notice("setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)")
                 }
                 completion()
-            }
-            catch {
-                // Data cannot be digested
+                
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 failure(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            failure(error)
         }
     }
 }

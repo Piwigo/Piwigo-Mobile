@@ -15,117 +15,79 @@ protocol DefaultImageSizeDelegate: NSObjectProtocol {
     func didSelectImageDefaultSize(_ imageSize: pwgImageSize)
 }
 
-class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+class DefaultImageSizeViewController: UIViewController {
+    
     weak var delegate: DefaultImageSizeDelegate?
     private lazy var currentImageSize = pwgImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize) ?? .fullRes
     private lazy var optimumSize = ImageUtilities.optimumImageSizeForDevice()
+    private lazy var scale = CGFloat(fmax(1.0, self.view.traitCollection.displayScale))
     
     @IBOutlet var tableView: UITableView!
     
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = NSLocalizedString("severalImages", comment: "Images")
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
-
+        view.backgroundColor = PwgColor.background
+        
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        tableView.separatorColor = .piwigoColorSeparator()
+        tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
+        // Set colors, fonts, etc.
+        applyColorPalette()
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
+        
         // Return selected image thumbnail size
         delegate?.didSelectImageDefaultSize(currentImageSize)
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - UITableView - Header
-    private func getContentOfHeader() -> (String, String) {
-        let title = String(format: "%@\n", NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))
-        let text = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
-        return (title, text)
-    }
+}
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
-                                                        width: tableView.frame.size.width)
-    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let (title, text) = getContentOfHeader()
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
-    }
-
+// MARK: - UITableViewDataSource Methods
+extension DefaultImageSizeViewController: UITableViewDataSource {
     
-    // MARK: - UITableView - Rows
-    
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pwgImageSize.allCases.count
     }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
-    }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .fullRes
 
         // Name of the image size
-        cell.backgroundColor = .piwigoColorCellBackground()
-        cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.backgroundColor = PwgColor.cellBackground
+        cell.tintColor = PwgColor.orange
+        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
         // Add checkmark in front of selected item
@@ -166,37 +128,50 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         if available {
             // This image size is available
             cell.isUserInteractionEnabled = allowed
-            cell.textLabel?.textColor = allowed ? .piwigoColorLeftLabel() : .piwigoColorRightLabel()
+            cell.textLabel?.textColor = allowed ? PwgColor.leftLabel : PwgColor.rightLabel
             var sizeName = size.name
             if size == optimumSize {
                 sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
             } else {
-                sizeName.append(contentsOf: size.sizeAndScale)
+                sizeName.append(contentsOf: size.sizeAndScale(forScale: scale))
             }
             cell.textLabel?.text = sizeName
         } else {
             // This image size is not available
             cell.isUserInteractionEnabled = false
-            cell.textLabel?.textColor = .piwigoColorRightLabel()
+            cell.textLabel?.textColor = PwgColor.rightLabel
             cell.textLabel?.text = size.name + NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)")
         }
     }
-    
+}
 
-    // MARK: - UITableView - Footer
+
+// MARK: - UITableViewDelegate Methods
+extension DefaultImageSizeViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
+    // MARK: - Header
+    private func getContentOfHeader() -> (String, String) {
+        let title = String(format: "%@\n", NSLocalizedString("defaultPreviewFile>414px", comment: "Preview Image File"))
+        let text = NSLocalizedString("defaultImageSizeHeader", comment: "Please select an image size")
+        return (title, text)
     }
 
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
-        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title, text: text,
+                                                        width: tableView.frame.size.width)
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let (title, text) = getContentOfHeader()
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title, text: text)
     }
 
     
-    // MARK: - UITableViewDelegate Methods
+    // MARK: - Rows
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -209,5 +184,17 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         tableView.cellForRow(at: IndexPath(row: Int(currentImageSize.rawValue), section: 0))?.accessoryType = .none
         currentImageSize = selectedSize
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+    }
+
+
+    // MARK: - Footer
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        return TableViewUtilities.shared.heightOfFooter(withText: footer, width: tableView.frame.width)
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
+        return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
     }
 }

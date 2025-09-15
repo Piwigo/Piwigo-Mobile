@@ -49,12 +49,12 @@ class VideoDetailViewController: UIViewController
         // Initialise videoContainerView size with placeHolder size
         configVideoViews()
         
-        // Initialise video controls delegate
-        videoControls.videoControlsDelegate = self
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     @MainActor
@@ -62,11 +62,14 @@ class VideoDetailViewController: UIViewController
         // Update description view colors if necessary
         descContainer.applyColorPalette()
         videoControls.applyColorPalette()
-        videoAirplay.tintColor = .piwigoColorText()
+        videoAirplay.tintColor = PwgColor.text
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Initialise video controls delegate
+        videoControls.videoControlsDelegate = self
         
         // Initialise video player if displayed on device
         if AppVars.shared.inSingleDisplayMode, let video = video {
@@ -87,9 +90,7 @@ class VideoDetailViewController: UIViewController
         super.viewDidAppear(animated)
         
         // Should this video be also displayed on the external screen?
-        if #available(iOS 13.0, *) {
-            self.configExternalVideoViews()
-        }
+        self.configExternalVideoViews()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -107,7 +108,9 @@ class VideoDetailViewController: UIViewController
             setPlaceHolderViewFrame()
             
             // Update scale, insets and offsets
-            configScrollView()
+            if let size = videoSize {
+                configScrollView(withSize: size)
+            }
         })
     }
     
@@ -121,15 +124,16 @@ class VideoDetailViewController: UIViewController
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        // Remove video player
+        // Pause video player
         if let video = video {
-            playbackController.remove(contentOfVideo: video)
+            playbackController.pause(contentOfVideo: video)
         }
     }
     
     deinit {
         // Release memory
         if let video = video {
+            playbackController.remove(contentOfVideo: video)
             playbackController.delete(video: video)
         }
         
@@ -176,16 +180,16 @@ class VideoDetailViewController: UIViewController
             videoAirplay.isHidden = false
             return
         }
-        
-        // Set video container view size
-        videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
-        videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
-        videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
-        
+                
         // Set scroll view scale and range
-        if videoSize != nil {
+        if let size = videoSize {
+            // Set video container view size
+            videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
+            videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
+            videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
+
             // Set zoom scale and scroll view
-            configScrollView()
+            configScrollView(withSize: size)
         }
     }
     
@@ -195,10 +199,11 @@ class VideoDetailViewController: UIViewController
      A zoom scale of less than 1 shows a zoomed-out version of the content,
      and a zoom scale greater than 1 shows the content zoomed in.
      */
-    private func configScrollView() {
+    private func configScrollView(withSize size: CGSize) {
         // Calc new zoom scale range
-        let widthScale = view.bounds.size.width / videoContainerView.bounds.size.width
-        let heightScale = view.bounds.size.height / videoContainerView.bounds.size.height
+        debugPrint(view.bounds.size, videoContainerView.bounds.size, size)
+        let widthScale = view.bounds.size.width / size.width
+        let heightScale = view.bounds.size.height / size.height
         let minScale = min(widthScale, heightScale)
         let maxScale = max(widthScale, heightScale)
         
@@ -302,9 +307,21 @@ class VideoDetailViewController: UIViewController
         }
     }
     
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
 
+            // Configure the description view before layouting subviews
+            self.descContainer.config(withImage: self.imageData, inViewController: self, forVideo: true)
+        }
+    }
+    
+    
     // MARK: - External Video Management
-    @available(iOS 13.0, *) @MainActor
+    @MainActor
     private func configExternalVideoViews() {
         // Get scene role of external display
         var wantedRole: UISceneSession.Role!

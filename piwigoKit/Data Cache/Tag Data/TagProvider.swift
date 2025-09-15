@@ -38,41 +38,39 @@ public class TagProvider: NSObject {
      The API method for admin pwg.tags.getAdminList does not return the number of tagged photos,
      so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
     */
-    public func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
+    public func fetchTags(asAdmin: Bool, completion: @escaping (PwgKitError?) -> Void) {
         // Launch the HTTP(S) request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: asAdmin ? pwgTagsGetAdminList : pwgTagsGetList, paramDict: [:],
                                 jsonObjectClientExpectsToReceive: TagJSON.self,
-                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData in
-            // Decode the JSON object and import it into Core Data.
-            DispatchQueue.global(qos: .background).async {
-                do {
-                    // Decode the JSON into codable type TagJSON.
-                    let decoder = JSONDecoder()
-                    let pwgData = try decoder.decode(TagJSON.self, from: jsonData)
-
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                        completionHandler(error)
-                        return
-                    }
-
-                    // Import the tagJSON into Core Data.
-                    try self.importTags(from: pwgData.data, asAdmin: asAdmin)
-
-                } catch {
-                    // Alert the user if data cannot be digested.
-                    completionHandler(error)
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
+            switch result {
+            case .success(let pwgData):
+                // Piwigo error?
+                if pwgData.errorCode != 0 {
+                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
-                completionHandler(nil)
+
+                // Import tag data into Core Data.
+                do {
+                    try self.importTags(from: pwgData.data, asAdmin: asAdmin)
+                }
+                catch let error as DecodingError {
+                    completion(.decodingFailed(innerError: error))
+                }
+                catch {
+                    completion(.otherError(innerError: error))
+                    return
+                }
+                completion(nil)
+                
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                completion(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completionHandler(error)
         }
     }
     
@@ -113,7 +111,7 @@ public class TagProvider: NSObject {
             
             // Stop the entire import if any batch is unsuccessful.
             let (success, tagIDs) = importOneBatch(tagsBatch, asAdmin: asAdmin, tagIDs: tagToDeleteIDs)
-            if success ==  false { return }
+            if success == false { return }
             tagToDeleteIDs = tagIDs
         }
     }
@@ -140,7 +138,7 @@ public class TagProvider: NSObject {
             
             // Get current server object
             guard let server = serverProvider.getServer(inContext: bckgContext) else {
-                debugPrint(TagError.creationError.localizedDescription)
+                debugPrint(PwgKitError.tagCreationError.localizedDescription)
                 return
             }
             
@@ -160,8 +158,9 @@ public class TagProvider: NSObject {
             // Perform the fetch.
             do {
                 try controller.performFetch()
-            } catch {
-                debugPrint(TagError.creationError.localizedDescription)
+            }
+            catch {
+                debugPrint(PwgKitError.tagCreationError.localizedDescription)
                 return
             }
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
@@ -188,9 +187,9 @@ public class TagProvider: NSObject {
                         // Do not delete this tag during the last interation of the import
                         tagToDeleteIDs.remove(ID)
                     }
-                    catch TagError.missingData {
+                    catch PwgKitError.missingTagData {
                         // Could not perform the update
-                        debugPrint(TagError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingTagData.localizedDescription)
                     }
                     catch {
                         debugPrint(error.localizedDescription)
@@ -200,7 +199,7 @@ public class TagProvider: NSObject {
                     // Create a Tag managed object on the private queue context.
                     guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag",
                                                                         into: bckgContext) as? Tag else {
-                        debugPrint(TagError.creationError.localizedDescription)
+                        debugPrint(PwgKitError.tagCreationError.localizedDescription)
                         return
                     }
                     
@@ -208,9 +207,9 @@ public class TagProvider: NSObject {
                     do {
                         try tag.update(with: tagData, server: server)
                     }
-                    catch TagError.missingData {
+                    catch PwgKitError.missingTagData {
                         // Delete invalid Tag from the private queue context.
-                        debugPrint(TagError.missingData.localizedDescription)
+                        debugPrint(PwgKitError.missingTagData.localizedDescription)
                         bckgContext.delete(tag)
                     }
                     catch {
@@ -249,51 +248,43 @@ public class TagProvider: NSObject {
     /**
      Adds a tag to the remote Piwigo server, and imports it into Core Data.
     */
-    public func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
+    public func addTag(with name: String, completion: @escaping (PwgKitError?) -> Void) {
                 
         // Add tag on server
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgTagsAdd, paramDict: ["name" : name],
                                 jsonObjectClientExpectsToReceive: TagAddJSON.self,
-                                countOfBytesClientExpectsToReceive: 3000) { jsonData in
-            // Decode the JSON object and import it into Core Data.
-            do {
-                // Decode the JSON into codable type TagJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(TagAddJSON.self, from: jsonData)
-
+                                countOfBytesClientExpectsToReceive: 3000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
-                    completionHandler(error)
+                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
                     return
                 }
 
                 // Import the tagJSON into Core Data.
                 guard let tagId = pwgData.data.id else {
-                    completionHandler(TagError.missingData)
+                    completion(PwgKitError.missingTagData)
                     return
                 }
                 let newTag = TagProperties(id: StringOrInt.integer(Int(tagId)),
-                                           name: PwgSession.utf8mb4String(from: name),
+                                           name: name.utf8mb4Encoded,
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
                 if self.importOneBatch([newTag], asAdmin: true, tagIDs: Set<Int32>()).0 {
-                    completionHandler(nil)
+                    completion(nil)
                 } else {
-                    completionHandler(TagError.creationError)
+                    completion(PwgKitError.tagCreationError)
                 }
-            } catch {
-                // Alert the user if data cannot be digested.
-                completionHandler(error)
-                return
+
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
+                completion(error)
             }
-        } failure: { error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            completionHandler(error)
         }
     }
     

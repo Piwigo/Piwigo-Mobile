@@ -59,7 +59,7 @@ public struct CategoriesGetImagesJSON: Decodable {
             catch {
                 // Returns an empty array => No category
                 errorCode = -1
-                errorMessage = ImageError.wrongDataFormat.localizedDescription
+                errorMessage = PwgKitError.wrongDataFormat.localizedDescription
             }
         }
         else if (status == "fail")
@@ -80,7 +80,7 @@ public struct CategoriesGetImagesJSON: Decodable {
         else {
             // Unexpected Piwigo server error
             errorCode = -1
-            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+            errorMessage = PwgKitError.invalidParameter.localizedDescription
         }
     }
 }

@@ -62,7 +62,7 @@ class AlbumRenaming: NSObject
             let style = NSMutableParagraphStyle()
             style.alignment = NSTextAlignment.left
             let attributes = [
-                NSAttributedString.Key.foregroundColor: UIColor.piwigoColorText(),
+                NSAttributedString.Key.foregroundColor: PwgColor.text,
                 NSAttributedString.Key.font: renameAlert?.textFields?.first?.font ?? UIFont.systemFont(ofSize: 13),
                 NSAttributedString.Key.paragraphStyle: style
             ]
@@ -100,16 +100,12 @@ class AlbumRenaming: NSObject
         if let renameAction = renameAction {
             renameAlert?.addAction(renameAction)
         }
-        renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        renameAlert?.view.tintColor = PwgColor.tintColor
+        renameAlert?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         if let alert = renameAlert {
             topViewController.present(alert, animated: true) { [self] in
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                renameAlert?.view.tintColor = UIColor.piwigoColorOrange()
+                renameAlert?.view.tintColor = PwgColor.tintColor
             }
         }
     }
@@ -136,8 +132,8 @@ class AlbumRenaming: NSObject
                     }
                     if albumData.commentStr != albumComment {
                         albumData.commentStr = albumComment
-                        albumData.comment = albumComment.attributedPlain()
-                        albumData.commentHTML = albumComment.attributedHTML()
+                        albumData.comment = albumComment.attributedPlain
+                        albumData.commentHTML = albumComment.attributedHTML
                     }
                     self.mainContext.saveIfNeeded()
                     
@@ -161,8 +157,7 @@ class AlbumRenaming: NSObject
     @MainActor
     private func renameCategoryError(_ error: Error, completion: @escaping (Bool) -> Void) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
             return
         }

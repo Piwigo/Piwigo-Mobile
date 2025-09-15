@@ -7,16 +7,13 @@
 //
 
 import AVFoundation
+import BackgroundTasks
 import CoreData
 import CoreHaptics
 import Foundation
 import Intents
 import LocalAuthentication
 import UIKit
-
-#if canImport(BackgroundTasks)
-import BackgroundTasks        // Requires iOS 13
-#endif
 
 import piwigoKit
 import uploadKit
@@ -33,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var privacyView: UIView?
     var isAuthenticatingWithBiometrics = false
     var didCancelBiometricsAuthentication = false
+    var networkMonitor: NetworkMonitor?
 
     // MARK: - Core Data Object Contexts
     private lazy var mainContext: NSManagedObjectContext = {
@@ -48,15 +46,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                if granted { debugPrint("request succeeded!") }
         }
 
+        // Remember the natural scale associated with the integrated screen for future initialisations
+        AppVars.shared.currentDeviceScale = UIScreen.main.scale
+        
         // Color palette depends on system settings
         initColorPalette()
-
-        // Check if the device supports haptics.
-        if #available(iOS 13.0, *) {
-            let hapticCapability = CHHapticEngine.capabilitiesForHardware()
-            AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
-        }
         
+        // Check if the device supports haptics.
+        let hapticCapability = CHHapticEngine.capabilitiesForHardware()
+        AppVars.shared.supportsHaptics = hapticCapability.supportsHaptics
+        
+        // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
+        CacheVars.shared.correctRecentPeriodIndex()
+
         // Set Settings Bundle data
         setSettingsBundleData()
         
@@ -78,35 +80,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let migrator = DataMigrator()
         AppVars.shared.isMigrationRunning = migrator.requiresMigration()
         
-        // Register launch handlers for tasks if using iOS 13+
+        // Register launch handlers for tasks
         /// All launch handlers must be registered before application finishes launching.
         /// Will have to check if pwg.images.uploadAsync is available
-        if #available(iOS 13.0, *) {
-            registerBgTasks()
+        registerBgTasks()
+
+        // Register network connection changes
+        Task { @MainActor in
+            // Start network monitoring
+            self.networkMonitor = await NetworkMonitor()
         }
-
-        // What follows depends on iOS version
-        if #available(iOS 13.0, *) {
-            // Delegate to SceneDelegate
-            /// - Present login view and if needed passcode view
-            /// - or album view behind passcode view if needed
-        } else {
-            // Create window
-            window = UIWindow(frame: UIScreen.main.bounds)
-
-            // Check if a migration is necessary
-            if AppVars.shared.isMigrationRunning {
-                // Tell user to wait until migration is completed and launch the migration
-                loadMigrationView(in: window, startMigrationWith: migrator)
-            } else {
-                // Create login view
-                loadLoginView(in: window)
-                addPrivacyProtectionIfNeeded()
-            }
-        }
-
-        // Display view
-        window?.makeKeyAndVisible()
 
         // Register left upload requests notifications updating the badge
         NotificationCenter.default.addObserver(self, selector: #selector(updateBadge),
@@ -136,7 +119,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
     // MARK: - Scene Configuration
-    @available(iOS 13.0, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 
@@ -182,7 +164,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return activity.sceneConfiguration()
     }
 
-    @available(iOS 13.0, *)
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         // Called when the system, due to a user interaction or a request from the application itself, removes one or more representation from the -[UIApplication openSessions] set
         // If sessions are discarded while the application is not running, this method is called shortly after the applications next launch.
@@ -211,112 +192,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
 
-    // MARK: - Transitioning to the Foreground
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        debugPrint("••> App will enter foreground.")
-        // Called when the app is about to enter the foreground.
-        // This call is then followed by a call to applicationDidBecomeActive().
-        
-        // Flag used to force relogin at start
-        NetworkVars.shared.applicationShouldRelogin = true
-    }
-        
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        debugPrint("••> App did become active.")
-        // The app has become active.
-        // Restart any tasks that were paused (or not yet started) while the application was inactive.
-        // If the application was previously in the background, optionally refresh the user interface.
-        
-        // Called during biometric authentication?
-        if isAuthenticatingWithBiometrics { return }
-
-        // Request passcode if necessary
-        if AppVars.shared.isAppUnlocked == false {
-            // Request passcode for accessing app
-            requestPasscode(onTopOf: window) { appLockVC in
-                // Set delegate
-                appLockVC.delegate = self
-                // Hide privacy view
-                self.privacyView?.isHidden = true
-                // Did user enable biometrics?
-                if AppVars.shared.isBiometricsEnabled,
-                   self.didCancelBiometricsAuthentication == false {
-                    // Yes, perform biometrics authentication
-                    self.performBiometricAuthentication() { success in
-                        // Authentication successful?
-                        if !success { return }
-                        // Dismiss passcode view controller
-                        appLockVC.dismiss(animated: true) {
-                            // Unlock the app
-                            self.loginOrReloginAndResumeUploads()
-                        }
-                    }
-                }
-            }
-            return
-        }
-
-        // Login/relogin and resume uploads
-        loginOrReloginAndResumeUploads()
-    }
-
-    
     // MARK: - Transitioning to the Background
-    func applicationWillResignActive(_ application: UIApplication) {
-        debugPrint("••> App will resign active.")
-        // Called when the app is about to become inactive. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-
-        // Called during biometric authentication?
-        if isAuthenticatingWithBiometrics { return }
-
-        // Blur views if the App Lock is enabled
-        /// The passcode window is not presented  so that the app
-        /// does not request the passcode until it is put into the background.
-        if AppVars.shared.isAppLockActive {
-            // Remember to ask for passcode
-            AppVars.shared.isAppUnlocked = false
-            // Remove passcode view controller if presented
-            if let topViewController = window?.topMostViewController(),
-               topViewController is AppLockViewController {
-                // Protect presented views
-                privacyView?.isHidden = false
-                // Reset biometry flag
-                didCancelBiometricsAuthentication = false
-                // Dismiss passcode view
-                topViewController.dismiss(animated: true)
-            } else {
-                // Protect presented views
-                addPrivacyProtection(to: window)
-            }
-        } else {
-            // Remember to not ask for passcode
-            AppVars.shared.isAppUnlocked = true
-        }
-
-        // Inform Upload Manager to pause activities
-        UploadManager.shared.isPaused = true
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        debugPrint("••> App did enter background.")
-        // Called when the app is now in the background.
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        
-        // Should we save changes in cache?
-        if AppVars.shared.isMigrationRunning == false {
-            // Save cached data in the main thread
-            mainContext.saveIfNeeded()
-        }
-
-        // Clean up /tmp directory
-        cleanUpTemporaryDirectory(immediately: false)
-
-        // Reset list of albums being fetched
-        AlbumVars.shared.isFetchingAlbumData = Set<Int32>()
-    }
-        
     func applicationWillTerminate(_ application: UIApplication) {
         debugPrint("••> App will terminate.")
         // Called when the application is about to terminate.
@@ -331,18 +207,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Cancel tasks and close session
         PwgSession.shared.dataSession.invalidateAndCancel()
 
+        // Unregister network connection changes
+        Task { @MainActor in
+            // Stop network monitoring
+            await self.networkMonitor?.stopMonitoring()
+        }
+
         // Clean up /tmp directory
         cleanUpTemporaryDirectory(immediately: false)
 
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
-
-        if #available(iOS 13.0, *) {
-            // NOP
-        } else {
-            // Unregister brightnessDidChangeNotification
-            NotificationCenter.default.removeObserver(self, name: UIScreen.brightnessDidChangeNotification, object: nil)
-        }
     }
     
 
@@ -379,7 +254,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        return appExtensionSession
 //    }
 
-    @available(iOS 13.0, *)
     private func registerBgTasks() {
         // Register background upload task
         BGTaskScheduler.shared.register(forTaskWithIdentifier: pwgBackgroundTaskUpload, using: nil) { task in
@@ -387,7 +261,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 13.0, *)
     func scheduleNextUpload() {
         // Schedule upload not earlier than 15 minute from now
         // Uploading requires network connectivity and external power
@@ -405,7 +278,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    @available(iOS 13.0, *)
     private func handleNextUpload(task: BGProcessingTask) {
         // Schedule the next uploads if needed
         if UploadVars.shared.nberOfUploadsToComplete > 0 {
@@ -433,6 +305,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Add operation setting flag and selecting upload requests
         let initOperation = BlockOperation {
+            // Start network monitoring
+            Task {
+                await self.networkMonitor?.startMonitoring()
+            }
+
             // Initialse variables and determine upload requests to prepare and transfer
             UploadManager.shared.initialiseBckgTask()
         }
@@ -465,6 +342,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             debugPrint("    > Task expired: Upload operation cancelled.")
             // Cancel operations
             uploadQueue.cancelAllOperations()
+            // Stop network monitoring
+            Task {
+                await self.networkMonitor?.stopMonitoring()
+            }
         }
         
         // Inform the system that the background task is complete
@@ -473,6 +354,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         lastOperation.completionBlock = {
             debugPrint("••> Task completed with success.")
             task.setTaskCompleted(success: true)
+            // Stop network monitoring
+            Task {
+                await self.networkMonitor?.stopMonitoring()
+            }
             // Save cached data in the main thread
             DispatchQueue.main.async {
                 self.mainContext.saveIfNeeded()
@@ -512,7 +397,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Display error message and resume Upload Manager operation
         let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
-        if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
+        let keyWindows = UIApplication.shared.connectedScenes
+            .filter({$0.session.role == .windowApplication})
+            .filter({$0.activationState == .foregroundActive})
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows
+            .filter({$0.isKeyWindow})
+        if let keyWindow = keyWindows?.first,
+           let topViewController = keyWindow.windowScene?.rootViewController(),
            topViewController is UINavigationController,
            let visibleVC = (topViewController as! UINavigationController).visibleViewController {
             // Inform user
@@ -551,8 +444,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     // MARK: - Intents
-    
-    @available(iOS 14.0, *)
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
         switch intent {
         case is AutoUploadIntent:
@@ -567,7 +458,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-//    @available(iOS 10.0, *)
 //    func application(_ application: UIApplication, handle intent: INIntent, completionHandler: @escaping (INIntentResponse) -> Void) {
 //        switch intent {
 //        case is AutoUploadIntent:
@@ -707,15 +597,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
-        if #available(iOS 13.0, *) {
-            // Transition to migration view
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve,
-                              animations: nil) { _ in }
-        } else {
-            // Next line fixes #259 view not displayed with iOS 8 and 9 on iPad
-            window.rootViewController?.view.setNeedsUpdateConstraints()
-        }
+        // Transition to migration view
+        UIView.transition(with: window, duration: 0.5,
+                          options: .transitionCrossDissolve,
+                          animations: nil) { _ in }
     }
 
     
@@ -742,12 +627,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nav.setNavigationBarHidden(true, animated: false)
         window.rootViewController = nav
 
-        if #available(iOS 13.0, *) {
-            // Transition to login view
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve,
-                              animations: nil) { _ in }
-        }
+        // Transition to login view
+        UIView.transition(with: window, duration: 0.5,
+                          options: .transitionCrossDissolve,
+                          animations: nil) { _ in }
     }
 
     @objc func checkSessionWhenLeavingLowPowerMode() {
@@ -769,23 +652,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else { preconditionFailure("Could not load AlbumViewController") }
         albumVC.categoryId = AlbumVars.shared.defaultCategory
         window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
-        if #available(iOS 13.0, *) {
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve) { }
-                completion: { [self] success in
-                    if success, keepLoginView == false {
-                        self._loginVC = nil
-                    }
+        UIView.transition(with: window, duration: 0.5,
+                          options: .transitionCrossDissolve) { }
+            completion: { [self] success in
+                if success, keepLoginView == false {
+                    self._loginVC = nil
                 }
-        } else {
-            // Fallback on earlier versions
-            _loginVC?.removeFromParent()
-            _loginVC = nil
-
-            // Observe the UIScreenBrightnessDidChangeNotification
-            NotificationCenter.default.addObserver(self, selector: #selector(screenBrightnessChanged),
-                                                   name: UIScreen.brightnessDidChangeNotification, object: nil)
-        }
+            }
 
         // Resume upload operations in background queue
         // and update badge, upload button of album navigator
@@ -900,52 +773,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else if AppVars.shared.switchPaletteAutomatically
         {
             // Dynamic palette mode chosen
-            if #available(iOS 13.0, *) {
-                if AppVars.shared.isSystemDarkModeActive {
-                    // System-wide dark mode active
-                    if AppVars.shared.isDarkPaletteActive {
-                        // Keep dark palette but make sure that images stays in appropriate mode
-                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                        return;
-                    } else {
-                        // Switch to dark mode
-                        AppVars.shared.isDarkPaletteActive = true
-                    }
-                } else {
-                    // System-wide light mode active
-                    if AppVars.shared.isDarkPaletteActive {
-                        // Switch to light mode
-                        AppVars.shared.isDarkPaletteActive = false
-                    } else {
-                        // Keep light palette but make sure that images stays in appropriate mode
-                        NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
-                        return;
-                    }
-                }
-            }
-            else {
-                // Option managed by screen brightness
-                let currentBrightness = lroundf(Float(UIScreen.main.brightness) * 100.0);
+            if AppVars.shared.isSystemDarkModeActive {
+                // System-wide dark mode active
                 if AppVars.shared.isDarkPaletteActive {
-                    // Dark palette displayed
-                    if currentBrightness > AppVars.shared.switchPaletteThreshold
-                    {
-                        // Screen brightness > thereshold, switch to light palette
-                        AppVars.shared.isDarkPaletteActive = false
-                    } else {
-                        // Keep dark palette
-                        return;
-                    }
+                    // Keep dark palette but make sure that images stays in appropriate mode
+                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                    return;
                 } else {
-                    // Light palette displayed
-                    if currentBrightness < AppVars.shared.switchPaletteThreshold
-                    {
-                        // Screen brightness < threshold, switch to dark palette
-                        AppVars.shared.isDarkPaletteActive = true
-                    } else {
-                        // Keep light palette
-                        return;
-                    }
+                    // Switch to dark mode
+                    AppVars.shared.isDarkPaletteActive = true
+                }
+            } else {
+                // System-wide light mode active
+                if AppVars.shared.isDarkPaletteActive {
+                    // Switch to light mode
+                    AppVars.shared.isDarkPaletteActive = false
+                } else {
+                    // Keep light palette but make sure that images stays in appropriate mode
+                    NotificationCenter.default.post(name: .pwgPaletteChanged, object: nil)
+                    return;
                 }
             }
         } else {
@@ -956,23 +802,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Tint colour
-        UIView.appearance().tintColor = .piwigoColorOrange()
+        UIView.appearance().tintColor = PwgColor.tintColor
         
         // Activity indicator
-        UIActivityIndicatorView.appearance().color = .piwigoColorOrange()
-
+        UIActivityIndicatorView.appearance().color = PwgColor.orange
+        
         // Tab bars
-        UITabBar.appearance().barTintColor = .piwigoColorBackground()
+        UITabBar.appearance().barTintColor = PwgColor.background
 
         // Styles
         if AppVars.shared.isDarkPaletteActive
         {
             UITabBar.appearance().barStyle = .black
             UIToolbar.appearance().barStyle = .black
+            UINavigationBar.appearance().barStyle = .black
         }
         else {
             UITabBar.appearance().barStyle = .default
             UIToolbar.appearance().barStyle = .default
+            UINavigationBar.appearance().barStyle = .default
         }
 
         // Notify palette change to views

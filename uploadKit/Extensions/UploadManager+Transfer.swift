@@ -6,12 +6,9 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import BackgroundTasks
 import CoreData
 import piwigoKit
-
-#if canImport(BackgroundTasks)
-import BackgroundTasks        // Requires iOS 13
-#endif
 
 extension UploadManager {
     
@@ -30,14 +27,14 @@ extension UploadManager {
             // Should never happen
             // ► The lounge will be emptied later by the server
             // ► Stop upload task and return an error
-            upload.setState(.uploadingError, error: UserError.emptyUsername, save: true)
+            upload.setState(.uploadingError, error: PwgKitError.emptyUsername, save: true)
             self.didEndTransfer(for: upload)
             return
         }
 
         // Check that the MD5 checksum is known
         if upload.md5Sum.isEmpty {
-            upload.setState(.uploadingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.uploadingFail, error: PwgKitError.missingAsset, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -88,7 +85,7 @@ extension UploadManager {
             guard let imageData = imageSet.first, let albums = imageData.albums,
                   let albumData = self.albumProvider.getAlbum(ofUser: upload.user, withId: upload.category)
             else {
-                upload.setState(.uploadingFail, error: UploadError.missingAsset, save: true)
+                upload.setState(.uploadingFail, error: PwgKitError.missingAsset, save: true)
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
@@ -233,9 +230,9 @@ extension UploadManager {
         let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
-        if chunks == 0, upload.fileName.isEmpty,
-           upload.md5Sum.isEmpty, upload.category == 0 {
-            upload.setState(.preparingFail, error: UploadError.missingFile, save: true)
+        if chunks == 0 || upload.fileName.isEmpty ||
+           upload.md5Sum.isEmpty || upload.category == 0 {
+            upload.setState(.preparingFail, error: PwgKitError.missingUploadFile, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -267,7 +264,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = PwgSessionError.otherError(code: error.code, msg: msg)
+            let err = PwgKitError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -393,7 +390,7 @@ extension UploadManager {
                 }
                 else if let httpResponse = task.response as? HTTPURLResponse {
                     let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                    let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: msg)
+                    let error = PwgKitError.pwgError(code: httpResponse.statusCode, msg: msg)
                     if (400...499).contains(httpResponse.statusCode) {
                         upload.setState(.uploadingFail, error: error, save: false)
                     } else {
@@ -405,7 +402,7 @@ extension UploadManager {
                     }
                 }
                 else {
-                    upload.setState(.uploadingError, error: PwgSessionError.networkUnavailable, save: false)
+                    upload.setState(.uploadingError, error: PwgKitError.networkUnavailable, save: false)
                     self.backgroundQueue.async {
                         self.uploadBckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -473,22 +470,23 @@ extension UploadManager {
                 if #available(iOSApplicationExtension 14.0, *) {
                     UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
                 }
-                upload.setState(.uploadingError, error: PwgSessionError.emptyJSONobject, save: false)
+                upload.setState(.uploadingError, error: PwgKitError.emptyJSONobject, save: false)
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                 }
                 return
             }
+            
+            // Filter returned data
             var jsonData = data
-            guard jsonData.isPiwigoResponseValid(for: ImagesUploadJSON.self,
-                                                 method: pwgImagesUpload) else {
+            guard jsonData.extractingBalancedBraces() else {
                 // Update upload request status
                 let dataStr = String(decoding: data, as: UTF8.self)
                 if #available(iOSApplicationExtension 14.0, *) {
                     UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
                 }
-                upload.setState(.uploadingError, error: PwgSessionError.invalidJSONobject, save: false)
+                upload.setState(.uploadingError, error: PwgKitError.invalidJSONobject, save: false)
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -503,8 +501,7 @@ extension UploadManager {
 
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
-                    let error = PwgSession.shared.error(for: uploadJSON.errorCode,
-                                                                 errorMessage: uploadJSON.errorMessage)
+                    let error = PwgKitError.pwgError(code: uploadJSON.errorCode, msg: uploadJSON.errorMessage)
                     if (400...499).contains(uploadJSON.errorCode) {
                         upload.setState(.uploadingFail, error: error, save: false)
                     } else {
@@ -553,7 +550,7 @@ extension UploadManager {
                 return
             } catch {
                 // Data cannot be digested, image still ready for upload
-                upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
+                upload.setState(.uploadingError, error: PwgKitError.wrongJSONobject, save: false)
                 backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
@@ -593,7 +590,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = PwgSessionError.otherError(code: error.code, msg: msg)
+            let err = PwgKitError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -604,9 +601,9 @@ extension UploadManager {
         let chunksDiv: Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
-        if chunks == 0, upload.fileName.isEmpty,
-           upload.md5Sum.isEmpty, upload.category == 0 {
-            upload.setState(.preparingFail, error: UploadError.missingFile, save: true)
+        if chunks == 0 || upload.fileName.isEmpty ||
+           upload.md5Sum.isEmpty || upload.category == 0 {
+            upload.setState(.preparingFail, error: PwgKitError.missingUploadFile, save: true)
             self.didEndTransfer(for: upload)
         }
         
@@ -620,7 +617,7 @@ extension UploadManager {
         // Prepare credentials
         let username = NetworkVars.shared.username
         guard let serverPath = upload.user?.server?.path else {
-            upload.setState(.preparingFail, error: UploadError.missingData, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingUploadData, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -711,7 +708,7 @@ extension UploadManager {
             // Could not find the file to upload!
             let msg = error.localizedDescription
                 .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            let err = PwgSessionError.otherError(code: error.code, msg: msg)
+            let err = PwgKitError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
             return
@@ -724,7 +721,7 @@ extension UploadManager {
         // Get credentials
         let username = NetworkVars.shared.username
         guard let serverPath = upload.user?.server?.path else {
-            upload.setState(.preparingFail, error: UploadError.missingData, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingUploadData, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -817,12 +814,9 @@ extension UploadManager {
         httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "category", value: "\(upload.category)", using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "filename", value: upload.fileName, using: boundary).data(using: .utf8)!)
-        let imageTitle = PwgSession.utf8mb3String(from: upload.imageName)
-        httpBody.append(convertFormField(named: "name", value: imageTitle, using: boundary).data(using: .utf8)!)
-        let author = PwgSession.utf8mb3String(from: upload.author)
-        httpBody.append(convertFormField(named: "author", value: author, using: boundary).data(using: .utf8)!)
-        let comment = PwgSession.utf8mb3String(from: upload.comment)
-        httpBody.append(convertFormField(named: "comment", value: comment, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "name", value: upload.imageName.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "author", value: upload.author.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "comment", value: upload.comment.utf8mb3Encoded, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel))", using: boundary).data(using: .utf8)!)
         let tagIDs = String((upload.tags ?? Set<Tag>()).map({"\($0.tagId),"}).reduce("", +).dropLast(1))
@@ -830,7 +824,7 @@ extension UploadManager {
 
         // Chunk of data
         let chunkOfData = imageData.subdata(in: chunk*chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-        let md5Checksum = chunkOfData.MD5checksum()
+        let md5Checksum = chunkOfData.MD5checksum
         httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
         httpBody.append(self.convertFileData(fieldName: "file",
                                              fileName: upload.fileName,
@@ -911,7 +905,7 @@ extension UploadManager {
             }
             else if let httpResponse = task.response as? HTTPURLResponse {
                 let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                let error = PwgSessionError.otherError(code: httpResponse.statusCode, msg: msg)
+                let error = PwgKitError.pwgError(code: httpResponse.statusCode, msg: msg)
                 if (400...499).contains(httpResponse.statusCode) {
                     upload.setState(.uploadingFail, error: error, save: false)
                 } else {
@@ -923,7 +917,7 @@ extension UploadManager {
                 }
             }
             else {
-                upload.setState(.uploadingError, error: PwgSessionError.networkUnavailable, save: false)
+                upload.setState(.uploadingError, error: PwgKitError.networkUnavailable, save: false)
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -995,7 +989,7 @@ extension UploadManager {
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned an Empty JSON object")
             }
-            upload.setState(.uploadingError, error: PwgSessionError.emptyJSONobject, save: false)
+            upload.setState(.uploadingError, error: PwgKitError.emptyJSONobject, save: false)
             self.backgroundQueue.async {
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -1003,14 +997,13 @@ extension UploadManager {
             return
         }
         var jsonData = data
-        guard jsonData.isPiwigoResponseValid(for: ImagesUploadAsyncJSON.self,
-                                             method: pwgImagesUploadAsync) else {
+        guard jsonData.extractingBalancedBraces() else {
             // Update upload request status
             let dataStr = String(decoding: data, as: UTF8.self)
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("\(upload.md5Sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the invalid JSON object: \(dataStr, privacy: .public)")
             }
-            upload.setState(.uploadingError, error: PwgSessionError.invalidJSONobject, save: false)
+            upload.setState(.uploadingError, error: PwgKitError.invalidJSONobject, save: false)
             self.backgroundQueue.async {
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -1028,8 +1021,7 @@ extension UploadManager {
                 if #available(iOSApplicationExtension 14.0, *) {
                     UploadManager.logger.notice("\(md5sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the Piwigo error \(uploadJSON.errorCode)")
                 }
-                let error = PwgSession.shared.error(for: uploadJSON.errorCode,
-                                                             errorMessage: uploadJSON.errorMessage)
+                let error = PwgKitError.pwgError(code: uploadJSON.errorCode, msg: uploadJSON.errorMessage)
                 if (400...499).contains(uploadJSON.errorCode) {
                     upload.setState(.uploadingFail, error: error, save: false)
                 } else {
@@ -1100,12 +1092,12 @@ extension UploadManager {
 
                 // Get data returned by the server
                 upload.imageId    = imageId
-                upload.imageName  = PwgSession.utf8mb4String(from: getInfos.title ?? "")
-                upload.author     = PwgSession.utf8mb4String(from: getInfos.author ?? "")
+                upload.imageName  = getInfos.title?.utf8mb4Encoded ?? ""
+                upload.author     = getInfos.author?.utf8mb4Encoded ?? ""
                 if let privacyLevelStr = getInfos.privacyLevel {
                     upload.privacyLevel = Int16(privacyLevelStr) ?? pwgPrivacy.unknown.rawValue
                 }
-                upload.comment    = PwgSession.utf8mb4String(from: getInfos.comment ?? "")
+                upload.comment    = getInfos.comment?.utf8mb4Encoded ?? ""
                 if let tags = getInfos.tags {
                     let tagIDs = tags.compactMap({$0.id}).map({$0.stringValue + ","}).reduce("", +).dropLast()
                     let newTagIDs = tagProvider.getTags(withIDs: String(tagIDs), taskContext: uploadBckgContext).map({$0.objectID})
@@ -1154,7 +1146,7 @@ extension UploadManager {
             if #available(iOSApplicationExtension 14.0, *) {
                 UploadManager.logger.notice("\(md5sum, privacy: .public) | Wrong JSON object!")
             }
-            upload.setState(.uploadingError, error: UploadError.wrongJSONobject, save: false)
+            upload.setState(.uploadingError, error: PwgKitError.wrongJSONobject, save: false)
             self.backgroundQueue.async {
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)

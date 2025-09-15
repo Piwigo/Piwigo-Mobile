@@ -84,11 +84,9 @@ extension Array where Element == AVMetadataItem {
         locationID = AVMetadataIdentifier.quickTimeMetadataLocationNote
         locations = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: locationID)
         if let _ = locations.first { return true }
-        if #available(iOS 14.0, *) {
-            locationID = AVMetadataIdentifier.quickTimeMetadataLocationHorizontalAccuracyInMeters
-            locations = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: locationID)
-            if let _ = locations.first { return true }
-        }
+        locationID = AVMetadataIdentifier.quickTimeMetadataLocationHorizontalAccuracyInMeters
+        locations = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: locationID)
+        if let _ = locations.first { return true }
         userID = AVMetadataIdentifier.quickTimeMetadataCollectionUser
         user = AVMetadataItem.metadataItems(from: metadata, filteredByIdentifier: userID)
         if let _ = user.first { return true }

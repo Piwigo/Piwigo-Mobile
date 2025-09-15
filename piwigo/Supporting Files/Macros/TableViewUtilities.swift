@@ -15,7 +15,21 @@ class TableViewUtilities: NSObject {
 
     // Constants
     let margin: CGFloat = 20.0
-    let minHeight: CGFloat = 44.0
+
+    
+    // MARK: - Title & Subtitle
+    // NB: For some reason, the UIBarAppearance defined in UINavigationBar+AppTools is not applied.
+    @available(iOS 26.0, *)
+    func largeAttributedSubTitleForAlbum(_ subtitle: String?) -> AttributedString {
+        guard let subtitle, subtitle.isEmpty == false else { return AttributedString("") }
+
+        // Get title
+        var attrSubtitle = AttributedString(subtitle)
+        attrSubtitle.foregroundColor = PwgColor.rightLabel
+        attrSubtitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        return attrSubtitle
+    }
+
     
     // MARK: - Headers
     // Returns the height of a header containing a title and/or a subtitle
@@ -35,19 +49,19 @@ class TableViewUtilities: NSObject {
 
         // Add title height
         if title.isEmpty == false {
-            let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)]
+            let titleAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline)]
             height += title.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                          attributes: titleAttributes, context: context).height
         }
 
         // Add text height
         if text.isEmpty == false {
-            let textAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
+            let textAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
             height += text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                            attributes: textAttributes, context: context).height
         }
 
-        return CGFloat(fmax(minHeight, ceil(height)))
+        return CGFloat(fmax(44.0, ceil(height)))
     }
     
     func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
@@ -60,7 +74,7 @@ class TableViewUtilities: NSObject {
         // Add title attributed string
         if title.isEmpty == false {
             let titleAttributedString = NSMutableAttributedString(string: title)
-            titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold),
+            titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
                                                range: NSRange(location: 0, length: title.count))
             headerAttributedString.append(titleAttributedString)
         }
@@ -68,7 +82,7 @@ class TableViewUtilities: NSObject {
         // Add text attributed string
         if text.isEmpty == false {
             let textAttributedString = NSMutableAttributedString(string: text)
-            textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
+            textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
                                               range: NSRange(location: 0, length: text.count))
             headerAttributedString.append(textAttributedString)
         }
@@ -76,7 +90,7 @@ class TableViewUtilities: NSObject {
         // Create header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = .piwigoColorHeader()
+        headerLabel.textColor = PwgColor.header
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -93,8 +107,74 @@ class TableViewUtilities: NSObject {
                                                              ]))
         return header
     }
+    
+    
+    // MARK: - Rows
+    // Returns the row height
+    static let defaultRowHeight = CGFloat(53)
+    static let defaultOldRowHeight = CGFloat(44)
+    static let rowHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultRowHeight
+        } else {
+            return defaultOldRowHeight
+        }
+    }()
+    
+    func rowHeightForContentSizeCategory(_ contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+        let rowHeight = TableViewUtilities.rowHeight
+        switch contentSizeCategory {
+        case .extraSmall:
+            return rowHeight - 3.0
+        case .small:
+            return rowHeight - 2.0
+        case .medium:
+            return rowHeight - 1.0
+        case .large:
+            return rowHeight
+        case .extraLarge:
+            return rowHeight + 2.0
+        case .extraExtraLarge:
+            return rowHeight + 4.0
+        case .extraExtraExtraLarge:
+            return rowHeight + 6.0
+        case .accessibilityMedium:
+            return rowHeight + 11.0
+        case .accessibilityLarge:
+            return rowHeight + 16.0
+        case .accessibilityExtraLarge:
+            return rowHeight + 23.0
+        case .accessibilityExtraExtraLarge:
+            return rowHeight + 30.0
+        case .accessibilityExtraExtraExtraLarge:
+            return rowHeight + 36.0
+        case .unspecified:
+            fallthrough
+        default:
+            return rowHeight
+        }
+    }
+    
+    static let rowExtraHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultRowHeight - defaultOldRowHeight
+        } else {
+            return 0.0
+        }
+    }()
 
+    // Returns the row corner radius
+    static let defaultCornerRadius = CGFloat(26)
+    static let defaultOldRCornerRadius = CGFloat(10)
+    static let rowCornerRadius: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultCornerRadius
+        } else {
+            return defaultOldRCornerRadius
+        }
+    }()
 
+    
     // MARK: - Footers
     // Returns the height of a footer containing some text
     func heightOfFooter(withText text: String,
@@ -115,7 +195,7 @@ class TableViewUtilities: NSObject {
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
-        let titleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13)]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote)]
         let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                                 attributes: titleAttributes, context: context).height
 
@@ -131,14 +211,14 @@ class TableViewUtilities: NSObject {
         
         // Add text attributed string
         let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13),
+        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
                                           range: NSRange(location: 0, length: text.count))
         footerAttributedString.append(textAttributedString)
                 
         // Create header label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.textColor = .piwigoColorHeader()
+        footerLabel.textColor = PwgColor.header
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.textAlignment = alignment

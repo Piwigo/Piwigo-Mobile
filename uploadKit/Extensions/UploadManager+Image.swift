@@ -159,8 +159,7 @@ extension UploadManager {
                            kCGImageSourceShouldAllowFloat : true] as CFDictionary
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
 
@@ -168,8 +167,7 @@ extension UploadManager {
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             
@@ -187,8 +185,7 @@ extension UploadManager {
             guard let UTI = CGImageSourceGetType(sourceRef),
                   let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, nberOfImages, nil) else {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
 
@@ -206,8 +203,7 @@ extension UploadManager {
             // Save image file
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             completion(fileURL)
@@ -228,20 +224,18 @@ extension UploadManager {
                            kCGImageSourceShouldAllowFloat       : true] as CFDictionary
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
-
+            
             // Get number of images in source
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
-                        
+            
             // Get creation date from metadata if possible
             if let dateFromMetadata = getCreationDateOfImageSource(sourceRef, options: options, nberOfImages: nberOfImages) {
                 upload.creationDate = dateFromMetadata.timeIntervalSinceReferenceDate
@@ -256,8 +250,7 @@ extension UploadManager {
             guard let UTI = CGImageSourceGetType(sourceRef),
                   let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, nberOfImages, nil) else {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
 
@@ -297,8 +290,7 @@ extension UploadManager {
                 guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
                                                                         resizeOptions as CFDictionary) else {
                     // Could not retrieve primary image
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    failure(error)
+                    failure(PwgKitError.missingAsset)
                     return
                 }
                 image = resized
@@ -306,8 +298,7 @@ extension UploadManager {
                 // Get image
                 guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
                     // Could not retrieve primary image
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    failure(error)
+                    failure(PwgKitError.missingAsset)
                     return
                 }
                 image = copied
@@ -379,8 +370,7 @@ extension UploadManager {
                     guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, index,
                                                                             resizeOptions as CFDictionary) else {
                         // Could not retrieve primary image
-                        let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                        failure(error)
+                        failure(PwgKitError.missingAsset)
                         return
                     }
                     image = resized
@@ -388,8 +378,7 @@ extension UploadManager {
                     // Get image
                     guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, index, nil) else {
                         // Could not retrieve primary image
-                        let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                        failure(error)
+                        failure(PwgKitError.missingAsset)
                         return
                     }
                     image = copied
@@ -436,8 +425,7 @@ extension UploadManager {
             // Save image file
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             completion(fileURL)
@@ -458,8 +446,7 @@ extension UploadManager {
                            kCGImageSourceShouldAllowFloat       : true] as CFDictionary
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             
@@ -467,8 +454,7 @@ extension UploadManager {
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             
@@ -481,14 +467,8 @@ extension UploadManager {
             
             // Prepare conversion to JPEG format
             var UTI: CFString, fileExt: String
-            if #available(iOS 14.0, *) {
-                UTI = UTType.jpeg.identifier as CFString
-                fileExt = UTType.jpeg.preferredFilenameExtension!
-            } else {
-                // Fallback on earlier versions
-                UTI = kUTTypeJPEG as CFString
-                fileExt = "jpeg"
-            }
+            UTI = UTType.jpeg.identifier as CFString
+            fileExt = UTType.jpeg.preferredFilenameExtension!
             upload.fileName = URL(fileURLWithPath: upload.fileName)
                 .deletingPathExtension().appendingPathExtension(fileExt).lastPathComponent
             
@@ -498,8 +478,7 @@ extension UploadManager {
             // Prepare destination file of JPEG type containing a single image
             guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
                 // Could not prepare image source
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             
@@ -539,8 +518,7 @@ extension UploadManager {
                 guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
                                                                         resizeOptions as CFDictionary) else {
                     // Could not retrieve primary image
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    failure(error)
+                    failure(PwgKitError.missingAsset)
                     return
                 }
                 image = resized
@@ -548,8 +526,7 @@ extension UploadManager {
                 // Get image
                 guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
                     // Could not retrieve primary image
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    failure(error)
+                    failure(PwgKitError.missingAsset)
                     return
                 }
                 image = copied
@@ -608,8 +585,7 @@ extension UploadManager {
             // Save image file
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                failure(error)
+                failure(PwgKitError.missingAsset)
                 return
             }
             completion(fileURL)

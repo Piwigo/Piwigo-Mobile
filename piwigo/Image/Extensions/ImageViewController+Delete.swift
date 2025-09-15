@@ -11,9 +11,10 @@ import UIKit
 import piwigoKit
 import uploadKit
 
+// MARK: - Delete/Remove Image
 extension ImageViewController
 {
-    // MARK: - Delete/Remove Image Bar Button
+    // MARK: - Bar Button
     func getDeleteBarButton() -> UIBarButtonItem {
         return UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
     }
@@ -58,16 +59,12 @@ extension ImageViewController
         }
 
         // Present list of actions
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = deleteBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
     
@@ -137,8 +134,7 @@ extension ImageViewController
     @MainActor
     private func removeImageFromAlbumError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
@@ -222,8 +218,7 @@ extension ImageViewController
     @MainActor
     private func deleteImageFromDatabaseError(_ error: Error) {
         // Session logout required?
-        if let pwgError = error as? PwgSessionError,
-           [.invalidCredentials, .incompatiblePwgVersion, .invalidURL, .authenticationFailed].contains(pwgError) {
+        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }

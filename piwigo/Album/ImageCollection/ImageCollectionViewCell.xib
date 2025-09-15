@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
         <capability name="Image references" minToolsVersion="12.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,39 +21,6 @@
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="unknownImage" translatesAutoresizingMaskIntoConstraints="NO" id="Xpg-8s-0ki">
                         <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                     </imageView>
-                    <view hidden="YES" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P89-cH-cSc">
-                        <rect key="frame" x="3" y="3" width="18" height="14.5"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="3"/>
-                            </userDefinedRuntimeAttribute>
-                        </userDefinedRuntimeAttributes>
-                    </view>
-                    <imageView hidden="YES" clipsSubviews="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="sUd-zF-riA">
-                        <rect key="frame" x="4" y="4" width="16" height="12.5"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" secondItem="sUd-zF-riA" secondAttribute="height" multiplier="75:58" id="tFM-T9-66C"/>
-                        </constraints>
-                    </imageView>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imageFavorite" translatesAutoresizingMaskIntoConstraints="NO" id="YCE-dL-uhM">
-                        <rect key="frame" x="3" y="100" width="17" height="17"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" secondItem="YCE-dL-uhM" secondAttribute="height" multiplier="1:1" id="KWs-O4-hPh"/>
-                        </constraints>
-                    </imageView>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imageFavorite" translatesAutoresizingMaskIntoConstraints="NO" id="6NV-2z-KvC">
-                        <rect key="frame" x="4" y="101" width="15" height="15"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="width" secondItem="6NV-2z-KvC" secondAttribute="height" multiplier="1:1" id="Mdt-hi-88T"/>
-                        </constraints>
-                    </imageView>
                     <view hidden="YES" clipsSubviews="YES" alpha="0.45000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CnI-HM-yNN">
                         <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -64,20 +30,73 @@
                             <constraint firstAttribute="height" constant="120" id="bSH-sQ-6Pk"/>
                         </constraints>
                     </view>
-                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rsF-Jx-0S0">
-                        <rect key="frame" x="95" y="95" width="22" height="22"/>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5G8-Qn-aa6">
+                        <rect key="frame" x="1" y="2" width="20" height="17.5"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="width" secondItem="rsF-Jx-0S0" secondAttribute="height" multiplier="1:1" id="COg-Gd-Xdq"/>
-                        </constraints>
-                        <imageReference key="image" image="checkMark" renderingMode="hierarchical-single">
+                        <imageReference key="image" image="play.square.fill" catalog="system" renderingMode="hierarchical">
                             <hierarchicalColors>
-                                <color systemColor="labelColor"/>
-                                <color systemColor="secondaryLabelColor"/>
-                                <color systemColor="tertiaryLabelColor"/>
+                                <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </hierarchicalColors>
                         </imageReference>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                <integer key="value" value="2"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                <integer key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                <size key="value" width="0.0" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="okp-9r-PUu">
+                        <rect key="frame" x="1" y="100.5" width="20" height="17.5"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <imageReference key="image" image="heart.fill" catalog="system" renderingMode="template"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                <integer key="value" value="2"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                <integer key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                <size key="value" width="0.0" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="4"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </imageView>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1OQ-Cz-6EJ">
+                        <rect key="frame" x="99" y="98" width="20" height="21.5"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <imageReference key="image" image="checkmark.circle.fill" catalog="system" renderingMode="hierarchical">
+                            <hierarchicalColors>
+                                <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </hierarchicalColors>
+                        </imageReference>
+                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" weight="black"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                <real key="value" value="0.5"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                <integer key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                                <size key="value" width="0.0" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </imageView>
                     <view hidden="YES" opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Q7-XL-5s9">
                         <rect key="frame" x="0.0" y="104" width="120" height="16"/>
@@ -112,28 +131,22 @@
                 <color key="tintColor" red="0.98877537250000003" green="0.37905481460000001" blue="0.034007694569999997" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="9Q7-XL-5s9" secondAttribute="trailing" id="0Cr-0R-uX7"/>
-                    <constraint firstItem="6NV-2z-KvC" firstAttribute="centerX" secondItem="YCE-dL-uhM" secondAttribute="centerX" id="28c-Tu-d5V"/>
-                    <constraint firstItem="rsF-Jx-0S0" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="10" id="5Dy-kE-Lb9"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="centerY" secondItem="sUd-zF-riA" secondAttribute="centerY" id="804-U6-y1c"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="width" secondItem="sUd-zF-riA" secondAttribute="width" constant="2" id="8Vx-cq-CzT"/>
-                    <constraint firstItem="YCE-dL-uhM" firstAttribute="width" secondItem="6NV-2z-KvC" secondAttribute="width" constant="2" id="AHV-PT-hS1"/>
+                    <constraint firstItem="1OQ-Cz-6EJ" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="8" id="0cZ-1t-rDA"/>
+                    <constraint firstItem="5G8-Qn-aa6" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="8" id="1go-Qd-LNf"/>
+                    <constraint firstItem="5G8-Qn-aa6" firstAttribute="top" secondItem="foa-P6-jpv" secondAttribute="top" constant="1" id="55c-0o-8By"/>
+                    <constraint firstItem="okp-9r-PUu" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="8" id="CNh-ip-QG7"/>
                     <constraint firstItem="9Q7-XL-5s9" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" id="ErF-Fu-ZMS"/>
                     <constraint firstAttribute="bottom" secondItem="Xpg-8s-0ki" secondAttribute="bottom" id="Ere-uT-J8V"/>
-                    <constraint firstAttribute="bottom" secondItem="rsF-Jx-0S0" secondAttribute="bottom" constant="3" id="Kxo-5A-V8n"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="height" secondItem="sUd-zF-riA" secondAttribute="height" constant="2" id="LzF-8p-Vpw"/>
+                    <constraint firstItem="5G8-Qn-aa6" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" constant="1" id="INc-A4-3cg"/>
                     <constraint firstAttribute="trailing" secondItem="Xpg-8s-0ki" secondAttribute="trailing" id="OF3-6y-C0p"/>
                     <constraint firstItem="CnI-HM-yNN" firstAttribute="centerY" secondItem="Xpg-8s-0ki" secondAttribute="centerY" id="PJV-Z6-jkU"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="centerX" secondItem="sUd-zF-riA" secondAttribute="centerX" id="VSt-92-7ar"/>
-                    <constraint firstAttribute="bottom" secondItem="YCE-dL-uhM" secondAttribute="bottom" constant="3" id="X4E-ia-xEh"/>
+                    <constraint firstItem="5G8-Qn-aa6" firstAttribute="height" secondItem="foa-P6-jpv" secondAttribute="height" multiplier="0.1" constant="8" id="TgA-RY-Uk7"/>
                     <constraint firstItem="Xpg-8s-0ki" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" id="c9e-Vj-chA"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="top" secondItem="foa-P6-jpv" secondAttribute="top" constant="3" id="eZG-lK-wHu"/>
-                    <constraint firstAttribute="trailing" secondItem="rsF-Jx-0S0" secondAttribute="trailing" constant="3" id="lqC-6o-Gdl"/>
-                    <constraint firstItem="YCE-dL-uhM" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" constant="3" id="nMe-0L-S4O"/>
-                    <constraint firstItem="YCE-dL-uhM" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="5" id="ncG-Fc-ZrF"/>
+                    <constraint firstAttribute="bottom" secondItem="1OQ-Cz-6EJ" secondAttribute="bottom" constant="1" id="fY1-O3-JoP"/>
+                    <constraint firstItem="okp-9r-PUu" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" constant="1" id="iXo-42-xUx"/>
+                    <constraint firstAttribute="trailing" secondItem="1OQ-Cz-6EJ" secondAttribute="trailing" constant="1" id="kvO-m1-Dsc"/>
+                    <constraint firstAttribute="bottom" secondItem="okp-9r-PUu" secondAttribute="bottom" constant="1" id="rlQ-ag-iTy"/>
                     <constraint firstItem="CnI-HM-yNN" firstAttribute="centerX" secondItem="Xpg-8s-0ki" secondAttribute="centerX" id="rnb-zH-7PX"/>
-                    <constraint firstItem="6NV-2z-KvC" firstAttribute="centerY" secondItem="YCE-dL-uhM" secondAttribute="centerY" id="w9m-7R-Tyj"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="width" secondItem="Xpg-8s-0ki" secondAttribute="width" multiplier="0.1" constant="6" id="x50-wq-xrG"/>
-                    <constraint firstItem="P89-cH-cSc" firstAttribute="leading" secondItem="foa-P6-jpv" secondAttribute="leading" constant="3" id="xjy-Cd-pRi"/>
                     <constraint firstItem="Xpg-8s-0ki" firstAttribute="top" secondItem="foa-P6-jpv" secondAttribute="top" id="zLN-cA-fAW"/>
                     <constraint firstAttribute="bottom" secondItem="9Q7-XL-5s9" secondAttribute="bottom" id="zwE-4P-lSq"/>
                 </constraints>
@@ -146,36 +159,25 @@
                 <outlet property="darkImgHeight" destination="bSH-sQ-6Pk" id="2eW-z9-UNw"/>
                 <outlet property="darkImgWidth" destination="O7l-JC-4Be" id="xLD-t6-7VE"/>
                 <outlet property="darkenView" destination="CnI-HM-yNN" id="o84-Ag-jNT"/>
-                <outlet property="favBckg" destination="YCE-dL-uhM" id="jks-B1-hm2"/>
-                <outlet property="favBottom" destination="X4E-ia-xEh" id="AzA-nH-ccQ"/>
-                <outlet property="favImg" destination="6NV-2z-KvC" id="dcS-io-LRU"/>
-                <outlet property="favLeft" destination="nMe-0L-S4O" id="W7F-rF-8jM"/>
+                <outlet property="favoriteBottom" destination="rlQ-ag-iTy" id="NWy-ch-9Jc"/>
+                <outlet property="favoriteIcon" destination="okp-9r-PUu" id="fLS-St-4cy"/>
+                <outlet property="favoriteLeading" destination="iXo-42-xUx" id="YOL-yA-Yya"/>
                 <outlet property="nameLabel" destination="4DW-m1-O4d" id="Gdj-5M-2aE"/>
                 <outlet property="noDataLabel" destination="rLs-xT-VJk" id="RAu-ew-hmw"/>
-                <outlet property="playBckg" destination="P89-cH-cSc" id="5SS-Xo-22d"/>
-                <outlet property="playImg" destination="sUd-zF-riA" id="tBU-h6-Duh"/>
-                <outlet property="playLeft" destination="xjy-Cd-pRi" id="KOD-Pg-fnx"/>
-                <outlet property="playTop" destination="eZG-lK-wHu" id="zlV-n3-rCJ"/>
-                <outlet property="selImgBot" destination="Kxo-5A-V8n" id="Vs4-TQ-tMz"/>
-                <outlet property="selImgRight" destination="lqC-6o-Gdl" id="qF0-vs-fwn"/>
-                <outlet property="selectedImg" destination="rsF-Jx-0S0" id="6zX-GG-AEX"/>
+                <outlet property="playIcon" destination="5G8-Qn-aa6" id="e4L-hZ-mt2"/>
+                <outlet property="playIconLeading" destination="INc-A4-3cg" id="ff6-C0-ZbZ"/>
+                <outlet property="playIconTop" destination="55c-0o-8By" id="3EY-tO-T8T"/>
+                <outlet property="selectedIcon" destination="1OQ-Cz-6EJ" id="eT3-mz-IWa"/>
+                <outlet property="selectedIconBottom" destination="fY1-O3-JoP" id="09K-ib-F9f"/>
+                <outlet property="selectedIconTrailing" destination="kvO-m1-Dsc" id="jJe-FN-p6n"/>
             </connections>
-            <point key="canvasLocation" x="369.56521739130437" y="-85.044642857142847"/>
+            <point key="canvasLocation" x="267" y="-90"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="checkMark" width="25" height="25"/>
-        <image name="imageFavorite" width="26" height="26"/>
+        <image name="checkmark.circle.fill" catalog="system" width="32" height="32"/>
+        <image name="heart.fill" catalog="system" width="32" height="32"/>
+        <image name="play.square.fill" catalog="system" width="32" height="32"/>
         <image name="unknownImage" width="512" height="512"/>
-        <image name="video" width="25" height="19"/>
-        <systemColor name="labelColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="secondaryLabelColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="tertiaryLabelColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
     </resources>
 </document>

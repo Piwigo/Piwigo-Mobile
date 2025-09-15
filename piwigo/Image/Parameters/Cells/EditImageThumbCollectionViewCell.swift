@@ -50,7 +50,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         editButtonView.layer.cornerRadius = 5
         removeButtonView.layer.cornerRadius = 15
 
-        editImageButton.tintColor = .piwigoColorOrange()
+        editImageButton.tintColor = PwgColor.orange
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -60,17 +60,17 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     @MainActor
     @objc func applyColorPalette() {
         // Background
-        imageThumbnailView.backgroundColor = .piwigoColorBackground()
-        imageDetails.backgroundColor = .piwigoColorBackground()
-        editButtonView.backgroundColor = .piwigoColorBackground()
-        removeButtonView.backgroundColor = .piwigoColorCellBackground()
+        imageThumbnailView.backgroundColor = PwgColor.background
+        imageDetails.backgroundColor = PwgColor.background
+        editButtonView.backgroundColor = PwgColor.background
+        removeButtonView.backgroundColor = PwgColor.cellBackground
 
         // Image size, file name, date and time
-        imageSize.textColor = .piwigoColorLeftLabel()
-        imageFile.textColor = .piwigoColorLeftLabel()
-        imageFileSize.textColor = .piwigoColorLeftLabel()
-        imageDate.textColor = .piwigoColorLeftLabel()
-        imageTime.textColor = .piwigoColorLeftLabel()
+        imageSize.textColor = PwgColor.leftLabel
+        imageFile.textColor = PwgColor.leftLabel
+        imageFileSize.textColor = PwgColor.leftLabel
+        imageDate.textColor = PwgColor.leftLabel
+        imageTime.textColor = PwgColor.leftLabel
     }
 
     func config(withImage imageData: Image?, removeOption hasRemove: Bool) {
@@ -101,7 +101,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         imageDate.text = ""; imageTime.text = ""
         if imageData.dateCreated != DateUtilities.unknownDateInterval {
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
-            let dateFormatter = DateUtilities.dateFormatter()
+            let dateFormatter = DateUtilities.dateFormatter
             if bounds.size.width > CGFloat(430) {
                 // i.e. larger than iPhone 14 Pro Max screen width
                 dateFormatter.dateStyle = .long
@@ -201,21 +201,17 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         if let renameFileNameAction = renameFileNameAction {
             alert.addAction(renameFileNameAction)
         }
-        alert.view.tintColor = .piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
+        alert.view.tintColor = PwgColor.tintColor
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         topViewController?.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = .piwigoColorOrange()
+            alert.view.tintColor = PwgColor.tintColor
         }
     }
 
     @MainActor
     private func renameImageFile(withName fileName: String,
-                         andViewController topViewController: UIViewController?) {
+                                 andViewController topViewController: UIViewController?) {
         // Display HUD during the update
         topViewController?.showHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"))
 
@@ -227,16 +223,12 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData in
-            // Decode the JSON object and update image filename if successful.
-            do {
-                // Decode the JSON into codable type ImagesSetInfoJSON.
-                let decoder = JSONDecoder()
-                let pwgData = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
-
+                                countOfBytesClientExpectsToReceive: 1000) { result in
+            switch result {
+            case .success(let pwgData):
                 // Piwigo error?
                 if pwgData.errorCode != 0 {
-                    let error = PwgSession.shared.error(for: pwgData.errorCode, errorMessage: pwgData.errorMessage)
+                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
                     DispatchQueue.main.async {
                         topViewController?.hideHUD {
                             topViewController?.dismissPiwigoError(
@@ -265,24 +257,19 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                 }
                 else {
                     // Could not change the filename
-                    debugPrint("••> setImageInfoForImageWithId(): no successful")
                     DispatchQueue.main.async {
-                        self.renameImageFileError(PwgSessionError.unexpectedError, topViewController: topViewController)
+                        self.renameImageFileError(PwgKitError.unexpectedError, topViewController: topViewController)
                     }
                     return
                 }
-            } catch let error {
-                // Data cannot be digested
+                
+            case .failure(let error):
+                /// - Network communication errors
+                /// - Returned JSON data is empty
+                /// - Cannot decode data returned by Piwigo server
                 DispatchQueue.main.async {
                     self.renameImageFileError(error, topViewController: topViewController)
                 }
-            }
-        } failure: { [self] error in
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            DispatchQueue.main.async {
-                self.renameImageFileError(error, topViewController: topViewController)
             }
         }
     }

@@ -18,57 +18,32 @@ class ReleaseNotesViewController: UIViewController {
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
     private var fixTextPositionAfterLoadingViewOnPad: Bool!
-    private var doneBarButton: UIBarButtonItem?
 
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Title
         title = NSLocalizedString("settings_releaseNotes", comment: "Release Notes")
-
-        // Button for returning to albums/images
-        doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
-        doneBarButton?.accessibilityIdentifier = "Done"
     }
 
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = .piwigoColorBackground()
+        view.backgroundColor = PwgColor.background
 
         // Change text colour according to palette colour
-        if #available(iOS 13.0, *) {
-            piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
-        }
+        piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 
         // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes as [NSAttributedString.Key : Any]
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = .piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-        }
+        navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Text color depdending on background color
-        authorsLabel.textColor = .piwigoColorText()
-        versionLabel.textColor = .piwigoColorText()
-        textView.textColor = .piwigoColorText()
-        textView.backgroundColor = .piwigoColorBackground()
+        authorsLabel.textColor = PwgColor.text
+        versionLabel.textColor = PwgColor.text
+        textView.textColor = PwgColor.text
+        textView.backgroundColor = PwgColor.background
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -87,9 +62,6 @@ class ReleaseNotesViewController: UIViewController {
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -106,16 +78,21 @@ class ReleaseNotesViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
+        // Scroll text to where it is expected to be after loading view
         if (fixTextPositionAfterLoadingViewOnPad) {
-            // Scroll text to where it is expected to be after loading view
             fixTextPositionAfterLoadingViewOnPad = false
             textView.setContentOffset(.zero, animated: false)
         }
+
+        // Navigation bar
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
 
-    @objc func quitSettings() {
-        // Close Settings view
-        dismiss(animated: true)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Back to large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     deinit {
@@ -128,6 +105,9 @@ class ReleaseNotesViewController: UIViewController {
     private func notesAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
+
+        // Release 4.0.x — Bundle string
+        notesAttributedString.append(releaseNotes("v4.0.0_text", comment: "v4.0.0 Release Notes text"))
 
         // Release 3.5.x — Bundle string
         notesAttributedString.append(releaseNotes("v3.5.1_text", comment: "v3.5.1 Release Notes text"))
@@ -271,13 +251,18 @@ class ReleaseNotesViewController: UIViewController {
                                         bundle: Bundle.main, value: "", comment: comment)
         let vAttributedString = NSMutableAttributedString(string: vString)
         var vRange = NSRange(location: 0, length: vString.count)
-        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 13), range: vRange)
+        vAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: vRange)
         vRange = NSRange(location: 0, length: (vString as NSString).range(of: "\n").location)
-        vAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: vRange)
+        guard vRange.length != LONG_MAX
+        else {  // Missing translations are not shown
+            return NSAttributedString()
+        }
+        
+        vAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline), range: vRange)
         if lineFeed {
             let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
             let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-            spacerAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 10), range: spacerRange)
+            spacerAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .caption2), range: spacerRange)
             vAttributedString.append(spacerAttributedString)
         }
         return vAttributedString

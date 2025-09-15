@@ -52,7 +52,7 @@ extension UploadManager
            upload.fileNameSuffixEncodedActions.isEmpty,
            FileExtCase(rawValue: upload.fileNameExtensionCase) == .keep {
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-            return PwgSession.utf8mb3String(from: fileName)
+            return fileName.utf8mb3Encoded
         }
         
         // Get album current counter value
@@ -103,7 +103,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -138,7 +138,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -185,7 +185,7 @@ extension UploadManager
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Update upload request
             didEndPreparation()
@@ -227,14 +227,14 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
         }
         else {
             // Unknown type
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -246,7 +246,7 @@ extension UploadManager
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             self.didEndPreparation()
             return
@@ -278,7 +278,7 @@ extension UploadManager
             PHAssetResourceManager.default().writeData(for: res, toFile: fileURL,
                                                        options: options) { error in
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                var utf8mb3Filename = PwgSession.utf8mb3String(from: originalFilename)
+                var utf8mb3Filename = originalFilename.utf8mb3Encoded
                 
                 // Snapchat creates filenames containning ":" characters,
                 // which prevents the app from storing the converted file
@@ -314,7 +314,7 @@ extension UploadManager
         }
         else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: UploadError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -354,11 +354,10 @@ extension UploadManager
             }
 
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: UploadKitError.unacceptedImageFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
-//            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
         case .video:
             upload.fileType = pwgImageFileType.video.rawValue
@@ -383,25 +382,23 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: UploadKitError.unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
-//                showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .\(fileExt.uppercased()) are not accepted by the Piwigo server."), forRetrying: false, withImage: uploadToPrepare)
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: UploadKitError.unacceptedAudioFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
-//            showError(withTitle: NSLocalizedString("audioUploadError_title", comment: "Audio Upload Error"), andMessage: NSLocalizedString("audioUploadError_format", comment: "Sorry, audio files are not supported by Piwigo Mobile yet."), forRetrying: false, withImage: uploadToPrepare)
 
         case .unknown:
             fallthrough
         default:
             // Update state of upload request: Unknown format
-            upload.setState(.formatError, error: UploadError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: UploadKitError.unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
