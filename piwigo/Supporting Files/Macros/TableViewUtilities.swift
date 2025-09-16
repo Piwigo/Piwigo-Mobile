@@ -43,8 +43,8 @@ class TableViewUtilities: NSObject {
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
         var height: CGFloat = CGFloat.zero
-        let minWidth: CGFloat = 320.0 - 2 * margin
-        let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
+        let minWidth: CGFloat = 320.0 - 2 * (margin + TableViewUtilities.rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + TableViewUtilities.rowCornerRadius), minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
@@ -61,7 +61,7 @@ class TableViewUtilities: NSObject {
                                            attributes: textAttributes, context: context).height
         }
 
-        return CGFloat(fmax(44.0, ceil(height)))
+        return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height)))
     }
     
     func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
@@ -93,6 +93,7 @@ class TableViewUtilities: NSObject {
         headerLabel.textColor = PwgColor.header
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
+        headerLabel.adjustsFontForContentSizeCategory = true
         headerLabel.lineBreakMode = .byWordWrapping
         headerLabel.attributedText = headerAttributedString
 
