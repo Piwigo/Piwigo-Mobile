@@ -191,8 +191,8 @@ class TableViewUtilities: NSObject {
         // Initialise variables and width constraint
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
-        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin
-        let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
+        let minWidth: CGFloat = 320.0 - 2 * (margin + TableViewUtilities.rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + TableViewUtilities.rowCornerRadius), minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
@@ -200,7 +200,7 @@ class TableViewUtilities: NSObject {
         let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                                 attributes: titleAttributes, context: context).height
 
-        return CGFloat(ceil(height) + 10.0)
+        return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height) + 10.0))
     }
     
     func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
@@ -222,6 +222,7 @@ class TableViewUtilities: NSObject {
         footerLabel.textColor = PwgColor.header
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.adjustsFontForContentSizeCategory = true
         footerLabel.textAlignment = alignment
         footerLabel.lineBreakMode = .byWordWrapping
         footerLabel.attributedText = footerAttributedString
