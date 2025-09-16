@@ -31,8 +31,8 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: PwgColor.placeHolder
         ])
-        let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-        rightTextField.textAlignment = isAppLanguageL2R ? .right : .left
+//        let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+//        rightTextField.textAlignment = isAppLanguageL2R ? .right : .left
     }
 
     override func prepareForReuse() {

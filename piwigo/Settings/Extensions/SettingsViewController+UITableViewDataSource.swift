@@ -151,7 +151,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* Number of recent albums */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SliderTableViewCell"
+                    : "SliderTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
                 let value = Float(AlbumVars.shared.maxNberRecentCategories)
@@ -168,7 +171,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 3 /* Recent period */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SliderTableViewCell"
+                    : "SliderTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value is the index of kRecentPeriods
                 var value:Float = Float(CacheVars.shared.recentPeriodIndex)
@@ -227,7 +233,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 2 /* Number of thumbnails */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SliderTableViewCell"
+                    : "SliderTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Min/max number of thumbnails per row depends on selected file
                 let thumbnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultThumbnailSize) ?? .thumb
@@ -275,10 +284,14 @@ extension SettingsViewController: UITableViewDataSource
         
         // MARK: Videos
         case .videos /* Videos */:
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SwitchTableViewCell"
+                : "SwitchTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Could not load SwitchTableViewCell") }
+
             switch indexPath.row {
             case 0:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_videoAutoPlay", comment: "Auto-Play"))
                 
                 // Switch status
@@ -291,8 +304,6 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 1:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-                else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_videoLoop", comment: "Loop Videos"))
                 
                 // Switch status
@@ -318,7 +329,10 @@ extension SettingsViewController: UITableViewDataSource
             row += (!NetworkVars.shared.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "TextFieldTableViewCell"
+                    : "TextFieldTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TextFieldTableViewCell
                 else { preconditionFailure("Could not load TextFieldTableViewCell") }
                 // See https://iosref.com/res
                 var title: String
@@ -353,7 +367,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* Strip private Metadata? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 440 {
@@ -369,7 +386,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* Resize Before Upload? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 if view.bounds.size.width > 440 {
                     cell.configure(with: NSLocalizedString("settings_photoResizeLong", comment: "Downsize Photo"))
@@ -421,7 +441,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 6 /* Compress before Upload? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 440 {
@@ -449,7 +472,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 7 /* Image Quality slider */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SliderTableViewCell"
+                    : "SliderTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
                 else { preconditionFailure("Could not load SliderTableViewCell") }
                 // Slider value
                 let value = Float(UploadVars.shared.photoQuality)
@@ -489,7 +515,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 9 /* Wi-Fi Only? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_wifiOnly", comment: "Wi-Fi Only"))
                 cell.cellSwitch.setOn(UploadVars.shared.wifiOnlyUploading, animated: true)
@@ -532,7 +561,10 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 11 /* Delete image after upload? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {
