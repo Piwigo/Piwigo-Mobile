@@ -19,12 +19,12 @@ protocol TagSelectorViewDelegate: NSObjectProtocol {
 class TagSelectorViewController: UITableViewController {
     
     weak var tagSelectedDelegate: TagSelectorViewDelegate?
-
+    
     @IBOutlet var tagsTableView: UITableView!
     private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
     private var updateOperations = [BlockOperation]()
-
+    
     
     // MARK: - Core Data Objects
     var user: User!
@@ -34,7 +34,7 @@ class TagSelectorViewController: UITableViewController {
         }
         return context
     }()
-
+    
     
     // MARK: - Core Data Providers
     private lazy var tagProvider: TagProvider = {
@@ -59,16 +59,16 @@ class TagSelectorViewController: UITableViewController {
         andPredicates.append(NSPredicate(format: "tagName LIKE[c] $query"))
         return NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
     }()
-
+    
     func getQueryVar() -> [String : Any] {
         return ["query"  : "*" + searchQuery + "*"]
     }
-
+    
     lazy var fetchRequest: NSFetchRequest = {
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = Tag.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
-                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+                                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = predicate.withSubstitutionVariables(getQueryVar())
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
@@ -82,15 +82,15 @@ class TagSelectorViewController: UITableViewController {
         tags.delegate = self
         return tags
     }()
-
+    
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Title
         title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
-
+        
         // Initialise search bar
         initSearchBar()
         
@@ -113,6 +113,11 @@ class TagSelectorViewController: UITableViewController {
         let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitTagSelect))
         cancelBarButton.accessibilityIdentifier = "cancelButton"
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
+        
+        // Table view identifier
+        tagsTableView?.accessibilityIdentifier = "tag selector"
+        tagsTableView?.rowHeight = UITableView.automaticDimension
+        tagsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
     }
     
     @MainActor
@@ -122,7 +127,7 @@ class TagSelectorViewController: UITableViewController {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
-
+        
         // Report error
         let title = PwgKitError.tagCreationError.localizedDescription
         self.dismissPiwigoError(withTitle: title, message: error.localizedDescription) { }
@@ -132,10 +137,10 @@ class TagSelectorViewController: UITableViewController {
     @objc private func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Search bar
         searchController.searchBar.configAppearance()
         
@@ -144,7 +149,7 @@ class TagSelectorViewController: UITableViewController {
         tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -157,40 +162,39 @@ class TagSelectorViewController: UITableViewController {
         } catch {
             debugPrint("Failed to fetch tags: \(error)")
         }
-
+        
         // Reload data
         tagsTableView?.reloadData()
         
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
+        
     }
-
+    
     deinit {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-
+    
     @objc private func quitTagSelect() {
         dismiss(animated: true, completion: nil)
     }
-
-
+    
+    
     // MARK: - UITableView Rows
     // Return the number of sections for the table.
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     // Return the number of rows for the table.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let objects = tags.fetchedObjects
         return objects?.count ?? 0
-    }
-
-    // Row height
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
     }
     
     // Return cell configured with tag
@@ -214,7 +218,7 @@ class TagSelectorViewController: UITableViewController {
         
         return cell
     }
-
+    
     
     // MARK: - UITableView Footers
     private func getContentOfFooter() -> String {
@@ -223,11 +227,11 @@ class TagSelectorViewController: UITableViewController {
         let nberOfTags = (tags.fetchedObjects ?? []).count
         let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
         let footer = nberOfTags > 1 ?
-            String(format: String(localized: "severalTagsCount", bundle: piwigoKit, comment: "%@ tags"), nberAsStr) :
-            String(format: String(localized: "singleTagCount", bundle: piwigoKit, comment: "%@ tag"), nberAsStr)
+        String(format: String(localized: "severalTagsCount", bundle: piwigoKit, comment: "%@ tags"), nberAsStr) :
+        String(format: String(localized: "singleTagCount", bundle: piwigoKit, comment: "%@ tag"), nberAsStr)
         return footer
     }
-
+    
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = getContentOfFooter()
         let height = TableViewUtilities.shared.heightOfFooter(withText: footer)
@@ -240,7 +244,7 @@ class TagSelectorViewController: UITableViewController {
         return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
     }
     
-
+    
     // MARK: - UITableViewDelegate Methods
     // Display images tagged with the tag selected a row of the table
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -258,7 +262,7 @@ class TagSelectorViewController: UITableViewController {
         
         // Deactivate search bar
         searchController.isActive = false
-
+        
         // Dismiss tag select
         dismiss(animated: true) { [self] in
             // Push tagged images view with AlbumViewController
@@ -267,6 +271,17 @@ class TagSelectorViewController: UITableViewController {
             else { preconditionFailure("Could not load AlbumViewController") }
             taggedImagesVC.categoryId = catID
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Animated update for smoother experience
+            self.tagsTableView?.beginUpdates()
+            self.tagsTableView?.endUpdates()
         }
     }
 }
