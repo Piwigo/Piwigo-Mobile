@@ -28,7 +28,9 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     @IBOutlet weak var subCategoriesLabel: UILabel!
     @IBOutlet weak var showHideSubCategoriesImage: UIImageView!
     @IBOutlet weak var showHideSubCategoriesGestureArea: UIView!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     private var albumData: Album!
     private var buttonState: pwgCategoryCellButtonState = .none
     
@@ -37,6 +39,8 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         // General settings
         backgroundColor = PwgColor.cellBackground
         tintColor = PwgColor.tintColor
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Category data
         albumData = album
