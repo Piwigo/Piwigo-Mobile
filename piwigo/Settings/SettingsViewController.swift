@@ -205,6 +205,8 @@ class SettingsViewController: UIViewController {
         
         // Table view identifier
         settingsTableView.accessibilityIdentifier = "settings"
+        settingsTableView.rowHeight = UITableView.automaticDimension
+        settingsTableView.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Check whether we should display the max size options
         if UploadVars.shared.resizeImageOnUpload,

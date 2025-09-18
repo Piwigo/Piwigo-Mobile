@@ -14,11 +14,15 @@ class TextFieldTableViewCell: UITableViewCell {
 
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var rightTextField: UITextField!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with name:String, input:String, placeHolder:String) {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Text field name
         leftLabel.textColor = PwgColor.leftLabel

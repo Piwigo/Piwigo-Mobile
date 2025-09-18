@@ -14,11 +14,15 @@ class LabelTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with title: String, detail: String) -> Void {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Left side: title
         titleLabel.textColor = PwgColor.leftLabel
