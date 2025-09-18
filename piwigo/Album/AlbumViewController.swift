@@ -300,13 +300,9 @@ class AlbumViewController: UIViewController
             view.insertSubview(uploadImagesButton, belowSubview: addButton)
         }
         
-        // Sticky section headers
+        // No sticky section headers
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            if #available(iOS 26.0, *) {
-                layout.sectionHeadersPinToVisibleBounds = false
-            } else {
-                layout.sectionHeadersPinToVisibleBounds = true
-            }
+            layout.sectionHeadersPinToVisibleBounds = false
         }
         
         // Refresh view
