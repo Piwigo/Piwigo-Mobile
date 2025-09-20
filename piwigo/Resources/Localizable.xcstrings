@@ -10400,102 +10400,102 @@
       }
     },
     "defaultImageSize_recommended" : {
-      "comment" : " (recommended)",
+      "comment" : "(recommended)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (موصى به)"
+            "value" : "(موصى به)"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (anbefales)"
+            "value" : "(anbefales)"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (empfohlen)"
+            "value" : "(empfohlen)"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (recommended)"
+            "value" : "(recommended)"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (recomendado)"
+            "value" : "(recomendado)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (recommandé)"
+            "value" : "(recommandé)"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (ajánlott)"
+            "value" : "(ajánlott)"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (direkomendasikan)"
+            "value" : "(direkomendasikan)"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (consigliato)"
+            "value" : "(consigliato)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (推奨)"
+            "value" : "(推奨)"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (aanbevolen)"
+            "value" : "(aanbevolen)"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (zalecane)"
+            "value" : "(zalecane)"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (рекомендуется)"
+            "value" : "(рекомендуется)"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (rekommenderas)"
+            "value" : "(rekommenderas)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "（推荐）"
+            "value" : "(推荐)"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (建議)"
+            "value" : "(建議)"
           }
         }
       }
@@ -11717,90 +11717,90 @@
       }
     },
     "defaultSize_disabled" : {
-      "comment" : " (disabled on server)",
+      "comment" : "(disabled on server)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (معطل على الخادم)"
+            "value" : "(معطل على الخادم)"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (deaktiveret på serveren)"
+            "value" : "(deaktiveret på serveren)"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (auf Server deaktiviert)"
+            "value" : "(auf Server deaktiviert)"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (disabled on server)"
+            "value" : "(disabled on server)"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (desactivado en el servidor)"
+            "value" : "(desactivado en el servidor)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (désactivée sur le serveur)"
+            "value" : "(désactivée sur le serveur)"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (szerveren kikapcsolva)"
+            "value" : "(szerveren kikapcsolva)"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (nonaktifkan pada peladen)"
+            "value" : "(nonaktifkan pada peladen)"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (disabilitato dal server)"
+            "value" : "(disabilitato dal server)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " （サーバで無効化）"
+            "value" : "（サーバで無効化）"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (uitgeschakeld op de server)"
+            "value" : "(uitgeschakeld op de server)"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (wyłączone na serwerze)"
+            "value" : "(wyłączone na serwerze)"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (заблокировано на сервере)"
+            "value" : "(заблокировано на сервере)"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (inaktiverad på servern)"
+            "value" : "(inaktiverad på servern)"
           }
         },
         "zh-Hans" : {
@@ -11812,7 +11812,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " (在伺服器上停用)"
+            "value" : "(在伺服器上停用)"
           }
         }
       }
@@ -42555,7 +42555,7 @@
       }
     },
     "settings_deleteImageLong" : {
-      "comment" : "Delete Image After\nDelete Image After Upload",
+      "comment" : "Delete Image After",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

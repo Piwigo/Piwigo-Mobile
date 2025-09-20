@@ -31,6 +31,14 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
         
         // Title
         title = String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
+
+        // Table view
+        tableView?.accessibilityIdentifier = "Album Thumbnail Size"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
     
     @MainActor
@@ -72,6 +80,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController {
 }
 
 
+// MARK: - UITableViewDataSource Methods
 extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
     
     // MARK: - Rows
@@ -80,72 +89,60 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .medium
-
-        // Name of the thumbnail size
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = false
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "LabelTableViewCell"
+            : "LabelTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
 
         // Add checkmark in front of selected item
-        if imageSize == currentThumbnailSize {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .medium
+        let isSelected = imageSize == currentThumbnailSize
 
         // Disable unavailable and useless sizes
         switch imageSize {
-        case .square:
-            configCell(cell, forSize: .square, available: NetworkVars.shared.hasSquareSizeImages)
-        case .thumb:
-            configCell(cell, forSize: .thumb, available: NetworkVars.shared.hasThumbSizeImages)
-        case .xxSmall:
-            configCell(cell, forSize: .xxSmall, available: NetworkVars.shared.hasXXSmallSizeImages)
-        case .xSmall:
-            configCell(cell, forSize: .xSmall, available: NetworkVars.shared.hasXSmallSizeImages)
-        case .small:
-            configCell(cell, forSize: .small, available: NetworkVars.shared.hasSmallSizeImages)
-        case .medium:
-            configCell(cell, forSize: .medium, available: NetworkVars.shared.hasMediumSizeImages)
-        case .large:
-            configCell(cell, forSize: .large, available: NetworkVars.shared.hasLargeSizeImages)
-        case .xLarge:
-            configCell(cell, forSize: .xLarge, available: NetworkVars.shared.hasXLargeSizeImages)
-        case .xxLarge:
-            configCell(cell, forSize: .xxLarge, available: NetworkVars.shared.hasXXLargeSizeImages)
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium, .large, .xLarge, .xxLarge:
+            configCell(cell, forSize: imageSize, selectable: true, selected: isSelected)
         case .fullRes:
-            cell.isUserInteractionEnabled = false
-            cell.textLabel?.textColor = PwgColor.rightLabel
-            cell.textLabel?.text = imageSize.name
+            configCell(cell, forSize: .fullRes, selectable: false)
         }
-
         return cell
     }
     
-    private func configCell(_ cell: UITableViewCell, forSize size: pwgImageSize, available: Bool) {
-        if available {
-            cell.isUserInteractionEnabled = true
-            cell.textLabel?.textColor = PwgColor.leftLabel
-            var sizeName = size.name
-            if size == optimumSize {
-                sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-            } else {
-                sizeName.append(contentsOf: size.sizeAndScale(forScale: scale))
-            }
-            cell.textLabel?.text = sizeName
-        } else {
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selectable: Bool, selected: Bool = false) {
+        // Selected?
+        cell.accessoryType = selected ? .checkmark : .none
+        
+        // Available?
+        guard size.isAvailable
+        else {
+            cell.configure(with: size.name, detail: " ")
+            cell.titleLabel.textColor = cell.detailLabel.textColor
             cell.isUserInteractionEnabled = false
-            cell.textLabel?.textColor = PwgColor.rightLabel
-            cell.textLabel?.text = size.name + NSLocalizedString("defaultSize_disabled",comment: " (disabled on server)")
-       }
+            return
+        }
+        
+        // Optimum?
+        if size == optimumSize {
+            let detail = NSLocalizedString("defaultImageSize_recommended", comment: "(recommended)")
+            cell.configure(with: size.name, detail: detail)
+        } else {
+            cell.configure(with: size.name, detail: size.sizeAndScale(forScale: scale))
+        }
+        
+        // Selectable?
+        cell.isUserInteractionEnabled = selectable
+        if selectable == false {
+            // Colour must be changed after configuration
+            cell.titleLabel.textColor = cell.detailLabel.textColor
+        }
     }
 }
 
 
+// MARK: - UITableViewDelegate Methods
 extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Header
@@ -168,10 +165,6 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -179,10 +172,18 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
         guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
         if selectedSize == currentThumbnailSize { return }
 
-        // Update default size
-        tableView.cellForRow(at: IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0))?.accessoryType = .none
+        // Update deslected cell
+        let selectable = currentThumbnailSize != .fullRes
+        let deselectedIndexPath = IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0)
+        if let cell = tableView.cellForRow(at: deselectedIndexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: currentThumbnailSize, selectable: selectable, selected: false)
+        }
+        
+        // Update selected cell
         currentThumbnailSize = selectedSize
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        if let cell = tableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: currentThumbnailSize, selectable: selectable, selected: true)
+        }
     }
 
     

@@ -111,6 +111,17 @@ class TableViewUtilities: NSObject {
     
     
     // MARK: - Rows
+    // Returns the top or bottom margins of a cell
+    static let defaultVertMargin: CGFloat = 48.0/3.0
+    static let defaultOldVertMargin: CGFloat = 35.0/3.0
+    static let vertMargin: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultVertMargin
+        } else {
+            return defaultOldVertMargin
+        }
+    }()
+    
     // Returns the row height
     static let defaultRowHeight = CGFloat(53)
     static let defaultOldRowHeight = CGFloat(44)
