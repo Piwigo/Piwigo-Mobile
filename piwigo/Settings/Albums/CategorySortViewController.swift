@@ -30,7 +30,12 @@ class CategorySortViewController: UIViewController {
         // Apply attributes to title
         title = NSLocalizedString("severalImages", comment: "Images")
         
-        sortSelectTableView.accessibilityIdentifier = "sortSelect"
+        // Table view
+        sortSelectTableView?.accessibilityIdentifier = "sortSelect"
+        sortSelectTableView?.rowHeight = UITableView.automaticDimension
+        sortSelectTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
         navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
         
         // This view is called only if the Piwigo version < 14
@@ -88,22 +93,13 @@ extension CategorySortViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
         let sortChoice = pwgImageSort(rawValue: Int16(indexPath.row))!
-
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.text = sortChoice.name
-        cell.textLabel?.minimumScaleFactor = 0.5
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.lineBreakMode = .byTruncatingMiddle
+        cell.configure(with: sortChoice.name, detail: "")
         if indexPath.row == 0 {
             cell.accessibilityIdentifier = "sortAZ"
         }
-
         if indexPath.row == currentDefaultSort.rawValue {
             cell.accessoryType = .checkmark
         } else {
@@ -138,10 +134,6 @@ extension CategorySortViewController: UITableViewDelegate {
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
