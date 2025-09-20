@@ -144,7 +144,7 @@ extension LocalAlbumsViewController: UITableViewDataSource {
         if let startDate = aCollection.startDate, let endDate = aCollection.endDate {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell
             else { preconditionFailure("Could not load a LocalAlbumsTableViewCell!") }
-            cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
+            cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate, preferredContenSize: traitCollection.preferredContentSizeCategory, width: localAlbumsTableView.frame.width - 2 * TableViewUtilities.rowCornerRadius)
             cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if aCollection.assetCollectionType == .smartAlbum,
                aCollection.assetCollectionSubtype == .smartAlbumUserLibrary {

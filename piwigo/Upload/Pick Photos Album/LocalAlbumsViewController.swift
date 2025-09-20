@@ -78,7 +78,12 @@ class LocalAlbumsViewController: UIViewController {
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
-        
+                
+        // Table view identifier
+        localAlbumsTableView?.accessibilityIdentifier = "album selector"
+        localAlbumsTableView?.rowHeight = UITableView.automaticDimension
+        localAlbumsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
