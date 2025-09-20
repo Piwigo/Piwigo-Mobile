@@ -36,7 +36,7 @@ class CategorySortViewController: UIViewController {
         sortSelectTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Navigation bar
-        navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
         
         // This view is called only if the Piwigo version < 14
         if AlbumVars.shared.defaultSort.rawValue > pwgImageSort.random.rawValue {
