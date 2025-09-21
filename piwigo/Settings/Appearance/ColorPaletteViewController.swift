@@ -22,6 +22,11 @@ class ColorPaletteViewController: UIViewController {
         // Title
         title = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
 
+        // Table view
+        tableView?.accessibilityIdentifier = "Color Palette Selector"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
         // Disable large titles
         navigationController?.navigationBar.prefersLargeTitles = false
     }
@@ -35,9 +40,9 @@ class ColorPaletteViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         
         // Table view
-        tableView.separatorColor = PwgColor.separator
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        tableView.reloadData()
+        tableView?.separatorColor = PwgColor.separator
+        tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,7 +82,7 @@ extension ColorPaletteViewController: UITableViewDataSource {
     // MARK: - Rows
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.row {
         case 0:
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -93,8 +98,11 @@ extension ColorPaletteViewController: UITableViewDataSource {
             }
             
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SwitchTableViewCell"
+                : "SwitchTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Could not load SwitchTableViewCell") }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
             cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -147,20 +155,5 @@ extension ColorPaletteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader()
         return TableViewUtilities.shared.viewOfHeader(withTitle: title)
-    }
-    
-    
-    // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var height: CGFloat = 0.0
-        switch indexPath.row {
-        case 0:
-            height = 214.0 + TableViewUtilities.rowExtraHeight
-        case 1:
-            height = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-        default:
-            break
-        }
-        return height
     }
 }
