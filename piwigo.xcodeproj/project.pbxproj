@@ -183,7 +183,6 @@
 		AD2C62572A4898A200671582 /* UploadManager+Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD958B9629A7E2470022AE23 /* UploadManager+Tasks.swift */; };
 		AD2C62582A48993F00671582 /* uploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2C623A2A4896A600671582 /* uploadKit.framework */; };
 		AD2C625E2A48A02800671582 /* UploadSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335442666CA46000A1487 /* UploadSizes.swift */; };
-		AD2C62602A48A09300671582 /* UploadSizes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2C625F2A48A09300671582 /* UploadSizes.swift */; };
 		AD2C62612A48A3DB00671582 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778359267E34F800317F36 /* IntentHandler.swift */; };
 		AD2C62622A48A3DE00671582 /* UploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778368267E384500317F36 /* UploadPhotosHandler.swift */; };
 		AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */; };
@@ -904,7 +903,6 @@
 		AD2C623A2A4896A600671582 /* uploadKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = uploadKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2C623C2A4896A600671582 /* uploadKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uploadKit.h; sourceTree = "<group>"; };
 		AD2C625C2A4899F700671582 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AD2C625F2A48A09300671582 /* UploadSizes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSizes.swift; sourceTree = "<group>"; };
 		AD2D959927D7F14900AC1FD8 /* AppLockViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AppLockViewController.storyboard; sourceTree = "<group>"; };
 		AD2FEA5725AFA1470072596A /* VideoMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMetadata.swift; sourceTree = "<group>"; };
 		AD30FD3421316DA7009AA30E /* piwigoScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2554,7 +2552,6 @@
 			children = (
 				AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */,
 				AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */,
-				AD2C625F2A48A09300671582 /* UploadSizes.swift */,
 				ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */,
 				ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */,
 				ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */,
@@ -4067,7 +4064,6 @@
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,
 				AD41531527C6D37D00DE01CB /* LoginNavigationController.swift in Sources */,
 				AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */,
-				AD2C62602A48A09300671582 /* UploadSizes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
