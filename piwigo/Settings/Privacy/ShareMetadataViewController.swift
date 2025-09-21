@@ -35,7 +35,15 @@ class ShareMetadataViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+
+        // Table view
+        shareMetadataTableView?.accessibilityIdentifier = "Share Metadata"
+        shareMetadataTableView?.rowHeight = UITableView.automaticDimension
+        shareMetadataTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
         
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
+
         // Buttons
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(stopEditingOptions))
     }
@@ -49,9 +57,9 @@ class ShareMetadataViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        shareMetadataTableView.separatorColor = PwgColor.separator
-        shareMetadataTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        shareMetadataTableView.reloadData()
+        shareMetadataTableView?.separatorColor = PwgColor.separator
+        shareMetadataTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        shareMetadataTableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
