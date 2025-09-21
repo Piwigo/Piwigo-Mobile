@@ -59,14 +59,19 @@ class RenameFileViewController: UIViewController {
         // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
         
+        // Table view
+        tableView?.accessibilityIdentifier = "Rename File Settings"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
+        // Register the Add Action footer view
+        tableView?.register(AddActionTableViewFooterView.self, forHeaderFooterViewReuseIdentifier: "addActionFooter")
+
         // Header
         setMainHeader()
         
         // Enable/disable drag and delete interactions
         navigationItem.rightBarButtonItem = editButtonItem
-
-        // Register the Add Action footer view
-        tableView?.register(AddActionTableViewFooterView.self, forHeaderFooterViewReuseIdentifier: "addActionFooter")
     }
     
     @MainActor

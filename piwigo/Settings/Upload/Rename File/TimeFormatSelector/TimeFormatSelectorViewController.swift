@@ -54,6 +54,11 @@ class TimeFormatSelectorViewController: UIViewController {
         // Title, header and example
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
 
+        // Table view
+        tableView?.accessibilityIdentifier = "Time Format Settings"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
         // Header
         setMainHeader()
         

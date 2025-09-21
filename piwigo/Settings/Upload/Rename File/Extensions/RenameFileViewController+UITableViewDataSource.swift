@@ -15,10 +15,14 @@ import uploadKit
 extension RenameFileViewController: UITableViewDataSource
 {
     // MARK: - Cells
-    private func addTextCellForRow(at indexPath: IndexPath) -> TextFieldTableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+    private func addTextCellForRow(at indexPath: IndexPath,
+                                   for contentSizeCategory: UIContentSizeCategory) -> TextFieldTableViewCell {
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "TextFieldTableViewCell"
+            : "TextFieldTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TextFieldTableViewCell
         else { preconditionFailure("Could not load TextFieldTableViewCell") }
-        
+
         let title = RenameAction.ActionType.addText.name
         switch RenameSection(rawValue: indexPath.section) {
         case .prefix:
@@ -43,10 +47,14 @@ extension RenameFileViewController: UITableViewDataSource
         return cell
     }
     
-    private func addAlbumIDCellForRow(at indexPath: IndexPath) -> LabelTableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-        else { preconditionFailure("Could not load LabelTableViewCell") }
-        
+    private func addAlbumIDCellForRow(at indexPath: IndexPath,
+                                      for contentSizeCategory: UIContentSizeCategory) -> LabelTableViewCell {
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "LabelTableViewCell"
+            : "LabelTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell")}
+
         var detail = ""
         if parent is SettingsViewController {
             detail = ""
@@ -59,30 +67,33 @@ extension RenameFileViewController: UITableViewDataSource
         return cell
     }
     
-    private func addDateCellForRow(at indexPath: IndexPath) -> LabelTableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+    private func addDateCellForRow(at indexPath: IndexPath,
+                                   for contentSizeCategory: UIContentSizeCategory) -> LabelTableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
-        
+
         cell.configure(with: RenameAction.ActionType.addDate.name, detail: "")
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "addCreationDate"
         return cell
     }
     
-    private func addTimeCellForRow(at indexPath: IndexPath) -> LabelTableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+    private func addTimeCellForRow(at indexPath: IndexPath,
+                                   for contentSizeCategory: UIContentSizeCategory) -> LabelTableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
-        
+
         cell.configure(with: RenameAction.ActionType.addTime.name, detail: "")
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "addCreationTime"
         return cell
     }
     
-    private func addCounterCellForRow(at indexPath: IndexPath) -> LabelTableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+    private func addCounterCellForRow(at indexPath: IndexPath,
+                                      for contentSizeCategory: UIContentSizeCategory) -> LabelTableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
-        
+
         cell.configure(with: RenameAction.ActionType.addCounter.name, detail: "")
         cell.accessoryType = .disclosureIndicator
         cell.accessibilityIdentifier = "addCounter"
@@ -115,12 +126,16 @@ extension RenameFileViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch RenameSection(rawValue: indexPath.section) {
         case .prefix:
             let row = indexPath.row > 0 ? prefixActions[indexPath.row - 1].index : indexPath.row
             switch row {
             case 0 /* Add prefix switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renamePrefix", comment: "Prefix File Name"))
@@ -159,19 +174,19 @@ extension RenameFileViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case RenameAction.ActionType.addText.rawValue /* Text of prefix */:
-                tableViewCell = addTextCellForRow(at: indexPath)
+                tableViewCell = addTextCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addAlbum.rawValue /* Dummy album name */:
-                tableViewCell = addAlbumIDCellForRow(at: indexPath)
+                tableViewCell = addAlbumIDCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addDate.rawValue /* Dummy creation date */:
-                tableViewCell = addDateCellForRow(at: indexPath)
+                tableViewCell = addDateCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addTime.rawValue /* Dummy creation time */ :
-                tableViewCell = addTimeCellForRow(at: indexPath)
+                tableViewCell = addTimeCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addCounter.rawValue /* Dummy counter */ :
-                tableViewCell = addCounterCellForRow(at: indexPath)
+                tableViewCell = addCounterCellForRow(at: indexPath, for: contentSizeCategory)
                 
             default:
                 break
@@ -181,9 +196,12 @@ extension RenameFileViewController: UITableViewDataSource
             let row = indexPath.row > 0 ? replaceActions[indexPath.row - 1].index : indexPath.row
             switch row {
             case 0 /* Replace name switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("settings_renameReplace", comment: "Replace File Name"))
                 cell.cellSwitch.setOn(replaceBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -219,19 +237,19 @@ extension RenameFileViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case RenameAction.ActionType.addText.rawValue /* e.g. a separator */:
-                tableViewCell = addTextCellForRow(at: indexPath)
+                tableViewCell = addTextCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addAlbum.rawValue /* Dummy album name */:
-                tableViewCell = addAlbumIDCellForRow(at: indexPath)
+                tableViewCell = addAlbumIDCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addDate.rawValue /* Dummy creation date */:
-                tableViewCell = addDateCellForRow(at: indexPath)
+                tableViewCell = addDateCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addTime.rawValue /* Dummy creation time */ :
-                tableViewCell = addTimeCellForRow(at: indexPath)
+                tableViewCell = addTimeCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addCounter.rawValue /* Dummy counter */ :
-                tableViewCell = addCounterCellForRow(at: indexPath)
+                tableViewCell = addCounterCellForRow(at: indexPath, for: contentSizeCategory)
                 
             default:
                 break
@@ -241,9 +259,12 @@ extension RenameFileViewController: UITableViewDataSource
             let row = indexPath.row > 0 ? suffixActions[indexPath.row - 1].index : indexPath.row
             switch row {
             case 0 /* Add suffix switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("settings_renameSuffix", comment: "Suffix File Name"))
                 cell.cellSwitch.setOn(suffixBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -279,19 +300,19 @@ extension RenameFileViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case RenameAction.ActionType.addText.rawValue /* Text of suffix */:
-                tableViewCell = addTextCellForRow(at: indexPath)
+                tableViewCell = addTextCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addAlbum.rawValue /* Dummy album name */:
-                tableViewCell = addAlbumIDCellForRow(at: indexPath)
+                tableViewCell = addAlbumIDCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addDate.rawValue /* Dummy creation date */:
-                tableViewCell = addDateCellForRow(at: indexPath)
+                tableViewCell = addDateCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addTime.rawValue /* Dummy creation time */ :
-                tableViewCell = addTimeCellForRow(at: indexPath)
+                tableViewCell = addTimeCellForRow(at: indexPath, for: contentSizeCategory)
                 
             case RenameAction.ActionType.addCounter.rawValue /* Dummy counter */ :
-                tableViewCell = addCounterCellForRow(at: indexPath)
+                tableViewCell = addCounterCellForRow(at: indexPath, for: contentSizeCategory)
                 
             default:
                 break
@@ -300,9 +321,12 @@ extension RenameFileViewController: UITableViewDataSource
         case .fileExtension:
             switch indexPath.row {
             case 0 /* Change Case switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("settings_renameChangeCase", comment: "Change Case"))
                 cell.cellSwitch.setOn(changeCaseBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in

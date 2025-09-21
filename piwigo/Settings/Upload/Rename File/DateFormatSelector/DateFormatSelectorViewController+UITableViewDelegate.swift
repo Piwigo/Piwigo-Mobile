@@ -12,11 +12,6 @@ import UIKit
 // MARK: UITableViewDelegate Methods
 extension DateFormatSelectorViewController: UITableViewDelegate
 {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-        
-
     // MARK: - Year/Month/Day Reordering
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // Show reorder control if necessary

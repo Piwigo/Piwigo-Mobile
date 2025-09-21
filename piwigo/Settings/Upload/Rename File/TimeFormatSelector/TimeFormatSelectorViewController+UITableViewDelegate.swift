@@ -12,10 +12,6 @@ import UIKit
 // MARK: - UITableViewDelegate Methods
 extension TimeFormatSelectorViewController: UITableViewDelegate
 {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         switch TimeSection(rawValue: indexPath.section) {
         case .hour, .minute, .second:

@@ -40,13 +40,17 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch TimeSection(rawValue: indexPath.section) {
         case .hour:
             switch indexPath.row {
             case 0 /* Display Hour switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Hour", comment: "Hour"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .hour(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -72,7 +76,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* hha option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("12-hour", comment: "12-hour cycle"), detail: "")
@@ -83,7 +87,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* HH option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("24-hour", comment: "24-hour cycle"), detail: "")
@@ -100,9 +104,12 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
         case .minute:
             switch indexPath.row {
             case 0 /* Display Minute switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Minute", comment: "Minute"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .minute(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -128,7 +135,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* mm option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
@@ -145,9 +152,12 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
         case .second:
             switch indexPath.row {
             case 0 /* Display Second switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Second", comment: "Second"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .second(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -173,7 +183,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* ss option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
@@ -184,7 +194,7 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* ssSSS option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameFiveDigit", comment: "5-digit version"), detail: "")
@@ -201,9 +211,12 @@ extension TimeFormatSelectorViewController: UITableViewDataSource
         case .separator:
             switch indexPath.row {
             case 0 /* Display Hour/Minute/Second Separator switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Separator", comment: "Separator"))
                 cell.cellSwitch.setOn(timeFormats[indexPath.section] != .separator(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in

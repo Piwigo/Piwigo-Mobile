@@ -36,11 +36,15 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch CounterSection(rawValue: indexPath.section) {
         case .start:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "TextFieldTableViewCell"
+                : "TextFieldTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TextFieldTableViewCell
             else { preconditionFailure("Could not load TextFieldTableViewCell") }
-            
+
             var title = ""
             if parent?.parent is SettingsViewController {
                 title = NSLocalizedString("settings_renameCounterCurrent", comment: "Starts From")
@@ -55,9 +59,12 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
         case .prefix:
             switch indexPath.row {
             case 0 /* Display Counter Prefix switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("settings_prefix", comment: "Prefix"))
                 cell.cellSwitch.setOn(counterFormats[indexPath.section - 1] != .prefix(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -100,9 +107,12 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
             }
 
         case .digits:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell") as? SliderTableViewCell
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SliderTableViewCell"
+                : "SliderTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
             else { preconditionFailure("Could not load SliderTableViewCell") }
-            
+
             // Slider value
             var value = Float(4)
             if let index = counterFormats.firstIndex(where: {
@@ -129,9 +139,12 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
         case .suffix:
             switch indexPath.row {
             case 0 /* Display Counter Suffix switch */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
+                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                    ? "SwitchTableViewCell"
+                    : "SwitchTableViewCell2"
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("settings_suffix", comment: "Suffix"))
                 cell.cellSwitch.setOn(counterFormats[indexPath.section - 1] != .suffix(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in

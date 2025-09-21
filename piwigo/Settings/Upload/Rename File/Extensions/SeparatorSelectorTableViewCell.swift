@@ -1,5 +1,5 @@
 //
-//  DateSeparatorSelectorTableViewCell.swift
+//  SeparatorSelectorTableViewCell.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 27/04/2025.
@@ -17,12 +17,26 @@ class SeparatorSelectorTableViewCell: UITableViewCell {
     var cellSeparatorSelectorBlock: cellSeparatorSelectorBlock?
 
     @IBOutlet var segmentedControl: UISegmentedControl!
-    
+    @IBOutlet weak var segmentedControlHeight: NSLayoutConstraint!
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with choice: String) {
         
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
         segmentedControl.selectedSegmentTintColor = PwgColor.orange
+        segmentedControl.setTitleTextAttributes(
+            [.font : UIFont.preferredFont(forTextStyle: .body),
+             .foregroundColor: PwgColor.gray
+        ], for: .normal)
+        segmentedControl.setTitleTextAttributes(
+            [.font : UIFont.preferredFont(forTextStyle: .body),
+             .foregroundColor: UIColor.white
+        ], for: .selected)
+        segmentedControlHeight.constant = UIFont.preferredFont(forTextStyle: .body).lineHeight +  TableViewUtilities.vertMargin
 
         // Configure segments
         let separators = pwgSeparator.allCases.filter({$0 != .none})

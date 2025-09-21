@@ -57,6 +57,11 @@ class CounterFormatSelectorViewController: UIViewController {
         // Title, header and example
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
 
+        // Table view
+        tableView?.accessibilityIdentifier = "Counter Settings"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
         // Header
         setMainHeader()
     }
