@@ -34,11 +34,14 @@ extension AutoUploadViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-        
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SwitchTableViewCell"
+                : "SwitchTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Could not load SwitchTableViewCell") }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
             cell.cellSwitch.setOn(UploadVars.shared.isAutoUploadActive, animated: true)
@@ -62,9 +65,11 @@ extension AutoUploadViewController: UITableViewDataSource
             tableViewCell = cell
             
         case 1:     // Source & destination albums
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-            else { preconditionFailure("Could not load a LabelTableViewCell!") }
-            
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "LabelTableViewCell"
+                : "LabelTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load LabelTableViewCell")}
             var title = "", detail = ""
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :

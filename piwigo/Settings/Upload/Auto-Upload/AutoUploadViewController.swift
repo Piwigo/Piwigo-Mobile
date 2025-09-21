@@ -62,6 +62,14 @@ class AutoUploadViewController: UIViewController {
 
         // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+
+        // Table view
+        autoUploadTableView?.accessibilityIdentifier = "Privacy"
+        autoUploadTableView?.rowHeight = UITableView.automaticDimension
+        autoUploadTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
 
     @MainActor
@@ -73,9 +81,9 @@ class AutoUploadViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        autoUploadTableView.separatorColor = PwgColor.separator
-        autoUploadTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        autoUploadTableView.reloadData()
+        autoUploadTableView?.separatorColor = PwgColor.separator
+        autoUploadTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        autoUploadTableView?.reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {

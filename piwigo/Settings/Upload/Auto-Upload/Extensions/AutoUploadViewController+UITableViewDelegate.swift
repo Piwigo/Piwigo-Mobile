@@ -40,24 +40,6 @@ extension AutoUploadViewController: UITableViewDelegate
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var height: CGFloat = 44.0
-        switch indexPath.section {
-        case 2:
-            switch indexPath.row {
-            case 0:
-                height = 78.0 + TableViewUtilities.rowExtraHeight
-            case 1:
-                height = 428.0 + TableViewUtilities.rowExtraHeight
-            default:
-                break
-            }
-        default:
-            height = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-        }
-        return height
-    }
-    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
         case 0:
