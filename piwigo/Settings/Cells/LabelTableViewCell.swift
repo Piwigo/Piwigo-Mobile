@@ -25,22 +25,14 @@ class LabelTableViewCell: UITableViewCell {
         bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Left side: title
-        if title.isEmpty {
-            titleLabel.isHidden = true
-        } else {
-            detailLabel.isHidden = false
-            titleLabel.textColor = PwgColor.leftLabel
-            titleLabel.text = title
-        }
+        titleLabel.text = title
+        titleLabel.isHidden = title.isEmpty
+        titleLabel.textColor = PwgColor.leftLabel
         
         // Right side: detail
-        if detail.isEmpty {
-            detailLabel.isHidden = true
-        } else {
-            detailLabel.isHidden = false
-            detailLabel.textColor = PwgColor.rightLabel
-            detailLabel.text = detail
-        }
+        detailLabel.text = detail
+        detailLabel.textColor = PwgColor.rightLabel
+        detailLabel.isHidden = detail.isEmpty
     }
 
     override func prepareForReuse() {
