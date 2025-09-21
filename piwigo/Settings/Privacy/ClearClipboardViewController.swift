@@ -96,6 +96,14 @@ class ClearClipboardViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
+
+        // Table view
+        delayTableView?.accessibilityIdentifier = "Clear Clipboard After Delay"
+        delayTableView?.rowHeight = UITableView.automaticDimension
+        delayTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
     
     @MainActor
@@ -107,9 +115,9 @@ class ClearClipboardViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        delayTableView.separatorColor = PwgColor.separator
-        delayTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        delayTableView.reloadData()
+        delayTableView?.separatorColor = PwgColor.separator
+        delayTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        delayTableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -148,18 +156,10 @@ extension ClearClipboardViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let delayChoice = pwgClearClipboard(rawValue: indexPath.row)
-
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.text = delayChoice?.delayText
-        cell.textLabel?.minimumScaleFactor = 0.5
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.lineBreakMode = .byTruncatingMiddle
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
+        let delayChoice = pwgClearClipboard(rawValue: indexPath.row)!
+        cell.configure(with: delayChoice.delayText, detail: "")
         if indexPath.row == AppVars.shared.clearClipboardDelay {
             cell.accessoryType = .checkmark
         } else {
@@ -194,10 +194,6 @@ extension ClearClipboardViewController: UITableViewDelegate {
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
