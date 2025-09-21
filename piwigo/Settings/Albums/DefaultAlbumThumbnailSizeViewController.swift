@@ -105,7 +105,7 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
         case .square, .thumb, .xxSmall, .xSmall, .small, .medium, .large, .xLarge, .xxLarge:
             configCell(cell, forSize: imageSize, selectable: true, selected: isSelected)
         case .fullRes:
-            configCell(cell, forSize: .fullRes, selectable: false)
+            configCell(cell, forSize: imageSize, selectable: false)
         }
         return cell
     }
