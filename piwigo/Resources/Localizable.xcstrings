@@ -11718,6 +11718,7 @@
     },
     "defaultSize_disabled" : {
       "comment" : "(disabled on server)",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
