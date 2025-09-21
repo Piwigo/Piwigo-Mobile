@@ -203,8 +203,8 @@ class SettingsViewController: UIViewController {
         }
         helpBarButton?.accessibilityIdentifier = "Help"
         
-        // Table view identifier
-        settingsTableView.accessibilityIdentifier = "settings"
+        // Table view
+        settingsTableView.accessibilityIdentifier = "Settings"
         settingsTableView.rowHeight = UITableView.automaticDimension
         settingsTableView.estimatedRowHeight = TableViewUtilities.rowHeight
         
