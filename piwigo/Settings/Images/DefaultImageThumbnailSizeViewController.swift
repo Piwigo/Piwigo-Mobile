@@ -32,6 +32,14 @@ class DefaultImageThumbnailSizeViewController: UIViewController {
         
         // Title
         title = NSLocalizedString("severalImages", comment: "Images")
+
+        // Table view
+        tableView?.accessibilityIdentifier = "Image Thumbnail Size"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
     
     @MainActor
@@ -82,67 +90,54 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .thumb
-
-        // Appearance
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = false
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "LabelTableViewCell"
+            : "LabelTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
 
         // Add checkmark in front of selected item
-        if imageSize == currentThumbnailSize {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .thumb
+        let isSelected = imageSize == currentThumbnailSize
 
         // Disable unavailable and useless sizes
         switch imageSize {
-        case .square:
-            configCell(cell, forSize: .square, available: NetworkVars.shared.hasSquareSizeImages)
-        case .thumb:
-            configCell(cell, forSize: .thumb, available: NetworkVars.shared.hasThumbSizeImages)
-        case .xxSmall:
-            configCell(cell, forSize: .xxSmall, available: NetworkVars.shared.hasXXSmallSizeImages)
-        case .xSmall:
-            configCell(cell, forSize: .xSmall, available: NetworkVars.shared.hasXSmallSizeImages)
-        case .small:
-            configCell(cell, forSize: .small, available: NetworkVars.shared.hasSmallSizeImages)
-        case .medium:
-            configCell(cell, forSize: .medium, available: NetworkVars.shared.hasMediumSizeImages)
-        case .large:
-            configCell(cell, forSize: .large, available: NetworkVars.shared.hasLargeSizeImages, allowed: false)
-        case .xLarge:
-            configCell(cell, forSize: .xLarge, available: NetworkVars.shared.hasXLargeSizeImages, allowed: false)
-        case .xxLarge:
-            configCell(cell, forSize: .xxLarge, available: NetworkVars.shared.hasXXLargeSizeImages, allowed: false)
-        case .fullRes:
-            configCell(cell, forSize: .fullRes, available: true, allowed: false)
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
+            configCell(cell, forSize: imageSize, selectable: true, selected: isSelected)
+        case .large, .xLarge, .xxLarge, .fullRes:
+            configCell(cell, forSize: imageSize, selectable: false)
         }
-
         return cell
     }
-
-    private func configCell(_ cell: UITableViewCell, forSize size: pwgImageSize, available: Bool, allowed: Bool = true) {
-        if available {
-            // This image size is available
-            cell.isUserInteractionEnabled = allowed
-            cell.textLabel?.textColor = allowed ? PwgColor.leftLabel : PwgColor.rightLabel
-            var sizeName = size.name
-            if size == optimumSize {
-                sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-            } else {
-                sizeName.append(contentsOf: size.sizeAndScale(forScale: scale))
-            }
-            cell.textLabel?.text = sizeName
-        } else {
-            // This image size is not available
+    
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selectable: Bool, selected: Bool = false) {
+        // Selected?
+        cell.accessoryType = selected ? .checkmark : .none
+        
+        // Available?
+        guard size.isAvailable
+        else {
+            cell.configure(with: size.name, detail: " ")
+            cell.titleLabel.textColor = cell.detailLabel.textColor
             cell.isUserInteractionEnabled = false
-            cell.textLabel?.textColor = PwgColor.rightLabel
-            cell.textLabel?.text = size.name + NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)")
+            return
+        }
+        
+        // Optimum?
+        if size == optimumSize {
+            let detail = NSLocalizedString("defaultImageSize_recommended", comment: "(recommended)")
+            cell.configure(with: size.name, detail: detail)
+        } else {
+            cell.configure(with: size.name, detail: size.sizeAndScale(forScale: scale))
+        }
+        
+        // Selectable?
+        cell.isUserInteractionEnabled = selectable
+        if selectable == false {
+            // Colour must be changed after configuration
+            cell.titleLabel.textColor = cell.detailLabel.textColor
         }
     }
 }
@@ -172,7 +167,7 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDelegate {
     
     // MARK: - Rows
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+        return TableViewUtilities.shared.rowHeight(forContentSizeCategory: traitCollection.preferredContentSizeCategory)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

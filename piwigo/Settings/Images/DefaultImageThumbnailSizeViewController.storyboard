@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24127"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,13 +17,84 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="BRg-Y4-Q8I">
-                                <rect key="frame" x="20" y="49.5" width="374" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell" rowHeight="58" id="jdZ-XE-H82" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="58"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BRg-Y4-Q8I" id="FWX-QH-X6t">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jdZ-XE-H82" id="vT3-X2-UV6">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="58"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cBy-z2-SsG">
+                                            <rect key="frame" x="20" y="20" width="62.5" height="18"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="https://piwigo.org/my-photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tdn-It-zlX">
+                                            <rect key="frame" x="133" y="19" width="221" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" systemColor="systemGrayColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Tdn-It-zlX" firstAttribute="centerY" secondItem="cBy-z2-SsG" secondAttribute="centerY" id="9eU-R0-B9M"/>
+                                        <constraint firstItem="cBy-z2-SsG" firstAttribute="top" secondItem="vT3-X2-UV6" secondAttribute="top" constant="20" symbolic="YES" id="Dd6-9f-EsA"/>
+                                        <constraint firstItem="cBy-z2-SsG" firstAttribute="leading" secondItem="vT3-X2-UV6" secondAttribute="leading" constant="20" symbolic="YES" id="LbY-al-46D"/>
+                                        <constraint firstItem="Tdn-It-zlX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cBy-z2-SsG" secondAttribute="trailing" constant="10" id="Vv8-km-a1W"/>
+                                        <constraint firstAttribute="trailing" secondItem="Tdn-It-zlX" secondAttribute="trailing" constant="20" symbolic="YES" id="b04-Gy-0f0"/>
+                                        <constraint firstAttribute="bottom" secondItem="cBy-z2-SsG" secondAttribute="bottom" constant="20" symbolic="YES" id="fa3-d8-lZd"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="bottomMargin" destination="fa3-d8-lZd" id="XfH-VQ-Z5W"/>
+                                    <outlet property="detailLabel" destination="Tdn-It-zlX" id="eOE-KK-K9v"/>
+                                    <outlet property="titleLabel" destination="cBy-z2-SsG" id="fSj-Ot-aFB"/>
+                                    <outlet property="topMargin" destination="Dd6-9f-EsA" id="ZwO-Bm-0FF"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell2" rowHeight="85" id="d5y-gD-UeV" userLabel="LabelTableViewCell2" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="113.5" width="374" height="85"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="d5y-gD-UeV" id="wB6-w1-w7l">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="85"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XvD-pk-0u5">
+                                            <rect key="frame" x="20" y="20" width="334" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OdW-4E-0Mx">
+                                            <rect key="frame" x="20" y="48.5" width="334" height="16.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" systemColor="systemGrayColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="OdW-4E-0Mx" firstAttribute="top" secondItem="XvD-pk-0u5" secondAttribute="bottom" constant="8" symbolic="YES" id="3jZ-hO-XLY"/>
+                                        <constraint firstItem="OdW-4E-0Mx" firstAttribute="leading" secondItem="wB6-w1-w7l" secondAttribute="leading" constant="20" symbolic="YES" id="Bky-gR-HQd"/>
+                                        <constraint firstAttribute="trailing" secondItem="OdW-4E-0Mx" secondAttribute="trailing" constant="20" symbolic="YES" id="OUZ-xd-aYS"/>
+                                        <constraint firstItem="XvD-pk-0u5" firstAttribute="leading" secondItem="wB6-w1-w7l" secondAttribute="leading" constant="20" symbolic="YES" id="QaJ-f3-1yc"/>
+                                        <constraint firstAttribute="trailing" secondItem="XvD-pk-0u5" secondAttribute="trailing" constant="20" symbolic="YES" id="Vrx-o1-tMI"/>
+                                        <constraint firstAttribute="bottom" secondItem="OdW-4E-0Mx" secondAttribute="bottom" constant="20" symbolic="YES" id="dgA-UU-dmg"/>
+                                        <constraint firstItem="XvD-pk-0u5" firstAttribute="top" secondItem="wB6-w1-w7l" secondAttribute="top" constant="20" symbolic="YES" id="fKc-Pl-Neu"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="bottomMargin" destination="dgA-UU-dmg" id="17N-4e-qEl"/>
+                                    <outlet property="detailLabel" destination="OdW-4E-0Mx" id="m8u-Dp-5os"/>
+                                    <outlet property="titleLabel" destination="XvD-pk-0u5" id="bHO-OE-ulZ"/>
+                                    <outlet property="topMargin" destination="fKc-Pl-Neu" id="PdC-2w-8q0"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <sections/>
@@ -40,4 +112,9 @@
             <point key="canvasLocation" x="132" y="139"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemGrayColor">
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>
