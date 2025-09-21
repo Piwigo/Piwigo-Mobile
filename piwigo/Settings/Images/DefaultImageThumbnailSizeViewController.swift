@@ -166,17 +166,13 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDelegate {
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeight(forContentSizeCategory: traitCollection.preferredContentSizeCategory)
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
         // Did the user change of default size
         guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
         if selectedSize == currentThumbnailSize { return }
-
+        
         // Update default size
         tableView.cellForRow(at: IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0))?.accessoryType = .none
         currentThumbnailSize = selectedSize
