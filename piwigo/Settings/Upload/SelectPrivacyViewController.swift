@@ -144,9 +144,10 @@ extension SelectPrivacyViewController: UITableViewDelegate
         // Update choice
         privacy = newPrivacy
         for visibleCell in tableView.visibleCells {
-            visibleCell.accessoryType = .none
             if visibleCell.tag == Int(privacy.rawValue) {
                 visibleCell.accessoryType = .checkmark
+            } else {
+                visibleCell.accessoryType = .none
             }
         }
     }

@@ -100,13 +100,19 @@ extension DefaultImageSizeViewController: UITableViewDataSource {
         let isSelected = imageSize == currentImageSize
 
         // Disable unavailable sizes
-        switch imageSize {
-        case .square, .thumb, .xxSmall, .xSmall, .small:
-            configCell(cell, forSize: imageSize, selectable: false)
-        case .medium, .large, .xLarge, .xxLarge, .fullRes:
-            configCell(cell, forSize: imageSize, selectable: true, selected: isSelected)
-        }
+        configCell(cell, forSize: imageSize, selected: isSelected)
+
         return cell
+    }
+    
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selected: Bool = false) {
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small:
+            configCell(cell, forSize: size, selectable: false)
+        case .medium, .large, .xLarge, .xxLarge, .fullRes:
+            configCell(cell, forSize: size, selectable: true, selected: selected)
+        }
     }
     
     private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
@@ -171,10 +177,17 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
         guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
         if selectedSize == currentImageSize { return }
 
-        // Update default size
-        tableView.cellForRow(at: IndexPath(row: Int(currentImageSize.rawValue), section: 0))?.accessoryType = .none
+        // Update deselected cell
+        let deselectedIndexPath = IndexPath(row: Int(currentImageSize.rawValue), section: 0)
+        if let cell = tableView.cellForRow(at: deselectedIndexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: currentImageSize, selected: false)
+        }
+        
+        // Update selected cell
         currentImageSize = selectedSize
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        if let cell = tableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: selectedSize, selected: true)
+        }
     }
 
 

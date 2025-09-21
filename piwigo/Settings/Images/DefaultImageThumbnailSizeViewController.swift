@@ -102,13 +102,19 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDataSource {
         let isSelected = imageSize == currentThumbnailSize
 
         // Disable unavailable and useless sizes
-        switch imageSize {
-        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
-            configCell(cell, forSize: imageSize, selectable: true, selected: isSelected)
-        case .large, .xLarge, .xxLarge, .fullRes:
-            configCell(cell, forSize: imageSize, selectable: false)
-        }
+        configCell(cell, forSize: imageSize, selected: isSelected)
+
         return cell
+    }
+    
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selected: Bool = false) {
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium:
+            configCell(cell, forSize: size, selectable: true, selected: selected)
+        case .large, .xLarge, .xxLarge, .fullRes:
+            configCell(cell, forSize: size, selectable: false)
+        }
     }
     
     private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
@@ -173,12 +179,19 @@ extension DefaultImageThumbnailSizeViewController: UITableViewDelegate {
         guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
         if selectedSize == currentThumbnailSize { return }
         
-        // Update default size
-        tableView.cellForRow(at: IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0))?.accessoryType = .none
+        // Update deselected cell
+        let deselectedIndexPath = IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0)
+        if let cell = tableView.cellForRow(at: deselectedIndexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: currentThumbnailSize, selected: false)
+        }
+        
+        // Update selected cell
         currentThumbnailSize = selectedSize
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        if let cell = tableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: selectedSize, selected: true)
+        }
     }
-
+    
     
     // MARK: - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

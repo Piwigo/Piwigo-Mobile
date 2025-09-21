@@ -101,13 +101,19 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDataSource {
         let isSelected = imageSize == currentThumbnailSize
 
         // Disable unavailable and useless sizes
-        switch imageSize {
-        case .square, .thumb, .xxSmall, .xSmall, .small, .medium, .large, .xLarge, .xxLarge:
-            configCell(cell, forSize: imageSize, selectable: true, selected: isSelected)
-        case .fullRes:
-            configCell(cell, forSize: imageSize, selectable: false)
-        }
+        configCell(cell, forSize: imageSize, selected: isSelected)
+        
         return cell
+    }
+    
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selected: Bool = false) {
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small, .medium, .large, .xLarge, .xxLarge:
+            configCell(cell, forSize: size, selectable: true, selected: selected)
+        case .fullRes:
+            configCell(cell, forSize: size, selectable: false)
+        }
     }
     
     private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
@@ -172,17 +178,16 @@ extension DefaultAlbumThumbnailSizeViewController: UITableViewDelegate {
         guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
         if selectedSize == currentThumbnailSize { return }
 
-        // Update deslected cell
-        let selectable = currentThumbnailSize != .fullRes
+        // Update deselected cell
         let deselectedIndexPath = IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0)
         if let cell = tableView.cellForRow(at: deselectedIndexPath) as? LabelTableViewCell {
-            configCell(cell, forSize: currentThumbnailSize, selectable: selectable, selected: false)
+            configCell(cell, forSize: currentThumbnailSize, selected: false)
         }
         
         // Update selected cell
         currentThumbnailSize = selectedSize
         if let cell = tableView.cellForRow(at: indexPath) as? LabelTableViewCell {
-            configCell(cell, forSize: currentThumbnailSize, selectable: selectable, selected: true)
+            configCell(cell, forSize: currentThumbnailSize, selected: true)
         }
     }
 
