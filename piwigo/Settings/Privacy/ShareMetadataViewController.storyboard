@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,28 +16,28 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShareMetadataCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShareMetadataCell" rowHeight="43" id="Mqn-Bi-hy6" userLabel="ShareMetadataCell" customClass="ShareMetadataCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="55.5" width="374" height="43"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShareMetadataCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShareMetadataCell" rowHeight="71" id="Mqn-Bi-hy6" userLabel="ShareMetadataCell" customClass="ShareMetadataCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="71"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mqn-Bi-hy6" id="ONK-RN-4VZ">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="71"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="U5f-4F-ljO">
-                                            <rect key="frame" x="20" y="11.5" width="96.5" height="20.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U5f-4F-ljO">
+                                            <rect key="frame" x="20" y="25.5" width="96.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="addItem" translatesAutoresizingMaskIntoConstraints="NO" id="N8C-Gl-202" userLabel="Add Image">
-                                            <rect key="frame" x="329" y="9" width="25" height="25"/>
+                                            <rect key="frame" x="329" y="23" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="N8C-Gl-202" secondAttribute="height" multiplier="1:1" id="JeF-7c-fRn"/>
-                                                <constraint firstAttribute="height" constant="25" id="Q1y-co-Czi"/>
+                                                <constraint firstAttribute="height" constant="25" id="Sgx-Og-enF"/>
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="removeItem" translatesAutoresizingMaskIntoConstraints="NO" id="rBa-Vf-HwT" userLabel="Remove Image">
-                                            <rect key="frame" x="329" y="9" width="25" height="25"/>
+                                            <rect key="frame" x="329" y="23" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="EJd-41-qXm"/>
                                                 <constraint firstAttribute="width" secondItem="rBa-Vf-HwT" secondAttribute="height" multiplier="1:1" id="sqh-Iu-J3P"/>
@@ -47,12 +47,14 @@
                                     <constraints>
                                         <constraint firstItem="rBa-Vf-HwT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="U5f-4F-ljO" secondAttribute="trailing" constant="10" id="Fo7-1r-ABW"/>
                                         <constraint firstItem="rBa-Vf-HwT" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="GXc-lj-daK"/>
-                                        <constraint firstItem="U5f-4F-ljO" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="Qac-mF-9mL"/>
+                                        <constraint firstItem="U5f-4F-ljO" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="Hrn-tR-zXx"/>
+                                        <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="U5f-4F-ljO" secondAttribute="bottom" constant="20" symbolic="YES" id="VDZ-R1-mIU"/>
                                         <constraint firstItem="U5f-4F-ljO" firstAttribute="leading" secondItem="ONK-RN-4VZ" secondAttribute="leadingMargin" id="Y8s-X3-qrv"/>
                                         <constraint firstItem="N8C-Gl-202" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="U5f-4F-ljO" secondAttribute="trailing" constant="10" id="eNG-10-fqg"/>
                                         <constraint firstAttribute="trailing" secondItem="N8C-Gl-202" secondAttribute="trailing" constant="20" symbolic="YES" id="j3B-02-cp5"/>
                                         <constraint firstAttribute="trailing" secondItem="rBa-Vf-HwT" secondAttribute="trailing" constant="20" symbolic="YES" id="l9u-nf-lh7"/>
                                         <constraint firstItem="N8C-Gl-202" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="sIg-di-ZTs"/>
+                                        <constraint firstItem="U5f-4F-ljO" firstAttribute="top" relation="greaterThanOrEqual" secondItem="ONK-RN-4VZ" secondAttribute="top" constant="20" symbolic="YES" id="w5l-jA-Y42"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -73,7 +75,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6EM-Yn-F7U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="139"/>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
         </scene>
     </scenes>
     <resources>
