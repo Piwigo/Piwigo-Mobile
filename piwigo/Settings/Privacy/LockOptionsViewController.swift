@@ -31,6 +31,11 @@ class LockOptionsViewController: UIViewController {
         // Title
         title = NSLocalizedString("settingsHeader_privacy", comment: "Privacy")
         
+        // Table view
+        lockOptionsTableView?.accessibilityIdentifier = "Lock Settings"
+        lockOptionsTableView?.rowHeight = UITableView.automaticDimension
+        lockOptionsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
         // Evaluate biometrics policy
         var error: NSError?
         let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
@@ -46,9 +51,9 @@ class LockOptionsViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Table view
-        lockOptionsTableView.separatorColor = PwgColor.separator
-        lockOptionsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-        lockOptionsTableView.reloadData()
+        lockOptionsTableView?.separatorColor = PwgColor.separator
+        lockOptionsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        lockOptionsTableView?.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,13 +97,16 @@ extension LockOptionsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            let title = NSLocalizedString("settings_appLock", comment: "App Lock")
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SwitchTableViewCell"
+                : "SwitchTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Could not load SwitchTableViewCell") }
 
+            let title = NSLocalizedString("settings_appLock", comment: "App Lock")
             cell.configure(with: title)
             cell.cellSwitch.setOn(AppVars.shared.isAppLockActive, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -128,8 +136,11 @@ extension LockOptionsViewController: UITableViewDataSource {
             tableViewCell = cell
 
         case 2:     // TouchID / FaceID / OpticID On/Off
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SwitchTableViewCell"
+                : "SwitchTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            else { preconditionFailure("Could not load SwitchTableViewCell") }
             var title = ""
             switch context.biometryType {
             case .touchID:
@@ -190,10 +201,6 @@ extension LockOptionsViewController: UITableViewDelegate {
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
