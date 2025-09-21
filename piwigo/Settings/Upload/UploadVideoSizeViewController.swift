@@ -42,6 +42,14 @@ class UploadVideoSizeViewController: UIViewController {
 
         // Title
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+
+        // Table view
+        tableView?.accessibilityIdentifier = "Video Size"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
 
     @MainActor
@@ -92,23 +100,26 @@ extension UploadVideoSizeViewController: UITableViewDataSource
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        // Name of the image size
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.text = indexPath.row == 0 ? pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "LabelTableViewCell"
+            : "LabelTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
 
         // Add checkmark in front of selected item
-        if indexPath.row == videoMaxSize {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        cell.accessoryType = indexPath.row == videoMaxSize ? .checkmark : .none
 
+        // Configure cell
+        let title = pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name
+        switch indexPath.row {
+        case 0:
+            cell.configure(with: title, detail: "")
+        default:
+            let maxPixels = pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.pixels
+            let detail = String(format: "(%ld px)", maxPixels)
+            cell.configure(with: title, detail: detail)
+        }
         return cell
     }
 }
@@ -137,10 +148,6 @@ extension UploadVideoSizeViewController: UITableViewDelegate
 
     
     // MARK: - UITableView - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -169,5 +176,20 @@ extension UploadVideoSizeViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = getContentOfFooter()
         return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+    }
+}
+
+
+// MARK: - pwgVideoMaxSizes Name
+extension pwgVideoMaxSizes {
+    public var name: String {
+        switch self {
+        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
+        case .UHD4K:            return "4K"
+        case .FullHD:           return "Full HD"
+        case .HD:               return "HD"
+        case .qHD:              return "qHD"
+        case .nHD:              return "nHD"
+        }
     }
 }

@@ -41,6 +41,14 @@ class UploadPhotoSizeViewController: UIViewController {
         super.viewDidLoad()
 
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+
+        // Table view
+        tableView?.accessibilityIdentifier = "Photo Size"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
 
     @MainActor
@@ -91,23 +99,26 @@ extension UploadPhotoSizeViewController: UITableViewDataSource
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        // Name of the image size
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.text = indexPath.row == 0 ? pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "LabelTableViewCell"
+            : "LabelTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
 
         // Add checkmark in front of selected item
-        if indexPath.row == photoMaxSize {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        cell.accessoryType = indexPath.row == photoMaxSize ? .checkmark : .none
 
+        // Configure cell
+        let title = pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name
+        switch indexPath.row {
+        case 0:
+            cell.configure(with: title, detail: "")
+        default:
+            let maxPixels = pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.pixels
+            let detail = String(format: "(%ld px)", maxPixels)
+            cell.configure(with: title, detail: detail)
+        }
         return cell
     }
 }
@@ -136,10 +147,6 @@ extension UploadPhotoSizeViewController: UITableViewDelegate
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -168,5 +175,22 @@ extension UploadPhotoSizeViewController: UITableViewDelegate
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = getContentOfFooter()
         return TableViewUtilities.shared.viewOfFooter(withText: footer, alignment: .center)
+    }
+}
+
+
+// MARK: - pwgPhotoMaxSizes Names
+extension pwgPhotoMaxSizes {
+    public var name: String {
+        switch self {
+        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
+        case .Retina5K:         return "5K"
+        case .UHD4K:            return "4K"
+        case .DCI2K:            return "2K"
+        case .FullHD:           return "Full HD"
+        case .HD:               return "HD"
+        case .qHD:              return "qHD"
+        case .nHD:              return "nHD"
+        }
     }
 }
