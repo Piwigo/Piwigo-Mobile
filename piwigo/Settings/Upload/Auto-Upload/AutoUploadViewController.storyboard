@@ -169,46 +169,8 @@
                                     <outlet property="topMargin" destination="yAL-74-ecw" id="Mw1-aJ-bK7"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTagsTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tags" rowHeight="78" id="9gb-JM-J3K" customClass="EditImageTagsTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="327.5" width="374" height="78"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="9gb-JM-J3K" id="aoD-Ig-e9c">
-                                    <rect key="frame" x="0.0" y="0.0" width="343.5" height="78"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="DPh-Yc-0cF">
-                                            <rect key="frame" x="20" y="15" width="315.5" height="20.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="g4p-N8-i4N">
-                                            <rect key="frame" x="20" y="42" width="315.5" height="21"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="lSX-ai-jUe"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="g4p-N8-i4N" firstAttribute="leading" secondItem="DPh-Yc-0cF" secondAttribute="leading" id="4Bl-O1-boP"/>
-                                        <constraint firstItem="g4p-N8-i4N" firstAttribute="bottom" secondItem="aoD-Ig-e9c" secondAttribute="bottomMargin" id="FMy-Q3-44X"/>
-                                        <constraint firstItem="g4p-N8-i4N" firstAttribute="trailing" secondItem="DPh-Yc-0cF" secondAttribute="trailing" id="pcB-Qq-RJo"/>
-                                        <constraint firstItem="DPh-Yc-0cF" firstAttribute="trailing" secondItem="aoD-Ig-e9c" secondAttribute="trailingMargin" id="txm-uM-3Is"/>
-                                        <constraint firstItem="DPh-Yc-0cF" firstAttribute="top" secondItem="aoD-Ig-e9c" secondAttribute="topMargin" id="vCH-30-Hki"/>
-                                        <constraint firstItem="DPh-Yc-0cF" firstAttribute="leading" secondItem="aoD-Ig-e9c" secondAttribute="leadingMargin" id="xKo-DC-UgB"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
-                                <connections>
-                                    <outlet property="tagsLabel" destination="DPh-Yc-0cF" id="TrQ-Ep-Q9R"/>
-                                    <outlet property="tagsList" destination="g4p-N8-i4N" id="bLy-dB-1Rb"/>
-                                </connections>
-                            </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="comment" rowHeight="428" id="xNl-uf-td8" customClass="EditImageTextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="405.5" width="374" height="428"/>
+                                <rect key="frame" x="20" y="327.5" width="374" height="428"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="xNl-uf-td8" id="Ixt-7j-4fa">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="428"/>
@@ -256,7 +218,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="79.6875"/>
+            <point key="canvasLocation" x="-87" y="9"/>
         </scene>
     </scenes>
     <resources>

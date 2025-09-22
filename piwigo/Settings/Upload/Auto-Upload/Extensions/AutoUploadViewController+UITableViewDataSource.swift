@@ -28,7 +28,7 @@ extension AutoUploadViewController: UITableViewDataSource
         case 2:
             return 2
         default:
-            fatalError("Unknown section")
+            preconditionFailure("Unknown section")
         }
     }
     
@@ -110,11 +110,15 @@ extension AutoUploadViewController: UITableViewDataSource
         case 2:     // Properties
             switch indexPath.row {
             case 0 /* Tags */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell
-                else { preconditionFailure("Could not load a EditImageTagsTableViewCell!") }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell2", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell")}
                 // Retrieve tags and switch to old cache data format
+                let title = NSLocalizedString("editImageDetails_tags", comment: "Tags")
                 let tags = tagProvider.getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)
-                cell.config(withList: tags, inColor: PwgColor.rightLabel)
+                let tagList: String = tags.compactMap({"\($0.tagName), "}).reduce("", +)
+                let detail = String(tagList.dropLast(2))
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = .disclosureIndicator
                 tableViewCell = cell
 
             case 1 /* Comments */ :
