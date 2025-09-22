@@ -92,6 +92,11 @@ class EditImageParamsViewController: UIViewController
         editImageParamsTableView?.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
         editImageParamsTableView?.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
         
+        // Table view
+        editImageParamsTableView?.accessibilityIdentifier = "Edit Image Properties"
+        editImageParamsTableView?.rowHeight = UITableView.automaticDimension
+        editImageParamsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
         // Title
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         

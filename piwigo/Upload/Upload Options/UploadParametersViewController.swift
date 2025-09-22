@@ -40,10 +40,12 @@ class UploadParametersViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Collection view identifier
-        paramsTableView.accessibilityIdentifier = "Parameters"
+        // Table view
+        paramsTableView?.accessibilityIdentifier = "Parameters"
+        paramsTableView?.rowHeight = UITableView.automaticDimension
+        paramsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
     }
-
+    
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the views

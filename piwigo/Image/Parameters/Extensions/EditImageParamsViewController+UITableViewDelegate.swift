@@ -1,5 +1,5 @@
 //
-//  EditImageParamsViewController+UITableView.swift
+//  EditImageParamsViewController+UITableViewDelegate.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 31/12/2023.
@@ -18,31 +18,6 @@ extension EditImageParamsViewController: UITableViewDelegate
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.0 // To hide the section footer
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var height: CGFloat = 44.0
-        let row = rowAt(indexPath: indexPath)
-        switch EditImageParamsOrder(rawValue: row) {
-            case .thumbnails:
-                height = 188.0
-            case .datePicker:
-                if images.count > 1 {
-                    // Time interval picker
-                    height = 258.0
-                } else {
-                    // Date picker
-                    height = 304.0
-                }
-            case .privacy, .tags:
-                height = 73.0
-            case .desc:
-                height = 428.0
-            default:
-                break
-        }
-
-        return height
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -67,7 +42,8 @@ extension EditImageParamsViewController: UITableViewDelegate
 
             // Create view controller
             let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
-            guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
+            guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
+            else { preconditionFailure("Could not load SelectPrivacyViewController") }
             privacyVC.delegate = self
             privacyVC.privacy = pwgPrivacy(rawValue: commonPrivacyLevel) ?? .everybody
             navigationController?.pushViewController(privacyVC, animated: true)
@@ -91,7 +67,8 @@ extension EditImageParamsViewController: UITableViewDelegate
 
             // Create view controller
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
-            guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
+            guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
+            else { preconditionFailure("Could not load TagsViewController") }
             tagsVC.delegate = self
             tagsVC.user = user
             let tagList: [Int32] = commonTags.compactMap { Int32($0.tagId) }

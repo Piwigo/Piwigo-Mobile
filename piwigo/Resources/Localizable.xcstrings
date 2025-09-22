@@ -16697,7 +16697,7 @@
       }
     },
     "editImageDetails_author" : {
-      "comment" : "Author\nAuthor:",
+      "comment" : "Author",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17808,7 +17808,7 @@
       }
     },
     "editImageDetails_title" : {
-      "comment" : "Title\nTitle:",
+      "comment" : "Title",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17909,7 +17909,7 @@
       }
     },
     "editImageDetails_titlePlaceholder" : {
-      "comment" : "Title",
+      "comment" : "Title placeholder",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

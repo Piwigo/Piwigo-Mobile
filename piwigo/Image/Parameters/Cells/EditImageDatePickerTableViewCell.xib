@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,8 +17,15 @@
                 <rect key="frame" x="0.0" y="0.0" width="373" height="304"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <pickerView contentMode="center" verticalHuggingPriority="249" restorationIdentifier="datePicker" translatesAutoresizingMaskIntoConstraints="NO" id="R1T-MH-EHh">
+                        <rect key="frame" x="0.0" y="0.0" width="373" height="208"/>
+                        <connections>
+                            <outlet property="dataSource" destination="r0z-Q2-GYV" id="hfd-me-Ohn"/>
+                            <outlet property="delegate" destination="r0z-Q2-GYV" id="5SR-T4-QGp"/>
+                        </connections>
+                    </pickerView>
                     <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="toolBarTop" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BiK-FK-Wdq" userLabel="Tool Bar(top)">
-                        <rect key="frame" x="0.0" y="162" width="373" height="44"/>
+                        <rect key="frame" x="0.0" y="208" width="373" height="48"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <items>
                             <barButtonItem title="-1 Month" style="plain" id="bOu-Vt-5OJ">
@@ -45,15 +52,8 @@
                             </barButtonItem>
                         </items>
                     </toolbar>
-                    <pickerView contentMode="center" restorationIdentifier="datePicker" translatesAutoresizingMaskIntoConstraints="NO" id="R1T-MH-EHh">
-                        <rect key="frame" x="0.0" y="0.0" width="373" height="162"/>
-                        <connections>
-                            <outlet property="dataSource" destination="r0z-Q2-GYV" id="hfd-me-Ohn"/>
-                            <outlet property="delegate" destination="r0z-Q2-GYV" id="5SR-T4-QGp"/>
-                        </connections>
-                    </pickerView>
                     <toolbar opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="toolBarBottom" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DKH-QZ-J71" userLabel="Toolbar (bottom)">
-                        <rect key="frame" x="0.0" y="206" width="373" height="44"/>
+                        <rect key="frame" x="0.0" y="256" width="373" height="48"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <items>
                             <barButtonItem title="-1 Year" id="QaO-Qm-EdD">
@@ -88,6 +88,7 @@
                     <constraint firstItem="R1T-MH-EHh" firstAttribute="trailing" secondItem="l2g-OY-l5J" secondAttribute="trailing" id="Jav-sU-nMq"/>
                     <constraint firstItem="BiK-FK-Wdq" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="Vsd-xA-VWB"/>
                     <constraint firstItem="R1T-MH-EHh" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="ZDw-tI-Iwz"/>
+                    <constraint firstAttribute="bottom" secondItem="DKH-QZ-J71" secondAttribute="bottom" id="bR3-Yu-x5Z"/>
                     <constraint firstItem="DKH-QZ-J71" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="bgr-bN-fM0"/>
                     <constraint firstItem="R1T-MH-EHh" firstAttribute="top" secondItem="l2g-OY-l5J" secondAttribute="top" id="jBi-ff-pux"/>
                 </constraints>
@@ -111,7 +112,7 @@
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
