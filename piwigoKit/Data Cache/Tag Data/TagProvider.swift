@@ -300,7 +300,7 @@ public class TagProvider: NSObject {
         taskContext.performAndWait {
             // Retrieve tags in persistent store
             let fetchRequest = Tag.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagId), ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true)]
             
             // Look for tags belonging to the currently active server
             fetchRequest.predicate = NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)
