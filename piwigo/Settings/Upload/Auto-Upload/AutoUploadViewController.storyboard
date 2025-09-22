@@ -169,23 +169,26 @@
                                     <outlet property="topMargin" destination="yAL-74-ecw" id="Mw1-aJ-bK7"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="comment" rowHeight="428" id="xNl-uf-td8" customClass="EditImageTextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="TextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextViewTableViewCell" rowHeight="428" id="xNl-uf-td8" customClass="TextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="20" y="327.5" width="374" height="428"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="xNl-uf-td8" id="Ixt-7j-4fa">
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="428"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TQ6-LS-6aD">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TQ6-LS-6aD">
                                             <rect key="frame" x="20" y="15" width="334" height="20.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="qL4-tG-qIb">
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qL4-tG-qIb">
                                             <rect key="frame" x="20" y="43.5" width="334" height="369.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="369.5" id="s2W-LQ-Bt3"/>
+                                            </constraints>
                                             <color key="textColor" systemColor="darkTextColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
                                         </textView>
                                     </subviews>
@@ -202,8 +205,9 @@
                                 <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
-                                    <outlet property="label" destination="TQ6-LS-6aD" id="cR3-Cf-SJK"/>
-                                    <outlet property="textView" destination="qL4-tG-qIb" id="8fN-mK-5ig"/>
+                                    <outlet property="label" destination="TQ6-LS-6aD" id="XGt-eT-syy"/>
+                                    <outlet property="textView" destination="qL4-tG-qIb" id="7KW-pV-tgh"/>
+                                    <outlet property="textViewHeight" destination="s2W-LQ-Bt3" id="xdU-Mb-dZJ"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

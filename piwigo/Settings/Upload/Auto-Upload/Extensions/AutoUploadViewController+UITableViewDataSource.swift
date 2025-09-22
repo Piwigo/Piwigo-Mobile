@@ -106,7 +106,7 @@ extension AutoUploadViewController: UITableViewDataSource
             cell.configure(with: title, detail: detail)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             tableViewCell = cell
-
+            
         case 2:     // Properties
             switch indexPath.row {
             case 0 /* Tags */ :
@@ -120,23 +120,23 @@ extension AutoUploadViewController: UITableViewDataSource
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = .disclosureIndicator
                 tableViewCell = cell
-
+                
             case 1 /* Comments */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell
-                else { preconditionFailure("Could not load a EditImageTextViewTableViewCell!") }
-                cell.config(withText: NSAttributedString(string: UploadVars.shared.autoUploadComments),
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextViewTableViewCell", for: indexPath) as? TextViewTableViewCell
+                else { preconditionFailure("Could not load a TextViewTableViewCell!") }
+                cell.config(withText: UploadVars.shared.autoUploadComments,
                             inColor: PwgColor.rightLabel)
                 cell.textView.delegate = self
                 tableViewCell = cell
-
+                
             default:
                 break
             }
-
+            
         default:
             break
         }
-
+        
         tableViewCell.backgroundColor = PwgColor.cellBackground
         tableViewCell.tintColor = PwgColor.orange
         return tableViewCell
