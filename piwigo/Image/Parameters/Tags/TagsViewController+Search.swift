@@ -20,9 +20,23 @@ extension TagsViewController
         searchController.searchBar.showsSearchResultsButton = false
         searchController.searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
         searchController.searchBar.delegate = self
-        searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.showsCancelButton = false
+        if #unavailable(iOS 26.0) {
+            // Fallback on previous version
+            searchController.searchBar.showsCancelButton = false
+            if #available(iOS 16.0, *) {
+                switch view.traitCollection.userInterfaceIdiom {
+                case .phone:
+                    navigationItem.preferredSearchBarPlacement = .stacked
+                case .pad:
+                    navigationItem.preferredSearchBarPlacement = .inline
+                default:
+                    break
+                }
+            }
+        }
+        definesPresentationContext = true
+        searchController.searchResultsUpdater = self
         
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar
