@@ -140,15 +140,24 @@ class ImageViewController: UIViewController {
         } else {
             view.backgroundColor = PwgColor.background
         }
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
         setTitleViewFromImageData()
-
+        
         // Toolbar
         navigationController?.toolbar.configAppearance()
+        if #available(iOS 26.0, *) {
+            backButton.tintColor = PwgColor.tintColor
+            deleteBarButton.tintColor = PwgColor.tintColor
+            shareBarButton?.tintColor = PwgColor.tintColor
+            favoriteBarButton?.tintColor = PwgColor.tintColor
+            playBarButton?.tintColor = PwgColor.tintColor
+            muteBarButton?.tintColor = PwgColor.tintColor
+            goToPageButton?.tintColor = PwgColor.tintColor
+        }
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
