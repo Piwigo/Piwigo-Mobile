@@ -51,7 +51,6 @@ class UploadSwitchViewController: UIViewController {
             uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
                                               style: .plain, target: self, action: #selector(didTapUploadButton))
         }
-        uploadBarButton?.tintColor = PwgColor.tintColor
 
         // Segmented control (choice for presenting common image parameters or upload settings)
         switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.tintColor
