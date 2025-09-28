@@ -71,6 +71,8 @@
 		AD13CD712B8E5A79001ACBE8 /* ImageViewController+Rotate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */; };
 		AD1477CD2A3BA3020010BD78 /* WhatsNewViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */; };
 		AD1477D32A3BB23B0010BD78 /* WhatsNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */; };
+		AD1644032E8942C5002B555F /* RenameFileTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1644022E8942C5002B555F /* RenameFileTableHeaderView.swift */; };
+		AD1644052E894313002B555F /* RenameFileTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD1644042E894313002B555F /* RenameFileTableHeaderView.xib */; };
 		AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */; };
 		AD1807042A84318A00B3BEF8 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */; };
 		AD18C74027F22A0D002CD05C /* LockOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */; };
@@ -604,7 +606,6 @@
 		ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C22525754B420060A203 /* Help03ViewController.swift */; };
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
 		ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23D25756BC80060A203 /* Help02ViewController.swift */; };
-		ADE6ADAF2DC4C20500EAE9C8 /* RenameFileInfoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE6ADAE2DC4C20500EAE9C8 /* RenameFileInfoLabel.swift */; };
 		ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */; };
 		ADE6ADB52DC769B900EAE9C8 /* UploadRenameAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD665ADA2DC3BD9A00AB085F /* UploadRenameAction.swift */; };
 		ADE6ADB62DC769E500EAE9C8 /* UploadVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2C62302A488F4D00671582 /* UploadVars.swift */; };
@@ -802,6 +803,8 @@
 		AD13CD702B8E5A79001ACBE8 /* ImageViewController+Rotate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Rotate.swift"; sourceTree = "<group>"; };
 		AD1477CC2A3BA3020010BD78 /* WhatsNewViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WhatsNewViewController.storyboard; sourceTree = "<group>"; };
 		AD1477D22A3BB23B0010BD78 /* WhatsNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewController.swift; sourceTree = "<group>"; };
+		AD1644022E8942C5002B555F /* RenameFileTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileTableHeaderView.swift; sourceTree = "<group>"; };
+		AD1644042E894313002B555F /* RenameFileTableHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenameFileTableHeaderView.xib; sourceTree = "<group>"; };
 		AD1806FD2A803DA000B3BEF8 /* VideoVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoVars.swift; sourceTree = "<group>"; };
 		AD18C73F27F22A0D002CD05C /* LockOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOptionsViewController.swift; sourceTree = "<group>"; };
 		AD18C74127F22B1B002CD05C /* LockOptionsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LockOptionsViewController.storyboard; sourceTree = "<group>"; };
@@ -1368,7 +1371,6 @@
 		ADE4C22525754B420060A203 /* Help03ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help03ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23325755E660060A203 /* Help01ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help01ViewController.swift; sourceTree = "<group>"; };
 		ADE4C23D25756BC80060A203 /* Help02ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help02ViewController.swift; sourceTree = "<group>"; };
-		ADE6ADAE2DC4C20500EAE9C8 /* RenameFileInfoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileInfoLabel.swift; sourceTree = "<group>"; };
 		ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActionTableViewFooterView.swift; sourceTree = "<group>"; };
 		ADE986302A7277740087F031 /* VideoHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoHUD.swift; sourceTree = "<group>"; };
 		ADEA2699285F8D5F00B6C9A0 /* ImageViewController+Share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageViewController+Share.swift"; sourceTree = "<group>"; };
@@ -2483,7 +2485,8 @@
 			children = (
 				AD5FB3A22D96A49400802895 /* RenameFileViewController.swift */,
 				AD5FB3A42D96A4AB00802895 /* RenameFileViewController.storyboard */,
-				ADE6ADAE2DC4C20500EAE9C8 /* RenameFileInfoLabel.swift */,
+				AD1644022E8942C5002B555F /* RenameFileTableHeaderView.swift */,
+				AD1644042E894313002B555F /* RenameFileTableHeaderView.xib */,
 				AD8803542DBE86EE00ECF990 /* CaseSelectorTableViewCell.swift */,
 				ADE6ADB22DC5196500EAE9C8 /* AddActionTableViewFooterView.swift */,
 				ADCD44732D98118B00111138 /* Extensions */,
@@ -3420,6 +3423,7 @@
 				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */,
+				AD1644052E894313002B555F /* RenameFileTableHeaderView.xib in Resources */,
 				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
 				AD96F4302748601D004C8DFF /* piwigo.png in Resources */,
@@ -3830,6 +3834,7 @@
 				AD9833A62E37834200159DEA /* ImageViewController+GoTo.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* Device+Model.swift in Sources */,
 				AD400B212C61334200DC9A61 /* PasteboardImagesViewController+FlowLayout.swift in Sources */,
+				AD1644032E8942C5002B555F /* RenameFileTableHeaderView.swift in Sources */,
 				ADDB2A5E2B416A8400FDC1B1 /* EditImageParamsViewController+UITextField.swift in Sources */,
 				AD7D415C2B4435AC0095A070 /* AutoUploadViewController+Tags.swift in Sources */,
 				ADDB2A682B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift in Sources */,
@@ -3922,7 +3927,6 @@
 				AD21EB7D2E54D22A004458D7 /* UIToolbar+AppTools.swift in Sources */,
 				AD7D132E2DFF120A00EEE90D /* AppShortcuts.swift in Sources */,
 				AD6BA0ED2BA5A8B200755257 /* LocalImagesViewController+DataSource.swift in Sources */,
-				ADE6ADAF2DC4C20500EAE9C8 /* RenameFileInfoLabel.swift in Sources */,
 				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
 				AD96982A2BE6844C00520614 /* AlbumNavigationController.swift in Sources */,
 				AD089CFE2BC2A51600CE4A3E /* ImageCollectionViewCell.swift in Sources */,
@@ -4580,6 +4584,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = ZEC3W885H6;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZEC3W885H6;
 				ENABLE_DEBUG_DYLIB = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
@@ -4596,6 +4601,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo.intents";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo Intents";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Dev profile for Piwigo Intents";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_INSTALL_OBJC_HEADER = NO;

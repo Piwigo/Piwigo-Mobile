@@ -42,8 +42,6 @@ class RenameFileViewController: UIViewController {
     var changeCaseBeforeUpload: Bool = UploadVars.shared.changeCaseOfFileExtension
     var caseOfFileExtension: FileExtCase = FileExtCase(rawValue: UploadVars.shared.caseOfFileExtension) ?? .keep
     
-    @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
     @IBOutlet weak var tableView: UITableView!
     
     // Used to display the album ID (unset by SettingsViewController)
@@ -68,7 +66,7 @@ class RenameFileViewController: UIViewController {
         tableView?.register(AddActionTableViewFooterView.self, forHeaderFooterViewReuseIdentifier: "addActionFooter")
 
         // Header
-        setMainHeader()
+        setTableViewMainHeader()
         
         // Enable/disable drag and delete interactions
         navigationItem.rightBarButtonItem = editButtonItem
@@ -83,9 +81,10 @@ class RenameFileViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Header and example
-        headerLabel.textColor = PwgColor.header
-        exampleLabel.textColor = PwgColor.text
-
+        if let headerView = tableView?.tableHeaderView as? RenameFileTableHeaderView {
+            headerView.applyColorPalette()
+        }
+        
         // Table view
         tableView?.separatorColor = PwgColor.separator
         tableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
@@ -242,8 +241,7 @@ class RenameFileViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             // Update header
-            self.setMainHeader()
-            self.updateExample()
+            self.setTableViewMainHeader()
             
             // Animated update for smoother experience
             self.tableView?.beginUpdates()
@@ -254,20 +252,18 @@ class RenameFileViewController: UIViewController {
         }
     }
     
-    private func setMainHeader() {
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", NSLocalizedString("settings_renameFileLong", comment: "Rename File Before Upload"))
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
-                                           range: NSRange(location: 0, length: title.count))
-        headerAttributedString.append(titleAttributedString)
+    @MainActor
+    private func setTableViewMainHeader() {
+        let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
+        let title = NSLocalizedString("settings_renameFileLong", comment: "Rename File Before Upload")
         let text = NSLocalizedString("settings_renameFile_info", comment: "Please define how file names should be modified before uploading.")
-        let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
-                                          range: NSRange(location: 0, length: text.count))
-        headerAttributedString.append(textAttributedString)
-        headerLabel.attributedText = headerAttributedString
-        headerLabel.sizeToFit()
+        headerView.config(with: title, text: text, forWidth: view.bounds.width)
+        headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                 replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                 suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                 changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                 categoryId: categoryId, counter: currentCounter)
+        tableView?.tableHeaderView = headerView
     }
 
 
@@ -279,11 +275,13 @@ class RenameFileViewController: UIViewController {
     }
 
     func updateExample() {
-        exampleLabel?.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
-                                    replace: replaceBeforeUpload, replaceActions: replaceActions,
-                                    suffix: suffixBeforeUpload, suffixActions: suffixActions,
-                                    changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                    categoryId: categoryId, counter: currentCounter)
+        if let headerView = tableView?.tableHeaderView as? RenameFileTableHeaderView {
+            headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                     replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                     suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                     changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                     categoryId: categoryId, counter: currentCounter)
+        }
     }
     
 

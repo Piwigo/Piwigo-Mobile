@@ -17,25 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p2R-zW-WpV">
-                                <rect key="frame" x="20" y="130" width="353" height="20.333333333333343"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="RenameFileInfoLabel" preservesSuperviewLayoutMargins="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ts5-JZ-jcn" customClass="RenameFileInfoLabel" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="12" y="158.33333333333334" width="369" height="51.666666666666657"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">IMG_0023.HEIC
-⇩
-IMG_0023.HEIC</string>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="44" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="r66-9e-dRw">
-                                <rect key="frame" x="0.0" y="214" width="393" height="638"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="734"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
@@ -382,21 +365,13 @@ IMG_0023.HEIC</string>
                         <viewLayoutGuide key="safeArea" id="OkQ-M4-qk6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="OkQ-M4-qk6" firstAttribute="trailing" secondItem="p2R-zW-WpV" secondAttribute="trailing" constant="20" id="5bG-4U-bpa"/>
                             <constraint firstAttribute="bottom" secondItem="r66-9e-dRw" secondAttribute="bottom" id="8xJ-Oc-2q8"/>
-                            <constraint firstItem="OkQ-M4-qk6" firstAttribute="trailing" secondItem="Ts5-JZ-jcn" secondAttribute="trailing" constant="12" id="AZb-at-aV1"/>
                             <constraint firstItem="OkQ-M4-qk6" firstAttribute="trailing" secondItem="r66-9e-dRw" secondAttribute="trailing" id="Ap8-YJ-zVi"/>
-                            <constraint firstItem="p2R-zW-WpV" firstAttribute="leading" secondItem="rbT-gR-1EV" secondAttribute="leading" constant="20" id="CkJ-XN-5Pv"/>
-                            <constraint firstItem="Ts5-JZ-jcn" firstAttribute="leading" secondItem="OkQ-M4-qk6" secondAttribute="leading" constant="12" id="UB5-aT-j7W"/>
-                            <constraint firstItem="r66-9e-dRw" firstAttribute="top" secondItem="Ts5-JZ-jcn" secondAttribute="bottom" constant="4" id="dfb-92-tP0"/>
-                            <constraint firstItem="p2R-zW-WpV" firstAttribute="top" secondItem="OkQ-M4-qk6" secondAttribute="top" constant="12" id="eHg-jR-UV6"/>
+                            <constraint firstItem="r66-9e-dRw" firstAttribute="top" secondItem="OkQ-M4-qk6" secondAttribute="top" id="GI5-XI-gEp"/>
                             <constraint firstItem="r66-9e-dRw" firstAttribute="leading" secondItem="OkQ-M4-qk6" secondAttribute="leading" id="hue-1L-tv9"/>
-                            <constraint firstItem="Ts5-JZ-jcn" firstAttribute="top" secondItem="p2R-zW-WpV" secondAttribute="bottom" constant="8" id="ldo-Ne-Klu"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="exampleLabel" destination="Ts5-JZ-jcn" id="iav-dJ-yRx"/>
-                        <outlet property="headerLabel" destination="p2R-zW-WpV" id="74s-ZG-zFU"/>
                         <outlet property="tableView" destination="r66-9e-dRw" id="z62-Ad-RwY"/>
                     </connections>
                 </viewController>
