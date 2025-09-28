@@ -151,6 +151,5 @@ class RenameFileTableHeaderView: UIView {
 
         // Update global size
         frame.size.height = headerView.frame.height + 16.0 + exampleRect.height
-        debugPrint(frame)
     }
 }
