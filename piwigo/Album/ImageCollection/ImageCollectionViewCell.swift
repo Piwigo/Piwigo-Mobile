@@ -52,7 +52,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private let favRatio: CGFloat = 1.0
     private let selectScale: CGFloat = 0.2
     private let playScale: CGFloat = 0.17
-    private let playRatio: CGFloat = 0.9 // was 58/75 = 0.7733;
 
     private var _isSelection = false
     var isSelection: Bool {
