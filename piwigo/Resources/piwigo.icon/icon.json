@@ -51,7 +51,10 @@
             {
               "appearance" : "dark",
               "value" : {
-                "automatic-gradient" : "srgb:0.62730,0.29274,0.00246,1.00000"
+                "linear-gradient" : [
+                  "display-p3:0.79811,0.52646,0.32382,1.00000",
+                  "srgb:0.62730,0.29274,0.00246,1.00000"
+                ]
               }
             },
             {
@@ -191,7 +194,10 @@
             {
               "appearance" : "dark",
               "value" : {
-                "automatic-gradient" : "display-p3:0.58500,0.58500,0.58500,1.00000"
+                "linear-gradient" : [
+                  "display-p3:0.87190,0.87190,0.87190,1.00000",
+                  "display-p3:0.58500,0.58500,0.58500,1.00000"
+                ]
               }
             },
             {
