@@ -32,9 +32,10 @@ class UploadImageTableViewCell: UITableViewCell {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        playIcon?.layer.shadowColor = UIColor.black.cgColor
         localIdentifier = upload.localIdentifier
         objectID = upload.objectID
-
+        
         // Upload info label
         uploadInfoLabel.textColor = PwgColor.leftLabel
         uploadInfoLabel.text = upload.stateLabel
