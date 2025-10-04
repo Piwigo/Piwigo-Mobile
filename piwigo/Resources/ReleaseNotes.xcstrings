@@ -205,7 +205,6 @@
     },
     "v2.0.1_text" : {
       "extractionState" : "manual",
-      "generatesSymbol" : false,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9502,97 +9501,198 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.0\n\n• توافق iOS 26\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
+            "value" : "الإصدار 4.0\n15 سبتمبر 2025\n\n• توافق iOS 26\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.0\n\n• iOS 26 kompabilitet\n• Mindre fejl rettet og forbedringer af brugerflade"
+            "value" : "Version 4.0\n15 september 2025\n\n• iOS 26 kompabilitet\n• Mindre fejl rettet og forbedringer af brugerflade"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 2.4.3\n\n• iOS 26-Kompatibilität\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle"
+            "value" : "Version 4.0\n15. September 2025\n\n• iOS 26-Kompatibilität\n• Kleine Fehlerbeseitigungen und Verbesserungen der Schnittstelle"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.0\n\n• iOS 26 compatibility\n• Minor bug fixes and improvements of the interface"
+            "value" : "Version 4.0\nSeptember 15, 2025\n\n• iOS 26 compatibility\n• Minor bug fixes and improvements of the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 2.4.3\n\n• Compatibilidad con iOS 26\n• Corrección de errores menores y mejoras en la interfaz"
+            "value" : "Versión 4.0\n15 de septiembre de 2025\n\n• Compatibilidad con iOS 26\n• Corrección de errores menores y mejoras en la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.0\n\n• Compatibilité avec iOS 26\n• Corrige des bugs mineurs et améliore l'interface"
+            "value" : "Version 4.0\n15 septembre 2025\n\n• Compatibilité avec iOS 26\n• Corrige des bugs mineurs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.0-as verzió\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
+            "value" : "4.0-as verzió\nSeptember 15, 2025\n\n• iOS 26 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.0\n\n• Kompatibilitas iOS 26\n• Perbaikan bug minor dan perbaikan antarmuka"
+            "value" : "Version 4.0\n15 September 2025\n\n• Kompatibilitas iOS 26\n• Perbaikan bug minor dan perbaikan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.0\n\n• Compatibilità iOS 26\n• Correzioni di bug minori e miglioramenti dell'interfaccia"
+            "value" : "Versione 4.0\n15 settembre 2025\n\n• Compatibilità iOS 26\n• Correzioni di bug minori e miglioramenti dell'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 4.0\n\n• iOS 26の互換性\n• 軽微なバグの修正とインタフェースの改善"
+            "value" : "バージョン 4.0\n2025年9月15日\n\n• iOS 26の互換性\n• 軽微なバグの修正とインタフェースの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.0\n\n• iOS 26-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
+            "value" : "Versie 4.0\n15 September 2025\n\n• iOS 26-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.0\n\n• Kompatybilność z iOS 26\n• Drobne poprawki błędów i ulepszenia interfejsu"
+            "value" : "Wersja 4.0\n15 września 2025\n\n• Kompatybilność z iOS 26\n• Drobne poprawki błędów i ulepszenia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.0\n\n• совместимость с iOS 26\n• Исправления и улучшения интерфейса"
+            "value" : "Версия 4.0\n15 сентября 2025\n\n• совместимость с iOS 26\n• Исправления и улучшения интерфейса"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.0\n\n• iOS 26-kompatibilitet\n• Mindre bugfixar och förbättringar av gränssnittet"
+            "value" : "Version 4.0\n15 september 2025\n\n• iOS 26-kompatibilitet\n• Mindre bugfixar och förbättringar av gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本4.0\n\n• 支持iOS 26\n• 错误修复和界面改进"
+            "value" : "版本4.0\n2025年9月15日\n\n• 支持iOS 26\n• 错误修复和界面改进"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.0\n\n• 支援iOS 26\n• 小型錯誤修正及介面改進"
+            "value" : "版本 4.0\n2025年9月15日\n\n• 支援iOS 26\n• 小型錯誤修正及介面改進"
+          }
+        }
+      }
+    },
+    "v4.1.0_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.1\n\n• يدعم النصوص الكبيرة\n• يصلح الأخطاء ويحسن الواجهة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1\n\n• Understøtter større skrifttyper\n• Mindre fejl rettet og forbedringer af brugerflade"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1\n\n• Unterstützt größere Schriftarten\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1\n\n• Brings support for Larger Text\n• Fixes bugs and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.1\n\n• Admite fuentes más grandes\n• Corrige errores y mejora la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1\n\n• Prend en charge des polices plus grandes\n• Corrige les bugs et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.1-es verzió\n\n• Nagyobb betűméret támogatása\n• Hibák javítása és a felület javítása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.1\n\n• Mendukung font yang lebih besar\n• Memperbaiki bug dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.1\n\n• Supporta caratteri più grandi\n• Corregge i bug e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.1\n\n• 大きなフォントのサポート\n• バグの修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.1\n\n• Brings ondersteuning voor grotere tekst\n• Verbetert bugs en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.1\n\n• Obsługa większych czcionek\n• Naprawiono błędy i ulepszono interfejs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.1\n\n• Поддержка более крупных шрифтов.\n• Исправлены ошибки и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1\n\n• Stöder större teckensnitt\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本4.1\n\n• 支持更大字号的字体\n• 修复了错误并改进了界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1\n\n• 支援更大尺寸的字型\n• 錯誤修正與介面改進"
           }
         }
       }

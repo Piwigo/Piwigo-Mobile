@@ -106,6 +106,9 @@ class ReleaseNotesViewController: UIViewController {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
 
+        // Release 4.1.x — Bundle string
+        notesAttributedString.append(releaseNotes("v4.1.0_text", comment: "v4.1.0 Release Notes text"))
+
         // Release 4.0.x — Bundle string
         notesAttributedString.append(releaseNotes("v4.0.0_text", comment: "v4.0.0 Release Notes text"))
 
