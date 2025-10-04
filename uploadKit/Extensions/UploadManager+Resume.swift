@@ -66,8 +66,10 @@ extension UploadManager
             }
             
             // Logs
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("\((self.uploads.fetchedObjects ?? []).count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests in cache.")
+            if #available(iOSApplicationExtension 14.0, *),
+               let uploadObjects = self.uploads.fetchedObjects,
+               let completedObjects = self.completed.fetchedObjects {
+                UploadManager.logger.notice("\(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
             }
             
             // Resume operations
