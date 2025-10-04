@@ -133,7 +133,7 @@ class TableViewUtilities: NSObject {
         }
     }()
     
-    func rowHeightForContentSizeCategory(_ contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+    func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
         let rowHeight = TableViewUtilities.rowHeight
         switch contentSizeCategory {
         case .extraSmall:
@@ -167,14 +167,6 @@ class TableViewUtilities: NSObject {
         }
     }
     
-    static let rowExtraHeight: CGFloat = {
-        if #available(iOS 26.0, *) {
-            return defaultRowHeight - defaultOldRowHeight
-        } else {
-            return 0.0
-        }
-    }()
-
     // Returns the row corner radius
     static let defaultCornerRadius = CGFloat(26)
     static let defaultOldRCornerRadius = CGFloat(10)
