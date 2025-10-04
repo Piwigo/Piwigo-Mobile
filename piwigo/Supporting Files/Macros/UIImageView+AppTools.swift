@@ -9,9 +9,6 @@
 import Foundation
 import UIKit
 
-// Constants
-let playRatio: CGFloat = 1.0 // was 506:503
-
 extension UIImageView {
     
     // MARK: - Movie Icon

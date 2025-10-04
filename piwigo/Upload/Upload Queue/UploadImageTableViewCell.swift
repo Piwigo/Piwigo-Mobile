@@ -22,18 +22,13 @@ class UploadImageTableViewCell: UITableViewCell {
     private lazy var scale = CGFloat(fmax(1.0, self.traitCollection.displayScale))
 
     @IBOutlet weak var cellImage: UIImageView!
-
-    var playImg = UIImageView()
-    @IBOutlet weak var playBckg: UIImageView!
-    @IBOutlet weak var playBckgWidth: NSLayoutConstraint!
-    @IBOutlet weak var playBckgHeight: NSLayoutConstraint!
-    
+    @IBOutlet weak var playIcon: UIImageView!
     @IBOutlet weak var uploadInfoLabel: UILabel!
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var imageInfoLabel: UILabel!
     
     // MARK: - Cell Configuration & Update
-    func configure(with upload:Upload, availableWidth:Int) {
+    func configure(with upload: Upload, availableWidth: Int, maskedCorner: CACornerMask) {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
@@ -60,9 +55,22 @@ class UploadImageTableViewCell: UITableViewCell {
         imageInfoLabel.textColor = PwgColor.rightLabel
         
         // Prepare image view
-        if #unavailable(iOS 26.0) {
-            cellImage.layer.cornerRadius = 10 - 3
-            cellImage.layer.masksToBounds = true
+        if #available(iOS 26.0, *) {
+            // Apply large corner radius to first and last cells
+            let oldCornerRadius: CGFloat = TableViewUtilities.defaultOldRCornerRadius - 2.0
+            let newCornerRadius: CGFloat = TableViewUtilities.rowCornerRadius - 2.0
+            if maskedCorner.isEmpty {
+                cellImage.layer.cornerRadius = oldCornerRadius
+            } else if maskedCorner.contains(.layerMinXMinYCorner) {
+                cellImage.roundCorners(topLeft: newCornerRadius, topRight: oldCornerRadius,
+                                       bottomLeft: oldCornerRadius, bottomRight: oldCornerRadius)
+            } else if maskedCorner.contains(.layerMinXMaxYCorner) {
+                cellImage.roundCorners(topLeft: oldCornerRadius, topRight: oldCornerRadius,
+                                       bottomLeft: newCornerRadius, bottomRight: oldCornerRadius)
+            }
+        } else {
+            // Fallback on previous version
+            cellImage.layer.cornerRadius = TableViewUtilities.rowCornerRadius - 2.0
         }
         
         // Determine from where the file comes from:
@@ -94,10 +102,7 @@ class UploadImageTableViewCell: UITableViewCell {
         var image: UIImage!
         if fileURL.lastPathComponent.contains("img") {
             // Case of a photo
-            if playBckg.isHidden == false {
-                playBckg.isHidden = true
-                playImg.isHidden = true
-            }
+            playIcon.isHidden = true
 
             // Retrieve image data from file stored in the Uploads directory
             var fullResImageData: Data = Data()
@@ -128,10 +133,11 @@ class UploadImageTableViewCell: UITableViewCell {
             }
             
             // Add movie icon
-            addMovieIcon()
+            playIcon.isHidden = false
         }
         else {
             // Unknown type
+            playIcon.isHidden = true
             image = pwgImageType.image.placeHolder
         }
 
@@ -164,8 +170,7 @@ class UploadImageTableViewCell: UITableViewCell {
             cellImage.image = pwgImageType.image.placeHolder
             imageInfoLabel.text = errorDescription(for: upload)
             uploadingProgress?.setProgress(0.0, animated: false)
-            playBckg.isHidden = true
-            playImg.isHidden = true
+            playIcon.isHidden = true
             return
         }
         
@@ -182,6 +187,8 @@ class UploadImageTableViewCell: UITableViewCell {
                                 maxSize: maxSize)
         }
         imageInfoLabel.text = text
+        print("imageInfoLabel text: '\(text)'")
+        print("imageInfoLabel font: \(String(describing: imageInfoLabel.font))")
 
         // Cell image: retrieve data of right size and crop image
         let squareSize = CGSize(width: 58.0 * scale, height: 58.0 * scale)
@@ -207,14 +214,7 @@ class UploadImageTableViewCell: UITableViewCell {
         })
         
         // Video icon?
-        if imageAsset.mediaType == .video {
-            addMovieIcon()
-        } else {
-            if playBckg.isHidden == false {
-                playBckg.isHidden = true
-                playImg.isHidden = true
-            }
-        }
+        playIcon.isHidden = (imageAsset.mediaType != .video)
     }
     
     private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, maxSize: Int16) -> String {
@@ -294,17 +294,38 @@ class UploadImageTableViewCell: UITableViewCell {
             return String(format: "%.0fx%.0f", pixelWidth, pixelHeight)
         }
         
-        // Info depends on table width
-        if availableWidth > 480 {
-            // i.e. iPhone SE in landscape mode or iPad
-            return String(format: "%.0fx%.0f • %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
-        } else if availableWidth > 430 {
-            return String(format: "%.0fx%.0f • %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
-        } else if availableWidth > 375 {
-            return String(format: "%.0fx%.0f • %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .medium, timeStyle: .short))
-        } else {
-            return String(format: "%.0fx%.0f • %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+        // Info depends on content size
+        var dateString: String = ""
+        let preferredContenSize = traitCollection.preferredContentSizeCategory
+        switch preferredContenSize {
+        case .extraSmall, .small, .medium, .large, .extraLarge:
+            dateString = creationDate.formatted(.dateTime
+                .day(.defaultDigits) .month(.wide) .year(.twoDigits) .hour() .minute())
+        
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            switch availableWidth {
+            case ...375:
+                dateString = creationDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+            case 376...402:
+                fallthrough
+            default:
+                dateString = creationDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+            }
+
+        case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+            dateString = creationDate.formatted(.dateTime
+                .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+
+        case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            dateString = creationDate.formatted(.dateTime
+                .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+
+        default:
+            break
         }
+        return String(format: "%.0fx%.0f • %@", pixelWidth, pixelHeight, dateString)
     }
     
     private func videoInfo(for availableWidth:Int,
@@ -321,32 +342,37 @@ class UploadImageTableViewCell: UITableViewCell {
             return String(format: "%.0fx%.0f • %@", pixelWidth, pixelHeight, formattedDuration)
         }
 
-        // Info depends on table width
-        if availableWidth > 480 {
-            // i.e. iPhone SE in landscape mode or iPad
-            return String(format: "%.0fx%.0f • %@ • %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
-        } else if availableWidth > 430 {
-            return String(format: "%.0fx%.0f • %@ • %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
-        } else if availableWidth > 375 {
-            return String(format: "%.0fx%.0f • %@ • %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .medium, timeStyle: .short))
-        } else {
-            return String(format: "%.0fx%.0f • %@ • %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+        // Info depends on content size
+        var dateString: String = ""
+        let preferredContenSize = traitCollection.preferredContentSizeCategory
+        switch preferredContenSize {
+        case .extraSmall, .small, .medium, .large, .extraLarge:
+            dateString = creationDate.formatted(.dateTime
+                .day(.twoDigits) .month(.abbreviated) .year(.twoDigits) .hour() .minute())
+        
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            switch availableWidth {
+            case ...375:
+                dateString = creationDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+            case 376...402:
+                fallthrough
+            default:
+                dateString = creationDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+            }
+
+        case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+            dateString = creationDate.formatted(.dateTime
+                .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+
+        case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            dateString = creationDate.formatted(.dateTime
+                .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+
+        default:
+            break
         }
-    }
-    
-    private func addMovieIcon() {
-        // Match size to cell size
-        let width = cellImage.frame.size.width * playScale + (scale - 1)
-        playBckg.setMovieIconImage()
-        playBckg.tintColor = UIColor.white.withAlphaComponent(0.3)
-        playBckgWidth.constant = width + 2*offset
-        playBckgHeight.constant = playBckgWidth.constant * playRatio
-        playImg.setMovieIconImage()
-        playImg.tintColor = UIColor.white
-        playBckg.addSubview(playImg)
-        playBckg.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)
-        playBckg.addConstraints(NSLayoutConstraint.constraintView(playImg, to: CGSize(width: width, height: width * playRatio))!)
-        playBckg.isHidden = false
-        playImg.isHidden = false
+        return String(format: "%.0fx%.0f • %@ • %@", pixelWidth, pixelHeight, formattedDuration, dateString)
     }
 }
