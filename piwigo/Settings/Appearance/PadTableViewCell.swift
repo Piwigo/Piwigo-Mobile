@@ -38,7 +38,7 @@ class PadTableViewCell: UITableViewCell {
         darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: cellSize, for: .image), for: .normal)
 
         // Labels
-        let labelHeight = UIFont.preferredFont(forTextStyle: .footnote).pointSize + TableViewUtilities.defaultVertMargin
+        let labelHeight = UIFont.preferredFont(forTextStyle: .footnote).pointSize + TableViewUtilities.vertMargin
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
         lightLabel.setTitleColor(PwgColor.leftLabel, for: .normal)
         lightLabelHeight.constant = labelHeight
