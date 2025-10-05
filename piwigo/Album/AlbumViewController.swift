@@ -911,6 +911,14 @@ class AlbumViewController: UIViewController
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
 
+            // Search bar
+            if let textField = self.searchController?.searchBar.searchTextField as? UITextField {
+                textField.font = UIFont.preferredFont(forTextStyle: .body)
+                self.searchController?.searchBar.invalidateIntrinsicContentSize()
+                self.searchController?.searchBar.layer.setNeedsLayout()
+                self.searchController?.searchBar.layoutIfNeeded()
+            }
+
             // Invalidate layout to recalculate cell sizes
             self.collectionView.collectionViewLayout.invalidateLayout()
             

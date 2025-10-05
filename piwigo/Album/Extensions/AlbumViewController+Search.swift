@@ -43,6 +43,12 @@ extension AlbumViewController
             }
         }
         definesPresentationContext = true
+        
+        // Enable Dynamic Type
+        if let textField = searchController?.searchBar.searchTextField as? UITextField {
+            textField.font = UIFont.preferredFont(forTextStyle: .body)
+            textField.adjustsFontForContentSizeCategory = true
+        }
 
         // Place the search bar in the navigation bar.
         navigationItem.searchController = searchController
