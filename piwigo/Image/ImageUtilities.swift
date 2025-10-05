@@ -284,8 +284,10 @@ class ImageUtilities: NSObject {
             return image
         }
         
-        // Save the downsampled image in cache
-        saveDownsampledImage(downsampledImage, atPath: filePath)
+        // Save the downsampled image in cache if it does not belong to the app
+        if [.album, .image].contains(type) {
+            saveDownsampledImage(downsampledImage, atPath: filePath)
+        }
         return downsampledImage
     }
     

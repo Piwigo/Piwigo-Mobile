@@ -43,13 +43,12 @@ class Help03ViewController: UIViewController {
         legend.attributedText = legendAttributedString
         
         // Set image view
-        guard let imageUrl = Bundle.main.url(forResource: "help03", withExtension: "png") else {
-            fatalError("!!! Could not find help03 image !!!")
-        }
+        guard let imageUrl = Bundle.main.url(forResource: "help03", withExtension: "png")
+        else { preconditionFailure("!!! Could not find help03 image !!!") }
         imageView.layoutIfNeeded() // Ensure imageView is in its final size.
         let scale = max(imageView.traitCollection.displayScale, 1.0)
         let imageSize = CGSizeMake(imageView.bounds.size.width * scale, imageView.bounds.size.height * scale)
-        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize, for: .album)
+        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize, for: .help)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID
