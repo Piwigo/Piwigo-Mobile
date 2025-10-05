@@ -159,6 +159,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "add"
+        button.accessibilityLabel = NSLocalizedString("createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -281,6 +282,8 @@ extension AlbumViewController
         button.layer.shadowOpacity = 0.8
         button.addTarget(self, action: #selector(didTapUploadQueueButton), for: .touchUpInside)
         button.isHidden = true
+        button.accessibilityIdentifier = "Upload Queue"
+        button.accessibilityLabel = NSLocalizedString("UploadRequests_cache", comment: "Uploads")
         return button
     }
     
@@ -446,7 +449,8 @@ extension AlbumViewController
         button.layer.shadowOpacity = 0.8
         button.addTarget(self, action: #selector(returnToDefaultCategory), for: .touchUpInside)
         button.isHidden = true
-        button.accessibilityIdentifier = "rootAlbum"
+        button.accessibilityIdentifier = pwgSmartAlbum.root.name
+        button.accessibilityLabel = pwgSmartAlbum.root.name
         return button
     }
     
@@ -531,6 +535,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapCreateAlbum), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "createAlbum"
+        button.accessibilityLabel = NSLocalizedString("createNewAlbum_title", comment: "New Album")
         return button
     }
     
@@ -565,6 +570,7 @@ extension AlbumViewController
         button.addTarget(self, action: #selector(didTapUploadImagesButton), for: .touchUpInside)
         button.isHidden = true
         button.accessibilityIdentifier = "addImages"
+        button.accessibilityLabel = NSLocalizedString("tabBar_upload", comment: "Upload")
         return button
     }
 
