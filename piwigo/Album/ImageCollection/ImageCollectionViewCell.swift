@@ -115,6 +115,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Title
         let title = getImageTitle(forSortOption: sortOption)
+        accessibilityIdentifier = title.string
+        accessibilityLabel = title.string
         if AlbumVars.shared.displayImageTitles {
             bottomLayer?.isHidden = false
             nameLabel?.attributedText = title
@@ -123,14 +125,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
             bottomLayer?.isHidden = true
             nameLabel?.isHidden = true
         }
-#if DEBUG
-        // Used for selecting cells in piwigoAppStore
-        if title.string.contains("Clos de Vougeot") {
-            self.accessibilityIdentifier = "Clos de Vougeot"
-        } else if title.string.contains("Hotel de Coimbra") {
-            self.accessibilityIdentifier = "Hotel de Coimbra"
-        }
-#endif
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
