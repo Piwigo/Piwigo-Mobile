@@ -202,6 +202,7 @@ class SettingsViewController: UIViewController {
                                             style: .plain, target: self, action: #selector(displayHelp))
         }
         helpBarButton?.accessibilityIdentifier = "Help"
+        helpBarButton?.accessibilityLabel = NSLocalizedString("settings_help", comment: "Help")
         
         // Table view
         settingsTableView.accessibilityIdentifier = "Settings"
