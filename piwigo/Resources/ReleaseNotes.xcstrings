@@ -9627,7 +9627,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.1\n\n• Admite fuentes más grandes\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 4.1\n\n• Añade soporte para textos más grandes\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
