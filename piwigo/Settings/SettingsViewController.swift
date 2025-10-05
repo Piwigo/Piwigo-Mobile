@@ -194,15 +194,7 @@ class SettingsViewController: UIViewController {
         closeBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
-        if #available(iOS 26.0, *) {
-            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark"), style: .plain,
-                                            target: self, action: #selector(displayHelp))
-        } else {
-            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"),
-                                            style: .plain, target: self, action: #selector(displayHelp))
-        }
-        helpBarButton?.accessibilityIdentifier = "Help"
-        helpBarButton?.accessibilityLabel = NSLocalizedString("settings_help", comment: "Help")
+        helpBarButton = UIBarButtonItem.helpButton(target: self, action: #selector(displayHelp))
         
         // Table view
         settingsTableView.accessibilityIdentifier = "Settings"
