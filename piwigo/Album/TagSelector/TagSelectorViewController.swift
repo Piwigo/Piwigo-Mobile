@@ -172,7 +172,6 @@ class TagSelectorViewController: UITableViewController {
         // Register font changes
         NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
                                                name: UIContentSizeCategory.didChangeNotification, object: nil)
-        
     }
     
     deinit {
@@ -279,6 +278,12 @@ class TagSelectorViewController: UITableViewController {
     @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            // Search bar
+            self.searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+            self.searchController.searchBar.invalidateIntrinsicContentSize()
+            self.searchController.searchBar.layer.setNeedsLayout()
+            self.searchController.searchBar.layoutIfNeeded()
+            
             // Animated update for smoother experience
             self.tagsTableView?.beginUpdates()
             self.tagsTableView?.endUpdates()
