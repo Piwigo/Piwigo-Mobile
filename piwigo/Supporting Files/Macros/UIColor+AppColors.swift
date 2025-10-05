@@ -107,11 +107,11 @@ struct PwgColor {
         if #available(iOS 26.0, *) {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
-            : UIColor(red: 152 / 255.0, green: 152 / 255.0, blue: 159 / 255.0, alpha: 1.0)
+            : UIColor(red: 109 / 255.0, green: 109 / 255.0, blue: 109 / 255.0, alpha: 1.0)
         } else {
             AppVars.shared.isDarkPaletteActive
             ? UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
-            : UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
+            : UIColor(red: 109 / 255.0, green: 109 / 255.0, blue: 109 / 255.0, alpha: 1.0)
         }
     }
     
