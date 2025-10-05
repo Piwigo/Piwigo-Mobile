@@ -16,9 +16,10 @@ class AlbumCollectionViewCell: UICollectionViewCell {
     var imageURL: URL?
 
     @IBOutlet weak var albumThumbnail: UIImageView!
+    @IBOutlet weak var recentlyModified: UIImageView!
     @IBOutlet weak var albumName: UILabel!
     @IBOutlet weak var numberOfImages: UILabel!
-    @IBOutlet weak var recentlyModified: UIImageView!
+    @IBOutlet weak var legendHeight: NSLayoutConstraint!
     
     func config(withAlbumData albumData: Album?) {
         // Store album data
@@ -27,11 +28,10 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // General settings
         applyColorPalette()
         
-        // Album name (Piwigo orange colour)
+        // Legend
         albumName.text = albumData?.name ?? "—?—"
-        
-        // Number of images and sub-albums
         numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
+        legendHeight.constant = UIFont.preferredFont(forTextStyle: .headline).lineHeight + UIFont.preferredFont(forTextStyle: .footnote).lineHeight + 4
 
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
