@@ -31,6 +31,9 @@ class HelpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
+        // Initialise button
+        closeButton.tintColor = PwgColor.tintColor
+
         // Initialise pages
         for i in displayHelpPagesWithID {
             // Loop over the storyboards
