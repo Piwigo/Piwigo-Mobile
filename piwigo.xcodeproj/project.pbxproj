@@ -534,6 +534,7 @@
 		ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */; };
 		ADC820DC276DF5E000720F33 /* AlbumUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */; };
 		ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */; };
+		ADCA7CF82E928A7F00EFC3C5 /* HelpUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCA7CF72E928A7F00EFC3C5 /* HelpUtilities.swift */; };
 		ADCCFC3527D532AA00E42A6E /* AppLockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCCFC3427D532AA00E42A6E /* AppLockViewController.swift */; };
 		ADCD44752D98148700111138 /* RenameFileViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD44742D98148700111138 /* RenameFileViewController+UITableViewDataSource.swift */; };
 		ADCD44772D9814BE00111138 /* RenameFileViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD44762D9814BE00111138 /* RenameFileViewController+UITableViewDelegate.swift */; };
@@ -1295,6 +1296,7 @@
 		ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalImagesViewController.storyboard; sourceTree = "<group>"; };
 		ADC820DB276DF5E000720F33 /* AlbumUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumUtilities.swift; sourceTree = "<group>"; };
 		ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagesFooterReusableView.swift; sourceTree = "<group>"; };
+		ADCA7CF72E928A7F00EFC3C5 /* HelpUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpUtilities.swift; sourceTree = "<group>"; };
 		ADCA95CD26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		ADCA95CF26B3434300F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/About.strings; sourceTree = "<group>"; };
 		ADCA95D326B3434400F27123 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -2196,6 +2198,7 @@
 		AD8709B0259A8F83008C4E4C /* Help */ = {
 			isa = PBXGroup;
 			children = (
+				ADCA7CF72E928A7F00EFC3C5 /* HelpUtilities.swift */,
 				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
 				ADE4C23325755E660060A203 /* Help01ViewController.swift */,
 				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
@@ -3908,6 +3911,7 @@
 				ADB65D5126FBC4650094DAF1 /* ImageViewController.swift in Sources */,
 				ADDFD45027EF4C8900DB5081 /* String+AppTools.swift in Sources */,
 				AD43733D2B4326ED009BC454 /* SettingsViewController+UITextField.swift in Sources */,
+				ADCA7CF82E928A7F00EFC3C5 /* HelpUtilities.swift in Sources */,
 				ADEA269A285F8D5F00B6C9A0 /* ImageViewController+Share.swift in Sources */,
 				ADC339FD26A7ECF000173F8A /* AutoUploadIntentHandler.swift in Sources */,
 				ADA74B0B2C5BC72500162BE0 /* LocalImagesViewController+FlowLayout.swift in Sources */,

@@ -606,10 +606,7 @@ class AlbumViewController: UIViewController
         }
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
-            let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-            guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
-            else { preconditionFailure("Could not load HelpViewController") }
-            helpVC.displayHelpPagesWithID = displayHelpPagesWithID
+            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 present(helpVC, animated: true)

@@ -155,19 +155,15 @@ extension LocalImagesViewController: UploadSwitchDelegate
         }
         if displayHelpPagesWithID.count > 0 {
             // Present unseen upload management help views
-            let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-            let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
-            if let helpVC = helpVC {
-                helpVC.displayHelpPagesWithID = displayHelpPagesWithID
-                if UIDevice.current.userInterfaceIdiom == .phone {
-                    helpVC.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(helpVC, animated:true)
-                } else {
-                    helpVC.modalPresentationStyle = .formSheet
-                    helpVC.modalTransitionStyle = .coverVertical
-                    helpVC.popoverPresentationController?.sourceView = view
-                    navigationController?.present(helpVC, animated: true)
-                }
+            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                helpVC.popoverPresentationController?.permittedArrowDirections = .up
+                navigationController?.present(helpVC, animated:true)
+            } else {
+                helpVC.modalPresentationStyle = .formSheet
+                helpVC.modalTransitionStyle = .coverVertical
+                helpVC.popoverPresentationController?.sourceView = view
+                navigationController?.present(helpVC, animated: true)
             }
         }
     }

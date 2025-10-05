@@ -337,24 +337,15 @@ class SettingsViewController: UIViewController {
     }
     
     @objc func displayHelp() {
-        let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-        let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
-        if let helpVC = helpVC {
-            // Update this list after deleting/creating Help##ViewControllers
-            if NetworkVars.shared.usesUploadAsync {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
-            } else {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
-            }
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                helpVC.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(helpVC, animated:true)
-            } else {
-                helpVC.modalPresentationStyle = .currentContext
-                helpVC.modalTransitionStyle = .flipHorizontal
-                helpVC.popoverPresentationController?.sourceView = view
-                navigationController?.present(helpVC, animated: true)
-            }
+        let helpVC = HelpUtilities.getHelpViewController()
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            helpVC.popoverPresentationController?.permittedArrowDirections = .up
+            navigationController?.present(helpVC, animated:true)
+        } else {
+            helpVC.modalPresentationStyle = .currentContext
+            helpVC.modalTransitionStyle = .flipHorizontal
+            helpVC.popoverPresentationController?.sourceView = view
+            navigationController?.present(helpVC, animated: true)
         }
     }
     
