@@ -207,6 +207,9 @@ class TagsViewController: UITableViewController {
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -223,15 +226,15 @@ class TagsViewController: UITableViewController {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-
+    
     
     // MARK: - UITableViewDataSource Methods
-    // MARK: - Sections
+    // MARK: -- Sections
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-
-    // MARK: - Rows
+    
+    // MARK: -- Rows
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -259,10 +262,10 @@ class TagsViewController: UITableViewController {
         }
         return cell
     }
-
+    
     
     // MARK: - UITableViewDelegate Methods
-    // MARK: - Headers
+    // MARK: -- Headers
     private func getContentOfHeader(inSection section: Int) -> String {
         if section == 0 {
             return NSLocalizedString("tagsHeader_selected", comment: "Selected")
@@ -270,28 +273,28 @@ class TagsViewController: UITableViewController {
             return NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
         }
     }
-
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let title = getContentOfHeader(inSection: section)
         return TableViewUtilities.shared.heightOfHeader(withTitle: title,
                                                         width: tableView.frame.size.width)
     }
-
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = getContentOfHeader(inSection: section)
         return TableViewUtilities.shared.viewOfHeader(withTitle: title)
     }
-
-
-    // MARK: - Rows
+    
+    
+    // MARK: -- Rows
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
         switch indexPath.section {
         case 0 /* Selected tags */:
             // Tapped selected tag
             let currentTag = selectedTags.object(at: indexPath)
-
+            
             // Remove tag from list of selected tags
             selectedTagIds.remove(currentTag.tagId)
             
@@ -301,7 +304,7 @@ class TagsViewController: UITableViewController {
                 try selectedTags.performFetch()
                 fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
                 try nonSelectedTags.performFetch()
-
+                
                 // Determine new indexPath of deselected tag
                 if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
                     let insertPath = IndexPath(row: indexOfTag, section: 1)
@@ -321,17 +324,17 @@ class TagsViewController: UITableViewController {
             // Tapped non selected tag
             let indexPath1 = IndexPath(row: indexPath.row, section: 0)
             let currentTag = nonSelectedTags.object(at: indexPath1)
-
+            
             // Add tag to list of selected tags
             selectedTagIds.insert(currentTag.tagId)
-
+            
             // Update fetch requests and perform fetches
             do {
                 fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
                 try selectedTags.performFetch()
                 fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
                 try nonSelectedTags.performFetch()
-
+                
                 // Determine new indexPath of selected tag
                 if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
                     let insertPath = IndexPath(row: indexOfTag, section: 0)
@@ -349,6 +352,23 @@ class TagsViewController: UITableViewController {
             }
         default:
             fatalError("Unknown tableView section!")
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Search bar
+            self.searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+            self.searchController.searchBar.invalidateIntrinsicContentSize()
+            self.searchController.searchBar.layer.setNeedsLayout()
+            self.searchController.searchBar.layoutIfNeeded()
+            
+            // Animated update for smoother experience
+            self.tagsTableView?.beginUpdates()
+            self.tagsTableView?.endUpdates()
         }
     }
 }

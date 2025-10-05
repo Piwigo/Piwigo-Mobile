@@ -38,6 +38,10 @@ extension TagsViewController
         definesPresentationContext = true
         searchController.searchResultsUpdater = self
         
+        // Enable Dynamic Type
+        searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        searchController.searchBar.searchTextField.adjustsFontForContentSizeCategory = true
+        
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar
     }
