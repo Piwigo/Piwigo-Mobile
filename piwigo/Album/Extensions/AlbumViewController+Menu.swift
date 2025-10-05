@@ -490,7 +490,7 @@ extension AlbumViewController {
             })
             // Update menu
             if categoryId == Int32.zero {
-                let children = [smartAlbums(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
+                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
                 let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
                 discoverBarButton.menu = updatedMenu
             } else {
@@ -511,7 +511,7 @@ extension AlbumViewController {
             AlbumVars.shared.displayImageTitles = !isActive
             // Update menu
             if categoryId == Int32.zero {
-                let children = [smartAlbums(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
+                let children = [smartAlbumsMenu(), viewOptionsMenu(), settingsMenu()].compactMap({$0})
                 let updatedMenu = discoverBarButton.menu?.replacingChildren(children)
                 discoverBarButton.menu = updatedMenu
             } else {

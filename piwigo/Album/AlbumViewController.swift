@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import MessageUI
 import UIKit
 import piwigoKit
 import uploadKit
@@ -1167,5 +1168,16 @@ class AlbumViewController: UIViewController
         if let rootAlbumViewController = rootAlbumViewController {
             navigationController?.popToViewController(rootAlbumViewController, animated: true)
         }
+    }
+}
+
+
+// MARK: - MFMailComposeViewControllerDelegate
+extension AlbumViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        // Check the result or perform other tasks.
+
+        // Dismiss the mail compose view controller.
+        dismiss(animated: true)
     }
 }

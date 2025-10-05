@@ -723,7 +723,7 @@ extension SettingsViewController: UITableViewDataSource
             else { preconditionFailure("Could not load LabelTableViewCell") }
             switch indexPath.row {
             case 0 /* Piwigo.org website */:
-                cell.configure(with: "Piwigo", detail: "")
+                cell.configure(with: NSLocalizedString("settings_about", comment: "About Piwigo"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "piwigoWebsite"
                 tableViewCell = cell
@@ -783,8 +783,8 @@ extension SettingsViewController: UITableViewDataSource
                 cell.accessibilityIdentifier = "supportForum"
                 tableViewCell = cell
                 
-            case 2 /* Contact Us */:
-                cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
+            case 2 /* Contact Support */:
+                cell.configure(with: NSLocalizedString("settings_contact", comment: "Contact Support"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 if !MFMailComposeViewController.canSendMail() {
                     cell.titleLabel.textColor = PwgColor.rightLabel

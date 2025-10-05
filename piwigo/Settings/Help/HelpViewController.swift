@@ -30,9 +30,6 @@ class HelpViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-                
-        // Initialise button
-        closeButton.tintColor = PwgColor.tintColor
 
         // Initialise pages
         for i in displayHelpPagesWithID {
@@ -66,6 +63,9 @@ class HelpViewController: UIViewController {
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
+
+        // Close button
+        closeButton.tintColor = PwgColor.tintColor
     }
 
     override func viewWillAppear(_ animated: Bool) {

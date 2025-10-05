@@ -38,7 +38,7 @@ extension AlbumViewController
         }
         
         // Right side of navigation bar and toolbar
-        if categoryId == 0 {
+        if categoryId == Int32.zero {
             // Root album => Discover menu button in navigation bar
             discoverBarButton = getDiscoverButton()
             
@@ -108,14 +108,11 @@ extension AlbumViewController
             favoriteBarButton = getFavoriteBarButton()
             
             // Menu for activating the selection mode and changing the way images are sorted
-            var children = [sortMenu(), viewOptionsMenu()]
+            var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
                 children.insert(selectMenu(), at: 0)
             }
-            if categoryId == AlbumVars.shared.defaultCategory {
-                children.append(settingsMenu())
-            }
-            let menu = UIMenu(title: "", children: children.compactMap({$0}))
+            let menu = UIMenu(title: "", options: UIMenu.Options.displayInline, children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             selectBarButton?.accessibilityIdentifier = "select"
             let hasImages = albumData.nbImages != 0
@@ -239,12 +236,9 @@ extension AlbumViewController
         shareBarButton = getShareBarButton()
         
         // Menu for activating the selection mode or change the way images are sorted
-        var children = [sortMenu(), viewOptionsMenu()]
+        var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
             children.insert(selectMenu(), at: 0)
-        }
-        if categoryId != 0, categoryId == AlbumVars.shared.defaultCategory {
-            children.append(settingsMenu())
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu

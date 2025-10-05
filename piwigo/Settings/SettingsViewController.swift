@@ -191,7 +191,6 @@ class SettingsViewController: UIViewController {
         
         // Button for returning to albums/images
         closeBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitSettings))
-        closeBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
         helpBarButton = UIBarButtonItem.helpButton(target: self, action: #selector(displayHelp))

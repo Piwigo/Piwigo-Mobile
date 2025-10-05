@@ -164,7 +164,7 @@ extension SettingsViewController: UITableViewDelegate
             case 0 /* Error Logs */,
                 1 /* Support Forum */:
                 result = true
-            case 2 /* Contact Us */:
+            case 2 /* Contact Support */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
             default:
                 result = false
@@ -434,41 +434,12 @@ extension SettingsViewController: UITableViewDelegate
                     UIApplication.shared.open(url)
                 }
             case 2 /* Prepare draft email */:
-                if MFMailComposeViewController.canSendMail() {
-                    let composeVC = MFMailComposeViewController()
-                    composeVC.mailComposeDelegate = self
-                    composeVC.view.tintColor = PwgColor.tintColor
+                // Get mail composer if possible
+                guard let composeVC = SettingsUtilities.getMailComposer() else { return }
+                composeVC.mailComposeDelegate = self
 
-                    // Configure the fields of the interface.
-                    composeVC.setToRecipients([
-                        NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
-                    ])
-
-                    // Collect version and build numbers
-                    let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-                    let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-
-                    // Compile ticket number from current date
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyyMMddHHmm"
-                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.shared.language) as Locale
-                    let date = Date()
-                    let ticketDate = dateFormatter.string(from: date)
-
-                    // Set subject
-                    composeVC.setSubject("[Ticket#\(ticketDate)]: \(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(NSLocalizedString("settings_feedback", comment: "Feedback"))")
-
-                    // Collect system and device data
-                    let deviceModel = UIDevice.current.modelName
-                    let deviceOS = UIDevice.current.systemName
-                    let deviceOSversion = UIDevice.current.systemVersion
-
-                    // Set message body
-                    composeVC.setMessageBody("\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? ""))\n\(deviceModel ) — \(deviceOS) \(deviceOSversion)\n==============>>\n\n", isHTML: false)
-
-                    // Present the view controller modally.
-                    present(composeVC, animated: true)
-                }
+                // Present the view controller modally.
+                present(composeVC, animated: true)
             default:
                 break
             }
