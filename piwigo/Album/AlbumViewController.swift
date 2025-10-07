@@ -548,7 +548,7 @@ class AlbumViewController: UIViewController
                     whatsNewVC.isModalInPresentation = true
                     if let sheet = whatsNewVC.sheetPresentationController {
                         sheet.detents = [.medium(), .large()]
-                        sheet.selectedDetentIdentifier = .medium
+                        sheet.selectedDetentIdentifier = view.bounds.height < 750 ? .large : .medium
                         sheet.prefersGrabberVisible = true
                         sheet.preferredCornerRadius = 40
                     }

@@ -41777,7 +41777,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Contactar Soporte"
+            "value" : "Contactar con el servicio de soporte"
           }
         },
         "fr" : {
@@ -59227,203 +59227,203 @@
       }
     },
     "whatsNew_desc1" : {
-      "comment" : "Read and share PDF files directly",
+      "comment" : "Adopts Liquid Glass and brings iOS 26 compatibility.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "قراءة ومشاركة ملفات PDF مباشرة"
+            "value" : "يعتمد Liquid Glass ويوفر التوافق مع iOS 26."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Læs og del PDF-filer direkte"
+            "value" : "Anvender Liquid Glass og giver kompatibilitet med iOS 26."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF-Dateien direkt lesen und teilen"
+            "value" : "Verwendet Liquid Glass und bietet Kompatibilität mit iOS 26."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Read and share PDF files directly"
+            "value" : "Adopts Liquid Glass and brings iOS 26 compatibility."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leer y compartir archivos PDF directamente"
+            "value" : "Adopta Liquid Glass y ofrece compatibilidad con iOS 26."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lire et partager des fichiers PDF directement"
+            "value" : "Adopte Liquid Glass et apporte la compatibilité avec iOS 26."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF fájlok közvetlen olvasása és megosztása"
+            "value" : "Liquid Glass bevezetése és iOS 26 kompatibilitás."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baca dan bagikan berkas PDF secara langsung"
+            "value" : "Mengadopsi Liquid Glass dan mendukung kompatibilitas dengan iOS 26."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leggi e condividi direttamente i file PDF"
+            "value" : "Adotta Liquid Glass e garantisce la compatibilità con iOS 26."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF ファイルの読み取りと共有"
+            "value" : "Liquid Glassを採用し、iOS 26との互換性を実現しました。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF-bestanden direct lezen en delen"
+            "value" : "Maakt gebruik van Liquid Glass en biedt compatibiliteit met iOS 26."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Odczytuj i udostępniaj pliki PDF bezpośrednio"
+            "value" : "Wprowadza Liquid Glass i zapewnia zgodność z iOS 26."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Читать и делиться PDF-файлами напрямую"
+            "value" : "Использует технологию Liquid Glass и обеспечивает совместимость с iOS 26."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Läs och dela PDF-filer direkt"
+            "value" : "Använder Liquid Glass och är kompatibel med iOS 26."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "直接阅读和分享 PDF 文件"
+            "value" : "采用Liquid Glass技术，并实现iOS 26兼容性。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "直接讀取和分享 PDF 檔案"
+            "value" : "採用液態玻璃設計，並實現與 iOS 26 的相容性。"
           }
         }
       }
     },
     "whatsNew_desc2" : {
-      "comment" : "Bug fixes and improvement of the interface",
+      "comment" : "Improved accessibility thanks to support for bold text, larger text sizes, and more.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إصلاح الأخطاء وتحسين الواجهة"
+            "value" : "تحسين إمكانية الوصول بفضل الدعم للنص الجريء، وأحجام النصوص الأكبر وأكثر."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fejlrettelser og forbedringer af grænsefladen"
+            "value" : "Forbedret tilgængelighed takket være understøttelse af fed tekst, større tekststørrelser og mere."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fehlerbehebung und Verbesserung der Schnittstelle"
+            "value" : "Verbesserte Barrierefreiheit dank Unterstützung für fettgedruckten Text, größere Schriftgrößen und mehr."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bug fixes and improvement of the interface"
+            "value" : "Improved accessibility thanks to support for bold text, larger text sizes, and more."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Corrección de errores y mejora de la interfaz"
+            "value" : "Accesibilidad mejorada gracias a la compatibilidad con texto en negrita, tamaños de texto más grandes y mucho más."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Corrections de bugs et amélioration de l'interface"
+            "value" : "Amélioration de l'accessibilité grâce à la prise en charge du texte en gras, des polices de caractères plus grandes, et plus encore."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hibajavítások és a felület fejlesztése"
+            "value" : "Jobb akadálymentesség a vastag betűk, nagyobb betűméret és egyéb funkciók támogatásának köszönhetően."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perbaikan bug dan peningkatan antarmuka"
+            "value" : "Peningkatan aksesibilitas berkat dukungan untuk teks tebal, ukuran teks yang lebih besar, dan fitur lainnya."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Correzioni di bug e miglioramento dell'interfaccia"
+            "value" : "Accessibilità migliorata grazie al supporto per il testo in grassetto, dimensioni del testo più grandi e altro ancora."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バグ修正とインターフェースの改善"
+            "value" : "太字テキストや大きな文字サイズなどのサポートにより、アクセシビリティが向上しました。"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bug fixes en verbetering van de interface"
+            "value" : "Verbeterde toegankelijkheid dankzij ondersteuning voor vetgedrukte tekst, grotere tekstgroottes en meer."
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Poprawki błędów i ulepszenia interfejsu"
+            "value" : "Poprawiona dostępność dzięki obsłudze pogrubionego tekstu, większych rozmiarów tekstu i nie tylko."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Исправления ошибок и улучшение интерфейса"
+            "value" : "Улучшенная доступность благодаря поддержке жирного шрифта, увеличенного размера текста и другим функциям."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buggfixar och förbättring av gränssnittet"
+            "value" : "Förbättrad tillgänglighet tack vare stöd för fetstil, större textstorlekar och mycket mer."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "错误修复和界面改进"
+            "value" : "通过支持粗体文本、更大字号等功能，提升了无障碍体验。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "修正錯誤並改進介面"
+            "value" : "透過支援粗體文字、加大字型等功能，提升無障礙體驗。"
           }
         }
       }
@@ -59530,203 +59530,203 @@
       }
     },
     "whatsNew_title1" : {
-      "comment" : "PDF Files",
+      "comment" : "Major Update",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ملفات PDF"
+            "value" : "تحديث رئيسي"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF Filer"
+            "value" : "Større opdatering"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF-Dateien"
+            "value" : "Wichtiges Update"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF Files"
+            "value" : "Major Update"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Archivos PDF"
+            "value" : "Actualización importante"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fichiers PDF"
+            "value" : "Mise à jour majeure"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF fájlok"
+            "value" : "Főbb frissítések"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berkas PDF"
+            "value" : "Pembaruan Besar"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File PDF"
+            "value" : "Aggiornamento importante"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF ファイル"
+            "value" : "メジャーアップデート"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF bestanden"
+            "value" : "Grote update"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pliki PDF"
+            "value" : "Duża aktualizacja"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF-файлы"
+            "value" : "Крупное обновление"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF-filer"
+            "value" : "Större uppdatering"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF 文件"
+            "value" : "重大更新"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF 檔案"
+            "value" : "重大更新"
           }
         }
       }
     },
     "whatsNew_title2" : {
-      "comment" : "Stability",
+      "comment" : "Accessibility",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الاستقرار"
+            "value" : "إمكانية الوصول"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilitet"
+            "value" : "Tilgængelighed"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilität"
+            "value" : "Barrierefreiheit"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stability"
+            "value" : "Accessibility"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Estabilidad"
+            "value" : "Accesibilidad"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilité"
+            "value" : "Accessibilité"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilitás"
+            "value" : "Akadálymentesség"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilitas"
+            "value" : "Aksesibilitas"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilità"
+            "value" : "Accessibilità"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "安定度"
+            "value" : "アクセシビリティ"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabiliteit"
+            "value" : "Toegankelijkheid"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilność"
+            "value" : "Dostępność"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Стабильность"
+            "value" : "Доступность"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilitet"
+            "value" : "Tillgänglighet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "稳定性"
+            "value" : "无障碍功能"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "穩定性"
+            "value" : "無障礙功能"
           }
         }
       }
