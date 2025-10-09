@@ -22,8 +22,13 @@ class UploadSwitchViewController: UIViewController {
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
-    private var switchViewSegmentedControl = UISegmentedControl(items: [UIImage(systemName: "photo.on.rectangle.angled")!,
-                                                                        UIImage(systemName: "gear")!])
+    private var switchViewSegmentedControl = {
+        let segmentedCtrl = UISegmentedControl(items: [UIImage(systemName: "photo.on.rectangle.angled")!,
+                                                       UIImage(systemName: "gear")!])
+        segmentedCtrl.accessibilityIdentifier = "org.piwigo.upload.switch"
+        segmentedCtrl.selectedSegmentIndex = 0
+        return segmentedCtrl
+    }()
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
@@ -53,13 +58,11 @@ class UploadSwitchViewController: UIViewController {
         }
 
         // Segmented control (choice for presenting common image parameters or upload settings)
-        switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.tintColor
-        switchViewSegmentedControl.selectedSegmentIndex = 0
         switchViewSegmentedControl.addTarget(self, action: #selector(didSwitchView), for: .valueChanged)
         switchViewSegmentedControl.superview?.layer.cornerRadius = switchViewSegmentedControl.layer.cornerRadius
         
         // Navigation bar
-        navigationController?.navigationBar.accessibilityIdentifier = "UploadSwitchView"
+        navigationController?.navigationBar.accessibilityIdentifier = "org.piwigo.upload.switchView"
         navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
         navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
         navigationItem.titleView = switchViewSegmentedControl
@@ -76,6 +79,7 @@ class UploadSwitchViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Segmented control
+        switchViewSegmentedControl.selectedSegmentTintColor = PwgColor.tintColor
         switchViewSegmentedControl.superview?.backgroundColor = PwgColor.background.withAlphaComponent(0.8)
         switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
     }

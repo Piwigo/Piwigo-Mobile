@@ -53,7 +53,7 @@ class UploadSettingsViewController: UITableViewController {
         super.viewDidLoad()
         
         // Table view
-        settingsTableView?.accessibilityIdentifier = "Settings"
+        settingsTableView?.accessibilityIdentifier = "org.piwigo.upload.settings"
         settingsTableView?.rowHeight = UITableView.automaticDimension
         settingsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
     }

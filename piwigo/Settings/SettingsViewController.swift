@@ -196,7 +196,7 @@ class SettingsViewController: UIViewController {
         helpBarButton = UIBarButtonItem.helpButton(target: self, action: #selector(displayHelp))
         
         // Table view
-        settingsTableView.accessibilityIdentifier = "Settings"
+        settingsTableView.accessibilityIdentifier = "org.piwigo.settings"
         settingsTableView.rowHeight = UITableView.automaticDimension
         settingsTableView.estimatedRowHeight = TableViewUtilities.rowHeight
         

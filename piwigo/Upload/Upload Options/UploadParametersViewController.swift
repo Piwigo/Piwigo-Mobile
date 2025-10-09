@@ -41,7 +41,7 @@ class UploadParametersViewController: UITableViewController {
         super.viewDidLoad()
         
         // Table view
-        paramsTableView?.accessibilityIdentifier = "Parameters"
+        paramsTableView?.accessibilityIdentifier = "org.piwigo.upload.parameters"
         paramsTableView?.rowHeight = UITableView.automaticDimension
         paramsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
     }

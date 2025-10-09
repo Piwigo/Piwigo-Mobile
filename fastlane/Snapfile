@@ -50,16 +50,16 @@ devices([
 # "iPhone SE (1st generation)",				# 4-inch
 # "iPhone SE (3rd generation)",				# 4.7-inch
 # "iPhone 8 Plus",							# 5.5-inch
-# "iPhone 16e",								# 6.1-inch (was iPhone 14)
+# "iPhone 16e",								# 6.1-inch
 # "iPhone 13 Pro",							# Wiki
-# "iPhone 16 Pro",							# 6.3-inch (was iPhone 14 Pro)
+# "iPhone 17 Pro",							# 6.3-inch (was iPhone 16 Pro)
 # "iPhone 14 Plus",							# 6.5-inch
-# "iPhone 16 Pro Max",						# 6.9-inch (was iPhone 15 Pro Max)
+# "iPhone Air",								# 6.9-inch (was iPhone 16 Pro Max)
 # "iPad Pro (9.7-inch)",					# 9.7-inch
 # "iPad Pro (10.5-inch)",					# 10.5-inch
-# "iPad Pro 11-inch (M4)",					# 11-inch (was iPad Pro (11-inch) (4th generation))
+# "iPad Pro 11-inch (M4)",					# 11-inch
 # "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
-"iPad Pro 13-inch (M4)"					# 13-inch (was iPad Pro (12.9-inch) (6th generation))
+# "iPad Pro 13-inch (M4)"					# 13-inch
 ])
 
 # ["pt", "pt_BR"] # Portuguese with Brazilian locale
@@ -67,7 +67,7 @@ languages([
 "en-US",
 # "zh-Hans",
 # "zh-Hant",
-"da",
+# "da",
 # "nl-NL",
 # "fr-FR",
 # "de-DE",
@@ -91,7 +91,7 @@ number_of_retries(0)
 
 
 # Command below fails with iOS +16.1, 17.x, 18.x:
-# override_status_bar(true)
+override_status_bar(true)
 # With Xcode:
 #   xcrun simctl status_bar "iPhone 16e" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #

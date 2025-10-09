@@ -449,7 +449,7 @@ extension AlbumViewController
         button.layer.shadowOpacity = 0.8
         button.addTarget(self, action: #selector(returnToDefaultCategory), for: .touchUpInside)
         button.isHidden = true
-        button.accessibilityIdentifier = pwgSmartAlbum.root.name
+        button.accessibilityIdentifier = "rootAlbum"
         button.accessibilityLabel = pwgSmartAlbum.root.name
         return button
     }
@@ -569,7 +569,7 @@ extension AlbumViewController
         button.layer.shadowOpacity = 0.8
         button.addTarget(self, action: #selector(didTapUploadImagesButton), for: .touchUpInside)
         button.isHidden = true
-        button.accessibilityIdentifier = "addImages"
+        button.accessibilityIdentifier = "org.piwigo.addImages"
         button.accessibilityLabel = NSLocalizedString("tabBar_upload", comment: "Upload")
         return button
     }
