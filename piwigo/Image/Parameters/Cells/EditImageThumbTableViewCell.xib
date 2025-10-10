@@ -17,10 +17,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <collectionView autoresizesSubviews="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="redraw" insetsLayoutMarginsFromSafeArea="NO" directionalLockEnabled="YES" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="eTE-lI-Gnc">
-                        <rect key="frame" x="0.0" y="-1" width="420" height="188"/>
+                        <rect key="frame" x="0.0" y="0.0" width="420" height="188"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="188" id="eM1-11-Jac"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="188" id="eM1-11-Jac"/>
                         </constraints>
                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="Gbm-Cc-Cca">
                             <size key="itemSize" width="50" height="50"/>
@@ -36,9 +36,9 @@
                     </collectionView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="eTE-lI-Gnc" secondAttribute="bottom" constant="1" id="Mvo-is-wGI"/>
+                    <constraint firstAttribute="bottom" secondItem="eTE-lI-Gnc" secondAttribute="bottom" id="Mvo-is-wGI"/>
                     <constraint firstItem="eTE-lI-Gnc" firstAttribute="leading" secondItem="5n7-kY-3hv" secondAttribute="leading" id="NuF-lc-4bQ"/>
-                    <constraint firstItem="eTE-lI-Gnc" firstAttribute="top" secondItem="5n7-kY-3hv" secondAttribute="top" constant="-1" id="Rig-EI-dIB"/>
+                    <constraint firstItem="eTE-lI-Gnc" firstAttribute="top" secondItem="5n7-kY-3hv" secondAttribute="top" id="Rig-EI-dIB"/>
                     <constraint firstAttribute="trailing" secondItem="eTE-lI-Gnc" secondAttribute="trailing" id="bga-mH-CLq"/>
                 </constraints>
             </tableViewCellContentView>
