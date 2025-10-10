@@ -473,7 +473,8 @@ extension AlbumViewController
         let title: String = categoryId == Int32.zero
             ? String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
             : albumData.name
-        self.view?.window?.windowScene?.title = title
+        navigationItem.title = title
+        view?.window?.windowScene?.title = title
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
@@ -482,7 +483,6 @@ extension AlbumViewController
             (UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
             // Set title and subtitle
             if prefersLargeTitles {
-                navigationItem.title = title
                 navigationItem.subtitle = nil
             } else {
                 navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
@@ -538,15 +538,15 @@ extension AlbumViewController
             }
         }
         
-        // Set title and subtitle
+        // Set subtitle
         if prefersLargeTitles {
-            navigationItem.title = title
             navigationItem.subtitle = subTitle
             navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
         } else {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
                                                     subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
         }
+        self.view?.window?.windowScene?.subtitle = subTitle
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
@@ -559,7 +559,8 @@ extension AlbumViewController
         }
         
         let title = albumData.name
-        self.view?.window?.windowScene?.title = albumData.name
+        self.title = title
+        self.view?.window?.windowScene?.title = title
         
         // There is no subtitle in landscape mode on iPhone
         // nor when using acessibility category
