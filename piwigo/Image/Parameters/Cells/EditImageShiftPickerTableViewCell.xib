@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -46,6 +46,7 @@
                 <constraints>
                     <constraint firstItem="R1T-MH-EHh" firstAttribute="trailing" secondItem="l2g-OY-l5J" secondAttribute="trailing" id="Jav-sU-nMq"/>
                     <constraint firstItem="raK-2i-FfZ" firstAttribute="top" secondItem="l2g-OY-l5J" secondAttribute="top" constant="11" id="UzW-vr-nSJ"/>
+                    <constraint firstAttribute="bottom" secondItem="R1T-MH-EHh" secondAttribute="bottom" id="V9M-rK-xDN"/>
                     <constraint firstItem="R1T-MH-EHh" firstAttribute="leading" secondItem="l2g-OY-l5J" secondAttribute="leading" id="ZDw-tI-Iwz"/>
                     <constraint firstItem="R1T-MH-EHh" firstAttribute="top" secondItem="raK-2i-FfZ" secondAttribute="bottom" id="jBi-ff-pux"/>
                     <constraint firstItem="raK-2i-FfZ" firstAttribute="centerX" secondItem="l2g-OY-l5J" secondAttribute="centerX" id="ucE-du-BXe"/>
@@ -55,7 +56,7 @@
                 <outlet property="addRemoveTimeButton" destination="raK-2i-FfZ" id="2Gh-VY-pre"/>
                 <outlet property="shiftPicker" destination="R1T-MH-EHh" id="7yg-ke-lWs"/>
             </connections>
-            <point key="canvasLocation" x="-102.89855072463769" y="-159.70982142857142"/>
+            <point key="canvasLocation" x="-114" y="-64"/>
         </tableViewCell>
     </objects>
     <resources>
