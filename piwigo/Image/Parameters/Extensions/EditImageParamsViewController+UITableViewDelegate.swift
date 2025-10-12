@@ -31,14 +31,7 @@ extension EditImageParamsViewController: UITableViewDelegate
             view.endEditing(true)
 
             // Hide picker if necessary
-            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
-            if hasDatePicker {
-                // Found a picker, so remove it
-                hasDatePicker = false
-                editImageParamsTableView.beginUpdates()
-                editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
-                editImageParamsTableView.endUpdates()
-            }
+            removePickersIfNeeded()
 
             // Create view controller
             let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -56,14 +49,7 @@ extension EditImageParamsViewController: UITableViewDelegate
             view.endEditing(true)
 
             // Hide picker if necessary
-            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
-            if hasDatePicker {
-                // Found a picker, so remove it
-                hasDatePicker = false
-                editImageParamsTableView.beginUpdates()
-                editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
-                editImageParamsTableView.endUpdates()
-            }
+            removePickersIfNeeded()
 
             // Create view controller
             let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
@@ -84,7 +70,10 @@ extension EditImageParamsViewController: UITableViewDelegate
         var result: Bool
         let row = rowAt(indexPath: indexPath)
         switch EditImageParamsOrder(rawValue: row) {
-            case .imageName, .author, .date, .datePicker, .desc:
+        case .imageName, .author,
+             .date, .datePicker,
+             .time, .timePicker,
+             .desc:
                 result = false
             default:
                 result = true

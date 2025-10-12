@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		AD018D8228D739DB0003D5DB /* AlbumImageSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */; };
 		AD018D8428D73AE60003D5DB /* ImagePrivacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD018D8328D73AE60003D5DB /* ImagePrivacy.swift */; };
+		AD02D2F42E9A446D0073335F /* EditImageTimePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */; };
+		AD02D2F62E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */; };
+		AD02D2FB2E9AAB190073335F /* EditImageDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CABF26DBF13700BEAEFB /* EditImageDatePickerTableViewCell.swift */; };
 		AD05F3E02E4CD5B700217E75 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD05F3DF2E4CD5B700217E75 /* NetworkMonitor.swift */; };
 		AD06B6E12BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */; };
 		AD06B6E32BEBD6CD00C5F078 /* PwgSession+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06B6E22BEBD6CD00C5F078 /* PwgSession+Delegate.swift */; };
@@ -21,7 +24,6 @@
 		AD06E3852A423051007CACD7 /* pwg.images.search.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD23882628FAB4050037696E /* pwg.images.search.swift */; };
 		AD06E3862A423053007CACD7 /* pwg.images.exist.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD06E3832A4227AA007CACD7 /* pwg.images.exist.swift */; };
 		AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CABD26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift */; };
-		AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CABF26DBF13700BEAEFB /* EditImageDatePickerTableViewCell.swift */; };
 		AD07CAC226DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAC126DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift */; };
 		AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAC326DD701600BEAEFB /* EditImageThumbTableViewCell.swift */; };
 		AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
@@ -369,7 +371,6 @@
 		AD816C912C49672B00A0A466 /* AlbumRenaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD816C902C49672B00A0A466 /* AlbumRenaming.swift */; };
 		AD816C932C497DB300A0A466 /* AlbumDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD816C922C497DB300A0A466 /* AlbumDeletion.swift */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
-		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD865770284CF4EB00C06EF4 /* community.categories.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD86576F284CF4EB00C06EF4 /* community.categories.getList.json */; };
 		AD865772284CF67E00C06EF4 /* community.categories.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD865771284CF67E00C06EF4 /* community.categories.getList.swift */; };
 		AD865773284CFE6D00C06EF4 /* community.categories.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD865771284CF67E00C06EF4 /* community.categories.getList.swift */; };
@@ -575,7 +576,6 @@
 		ADDB2A6A2B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */; };
 		ADDB2A6D2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */; };
 		ADDB2A6F2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */; };
-		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
 		ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36BB28CCC12800E5AE4B /* ResolutionValueTransformer.swift */; };
 		ADDC36BE28CCC31C00E5AE4B /* Resolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36BD28CCC31C00E5AE4B /* Resolution.swift */; };
 		ADDC36C528CCE8CE00E5AE4B /* Image+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDC36C328CCE8CD00E5AE4B /* Image+CoreDataClass.swift */; };
@@ -738,6 +738,8 @@
 /* Begin PBXFileReference section */
 		AD018D8128D739DB0003D5DB /* AlbumImageSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageSort.swift; sourceTree = "<group>"; };
 		AD018D8328D73AE60003D5DB /* ImagePrivacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePrivacy.swift; sourceTree = "<group>"; };
+		AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageTimePickerTableViewCell.swift; sourceTree = "<group>"; };
+		AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+TimePicker.swift"; sourceTree = "<group>"; };
 		AD05F3DF2E4CD5B700217E75 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		AD06B6E02BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlbumViewController+Prefetching.swift"; sourceTree = "<group>"; };
 		AD06B6E22BEBD6CD00C5F078 /* PwgSession+Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Delegate.swift"; sourceTree = "<group>"; };
@@ -1101,7 +1103,6 @@
 		AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPrivacyViewController.swift; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
 		AD8452601FEC70740035047B /* ar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/About.strings; sourceTree = "<group>"; };
-		AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageDatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		AD8549321FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/About.strings; sourceTree = "<group>"; };
 		AD86576F284CF4EB00C06EF4 /* community.categories.getList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = community.categories.getList.json; sourceTree = "<group>"; };
 		AD865771284CF67E00C06EF4 /* community.categories.getList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = community.categories.getList.swift; path = piwigoKit/Network/community/community.categories.getList.swift; sourceTree = SOURCE_ROOT; };
@@ -1344,7 +1345,6 @@
 		ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ThumbnailCell.swift"; sourceTree = "<group>"; };
 		ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
 		ADDB2A6E2B416FF500FDC1B1 /* EditImageParamsViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
-		ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageShiftPickerTableViewCell.xib; sourceTree = "<group>"; };
 		ADDC36BB28CCC12800E5AE4B /* ResolutionValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionValueTransformer.swift; sourceTree = "<group>"; };
 		ADDC36BD28CCC31C00E5AE4B /* Resolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resolution.swift; sourceTree = "<group>"; };
 		ADDC36C328CCE8CD00E5AE4B /* Image+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -2031,9 +2031,8 @@
 				AD07CAC126DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift */,
 				ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */,
 				AD07CABF26DBF13700BEAEFB /* EditImageDatePickerTableViewCell.swift */,
-				AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */,
+				AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */,
 				AD07CABD26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift */,
-				ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -2623,6 +2622,7 @@
 				ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */,
 				ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */,
 				ADDB2A672B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift */,
+				AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */,
 				ADDB2A652B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift */,
 				ADDB2A632B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift */,
 				ADDB2A612B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift */,
@@ -3382,10 +3382,8 @@
 				ADACD2912C317CFB00F8790B /* TroubleshootingViewController.storyboard in Resources */,
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD9697DA2BE2536300520614 /* LocalImageCollectionViewCell.xib in Resources */,
-				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
 				AD5DA2812DFF412500EFA7A5 /* help07-bot.png in Resources */,
 				AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */,
-				ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */,
 				AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */,
 				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
 				AD3B2C672A2938910001B8B0 /* (null) in Resources */,
@@ -3815,6 +3813,7 @@
 				AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */,
 				ADC115E52DCA7CDF000EA45B /* DateFormatSelectorViewController+UITableViewDataSource.swift in Sources */,
 				ADE6ADB32DC5196500EAE9C8 /* AddActionTableViewFooterView.swift in Sources */,
+				AD02D2FB2E9AAB190073335F /* EditImageDatePickerTableViewCell.swift in Sources */,
 				AD0B62FB2DEB5A0C001E9684 /* UploadParametersViewController+UITextFieldDelegate.swift in Sources */,
 				AD09E2FF2A90D6DD00D8E134 /* VideoDetailViewController.swift in Sources */,
 				ADD65C5D2BE77ACC005AC3B8 /* ImageAnimatedTransitioning.swift in Sources */,
@@ -3843,7 +3842,6 @@
 				ADDB2A682B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift in Sources */,
 				AD4373412B432967009BC454 /* SettingsViewController+UITableViewDataSource.swift in Sources */,
 				AD0B62F92DEB5910001E9684 /* UploadParametersViewController+UITableViewDelegate.swift in Sources */,
-				AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */,
 				AD7A0CC22C10FF4A008AB50F /* UIButton+AppTools.swift in Sources */,
 				AD6BA0F82BA5C18100755257 /* PasteboardImagesViewController+Delegate.swift in Sources */,
 				AD9698242BE6548400520614 /* AlbumViewController+Discover.swift in Sources */,
@@ -3885,6 +3883,7 @@
 				ADEA26A6285FA1EB00B6C9A0 /* ImageViewController+Delete.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
 				AD0B62E72DEA2DAB001E9684 /* CounterFormatSelectorViewController+UITableViewDelegate.swift in Sources */,
+				AD02D2F42E9A446D0073335F /* EditImageTimePickerTableViewCell.swift in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADD65C5A2BE777CC005AC3B8 /* AlbumViewController+Menu.swift in Sources */,
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
@@ -3987,6 +3986,7 @@
 				ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */,
 				ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */,
 				AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */,
+				AD02D2F62E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift in Sources */,
 				ADDB2A622B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift in Sources */,
 				AD58F77F24EFC62F00ECF6BD /* UploadImageHeaderView.swift in Sources */,
 				AD6BA0F12BA5B04200755257 /* LocalImagesViewController+PHPhotoLibraryChangeObserver.swift in Sources */,

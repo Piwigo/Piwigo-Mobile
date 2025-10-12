@@ -14,29 +14,33 @@ extension EditImageParamsViewController: EditImageDatePickerDelegate
 {
     func didSelectDate(withPicker date: Date) {
         // Apply new date
-        shouldUpdateDateCreated = true
+        shouldUpdateDateCreated = (commonDateCreated != date)
         commonDateCreated = date
-
-        // Update cell
-        let indexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
-        editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Update creation date and time cells
+        reloadCellsForDatePickerStateChange()
     }
-
+    
     func didUnsetImageCreationDate() {
+        // Apply new date
+        shouldUpdateDateCreated = (commonDateCreated != DateUtilities.unknownDate)
         commonDateCreated = DateUtilities.unknownDate
-        shouldUpdateDateCreated = true
-
+        
         // Close date picker
-        var indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
         if hasDatePicker {
-            hasDatePicker = false
-            editImageParamsTableView.beginUpdates()
-            editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
-            editImageParamsTableView.endUpdates()
+            hasDatePicker.toggle()
+            let rowIndex = EditImageParamsOrder.datePicker.rawValue
+            removePicker(at: IndexPath(row: rowIndex, section: 0))
         }
-
-        // Update creation date cell
-        indexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
-        editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Update creation date and time cells
+        reloadCellsForDatePickerStateChange()
+    }
+    
+    private func reloadCellsForDatePickerStateChange() {
+        let dateIndexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
+        let rowIndex = EditImageParamsOrder.time.rawValue - (hasDatePicker ? 0 : 1)
+        let timeIndexPath = IndexPath(row: rowIndex, section: 0)
+        editImageParamsTableView.reloadRows(at: [dateIndexPath, timeIndexPath], with: .automatic)
     }
 }
