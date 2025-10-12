@@ -143,8 +143,9 @@ class EditImageDatePickerTableViewCell: UITableViewCell
     
     @IBAction func setDateAsToday(_ sender: Any) {
         // Select today
-        let newDate = Date()
-
+        let offsetInSecs = TimeInterval(TimeZone.current.secondsFromGMT())
+        let newDate = Date().addingTimeInterval(offsetInSecs)
+        
         // Update picker with new date
         updatePicker(with: newDate)
     }
