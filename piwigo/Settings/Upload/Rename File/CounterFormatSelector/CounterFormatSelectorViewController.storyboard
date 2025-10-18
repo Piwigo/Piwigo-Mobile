@@ -93,82 +93,45 @@
                                             <outlet property="topMargin" destination="zeA-fM-eFV" id="dZT-8o-BkW"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" rowHeight="59" id="Ft7-8Q-3v9" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="202.33333206176758" width="353" height="59"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SwitchTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" rowHeight="70" id="LK5-k9-e6y" userLabel="SwitchTableViewCell" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="202.33333206176758" width="353" height="70"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ft7-8Q-3v9" id="F6H-Pb-Kgy">
-                                            <rect key="frame" x="0.0" y="0.0" width="353" height="59"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gwm-39-lJa">
-                                                    <rect key="frame" x="20" y="20" width="244" height="19"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mBF-IH-zgc">
-                                                    <rect key="frame" x="272" y="15.666666666666664" width="63" height="28"/>
-                                                    <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <connections>
-                                                        <action selector="switchChanged:" destination="Ft7-8Q-3v9" eventType="valueChanged" id="PHp-HY-bO7"/>
-                                                    </connections>
-                                                </switch>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="mBF-IH-zgc" firstAttribute="leading" secondItem="gwm-39-lJa" secondAttribute="trailing" constant="8" symbolic="YES" id="5at-Ww-dow"/>
-                                                <constraint firstItem="gwm-39-lJa" firstAttribute="leading" secondItem="F6H-Pb-Kgy" secondAttribute="leading" constant="20" symbolic="YES" id="7Nh-dZ-G6Y"/>
-                                                <constraint firstAttribute="bottom" secondItem="gwm-39-lJa" secondAttribute="bottom" constant="20" symbolic="YES" id="NZg-HG-bp0"/>
-                                                <constraint firstAttribute="trailing" secondItem="mBF-IH-zgc" secondAttribute="trailing" constant="20" symbolic="YES" id="ihp-g5-oLS"/>
-                                                <constraint firstItem="gwm-39-lJa" firstAttribute="top" secondItem="F6H-Pb-Kgy" secondAttribute="top" constant="20" symbolic="YES" id="vqQ-8S-Kb2"/>
-                                                <constraint firstItem="mBF-IH-zgc" firstAttribute="centerY" secondItem="F6H-Pb-Kgy" secondAttribute="centerY" id="yAz-ef-p4G"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="bottomMargin" destination="NZg-HG-bp0" id="G2B-ua-DFR"/>
-                                            <outlet property="cellSwitch" destination="mBF-IH-zgc" id="f4w-D8-wIv"/>
-                                            <outlet property="switchName" destination="gwm-39-lJa" id="gMu-aT-YMf"/>
-                                            <outlet property="topMargin" destination="vqQ-8S-Kb2" id="hha-9D-UrQ"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SwitchTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell2" rowHeight="70" id="nQX-yr-twg" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="261.33333206176758" width="353" height="70"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nQX-yr-twg" id="fDw-un-8xw">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LK5-k9-e6y" id="F6g-wm-Lgx">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="70"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bD5-ht-5VX">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VDX-c1-6vw">
                                                     <rect key="frame" x="20" y="20" width="45" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YMa-QU-syj">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gSV-iX-nlg">
                                                     <rect key="frame" x="272" y="21" width="63" height="28"/>
                                                     <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
-                                                        <action selector="switchChanged:" destination="nQX-yr-twg" eventType="valueChanged" id="InF-ba-xOw"/>
+                                                        <action selector="switchChanged:" destination="LK5-k9-e6y" eventType="valueChanged" id="zWH-Pf-lbx"/>
                                                     </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="YMa-QU-syj" secondAttribute="trailing" constant="20" symbolic="YES" id="OxD-Je-yMV"/>
-                                                <constraint firstItem="YMa-QU-syj" firstAttribute="centerY" secondItem="bD5-ht-5VX" secondAttribute="centerY" id="cjr-YA-f5A"/>
-                                                <constraint firstItem="bD5-ht-5VX" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="fDw-un-8xw" secondAttribute="trailing" constant="-81" id="o8t-rX-Ykj"/>
-                                                <constraint firstItem="bD5-ht-5VX" firstAttribute="leading" secondItem="fDw-un-8xw" secondAttribute="leading" constant="20" symbolic="YES" id="obb-Nd-xeY"/>
-                                                <constraint firstAttribute="bottom" secondItem="bD5-ht-5VX" secondAttribute="bottom" constant="20" symbolic="YES" id="u3h-MV-aTC"/>
-                                                <constraint firstItem="bD5-ht-5VX" firstAttribute="top" secondItem="fDw-un-8xw" secondAttribute="top" constant="20" symbolic="YES" id="xD3-1W-EFT"/>
+                                                <constraint firstAttribute="bottom" secondItem="VDX-c1-6vw" secondAttribute="bottom" constant="20" symbolic="YES" id="3xB-K8-Smo"/>
+                                                <constraint firstItem="gSV-iX-nlg" firstAttribute="centerY" secondItem="VDX-c1-6vw" secondAttribute="centerY" id="KM6-19-jhK"/>
+                                                <constraint firstItem="VDX-c1-6vw" firstAttribute="leading" secondItem="F6g-wm-Lgx" secondAttribute="leading" constant="20" symbolic="YES" id="SW0-GS-vnq"/>
+                                                <constraint firstAttribute="trailing" secondItem="gSV-iX-nlg" secondAttribute="trailing" constant="20" symbolic="YES" id="aiB-Ky-Lmg"/>
+                                                <constraint firstItem="VDX-c1-6vw" firstAttribute="top" secondItem="F6g-wm-Lgx" secondAttribute="top" constant="20" symbolic="YES" id="iA6-ov-TwM"/>
+                                                <constraint firstItem="gSV-iX-nlg" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="VDX-c1-6vw" secondAttribute="trailing" constant="8" symbolic="YES" id="ztX-z0-Z6z"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="bottomMargin" destination="u3h-MV-aTC" id="dyg-t7-1e4"/>
-                                            <outlet property="cellSwitch" destination="YMa-QU-syj" id="3wc-Wx-VdH"/>
-                                            <outlet property="switchName" destination="bD5-ht-5VX" id="Wbg-nC-7qP"/>
-                                            <outlet property="topMargin" destination="xD3-1W-EFT" id="Q1i-8U-8KV"/>
+                                            <outlet property="bottomMargin" destination="3xB-K8-Smo" id="xiM-ha-cLP"/>
+                                            <outlet property="cellSwitch" destination="gSV-iX-nlg" id="G2T-Pd-2O9"/>
+                                            <outlet property="switchName" destination="VDX-c1-6vw" id="CpW-IO-vlo"/>
+                                            <outlet property="topMargin" destination="iA6-ov-TwM" id="PI4-h2-xNE"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="CounterPrefixSelectorTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CounterPrefixSelectorTableViewCell" id="0yr-yD-fjr" customClass="CounterPrefixSelectorTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="331.33333206176758" width="353" height="77"/>
+                                        <rect key="frame" x="20" y="272.33333206176758" width="353" height="77"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0yr-yD-fjr" id="W5H-0n-F1B">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="77"/>
@@ -206,7 +169,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SliderTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SliderTableViewCell" rowHeight="56" id="80m-Oh-4Ap" customClass="SliderTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="408.33333206176758" width="353" height="56"/>
+                                        <rect key="frame" x="20" y="349.33333206176758" width="353" height="56"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="80m-Oh-4Ap" id="h8f-fe-iX0">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="56"/>
@@ -253,7 +216,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SliderTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SliderTableViewCell2" rowHeight="126" id="cRB-FB-U8b" userLabel="SliderTableViewCell2" customClass="SliderTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="464.33333206176758" width="353" height="126"/>
+                                        <rect key="frame" x="20" y="405.33333206176758" width="353" height="126"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cRB-FB-U8b" id="9Dw-Tv-ps1">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="126"/>
@@ -305,7 +268,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="CounterSuffixSelectorTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CounterSuffixSelectorTableViewCell" id="907-4K-X3S" customClass="CounterSuffixSelectorTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="590.33333206176758" width="353" height="77"/>
+                                        <rect key="frame" x="20" y="531.33333206176758" width="353" height="77"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="907-4K-X3S" id="fQv-dN-KGi">
                                             <rect key="frame" x="0.0" y="0.0" width="353" height="77"/>

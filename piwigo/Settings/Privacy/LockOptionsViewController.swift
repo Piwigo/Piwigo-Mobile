@@ -97,13 +97,9 @@ extension LockOptionsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
 
             let title = NSLocalizedString("settings_appLock", comment: "App Lock")
@@ -136,10 +132,7 @@ extension LockOptionsViewController: UITableViewDataSource {
             tableViewCell = cell
 
         case 2:     // TouchID / FaceID / OpticID On/Off
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             var title = ""
             switch context.biometryType {

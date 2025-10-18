@@ -132,10 +132,7 @@ extension RenameFileViewController: UITableViewDataSource
             let row = indexPath.row > 0 ? prefixActions[indexPath.row - 1].index : indexPath.row
             switch row {
             case 0 /* Add prefix switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renamePrefix", comment: "Prefix File Name"))
@@ -196,10 +193,7 @@ extension RenameFileViewController: UITableViewDataSource
             let row = indexPath.row > 0 ? replaceActions[indexPath.row - 1].index : indexPath.row
             switch row {
             case 0 /* Replace name switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("settings_renameReplace", comment: "Replace File Name"))
@@ -259,10 +253,7 @@ extension RenameFileViewController: UITableViewDataSource
             let row = indexPath.row > 0 ? suffixActions[indexPath.row - 1].index : indexPath.row
             switch row {
             case 0 /* Add suffix switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("settings_renameSuffix", comment: "Suffix File Name"))
@@ -321,10 +312,7 @@ extension RenameFileViewController: UITableViewDataSource
         case .fileExtension:
             switch indexPath.row {
             case 0 /* Change Case switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("settings_renameChangeCase", comment: "Change Case"))

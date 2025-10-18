@@ -41,15 +41,11 @@ extension DateFormatSelectorViewController: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch dateSections[indexPath.section] {
         case .year:
             switch indexPath.row {
             case 0 /* Display Year switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("Year", comment: "Year"))
@@ -105,10 +101,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
         case .month:
             switch indexPath.row {
             case 0 /* Display Month switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("Month", comment: "Month"))
@@ -175,10 +168,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
         case .day:
             switch indexPath.row {
             case 0 /* Display Day switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("Day", comment: "Day"))
@@ -256,10 +246,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
         case .separator:
             switch indexPath.row {
             case 0 /* Display Year/Month/Day Separator switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("Separator", comment: "Separator"))

@@ -284,10 +284,7 @@ extension SettingsViewController: UITableViewDataSource
         
         // MARK: Videos
         case .videos /* Videos */:
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
 
             switch indexPath.row {
@@ -367,10 +364,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* Strip private Metadata? */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 440 {
@@ -386,10 +380,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* Resize Before Upload? */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 if view.bounds.size.width > 440 {
                     cell.configure(with: NSLocalizedString("settings_photoResizeLong", comment: "Downsize Photo"))
@@ -441,10 +432,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 6 /* Compress before Upload? */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 440 {
@@ -515,10 +503,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 9 /* Wi-Fi Only? */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 cell.configure(with: NSLocalizedString("settings_wifiOnly", comment: "Wi-Fi Only"))
                 cell.cellSwitch.setOn(UploadVars.shared.wifiOnlyUploading, animated: true)
@@ -561,10 +546,7 @@ extension SettingsViewController: UITableViewDataSource
                 tableViewCell = cell
 
             case 11 /* Delete image after upload? */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
                 // See https://iosref.com/res
                 if view.bounds.size.width > 430 {

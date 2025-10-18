@@ -34,10 +34,7 @@ extension UploadSettingsViewController {
         row += (!compressImageOnUpload && (row > 4)) ? 1 : 0
         switch row {
         case 0 /* Strip private Metadata? */:
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             // See https://iosref.com/res
             cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
@@ -49,10 +46,7 @@ extension UploadSettingsViewController {
             tableViewCell = cell
             
         case 1 /* Resize Before Upload? */:
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Downsize"))
             cell.cellSwitch.setOn(resizeImageOnUpload, animated: true)
@@ -98,10 +92,7 @@ extension UploadSettingsViewController {
             tableViewCell = cell
             
         case 4 /* Compress before Upload? */:
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             // See https://iosref.com/res
             cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress"))
@@ -166,10 +157,7 @@ extension UploadSettingsViewController {
             tableViewCell = cell
 
         case 7 /* Delete image after upload? */:
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After"))
             cell.cellSwitch.setOn(deleteImageAfterUpload, animated: true)

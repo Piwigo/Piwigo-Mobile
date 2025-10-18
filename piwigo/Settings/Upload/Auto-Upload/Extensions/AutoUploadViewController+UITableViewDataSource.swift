@@ -37,10 +37,7 @@ extension AutoUploadViewController: UITableViewDataSource
         let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)

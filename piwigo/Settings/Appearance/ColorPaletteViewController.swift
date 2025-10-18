@@ -82,7 +82,6 @@ extension ColorPaletteViewController: UITableViewDataSource {
     // MARK: - Rows
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.row {
         case 0:
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -98,10 +97,7 @@ extension ColorPaletteViewController: UITableViewDataSource {
             }
             
         case 1:
-            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                ? "SwitchTableViewCell"
-                : "SwitchTableViewCell2"
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load SwitchTableViewCell") }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
             cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)

@@ -306,78 +306,41 @@
                                     <outlet property="lightLabelHeight" destination="7LY-P8-xv0" id="0c4-iv-B69"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SwitchTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell2" rowHeight="70" id="k1L-1v-zAi" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SwitchTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" rowHeight="70" id="o4S-kv-xUw" userLabel="SwitchTableViewCell" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="20" y="528.33333206176758" width="390" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="k1L-1v-zAi" id="6dV-Us-GAz">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="o4S-kv-xUw" id="8Lf-pU-fmS">
                                     <rect key="frame" x="0.0" y="0.0" width="390" height="70"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SVf-GH-rGC">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wKU-fl-0QF">
                                             <rect key="frame" x="20" y="20" width="45" height="30"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ih6-y6-DJQ">
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5HX-Wa-axN">
                                             <rect key="frame" x="309" y="21" width="63" height="28"/>
                                             <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
-                                                <action selector="switchChanged:" destination="k1L-1v-zAi" eventType="valueChanged" id="p0e-gH-Txe"/>
+                                                <action selector="switchChanged:" destination="o4S-kv-xUw" eventType="valueChanged" id="gI0-Ag-sZ7"/>
                                             </connections>
                                         </switch>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="SVf-GH-rGC" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="6dV-Us-GAz" secondAttribute="trailing" constant="-81" id="Agy-xm-j3M"/>
-                                        <constraint firstItem="SVf-GH-rGC" firstAttribute="top" secondItem="6dV-Us-GAz" secondAttribute="top" constant="20" symbolic="YES" id="OWr-Mr-HQx"/>
-                                        <constraint firstAttribute="bottom" secondItem="SVf-GH-rGC" secondAttribute="bottom" constant="20" symbolic="YES" id="PCy-Yi-xlq"/>
-                                        <constraint firstItem="Ih6-y6-DJQ" firstAttribute="centerY" secondItem="SVf-GH-rGC" secondAttribute="centerY" id="UyW-37-wOc"/>
-                                        <constraint firstItem="SVf-GH-rGC" firstAttribute="leading" secondItem="6dV-Us-GAz" secondAttribute="leading" constant="20" symbolic="YES" id="n9B-va-n0n"/>
-                                        <constraint firstAttribute="trailing" secondItem="Ih6-y6-DJQ" secondAttribute="trailing" constant="20" symbolic="YES" id="ubK-5e-oBl"/>
+                                        <constraint firstItem="wKU-fl-0QF" firstAttribute="top" secondItem="8Lf-pU-fmS" secondAttribute="top" constant="20" symbolic="YES" id="HEw-8l-80C"/>
+                                        <constraint firstAttribute="bottom" secondItem="wKU-fl-0QF" secondAttribute="bottom" constant="20" symbolic="YES" id="Q0d-2C-CaQ"/>
+                                        <constraint firstItem="wKU-fl-0QF" firstAttribute="leading" secondItem="8Lf-pU-fmS" secondAttribute="leading" constant="20" symbolic="YES" id="Rd5-wM-q5n"/>
+                                        <constraint firstItem="5HX-Wa-axN" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="wKU-fl-0QF" secondAttribute="trailing" constant="8" symbolic="YES" id="YDr-YY-xc7"/>
+                                        <constraint firstAttribute="trailing" secondItem="5HX-Wa-axN" secondAttribute="trailing" constant="20" symbolic="YES" id="la3-hV-Fvo"/>
+                                        <constraint firstItem="5HX-Wa-axN" firstAttribute="centerY" secondItem="wKU-fl-0QF" secondAttribute="centerY" id="rOq-JY-Ebc"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="bottomMargin" destination="PCy-Yi-xlq" id="ww6-oF-U0F"/>
-                                    <outlet property="cellSwitch" destination="Ih6-y6-DJQ" id="knS-Ym-lvb"/>
-                                    <outlet property="switchName" destination="SVf-GH-rGC" id="MYw-78-peB"/>
-                                    <outlet property="topMargin" destination="OWr-Mr-HQx" id="FPA-3W-p0c"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" id="WjU-QM-SaV" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="598.33333206176758" width="390" height="61.333332061767578"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WjU-QM-SaV" id="uyD-0P-QeF">
-                                    <rect key="frame" x="0.0" y="0.0" width="390" height="61.333332061767578"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aQL-Ca-vrd">
-                                            <rect key="frame" x="20" y="20" width="281" height="21.333333333333329"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="COg-Ey-dWn">
-                                            <rect key="frame" x="309" y="16.666666666666668" width="63" height="28.000000000000004"/>
-                                            <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                            <connections>
-                                                <action selector="switchChanged:" destination="WjU-QM-SaV" eventType="valueChanged" id="Nax-XD-eKB"/>
-                                            </connections>
-                                        </switch>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="COg-Ey-dWn" firstAttribute="leading" secondItem="aQL-Ca-vrd" secondAttribute="trailing" constant="8" symbolic="YES" id="4V4-Cp-3zd"/>
-                                        <constraint firstItem="aQL-Ca-vrd" firstAttribute="leading" secondItem="uyD-0P-QeF" secondAttribute="leading" constant="20" symbolic="YES" id="KQC-yy-erP"/>
-                                        <constraint firstAttribute="trailing" secondItem="COg-Ey-dWn" secondAttribute="trailing" constant="20" symbolic="YES" id="PtQ-fQ-sK0"/>
-                                        <constraint firstItem="aQL-Ca-vrd" firstAttribute="top" secondItem="uyD-0P-QeF" secondAttribute="top" constant="20" symbolic="YES" id="TTs-Qn-hnX"/>
-                                        <constraint firstItem="COg-Ey-dWn" firstAttribute="centerY" secondItem="uyD-0P-QeF" secondAttribute="centerY" id="xe0-b1-4ML"/>
-                                        <constraint firstAttribute="bottom" secondItem="aQL-Ca-vrd" secondAttribute="bottom" constant="20" symbolic="YES" id="zQc-XI-HXH"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="bottomMargin" destination="zQc-XI-HXH" id="1vK-re-BYf"/>
-                                    <outlet property="cellSwitch" destination="COg-Ey-dWn" id="e5d-DQ-scL"/>
-                                    <outlet property="switchName" destination="aQL-Ca-vrd" id="Ngu-TP-TvU"/>
-                                    <outlet property="topMargin" destination="TTs-Qn-hnX" id="iDi-L5-Uv3"/>
+                                    <outlet property="bottomMargin" destination="Q0d-2C-CaQ" id="aDn-WH-tNK"/>
+                                    <outlet property="cellSwitch" destination="5HX-Wa-axN" id="hFx-9y-MXx"/>
+                                    <outlet property="switchName" destination="wKU-fl-0QF" id="DBA-s8-jKZ"/>
+                                    <outlet property="topMargin" destination="HEw-8l-80C" id="68k-5Y-hbc"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

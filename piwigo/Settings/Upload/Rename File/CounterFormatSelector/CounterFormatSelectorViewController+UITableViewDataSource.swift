@@ -59,10 +59,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
         case .prefix:
             switch indexPath.row {
             case 0 /* Display Counter Prefix switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("settings_prefix", comment: "Prefix"))
@@ -139,10 +136,7 @@ extension CounterFormatSelectorViewController: UITableViewDataSource
         case .suffix:
             switch indexPath.row {
             case 0 /* Display Counter Suffix switch */:
-                let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
-                    ? "SwitchTableViewCell"
-                    : "SwitchTableViewCell2"
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SwitchTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
 
                 cell.configure(with: NSLocalizedString("settings_suffix", comment: "Suffix"))
