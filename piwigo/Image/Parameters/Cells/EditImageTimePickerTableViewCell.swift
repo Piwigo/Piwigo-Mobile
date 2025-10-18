@@ -64,15 +64,16 @@ class EditImageTimePickerTableViewCell: UITableViewCell {
         timePicker?.tintColor = PwgColor.leftLabel
         timePicker?.reloadAllComponents()
     }
-    
+        
+    override func prepareForReuse() {
+        super.prepareForReuse()
+    }
+
     // MARK: - Picker Methods
     func config(withDate date: Date?, animated: Bool) {
         // Adopts current date if provided date is nil
-        var pickerDate = Date()
-        if let date {
-            pickerDate = date
-        }
-        
+        let pickerDate = date ?? Date()
+
         // Initialisation
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(abbreviation: "UTC")!
@@ -81,22 +82,22 @@ class EditImageTimePickerTableViewCell: UITableViewCell {
         // Substract right amount of time
         let second = calendar.component(.second, from: pickerDate)
         daysInSec -= TimeInterval(second)
-        timePicker?.selectRow(second, inComponent: PickerComponents.second.rawValue, animated: false)
+        timePicker?.selectRow(second, inComponent: PickerComponents.second.rawValue, animated: animated)
         
         let minute = calendar.component(.minute, from: pickerDate)
         daysInSec -= TimeInterval(minute * 60)
-        timePicker?.selectRow(minute, inComponent: PickerComponents.minute.rawValue, animated: false)
+        timePicker?.selectRow(minute, inComponent: PickerComponents.minute.rawValue, animated: animated)
         
         var hour = calendar.component(.hour, from: pickerDate)
         daysInSec -= TimeInterval(hour * 3600)
         if is24hFormat {
-            timePicker?.selectRow(hour, inComponent: PickerComponents.hour.rawValue, animated: false)
+            timePicker?.selectRow(hour, inComponent: PickerComponents.hour.rawValue, animated: animated)
         } else {
             if hour > 11 {
                 hour -= 12
-                timePicker?.selectRow(1, inComponent: PickerComponents.AMPM.rawValue, animated: false)
+                timePicker?.selectRow(1, inComponent: PickerComponents.AMPM.rawValue, animated: animated)
             }
-            timePicker?.selectRow(hour, inComponent: PickerComponents.hour.rawValue, animated: false)
+            timePicker?.selectRow(hour, inComponent: PickerComponents.hour.rawValue, animated: animated)
         }
         
         pickerDateInSecs = daysInSec
@@ -127,7 +128,7 @@ extension EditImageTimePickerTableViewCell: UIPickerViewDataSource
             case .AMPM:
                 nberOfRows = 2
             default:
-                break
+                preconditionFailure("Unknown picker component")
         }
         return nberOfRows
     }
@@ -139,7 +140,7 @@ extension EditImageTimePickerTableViewCell: UIPickerViewDelegate
 {
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         // Same height for all components
-        return UIFont.preferredFont(forTextStyle: .body).lineHeight
+        return UIFont.preferredFont(forTextStyle: .body).lineHeight + 4.0
     }
 
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {

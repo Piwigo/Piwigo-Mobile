@@ -89,24 +89,22 @@ extension EditImageParamsViewController: UITableViewDataSource
             if images.count > 1 {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShiftPickerTableCell", for: indexPath) as? EditImageShiftPickerTableViewCell
                 else { preconditionFailure("Could not load a EditImageShiftPickerTableViewCell") }
-                cell.config(withDate: commonDateCreated, animated: false)
                 cell.delegate = self
+                cell.config(withDate: commonDateCreated, animated: false)
                 tableViewCell = cell
-                
-            } else {
+            }
+            else {
                 var cellIdentifier: String = ""
                 switch contentSizeCategory {
                 case .extraSmall, .small, .medium, .large, .extraLarge, .extraExtraLarge:
                     cellIdentifier = "DatePickerTableCell"
-                case .extraExtraExtraLarge, .accessibilityMedium, .accessibilityLarge:
-                    cellIdentifier = "DatePickerTableCell2"
                 default:
-                    cellIdentifier = "DatePickerTableCell3"
+                    cellIdentifier = "DatePickerTableCell2"
                 }
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? EditImageDatePickerTableViewCell
                 else { preconditionFailure("Could not load a EditImageDatePickerTableViewCell") }
-                cell.config(withDate: commonDateCreated, animated: false)
                 cell.delegate = self
+                cell.config(withDate: commonDateCreated, animated: false)
                 tableViewCell = cell
             }
             
@@ -129,15 +127,15 @@ extension EditImageParamsViewController: UITableViewDataSource
             if images.count > 1 {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShiftPickerTableCell", for: indexPath) as? EditImageShiftPickerTableViewCell
                 else { preconditionFailure("Could not load a EditImageShiftPickerTableViewCell") }
-                cell.config(withDate: commonDateCreated, animated: false)
                 cell.delegate = self
+                cell.config(withDate: commonDateCreated, animated: false)
                 tableViewCell = cell
-                
-            } else {
+            }
+            else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TimePickerTableCell", for: indexPath) as? EditImageTimePickerTableViewCell
                 else { preconditionFailure("Could not load a EditImageTimePickerTableViewCell") }
-                cell.config(withDate: commonDateCreated, animated: false)
                 cell.delegate = self
+                cell.config(withDate: commonDateCreated, animated: false)
                 tableViewCell = cell
             }
             
@@ -196,16 +194,21 @@ extension EditImageParamsViewController: UITableViewDataSource
         var dateStr = ""
         let formatStyle = Date.FormatStyle(timeZone: TimeZone(abbreviation: "UTC")!)
         if let date = date, date > DateUtilities.weekAfter {
-            switch traitCollection.preferredContentSizeCategory {
-            case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateStr = date.formatted(formatStyle
-                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
-            case .extraExtraLarge, .extraExtraExtraLarge:
-                dateStr = date.formatted(formatStyle
-                    .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
-            default:
-                dateStr = date.formatted(formatStyle
-                    .day(.defaultDigits) .month(.twoDigits) .year(.defaultDigits))
+            if hasDatePicker {
+                dateStr = date.formatted(formatStyle .weekday(.wide))
+            }
+            else {
+                switch traitCollection.preferredContentSizeCategory {
+                case .extraSmall, .small, .medium, .large, .extraLarge:
+                    dateStr = date.formatted(formatStyle
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                case .extraExtraLarge, .extraExtraExtraLarge:
+                    dateStr = date.formatted(formatStyle
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                default:
+                    dateStr = date.formatted(formatStyle
+                        .day(.defaultDigits) .month(.twoDigits) .year(.defaultDigits))
+                }
             }
         }
         return dateStr

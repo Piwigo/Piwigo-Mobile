@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -69,11 +69,11 @@
                                             <outlet property="topMargin" destination="rq0-Ck-eXy" id="Sii-HC-vCk"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell2" rowHeight="85" id="SGH-nR-sK5" userLabel="LabelTableViewCell2" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="283.5" width="374" height="85"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell2" rowHeight="83" id="SGH-nR-sK5" userLabel="LabelTableViewCell2" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="283.5" width="374" height="83"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SGH-nR-sK5" id="fPC-Iw-mwP">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="85"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="83"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zvk-GB-bfx">
@@ -84,7 +84,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="8 Jun 2009 - 18:01:48" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cdL-PV-uOV">
-                                                    <rect key="frame" x="20" y="48.5" width="334" height="16.5"/>
+                                                    <rect key="frame" x="20" y="48.5" width="334" height="14.5"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <color key="textColor" systemColor="systemGrayColor"/>
@@ -94,9 +94,9 @@
                                             <constraints>
                                                 <constraint firstItem="cdL-PV-uOV" firstAttribute="leading" secondItem="fPC-Iw-mwP" secondAttribute="leading" constant="20" symbolic="YES" id="CyN-eG-6jA"/>
                                                 <constraint firstItem="zvk-GB-bfx" firstAttribute="top" secondItem="fPC-Iw-mwP" secondAttribute="top" constant="20" symbolic="YES" id="MXb-wV-mHO"/>
-                                                <constraint firstItem="cdL-PV-uOV" firstAttribute="top" secondItem="zvk-GB-bfx" secondAttribute="bottom" constant="8" symbolic="YES" id="ifX-3h-HHu"/>
                                                 <constraint firstAttribute="bottom" secondItem="cdL-PV-uOV" secondAttribute="bottom" constant="20" symbolic="YES" id="nJt-Sf-OMQ"/>
                                                 <constraint firstAttribute="trailing" secondItem="zvk-GB-bfx" secondAttribute="trailing" constant="20" symbolic="YES" id="sKP-f0-3qa"/>
+                                                <constraint firstItem="cdL-PV-uOV" firstAttribute="top" secondItem="zvk-GB-bfx" secondAttribute="bottom" constant="8" symbolic="YES" id="tUp-Sv-Bg1"/>
                                                 <constraint firstAttribute="trailing" secondItem="cdL-PV-uOV" secondAttribute="trailing" constant="20" symbolic="YES" id="vfG-vq-S0S"/>
                                                 <constraint firstItem="zvk-GB-bfx" firstAttribute="leading" secondItem="fPC-Iw-mwP" secondAttribute="leading" constant="20" symbolic="YES" id="xmc-6s-Q28"/>
                                             </constraints>
@@ -109,165 +109,14 @@
                                             <outlet property="topMargin" destination="MXb-wV-mHO" id="jyu-la-bS2"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="DatePickerTableCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell" rowHeight="325" id="GwR-kK-I5m" customClass="EditImageDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="368.5" width="374" height="325"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GwR-kK-I5m" id="0NE-yr-Vzt">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="325"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <pickerView contentMode="center" restorationIdentifier="datePicker" translatesAutoresizingMaskIntoConstraints="NO" id="ap3-TW-9kN">
-                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="216" id="4ZX-cL-XEK"/>
-                                                    </constraints>
-                                                    <connections>
-                                                        <outlet property="dataSource" destination="GwR-kK-I5m" id="usN-Ci-94h"/>
-                                                        <outlet property="delegate" destination="GwR-kK-I5m" id="P2K-AD-JI9"/>
-                                                    </connections>
-                                                </pickerView>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GHr-cX-fIS">
-                                                    <rect key="frame" x="0.0" y="216" width="374" height="109"/>
-                                                    <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="mB6-zr-bl8">
-                                                            <rect key="frame" x="20" y="8" width="76.5" height="42.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="-1 Month" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="decrementMonth:" destination="GwR-kK-I5m" eventType="touchUpInside" id="aWm-cf-Nlt"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="HUL-IZ-YFG">
-                                                            <rect key="frame" x="20" y="58.5" width="76.5" height="42.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="-1 Year" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="decrementYear:" destination="GwR-kK-I5m" eventType="touchUpInside" id="MBr-tX-hji"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dI8-cE-xV5">
-                                                            <rect key="frame" x="149" y="8" width="76.5" height="42.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <color key="tintColor" systemColor="systemRedColor"/>
-                                                            <buttonConfiguration key="configuration" style="tinted" title="Unset" cornerStyle="large">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="unsetDate:" destination="GwR-kK-I5m" eventType="touchUpInside" id="Od3-LP-9Pd"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="sGE-w6-V7H">
-                                                            <rect key="frame" x="149" y="58.5" width="76.5" height="42.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="Today" cornerStyle="large">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="setDateAsToday:" destination="GwR-kK-I5m" eventType="touchUpInside" id="J60-te-afO"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="BVE-Q0-V7q">
-                                                            <rect key="frame" x="277.5" y="8" width="76.5" height="42.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="+1 Month" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="incrementMonth:" destination="GwR-kK-I5m" eventType="touchUpInside" id="k83-IT-kfV"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="IjP-RL-6DR">
-                                                            <rect key="frame" x="277.5" y="58.5" width="76.5" height="42.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="+1 Year" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="incrementYear:" destination="GwR-kK-I5m" eventType="touchUpInside" id="78H-g9-sW4"/>
-                                                            </connections>
-                                                        </button>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <constraints>
-                                                        <constraint firstItem="mB6-zr-bl8" firstAttribute="height" secondItem="dI8-cE-xV5" secondAttribute="height" id="2xm-Ge-566"/>
-                                                        <constraint firstItem="BVE-Q0-V7q" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dI8-cE-xV5" secondAttribute="trailing" constant="8" id="36l-bI-W1f"/>
-                                                        <constraint firstItem="mB6-zr-bl8" firstAttribute="top" secondItem="GHr-cX-fIS" secondAttribute="top" constant="8" id="5Bn-Jj-dff"/>
-                                                        <constraint firstItem="BVE-Q0-V7q" firstAttribute="height" secondItem="dI8-cE-xV5" secondAttribute="height" id="ARS-N9-Kuc"/>
-                                                        <constraint firstItem="HUL-IZ-YFG" firstAttribute="top" secondItem="mB6-zr-bl8" secondAttribute="bottom" constant="8" symbolic="YES" id="BA7-38-TLk"/>
-                                                        <constraint firstAttribute="trailing" secondItem="IjP-RL-6DR" secondAttribute="trailing" constant="20" symbolic="YES" id="By8-Fd-TBO"/>
-                                                        <constraint firstItem="dI8-cE-xV5" firstAttribute="width" secondItem="BVE-Q0-V7q" secondAttribute="width" id="D3H-LI-Im1"/>
-                                                        <constraint firstItem="dI8-cE-xV5" firstAttribute="centerX" secondItem="GHr-cX-fIS" secondAttribute="centerX" id="DfJ-3d-279"/>
-                                                        <constraint firstItem="sGE-w6-V7H" firstAttribute="centerX" secondItem="GHr-cX-fIS" secondAttribute="centerX" id="EWg-j3-NFF"/>
-                                                        <constraint firstAttribute="bottom" secondItem="IjP-RL-6DR" secondAttribute="bottom" constant="8" id="J2y-eU-0JV"/>
-                                                        <constraint firstItem="IjP-RL-6DR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="sGE-w6-V7H" secondAttribute="trailing" constant="8" id="KCt-vn-NJZ"/>
-                                                        <constraint firstItem="sGE-w6-V7H" firstAttribute="width" secondItem="dI8-cE-xV5" secondAttribute="width" id="Npz-i3-qUp"/>
-                                                        <constraint firstItem="dI8-cE-xV5" firstAttribute="top" secondItem="GHr-cX-fIS" secondAttribute="top" constant="8" id="RVm-3z-Ljl"/>
-                                                        <constraint firstItem="dI8-cE-xV5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="mB6-zr-bl8" secondAttribute="trailing" constant="8" id="UoE-aA-saD"/>
-                                                        <constraint firstAttribute="bottom" secondItem="sGE-w6-V7H" secondAttribute="bottom" constant="8" id="b8u-Qm-EHw"/>
-                                                        <constraint firstItem="IjP-RL-6DR" firstAttribute="height" secondItem="dI8-cE-xV5" secondAttribute="height" id="ep1-uc-0cN"/>
-                                                        <constraint firstAttribute="bottom" secondItem="HUL-IZ-YFG" secondAttribute="bottom" constant="8" id="fm7-Ny-7yq"/>
-                                                        <constraint firstItem="IjP-RL-6DR" firstAttribute="width" secondItem="dI8-cE-xV5" secondAttribute="width" id="g6k-JW-RQL"/>
-                                                        <constraint firstAttribute="trailing" secondItem="BVE-Q0-V7q" secondAttribute="trailing" constant="20" symbolic="YES" id="jNl-Cb-eqI"/>
-                                                        <constraint firstItem="HUL-IZ-YFG" firstAttribute="width" secondItem="dI8-cE-xV5" secondAttribute="width" id="k6j-us-KON"/>
-                                                        <constraint firstItem="mB6-zr-bl8" firstAttribute="leading" secondItem="GHr-cX-fIS" secondAttribute="leading" constant="20" symbolic="YES" id="kkw-xP-KuH"/>
-                                                        <constraint firstItem="HUL-IZ-YFG" firstAttribute="height" secondItem="dI8-cE-xV5" secondAttribute="height" id="lat-2e-GBr"/>
-                                                        <constraint firstItem="sGE-w6-V7H" firstAttribute="top" secondItem="dI8-cE-xV5" secondAttribute="bottom" constant="8" symbolic="YES" id="lw2-vt-43r"/>
-                                                        <constraint firstItem="HUL-IZ-YFG" firstAttribute="leading" secondItem="GHr-cX-fIS" secondAttribute="leading" constant="20" symbolic="YES" id="mCI-XQ-kkj"/>
-                                                        <constraint firstItem="sGE-w6-V7H" firstAttribute="height" secondItem="dI8-cE-xV5" secondAttribute="height" id="ojJ-JI-fMx"/>
-                                                        <constraint firstItem="IjP-RL-6DR" firstAttribute="top" secondItem="BVE-Q0-V7q" secondAttribute="bottom" constant="8" symbolic="YES" id="sgN-k5-H1J"/>
-                                                        <constraint firstItem="mB6-zr-bl8" firstAttribute="width" secondItem="dI8-cE-xV5" secondAttribute="width" id="tZu-wM-R8z"/>
-                                                        <constraint firstItem="BVE-Q0-V7q" firstAttribute="top" secondItem="GHr-cX-fIS" secondAttribute="top" constant="8" id="vyf-pQ-CJF"/>
-                                                        <constraint firstItem="sGE-w6-V7H" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="HUL-IZ-YFG" secondAttribute="trailing" constant="8" id="yXw-PX-b8s"/>
-                                                    </constraints>
-                                                </view>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="ap3-TW-9kN" firstAttribute="top" secondItem="0NE-yr-Vzt" secondAttribute="top" id="6UK-Zs-ltH"/>
-                                                <constraint firstAttribute="bottom" secondItem="GHr-cX-fIS" secondAttribute="bottom" id="6ob-N4-JaK"/>
-                                                <constraint firstAttribute="trailing" secondItem="GHr-cX-fIS" secondAttribute="trailing" id="CAF-V8-qLF"/>
-                                                <constraint firstItem="ap3-TW-9kN" firstAttribute="leading" secondItem="0NE-yr-Vzt" secondAttribute="leading" id="EdF-0W-3nN"/>
-                                                <constraint firstItem="GHr-cX-fIS" firstAttribute="leading" secondItem="0NE-yr-Vzt" secondAttribute="leading" id="FBd-V1-JeS"/>
-                                                <constraint firstItem="ap3-TW-9kN" firstAttribute="trailing" secondItem="0NE-yr-Vzt" secondAttribute="trailing" id="uVc-Ok-HeE"/>
-                                                <constraint firstItem="GHr-cX-fIS" firstAttribute="top" secondItem="ap3-TW-9kN" secondAttribute="bottom" id="zmn-Dr-vPJ"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="datePicker" destination="ap3-TW-9kN" id="ZFj-5q-nEJ"/>
-                                            <outlet property="decrementMonthButton" destination="mB6-zr-bl8" id="lbK-OU-sKl"/>
-                                            <outlet property="decrementYearButton" destination="HUL-IZ-YFG" id="2TH-O7-YIz"/>
-                                            <outlet property="incrementMonthButton" destination="BVE-Q0-V7q" id="62A-Ss-WAq"/>
-                                            <outlet property="incrementYearButton" destination="IjP-RL-6DR" id="jkD-qH-9hJ"/>
-                                            <outlet property="todayDateButton" destination="sGE-w6-V7H" id="X47-wQ-ubv"/>
-                                            <outlet property="unsetDateButton" destination="dI8-cE-xV5" id="KvX-2j-bFy"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="DatePickerTableCell2" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell2" rowHeight="358" id="6tH-Hl-ZcK" userLabel="DatePickerTableCell2" customClass="EditImageDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="693.5" width="374" height="358"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="DatePickerTableCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell" rowHeight="265" id="6tH-Hl-ZcK" userLabel="DatePickerTableCell" customClass="EditImageDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="366.5" width="374" height="265"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6tH-Hl-ZcK" id="Hjy-w5-vnw">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="358"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="265"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <pickerView contentMode="center" restorationIdentifier="datePicker2" translatesAutoresizingMaskIntoConstraints="NO" id="b4w-T3-YPt">
+                                                <pickerView contentMode="center" restorationIdentifier="datePicker" translatesAutoresizingMaskIntoConstraints="NO" id="b4w-T3-YPt">
                                                     <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="rgA-Id-TFc"/>
@@ -278,10 +127,10 @@
                                                     </connections>
                                                 </pickerView>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NkV-sD-igz">
-                                                    <rect key="frame" x="0.0" y="216" width="374" height="142"/>
+                                                    <rect key="frame" x="0.0" y="216" width="374" height="49"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LCN-e9-dl4">
-                                                            <rect key="frame" x="20" y="8" width="163" height="36.5"/>
+                                                            <rect key="frame" x="20" y="0.0" width="163" height="41"/>
                                                             <color key="tintColor" systemColor="systemRedColor"/>
                                                             <buttonConfiguration key="configuration" style="tinted" title="Unset" cornerStyle="large">
                                                                 <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
@@ -291,7 +140,7 @@
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="lEy-yX-upz">
-                                                            <rect key="frame" x="191" y="8" width="163" height="36.5"/>
+                                                            <rect key="frame" x="191" y="0.0" width="163" height="41"/>
                                                             <buttonConfiguration key="configuration" style="filled" title="Today" cornerStyle="large">
                                                                 <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
                                                                 <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -301,115 +150,45 @@
                                                                 <action selector="setDateAsToday:" destination="6tH-Hl-ZcK" eventType="touchUpInside" id="fiW-al-bkx"/>
                                                             </connections>
                                                         </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="n3s-eU-rnS">
-                                                            <rect key="frame" x="20" y="52.5" width="163" height="37"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="-1 Month" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray5Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="decrementMonth:" destination="6tH-Hl-ZcK" eventType="touchUpInside" id="avn-xV-MfH"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="PdY-Rd-3CZ">
-                                                            <rect key="frame" x="191" y="52.5" width="163" height="37"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="+1 Month" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="incrementMonth:" destination="6tH-Hl-ZcK" eventType="touchUpInside" id="e1V-g5-Rev"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Le8-Sn-lhZ">
-                                                            <rect key="frame" x="20" y="97.5" width="163" height="36.5"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="-1 Year" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="decrementYear:" destination="6tH-Hl-ZcK" eventType="touchUpInside" id="R3e-Ua-D9A"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="CmK-qo-Zqh">
-                                                            <rect key="frame" x="191" y="97.5" width="163" height="36.5"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="+1 Year" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="incrementYear:" destination="6tH-Hl-ZcK" eventType="touchUpInside" id="nfM-6I-Jx6"/>
-                                                            </connections>
-                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
-                                                        <constraint firstItem="CmK-qo-Zqh" firstAttribute="width" secondItem="LCN-e9-dl4" secondAttribute="width" id="6aU-Qr-5jx"/>
-                                                        <constraint firstItem="Le8-Sn-lhZ" firstAttribute="leading" secondItem="NkV-sD-igz" secondAttribute="leading" constant="20" symbolic="YES" id="75b-z7-RNn"/>
-                                                        <constraint firstItem="CmK-qo-Zqh" firstAttribute="height" secondItem="LCN-e9-dl4" secondAttribute="height" id="DjN-5b-LNq"/>
-                                                        <constraint firstItem="Le8-Sn-lhZ" firstAttribute="width" secondItem="LCN-e9-dl4" secondAttribute="width" id="EGB-zG-a7O"/>
-                                                        <constraint firstItem="LCN-e9-dl4" firstAttribute="top" secondItem="NkV-sD-igz" secondAttribute="top" constant="8" id="IFH-Jp-Aae"/>
-                                                        <constraint firstItem="n3s-eU-rnS" firstAttribute="width" secondItem="LCN-e9-dl4" secondAttribute="width" id="Qlq-kJ-MhD"/>
+                                                        <constraint firstAttribute="bottom" secondItem="LCN-e9-dl4" secondAttribute="bottom" constant="8" id="8fh-IS-etg"/>
+                                                        <constraint firstItem="LCN-e9-dl4" firstAttribute="top" secondItem="NkV-sD-igz" secondAttribute="top" id="IFH-Jp-Aae"/>
                                                         <constraint firstItem="lEy-yX-upz" firstAttribute="width" secondItem="LCN-e9-dl4" secondAttribute="width" id="RAG-Ey-3AL"/>
-                                                        <constraint firstItem="PdY-Rd-3CZ" firstAttribute="leading" secondItem="n3s-eU-rnS" secondAttribute="trailing" constant="8" id="UU3-al-EAB"/>
-                                                        <constraint firstAttribute="bottom" secondItem="CmK-qo-Zqh" secondAttribute="bottom" constant="8" id="VGP-DR-yBk"/>
-                                                        <constraint firstItem="Le8-Sn-lhZ" firstAttribute="top" secondItem="n3s-eU-rnS" secondAttribute="bottom" constant="8" symbolic="YES" id="YHe-i5-3kS"/>
+                                                        <constraint firstAttribute="bottom" secondItem="lEy-yX-upz" secondAttribute="bottom" constant="8" id="RcJ-mp-a4U"/>
                                                         <constraint firstAttribute="trailing" secondItem="lEy-yX-upz" secondAttribute="trailing" constant="20" symbolic="YES" id="bvk-K9-J9U"/>
-                                                        <constraint firstItem="n3s-eU-rnS" firstAttribute="top" secondItem="LCN-e9-dl4" secondAttribute="bottom" constant="8" symbolic="YES" id="cfG-ck-LQp"/>
-                                                        <constraint firstItem="Le8-Sn-lhZ" firstAttribute="height" secondItem="LCN-e9-dl4" secondAttribute="height" id="eIH-iJ-wpc"/>
-                                                        <constraint firstItem="CmK-qo-Zqh" firstAttribute="leading" secondItem="Le8-Sn-lhZ" secondAttribute="trailing" constant="8" id="eQD-mL-y6j"/>
-                                                        <constraint firstItem="CmK-qo-Zqh" firstAttribute="top" secondItem="PdY-Rd-3CZ" secondAttribute="bottom" constant="8" symbolic="YES" id="g4C-8b-xPJ"/>
-                                                        <constraint firstAttribute="trailing" secondItem="PdY-Rd-3CZ" secondAttribute="trailing" constant="20" symbolic="YES" id="hnX-Cu-Qxy"/>
-                                                        <constraint firstItem="n3s-eU-rnS" firstAttribute="height" secondItem="LCN-e9-dl4" secondAttribute="height" id="jRL-cz-5H3"/>
-                                                        <constraint firstItem="n3s-eU-rnS" firstAttribute="leading" secondItem="NkV-sD-igz" secondAttribute="leading" constant="20" symbolic="YES" id="kCN-3g-9P5"/>
-                                                        <constraint firstItem="lEy-yX-upz" firstAttribute="top" secondItem="NkV-sD-igz" secondAttribute="top" constant="8" id="lb0-Ap-98c"/>
+                                                        <constraint firstItem="lEy-yX-upz" firstAttribute="top" secondItem="NkV-sD-igz" secondAttribute="top" id="lb0-Ap-98c"/>
                                                         <constraint firstItem="LCN-e9-dl4" firstAttribute="leading" secondItem="NkV-sD-igz" secondAttribute="leading" constant="20" symbolic="YES" id="lqj-qy-U1W"/>
-                                                        <constraint firstItem="LCN-e9-dl4" firstAttribute="width" secondItem="PdY-Rd-3CZ" secondAttribute="width" id="lyk-iD-1LU"/>
-                                                        <constraint firstItem="PdY-Rd-3CZ" firstAttribute="top" secondItem="lEy-yX-upz" secondAttribute="bottom" constant="8" symbolic="YES" id="nSX-GI-Ifl"/>
                                                         <constraint firstItem="lEy-yX-upz" firstAttribute="leading" secondItem="LCN-e9-dl4" secondAttribute="trailing" constant="8" id="ol3-6W-cE3"/>
-                                                        <constraint firstAttribute="trailing" secondItem="CmK-qo-Zqh" secondAttribute="trailing" constant="20" symbolic="YES" id="rKR-98-Qld"/>
-                                                        <constraint firstItem="PdY-Rd-3CZ" firstAttribute="height" secondItem="LCN-e9-dl4" secondAttribute="height" id="rMB-94-Kzy"/>
-                                                        <constraint firstAttribute="bottom" secondItem="Le8-Sn-lhZ" secondAttribute="bottom" constant="8" id="uvA-nm-GcN"/>
                                                         <constraint firstItem="lEy-yX-upz" firstAttribute="height" secondItem="LCN-e9-dl4" secondAttribute="height" id="uyd-PE-9o3"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="NkV-sD-igz" secondAttribute="bottom" id="IzL-gS-4DM"/>
+                                                <constraint firstItem="b4w-T3-YPt" firstAttribute="top" secondItem="Hjy-w5-vnw" secondAttribute="top" id="T9c-JV-k4s"/>
                                                 <constraint firstItem="NkV-sD-igz" firstAttribute="leading" secondItem="Hjy-w5-vnw" secondAttribute="leading" id="Ua9-Gd-POQ"/>
                                                 <constraint firstAttribute="trailing" secondItem="NkV-sD-igz" secondAttribute="trailing" id="VJa-HS-rJU"/>
                                                 <constraint firstItem="NkV-sD-igz" firstAttribute="top" secondItem="b4w-T3-YPt" secondAttribute="bottom" id="VjO-w7-RBS"/>
                                                 <constraint firstItem="b4w-T3-YPt" firstAttribute="leading" secondItem="Hjy-w5-vnw" secondAttribute="leading" id="Y3R-Kd-dHT"/>
-                                                <constraint firstItem="b4w-T3-YPt" firstAttribute="top" secondItem="Hjy-w5-vnw" secondAttribute="top" id="lLW-8t-opI"/>
                                                 <constraint firstItem="b4w-T3-YPt" firstAttribute="trailing" secondItem="Hjy-w5-vnw" secondAttribute="trailing" id="oR1-tw-0fH"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="datePicker" destination="b4w-T3-YPt" id="TxV-Sg-RrJ"/>
-                                            <outlet property="decrementMonthButton" destination="n3s-eU-rnS" id="ztW-3g-lg6"/>
-                                            <outlet property="decrementYearButton" destination="Le8-Sn-lhZ" id="GaP-F9-eBw"/>
-                                            <outlet property="incrementMonthButton" destination="PdY-Rd-3CZ" id="4zA-Jg-oVC"/>
-                                            <outlet property="incrementYearButton" destination="CmK-qo-Zqh" id="2tY-ga-JF4"/>
                                             <outlet property="todayDateButton" destination="lEy-yX-upz" id="gO1-62-dp8"/>
                                             <outlet property="unsetDateButton" destination="LCN-e9-dl4" id="GeZ-Gq-Q2d"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="DatePickerTableCell3" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell3" rowHeight="528" id="dQJ-rN-WtU" userLabel="DatePickerTableCell3" customClass="EditImageDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1051.5" width="374" height="528"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="DatePickerTableCell2" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerTableCell2" rowHeight="304" id="dQJ-rN-WtU" customClass="EditImageDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="631.5" width="374" height="304"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dQJ-rN-WtU" id="ZCW-Bj-7uM">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="528"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="304"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <pickerView contentMode="center" restorationIdentifier="datePicker3" translatesAutoresizingMaskIntoConstraints="NO" id="Shk-DQ-tGZ">
+                                                <pickerView contentMode="center" restorationIdentifier="datePicker2" translatesAutoresizingMaskIntoConstraints="NO" id="Shk-DQ-tGZ">
                                                     <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="ViJ-6C-NUz"/>
@@ -420,10 +199,10 @@
                                                     </connections>
                                                 </pickerView>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3b6-MV-MSg">
-                                                    <rect key="frame" x="0.0" y="216" width="374" height="312"/>
+                                                    <rect key="frame" x="0.0" y="216" width="374" height="88"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F0y-Kb-Yp1">
-                                                            <rect key="frame" x="20" y="8" width="334" height="42.5"/>
+                                                            <rect key="frame" x="20" y="0.0" width="334" height="36"/>
                                                             <color key="tintColor" systemColor="systemRedColor"/>
                                                             <buttonConfiguration key="configuration" style="tinted" title="Unset" cornerStyle="large">
                                                                 <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
@@ -433,7 +212,7 @@
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="nYI-zE-Kbq">
-                                                            <rect key="frame" x="20" y="58.5" width="334" height="43"/>
+                                                            <rect key="frame" x="20" y="44" width="334" height="36"/>
                                                             <buttonConfiguration key="configuration" style="filled" title="Today" cornerStyle="large">
                                                                 <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
                                                                 <color key="baseForegroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -443,80 +222,16 @@
                                                                 <action selector="setDateAsToday:" destination="dQJ-rN-WtU" eventType="touchUpInside" id="BDG-dq-rUQ"/>
                                                             </connections>
                                                         </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="D9L-EC-Kv4">
-                                                            <rect key="frame" x="20" y="109.5" width="334" height="42.5"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="-1 Month" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="decrementMonth:" destination="dQJ-rN-WtU" eventType="touchUpInside" id="iSR-60-thp"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="fM2-Tc-xjz">
-                                                            <rect key="frame" x="20" y="160" width="334" height="42.5"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="+1 Month" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="incrementMonth:" destination="dQJ-rN-WtU" eventType="touchUpInside" id="16c-X1-D4F"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="oU0-Tj-R0n">
-                                                            <rect key="frame" x="20" y="210.5" width="334" height="43"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="-1 Year" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray6Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="decrementYear:" destination="dQJ-rN-WtU" eventType="touchUpInside" id="Xms-iH-0n5"/>
-                                                            </connections>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="hBR-LO-se6">
-                                                            <rect key="frame" x="20" y="261.5" width="334" height="42.5"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="filled" title="+1 Year" cornerStyle="large" titleAlignment="center">
-                                                                <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <color key="baseForegroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <color key="baseBackgroundColor" systemColor="systemGray5Color"/>
-                                                            </buttonConfiguration>
-                                                            <connections>
-                                                                <action selector="incrementYear:" destination="dQJ-rN-WtU" eventType="touchUpInside" id="vqn-Fp-PBc"/>
-                                                            </connections>
-                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="trailing" secondItem="nYI-zE-Kbq" secondAttribute="trailing" constant="20" symbolic="YES" id="0zI-OZ-vmJ"/>
-                                                        <constraint firstItem="hBR-LO-se6" firstAttribute="height" secondItem="F0y-Kb-Yp1" secondAttribute="height" id="2CX-HM-lcO"/>
-                                                        <constraint firstItem="hBR-LO-se6" firstAttribute="leading" secondItem="3b6-MV-MSg" secondAttribute="leading" constant="20" symbolic="YES" id="CwM-w3-FMg"/>
-                                                        <constraint firstItem="oU0-Tj-R0n" firstAttribute="height" secondItem="F0y-Kb-Yp1" secondAttribute="height" id="DPz-iw-YNo"/>
-                                                        <constraint firstAttribute="trailing" secondItem="hBR-LO-se6" secondAttribute="trailing" constant="20" symbolic="YES" id="E6V-gZ-Z0f"/>
-                                                        <constraint firstItem="fM2-Tc-xjz" firstAttribute="leading" secondItem="3b6-MV-MSg" secondAttribute="leading" constant="20" symbolic="YES" id="FJU-as-6AX"/>
+                                                        <constraint firstAttribute="bottom" secondItem="nYI-zE-Kbq" secondAttribute="bottom" constant="8" id="8Rn-WE-pkB"/>
                                                         <constraint firstItem="nYI-zE-Kbq" firstAttribute="top" secondItem="F0y-Kb-Yp1" secondAttribute="bottom" constant="8" symbolic="YES" id="Fzg-FP-jhd"/>
-                                                        <constraint firstItem="oU0-Tj-R0n" firstAttribute="leading" secondItem="3b6-MV-MSg" secondAttribute="leading" constant="20" symbolic="YES" id="HKY-ba-eD2"/>
-                                                        <constraint firstAttribute="trailing" secondItem="oU0-Tj-R0n" secondAttribute="trailing" constant="20" symbolic="YES" id="KvX-u4-HBK"/>
-                                                        <constraint firstItem="fM2-Tc-xjz" firstAttribute="height" secondItem="F0y-Kb-Yp1" secondAttribute="height" id="OSL-do-2oG"/>
-                                                        <constraint firstItem="D9L-EC-Kv4" firstAttribute="height" secondItem="F0y-Kb-Yp1" secondAttribute="height" id="OzK-Cp-pqX"/>
                                                         <constraint firstItem="nYI-zE-Kbq" firstAttribute="height" secondItem="F0y-Kb-Yp1" secondAttribute="height" id="QtB-WY-KSh"/>
-                                                        <constraint firstItem="oU0-Tj-R0n" firstAttribute="top" secondItem="fM2-Tc-xjz" secondAttribute="bottom" constant="8" symbolic="YES" id="V84-Ew-u7p"/>
                                                         <constraint firstAttribute="trailing" secondItem="F0y-Kb-Yp1" secondAttribute="trailing" constant="20" symbolic="YES" id="XWD-8M-fSv"/>
                                                         <constraint firstItem="F0y-Kb-Yp1" firstAttribute="leading" secondItem="3b6-MV-MSg" secondAttribute="leading" constant="20" symbolic="YES" id="XhC-ZR-lkH"/>
-                                                        <constraint firstAttribute="bottom" secondItem="hBR-LO-se6" secondAttribute="bottom" constant="8" id="Xt1-6k-LoN"/>
-                                                        <constraint firstItem="F0y-Kb-Yp1" firstAttribute="top" secondItem="3b6-MV-MSg" secondAttribute="top" constant="8" id="f4E-Wb-pv2"/>
-                                                        <constraint firstAttribute="trailing" secondItem="D9L-EC-Kv4" secondAttribute="trailing" constant="20" symbolic="YES" id="fud-3s-8Nf"/>
-                                                        <constraint firstAttribute="trailing" secondItem="fM2-Tc-xjz" secondAttribute="trailing" constant="20" symbolic="YES" id="gbh-VK-WUD"/>
-                                                        <constraint firstItem="D9L-EC-Kv4" firstAttribute="top" secondItem="nYI-zE-Kbq" secondAttribute="bottom" constant="8" symbolic="YES" id="s62-tN-ha7"/>
-                                                        <constraint firstItem="D9L-EC-Kv4" firstAttribute="leading" secondItem="3b6-MV-MSg" secondAttribute="leading" constant="20" symbolic="YES" id="syp-jj-1Nd"/>
-                                                        <constraint firstItem="fM2-Tc-xjz" firstAttribute="top" secondItem="D9L-EC-Kv4" secondAttribute="bottom" constant="8" symbolic="YES" id="vKa-kn-gCW"/>
-                                                        <constraint firstItem="hBR-LO-se6" firstAttribute="top" secondItem="oU0-Tj-R0n" secondAttribute="bottom" constant="8" symbolic="YES" id="y0L-vg-FgG"/>
+                                                        <constraint firstItem="F0y-Kb-Yp1" firstAttribute="top" secondItem="3b6-MV-MSg" secondAttribute="top" id="f4E-Wb-pv2"/>
                                                         <constraint firstItem="nYI-zE-Kbq" firstAttribute="leading" secondItem="3b6-MV-MSg" secondAttribute="leading" constant="20" symbolic="YES" id="yMK-rQ-JG1"/>
                                                     </constraints>
                                                 </view>
@@ -533,23 +248,19 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="datePicker" destination="Shk-DQ-tGZ" id="gLG-TK-ULZ"/>
-                                            <outlet property="decrementMonthButton" destination="D9L-EC-Kv4" id="XyC-gC-Oy9"/>
-                                            <outlet property="decrementYearButton" destination="oU0-Tj-R0n" id="ihk-QV-bHg"/>
-                                            <outlet property="incrementMonthButton" destination="fM2-Tc-xjz" id="n3R-Rp-04i"/>
-                                            <outlet property="incrementYearButton" destination="hBR-LO-se6" id="ibT-Hi-Flu"/>
                                             <outlet property="todayDateButton" destination="nYI-zE-Kbq" id="c6F-w8-x9z"/>
                                             <outlet property="unsetDateButton" destination="F0y-Kb-Yp1" id="FUz-zj-lnh"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TimePickerTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TimePickerTableCell" rowHeight="188" id="cuw-lv-TzX" customClass="EditImageTimePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1579.5" width="374" height="188"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TimePickerTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TimePickerTableCell" rowHeight="216" id="cuw-lv-TzX" customClass="EditImageTimePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="935.5" width="374" height="216"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cuw-lv-TzX" id="EdE-fm-gj8">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="188"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <pickerView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="go9-LD-JD3">
-                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="188"/>
+                                                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="go9-LD-JD3">
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="F5D-mN-epS"/>
                                                     </constraints>
@@ -560,6 +271,7 @@
                                                 </pickerView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="go9-LD-JD3" firstAttribute="centerX" secondItem="EdE-fm-gj8" secondAttribute="centerX" id="4tG-QG-w6V"/>
                                                 <constraint firstItem="go9-LD-JD3" firstAttribute="leading" secondItem="EdE-fm-gj8" secondAttribute="leading" id="9iT-rR-NLu"/>
                                                 <constraint firstAttribute="trailing" secondItem="go9-LD-JD3" secondAttribute="trailing" id="LEK-QC-XR6"/>
                                                 <constraint firstItem="go9-LD-JD3" firstAttribute="top" secondItem="EdE-fm-gj8" secondAttribute="top" id="fdQ-x1-sfe"/>
@@ -572,14 +284,17 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShiftPickerTableCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftPickerTableCell" rowHeight="258" id="eic-Kq-ow1" customClass="EditImageShiftPickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1767.5" width="374" height="258"/>
+                                        <rect key="frame" x="20" y="1151.5" width="374" height="258"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eic-Kq-ow1" id="pQd-lY-cDL">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="258"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-Ao-sZs">
-                                                    <rect key="frame" x="87" y="11" width="200" height="32"/>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-Ao-sZs">
+                                                    <rect key="frame" x="87" y="8" width="200" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="31" id="wVL-pi-MgI"/>
+                                                    </constraints>
                                                     <segments>
                                                         <segment title="" width="100">
                                                             <imageReference key="image" image="minus.arrow.trianglehead.counterclockwise" catalog="system" symbolScale="large" renderingMode="template"/>
@@ -593,8 +308,8 @@
                                                         <action selector="changedMode:" destination="eic-Kq-ow1" eventType="valueChanged" id="KNw-ZX-qS7"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <pickerView contentMode="center" ambiguous="YES" restorationIdentifier="shiftPicker" translatesAutoresizingMaskIntoConstraints="NO" id="Vnp-xG-chK" userLabel="Shift Picker">
-                                                    <rect key="frame" x="0.0" y="42" width="374" height="216"/>
+                                                <pickerView contentMode="center" restorationIdentifier="shiftPicker" translatesAutoresizingMaskIntoConstraints="NO" id="Vnp-xG-chK" userLabel="Shift Picker">
+                                                    <rect key="frame" x="0.0" y="39" width="374" height="219"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="t1u-cE-y5c"/>
                                                     </constraints>
@@ -608,7 +323,7 @@
                                                 <constraint firstItem="Vnp-xG-chK" firstAttribute="leading" secondItem="pQd-lY-cDL" secondAttribute="leading" id="HYb-8s-4vO"/>
                                                 <constraint firstItem="Vnp-xG-chK" firstAttribute="trailing" secondItem="pQd-lY-cDL" secondAttribute="trailing" id="OD5-Ua-2J5"/>
                                                 <constraint firstAttribute="bottom" secondItem="Vnp-xG-chK" secondAttribute="bottom" id="Snr-O0-i0J"/>
-                                                <constraint firstItem="wf2-Ao-sZs" firstAttribute="top" secondItem="pQd-lY-cDL" secondAttribute="top" constant="11" id="dVB-q8-rKk"/>
+                                                <constraint firstItem="wf2-Ao-sZs" firstAttribute="top" secondItem="pQd-lY-cDL" secondAttribute="top" constant="8" id="dVB-q8-rKk"/>
                                                 <constraint firstItem="Vnp-xG-chK" firstAttribute="top" secondItem="wf2-Ao-sZs" secondAttribute="bottom" id="hF0-Te-HNK"/>
                                                 <constraint firstItem="wf2-Ao-sZs" firstAttribute="centerX" secondItem="pQd-lY-cDL" secondAttribute="centerX" id="s4N-Vw-1Bj"/>
                                             </constraints>
@@ -618,83 +333,160 @@
                                             <outlet property="shiftPicker" destination="Vnp-xG-chK" id="KHJ-BJ-WTe"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell" rowHeight="61" id="m6u-Lm-WmD" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="2025.5" width="374" height="61"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShiftDatePickerTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftDatePickerTableCell" rowHeight="256" id="dem-EQ-6aH" customClass="EditImageShiftDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="1409.5" width="374" height="256"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="m6u-Lm-WmD" id="nZD-r1-ddu">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="61"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dem-EQ-6aH" id="Wvq-H9-P0V">
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="256"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7cX-6u-byF">
-                                                    <rect key="frame" x="20" y="20" width="33" height="21"/>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="5bI-X4-k06">
+                                                    <rect key="frame" x="148.5" y="20" width="77" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="31" id="ixR-S8-UiL"/>
+                                                    </constraints>
+                                                    <segments>
+                                                        <segment title="" image="minus.arrow.trianglehead.counterclockwise"/>
+                                                        <segment title="" image="plus.arrow.trianglehead.clockwise"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="changedMode:" destination="dem-EQ-6aH" eventType="valueChanged" id="BF8-d7-ItK"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HRv-Pq-ULD">
+                                                    <rect key="frame" x="0.0" y="51" width="374" height="205"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="216" id="lhI-Md-YVf"/>
+                                                    </constraints>
+                                                </pickerView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="HRv-Pq-ULD" firstAttribute="top" secondItem="5bI-X4-k06" secondAttribute="bottom" id="2zf-Nj-4PY"/>
+                                                <constraint firstItem="5bI-X4-k06" firstAttribute="centerX" secondItem="Wvq-H9-P0V" secondAttribute="centerX" id="DVr-Df-k7g"/>
+                                                <constraint firstAttribute="trailing" secondItem="HRv-Pq-ULD" secondAttribute="trailing" id="K6w-OO-3s3"/>
+                                                <constraint firstItem="HRv-Pq-ULD" firstAttribute="leading" secondItem="Wvq-H9-P0V" secondAttribute="leading" id="TPG-Eb-XCp"/>
+                                                <constraint firstAttribute="bottom" secondItem="HRv-Pq-ULD" secondAttribute="bottom" id="i3H-V4-dRf"/>
+                                                <constraint firstItem="5bI-X4-k06" firstAttribute="top" secondItem="Wvq-H9-P0V" secondAttribute="top" constant="20" symbolic="YES" id="vaB-ee-xU4"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="addRemoveTimeButton" destination="5bI-X4-k06" id="Scy-R1-RzS"/>
+                                            <outlet property="shiftPicker" destination="HRv-Pq-ULD" id="X3y-Zx-6At"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftTimePickerTableCell" rowHeight="256" id="rU6-8g-k8S" customClass="EditImageShiftTimePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="1665.5" width="374" height="256"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="rU6-8g-k8S" id="cwi-G0-zAH">
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="256"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="LLM-hR-TKh">
+                                                    <rect key="frame" x="148.5" y="20" width="77" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="31" id="9iu-iW-icT"/>
+                                                    </constraints>
+                                                    <segments>
+                                                        <segment title="" image="minus.arrow.trianglehead.counterclockwise"/>
+                                                        <segment title="" image="plus.arrow.trianglehead.clockwise"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                                <pickerView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E4Q-Ax-rVe">
+                                                    <rect key="frame" x="0.0" y="51" width="374" height="205"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="216" id="SpY-dk-Dcd"/>
+                                                    </constraints>
+                                                </pickerView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="E4Q-Ax-rVe" secondAttribute="trailing" id="AlO-AT-RRO"/>
+                                                <constraint firstItem="LLM-hR-TKh" firstAttribute="centerX" secondItem="cwi-G0-zAH" secondAttribute="centerX" id="G1o-pT-zxL"/>
+                                                <constraint firstItem="LLM-hR-TKh" firstAttribute="top" secondItem="cwi-G0-zAH" secondAttribute="top" constant="20" symbolic="YES" id="GE4-6I-IlZ"/>
+                                                <constraint firstItem="E4Q-Ax-rVe" firstAttribute="top" secondItem="LLM-hR-TKh" secondAttribute="bottom" id="Wch-4e-jBh"/>
+                                                <constraint firstAttribute="bottom" secondItem="E4Q-Ax-rVe" secondAttribute="bottom" id="enC-8k-fP4"/>
+                                                <constraint firstItem="E4Q-Ax-rVe" firstAttribute="leading" secondItem="cwi-G0-zAH" secondAttribute="leading" id="oVS-z3-bbS"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="addRemoveTimeButton" destination="LLM-hR-TKh" id="Gg7-hr-8ut"/>
+                                            <outlet property="shiftPicker" destination="E4Q-Ax-rVe" id="weI-wP-9it"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell" id="jp4-Ii-idg" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="1921.5" width="374" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jp4-Ii-idg" id="jA2-OI-i3w">
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s8f-OS-POB">
+                                                    <rect key="frame" x="20" y="20" width="45" height="4"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" text="placeholder" textAlignment="right" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="yw7-6R-3Dp">
-                                                    <rect key="frame" x="63" y="19.5" width="291" height="22"/>
-                                                    <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="umS-ka-U1J">
+                                                    <rect key="frame" x="75" y="11" width="279" height="22"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="yw7-6R-3Dp" secondAttribute="trailing" constant="20" symbolic="YES" id="0mv-rK-RDj"/>
-                                                <constraint firstItem="7cX-6u-byF" firstAttribute="leading" secondItem="nZD-r1-ddu" secondAttribute="leading" constant="20" symbolic="YES" id="1wO-aW-Snk"/>
-                                                <constraint firstItem="yw7-6R-3Dp" firstAttribute="centerY" secondItem="nZD-r1-ddu" secondAttribute="centerY" id="8aN-Gs-0ae"/>
-                                                <constraint firstItem="yw7-6R-3Dp" firstAttribute="leading" secondItem="7cX-6u-byF" secondAttribute="trailing" constant="10" id="94K-M0-xJf"/>
-                                                <constraint firstItem="7cX-6u-byF" firstAttribute="top" secondItem="nZD-r1-ddu" secondAttribute="top" constant="20" symbolic="YES" id="oOP-Id-awO"/>
-                                                <constraint firstAttribute="bottom" secondItem="7cX-6u-byF" secondAttribute="bottom" constant="20" symbolic="YES" id="oqh-Zi-uio"/>
+                                                <constraint firstItem="umS-ka-U1J" firstAttribute="centerY" secondItem="jA2-OI-i3w" secondAttribute="centerY" id="6ry-EK-b32"/>
+                                                <constraint firstItem="s8f-OS-POB" firstAttribute="leading" secondItem="jA2-OI-i3w" secondAttribute="leading" constant="20" symbolic="YES" id="H2s-5F-Hem"/>
+                                                <constraint firstItem="s8f-OS-POB" firstAttribute="top" secondItem="jA2-OI-i3w" secondAttribute="top" constant="20" symbolic="YES" id="I2K-BB-SlV"/>
+                                                <constraint firstAttribute="bottom" secondItem="s8f-OS-POB" secondAttribute="bottom" constant="20" symbolic="YES" id="csW-dQ-OaV"/>
+                                                <constraint firstAttribute="trailing" secondItem="umS-ka-U1J" secondAttribute="trailing" constant="20" symbolic="YES" id="kPi-ST-p2n"/>
+                                                <constraint firstItem="umS-ka-U1J" firstAttribute="leading" secondItem="s8f-OS-POB" secondAttribute="trailing" constant="10" id="l7o-p7-hNB"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="bottomMargin" destination="oqh-Zi-uio" id="aMr-6g-14Y"/>
-                                            <outlet property="leftLabel" destination="7cX-6u-byF" id="Sc4-NY-dyX"/>
-                                            <outlet property="rightTextField" destination="yw7-6R-3Dp" id="dDK-U6-7dN"/>
-                                            <outlet property="topMargin" destination="oOP-Id-awO" id="EBG-Zr-wki"/>
+                                            <outlet property="bottomMargin" destination="csW-dQ-OaV" id="m7L-Mt-vaX"/>
+                                            <outlet property="leftLabel" destination="s8f-OS-POB" id="gG4-Zn-Nwo"/>
+                                            <outlet property="rightTextField" destination="umS-ka-U1J" id="Pvz-7R-sBw"/>
+                                            <outlet property="topMargin" destination="I2K-BB-SlV" id="rf8-UT-kMU"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell2" rowHeight="104" id="dVP-s2-g5e" userLabel="TextFieldTableViewCell2" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="2086.5" width="374" height="104"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell2" rowHeight="88" id="bVQ-T1-85o" userLabel="TextFieldTableViewCell2" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="1965.5" width="374" height="88"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dVP-s2-g5e" id="UmT-3i-NJK">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="104"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bVQ-T1-85o" id="h7c-ir-hfu">
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="88"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SYK-AG-kXf">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xzA-vU-OJn">
                                                     <rect key="frame" x="20" y="20" width="334" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="left" ambiguous="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" text="placeholder" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="XHh-pn-7xk">
-                                                    <rect key="frame" x="20" y="48.5" width="334" height="35.5"/>
-                                                    <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <textField opaque="NO" contentMode="left" ambiguous="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" text="Author" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="OZ6-j7-bAI">
+                                                    <rect key="frame" x="20" y="36.5" width="334" height="31.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="SYK-AG-kXf" secondAttribute="trailing" constant="20" symbolic="YES" id="7dn-0X-WQQ"/>
-                                                <constraint firstItem="SYK-AG-kXf" firstAttribute="leading" secondItem="UmT-3i-NJK" secondAttribute="leading" constant="20" symbolic="YES" id="8pk-l1-akP"/>
-                                                <constraint firstAttribute="trailing" secondItem="XHh-pn-7xk" secondAttribute="trailing" constant="20" symbolic="YES" id="RL6-2N-Ca3"/>
-                                                <constraint firstItem="XHh-pn-7xk" firstAttribute="top" secondItem="SYK-AG-kXf" secondAttribute="bottom" constant="8" symbolic="YES" id="dtn-cH-E0h"/>
-                                                <constraint firstItem="XHh-pn-7xk" firstAttribute="leading" secondItem="UmT-3i-NJK" secondAttribute="leading" constant="20" symbolic="YES" id="huE-d7-TPL"/>
-                                                <constraint firstItem="SYK-AG-kXf" firstAttribute="top" secondItem="UmT-3i-NJK" secondAttribute="top" constant="20" symbolic="YES" id="kgp-2p-0lG"/>
-                                                <constraint firstAttribute="bottom" secondItem="XHh-pn-7xk" secondAttribute="bottom" constant="20" symbolic="YES" id="tH8-Qg-lYJ"/>
+                                                <constraint firstItem="xzA-vU-OJn" firstAttribute="top" secondItem="h7c-ir-hfu" secondAttribute="top" constant="20" symbolic="YES" id="4BX-jB-a4A"/>
+                                                <constraint firstItem="OZ6-j7-bAI" firstAttribute="leading" secondItem="h7c-ir-hfu" secondAttribute="leading" constant="20" symbolic="YES" id="5cT-5y-Wp5"/>
+                                                <constraint firstItem="OZ6-j7-bAI" firstAttribute="firstBaseline" secondItem="xzA-vU-OJn" secondAttribute="baseline" constant="22" symbolType="layoutAnchor" id="Dgm-lq-r19"/>
+                                                <constraint firstItem="xzA-vU-OJn" firstAttribute="leading" secondItem="h7c-ir-hfu" secondAttribute="leading" constant="20" symbolic="YES" id="Ex5-yF-zFm"/>
+                                                <constraint firstAttribute="trailing" secondItem="OZ6-j7-bAI" secondAttribute="trailing" constant="20" symbolic="YES" id="Vaf-uj-2sl"/>
+                                                <constraint firstAttribute="bottom" secondItem="OZ6-j7-bAI" secondAttribute="bottom" constant="20" symbolic="YES" id="nN8-Fr-akw"/>
+                                                <constraint firstAttribute="trailing" secondItem="xzA-vU-OJn" secondAttribute="trailing" constant="20" symbolic="YES" id="zUK-ls-55p"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="bottomMargin" destination="tH8-Qg-lYJ" id="1Lk-7B-HMh"/>
-                                            <outlet property="leftLabel" destination="SYK-AG-kXf" id="zGx-LD-JKT"/>
-                                            <outlet property="rightTextField" destination="XHh-pn-7xk" id="oVy-6U-4XP"/>
-                                            <outlet property="topMargin" destination="kgp-2p-0lG" id="sNV-7u-XGU"/>
+                                            <outlet property="bottomMargin" destination="nN8-Fr-akw" id="Mph-G3-xpI"/>
+                                            <outlet property="leftLabel" destination="xzA-vU-OJn" id="sbm-Tz-CEG"/>
+                                            <outlet property="rightTextField" destination="OZ6-j7-bAI" id="Ha7-jK-TSZ"/>
+                                            <outlet property="topMargin" destination="4BX-jB-a4A" id="L6A-CY-a3h"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" restorationIdentifier="TextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextViewTableViewCell" rowHeight="428" id="tk9-hs-vsf" customClass="TextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="2190.5" width="374" height="428"/>
+                                        <rect key="frame" x="20" y="2053.5" width="374" height="428"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="tk9-hs-vsf" id="9SW-88-raF">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tk9-hs-vsf" id="9SW-88-raF">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="428"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
@@ -755,21 +547,20 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jIA-hH-7tD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="314.49275362318843" y="16.741071428571427"/>
+            <point key="canvasLocation" x="292.75362318840581" y="-300.66964285714283"/>
         </scene>
     </scenes>
     <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="minus.arrow.trianglehead.counterclockwise" catalog="system" width="119" height="128"/>
+        <image name="minus.arrow.trianglehead.counterclockwise" width="20.5" height="23.5"/>
+        <image name="plus.arrow.trianglehead.clockwise" width="20.5" height="23.5"/>
         <image name="plus.arrow.trianglehead.clockwise" catalog="system" width="119" height="128"/>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray6Color">
             <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
