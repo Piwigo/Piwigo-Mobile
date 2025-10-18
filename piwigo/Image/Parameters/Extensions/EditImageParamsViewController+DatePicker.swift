@@ -17,8 +17,9 @@ extension EditImageParamsViewController: EditImageDatePickerDelegate
         shouldUpdateDateCreated = (commonDateCreated != date)
         commonDateCreated = date
         
-        // Update creation date and time cells
-        reloadCellsForDatePickerStateChange()
+        // Update creation date cell
+        let dateIndexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
+        editImageParamsTableView.reloadRows(at: [dateIndexPath], with: .automatic)
     }
     
     func didUnsetImageCreationDate() {
@@ -28,16 +29,12 @@ extension EditImageParamsViewController: EditImageDatePickerDelegate
         
         // Close date picker
         if hasDatePicker {
-            hasDatePicker.toggle()
+            hasDatePicker = false
             let rowIndex = EditImageParamsOrder.datePicker.rawValue
             removePicker(at: IndexPath(row: rowIndex, section: 0))
         }
         
         // Update creation date and time cells
-        reloadCellsForDatePickerStateChange()
-    }
-    
-    private func reloadCellsForDatePickerStateChange() {
         let dateIndexPath = IndexPath(row: EditImageParamsOrder.date.rawValue, section: 0)
         let rowIndex = EditImageParamsOrder.time.rawValue - (hasDatePicker ? 0 : 1)
         let timeIndexPath = IndexPath(row: rowIndex, section: 0)

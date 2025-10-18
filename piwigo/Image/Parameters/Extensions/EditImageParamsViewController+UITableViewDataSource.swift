@@ -86,9 +86,9 @@ extension EditImageParamsViewController: UITableViewDataSource
             
         case .datePicker:
             // Which picker?
-            if images.count > 1 {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShiftPickerTableCell", for: indexPath) as? EditImageShiftPickerTableViewCell
-                else { preconditionFailure("Could not load a EditImageShiftPickerTableViewCell") }
+            if images.count > 1, commonDateCreated != DateUtilities.unknownDate {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShiftDatePickerTableCell", for: indexPath) as? EditImageShiftDatePickerTableViewCell
+                else { preconditionFailure("Could not load a EditImageShiftDatePickerTableViewCell") }
                 cell.delegate = self
                 cell.config(withDate: commonDateCreated, animated: false)
                 tableViewCell = cell
@@ -124,9 +124,9 @@ extension EditImageParamsViewController: UITableViewDataSource
             
         case .timePicker:
             // Which picker?
-            if images.count > 1 {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShiftPickerTableCell", for: indexPath) as? EditImageShiftPickerTableViewCell
-                else { preconditionFailure("Could not load a EditImageShiftPickerTableViewCell") }
+            if images.count > 1, commonDateCreated != DateUtilities.unknownDate {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "ShiftTimePickerTableCell", for: indexPath) as? EditImageShiftTimePickerTableViewCell
+                else { preconditionFailure("Could not load a EditImageShiftTimePickerTableViewCell") }
                 cell.delegate = self
                 cell.config(withDate: commonDateCreated, animated: false)
                 tableViewCell = cell
@@ -194,7 +194,9 @@ extension EditImageParamsViewController: UITableViewDataSource
         var dateStr = ""
         let formatStyle = Date.FormatStyle(timeZone: TimeZone(abbreviation: "UTC")!)
         if let date = date, date > DateUtilities.weekAfter {
-            if hasDatePicker {
+            let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
+            let isShiftPicker = editImageParamsTableView.cellForRow(at: indexPath) is EditImageShiftDatePickerTableViewCell
+            if hasDatePicker && !isShiftPicker {
                 dateStr = date.formatted(formatStyle .weekday(.wide))
             }
             else {

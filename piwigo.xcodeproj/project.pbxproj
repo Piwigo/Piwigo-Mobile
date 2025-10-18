@@ -240,6 +240,8 @@
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
 		AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */; };
 		AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */; };
+		AD54834A2EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */; };
+		AD54834C2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */; };
 		AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */; };
 		AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */; };
 		AD58F77F24EFC62F00ECF6BD /* UploadImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */; };
@@ -334,6 +336,8 @@
 		AD7A8FEC28494A3D00171592 /* pwg.categories.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FE8284944B200171592 /* pwg.categories.delete.json */; };
 		AD7A8FEE28494E1A00171592 /* pwg.categories.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */; };
 		AD7A8FF128494E5600171592 /* pwg.categories.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */; };
+		AD7B4E582E9C0EC900E3219E /* EditImageShiftDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7B4E572E9C0EC900E3219E /* EditImageShiftDatePickerTableViewCell.swift */; };
+		AD7B4E5A2E9C0ED800E3219E /* EditImageShiftTimePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7B4E592E9C0ED800E3219E /* EditImageShiftTimePickerTableViewCell.swift */; };
 		AD7D13082DFDB42E00EEE90D /* pwg.groups.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D13072DFDB42E00EEE90D /* pwg.groups.getList.swift */; };
 		AD7D13092DFDB42E00EEE90D /* pwg.groups.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D13072DFDB42E00EEE90D /* pwg.groups.getList.swift */; };
 		AD7D130C2DFDB75200EEE90D /* PwgSession+Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7D130B2DFDB75200EEE90D /* PwgSession+Groups.swift */; };
@@ -571,7 +575,6 @@
 		ADDB2A602B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A5F2B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift */; };
 		ADDB2A622B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A612B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift */; };
 		ADDB2A642B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A632B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift */; };
-		ADDB2A662B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A652B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift */; };
 		ADDB2A682B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A672B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift */; };
 		ADDB2A6A2B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */; };
 		ADDB2A6D2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */; };
@@ -971,6 +974,8 @@
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
 		AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareVideoActivityItemProvider.swift; sourceTree = "<group>"; };
+		AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftDatePicker.swift"; sourceTree = "<group>"; };
+		AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftTimePicker.swift"; sourceTree = "<group>"; };
 		AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadViewController.swift; sourceTree = "<group>"; };
 		AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AutoUploadViewController.storyboard; sourceTree = "<group>"; };
 		AD56B7BB266905ED001D4E21 /* release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = release.entitlements; sourceTree = "<group>"; };
@@ -1065,6 +1070,8 @@
 		AD7A8FEA284944EA00171592 /* pwg.categories.delete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.delete.swift; sourceTree = "<group>"; };
 		AD7A8FED28494E1A00171592 /* pwg.categories.setInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.categories.setInfo.swift; sourceTree = "<group>"; };
 		AD7A8FEF28494E4F00171592 /* pwg.categories.setInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.categories.setInfo.json; sourceTree = "<group>"; };
+		AD7B4E572E9C0EC900E3219E /* EditImageShiftDatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageShiftDatePickerTableViewCell.swift; sourceTree = "<group>"; };
+		AD7B4E592E9C0ED800E3219E /* EditImageShiftTimePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditImageShiftTimePickerTableViewCell.swift; sourceTree = "<group>"; };
 		AD7D13072DFDB42E00EEE90D /* pwg.groups.getList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.groups.getList.swift; sourceTree = "<group>"; };
 		AD7D130B2DFDB75200EEE90D /* PwgSession+Groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Groups.swift"; sourceTree = "<group>"; };
 		AD7D130F2DFDBB5200EEE90D /* pwg.groups.getList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.groups.getList.json; sourceTree = "<group>"; };
@@ -1340,7 +1347,6 @@
 		ADDB2A5F2B416B5800FDC1B1 /* EditImageParamsViewController+UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITextView.swift"; sourceTree = "<group>"; };
 		ADDB2A612B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+Tags.swift"; sourceTree = "<group>"; };
 		ADDB2A632B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+Privacy.swift"; sourceTree = "<group>"; };
-		ADDB2A652B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftPicker.swift"; sourceTree = "<group>"; };
 		ADDB2A672B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+DatePicker.swift"; sourceTree = "<group>"; };
 		ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ThumbnailCell.swift"; sourceTree = "<group>"; };
 		ADDB2A6C2B416F5800FDC1B1 /* EditImageParamsViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
@@ -2033,6 +2039,8 @@
 				AD07CABF26DBF13700BEAEFB /* EditImageDatePickerTableViewCell.swift */,
 				AD02D2F32E9A446D0073335F /* EditImageTimePickerTableViewCell.swift */,
 				AD07CABD26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift */,
+				AD7B4E572E9C0EC900E3219E /* EditImageShiftDatePickerTableViewCell.swift */,
+				AD7B4E592E9C0ED800E3219E /* EditImageShiftTimePickerTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -2623,7 +2631,8 @@
 				ADDB2A692B416E2100FDC1B1 /* EditImageParamsViewController+ThumbnailCell.swift */,
 				ADDB2A672B416DC600FDC1B1 /* EditImageParamsViewController+DatePicker.swift */,
 				AD02D2F52E9A665A0073335F /* EditImageParamsViewController+TimePicker.swift */,
-				ADDB2A652B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift */,
+				AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */,
+				AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */,
 				ADDB2A632B416D1C00FDC1B1 /* EditImageParamsViewController+Privacy.swift */,
 				ADDB2A612B416C9D00FDC1B1 /* EditImageParamsViewController+Tags.swift */,
 				ADDB2A5D2B416A8400FDC1B1 /* EditImageParamsViewController+UITextField.swift */,
@@ -3871,7 +3880,6 @@
 				AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */,
 				ADC115E72DCA7D7A000EA45B /* DateFormatSelectorViewController+UITableViewDelegate.swift in Sources */,
 				AD211A7A27BAD596005D5E4F /* LoginUtilities.swift in Sources */,
-				ADDB2A662B416D8100FDC1B1 /* EditImageParamsViewController+ShiftPicker.swift in Sources */,
 				AD8D218B26B20D6E0008E907 /* PadTableViewCell.swift in Sources */,
 				AD9698222BE653DE00520614 /* AlbumViewController+Settings.swift in Sources */,
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
@@ -3894,6 +3902,7 @@
 				ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */,
 				ADDFD45227EF4E7C00DB5081 /* UIView+AppTools.swift in Sources */,
 				AD911272281060D9002FB78F /* UIWindow+AppTools.swift in Sources */,
+				AD54834A2EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift in Sources */,
 				ADD77EF02A19339800F8C779 /* ExternalDisplaySceneDelegate.swift in Sources */,
 				AD6BA1002BA5D2FA00755257 /* PasteboardImagesViewController+HeaderDelegate.swift in Sources */,
 				ADBE0C232BE961E300F16A50 /* AlbumViewController+Edit.swift in Sources */,
@@ -3961,6 +3970,7 @@
 				AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD0F4E5F2E74B8F700D05C4C /* LocalAlbumsViewController+Delegate.swift in Sources */,
+				AD7B4E582E9C0EC900E3219E /* EditImageShiftDatePickerTableViewCell.swift in Sources */,
 				AD9F9C2F2B4AF2D700943A96 /* EditImageParamsViewController+Keyboard.swift in Sources */,
 				ADD65C562BE775F9005AC3B8 /* AlbumViewController+Bars.swift in Sources */,
 				AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */,
@@ -4021,6 +4031,7 @@
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADBE950E279D632800397426 /* TableViewUtilities.swift in Sources */,
 				AD06B6E12BEBBCFA00C5F078 /* AlbumViewController+Prefetching.swift in Sources */,
+				AD54834C2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift in Sources */,
 				AD6BA0FE2BA5D15900755257 /* PasteboardImagesViewController+Data.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				AD07CABE26DBE4BA00BEAEFB /* EditImageShiftPickerTableViewCell.swift in Sources */,
@@ -4058,6 +4069,7 @@
 				AD1806FE2A803DA000B3BEF8 /* VideoVars.swift in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,
+				AD7B4E5A2E9C0ED800E3219E /* EditImageShiftTimePickerTableViewCell.swift in Sources */,
 				AD41531527C6D37D00DE01CB /* LoginNavigationController.swift in Sources */,
 				AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */,
 			);

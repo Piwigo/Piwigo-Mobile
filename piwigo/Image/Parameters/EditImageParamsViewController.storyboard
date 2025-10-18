@@ -4,7 +4,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -283,149 +282,80 @@
                                             <outlet property="timePicker" destination="go9-LD-JD3" id="Lvr-oS-34W"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShiftPickerTableCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftPickerTableCell" rowHeight="258" id="eic-Kq-ow1" customClass="EditImageShiftPickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1151.5" width="374" height="258"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eic-Kq-ow1" id="pQd-lY-cDL">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="258"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="wf2-Ao-sZs">
-                                                    <rect key="frame" x="87" y="8" width="200" height="32"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="31" id="wVL-pi-MgI"/>
-                                                    </constraints>
-                                                    <segments>
-                                                        <segment title="" width="100">
-                                                            <imageReference key="image" image="minus.arrow.trianglehead.counterclockwise" catalog="system" symbolScale="large" renderingMode="template"/>
-                                                        </segment>
-                                                        <segment title="" width="100">
-                                                            <imageReference key="image" image="plus.arrow.trianglehead.clockwise" catalog="system" symbolScale="large" renderingMode="template"/>
-                                                        </segment>
-                                                    </segments>
-                                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <connections>
-                                                        <action selector="changedMode:" destination="eic-Kq-ow1" eventType="valueChanged" id="KNw-ZX-qS7"/>
-                                                    </connections>
-                                                </segmentedControl>
-                                                <pickerView contentMode="center" restorationIdentifier="shiftPicker" translatesAutoresizingMaskIntoConstraints="NO" id="Vnp-xG-chK" userLabel="Shift Picker">
-                                                    <rect key="frame" x="0.0" y="39" width="374" height="219"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="216" id="t1u-cE-y5c"/>
-                                                    </constraints>
-                                                    <connections>
-                                                        <outlet property="dataSource" destination="eic-Kq-ow1" id="I9e-Dd-rfQ"/>
-                                                        <outlet property="delegate" destination="eic-Kq-ow1" id="iXx-qa-Jdl"/>
-                                                    </connections>
-                                                </pickerView>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="Vnp-xG-chK" firstAttribute="leading" secondItem="pQd-lY-cDL" secondAttribute="leading" id="HYb-8s-4vO"/>
-                                                <constraint firstItem="Vnp-xG-chK" firstAttribute="trailing" secondItem="pQd-lY-cDL" secondAttribute="trailing" id="OD5-Ua-2J5"/>
-                                                <constraint firstAttribute="bottom" secondItem="Vnp-xG-chK" secondAttribute="bottom" id="Snr-O0-i0J"/>
-                                                <constraint firstItem="wf2-Ao-sZs" firstAttribute="top" secondItem="pQd-lY-cDL" secondAttribute="top" constant="8" id="dVB-q8-rKk"/>
-                                                <constraint firstItem="Vnp-xG-chK" firstAttribute="top" secondItem="wf2-Ao-sZs" secondAttribute="bottom" id="hF0-Te-HNK"/>
-                                                <constraint firstItem="wf2-Ao-sZs" firstAttribute="centerX" secondItem="pQd-lY-cDL" secondAttribute="centerX" id="s4N-Vw-1Bj"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="addRemoveTimeButton" destination="wf2-Ao-sZs" id="otX-6n-eIA"/>
-                                            <outlet property="shiftPicker" destination="Vnp-xG-chK" id="KHJ-BJ-WTe"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShiftDatePickerTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftDatePickerTableCell" rowHeight="256" id="dem-EQ-6aH" customClass="EditImageShiftDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1409.5" width="374" height="256"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ShiftDatePickerTableCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftDatePickerTableCell" rowHeight="216" id="dem-EQ-6aH" customClass="EditImageShiftDatePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="1151.5" width="374" height="216"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dem-EQ-6aH" id="Wvq-H9-P0V">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="256"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="5bI-X4-k06">
-                                                    <rect key="frame" x="148.5" y="20" width="77" height="32"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="31" id="ixR-S8-UiL"/>
-                                                    </constraints>
-                                                    <segments>
-                                                        <segment title="" image="minus.arrow.trianglehead.counterclockwise"/>
-                                                        <segment title="" image="plus.arrow.trianglehead.clockwise"/>
-                                                    </segments>
-                                                    <connections>
-                                                        <action selector="changedMode:" destination="dem-EQ-6aH" eventType="valueChanged" id="BF8-d7-ItK"/>
-                                                    </connections>
-                                                </segmentedControl>
                                                 <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HRv-Pq-ULD">
-                                                    <rect key="frame" x="0.0" y="51" width="374" height="205"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="lhI-Md-YVf"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outlet property="dataSource" destination="dem-EQ-6aH" id="cUC-h7-OGD"/>
+                                                        <outlet property="delegate" destination="dem-EQ-6aH" id="HZD-Kc-62X"/>
+                                                    </connections>
                                                 </pickerView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="HRv-Pq-ULD" firstAttribute="top" secondItem="5bI-X4-k06" secondAttribute="bottom" id="2zf-Nj-4PY"/>
-                                                <constraint firstItem="5bI-X4-k06" firstAttribute="centerX" secondItem="Wvq-H9-P0V" secondAttribute="centerX" id="DVr-Df-k7g"/>
+                                                <constraint firstItem="HRv-Pq-ULD" firstAttribute="centerX" secondItem="Wvq-H9-P0V" secondAttribute="centerX" id="IhL-s8-lMJ"/>
                                                 <constraint firstAttribute="trailing" secondItem="HRv-Pq-ULD" secondAttribute="trailing" id="K6w-OO-3s3"/>
                                                 <constraint firstItem="HRv-Pq-ULD" firstAttribute="leading" secondItem="Wvq-H9-P0V" secondAttribute="leading" id="TPG-Eb-XCp"/>
+                                                <constraint firstItem="HRv-Pq-ULD" firstAttribute="top" secondItem="Wvq-H9-P0V" secondAttribute="top" id="gEc-aA-bsO"/>
                                                 <constraint firstAttribute="bottom" secondItem="HRv-Pq-ULD" secondAttribute="bottom" id="i3H-V4-dRf"/>
-                                                <constraint firstItem="5bI-X4-k06" firstAttribute="top" secondItem="Wvq-H9-P0V" secondAttribute="top" constant="20" symbolic="YES" id="vaB-ee-xU4"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="addRemoveTimeButton" destination="5bI-X4-k06" id="Scy-R1-RzS"/>
                                             <outlet property="shiftPicker" destination="HRv-Pq-ULD" id="X3y-Zx-6At"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftTimePickerTableCell" rowHeight="256" id="rU6-8g-k8S" customClass="EditImageShiftTimePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1665.5" width="374" height="256"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="EditImageShiftTimePickerTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShiftTimePickerTableCell" rowHeight="216" id="rU6-8g-k8S" customClass="EditImageShiftTimePickerTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="1367.5" width="374" height="216"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="rU6-8g-k8S" id="cwi-G0-zAH">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="256"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="LLM-hR-TKh">
-                                                    <rect key="frame" x="148.5" y="20" width="77" height="32"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="31" id="9iu-iW-icT"/>
-                                                    </constraints>
-                                                    <segments>
-                                                        <segment title="" image="minus.arrow.trianglehead.counterclockwise"/>
-                                                        <segment title="" image="plus.arrow.trianglehead.clockwise"/>
-                                                    </segments>
-                                                </segmentedControl>
-                                                <pickerView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E4Q-Ax-rVe">
-                                                    <rect key="frame" x="0.0" y="51" width="374" height="205"/>
+                                                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E4Q-Ax-rVe">
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="SpY-dk-Dcd"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outlet property="dataSource" destination="rU6-8g-k8S" id="LCm-YH-jQd"/>
+                                                        <outlet property="delegate" destination="rU6-8g-k8S" id="CIl-13-8Tv"/>
+                                                    </connections>
                                                 </pickerView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="E4Q-Ax-rVe" firstAttribute="centerX" secondItem="cwi-G0-zAH" secondAttribute="centerX" id="79Q-zB-SQS"/>
+                                                <constraint firstItem="E4Q-Ax-rVe" firstAttribute="top" secondItem="cwi-G0-zAH" secondAttribute="top" id="AEN-kZ-EjV"/>
                                                 <constraint firstAttribute="trailing" secondItem="E4Q-Ax-rVe" secondAttribute="trailing" id="AlO-AT-RRO"/>
-                                                <constraint firstItem="LLM-hR-TKh" firstAttribute="centerX" secondItem="cwi-G0-zAH" secondAttribute="centerX" id="G1o-pT-zxL"/>
-                                                <constraint firstItem="LLM-hR-TKh" firstAttribute="top" secondItem="cwi-G0-zAH" secondAttribute="top" constant="20" symbolic="YES" id="GE4-6I-IlZ"/>
-                                                <constraint firstItem="E4Q-Ax-rVe" firstAttribute="top" secondItem="LLM-hR-TKh" secondAttribute="bottom" id="Wch-4e-jBh"/>
                                                 <constraint firstAttribute="bottom" secondItem="E4Q-Ax-rVe" secondAttribute="bottom" id="enC-8k-fP4"/>
                                                 <constraint firstItem="E4Q-Ax-rVe" firstAttribute="leading" secondItem="cwi-G0-zAH" secondAttribute="leading" id="oVS-z3-bbS"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="addRemoveTimeButton" destination="LLM-hR-TKh" id="Gg7-hr-8ut"/>
                                             <outlet property="shiftPicker" destination="E4Q-Ax-rVe" id="weI-wP-9it"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell" id="jp4-Ii-idg" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1921.5" width="374" height="44"/>
+                                        <rect key="frame" x="20" y="1583.5" width="374" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jp4-Ii-idg" id="jA2-OI-i3w">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s8f-OS-POB">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s8f-OS-POB">
                                                     <rect key="frame" x="20" y="20" width="45" height="4"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="umS-ka-U1J">
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="umS-ka-U1J">
                                                     <rect key="frame" x="75" y="11" width="279" height="22"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
@@ -448,19 +378,19 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell2" rowHeight="88" id="bVQ-T1-85o" userLabel="TextFieldTableViewCell2" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="1965.5" width="374" height="88"/>
+                                        <rect key="frame" x="20" y="1627.5" width="374" height="88"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bVQ-T1-85o" id="h7c-ir-hfu">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="88"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xzA-vU-OJn">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xzA-vU-OJn">
                                                     <rect key="frame" x="20" y="20" width="334" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="left" ambiguous="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" text="Author" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="OZ6-j7-bAI">
+                                                <textField opaque="NO" contentMode="left" contentHorizontalAlignment="right" contentVerticalAlignment="center" text="Author" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="OZ6-j7-bAI">
                                                     <rect key="frame" x="20" y="36.5" width="334" height="31.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
@@ -484,19 +414,19 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" restorationIdentifier="TextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextViewTableViewCell" rowHeight="428" id="tk9-hs-vsf" customClass="TextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="2053.5" width="374" height="428"/>
+                                        <rect key="frame" x="20" y="1715.5" width="374" height="428"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tk9-hs-vsf" id="9SW-88-raF">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="428"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5PK-XB-94k">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5PK-XB-94k">
                                                     <rect key="frame" x="20" y="20" width="334" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bdg-GH-0sJ">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bdg-GH-0sJ">
                                                     <rect key="frame" x="20" y="48.5" width="374" height="399.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="399.5" id="Mqv-fN-zlk"/>
@@ -552,10 +482,6 @@
     </scenes>
     <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
-        <image name="minus.arrow.trianglehead.counterclockwise" catalog="system" width="119" height="128"/>
-        <image name="minus.arrow.trianglehead.counterclockwise" width="20.5" height="23.5"/>
-        <image name="plus.arrow.trianglehead.clockwise" width="20.5" height="23.5"/>
-        <image name="plus.arrow.trianglehead.clockwise" catalog="system" width="119" height="128"/>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
