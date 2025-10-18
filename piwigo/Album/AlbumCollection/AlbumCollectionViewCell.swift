@@ -31,7 +31,7 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         // Legend
         albumName.text = albumData?.name ?? "—?—"
         numberOfImages.text = getNberOfImages(fromAlbumData: albumData)
-        legendHeight.constant = UIFont.preferredFont(forTextStyle: .headline).lineHeight + UIFont.preferredFont(forTextStyle: .footnote).lineHeight + 4
+        legendHeight.constant = UIFont.preferredFont(forTextStyle: .headline).lineHeight + UIFont.preferredFont(forTextStyle: .footnote).lineHeight + 6.0
 
         // If requested, display recent icon when images have been uploaded recently
         let timeSinceLastUpload = Date.timeIntervalSinceReferenceDate - (albumData?.dateLast ?? TimeInterval(-3187296000))
