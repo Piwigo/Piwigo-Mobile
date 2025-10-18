@@ -32,7 +32,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DaK-hl-1ER">
-                                <rect key="frame" x="8" y="24.666666666666654" width="229" height="15.333333333333332"/>
+                                <rect key="frame" x="8" y="22.666666666666657" width="229" height="15.333333333333336"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
@@ -44,9 +44,9 @@
                         <constraints>
                             <constraint firstItem="nct-Gd-tKP" firstAttribute="top" secondItem="kX3-5t-BU1" secondAttribute="top" constant="4" id="CZX-jC-qSJ"/>
                             <constraint firstAttribute="trailing" secondItem="nct-Gd-tKP" secondAttribute="trailing" constant="5" id="HIR-F1-BvZ"/>
+                            <constraint firstAttribute="bottom" secondItem="DaK-hl-1ER" secondAttribute="bottom" constant="4" id="HQk-gp-GFE"/>
                             <constraint firstAttribute="trailing" secondItem="DaK-hl-1ER" secondAttribute="trailing" constant="8" id="cLe-Hz-2xj"/>
                             <constraint firstAttribute="height" constant="42" id="i3f-s3-ptS"/>
-                            <constraint firstItem="DaK-hl-1ER" firstAttribute="firstBaseline" secondItem="nct-Gd-tKP" secondAttribute="baseline" constant="16.666666666666668" symbolType="layoutAnchor" id="vTv-Pf-ZOd"/>
                             <constraint firstItem="DaK-hl-1ER" firstAttribute="leading" secondItem="kX3-5t-BU1" secondAttribute="leading" constant="8" id="yLK-iD-QYS"/>
                             <constraint firstItem="nct-Gd-tKP" firstAttribute="leading" secondItem="kX3-5t-BU1" secondAttribute="leading" constant="5" id="yph-9Y-nE7"/>
                         </constraints>
