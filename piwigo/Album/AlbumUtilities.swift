@@ -519,54 +519,63 @@ class AlbumUtilities: NSObject {
             endDate = startDate
         }
         
+        // Initialisation
+        var dateFormatStyle: Date.FormatStyle!
+        var optionalDateFormatStyle: Date.FormatStyle!
+        let timeZone: TimeZone = arePwgDates ? TimeZone(abbreviation: "UTC")! : .current
+
         // Single date?
         if startDate == endDate {
             // Display day/month/year above and weekday/time below if possible
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
-                if arePwgDates {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute() .second())
-                } else {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday())
-                }
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
+                
+                optionalDateFormatStyle = arePwgDates
+                ? Date.FormatStyle()
+                    .weekday(.wide) .hour() .minute() .second()
+                : Date.FormatStyle()
+                    .weekday()
+                optionalDateFormatStyle.timeZone = timeZone
+                optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                 
             case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits)
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
                 }
-                if arePwgDates {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute())
-                } else {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday())
-                }
+                
+                optionalDateFormatStyle = arePwgDates
+                ? Date.FormatStyle()
+                    .weekday(.wide) .hour() .minute()
+                : Date.FormatStyle()
+                    .weekday()
+                optionalDateFormatStyle.timeZone = timeZone
+                optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
 
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits)
                 optionalDateLabelText = ""
 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits)
                 optionalDateLabelText = ""
 
             default:
                 break
             }
+            dateFormatStyle.timeZone = timeZone
+            dateLabelText = startDate.formatted(dateFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
  
@@ -577,8 +586,9 @@ class AlbumUtilities: NSObject {
         if firstImageDay == lastImageDay {
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
+                
                 if arePwgDates {
                     optionalDateLabelText = dateRange.formatted(.interval
                         .weekday(.wide) .hour() .minute() .second())
@@ -590,14 +600,15 @@ class AlbumUtilities: NSObject {
             case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits)
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
                 }
+                
                 if arePwgDates {
                     optionalDateLabelText = dateRange.formatted(.interval
                         .weekday(.abbreviated) .hour() .minute())
@@ -609,24 +620,26 @@ class AlbumUtilities: NSObject {
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits)
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits)
                 }
                 optionalDateLabelText = ""
 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits)
                 optionalDateLabelText = ""
 
             default:
                 break
             }
+            dateFormatStyle.timeZone = timeZone
+            dateLabelText = startDate.formatted(dateFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
 
@@ -646,11 +659,12 @@ class AlbumUtilities: NSObject {
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.wide) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
                     optionalDateLabelText = dateRange.formatted(.interval
@@ -676,11 +690,12 @@ class AlbumUtilities: NSObject {
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.wide) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
                     optionalDateLabelText = dateRange.formatted(.interval
@@ -719,11 +734,12 @@ class AlbumUtilities: NSObject {
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.wide) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
                     optionalDateLabelText = dateRange.formatted(.interval
@@ -749,11 +765,12 @@ class AlbumUtilities: NSObject {
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.abbreviated) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
                     optionalDateLabelText = dateRange.formatted(.interval
@@ -833,11 +850,12 @@ class AlbumUtilities: NSObject {
                     .day() .month(.wide) .year())
             }
             if arePwgDates {
-                optionalDateLabelText = startDate.formatted(.dateTime
-                    .weekday(.wide) .hour() .minute())
+                optionalDateFormatStyle = Date.FormatStyle()
+                    .weekday(.wide) .hour() .minute()
+                optionalDateFormatStyle.timeZone = timeZone
+                optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                 optionalDateLabelText.append(" - ")
-                optionalDateLabelText.append(endDate.formatted(.dateTime
-                    .weekday(.wide) .hour() .minute()))
+                optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
             } else {
                 optionalDateLabelText = dateRange.formatted(.interval
                     .weekday(.wide))
@@ -862,11 +880,12 @@ class AlbumUtilities: NSObject {
                 case 376...402:
                     fallthrough
                 default:
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute())
+                    optionalDateFormatStyle = Date.FormatStyle()
+                        .weekday(.wide) .hour() .minute()
+                    optionalDateFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                     optionalDateLabelText.append(" - ")
-                    optionalDateLabelText.append(endDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute()))
+                    optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                 }
             } else {
                 optionalDateLabelText = dateRange.formatted(.interval
@@ -892,11 +911,12 @@ class AlbumUtilities: NSObject {
                 case 376...402:
                     fallthrough
                 default:
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute())
+                    optionalDateFormatStyle = Date.FormatStyle()
+                        .weekday(.wide) .hour() .minute()
+                    optionalDateFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                     optionalDateLabelText.append(" - ")
-                    optionalDateLabelText.append(endDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute()))
+                    optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                 }
             } else {
                 optionalDateLabelText = dateRange.formatted(.interval
@@ -924,11 +944,12 @@ class AlbumUtilities: NSObject {
         case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
             switch width {
             case ...375:
-                dateLabelText = startDate.formatted(.dateTime
-                    .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .year(.twoDigits)
+                dateFormatStyle.timeZone = timeZone
+                dateLabelText = startDate.formatted(dateFormatStyle)
                 dateLabelText.append(" - ")
-                dateLabelText.append(endDate.formatted(.dateTime
-                    .year(.twoDigits)))
+                dateLabelText.append(endDate.formatted(dateFormatStyle))
                 optionalDateLabelText = ""
             case 376...402:
                 fallthrough
