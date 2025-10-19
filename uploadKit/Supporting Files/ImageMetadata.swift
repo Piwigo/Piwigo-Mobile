@@ -49,7 +49,7 @@ class ImageMetadata {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
 
@@ -84,7 +84,7 @@ class ImageMetadata {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyyMMdd"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
 
@@ -92,7 +92,7 @@ class ImageMetadata {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyyMM"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
 
@@ -100,7 +100,7 @@ class ImageMetadata {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
 
@@ -108,7 +108,7 @@ class ImageMetadata {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyyMMdd'T'HHmmss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(abbreviation: "UTC")!
         return formatter
     }()
     

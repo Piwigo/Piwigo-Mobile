@@ -36,7 +36,7 @@ class RenameFileTableHeaderView: UIView {
         components.hour = 9
         components.minute = 41
         var calendar = Calendar.current
-        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
         return calendar.date(from: components)!
     }()
     
