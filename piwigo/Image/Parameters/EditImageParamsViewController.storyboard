@@ -258,7 +258,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="go9-LD-JD3">
+                                                <pickerView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="go9-LD-JD3">
                                                     <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="F5D-mN-epS"/>
@@ -289,7 +289,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HRv-Pq-ULD">
+                                                <pickerView contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HRv-Pq-ULD">
                                                     <rect key="frame" x="0.0" y="0.0" width="374" height="216"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="216" id="lhI-Md-YVf"/>
@@ -421,13 +421,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5PK-XB-94k">
-                                                    <rect key="frame" x="20" y="20" width="334" height="20.5"/>
+                                                    <rect key="frame" x="20" y="20" width="334" height="0.0"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bdg-GH-0sJ">
-                                                    <rect key="frame" x="20" y="48.5" width="374" height="399.5"/>
+                                                    <rect key="frame" x="20" y="28" width="334" height="380"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="399.5" id="Mqv-fN-zlk"/>
                                                     </constraints>
@@ -441,9 +441,9 @@
                                                 <constraint firstItem="5PK-XB-94k" firstAttribute="leading" secondItem="9SW-88-raF" secondAttribute="leading" constant="20" symbolic="YES" id="2DY-vo-6hP"/>
                                                 <constraint firstItem="Bdg-GH-0sJ" firstAttribute="leading" secondItem="9SW-88-raF" secondAttribute="leading" constant="20" symbolic="YES" id="4V6-z4-egZ"/>
                                                 <constraint firstItem="5PK-XB-94k" firstAttribute="top" secondItem="9SW-88-raF" secondAttribute="top" constant="20" symbolic="YES" id="5Tx-89-1Lh"/>
-                                                <constraint firstItem="Bdg-GH-0sJ" firstAttribute="trailing" secondItem="9SW-88-raF" secondAttribute="trailing" constant="20" symbolic="YES" id="FYb-jh-yYg"/>
+                                                <constraint firstAttribute="trailing" secondItem="Bdg-GH-0sJ" secondAttribute="trailing" constant="20" symbolic="YES" id="FYb-jh-yYg"/>
                                                 <constraint firstItem="Bdg-GH-0sJ" firstAttribute="top" secondItem="5PK-XB-94k" secondAttribute="bottom" constant="8" symbolic="YES" id="TeN-UX-Iw3"/>
-                                                <constraint firstItem="Bdg-GH-0sJ" firstAttribute="bottom" secondItem="9SW-88-raF" secondAttribute="bottom" constant="20" symbolic="YES" id="i2h-ei-Pk8"/>
+                                                <constraint firstAttribute="bottom" secondItem="Bdg-GH-0sJ" secondAttribute="bottom" constant="20" symbolic="YES" id="i2h-ei-Pk8"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
