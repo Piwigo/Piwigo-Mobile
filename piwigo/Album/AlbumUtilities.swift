@@ -661,7 +661,7 @@ class AlbumUtilities: NSObject {
                     case ...375:
                         optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
                             .weekday(.short) .hour() .minute()
-                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateIntervalFormatStyle.timeZone = timeZone
                         optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                     case 376...402:
                         fallthrough
