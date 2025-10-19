@@ -544,7 +544,7 @@ extension UIDevice {
         // MARK: Simulator
         case "i386", "x86_64":
             return false
-        default:
+        default:    // includes all iPhones
             return true
         }
     }
