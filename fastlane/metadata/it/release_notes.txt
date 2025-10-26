@@ -1,2 +1,2 @@
-• Aggiunge opzioni per modificare i nomi dei file prima del caricamento
-• Correzione di bug e miglioramento dell'interfaccia
+• Supporta caratteri più grandi
+• Corregge i bug e migliora l'interfaccia

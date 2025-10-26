@@ -1,2 +1,2 @@
-• Ajoute des options pour modifier les noms de fichiers avant transfert
-• Corrige des bugs et améliore l'interface
+• Prend en charge des polices plus grandes
+• Corrige les bugs et améliore l'interface

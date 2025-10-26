@@ -1,2 +1,2 @@
-• Añade opciones para modificar los nombres de archivos antes de subirlos
+• Añade soporte para textos más grandes
 • Corrige errores y mejora la interfaz

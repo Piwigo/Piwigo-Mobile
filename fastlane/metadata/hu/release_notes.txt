@@ -1,2 +1,2 @@
-• Fájlnevek feltöltés előtti módosításának lehetőségei
-• Hibajavítások és a kezelőfelület javítása
+• Nagyobb betűméret támogatása
+• Hibák javítása és a felület javítása
