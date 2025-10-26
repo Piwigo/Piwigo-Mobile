@@ -205,7 +205,6 @@
     },
     "v2.0.1_text" : {
       "extractionState" : "manual",
-      "generatesSymbol" : false,
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -9669,7 +9668,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.1\n\n• Obsługa większych czcionek\n• Naprawiono błędy i ulepszono interfejs"
+            "value" : "Wersja 4.1\n\n• Obsługa większych czcionek\n• Poprawki błędów i ulepszenia interfejsu"
           }
         },
         "ru" : {
