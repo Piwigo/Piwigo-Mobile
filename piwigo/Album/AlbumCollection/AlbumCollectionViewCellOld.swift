@@ -134,14 +134,16 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             } failure: { _ in }
         }
 
-        // Image configuration
-        var imageConfig: UIImage.SymbolConfiguration
+        // Symbol configuration
+        var symbolConfig: UIImage.SymbolConfiguration
         if #available(iOS 26.0, *) {
-            imageConfig = UIImage.SymbolConfiguration(pointSize: 21.0, weight: .medium)
+            symbolConfig = UIImage.SymbolConfiguration(pointSize: 21.0, weight: .medium)
         } else {
             // Fallback on previous version
-            imageConfig = UIImage.SymbolConfiguration(pointSize: 24.0, weight: .regular)
+            symbolConfig = UIImage.SymbolConfiguration(pointSize: 24.0, weight: .regular)
         }
+        let colorConfig = UIImage.SymbolConfiguration(paletteColors: [.white])
+        let combinedConfig = symbolConfig.applying(colorConfig)
         
         // Album deletion
         let trash = UIContextualAction(style: .normal, title: nil,
@@ -151,7 +153,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             delete.displayAlert(completion: completionHandler)
         })
         trash.backgroundColor = .red
-        trash.image = UIImage(systemName: "trash", withConfiguration: imageConfig)
+        trash.image = UIImage(systemName: "trash", withConfiguration: combinedConfig)
         
         // Album move
         let move = UIContextualAction(style: .normal, title: nil,
@@ -164,7 +166,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             }
         })
         move.backgroundColor = PwgColor.brown
-        move.image = UIImage(systemName: "rectangle.stack", withConfiguration: imageConfig)
+        move.image = UIImage(systemName: "rectangle.stack", withConfiguration: combinedConfig)
         
         // Album renaming
         let rename = UIContextualAction(style: .normal, title: nil,
@@ -174,7 +176,7 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
             rename.displayAlert(completion: completionHandler)
         })
         rename.backgroundColor = PwgColor.orange
-        rename.image = UIImage(systemName: "character.cursor.ibeam", withConfiguration: imageConfig)
+        rename.image = UIImage(systemName: "character.cursor.ibeam", withConfiguration: combinedConfig)
 
         // Disallow user to delete the active auto-upload destination album
         if (UploadVars.shared.autoUploadCategoryId == Int(albumData.pwgID)),
