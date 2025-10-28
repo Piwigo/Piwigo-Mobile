@@ -510,7 +510,6 @@ extension AlbumViewController: ImageDetailDelegate
         if collectionView?.numberOfSections ?? 0 > indexPath.section,
            collectionView?.numberOfItems(inSection: indexPath.section) ?? 0 > indexPath.item {
             
-            imageOfInterest = indexPath
             collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
             
             // Prepare variables for transitioning delegate

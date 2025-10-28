@@ -110,7 +110,6 @@ class AlbumViewController: UIViewController
     
     
     // MARK: Image Managemennt
-    var imageOfInterest = IndexPath(item: 0, section: 0)
     var indexOfImageToRestore = Int.min
     var inSelectionMode = false
     var touchedImageIDs = [Int64]()
@@ -524,11 +523,6 @@ class AlbumViewController: UIViewController
             self.startFetchingAlbumAndImages(withHUD: isSmartAlbum || missingImages)
         }
         
-        // Should we highlight the image of interest?
-        if nbImages > 0 {
-            revealImageOfInteret()
-        }
-        
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
@@ -625,24 +619,6 @@ class AlbumViewController: UIViewController
         //        [SKStoreReviewController requestReview];
         //    }
         //#endif
-    }
-    
-    func revealImageOfInteret() {
-        if imageOfInterest.item != 0 {
-            // Highlight the cell of interest
-            let indexPathsForVisibleItems = collectionView?.indexPathsForVisibleItems
-            if indexPathsForVisibleItems?.contains(imageOfInterest) ?? false {
-                // Thumbnail is already visible and is highlighted
-                if let cell = collectionView?.cellForItem(at: imageOfInterest),
-                   let imageCell = cell as? ImageCollectionViewCell {
-                    imageCell.highlight() {
-                        self.imageOfInterest = IndexPath(item: 0, section: 0)
-                    }
-                } else {
-                    self.imageOfInterest = IndexPath(item: 0, section: 0)
-                }
-            }
-        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

@@ -92,7 +92,6 @@ extension SceneDelegate {
         else { return }
         
         // Scroll collection view to cell position
-        subAlbumVC.imageOfInterest = indexPath
         subAlbumVC.collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
         
         // Prepare image detail view
