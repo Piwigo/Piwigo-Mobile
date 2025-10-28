@@ -1,2 +1,2 @@
-• Dodaje opcje modyfikowania nazw plików przed przesłaniem
-• Poprawki błędów i usprawnienia interfejsu
+• Obsługa większych czcionek
+• Naprawiono błędy i ulepszono interfejs

@@ -31,10 +31,6 @@ extension UploadSettingsViewController {
 
 
     // MARK: - UITableView - Rows
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-    
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         var row = indexPath.row
         row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
@@ -63,6 +59,7 @@ extension UploadSettingsViewController {
             uploadPhotoSizeVC.delegate = self
             uploadPhotoSizeVC.photoMaxSize = photoMaxSize
             navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
+        
         case 3 /* Upload Video Size */:
             // Present the Upload Photo Size selector
             let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
@@ -71,6 +68,7 @@ extension UploadSettingsViewController {
             uploadVideoSizeVC.delegate = self
             uploadVideoSizeVC.videoMaxSize = videoMaxSize
             navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
+        
         case 6 /* Rename Filename Before Upload */:
             // Present the Rename File selector
             let filenameSB = UIStoryboard(name: "RenameFileViewController", bundle: nil)
@@ -88,6 +86,7 @@ extension UploadSettingsViewController {
             filenameVC.changeCaseBeforeUpload = changeCaseBeforeUpload
             filenameVC.caseOfFileExtension = caseOfFileExtension
             navigationController?.pushViewController(filenameVC, animated: true)
+        
         default:
             break
         }

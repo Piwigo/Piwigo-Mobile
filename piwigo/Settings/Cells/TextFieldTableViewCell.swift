@@ -14,29 +14,29 @@ class TextFieldTableViewCell: UITableViewCell {
 
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var rightTextField: UITextField!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with name:String, input:String, placeHolder:String) {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Text field name
-        leftLabel.font = .preferredFont(forTextStyle: .body)
-        leftLabel.adjustsFontForContentSizeCategory = true
         leftLabel.textColor = PwgColor.leftLabel
         leftLabel.text = name
 
         // Text field
-        rightTextField.font = .preferredFont(forTextStyle: .body)
-        rightTextField.adjustsFontForContentSizeCategory = true
         rightTextField.textColor = PwgColor.rightLabel
         rightTextField.text = input
         rightTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: PwgColor.placeHolder
         ])
-        let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
-        rightTextField.textAlignment = isAppLanguageL2R ? .right : .left
+//        let isAppLanguageL2R = UIApplication.shared.userInterfaceLayoutDirection == .leftToRight
+//        rightTextField.textAlignment = isAppLanguageL2R ? .right : .left
     }
 
     override func prepareForReuse() {

@@ -56,22 +56,24 @@ class Help08ViewController: UIViewController {
         legendBot.attributedText = legendBotAttributedString
         
         // Set top image view
-        guard let topImageUrl = Bundle.main.url(forResource: "help08-top", withExtension: "png") else {
-            fatalError("!!! Could not find help08-top image !!!")
-        }
+        var fileName: String = "help08-top"
+        if #unavailable(iOS 26.0) { fileName += "-iOS18" }
+        guard let topImageUrl = Bundle.main.url(forResource: fileName, withExtension: "png")
+        else { preconditionFailure("!!! Could not find help08-top image !!!") }
         imageViewTop.layoutIfNeeded() // Ensure imageView is in its final size.
         var scale = max(imageViewTop.traitCollection.displayScale, 1.0)
         var imageSize = CGSizeMake(imageViewTop.bounds.size.width * scale, imageViewTop.bounds.size.height * scale)
-        imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize, for: .album)
+        imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize, for: .help)
         
         // Set bottom image view
-        guard let botImageUrl = Bundle.main.url(forResource: "help08-bot", withExtension: "png") else {
-            fatalError("!!! Could not find help08-bot image !!!")
-        }
+        fileName = "help08-bot"
+        if #unavailable(iOS 26.0) { fileName += "-iOS18" }
+        guard let botImageUrl = Bundle.main.url(forResource: fileName, withExtension: "png")
+        else { preconditionFailure("!!! Could not find help08-bot image !!!") }
         imageViewBot.layoutIfNeeded() // Ensure imageView is in its final size.
         scale = max(imageViewBot.traitCollection.displayScale, 1.0)
         imageSize = CGSizeMake(imageViewBot.bounds.size.width * scale, imageViewBot.bounds.size.height * scale)
-        imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: imageSize, for: .album)
+        imageViewBot.image = ImageUtilities.downsample(imageAt: botImageUrl, to: imageSize, for: .help)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID

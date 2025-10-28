@@ -17,32 +17,29 @@
                         <color key="sectionIndexColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagTableViewCell" rowHeight="43.5" translatesAutoresizingMaskIntoConstraints="NO" id="JLM-UW-y4d" userLabel="TagTableViewCell" customClass="TagTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="55.5" width="374" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagTableViewCell" rowHeight="65" translatesAutoresizingMaskIntoConstraints="NO" id="JLM-UW-y4d" userLabel="TagTableViewCell" customClass="TagTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="65"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JLM-UW-y4d" id="A0J-gA-CTM">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="65"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="addItem" translatesAutoresizingMaskIntoConstraints="NO" id="dW4-TH-asX" userLabel="Add Image">
-                                            <rect key="frame" x="329" y="9.5" width="25" height="25"/>
+                                            <rect key="frame" x="329" y="20" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="Hv3-fK-7Cp"/>
                                                 <constraint firstAttribute="width" secondItem="dW4-TH-asX" secondAttribute="height" multiplier="1:1" id="Whb-To-E0o"/>
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="removeItem" translatesAutoresizingMaskIntoConstraints="NO" id="zWH-dn-Nuv" userLabel="Remove Image">
-                                            <rect key="frame" x="329" y="9.5" width="25" height="25"/>
+                                            <rect key="frame" x="329" y="20" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="e6F-iv-tEV"/>
                                                 <constraint firstAttribute="width" secondItem="zWH-dn-Nuv" secondAttribute="height" multiplier="1:1" id="mxw-1t-Urj"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F5m-b5-6AC">
-                                            <rect key="frame" x="20" y="10" width="96.5" height="23.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="23.5" id="dzy-5F-3Kc"/>
-                                            </constraints>
+                                            <rect key="frame" x="20" y="20" width="96.5" height="25"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -53,8 +50,9 @@
                                         <constraint firstAttribute="trailing" secondItem="zWH-dn-Nuv" secondAttribute="trailing" constant="20" symbolic="YES" id="Djb-gt-rru"/>
                                         <constraint firstItem="dW4-TH-asX" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="Lq3-um-eGO"/>
                                         <constraint firstItem="dW4-TH-asX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="F5m-b5-6AC" secondAttribute="trailing" constant="10" id="RZ1-zJ-oyg"/>
+                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="top" secondItem="A0J-gA-CTM" secondAttribute="top" constant="20" symbolic="YES" id="SIo-Cc-KEC"/>
                                         <constraint firstItem="F5m-b5-6AC" firstAttribute="leading" secondItem="A0J-gA-CTM" secondAttribute="leading" constant="20" id="erA-za-9Bt"/>
-                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="fY6-21-tEf"/>
+                                        <constraint firstAttribute="bottom" secondItem="F5m-b5-6AC" secondAttribute="bottom" constant="20" symbolic="YES" id="s8r-gr-frW"/>
                                         <constraint firstAttribute="trailing" secondItem="dW4-TH-asX" secondAttribute="trailing" constant="20" symbolic="YES" id="yeP-cH-UDI"/>
                                     </constraints>
                                 </tableViewCellContentView>

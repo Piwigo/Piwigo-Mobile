@@ -30,10 +30,7 @@ class HelpViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Initialise button
-        closeButton.setTitle(NSLocalizedString("alertOkButton", comment: "OK"), for: .normal)
-        
+
         // Initialise pages
         for i in displayHelpPagesWithID {
             // Loop over the storyboards
@@ -66,6 +63,9 @@ class HelpViewController: UIViewController {
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
+
+        // Close button
+        closeButton.tintColor = PwgColor.tintColor
     }
 
     override func viewWillAppear(_ animated: Bool) {

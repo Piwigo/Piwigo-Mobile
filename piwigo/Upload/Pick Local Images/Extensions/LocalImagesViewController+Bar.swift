@@ -18,9 +18,9 @@ extension LocalImagesViewController {
         // Buttons
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
         let hasSelectedImages = nberOfSelectedImages > 0
-        cancelBarButton.isEnabled = hasSelectedImages
-        actionBarButton.isEnabled = (queue.operationCount == 0)
-        uploadBarButton.isEnabled = hasSelectedImages
+        cancelBarButton?.isEnabled = hasSelectedImages
+        actionBarButton?.isEnabled = (queue.operationCount == 0)
+        uploadBarButton?.isEnabled = hasSelectedImages
         
         // Left side of navigation bar
         if hasSelectedImages {
@@ -60,7 +60,7 @@ extension LocalImagesViewController {
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton].compactMap { $0 }
             case .pad:
-                trashBarButton.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
+                trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton, trashBarButton].compactMap { $0 }
             default:
@@ -73,7 +73,7 @@ extension LocalImagesViewController {
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
 
             case .pad:
-                trashBarButton.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
+                trashBarButton?.isEnabled = canDeleteUploadedImages() || canDeleteSelectedImages()
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton,
                                                       trashBarButton].compactMap { $0 }
             default:

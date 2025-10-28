@@ -279,6 +279,11 @@ class SelectCategoryViewController: UIViewController {
         categoriesTableView?.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
                                       forCellReuseIdentifier: "CategoryTableViewCell")
 
+        // Table view identifier
+        categoriesTableView?.accessibilityIdentifier = "album selector"
+        categoriesTableView?.rowHeight = UITableView.automaticDimension
+        categoriesTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
         // Check that a root album exists in cache (create it if necessary)
         guard let _ = albumProvider.getAlbum(ofUser: user, withId: pwgSmartAlbum.root.rawValue) else {
             return

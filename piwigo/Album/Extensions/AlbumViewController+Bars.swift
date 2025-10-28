@@ -38,7 +38,7 @@ extension AlbumViewController
         }
         
         // Right side of navigation bar and toolbar
-        if categoryId == 0 {
+        if categoryId == Int32.zero {
             // Root album => Discover menu button in navigation bar
             discoverBarButton = getDiscoverButton()
             
@@ -108,14 +108,11 @@ extension AlbumViewController
             favoriteBarButton = getFavoriteBarButton()
             
             // Menu for activating the selection mode and changing the way images are sorted
-            var children = [sortMenu(), viewOptionsMenu()]
+            var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
             if shareBarButton != nil || favoriteBarButton != nil {
                 children.insert(selectMenu(), at: 0)
             }
-            if categoryId == AlbumVars.shared.defaultCategory {
-                children.append(settingsMenu())
-            }
-            let menu = UIMenu(title: "", children: children.compactMap({$0}))
+            let menu = UIMenu(title: "", options: UIMenu.Options.displayInline, children: children.compactMap({$0}))
             selectBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: menu)
             selectBarButton?.accessibilityIdentifier = "select"
             let hasImages = albumData.nbImages != 0
@@ -239,12 +236,9 @@ extension AlbumViewController
         shareBarButton = getShareBarButton()
         
         // Menu for activating the selection mode or change the way images are sorted
-        var children = [sortMenu(), viewOptionsMenu()]
+        var children = [sortMenu(), viewOptionsMenu(), settingsMenu()]
         if shareBarButton != nil || favoriteBarButton != nil {
             children.insert(selectMenu(), at: 0)
-        }
-        if categoryId != 0, categoryId == AlbumVars.shared.defaultCategory {
-            children.append(settingsMenu())
         }
         let updatedMenu = selectBarButton?.menu?.replacingChildren(children.compactMap({$0}))
         selectBarButton?.menu = updatedMenu
@@ -479,7 +473,8 @@ extension AlbumViewController
         let title: String = categoryId == Int32.zero
             ? String(localized: "tabBar_albums", bundle: piwigoKit, comment: "Albums")
             : albumData.name
-        self.view?.window?.windowScene?.title = title
+        navigationItem.title = title
+        view?.window?.windowScene?.title = title
         
         // No subtitle when using acessibility category or on iPhone in landscape mode
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
@@ -488,7 +483,6 @@ extension AlbumViewController
             (UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
             // Set title and subtitle
             if prefersLargeTitles {
-                navigationItem.title = title
                 navigationItem.subtitle = nil
             } else {
                 navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
@@ -544,15 +538,15 @@ extension AlbumViewController
             }
         }
         
-        // Set title and subtitle
+        // Set subtitle
         if prefersLargeTitles {
-            navigationItem.title = title
             navigationItem.subtitle = subTitle
             navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
         } else {
             navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
                                                     subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
         }
+        self.view?.window?.windowScene?.subtitle = subTitle
     }
     
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
@@ -565,7 +559,8 @@ extension AlbumViewController
         }
         
         let title = albumData.name
-        self.view?.window?.windowScene?.title = albumData.name
+        self.title = title
+        self.view?.window?.windowScene?.title = title
         
         // There is no subtitle in landscape mode on iPhone
         // nor when using acessibility category

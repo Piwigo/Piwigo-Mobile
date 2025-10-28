@@ -50,7 +50,11 @@ extension Image {
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
     
-    static let calendar = Calendar.current
+    static let calendar = {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        return calendar
+    }()
     static let byDay: Set<Calendar.Component> = [.year, .month, .day]
     static let byWeek: Set<Calendar.Component> = [.year, .weekOfYear]
     static let byMonth: Set<Calendar.Component> = [.year, .month]

@@ -1,2 +1,2 @@
-• Opties toegevoegd voor het wijzigen van bestandsnamen vóór het uploaden
-• Lost bugs op en verbetert de interface
+• Brings ondersteuning voor grotere tekst
+• Verbetert bugs en verbetert de interface

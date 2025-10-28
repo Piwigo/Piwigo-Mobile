@@ -197,7 +197,7 @@ class LoginViewController: UIViewController {
     private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
         // Set cell size according to the selected category
         /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
-        let fieldHeight = TableViewUtilities.shared.rowHeightForContentSizeCategory(contentSizeCategory)
+        let fieldHeight = TableViewUtilities.shared.rowHeight(forContentSizeCategory: contentSizeCategory)
         serverTextFiledHeight.constant = fieldHeight
         userTextFieldHeight.constant = fieldHeight
         passwordTextFieldHeight.constant = fieldHeight

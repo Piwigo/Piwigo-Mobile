@@ -28,17 +28,17 @@ extension AutoUploadViewController: UITableViewDataSource
         case 2:
             return 2
         default:
-            fatalError("Unknown section")
+            preconditionFailure("Unknown section")
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
-        
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         switch indexPath.section {
         case 0:     // Auto-Upload On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
-            else { preconditionFailure("Could not load a SwitchTableViewCell!") }
+            else { preconditionFailure("Could not load SwitchTableViewCell") }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
             cell.cellSwitch.setOn(UploadVars.shared.isAutoUploadActive, animated: true)
@@ -62,9 +62,11 @@ extension AutoUploadViewController: UITableViewDataSource
             tableViewCell = cell
             
         case 1:     // Source & destination albums
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
-            else { preconditionFailure("Could not load a LabelTableViewCell!") }
-            
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "LabelTableViewCell"
+                : "LabelTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+            else { preconditionFailure("Could not load LabelTableViewCell")}
             var title = "", detail = ""
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :
@@ -101,33 +103,37 @@ extension AutoUploadViewController: UITableViewDataSource
             cell.configure(with: title, detail: detail)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             tableViewCell = cell
-
+            
         case 2:     // Properties
             switch indexPath.row {
             case 0 /* Tags */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell
-                else { preconditionFailure("Could not load a EditImageTagsTableViewCell!") }
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell2", for: indexPath) as? LabelTableViewCell
+                else { preconditionFailure("Could not load LabelTableViewCell")}
                 // Retrieve tags and switch to old cache data format
+                let title = NSLocalizedString("editImageDetails_tags", comment: "Tags")
                 let tags = tagProvider.getTags(withIDs: UploadVars.shared.autoUploadTagIds, taskContext: mainContext)
-                cell.config(withList: tags, inColor: PwgColor.rightLabel)
+                let tagList: String = tags.compactMap({"\($0.tagName), "}).reduce("", +)
+                let detail = String(tagList.dropLast(2))
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = .disclosureIndicator
                 tableViewCell = cell
-
+                
             case 1 /* Comments */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell
-                else { preconditionFailure("Could not load a EditImageTextViewTableViewCell!") }
-                cell.config(withText: NSAttributedString(string: UploadVars.shared.autoUploadComments),
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextViewTableViewCell", for: indexPath) as? TextViewTableViewCell
+                else { preconditionFailure("Could not load a TextViewTableViewCell!") }
+                cell.config(withText: UploadVars.shared.autoUploadComments,
                             inColor: PwgColor.rightLabel)
                 cell.textView.delegate = self
                 tableViewCell = cell
-
+                
             default:
                 break
             }
-
+            
         default:
             break
         }
-
+        
         tableViewCell.backgroundColor = PwgColor.cellBackground
         tableViewCell.tintColor = PwgColor.orange
         return tableViewCell

@@ -1,4 +1,4 @@
-This version brings an option allowing to rename files before upload and features dark and tinted app icons. The "Wi-Fi Only" option is now hidden on devices without cellular and one can now say "Siri, upload my photos to Piwigo" to add recent photos to the upload queue (requires the Auto-Upload option enabled).
+This version brings support for Larger Text and fixes the few issues listed in the TestFlight section.
 
 Here is the address of the server requiring the above credentials and allowing to test all functionalities: https://piwigo.lelievre-berna.net/15.x/
 And here are servers you can try without credentials: https://raia.com, https://www.neilfitzgeraldphoto.co.nz/gallery, http://www.dongshawhwei.com/photos.

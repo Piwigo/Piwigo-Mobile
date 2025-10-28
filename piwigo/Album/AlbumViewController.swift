@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import MessageUI
 import UIKit
 import piwigoKit
 import uploadKit
@@ -72,7 +73,7 @@ class AlbumViewController: UIViewController
     lazy var discoverBarButton: UIBarButtonItem = getDiscoverButton()
     lazy var addAlbumBarButton: UIBarButtonItem = getAddAlbumBarButton()            // since iOS 26
     lazy var addImageBarButton: UIBarButtonItem = getAddImageBarButton()            // since iOS 26
-    lazy var uploadQueueBarButton: UIBarButtonItem? = getUploadQueueBarButton()     // since iOS 26
+    var uploadQueueBarButton: UIBarButtonItem?                                      // since iOS 26
     // Bar buttons for other albums
     var actionBarButton: UIBarButtonItem?
     lazy var deleteBarButton: UIBarButtonItem = getDeleteBarButton()
@@ -109,7 +110,6 @@ class AlbumViewController: UIViewController
     
     
     // MARK: Image Managemennt
-    var imageOfInterest = IndexPath(item: 0, section: 0)
     var indexOfImageToRestore = Int.min
     var inSelectionMode = false
     var touchedImageIDs = [Int64]()
@@ -300,13 +300,9 @@ class AlbumViewController: UIViewController
             view.insertSubview(uploadImagesButton, belowSubview: addButton)
         }
         
-        // Sticky section headers
+        // No sticky section headers
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            if #available(iOS 26.0, *) {
-                layout.sectionHeadersPinToVisibleBounds = false
-            } else {
-                layout.sectionHeadersPinToVisibleBounds = true
-            }
+            layout.sectionHeadersPinToVisibleBounds = false
         }
         
         // Refresh view
@@ -527,11 +523,6 @@ class AlbumViewController: UIViewController
             self.startFetchingAlbumAndImages(withHUD: isSmartAlbum || missingImages)
         }
         
-        // Should we highlight the image of interest?
-        if nbImages > 0 {
-            revealImageOfInteret()
-        }
-        
         // Display What's New in Piwigo if needed
         /// Next line to be used for dispalying What's New in Piwigo:
 #if DEBUG
@@ -551,7 +542,7 @@ class AlbumViewController: UIViewController
                     whatsNewVC.isModalInPresentation = true
                     if let sheet = whatsNewVC.sheetPresentationController {
                         sheet.detents = [.medium(), .large()]
-                        sheet.selectedDetentIdentifier = .medium
+                        sheet.selectedDetentIdentifier = view.bounds.height < 750 ? .large : .medium
                         sheet.prefersGrabberVisible = true
                         sheet.preferredCornerRadius = 40
                     }
@@ -610,10 +601,7 @@ class AlbumViewController: UIViewController
         }
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
-            let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-            guard let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
-            else { preconditionFailure("Could not load HelpViewController") }
-            helpVC.displayHelpPagesWithID = displayHelpPagesWithID
+            let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 present(helpVC, animated: true)
@@ -631,24 +619,6 @@ class AlbumViewController: UIViewController
         //        [SKStoreReviewController requestReview];
         //    }
         //#endif
-    }
-    
-    func revealImageOfInteret() {
-        if imageOfInterest.item != 0 {
-            // Highlight the cell of interest
-            let indexPathsForVisibleItems = collectionView?.indexPathsForVisibleItems
-            if indexPathsForVisibleItems?.contains(imageOfInterest) ?? false {
-                // Thumbnail is already visible and is highlighted
-                if let cell = collectionView?.cellForItem(at: imageOfInterest),
-                   let imageCell = cell as? ImageCollectionViewCell {
-                    imageCell.highlight() {
-                        self.imageOfInterest = IndexPath(item: 0, section: 0)
-                    }
-                } else {
-                    self.imageOfInterest = IndexPath(item: 0, section: 0)
-                }
-            }
-        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -915,6 +885,14 @@ class AlbumViewController: UIViewController
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
 
+            // Search bar
+            if let textField = self.searchController?.searchBar.searchTextField as? UITextField {
+                textField.font = UIFont.preferredFont(forTextStyle: .body)
+                self.searchController?.searchBar.invalidateIntrinsicContentSize()
+                self.searchController?.searchBar.layer.setNeedsLayout()
+                self.searchController?.searchBar.layoutIfNeeded()
+            }
+
             // Invalidate layout to recalculate cell sizes
             self.collectionView.collectionViewLayout.invalidateLayout()
             
@@ -1166,5 +1144,16 @@ class AlbumViewController: UIViewController
         if let rootAlbumViewController = rootAlbumViewController {
             navigationController?.popToViewController(rootAlbumViewController, animated: true)
         }
+    }
+}
+
+
+// MARK: - MFMailComposeViewControllerDelegate
+extension AlbumViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        // Check the result or perform other tasks.
+
+        // Dismiss the mail compose view controller.
+        dismiss(animated: true)
     }
 }

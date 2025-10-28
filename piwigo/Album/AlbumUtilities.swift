@@ -519,303 +519,360 @@ class AlbumUtilities: NSObject {
             endDate = startDate
         }
         
+        // Initialisation
+        var dateFormatStyle: Date.FormatStyle!
+        var optionalDateFormatStyle: Date.FormatStyle!
+        var dateIntervalFormatStyle: Date.IntervalFormatStyle!
+        var optionalDateIntervalFormatStyle: Date.IntervalFormatStyle!
+        let timeZone: TimeZone = arePwgDates ? TimeZone(abbreviation: "UTC")! : .current
+        var calendar = Calendar.current
+        calendar.timeZone = timeZone
+        
         // Single date?
         if startDate == endDate {
             // Display day/month/year above and weekday/time below if possible
             // See http://www.unicode.org/reports/tr35/tr35-31/tr35-dates.html#Date_Format_Patterns
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
-                if arePwgDates {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute() .second())
-                } else {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday())
-                }
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
+                
+                optionalDateFormatStyle = arePwgDates
+                ? Date.FormatStyle()
+                    .weekday(.wide) .hour() .minute() .second()
+                : Date.FormatStyle()
+                    .weekday()
+                optionalDateFormatStyle.timeZone = timeZone
+                optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                 
             case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits)
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
                 }
-                if arePwgDates {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute())
-                } else {
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday())
-                }
+                
+                optionalDateFormatStyle = arePwgDates
+                ? Date.FormatStyle()
+                    .weekday(.wide) .hour() .minute()
+                : Date.FormatStyle()
+                    .weekday()
+                optionalDateFormatStyle.timeZone = timeZone
+                optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
 
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits)
                 optionalDateLabelText = ""
 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits)
                 optionalDateLabelText = ""
 
             default:
                 break
             }
+            dateFormatStyle.timeZone = timeZone
+            dateLabelText = startDate.formatted(dateFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
  
         // Images taken the same day?
         let dateRange = startDate..<endDate
-        let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
-        let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
+        let firstImageDay = calendar.dateComponents([.year, .month, .day], from: startDate)
+        let lastImageDay = calendar.dateComponents([.year, .month, .day], from: endDate)
         if firstImageDay == lastImageDay {
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
-                if arePwgDates {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide) .hour() .minute() .second())
-                } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide))
-                }
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
+                
+                optionalDateIntervalFormatStyle = arePwgDates
+                ? Date.IntervalFormatStyle()
+                    .weekday(.wide) .hour() .minute() .second()
+                : Date.IntervalFormatStyle()
+                    .weekday(.wide)
+                optionalDateIntervalFormatStyle.timeZone = timeZone
+                optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 
             case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits)
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
                 }
-                if arePwgDates {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.abbreviated) .hour() .minute())
-                } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide) )
-                }
+                
+                optionalDateIntervalFormatStyle = arePwgDates
+                ? Date.IntervalFormatStyle()
+                    .weekday(.abbreviated) .hour() .minute()
+                : Date.IntervalFormatStyle()
+                    .weekday(.wide)
+                optionalDateIntervalFormatStyle.timeZone = timeZone
+                optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
 
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits)
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = startDate.formatted(.dateTime
-                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                    dateFormatStyle = Date.FormatStyle()
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits)
                 }
                 optionalDateLabelText = ""
 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = startDate.formatted(.dateTime
-                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits)
                 optionalDateLabelText = ""
 
             default:
                 break
             }
+            dateFormatStyle.timeZone = timeZone
+            dateLabelText = startDate.formatted(dateFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
 
         // Images taken the same week?
-        let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: startDate)
-        let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: endDate)
+        let firstImageWeek = calendar.dateComponents([.year, .weekOfMonth], from: startDate)
+        let lastImageWeek = calendar.dateComponents([.year, .weekOfMonth], from: endDate)
         if firstImageWeek == lastImageWeek {
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.wide) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.wide) .year()
+
                 if arePwgDates {
                     switch width {
                     case ...375:
-                        optionalDateLabelText = dateRange.formatted(.interval
-                            .weekday(.short) .hour() .minute())
+                        optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                            .weekday(.short) .hour() .minute()
+                        optionalDateIntervalFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.wide) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide))
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 }
                 
             case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = dateRange.formatted(.interval
-                        .day() .month(.abbreviated) .year())
+                    dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .day() .month(.abbreviated) .year()
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = dateRange.formatted(.interval
-                        .day() .month(.wide) .year())
+                    dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .day() .month(.wide) .year()
                 }
+                
                 if arePwgDates {
                     switch width {
                     case ...375:
-                        optionalDateLabelText = dateRange.formatted(.interval
-                            .weekday(.wide))
+                        optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                            .weekday(.wide)
+                        optionalDateIntervalFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.wide) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide) )
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 }
 
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.abbreviated) .year()
                 optionalDateLabelText = ""
 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.twoDigits) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.twoDigits) .year()
                 optionalDateLabelText = ""
 
             default:
                 break
             }
+            dateIntervalFormatStyle.timeZone = timeZone
+            dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
 
         // Images taken the same month?
-        let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
-        let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
+        let firstImageMonth = calendar.dateComponents([.year, .month], from: startDate)
+        let lastImageMonth = calendar.dateComponents([.year, .month], from: endDate)
         if firstImageMonth == lastImageMonth {
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.wide) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.wide) .year()
+                
                 if arePwgDates {
                     switch width {
                     case ...375:
-                        optionalDateLabelText = dateRange.formatted(.interval
-                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                            .weekday(.abbreviated) .hour() .minute()
+                        optionalDateIntervalFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.wide) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.wide) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide))
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 }
                 
             case .extraExtraLarge, .extraExtraExtraLarge:
                 switch width {
                 case ...375:
-                    dateLabelText = dateRange.formatted(.interval
-                        .day() .month(.abbreviated) .year())
+                    dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .day() .month(.abbreviated) .year()
                 case 376...402:
                     fallthrough
                 default:
-                    dateLabelText = dateRange.formatted(.interval
-                        .day() .month(.wide) .year())
+                    dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .day() .month(.wide) .year()
                 }
+                
                 if arePwgDates {
                     switch width {
                     case ...375:
-                        optionalDateLabelText = dateRange.formatted(.interval
-                            .weekday(.narrow) .hour())
+                        optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                            .weekday(.narrow) .hour()
+                        optionalDateIntervalFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                     case 376...402:
                         fallthrough
                     default:
-                        optionalDateLabelText = startDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute())
+                        optionalDateFormatStyle = Date.FormatStyle()
+                            .weekday(.abbreviated) .hour() .minute()
+                        optionalDateFormatStyle.timeZone = timeZone
+                        optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                         optionalDateLabelText.append(" - ")
-                        optionalDateLabelText.append(endDate.formatted(.dateTime
-                            .weekday(.abbreviated) .hour() .minute()))
+                        optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                     }
                 } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide) )
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 }
 
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.abbreviated) .year()
                 optionalDateLabelText = ""
 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.twoDigits) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.twoDigits) .year()
                 optionalDateLabelText = ""
 
             default:
                 break
             }
+            dateIntervalFormatStyle.timeZone = timeZone
+            dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
         
         // Images taken the same year?
-        let firstImageYear = Calendar.current.dateComponents([.year], from: startDate)
-        let lastImageYear = Calendar.current.dateComponents([.year], from: endDate)
+        let firstImageYear = calendar.dateComponents([.year], from: startDate)
+        let lastImageYear = calendar.dateComponents([.year], from: endDate)
         if firstImageYear == lastImageYear {
             switch preferredContenSize {
             case .extraSmall, .small, .medium, .large, .extraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.abbreviated) .year()
+                
                 if arePwgDates {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide) .day())
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide) .day()
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide))
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 }
                 
             case .extraExtraLarge, .extraExtraExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.twoDigits) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.twoDigits) .year()
+                
                 if arePwgDates {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.abbreviated))
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.abbreviated)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 } else {
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide) )
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 }
                 
             case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.abbreviated))
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.abbreviated)
                 optionalDateLabelText = ""
                 
             case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.twoDigits))
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.twoDigits)
                 optionalDateLabelText = ""
                 
             default:
                 break
             }
+            dateIntervalFormatStyle.timeZone = timeZone
+            dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             return (dateLabelText, optionalDateLabelText)
         }
 
@@ -824,117 +881,154 @@ class AlbumUtilities: NSObject {
         case .extraSmall, .small, .medium, .large:
             switch width {
             case ...375:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.abbreviated) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             case 376...402:
                 fallthrough
             default:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.wide) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.wide) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             }
+            
             if arePwgDates {
-                optionalDateLabelText = startDate.formatted(.dateTime
-                    .weekday(.wide) .hour() .minute())
+                optionalDateFormatStyle = Date.FormatStyle()
+                    .weekday(.wide) .hour() .minute()
+                optionalDateFormatStyle.timeZone = timeZone
+                optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                 optionalDateLabelText.append(" - ")
-                optionalDateLabelText.append(endDate.formatted(.dateTime
-                    .weekday(.wide) .hour() .minute()))
+                optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
             } else {
-                optionalDateLabelText = dateRange.formatted(.interval
-                    .weekday(.wide))
+                optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .weekday(.wide)
+                optionalDateIntervalFormatStyle.timeZone = timeZone
+                optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
             }
             
         case .extraLarge:
             switch width {
             case ...375:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.twoDigits) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.twoDigits) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             case 376...402:
                 fallthrough
             default:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.abbreviated) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             }
+            
             if arePwgDates {
                 switch width {
                 case ...375:
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide))
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 case 376...402:
                     fallthrough
                 default:
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute())
+                    optionalDateFormatStyle = Date.FormatStyle()
+                        .weekday(.wide) .hour() .minute()
+                    optionalDateFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                     optionalDateLabelText.append(" - ")
-                    optionalDateLabelText.append(endDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute()))
+                    optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                 }
             } else {
-                optionalDateLabelText = dateRange.formatted(.interval
-                    .weekday(.wide) )
+                optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .weekday(.wide)
+                optionalDateIntervalFormatStyle.timeZone = timeZone
+                optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
             }
 
         case .extraExtraLarge, .extraExtraExtraLarge:
             switch width {
             case ...375:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.abbreviated) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             case 376...402:
                 fallthrough
             default:
-                dateLabelText = dateRange.formatted(.interval
-                    .day() .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .day() .month(.abbreviated) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             }
+            
             if arePwgDates {
                 switch width {
                 case ...375:
-                    optionalDateLabelText = dateRange.formatted(.interval
-                        .weekday(.wide))
+                    optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                        .weekday(.wide)
+                    optionalDateIntervalFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
                 case 376...402:
                     fallthrough
                 default:
-                    optionalDateLabelText = startDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute())
+                    optionalDateFormatStyle = Date.FormatStyle()
+                        .weekday(.wide) .hour() .minute()
+                    optionalDateFormatStyle.timeZone = timeZone
+                    optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                     optionalDateLabelText.append(" - ")
-                    optionalDateLabelText.append(endDate.formatted(.dateTime
-                        .weekday(.wide) .hour() .minute()))
+                    optionalDateLabelText.append(endDate.formatted(optionalDateFormatStyle))
                 }
             } else {
-                optionalDateLabelText = dateRange.formatted(.interval
-                    .weekday(.wide) )
+                optionalDateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .weekday(.wide)
+                optionalDateIntervalFormatStyle.timeZone = timeZone
+                optionalDateLabelText = dateRange.formatted(optionalDateIntervalFormatStyle)
             }
 
         case .accessibilityMedium:
             switch width {
             case ...375:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.twoDigits) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.twoDigits) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             case 376...402:
                 fallthrough
             default:
-                dateLabelText = dateRange.formatted(.interval
-                    .month(.abbreviated) .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .month(.abbreviated) .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             }
             optionalDateLabelText = ""
 
         case .accessibilityLarge, .accessibilityExtraLarge:
-            dateLabelText = dateRange.formatted(.interval
-                .year())
+            dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                .year()
+            dateIntervalFormatStyle.timeZone = timeZone
+            dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             optionalDateLabelText = ""
 
         case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
             switch width {
             case ...375:
-                dateLabelText = startDate.formatted(.dateTime
-                    .year(.twoDigits))
+                dateFormatStyle = Date.FormatStyle()
+                    .year(.twoDigits)
+                dateFormatStyle.timeZone = timeZone
+                dateLabelText = startDate.formatted(dateFormatStyle)
                 dateLabelText.append(" - ")
-                dateLabelText.append(endDate.formatted(.dateTime
-                    .year(.twoDigits)))
+                dateLabelText.append(endDate.formatted(dateFormatStyle))
                 optionalDateLabelText = ""
             case 376...402:
                 fallthrough
             default:
-                dateLabelText = dateRange.formatted(.interval
-                    .year())
+                dateIntervalFormatStyle = Date.IntervalFormatStyle()
+                    .year()
+                dateIntervalFormatStyle.timeZone = timeZone
+                dateLabelText = dateRange.formatted(dateIntervalFormatStyle)
             }
 
         default:

@@ -182,7 +182,6 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
 
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        uploadBarButton.tintColor = PwgColor.tintColor
 
         // Collection view
         localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

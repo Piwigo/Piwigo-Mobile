@@ -12,11 +12,18 @@ import UIKit
 // MARK: UITableViewDelegate Methods
 extension DateFormatSelectorViewController: UITableViewDelegate
 {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    // MARK: - Headers
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 { return 20 }
+        return 0
     }
-        
-
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 0 { return UIView() }
+        return nil
+    }
+    
+    
     // MARK: - Year/Month/Day Reordering
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // Show reorder control if necessary
@@ -37,7 +44,7 @@ extension DateFormatSelectorViewController: UITableViewDelegate
         
         return proposedDestinationIndexPath
     }
-
+    
     
     // MARK: - Year/Month/Day Format Selection
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {

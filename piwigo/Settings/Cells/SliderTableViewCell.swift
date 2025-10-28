@@ -18,7 +18,9 @@ class SliderTableViewCell: UITableViewCell {
     @IBOutlet weak var sliderName: UILabel!
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var sliderValue: UILabel!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     private var valuePrefix: String?
     private var valueSuffix: String?
     private var incrementSliderBy:Float = 0.0
@@ -35,10 +37,10 @@ class SliderTableViewCell: UITableViewCell {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Slider title
-        sliderName.font = .preferredFont(forTextStyle: .body)
-        sliderName.adjustsFontForContentSizeCategory = true
         sliderName.textColor = PwgColor.leftLabel
         sliderName.text = title
 
@@ -51,8 +53,6 @@ class SliderTableViewCell: UITableViewCell {
         slider.thumbTintColor = PwgColor.thumb
 
         // Slider value
-        sliderValue.font = .preferredFont(forTextStyle: .body)
-        sliderValue.adjustsFontForContentSizeCategory = true
         sliderValue.textColor = PwgColor.rightLabel
         valuePrefix = prefix
         valueSuffix = suffix

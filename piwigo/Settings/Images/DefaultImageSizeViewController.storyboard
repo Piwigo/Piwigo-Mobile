@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24127"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,13 +17,84 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="cell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="NGM-u3-6wx">
-                                <rect key="frame" x="20" y="49.5" width="374" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell" rowHeight="58" id="Pf9-Es-33E" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="58"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NGM-u3-6wx" id="fjB-u5-rvZ">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Pf9-Es-33E" id="IGk-m7-WM4">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="58"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V9F-nR-BTU">
+                                            <rect key="frame" x="20" y="20" width="62.5" height="18"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="https://piwigo.org/my-photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kIL-HH-Chw">
+                                            <rect key="frame" x="133" y="19" width="221" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" systemColor="systemGrayColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="kIL-HH-Chw" firstAttribute="centerY" secondItem="V9F-nR-BTU" secondAttribute="centerY" id="1PG-1d-hRV"/>
+                                        <constraint firstItem="V9F-nR-BTU" firstAttribute="top" secondItem="IGk-m7-WM4" secondAttribute="top" constant="20" symbolic="YES" id="FoF-i5-BMc"/>
+                                        <constraint firstItem="kIL-HH-Chw" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="V9F-nR-BTU" secondAttribute="trailing" constant="10" id="Gzb-uE-DN2"/>
+                                        <constraint firstItem="V9F-nR-BTU" firstAttribute="leading" secondItem="IGk-m7-WM4" secondAttribute="leading" constant="20" symbolic="YES" id="Wvv-je-mwj"/>
+                                        <constraint firstAttribute="trailing" secondItem="kIL-HH-Chw" secondAttribute="trailing" constant="20" symbolic="YES" id="ebq-5r-UDJ"/>
+                                        <constraint firstAttribute="bottom" secondItem="V9F-nR-BTU" secondAttribute="bottom" constant="20" symbolic="YES" id="yAi-Yf-gSX"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="bottomMargin" destination="yAi-Yf-gSX" id="hqO-e5-P9A"/>
+                                    <outlet property="detailLabel" destination="kIL-HH-Chw" id="eei-Ht-bxo"/>
+                                    <outlet property="titleLabel" destination="V9F-nR-BTU" id="QM7-eS-AAr"/>
+                                    <outlet property="topMargin" destination="FoF-i5-BMc" id="ber-bV-8yC"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell2" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell2" rowHeight="85" id="l3l-aI-KmU" userLabel="LabelTableViewCell2" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="113.5" width="374" height="85"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="l3l-aI-KmU" id="YMW-sf-koD">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="85"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K1C-68-u6f">
+                                            <rect key="frame" x="20" y="20" width="334" height="20.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J7V-3c-xKB">
+                                            <rect key="frame" x="20" y="48.5" width="334" height="16.5"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" systemColor="systemGrayColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="K1C-68-u6f" firstAttribute="leading" secondItem="YMW-sf-koD" secondAttribute="leading" constant="20" symbolic="YES" id="BAO-Iv-VU5"/>
+                                        <constraint firstItem="J7V-3c-xKB" firstAttribute="leading" secondItem="YMW-sf-koD" secondAttribute="leading" constant="20" symbolic="YES" id="Fqz-Rg-bUe"/>
+                                        <constraint firstItem="J7V-3c-xKB" firstAttribute="top" secondItem="K1C-68-u6f" secondAttribute="bottom" constant="8" symbolic="YES" id="GBY-Su-2IS"/>
+                                        <constraint firstItem="K1C-68-u6f" firstAttribute="top" secondItem="YMW-sf-koD" secondAttribute="top" constant="20" symbolic="YES" id="YRU-h2-mGF"/>
+                                        <constraint firstAttribute="trailing" secondItem="J7V-3c-xKB" secondAttribute="trailing" constant="20" symbolic="YES" id="dWq-q4-6dP"/>
+                                        <constraint firstAttribute="bottom" secondItem="J7V-3c-xKB" secondAttribute="bottom" constant="20" symbolic="YES" id="qRO-Li-4dM"/>
+                                        <constraint firstAttribute="trailing" secondItem="K1C-68-u6f" secondAttribute="trailing" constant="20" symbolic="YES" id="umb-37-jU8"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="bottomMargin" destination="qRO-Li-4dM" id="l88-SO-EmM"/>
+                                    <outlet property="detailLabel" destination="J7V-3c-xKB" id="52i-r4-Rf1"/>
+                                    <outlet property="titleLabel" destination="K1C-68-u6f" id="g9w-TC-PbO"/>
+                                    <outlet property="topMargin" destination="YRU-h2-mGF" id="DGe-I4-WDv"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -39,4 +111,9 @@
             <point key="canvasLocation" x="135" y="139"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemGrayColor">
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

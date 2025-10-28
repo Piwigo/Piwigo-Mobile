@@ -20,6 +20,8 @@ extension TagSelectorViewController
         searchController.searchBar.showsSearchResultsButton = false
         searchController.searchBar.placeholder = NSLocalizedString("tags", comment: "Tags")
         searchController.searchBar.delegate = self
+        searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        searchController.searchBar.searchTextField.adjustsFontSizeToFitWidth = true
         searchController.searchResultsUpdater = self
         if #available(iOS 26.0, *) {
             searchController.searchBar.showsCancelButton = false
@@ -28,6 +30,10 @@ extension TagSelectorViewController
             searchController.searchBar.showsCancelButton = false
             searchController.hidesNavigationBarDuringPresentation = true
         }
+        
+        // Enable Dynamic Type
+        searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        searchController.searchBar.searchTextField.adjustsFontForContentSizeCategory = true
         
         // Place the search bar in the header of the tableview
         tagsTableView.tableHeaderView = searchController.searchBar

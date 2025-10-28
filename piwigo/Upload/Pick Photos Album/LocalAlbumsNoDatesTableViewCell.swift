@@ -12,12 +12,16 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with title: String, nberPhotos: Int64) -> Void {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
         tintColor = PwgColor.tintColor
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Title
         titleLabel.textColor = PwgColor.leftLabel

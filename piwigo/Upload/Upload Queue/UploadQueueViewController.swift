@@ -68,19 +68,18 @@ class UploadQueueViewController: UIViewController {
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
     
-    let defaultUploadCellHeight: CGFloat = 60.0
-    lazy var uploadCellHeight: CGFloat = defaultUploadCellHeight
-
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise headers height
-        updateContentSizes(for: traitCollection.preferredContentSizeCategory)
-
         // Register section header view before using it
         queueTableView?.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
+        
+        // Table view
+        queueTableView?.accessibilityIdentifier = "Upload Queue"
+        queueTableView?.rowHeight = UITableView.automaticDimension
+        queueTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Menu & button
         if #available(iOS 26.0, *) {
@@ -108,7 +107,7 @@ class UploadQueueViewController: UIViewController {
         super.viewWillAppear(animated)
         
         // Set colors, fonts, etc.
-        applyColorPaletteToInitialViews()
+        applyColorPalette()
         
         // Navigation bar button and identifier
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
@@ -146,7 +145,8 @@ class UploadQueueViewController: UIViewController {
         }
     }
     
-    private func applyColorPaletteToInitialViews() {
+    @MainActor
+    @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
         
@@ -156,12 +156,6 @@ class UploadQueueViewController: UIViewController {
         // Table view
         queueTableView.separatorColor = PwgColor.separator
         queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
-    }
-    
-    @MainActor
-    @objc func applyColorPalette() {
-        // Set colors, fonts, etc.
-        applyColorPaletteToInitialViews()
         
         // Table view items
         let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
@@ -325,12 +319,6 @@ class UploadQueueViewController: UIViewController {
     
     // MARK: - Content Sizes
     @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
-        // Update content sizes
-        guard let info = notification.userInfo,
-              let contentSizeCategory = info[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory
-        else { return }
-        updateContentSizes(for: contentSizeCategory)
-        
         // Apply modifications
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
@@ -341,56 +329,6 @@ class UploadQueueViewController: UIViewController {
             // Update navigation bar
             self.navigationController?.navigationBar.configAppearance(withLargeTitles: false)
             self.updateNavBar()
-        }
-    }
-    
-    private func updateContentSizes(for contentSizeCategory: UIContentSizeCategory) {
-        // Constants
-        let contentSizeCategory = UIApplication.shared.preferredContentSizeCategory
-        
-        // Set cell size according to the selected category
-        /// https://developer.apple.com/design/human-interface-guidelines/typography#Specifications
-        switch contentSizeCategory {
-        case .extraSmall:
-            // Image section header height: Subhead 12 pnts + Caption1 11 pnts
-            uploadCellHeight = defaultUploadCellHeight - 3.0 - 1.0
-        case .small:
-            // Image section header height: Subhead 13 pnts + Caption1 11 pnts
-            uploadCellHeight = defaultUploadCellHeight - 2.0 - 1.0
-        case .medium:
-            // Image section header height: Subhead 14 pnts + Caption1 11 pnts
-            uploadCellHeight = defaultUploadCellHeight - 1.0 - 1.0
-        case .large:    // default style
-            // Image section header height: Subhead 15 pnts + Caption1 12 pnts
-            uploadCellHeight = defaultUploadCellHeight
-        case .extraLarge:
-            // Image section header height: Subhead 17 pnts + Caption1 14 pnts
-            uploadCellHeight = defaultUploadCellHeight + 2.0 + 2.0
-        case .extraExtraLarge:
-            // Image section header height: Subhead 19 pnts + Caption1 16 pnts
-            uploadCellHeight = defaultUploadCellHeight + 4.0 + 4.0
-        case .extraExtraExtraLarge:
-            // Image section header height: Subhead 21 pnts + Caption1 18 pnts
-            uploadCellHeight = defaultUploadCellHeight + 6.0 + 6.0
-        case .accessibilityMedium:
-            // Image section header height: Subhead 25 pnts + Caption1 22 pnts
-            uploadCellHeight = defaultUploadCellHeight + 10.0 + 10.0
-        case .accessibilityLarge:
-            // Image section header height: Subhead 30 pnts + Caption1 26 pnts
-            uploadCellHeight = defaultUploadCellHeight + 15.0 + 14.0
-        case .accessibilityExtraLarge:
-            // Image section header height: Subhead 36 pnts + Caption1 32 pnts
-            uploadCellHeight = defaultUploadCellHeight + 21.0 + 20.0
-        case .accessibilityExtraExtraLarge:
-            // Image section header height: Subhead 42 pnts + Caption1 37 pnts
-            uploadCellHeight = defaultUploadCellHeight + 27.0 + 25.0
-        case .accessibilityExtraExtraExtraLarge:
-            // Image section header height: Subhead 49 pnts + Caption1 43 pnts
-            uploadCellHeight = defaultUploadCellHeight + 34.0 + 21.0
-        case .unspecified:
-            fallthrough
-        default:
-            uploadCellHeight = defaultUploadCellHeight
         }
     }
 }

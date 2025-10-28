@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24123.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24062"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -64,26 +64,26 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rgp-p4-rXJ">
-                        <rect key="frame" x="172" y="34" width="8" height="36"/>
+                        <rect key="frame" x="173" y="34" width="6" height="36"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="8" id="jAG-KK-Hte"/>
+                            <constraint firstAttribute="width" constant="6" id="jAG-KK-Hte"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="4"/>
+                                <integer key="value" value="3"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Ub-E5-pAL">
-                        <rect key="frame" x="172" y="110" width="8" height="36"/>
+                        <rect key="frame" x="173" y="110" width="6" height="36"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="8" id="0EO-Qj-Prj"/>
+                            <constraint firstAttribute="width" constant="6" id="0EO-Qj-Prj"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="4"/>
+                                <integer key="value" value="3"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
@@ -118,7 +118,7 @@
                 <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                 <constraints>
                     <constraint firstItem="V5H-h5-LzC" firstAttribute="leading" secondItem="AYo-NF-5du" secondAttribute="leading" id="4xy-Ru-6KX"/>
-                    <constraint firstItem="1Ub-E5-pAL" firstAttribute="trailing" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="4" id="7su-HE-tJ2"/>
+                    <constraint firstItem="1Ub-E5-pAL" firstAttribute="trailing" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="3" id="7su-HE-tJ2"/>
                     <constraint firstItem="RA8-TH-msE" firstAttribute="firstBaseline" secondItem="wfl-gh-pGP" secondAttribute="baseline" constant="16.5" symbolType="layoutAnchor" id="Jcu-mc-zQD"/>
                     <constraint firstAttribute="trailing" secondItem="NCi-Af-KSb" secondAttribute="trailing" constant="20" symbolic="YES" id="Llf-Mx-Yu7"/>
                     <constraint firstItem="1Ub-E5-pAL" firstAttribute="height" secondItem="AYo-NF-5du" secondAttribute="height" multiplier="0.2" id="NfB-q4-1WU"/>
@@ -132,7 +132,7 @@
                     <constraint firstItem="1Ub-E5-pAL" firstAttribute="top" secondItem="V5H-h5-LzC" secondAttribute="centerY" constant="20" id="ddf-nj-wGO"/>
                     <constraint firstItem="wfl-gh-pGP" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="8" symbolic="YES" id="f9F-Ky-mq4"/>
                     <constraint firstItem="NCi-Af-KSb" firstAttribute="leading" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="8" symbolic="YES" id="iVs-4h-XQP"/>
-                    <constraint firstItem="rgp-p4-rXJ" firstAttribute="trailing" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="4" id="j0w-Ub-mp6"/>
+                    <constraint firstItem="rgp-p4-rXJ" firstAttribute="trailing" secondItem="V5H-h5-LzC" secondAttribute="trailing" constant="3" id="j0w-Ub-mp6"/>
                     <constraint firstAttribute="bottom" secondItem="V5H-h5-LzC" secondAttribute="bottom" id="jRb-5X-HQ5"/>
                     <constraint firstAttribute="bottom" secondItem="NCi-Af-KSb" secondAttribute="bottom" constant="4" id="kfa-6I-XHB"/>
                     <constraint firstItem="rgp-p4-rXJ" firstAttribute="bottom" secondItem="V5H-h5-LzC" secondAttribute="centerY" constant="-20" id="lZv-SP-heE"/>

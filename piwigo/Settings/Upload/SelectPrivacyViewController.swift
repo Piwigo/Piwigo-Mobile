@@ -37,6 +37,14 @@ class SelectPrivacyViewController: UIViewController {
         super.viewDidLoad()
 
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
+
+        // Table view
+        privacyTableView?.accessibilityIdentifier = "Privacy"
+        privacyTableView?.rowHeight = UITableView.automaticDimension
+        privacyTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
 
     @MainActor
@@ -87,23 +95,16 @@ extension SelectPrivacyViewController: UITableViewDataSource
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "privacyCell", for: indexPath)
+        // Add checkmark in front of selected item
         let privacyLevel = getPrivacyLevel(forRow: indexPath.row)
-        if privacyLevel == privacy {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        cell.accessoryType = privacyLevel == privacy ? .checkmark : .none
 
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.textColor = PwgColor.leftLabel
-        cell.textLabel?.text = privacyLevel.name
+        // Configure cell
+        cell.configure(with: privacyLevel.name, detail: "")
         cell.tag = Int(privacyLevel.rawValue)
-
         return cell
     }
 }
@@ -132,10 +133,6 @@ extension SelectPrivacyViewController: UITableViewDelegate
 
 
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Deselect row
         tableView.deselectRow(at: indexPath, animated: true)
@@ -147,9 +144,10 @@ extension SelectPrivacyViewController: UITableViewDelegate
         // Update choice
         privacy = newPrivacy
         for visibleCell in tableView.visibleCells {
-            visibleCell.accessoryType = .none
             if visibleCell.tag == Int(privacy.rawValue) {
                 visibleCell.accessoryType = .checkmark
+            } else {
+                visibleCell.accessoryType = .none
             }
         }
     }

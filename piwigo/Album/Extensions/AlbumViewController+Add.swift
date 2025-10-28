@@ -16,14 +16,14 @@ extension AlbumViewController
     func getAddAlbumBarButton() -> UIBarButtonItem {
         let image = UIImage(systemName: "rectangle.stack.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didTapCreateAlbum))
-        button.accessibilityIdentifier = "addAlbum"
+        button.accessibilityIdentifier = "org.piwigo.addAlbum"
         return button
     }
     
     func getAddImageBarButton() -> UIBarButtonItem {
         let image = UIImage(systemName: "photo.badge.plus")!
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(checkPhotoLibraryAccess))
-        button.accessibilityIdentifier = "addImage"
+        button.accessibilityIdentifier = "org.piwigo.addImages"
         return button
     }
     

@@ -43,13 +43,14 @@ class Help09ViewController: UIViewController {
         legend.attributedText = legendAttributedString
         
         // Set image view
-        guard let imageUrl = Bundle.main.url(forResource: "help09", withExtension: "png") else {
-            fatalError("!!! Could not find help09 image !!!")
-        }
+        var fileName: String = "help09"
+        if #unavailable(iOS 26.0) { fileName += "-iOS18" }
+        guard let imageUrl = Bundle.main.url(forResource: fileName, withExtension: "png")
+        else { preconditionFailure("!!! Could not find help09 image !!!") }
         imageView.layoutIfNeeded() // Ensure imageView is in its final size.
         let scale = max(imageView.traitCollection.displayScale, 1.0)
         let imageSize = CGSizeMake(imageView.bounds.size.width * scale, imageView.bounds.size.height * scale)
-        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize, for: .album)
+        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: imageSize, for: .help)
         
         // Remember that this view was watched and when
         AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID

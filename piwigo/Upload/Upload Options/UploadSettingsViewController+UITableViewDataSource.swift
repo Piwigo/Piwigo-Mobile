@@ -28,6 +28,7 @@ extension UploadSettingsViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
         var row = indexPath.row
         row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
         row += (!compressImageOnUpload && (row > 4)) ? 1 : 0
@@ -47,11 +48,7 @@ extension UploadSettingsViewController {
         case 1 /* Resize Before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            if view.bounds.size.width > 440 {
-                cell.configure(with: NSLocalizedString("settings_photoResizeLong", comment: "Downsize Photo"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Downsize"))
-            }
+            cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Downsize"))
             cell.cellSwitch.setOn(resizeImageOnUpload, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Number of rows will change accordingly
@@ -71,7 +68,10 @@ extension UploadSettingsViewController {
             tableViewCell = cell
             
         case 2 /* Upload Photo Max Size */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "LabelTableViewCell"
+                : "LabelTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load a LabelTableViewCell!") }
             cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
                            detail: pwgPhotoMaxSizes(rawValue: photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name)
@@ -80,7 +80,10 @@ extension UploadSettingsViewController {
             tableViewCell = cell
 
         case 3 /* Upload Max Video Size */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "LabelTableViewCell"
+                : "LabelTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load a LabelTableViewCell!") }
             cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
                            detail: pwgVideoMaxSizes(rawValue: videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name)
@@ -92,11 +95,7 @@ extension UploadSettingsViewController {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
             // See https://iosref.com/res
-            if view.bounds.size.width > 440 {
-                cell.configure(with: NSLocalizedString("settings_photoCompressLong", comment: "Compress Photo"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress"))
-            }
+            cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress"))
             cell.cellSwitch.setOn(compressImageOnUpload, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Number of rows will change accordingly
@@ -115,7 +114,10 @@ extension UploadSettingsViewController {
             tableViewCell = cell
             
         case 5 /* Image Quality slider */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "SliderTableViewCell"
+                : "SliderTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? SliderTableViewCell
             else { preconditionFailure("Could not load a SliderTableViewCell!") }
             // Slider value
             let value = Float(photoQuality)
@@ -131,7 +133,10 @@ extension UploadSettingsViewController {
             tableViewCell = cell
             
         case 6 /* Rename Filename Before Upload */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+            let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+                ? "LabelTableViewCell"
+                : "LabelTableViewCell2"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
             else { preconditionFailure("Could not load LabelTableViewCell") }
             let title: String
             // See https://iosref.com/res
@@ -154,13 +159,7 @@ extension UploadSettingsViewController {
         case 7 /* Delete image after upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
             else { preconditionFailure("Could not load a SwitchTableViewCell!") }
-            // See https://iosref.com/res
-            if view.bounds.size.width > 430 {
-                // i.e. larger than iPhones 14 Pro Max screen width
-                cell.configure(with: NSLocalizedString("settings_deleteImageLong", comment: "Delete Image After Upload"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After"))
-            }
+            cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After"))
             cell.cellSwitch.setOn(deleteImageAfterUpload, animated: true)
             cell.cellSwitchBlock = { switchState in
                 self.deleteImageAfterUpload = switchState

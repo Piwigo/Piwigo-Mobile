@@ -26,8 +26,6 @@ class TimeFormatSelectorViewController: UIViewController {
     
     weak var delegate: SelectTimeFormatDelegate?
     
-    @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var exampleLabel: RenameFileInfoLabel!
     @IBOutlet weak var tableView: UITableView!
     
     // Actions to be modified or not
@@ -54,9 +52,14 @@ class TimeFormatSelectorViewController: UIViewController {
         // Title, header and example
         title = NSLocalizedString("tabBar_upload", comment: "Upload")
 
+        // Table view
+        tableView?.accessibilityIdentifier = "Time Format Settings"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+
         // Header
-        setMainHeader()
-        
+        setTableViewMainHeader()
+
         // Enable/disable drag interactions
         navigationItem.rightBarButtonItem = editButtonItem
     }
@@ -70,9 +73,10 @@ class TimeFormatSelectorViewController: UIViewController {
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
 
         // Header and example
-        headerLabel.textColor = PwgColor.header
-        exampleLabel.textColor = PwgColor.text
-        
+        if let headerView = tableView?.tableHeaderView as? RenameFileTableHeaderView {
+            headerView.applyColorPalette()
+        }
+
         // Table view
         tableView.separatorColor = PwgColor.separator
         tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
@@ -116,8 +120,7 @@ class TimeFormatSelectorViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             // Update header
-            self.setMainHeader()
-            self.updateExample()
+            self.setTableViewMainHeader()
             
             // Animated update for smoother experience
             self.tableView?.beginUpdates()
@@ -128,20 +131,18 @@ class TimeFormatSelectorViewController: UIViewController {
         }
     }
     
-    private func setMainHeader() {
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let title = String(format: "%@\n", RenameAction.ActionType.addTime.name)
-        let titleAttributedString = NSMutableAttributedString(string: title)
-        titleAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .headline),
-                                           range: NSRange(location: 0, length: title.count))
-        headerAttributedString.append(titleAttributedString)
+    @MainActor
+    private func setTableViewMainHeader() {
+        let headerView = RenameFileTableHeaderView(frame: CGRect.zero)
+        let title = RenameAction.ActionType.addTime.name
         let text = NSLocalizedString("settings_renameTimeHeader", comment: "Please select a time format…")
-        let textAttributedString = NSMutableAttributedString(string: text)
-        textAttributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote),
-                                          range: NSRange(location: 0, length: text.count))
-        headerAttributedString.append(textAttributedString)
-        headerLabel.attributedText = headerAttributedString
-        headerLabel.sizeToFit()
+        headerView.config(with: title, text: text, forWidth: view.bounds.width)
+        headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                 replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                 suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                 changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                 categoryId: categoryId, counter: currentCounter)
+        tableView?.tableHeaderView = headerView
     }
 
 
@@ -188,10 +189,12 @@ class TimeFormatSelectorViewController: UIViewController {
         }
 
         // Update example shown in header
-        exampleLabel?.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
-                                    replace: replaceBeforeUpload, replaceActions: replaceActions,
-                                    suffix: suffixBeforeUpload, suffixActions: suffixActions,
-                                    changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
-                                    categoryId: categoryId, counter: currentCounter)
+        if let headerView = tableView?.tableHeaderView as? RenameFileTableHeaderView {
+            headerView.updateExample(prefix: prefixBeforeUpload, prefixActions: prefixActions,
+                                     replace: replaceBeforeUpload, replaceActions: replaceActions,
+                                     suffix: suffixBeforeUpload, suffixActions: suffixActions,
+                                     changeCase: changeCaseBeforeUpload, caseOfExtension: caseOfFileExtension,
+                                     categoryId: categoryId, counter: currentCounter)
+        }
     }
 }

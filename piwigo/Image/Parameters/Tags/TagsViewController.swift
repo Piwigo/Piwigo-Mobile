@@ -17,17 +17,17 @@ protocol TagsViewControllerDelegate: NSObjectProtocol {
 }
 
 class TagsViewController: UITableViewController {
-
+    
     weak var delegate: TagsViewControllerDelegate?
     private var updateOperations = [BlockOperation]()
-
+    
     // Called before uploading images (Tag class)
     private var selectedTagIds = Set<Int32>()
     func setPreselectedTagIds(_ preselectedTagIds: Set<Int32>?) {
         selectedTagIds = preselectedTagIds ?? Set<Int32>()
     }
     
-
+    
     // MARK: - Core Data Objects
     var user: User!
     lazy var mainContext: NSManagedObjectContext = {
@@ -36,15 +36,15 @@ class TagsViewController: UITableViewController {
         }
         return context
     }()
-
-
+    
+    
     // MARK: - Core Data Providers
     lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider.shared
         return provider
     }()
-
-
+    
+    
     // MARK: - Core Data Source
     lazy var tagPredicates: [NSPredicate] = {
         let andPredicates = [NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath)]
@@ -60,17 +60,17 @@ class TagsViewController: UITableViewController {
     func getSelectedVars() -> [String : Any] {
         return ["tagIds" : selectedTagIds]
     }
-
+    
     lazy var fetchSelectedTagsRequest: NSFetchRequest = {
         // Sort tags by name i.e. the order in which they are presented in the web UI
         let fetchRequest = Tag.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
-                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+                                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
-
+    
     lazy var selectedTags: NSFetchedResultsController<Tag> = {
         let tags = NSFetchedResultsController(fetchRequest: fetchSelectedTagsRequest,
                                               managedObjectContext: mainContext,
@@ -78,7 +78,7 @@ class TagsViewController: UITableViewController {
         tags.delegate = self
         return tags
     }()
-
+    
     var searchQuery = ""
     lazy var nonSelectedTagsPredicate: NSPredicate = {
         var andPredicates = tagPredicates
@@ -96,12 +96,12 @@ class TagsViewController: UITableViewController {
         // Sort tags by name i.e. the order in which they are presented in the web UI
         let fetchRequest = Tag.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Tag.tagName), ascending: true,
-                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+                                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         fetchRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
         fetchRequest.fetchBatchSize = 20
         return fetchRequest
     }()
-
+    
     lazy var nonSelectedTags: NSFetchedResultsController<Tag> = {
         let tags = NSFetchedResultsController(fetchRequest: fetchNonSelectedTagsRequest,
                                               managedObjectContext: mainContext,
@@ -109,20 +109,25 @@ class TagsViewController: UITableViewController {
         tags.delegate = self
         return tags
     }()
-
-
+    
+    
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var letterIndex: [String] = []
     var allTagNames = Set<String>()
     let searchController = UISearchController(searchResultsController: nil)
-
+    
     var addAction: UIAlertAction?
     private var addBarButton: UIBarButtonItem?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        // Table view
+        tableView?.accessibilityIdentifier = "Tag Selector"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
         // Add search bar
         initSearchBar()
         
@@ -158,7 +163,7 @@ class TagsViewController: UITableViewController {
             ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
             return
         }
-
+        
         // Report error
         let title = PwgKitError.tagCreationError.localizedDescription
         self.dismissPiwigoError(withTitle: title,
@@ -169,10 +174,10 @@ class TagsViewController: UITableViewController {
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
-
+        
         // Navigation bar
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-
+        
         // Search bar
         searchController.searchBar.configAppearance()
         
@@ -181,13 +186,13 @@ class TagsViewController: UITableViewController {
         tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         // Set colors, fonts, etc.
         applyColorPalette()
-
+        
         // Initialise data source
         do {
             try selectedTags.performFetch()
@@ -195,18 +200,21 @@ class TagsViewController: UITableViewController {
         } catch {
             debugPrint("Error: \(error)")
         }
-
+        
         // Refresh table
         tagsTableView.reloadData()
-
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         // Dismiss search bar
         searchController.dismiss(animated: false)
         
@@ -218,34 +226,15 @@ class TagsViewController: UITableViewController {
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
     }
-
     
-    // MARK: - UITableView - Header
-    private func getContentOfHeader(inSection section: Int) -> String {
-        if section == 0 {
-            return NSLocalizedString("tagsHeader_selected", comment: "Selected")
-        } else {
-            return NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
-                                                        width: tableView.frame.size.width)
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let title = getContentOfHeader(inSection: section)
-        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
-    }
-
-
-    // MARK: - UITableView Rows & Cells
+    
+    // MARK: - UITableViewDataSource Methods
+    // MARK: -- Sections
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-
+    
+    // MARK: -- Rows
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -258,7 +247,7 @@ class TagsViewController: UITableViewController {
             fatalError("Unknown tableView section!")
         }
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "TagTableViewCell", for: indexPath) as? TagTableViewCell
         else { preconditionFailure("Could not load a TagTableViewCell!") }
@@ -273,17 +262,39 @@ class TagsViewController: UITableViewController {
         }
         return cell
     }
-
+    
     
     // MARK: - UITableViewDelegate Methods
+    // MARK: -- Headers
+    private func getContentOfHeader(inSection section: Int) -> String {
+        if section == 0 {
+            return NSLocalizedString("tagsHeader_selected", comment: "Selected")
+        } else {
+            return NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.shared.heightOfHeader(withTitle: title,
+                                                        width: tableView.frame.size.width)
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let title = getContentOfHeader(inSection: section)
+        return TableViewUtilities.shared.viewOfHeader(withTitle: title)
+    }
+    
+    
+    // MARK: -- Rows
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
         switch indexPath.section {
         case 0 /* Selected tags */:
             // Tapped selected tag
             let currentTag = selectedTags.object(at: indexPath)
-
+            
             // Remove tag from list of selected tags
             selectedTagIds.remove(currentTag.tagId)
             
@@ -293,7 +304,7 @@ class TagsViewController: UITableViewController {
                 try selectedTags.performFetch()
                 fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
                 try nonSelectedTags.performFetch()
-
+                
                 // Determine new indexPath of deselected tag
                 if let indexOfTag = nonSelectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
                     let insertPath = IndexPath(row: indexOfTag, section: 1)
@@ -313,17 +324,17 @@ class TagsViewController: UITableViewController {
             // Tapped non selected tag
             let indexPath1 = IndexPath(row: indexPath.row, section: 0)
             let currentTag = nonSelectedTags.object(at: indexPath1)
-
+            
             // Add tag to list of selected tags
             selectedTagIds.insert(currentTag.tagId)
-
+            
             // Update fetch requests and perform fetches
             do {
                 fetchSelectedTagsRequest.predicate = selectedTagsPredicate.withSubstitutionVariables(getSelectedVars())
                 try selectedTags.performFetch()
                 fetchNonSelectedTagsRequest.predicate = nonSelectedTagsPredicate.withSubstitutionVariables(getNonSelectedVars())
                 try nonSelectedTags.performFetch()
-
+                
                 // Determine new indexPath of selected tag
                 if let indexOfTag = selectedTags.fetchedObjects?.firstIndex(where: {$0.tagId == currentTag.tagId}) {
                     let insertPath = IndexPath(row: indexOfTag, section: 0)
@@ -341,6 +352,23 @@ class TagsViewController: UITableViewController {
             }
         default:
             fatalError("Unknown tableView section!")
+        }
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Search bar
+            self.searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+            self.searchController.searchBar.invalidateIntrinsicContentSize()
+            self.searchController.searchBar.layer.setNeedsLayout()
+            self.searchController.searchBar.layoutIfNeeded()
+            
+            // Animated update for smoother experience
+            self.tagsTableView?.beginUpdates()
+            self.tagsTableView?.endUpdates()
         }
     }
 }

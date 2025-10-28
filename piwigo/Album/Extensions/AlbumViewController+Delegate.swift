@@ -96,9 +96,6 @@ extension AlbumViewController: UICollectionViewDelegate
         navController.modalPresentationStyle = .custom
         navController.modalPresentationCapturesStatusBarAppearance = true
         navigationController?.present(navController, animated: animated)
-        
-        // Remember that user did tap this image
-        imageOfInterest = indexPath
     }
     
     

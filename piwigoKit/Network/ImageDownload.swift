@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 public enum pwgImageType {
-    case album, image
+    case album, image, help
 }
 
 extension pwgImageType {
@@ -20,6 +20,8 @@ extension pwgImageType {
             return UIImage(named: "unknownAlbum")!
         case .image:
             return UIImage(named: "unknownImage")!
+        case .help:
+            return UIImage(systemName: "questionmark")!
         }
     }
 }

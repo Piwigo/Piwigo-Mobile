@@ -30,7 +30,7 @@ class AddActionTableViewFooterView: UITableViewHeaderFooterView {
         button.translatesAutoresizingMaskIntoConstraints = false
         
         // Create footer view
-        backgroundColor = .clear
+        contentView.backgroundColor = .clear
         contentView.addSubview(button)
         NSLayoutConstraint.activate(NSLayoutConstraint.constraintCenter(button)!)
     }

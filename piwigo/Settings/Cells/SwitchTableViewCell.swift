@@ -16,6 +16,8 @@ class SwitchTableViewCell: UITableViewCell {
 
     @IBOutlet weak var switchName: UILabel!
     @IBOutlet weak var cellSwitch: UISwitch!
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
 
     var cellSwitchBlock: CellSwitchBlock?
 
@@ -23,10 +25,10 @@ class SwitchTableViewCell: UITableViewCell {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Switch name
-        switchName.font = .preferredFont(forTextStyle: .body)
-        switchName.adjustsFontForContentSizeCategory = true
         switchName.textColor = PwgColor.leftLabel
         switchName.text = title
 

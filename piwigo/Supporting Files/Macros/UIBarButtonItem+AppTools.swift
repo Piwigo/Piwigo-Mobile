@@ -109,6 +109,27 @@ extension UIBarButtonItem {
     }
     
     
+    // MARK: - Help Bar Button Item
+    static func helpButton(target: Any?, action: Selector?) -> UIBarButtonItem {
+        let button = UIBarButtonItem(title: nil, style: .plain, target: target, action: action)
+        button.setHelpImage()
+        button.accessibilityIdentifier = "Help"
+        button.accessibilityLabel = NSLocalizedString("settings_help", comment: "Help")
+        button.tintColor = PwgColor.tintColor
+        return button
+    }
+    
+    private func setHelpImage() {
+        let configuration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium, scale: .medium)
+        self.image = UIImage(systemName: "chevron.backward", withConfiguration: configuration)
+        if #available(iOS 26.0, *) {
+            self.image = UIImage(systemName: "questionmark")
+        } else {
+            self.image = UIImage(systemName: "questionmark.circle")
+        }
+    }
+    
+    
     // MARK: - Mute Audio Playback
     static let pwgMuted = 1
     static let pwgNotMuted = 2

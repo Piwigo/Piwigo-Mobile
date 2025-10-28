@@ -43,8 +43,8 @@ class TableViewUtilities: NSObject {
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
         var height: CGFloat = CGFloat.zero
-        let minWidth: CGFloat = 320.0 - 2 * margin
-        let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
+        let minWidth: CGFloat = 320.0 - 2 * (margin + TableViewUtilities.rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + TableViewUtilities.rowCornerRadius), minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
@@ -61,7 +61,7 @@ class TableViewUtilities: NSObject {
                                            attributes: textAttributes, context: context).height
         }
 
-        return CGFloat(fmax(44.0, ceil(height)))
+        return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height)))
     }
     
     func viewOfHeader(withTitle title: String, text: String = "") -> UIView? {
@@ -93,6 +93,7 @@ class TableViewUtilities: NSObject {
         headerLabel.textColor = PwgColor.header
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
+        headerLabel.adjustsFontForContentSizeCategory = true
         headerLabel.lineBreakMode = .byWordWrapping
         headerLabel.attributedText = headerAttributedString
 
@@ -110,6 +111,17 @@ class TableViewUtilities: NSObject {
     
     
     // MARK: - Rows
+    // Returns the top or bottom margins of a cell
+    static let defaultVertMargin: CGFloat = 48.0/3.0
+    static let defaultOldVertMargin: CGFloat = 35.0/3.0
+    static let vertMargin: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return defaultVertMargin
+        } else {
+            return defaultOldVertMargin
+        }
+    }()
+    
     // Returns the row height
     static let defaultRowHeight = CGFloat(53)
     static let defaultOldRowHeight = CGFloat(44)
@@ -121,7 +133,7 @@ class TableViewUtilities: NSObject {
         }
     }()
     
-    func rowHeightForContentSizeCategory(_ contentSizeCategory: UIContentSizeCategory) -> CGFloat {
+    func rowHeight(forContentSizeCategory contentSizeCategory: UIContentSizeCategory) -> CGFloat {
         let rowHeight = TableViewUtilities.rowHeight
         switch contentSizeCategory {
         case .extraSmall:
@@ -155,14 +167,6 @@ class TableViewUtilities: NSObject {
         }
     }
     
-    static let rowExtraHeight: CGFloat = {
-        if #available(iOS 26.0, *) {
-            return defaultRowHeight - defaultOldRowHeight
-        } else {
-            return 0.0
-        }
-    }()
-
     // Returns the row corner radius
     static let defaultCornerRadius = CGFloat(26)
     static let defaultOldRCornerRadius = CGFloat(10)
@@ -190,8 +194,8 @@ class TableViewUtilities: NSObject {
         // Initialise variables and width constraint
         /// The minimum width of a screen is of 320 pixels.
         /// See https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/
-        let margin: CGFloat =  15.0, minWidth: CGFloat = 320.0 - 2 * margin
-        let maxWidth = CGFloat(fmax(width - 2.0*margin, minWidth))
+        let minWidth: CGFloat = 320.0 - 2 * (margin + TableViewUtilities.rowCornerRadius)
+        let maxWidth = CGFloat(fmax(width - 2.0 * (margin + TableViewUtilities.rowCornerRadius), minWidth))
         let widthConstraint: CGSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
 
         // Add title height
@@ -199,7 +203,7 @@ class TableViewUtilities: NSObject {
         let height: CGFloat = text.boundingRect(with: widthConstraint, options: .usesLineFragmentOrigin,
                                                 attributes: titleAttributes, context: context).height
 
-        return CGFloat(ceil(height) + 10.0)
+        return CGFloat(fmax(TableViewUtilities.rowHeight, ceil(height) + 10.0))
     }
     
     func viewOfFooter(withText text: String = "", alignment: NSTextAlignment = .left) -> UIView? {
@@ -221,6 +225,7 @@ class TableViewUtilities: NSObject {
         footerLabel.textColor = PwgColor.header
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.adjustsFontForContentSizeCategory = true
         footerLabel.textAlignment = alignment
         footerLabel.lineBreakMode = .byWordWrapping
         footerLabel.attributedText = footerAttributedString

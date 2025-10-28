@@ -22,6 +22,7 @@ class UploadImageHeaderView: UITableViewHeaderFooterView {
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
+        headerLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         headerBckg = UIView(frame: self.bounds)
     }
     
@@ -30,15 +31,9 @@ class UploadImageHeaderView: UITableViewHeaderFooterView {
     }
 
     func config(with sectionKey: SectionKeys) {
-        // Title
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        let titleAttributedString = NSMutableAttributedString(string: sectionKey.name)
-        titleAttributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17, weight: .bold), range: NSRange(location: 0, length: sectionKey.name.count))
-        headerAttributedString.append(titleAttributedString)
-
         // Header label
         headerLabel.textColor = PwgColor.header
-        headerLabel.attributedText = headerAttributedString
+        headerLabel.text = sectionKey.name
         
         // Header background
         headerBckg.backgroundColor = PwgColor.background.withAlphaComponent(0.75)

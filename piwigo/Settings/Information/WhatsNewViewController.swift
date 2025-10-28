@@ -30,21 +30,21 @@ class WhatsNewViewController: UIViewController {
         titleLabel.text = NSLocalizedString("whatsNew_title", comment: "What's New in Piwigo")
         
         // What's new — 1st annoucement
-        firstNewsImage.image = UIImage(named: "document.pdf")
+        firstNewsImage.image = UIImage(named: "piwigo")
         firstNewsImage.tintColor = PwgColor.orange
-        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "PDF Files")
-        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Read and share PDF files directly")
+        firstNewsTitle.text = NSLocalizedString("whatsNew_title1", comment: "Major Update")
+        firstNewsDescription.text = NSLocalizedString("whatsNew_desc1", comment: "Adopts Liquid Glass and brings iOS 26 compatibility.")
         
         // What's new — 2nd annoucement
-        if #available(iOS 18.0, *) {
-            secondNewsImage.image = UIImage(systemName: "ladybug.slash")
+        if #available(iOS 17.0, *) {
+            secondNewsImage.image = UIImage(systemName: "accessibility")
         } else {
             // Fallback on ealier version
-            secondNewsImage.image = UIImage(named: "ladybug.slash")
+            secondNewsImage.image = UIImage(named: "accessibility")
         }
         secondNewsImage.tintColor = PwgColor.orange
-        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Stability")
-        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Bug fixes and improvement of the interface")
+        secondNewsTitle.text = NSLocalizedString("whatsNew_title2", comment: "Accessibility")
+        secondNewsDescription.text = NSLocalizedString("whatsNew_desc2", comment: "Improved accessibility thanks to support for bold text, larger text sizes, and more.")
         
         // Continue button
         continueButton.setTitle(NSLocalizedString("whatsNew_continue", comment: "Continue"), for: .normal)

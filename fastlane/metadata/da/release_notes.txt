@@ -1,2 +1,2 @@
-• Tilføjer muligheder for at ændre filnavne før upload
-• Retter fejl og forbedrer grænsefladen
+• Understøtter større skrifttyper
+• Mindre fejl rettet og forbedringer af brugerflade

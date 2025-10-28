@@ -13,18 +13,11 @@ extension EditImageParamsViewController: UITextViewDelegate
 {
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         // Hide picker if necessary
-        let indexPath = IndexPath(row: EditImageParamsOrder.datePicker.rawValue, section: 0)
-        if hasDatePicker {
-            // Found a picker, so remove it
-            hasDatePicker = false
-            editImageParamsTableView.beginUpdates()
-            editImageParamsTableView.deleteRows(at: [indexPath], with: .fade)
-            editImageParamsTableView.endUpdates()
-        }
-        
+        removePickersIfNeeded()
+
         // Will tell onKeyboardDidShow() which cell is being edited
-        let row = editImageParamsTableView.numberOfRows(inSection: 0) - 1
-        editedRow = IndexPath(row: row, section: 0)
+        let rowIndex = EditImageParamsOrder.desc.rawValue - (hasDatePicker ? 0 : 1) - (hasTimePicker ? 0 : 1)
+        editedRow = IndexPath(row: rowIndex, section: 0)
         return true
     }
     

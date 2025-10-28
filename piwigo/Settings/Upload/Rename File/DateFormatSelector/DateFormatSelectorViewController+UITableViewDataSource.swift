@@ -47,7 +47,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
             case 0 /* Display Year switch */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Year", comment: "Year"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .year(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -73,7 +73,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* yy option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
@@ -84,7 +84,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* yyyy option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameFourDigit", comment: "4-digit version"), detail: "")
@@ -103,7 +103,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
             case 0 /* Display Month switch */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Month", comment: "Month"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .month(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -129,7 +129,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* MM option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
@@ -140,7 +140,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* MMM option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("Abbreviation", comment: "Abbreviation"), detail: "")
@@ -151,7 +151,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* MMMM option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("FullName", comment: "Full Name"), detail: "")
@@ -170,7 +170,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
             case 0 /* Display Day switch */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Day", comment: "Day"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .day(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in
@@ -196,7 +196,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 1 /* dd option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameTwoDigit", comment: "2-digit version"), detail: "")
@@ -207,7 +207,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 2 /* ddd option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("settings_renameDayOfYear", comment: "Day of Year"), detail: "")
@@ -218,7 +218,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 3 /* EEE option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("Abbreviation", comment: "Abbreviation"), detail: "")
@@ -229,7 +229,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
                 tableViewCell = cell
                 
             case 4 /* EEEE option */ :
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell3", for: indexPath) as? LabelTableViewCell
                 else { preconditionFailure("Could not load LabelTableViewCell") }
                 
                 cell.configure(with: NSLocalizedString("FullName", comment: "Full Name"), detail: "")
@@ -248,7 +248,7 @@ extension DateFormatSelectorViewController: UITableViewDataSource
             case 0 /* Display Year/Month/Day Separator switch */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell
                 else { preconditionFailure("Could not load SwitchTableViewCell") }
-                
+
                 cell.configure(with: NSLocalizedString("Separator", comment: "Separator"))
                 cell.cellSwitch.setOn(dateFormats[indexPath.section] != .separator(format: .none), animated: true)
                 cell.cellSwitchBlock = { switchState in

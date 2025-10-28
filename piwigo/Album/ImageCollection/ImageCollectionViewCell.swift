@@ -52,7 +52,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
     private let favRatio: CGFloat = 1.0
     private let selectScale: CGFloat = 0.2
     private let playScale: CGFloat = 0.17
-    private let playRatio: CGFloat = 0.9 // was 58/75 = 0.7733;
 
     private var _isSelection = false
     var isSelection: Bool {
@@ -116,6 +115,8 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
         // Title
         let title = getImageTitle(forSortOption: sortOption)
+        accessibilityIdentifier = title.string
+        accessibilityLabel = title.string
         if AlbumVars.shared.displayImageTitles {
             bottomLayer?.isHidden = false
             nameLabel?.attributedText = title
@@ -124,14 +125,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
             bottomLayer?.isHidden = true
             nameLabel?.isHidden = true
         }
-#if DEBUG
-        // Used for selecting cells in piwigoAppStore
-        if title.string.contains("Clos de Vougeot") {
-            self.accessibilityIdentifier = "Clos de Vougeot"
-        } else if title.string.contains("Hotel de Coimbra") {
-            self.accessibilityIdentifier = "Hotel de Coimbra"
-        }
-#endif
 
         // Thumbnails are not squared on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {

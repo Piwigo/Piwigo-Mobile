@@ -24,7 +24,16 @@ extension UploadQueueViewController
             // Configure cell
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell
             else { preconditionFailure("Could not load a UploadImageTableViewCell!") }
-            cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
+            
+            // Large corners since iOS 26
+            var maskedCorner: CACornerMask = []
+            let nberOfRows = tableView.numberOfRows(inSection: indexPath.section)
+            if indexPath.row == 0 {
+                maskedCorner.insert(.layerMinXMinYCorner)
+            } else if indexPath.row == nberOfRows - 1 {
+                maskedCorner.insert(.layerMinXMaxYCorner)
+            }
+            cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width), maskedCorner: maskedCorner)
             return cell
         }
         dataSource.defaultRowAnimation = .fade

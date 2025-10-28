@@ -31,10 +31,6 @@ extension UploadQueueViewController: UITableViewDelegate
     
 
     // MARK: - UITableView - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return uploadCellHeight
-    }
-    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }

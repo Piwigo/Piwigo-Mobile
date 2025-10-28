@@ -34,6 +34,7 @@ class EditImageParamsViewController: UIViewController
     var commonAuthor = ""
     
     var hasDatePicker = false
+    var hasTimePicker = false
     var shouldUpdateDateCreated = false
     var commonDateCreated = DateUtilities.unknownDate
     var oldCreationDate = Date()
@@ -56,6 +57,8 @@ class EditImageParamsViewController: UIViewController
         case author
         case date
         case datePicker
+        case time
+        case timePicker
         case tags
         case privacy
         case desc
@@ -87,10 +90,13 @@ class EditImageParamsViewController: UIViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Register the cells before using them
+        // Register cells before using them
         editImageParamsTableView?.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
-        editImageParamsTableView?.register(UINib(nibName: "EditImageDatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: "DatePickerTableCell")
-        editImageParamsTableView?.register(UINib(nibName: "EditImageShiftPickerTableViewCell", bundle: nil), forCellReuseIdentifier: "ShiftPickerTableCell")
+        
+        // Table view
+        editImageParamsTableView?.accessibilityIdentifier = "Edit Image Properties"
+        editImageParamsTableView?.rowHeight = UITableView.automaticDimension
+        editImageParamsTableView?.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Title
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
@@ -135,6 +141,10 @@ class EditImageParamsViewController: UIViewController
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
+
+        // Register font changes
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeContentSizeCategory),
+                                               name: UIContentSizeCategory.didChangeNotification, object: nil)
 
         // Register keyboard appearance/disappearance
         NotificationCenter.default.addObserver(self, selector: #selector(onKeyboardWillShow(_:)),
@@ -182,6 +192,25 @@ class EditImageParamsViewController: UIViewController
         debugPrint("EditImageParamsViewController of \(images.count) image(s) is being deinitialized.")
         // Unregister all observers
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        // Apply changes
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                // Animated update for smoother experience
+                self.editImageParamsTableView?.beginUpdates()
+                self.editImageParamsTableView?.endUpdates()
+
+                // Update navigation bar
+                self.navigationController?.navigationBar.configAppearance(withLargeTitles: true)
+            }
+        }
     }
     
     

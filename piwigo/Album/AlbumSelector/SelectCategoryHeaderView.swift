@@ -12,8 +12,8 @@ import UIKit
 class SelectCategoryHeaderView: UIView {
 
     private let label = UILabel(frame: .zero)
-    private let margin: CGFloat = 32.0
-
+    private let margin: CGFloat = 14.0 + TableViewUtilities.rowCornerRadius
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
 

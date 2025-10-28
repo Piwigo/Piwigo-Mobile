@@ -17,13 +17,27 @@ class CaseSelectorTableViewCell: UITableViewCell {
     var cellCaseSelectorBlock: cellCaseSelectorBlock?
 
     @IBOutlet var segmentedControl: UISegmentedControl!
-    
+    @IBOutlet weak var segmentedControlHeight: NSLayoutConstraint!
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with caseType: FileExtCase) {
         
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
         segmentedControl.selectedSegmentTintColor = PwgColor.orange
-
+        segmentedControl.setTitleTextAttributes(
+            [.font : UIFont.preferredFont(forTextStyle: .body),
+             .foregroundColor: PwgColor.gray
+        ], for: .normal)
+        segmentedControl.setTitleTextAttributes(
+            [.font : UIFont.preferredFont(forTextStyle: .body),
+             .foregroundColor: UIColor.white
+        ], for: .selected)
+        segmentedControlHeight.constant = UIFont.preferredFont(forTextStyle: .body).lineHeight +  TableViewUtilities.vertMargin
+        
         // Select proper segment
         let selectedSegmentIndex: Int = caseType == .keep ? 1 : Int(UploadVars.shared.caseOfFileExtension)
         self.segmentedControl.selectedSegmentIndex = selectedSegmentIndex

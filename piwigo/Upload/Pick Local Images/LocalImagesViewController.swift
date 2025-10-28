@@ -93,10 +93,10 @@ class LocalImagesViewController: UIViewController
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
     
-    var cancelBarButton: UIBarButtonItem!           // For cancelling the selection of images
-    var uploadBarButton: UIBarButtonItem!           // for uploading selected images
-    var trashBarButton: UIBarButtonItem!            // For deleting uploaded images on iPad
-    var actionBarButton: UIBarButtonItem!           // on iPhone:
+    var cancelBarButton: UIBarButtonItem?           // For cancelling the selection of images
+    var uploadBarButton: UIBarButtonItem?           // for uploading selected images
+    var trashBarButton: UIBarButtonItem?            // For deleting uploaded images on iPad
+    var actionBarButton: UIBarButtonItem?           // on iPhone:
     //  - for reversing the sort order
     //  - for grouping by day, week or month (or not)
     //  - for deleting uploaded images
@@ -160,7 +160,7 @@ class LocalImagesViewController: UIViewController
         
         // The cancel button is used to cancel the selection of images to upload
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton.accessibilityIdentifier = "Cancel"
+        cancelBarButton?.accessibilityIdentifier = "Cancel"
         
         // The upload button is available after having selecting images
         if #available(iOS 17.0, *) {
@@ -171,8 +171,8 @@ class LocalImagesViewController: UIViewController
             uploadBarButton = UIBarButtonItem(image: UIImage(named: "arrowshape.up.fill"),
                                               style: .plain, target: self, action: #selector(didTapUploadButton))
         }
-        uploadBarButton.isEnabled = false
-        uploadBarButton.accessibilityIdentifier = "Upload"
+        uploadBarButton?.isEnabled = false
+        uploadBarButton?.accessibilityIdentifier = "Upload"
         
         // The action button proposes:
         /// - to swap between ascending and descending sort orders,
@@ -192,13 +192,13 @@ class LocalImagesViewController: UIViewController
             // Fallback on previous version
             actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
         }
-        
+        actionBarButton?.accessibilityIdentifier = "Action"
+
         if UIDevice.current.userInterfaceIdiom == .pad {
             // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.
             trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
-            trashBarButton.isEnabled = false
+            trashBarButton?.isEnabled = false
         }
-        actionBarButton.accessibilityIdentifier = "Action"
     }
     
     @MainActor
@@ -208,7 +208,6 @@ class LocalImagesViewController: UIViewController
         
         // Navigation bar appearance
         navigationController?.navigationBar.configAppearance(withLargeTitles: false)
-        uploadBarButton.tintColor = PwgColor.tintColor
         
         // Collection view
         localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black

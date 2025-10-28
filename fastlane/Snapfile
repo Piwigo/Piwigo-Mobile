@@ -26,9 +26,17 @@
 #   fastlane init swift
 #   fastlane snapshot update
 #	
+# To locate fastlane
+#	which fastlane
+#
+# To update screen sizes
+#	bundle exec fastlane frameit download_frames
+#   vi ~/.gem/ruby/2.7.3/gems/fastlane-2.228.0/snapshot/lib/snapshot/reports_generator.rb
+#	vi ~/.gem/ruby/2.7.3/gems/fastlane-2.228.0/deliver/lib/deliver/app_screenshot.rb
+#
 # To update fastlane:
 #	bundle update fastlane
-#   fastlane snapshot update
+#   bundle exec fastlane snapshot update
 #
 # To get a list of available options
 #   bundle exec fastlane action deliver
@@ -48,36 +56,36 @@
 # https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
 devices([
 # "iPhone SE (1st generation)",				# 4-inch
-# "iPhone SE (3rd generation)",				# 4.7-inch
-# "iPhone 8 Plus",							# 5.5-inch
-# "iPhone 16e",								# 6.1-inch (was iPhone 14)
+"iPhone SE (3rd generation)",				# 4.7-inch
+"iPhone 8 Plus",							# 5.5-inch
+"iPhone 16e",								# 6.1-inch
 # "iPhone 13 Pro",							# Wiki
-# "iPhone 16 Pro",							# 6.3-inch (was iPhone 14 Pro)
-# "iPhone 14 Plus",							# 6.5-inch
-# "iPhone 16 Pro Max",						# 6.9-inch (was iPhone 15 Pro Max)
-# "iPad Pro (9.7-inch)",					# 9.7-inch
-# "iPad Pro (10.5-inch)",					# 10.5-inch
-# "iPad Pro 11-inch (M4)",					# 11-inch (was iPad Pro (11-inch) (4th generation))
-# "iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
-"iPad Pro 13-inch (M4)"					# 13-inch (was iPad Pro (12.9-inch) (6th generation))
+"iPhone 17 Pro",							# 6.3-inch
+"iPhone 14 Plus",							# 6.5-inch
+"iPhone Air",								# 6.9-inch
+"iPad Pro (9.7-inch)",					# 9.7-inch
+"iPad Pro (10.5-inch)",					# 10.5-inch
+"iPad Pro 11-inch (M4)",					# 11-inch
+"iPad Pro (12.9-inch) (2nd generation)",	# 12.9-inch
+"iPad Pro 13-inch (M4)"					# 13-inch
 ])
 
 # ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-"en-US",
+# "en-US",
 # "zh-Hans",
-# "zh-Hant",
+"zh-Hant",
 "da",
-# "nl-NL",
-# "fr-FR",
-# "de-DE",
-# "hu",
-# "it",
-# "ja",
-# "pl",
-# "ru",
-# "es-ES",
-# "sv"
+"nl-NL",
+"fr-FR",
+"de-DE",
+"hu",
+"it",
+"ja",
+"pl",
+"ru",
+"es-ES",
+"sv"
 ])
 
 # Parameters
@@ -85,15 +93,29 @@ scheme("piwigoScreenshots")
 derived_data_path("DerivedData/piwigo")
 test_without_building(true)
 output_directory("fastlane/screenshots")
-concurrent_simulators(true)
+concurrent_simulators(false)
 skip_open_summary(true)
-number_of_retries(0)
+number_of_retries(1)
 
 
-# Command below fails with iOS +16.1, 17.x, 18.x:
-# override_status_bar(true)
+# Command below fails with iOS +16.1, 17.x, 18.x, 26.0.1:
+# See https://github.com/fastlane/fastlane/issues/22026
+# and https://github.com/fastlane/fastlane/issues/21464
+# override_status_bar(true)	# Enabled only for iPhone SE (1st Generation)
+# override_status_bar_arguments("--time 9:41 --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100 --dataNetwork wifi")
+# concurrent_simulators(true)
 # With Xcode:
+#	xcrun simctl status_bar booted list
+#   xcrun simctl status_bar booted override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar booted override --time "2007-01-09T09:41:00-08:00" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#
+#   xcrun simctl status_bar "iPhone SE (1st generation)" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar "iPhone SE (3rd generation)" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #   xcrun simctl status_bar "iPhone 16e" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar "iPhone 16 Pro" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar "iPhone 17 Pro" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar "iPhone 14 Plus" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar "iPhone Air" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #
 # Or use SimulatorStatusMagic to configure iOS 16+ simulators
 # See https://github.com/shinydevelopment/SimulatorStatusMagic

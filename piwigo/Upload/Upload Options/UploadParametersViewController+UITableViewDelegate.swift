@@ -32,24 +32,6 @@ extension UploadParametersViewController {
 
 
     // MARK: - Rows
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        // Don't present privacy level choice to non-admin users
-        var row = indexPath.row
-        row += (!(user?.hasAdminRights ?? false) && (row > 1)) ? 1 : 0
-
-        var height: CGFloat = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-        switch EditImageDetailsOrder(rawValue: row) {
-            case .privacy, .tags:
-                height = 78.0
-            case .comment:
-                height = 428.0
-                height += !(user?.hasAdminRights ?? false) ? 78.0 : 0.0
-            default:
-                break
-        }
-        return height
-    }
-
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row

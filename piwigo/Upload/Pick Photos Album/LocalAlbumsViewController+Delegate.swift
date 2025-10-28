@@ -36,58 +36,7 @@ extension LocalAlbumsViewController: UITableViewDelegate {
     }
     
     
-    // MARK: - UITableView - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var assetCollection: PHAssetCollection?
-        let albumType = albumTypeFor(section: indexPath.section)
-        let isLimited = hasLimitedNberOfAlbums[albumType]!
-        switch albumType {
-        case .pasteboard:
-            return 44.0 + TableViewUtilities.rowExtraHeight
-        case .localAlbums:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.localAlbums[indexPath.row]
-            }
-        case .eventsAlbums:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.eventsAlbums[indexPath.row]
-            }
-        case .syncedAlbums:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.syncedAlbums[indexPath.row]
-            }
-        case .facesAlbums:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.facesAlbums[indexPath.row]
-            }
-        case .sharedAlbums:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.sharedAlbums[indexPath.row]
-            }
-        case .mediaTypes:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.mediaTypes[indexPath.row]
-            }
-        case .otherAlbums:
-            if !(isLimited && indexPath.row == maxNberOfAlbumsInSection) {
-                assetCollection = LocalAlbumsProvider.shared.otherAlbums[indexPath.row]
-            }
-        }
-        
-        // Display [+] button at the bottom of section presenting a limited number of albums
-        let defaultRowHeight = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-        guard let aCollection = assetCollection else {
-            return defaultRowHeight - 8.0
-        }
-        
-        // Case of an album
-        if let _ = aCollection.startDate, let _ = aCollection.endDate {
-            return defaultRowHeight + 9.0
-        } else {
-            return defaultRowHeight
-        }
-    }
-    
+    // MARK: - UITableView - Rows    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 

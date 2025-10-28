@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24127"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,13 +16,46 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="7vB-jx-Xoz">
-                                <rect key="frame" x="20" y="49.5" width="374" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell3" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell3" rowHeight="62" id="iV5-Ba-gJl" userLabel="LabelTableViewCell3" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="62"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7vB-jx-Xoz" id="tWb-xc-fHz">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iV5-Ba-gJl" id="Znn-36-8IK">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="62"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oic-c3-eSs">
+                                            <rect key="frame" x="20" y="20" width="334" height="22"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Pd-Sm-dEh">
+                                            <rect key="frame" x="20" y="20" width="334" height="22"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="4Pd-Sm-dEh" secondAttribute="bottom" constant="20" symbolic="YES" id="1LR-Yk-5gF"/>
+                                        <constraint firstItem="4Pd-Sm-dEh" firstAttribute="leading" secondItem="Znn-36-8IK" secondAttribute="leading" constant="20" symbolic="YES" id="7OC-PS-cxa"/>
+                                        <constraint firstAttribute="trailing" secondItem="4Pd-Sm-dEh" secondAttribute="trailing" constant="20" symbolic="YES" id="Bx2-Bk-pZi"/>
+                                        <constraint firstItem="Oic-c3-eSs" firstAttribute="leading" secondItem="Znn-36-8IK" secondAttribute="leading" constant="20" symbolic="YES" id="IKE-Uq-j8Y"/>
+                                        <constraint firstAttribute="bottom" secondItem="Oic-c3-eSs" secondAttribute="bottom" constant="20" symbolic="YES" id="YLC-pX-hdG"/>
+                                        <constraint firstAttribute="trailing" secondItem="Oic-c3-eSs" secondAttribute="trailing" constant="20" symbolic="YES" id="mzP-HF-TQY"/>
+                                        <constraint firstItem="Oic-c3-eSs" firstAttribute="top" secondItem="Znn-36-8IK" secondAttribute="top" constant="20" symbolic="YES" id="nNu-Di-OHn"/>
+                                        <constraint firstItem="4Pd-Sm-dEh" firstAttribute="top" secondItem="Znn-36-8IK" secondAttribute="top" constant="20" symbolic="YES" id="yk0-XP-QgP"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="bottomMargin" destination="YLC-pX-hdG" id="i3y-e2-lRw"/>
+                                    <outlet property="detailLabel" destination="4Pd-Sm-dEh" id="VxM-ou-ZNU"/>
+                                    <outlet property="titleLabel" destination="Oic-c3-eSs" id="cHv-nI-b4Y"/>
+                                    <outlet property="topMargin" destination="nNu-Di-OHn" id="5el-dz-sHu"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

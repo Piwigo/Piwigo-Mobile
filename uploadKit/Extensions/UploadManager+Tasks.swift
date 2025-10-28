@@ -25,9 +25,6 @@ extension UploadManager
     /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework
     public func findNextImageToUpload() -> Void {
-        // for debugging background tasks
-//        return
-
         // Perform fetches
         do {
             try uploads.performFetch()
@@ -56,6 +53,9 @@ extension UploadManager
             return
         }
         
+        // for debugging background tasks
+//        return
+
         // Interrupted work should be set as if an error was encountered
         /// - case of finishing uploads
         let finishing = (uploads.fetchedObjects ?? []).filter({$0.state == .finishing})

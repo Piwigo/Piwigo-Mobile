@@ -13,13 +13,18 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
-    
-    func configure(with title: String, nberPhotos: Int64, startDate: Date?, endDate: Date?) -> Void {
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
 
+    func configure(with title: String, nberPhotos: Int64, startDate: Date, endDate: Date,
+                   preferredContenSize: UIContentSizeCategory, width: CGFloat) -> Void {
+        
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
         tintColor = PwgColor.tintColor
-
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
+        
         // Title
         titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
@@ -33,90 +38,254 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         } else {
             numberLabel.text = ""
         }
-
-        // Append date interval
-        var subtitle: String = ""
-        if let startDate = startDate {
-            if let endDate = endDate {
-                let calendar = Calendar.current
-                let startDateComponents = calendar.dateComponents([.day, .month, .year], from: startDate)
-                let endDateComponents = calendar.dateComponents([.day, .month, .year], from: endDate)
-
-                if startDateComponents.year == endDateComponents.year {
-                    // Photos from the same year
-                    if startDateComponents.month == endDateComponents.month {
-                        // Photo from the same month
-                        if startDateComponents.day == endDateComponents.day {
-                            // Photos from the same day
-                            if UIScreen.main.bounds.size.width > 430 {
-                                // i.e. larger than iPhone 14 Pro Max screen width
-                                let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                                dateFormatter1.locale = .current
-                                dateFormatter2.locale = .current
-                                dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd HH:mm")
-                                subtitle.append(dateFormatter1.string(from: startDate))
-                                if endDate != startDate {
-                                    dateFormatter2.setLocalizedDateFormatFromTemplate("HH:mm")
-                                    subtitle.append(" — " + dateFormatter2.string(from: endDate))
-                                }
-                            } else {
-                                let dateFormatter = DateFormatter()
-                                dateFormatter.locale = .current
-                                dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
-                                subtitle.append(dateFormatter.string(from: startDate))
-                            }
-                        } else {
-                            // Photos from different days in the same month
-                            let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                            dateFormatter1.locale = .current
-                            dateFormatter2.locale = .current
-                            if UIScreen.main.bounds.size.width > 430 {
-                                // i.e. larger than iPhone 14 Pro Max screen width
-                                dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
-                                dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd")
-                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
-                            } else {
-                                dateFormatter1.setLocalizedDateFormatFromTemplate("d")
-                                dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
-                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
-                            }
-                        }
-                    } else {
-                        // Photos from different months in the same year
-                        let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
-                        dateFormatter1.locale = .current
-                        dateFormatter2.locale = .current
-                        if UIScreen.main.bounds.size.width > 430 {
-                            // i.e. larger than iPhone 14 Pro Max screen width
-                            dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d MMMM")
-                            dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE d MMMM YYYY")
-                            subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
-                        } else {
-                            dateFormatter1.setLocalizedDateFormatFromTemplate("MMMd")
-                            dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMd")
-                            subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
-                        }
-                    }
-                } else {
-                    // Photos from different years
-                    let startString: String, endString: String
-                    if contentView.bounds.size.width > 430 {
-                        startString = DateFormatter.localizedString(from: startDate, dateStyle: .full, timeStyle: .none)
-                        endString = DateFormatter.localizedString(from: endDate, dateStyle: .full, timeStyle: .none)
-                    } else {
-                        startString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
-                        endString = DateFormatter.localizedString(from: endDate, dateStyle: .medium, timeStyle: .none)
-                    }
-                    subtitle.append(String(format: "%@ — %@", startString, endString))
-                }
-            } else {
-                // No end date available
-                let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                subtitle.append(String(format: "%@", startString))
-            }
-        }
+        
+        // Date interval
         subtitleLabel.textColor = PwgColor.rightLabel
-        subtitleLabel.text = subtitle
+
+        // Single date?
+        if startDate == endDate {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                subtitleLabel.text = startDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    subtitleLabel.text = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    subtitleLabel.text = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                }
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                subtitleLabel.text = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                subtitleLabel.text = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                
+            default:
+                break
+            }
+            return
+        }
+        
+        // Images taken the same day?
+        let dateRange = startDate..<endDate
+        let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+        let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: endDate)
+        if firstImageDay == lastImageDay {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                subtitleLabel.text = startDate.formatted(.dateTime
+                    .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    subtitleLabel.text = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    subtitleLabel.text = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.wide) .year(.defaultDigits))
+                }
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                switch width {
+                case ...375:
+                    subtitleLabel.text = startDate.formatted(.dateTime
+                        .day(.twoDigits) .month(.abbreviated) .year(.twoDigits))
+                case 376...402:
+                    fallthrough
+                default:
+                    subtitleLabel.text = startDate.formatted(.dateTime
+                        .day(.defaultDigits) .month(.abbreviated) .year(.defaultDigits))
+                }
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                subtitleLabel.text = startDate.formatted(.dateTime
+                    .day(.twoDigits) .month(.twoDigits) .year(.twoDigits))
+                
+            default:
+                break
+            }
+            return
+        }
+        
+        // Images taken the same week?
+        let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: startDate)
+        let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfMonth], from: endDate)
+        if firstImageWeek == lastImageWeek {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    subtitleLabel.text = dateRange.formatted(.interval
+                        .day() .month(.abbreviated) .year())
+                case 376...402:
+                    fallthrough
+                default:
+                    subtitleLabel.text = dateRange.formatted(.interval
+                        .day() .month(.wide) .year())
+                }
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                
+            default:
+                break
+            }
+            return
+        }
+        
+        // Images taken the same month?
+        let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: startDate)
+        let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: endDate)
+        if firstImageMonth == lastImageMonth {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                switch width {
+                case ...375:
+                    subtitleLabel.text = dateRange.formatted(.interval
+                        .day() .month(.abbreviated) .year())
+                case 376...402:
+                    fallthrough
+                default:
+                    subtitleLabel.text = dateRange.formatted(.interval
+                        .day() .month(.wide) .year())
+                }
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                
+            default:
+                break
+            }
+            return
+        }
+        
+        // Images taken the same year?
+        let firstImageYear = Calendar.current.dateComponents([.year], from: startDate)
+        let lastImageYear = Calendar.current.dateComponents([.year], from: endDate)
+        if firstImageYear == lastImageYear {
+            switch preferredContenSize {
+            case .extraSmall, .small, .medium, .large, .extraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+                
+            case .extraExtraLarge, .extraExtraExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.twoDigits) .year())
+                
+            case .accessibilityMedium, .accessibilityLarge, .accessibilityExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+                
+            case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+                
+            default:
+                break
+            }
+            return
+        }
+        
+        // Images not taken the same year
+        switch preferredContenSize {
+        case .extraSmall, .small, .medium, .large:
+            switch width {
+            case ...375:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            case 376...402:
+                fallthrough
+            default:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.wide) .year())
+            }
+            
+        case .extraLarge:
+            switch width {
+            case ...375:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.twoDigits) .year())
+            case 376...402:
+                fallthrough
+            default:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            }
+            
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            switch width {
+            case ...375:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+            case 376...402:
+                fallthrough
+            default:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .day() .month(.abbreviated) .year())
+            }
+            
+        case .accessibilityMedium:
+            switch width {
+            case ...375:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.twoDigits) .year())
+            case 376...402:
+                fallthrough
+            default:
+                subtitleLabel.text = dateRange.formatted(.interval
+                    .month(.abbreviated) .year())
+            }
+            
+        case .accessibilityLarge, .accessibilityExtraLarge:
+            subtitleLabel.text = dateRange.formatted(.interval .year())
+            
+        case .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            switch width {
+            case ...375:
+                var text = startDate.formatted(.dateTime .year())
+                text.append(" - ")
+                text.append(endDate.formatted(.dateTime .year()))
+                subtitleLabel.text = text
+            case 376...402:
+                fallthrough
+            default:
+                subtitleLabel.text = dateRange.formatted(.interval .year())
+            }
+            
+        default:
+            break
+        }
+        return
     }
 
     override func prepareForReuse() {

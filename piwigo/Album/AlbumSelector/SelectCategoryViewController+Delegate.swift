@@ -59,10 +59,6 @@ extension SelectCategoryViewController: UITableViewDelegate
     
     
     // MARK: - UITableView - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Retrieve album data
         let albumData: Album
@@ -358,7 +354,7 @@ extension SelectCategoryViewController: UITableViewDelegate
         alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.sourceView = categoriesTableView
         alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
-        alert.popoverPresentationController?.permittedArrowDirections = [.left, .right]
+        alert.popoverPresentationController?.permittedArrowDirections = [.down, .up]
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = PwgColor.tintColor

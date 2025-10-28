@@ -87,6 +87,32 @@ extension pwgImageSize {
         return width/scale
     }
     
+    // Availability on server
+    public var isAvailable: Bool {
+        switch self {
+        case .square:
+            return NetworkVars.shared.hasSquareSizeImages
+        case .thumb:
+            return NetworkVars.shared.hasThumbSizeImages
+        case .xxSmall:
+            return NetworkVars.shared.hasXXSmallSizeImages
+        case .xSmall:
+            return NetworkVars.shared.hasXSmallSizeImages
+        case .small:
+            return NetworkVars.shared.hasSmallSizeImages
+        case .medium:
+            return NetworkVars.shared.hasMediumSizeImages
+        case .large:
+            return NetworkVars.shared.hasLargeSizeImages
+        case .xLarge:
+            return NetworkVars.shared.hasXLargeSizeImages
+        case .xxLarge:
+            return NetworkVars.shared.hasXXLargeSizeImages
+        case .fullRes:
+            return true
+        }
+    }
+    
     // Default number of pixels at the current scale
     public func sizeAndScale(forScale scale: CGFloat) -> String {
         // Build size string

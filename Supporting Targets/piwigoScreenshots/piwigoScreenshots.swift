@@ -22,7 +22,7 @@ final class piwigoScreenshots: XCTestCase {
         DispatchQueue.main.async {
             // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
             let app = XCUIApplication()
-            setupSnapshot(app)
+            setupSnapshot(app, waitForAnimations: false)
             app.launch()
             
             // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
@@ -45,7 +45,7 @@ final class piwigoScreenshots: XCTestCase {
         let deviceType = UIDevice().modelName
         sleep(3);
         
-        // MARK: Screenshot #1
+        // MARK: Screenshot #1 -> 01
         // Swipe left to reveal album actions when displaying albums with description
         //        var index = 1
         //        if deviceType.hasPrefix("iPad") {
@@ -61,21 +61,23 @@ final class piwigoScreenshots: XCTestCase {
         if ["iPhone SE (1st generation)", "iPhone SE (3rd generation)"].contains(deviceType) == false {
             app.navigationBars["AlbumImagesNav"].buttons["discover"].tap()
             sleep(2);
-            snapshot("Image01")
+            snapshot("01")
             app.collectionViews.buttons["Tagged"].tap()
             sleep(2)
             if deviceType.contains("iPhone") {
-                app.navigationBars["piwigo.TagSelectorView"].buttons["cancelButton"].tap()
-            } else {
+                app.buttons["cancelTagSelectionButton"].tap()
+            } else if ["iPad Pro 9.7-inch (Wi-Fi + Cellular)", "iPad Pro 10.5 inch (Wi-Fi)"].contains(deviceType) {
                 app.collectionViews.children(matching: .cell).element(boundBy: 0).tap()
                 sleep(1)                        // Leave time for animation
+            } else {
+                app.otherElements["PopoverDismissRegion"].firstMatch.tap()
             }
         } else {
-            snapshot("Image01")
+            snapshot("01")
         }
         
-        // MARK: Screenshot #2
-        // Image collection with album at top
+        // MARK: Screenshot #2 -> 02
+        // Image collection with albums at top
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(2);
         var swipeCount = 0
@@ -92,30 +94,31 @@ final class piwigoScreenshots: XCTestCase {
                 swipeCount = 2
             case "iPhone 8 Plus":                                       // 5.5-inch
                 swipeCount = 2
+            case "iPhone 13 Pro":                                       // Wiki
+                swipeCount = 2
             case "iPhone 16e":                                          // 6.1-inch
                 swipeCount = 2
-            case "iPhone 16 Pro":                                       // 6.3-inch
+            case "iPhone 17 Pro":                                       // 6.3-inch
                 swipeCount = 2
             case "iPhone 14 Plus":                                      // 6.5-inch
                 swipeCount = 2
-            case "iPhone 16 Pro Max":                                   // 6.7-inch
+            case "iPhone Air":                                          // 6.7-inch
                 swipeCount = 2
             default:
-                swipeCount = 0
-                break
+                preconditionFailure("Unmanaged model")
             }
         }
         for _ in 0..<swipeCount {
             app.collectionViews.firstMatch.swipeUp(velocity: 200)
             sleep(1)
         }
-        snapshot("Image02")
+        snapshot("02")
         
-        // MARK: Screenshot #3
+        // MARK: Screenshot #3 -> 03
         // Fullscreen Image with Action menu
         // https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications
         app.collectionViews.cells["Clos de Vougeot"].tap()
-        sleep(3)
+        sleep(2)
         var image = app.scrollViews.scrollViews.images.firstMatch
         if #available(iOS 18.0, *) {
             image = app.scrollViews.scrollViews.images.firstMatch
@@ -143,15 +146,15 @@ final class piwigoScreenshots: XCTestCase {
             image.pinch(withScale: 1.69, velocity: 2.0)
             sleep(1)
             image.tap()
-        case "iPhone 16 Pro":                                       // 6.3-inch
-            image.pinch(withScale: 1.69, velocity: 2.0)
+        case "iPhone 17 Pro":                                       // 6.3-inch
+            image.pinch(withScale: 1.75, velocity: 2.0)
             sleep(1)
             image.tap()
         case "iPhone 14 Plus":                                      // 6.5-inch
             image.pinch(withScale: 1.75, velocity: 2.0)
             sleep(1)
             image.tap()
-        case "iPhone 16 Pro Max":                                   // 6.7-inch
+        case "iPhone Air":                                          // 6.9-inch
             image.pinch(withScale: 1.75, velocity: 2.0)
             sleep(1)
             image.tap()
@@ -160,19 +163,21 @@ final class piwigoScreenshots: XCTestCase {
         case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             break
         case "iPad Pro 11-inch (M4) (Wi-Fi + Cellular)":            // 11-inch
-            image.pinch(withScale: 1.15, velocity: 2.0)
-            sleep(1)
-            image.tap()
+            // pinch not working with iOS 26.0.1
+//            image.pinch(withScale: 1.15, velocity: 2.0)
+//            sleep(1)
+//            image.tap()
+            break
         case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
         case "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)":            // 13-inch
             break
         default:
-            break
+            preconditionFailure("Unmanaged model")
         }
         sleep(2)                        // Leave time for animation
         app.buttons["actions"].tap()
-        snapshot("Image03")
+        snapshot("03")
         
         // Dismiss "Action" menu
         app.collectionViews.buttons["Edit Parameters"].tap()
@@ -182,7 +187,7 @@ final class piwigoScreenshots: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
 
-        // MARK: Screenshot #5
+        // MARK: Screenshot #4 -> 05
         // Modify Parameters view with Action menu
         app.collectionViews.cells["Hotel de Coimbra"].tap()
         sleep(2)
@@ -192,27 +197,31 @@ final class piwigoScreenshots: XCTestCase {
             image = app.scrollViews.images.firstMatch
         }
         switch deviceType {
+        case let str where str.contains("iPhone"):
+            break
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             break
         case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             break
         case "iPad Pro 11-inch (M4) (Wi-Fi + Cellular)":            // 11-inch
-            image.pinch(withScale: 1.15, velocity: 2.0)
-            sleep(1)
-            image.tap()
+            // pinch not working with iOS 26.0.1
+//            image.pinch(withScale: 1.15, velocity: 2.0)
+//            sleep(1)
+//            image.tap()
+            break
         case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
             break
         case "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)":            // 13-inch
             break
         default:
-            break
+            preconditionFailure("Unmanaged model")
         }
         sleep(1)                        // Leave time for animation
         app.buttons["actions"].tap()
         app.collectionViews.buttons["Edit Parameters"].tap()
         sleep(2)                        // Leave time for animation
-        snapshot("Image05")
-
+        snapshot("05")
+        
         // Dismiss "Properties" view
         app.buttons["Cancel"].tap()
         sleep(2)                        // Leave time for animation
@@ -224,12 +233,12 @@ final class piwigoScreenshots: XCTestCase {
         case "iPhone SE (1st generation)":                          // 4-inch
             swipeCount = 4
         case "iPhone SE (3rd generation)":                          // 4.7-inch
-            swipeCount = 5
+            swipeCount = 4
         case "iPhone 8 Plus",                                       // 5.5-inch
              "iPhone 16e",                                          // 6.1-inch
-             "iPhone 16 Pro",                                       // 6.1-inch
+             "iPhone 17 Pro",                                       // 6.1-inch
              "iPhone 14 Plus",                                      // 6.5-inch
-             "iPhone 16 Pro Max":                                   // 6.7-inch
+             "iPhone Air":                                          // 6.9-inch
             swipeCount = 5
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
             swipeCount = 4
@@ -242,7 +251,7 @@ final class piwigoScreenshots: XCTestCase {
         case "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)":            // 13-inch
             swipeCount = 5
         default:
-            break
+            preconditionFailure("Unmanaged model")
         }
         for _ in 0..<swipeCount {
             app.collectionViews.firstMatch.swipeUp()
@@ -258,31 +267,31 @@ final class piwigoScreenshots: XCTestCase {
             swipeCount = 4
         case "iPhone 16e":                                          // 6.1-inch
             swipeCount = 4
-        case "iPhone 16 Pro":                                       // 6.3-inch
+        case "iPhone 17 Pro":                                       // 6.3-inch
             swipeCount = 4
         case "iPhone 14 Plus":                                      // 6.5-inch
             swipeCount = 4
-        case "iPhone 16 Pro Max":                                   // 6.7-inch
+        case "iPhone Air":                                          // 6.9-inch
             swipeCount = 4
         case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
-            swipeCount = 3
-        case "iPad Pro 10.5-inch (Wi-Fi)":                          // 10.5-inch
+            swipeCount = 2
+        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
             swipeCount = 3
         case "iPad Pro 11-inch (M4) (Wi-Fi + Cellular)":            // 11-inch
-            swipeCount = 3
+            swipeCount = 2
         case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
-            swipeCount = 3
+            swipeCount = 2
         case "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)":            // 13-inch
-            swipeCount = 3
+            swipeCount = 2
         default:
-            swipeCount = 0
+            preconditionFailure("Unmanaged model")
         }
         for _ in 0..<swipeCount {
             app.collectionViews.firstMatch.swipeDown(velocity: 200)
             sleep(1)
         }
         
-        // MARK: Screenshot #4
+        // MARK: Screenshot #5 -> 04
         // Select images with the aim to modify properties
         app.navigationBars.buttons["select"].tap()
         sleep(1)
@@ -295,10 +304,10 @@ final class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         case "iPhone SE (3rd generation)":                          // 4.7-inch
-            app.collectionViews.children(matching: .cell).element(boundBy: 4).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 5).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
         case "iPhone 8 Plus":                                       // 5.5-inch
             app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
@@ -309,7 +318,7 @@ final class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
-        case "iPhone 16 Pro":                                       // 6.3-inch
+        case "iPhone 17 Pro":                                       // 6.3-inch
             app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
@@ -319,7 +328,7 @@ final class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
-        case "iPhone 16 Pro Max":                                   // 6.7-inch
+        case "iPhone Air":                                          // 6.9-inch
             app.collectionViews.children(matching: .cell).element(boundBy: 8).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 9).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
@@ -360,30 +369,32 @@ final class piwigoScreenshots: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
             app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
         default:
-            break
+            preconditionFailure("Unmanaged model")
         }
         app.navigationBars.buttons["actions"].tap()
-        snapshot("Image04")
-        
+        snapshot("04")
+
         // Deselect images
         app.collectionViews.buttons["editProperties"].tap()
         sleep(1)                        // Leave time for animation
         app.navigationBars["editParams"].buttons["Cancel"].tap()
         sleep(1)                        // Leave time for animation
 
-        // MARK: Screenshot #6
-        // Show Add buttons
+        // MARK: Screenshot #6 -> 06
+        // Show Add buttons before iOS 26
         swipeCount = Int(Double(swipeCount / 2).rounded(.awayFromZero))
         for _ in 0..<swipeCount {
             app.collectionViews.firstMatch.swipeUp()
         }
-        app.buttons["add"].tap()
+        if #unavailable(iOS 26) {
+            app.buttons["add"].tap()
+        }
         sleep(2)                        // Leave time for animation
-        snapshot("Image06")
+        snapshot("06")
         
-        // MARK: Screenshot #7
+        // MARK: Screenshot #7 -> 07
         // Show recent images to upload
-        app.buttons["addImages"].tap()
+        app.buttons["org.piwigo.addImages"].tap()
         sleep(1)                        // Leave time for animation
         app.tables.children(matching: .cell).matching(identifier: "Recent").element.tap()
         sleep(1)                        // Leave time for animation
@@ -402,66 +413,67 @@ final class piwigoScreenshots: XCTestCase {
         sleep(1)                        // Leave time for animation
         moreButton.tap()
         sleep(1)                        // Leave time for animation
-        snapshot("Image07")
+        snapshot("07")
         
-        // MARK: Screenshot #8
+        // MARK: Screenshot #8 -> 08
         // Show upload parameters
         app.collectionViews.buttons["groupByWeek"].tap()
         sleep(1)                        // Leave time for animation
-        if deviceType.contains("iPhone") {
-            app.toolbars.buttons["Upload"].tap()
-        } else {
-            app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
-        }
+        app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
         sleep(1)
-        snapshot("Image08")
+        snapshot("08")
         
-        // MARK: Screenshot #9
+        // MARK: Screenshot #9 -> 09
         // Show upload settings
-        app.navigationBars["UploadSwitchView"]/*@START_MENU_TOKEN@*/.buttons["settings"]/*[[".segmentedControls.buttons[\"settings\"]",".buttons[\"settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        app.navigationBars["org.piwigo.upload.switchView"]
+            .segmentedControls["org.piwigo.upload.switch"].swipeRight()
         sleep(1)
-        snapshot("Image09")
+        snapshot("09")
         
         // Dismiss upload views
-        app.navigationBars["UploadSwitchView"].buttons["Cancel"].tap()
+        app.navigationBars["org.piwigo.upload.switchView"].buttons["Cancel"].tap()
         let localimagesnavNavigationBar = app.navigationBars["LocalImagesNav"]
         localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
         localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
-        app.buttons["rootAlbum"].tap()
+        if #available(iOS 26.0, *) {
+            app/*@START_MENU_TOKEN@*/.buttons["BackButton"].firstMatch.press(forDuration: 1.7)/*[[".navigationBars",".buttons[\"Album\"].firstMatch",".tap()",".press(forDuration: 1.7)",".buttons[\"BackButton\"].firstMatch"],[[[-1,4,2],[-1,1,2],[-1,0,1]],[[-1,4,2],[-1,1,2]],[[-1,3],[-1,2]]],[0,0]]@END_MENU_TOKEN@*/
+            app/*@START_MENU_TOKEN@*/.buttons["discover"]/*[[".navigationBars",".buttons",".buttons[\"Mere\"]",".buttons[\"discover\"]"],[[[-1,3],[-1,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+        } else {
+            app.buttons["rootAlbum"].tap()
+        }
         sleep(1)                        // Leave time for animation
-        
+
         // MARK: Screenshot #10
         // Show app settings
-        app.buttons["settings"].tap()
+        app/*@START_MENU_TOKEN@*/.buttons["settings"]/*[[".buttons.containing(.image, identifier: \"gear\")",".cells",".buttons[\"Indstillinger\"]",".buttons[\"settings\"]"],[[[-1,3],[-1,2],[-1,1,1],[-1,0]],[[-1,3],[-1,2]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         sleep(1)                        // Leave time for animation
+        var velocity = XCUIGestureVelocity(150)
         switch deviceType {
         case "iPhone SE (1st generation)",                          // 4-inch
-            "iPhone SE (3rd generation)",                          // 4.7-inch
-            "iPhone 8 Plus",                                       // 5.5-inch
-            "iPhone 16e",                                          // 6.1-inch
-            "iPhone 16 Pro",                                       // 6.1-inch
-            "iPhone 14 Plus",                                      // 6.5-inch
-            "iPhone 16 Pro Max":                                   // 6.7-inch
+             "iPhone SE (3rd generation)",                          // 4.7-inch
+             "iPhone 8 Plus",                                       // 5.5-inch
+             "iPhone 16e",                                          // 6.1-inch
+             "iPhone 17 Pro",                                       // 6.1-inch
+             "iPhone 14 Plus",                                      // 6.5-inch
+             "iPhone Air":                                          // 6.9-inch
+            velocity = XCUIGestureVelocity(150)
             swipeCount = 2
-        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)":                // 9.7-inch
-            swipeCount = 2
-        case "iPad Pro 10.5 inch (Wi-Fi)":                          // 10.5-inch
-            swipeCount = 2
-        case "iPad Pro 11-inch (M4) (Wi-Fi + Cellular)":            // 11-inch
-            swipeCount = 2
-        case "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)":         // 12.9-inch
-            swipeCount = 2
-        case "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)":            // 13-inch
+        case "iPad Pro 9.7-inch (Wi-Fi + Cellular)",                // 9.7-inch
+             "iPad Pro 10.5 inch (Wi-Fi)",                          // 10.5-inch
+             "iPad Pro 11-inch (M4) (Wi-Fi + Cellular)",            // 11-inch
+             "iPad Pro 12.9-inch (2nd generation) (Wi-Fi)",         // 12.9-inch
+             "iPad Pro 13-inch (M4) (Wi-Fi + Cellular)":            // 13-inch
+            velocity = XCUIGestureVelocity(100)
             swipeCount = 2
         default:
-            break
+            preconditionFailure("Unmanaged model")
         }
         for _ in 0..<swipeCount {
-            app.tables["settings"].firstMatch.swipeUp(velocity: 150)
+            app.tables["org.piwigo.settings"].swipeUp(velocity: velocity)
             sleep(1)                        // Leave time for animation
         }
-        snapshot("Image10")
+        snapshot("10")
     }
 }

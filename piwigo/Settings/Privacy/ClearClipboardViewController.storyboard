@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24127"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,13 +16,46 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="7vB-jx-Xoz">
-                                <rect key="frame" x="20" y="49.5" width="374" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell3" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell3" rowHeight="62" id="DYb-WT-GYY" userLabel="LabelTableViewCell3" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="62"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7vB-jx-Xoz" id="tWb-xc-fHz">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DYb-WT-GYY" id="qCG-VD-6Fs">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="62"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lGz-M1-zf1">
+                                            <rect key="frame" x="20" y="20" width="334" height="22"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="izs-uS-VHa">
+                                            <rect key="frame" x="20" y="20" width="334" height="22"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="lGz-M1-zf1" secondAttribute="bottom" constant="20" symbolic="YES" id="4Fl-Lb-Lh9"/>
+                                        <constraint firstAttribute="trailing" secondItem="lGz-M1-zf1" secondAttribute="trailing" constant="20" symbolic="YES" id="Fno-iy-Liq"/>
+                                        <constraint firstItem="lGz-M1-zf1" firstAttribute="leading" secondItem="qCG-VD-6Fs" secondAttribute="leading" constant="20" symbolic="YES" id="V5J-Hd-Q1i"/>
+                                        <constraint firstItem="lGz-M1-zf1" firstAttribute="top" secondItem="qCG-VD-6Fs" secondAttribute="top" constant="20" symbolic="YES" id="fhA-ww-Ve9"/>
+                                        <constraint firstAttribute="trailing" secondItem="izs-uS-VHa" secondAttribute="trailing" constant="20" symbolic="YES" id="jE8-nY-zwi"/>
+                                        <constraint firstItem="izs-uS-VHa" firstAttribute="leading" secondItem="qCG-VD-6Fs" secondAttribute="leading" constant="20" symbolic="YES" id="oCe-3v-Hrv"/>
+                                        <constraint firstAttribute="bottom" secondItem="izs-uS-VHa" secondAttribute="bottom" constant="20" symbolic="YES" id="sUf-r1-9Bv"/>
+                                        <constraint firstItem="izs-uS-VHa" firstAttribute="top" secondItem="qCG-VD-6Fs" secondAttribute="top" constant="20" symbolic="YES" id="seg-zr-XKZ"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="bottomMargin" destination="4Fl-Lb-Lh9" id="5Bm-A3-u0Q"/>
+                                    <outlet property="detailLabel" destination="izs-uS-VHa" id="4Nr-ih-f3a"/>
+                                    <outlet property="titleLabel" destination="lGz-M1-zf1" id="GAb-ik-hS8"/>
+                                    <outlet property="topMargin" destination="fhA-ww-Ve9" id="u4P-zc-eLw"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

@@ -72,101 +72,6 @@ extension SettingsViewController: UITableViewDelegate
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let defaultHeight = TableViewUtilities.rowHeight
-        let contentSizeCategory = traitCollection.preferredContentSizeCategory
-        switch contentSizeCategory {
-        case .extraSmall:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight - 3.0
-            default:
-                return defaultHeight - 3.0
-            }
-        case .small:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight - 2.0
-            default:
-                return defaultHeight - 2.0
-            }
-        case .medium:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight - 1.0
-            default:
-                return defaultHeight - 1.0
-            }
-        case .large:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight
-            default:
-                return defaultHeight
-            }
-        case .extraLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 2.0
-            default:
-                return defaultHeight + 2.0
-            }
-        case .extraExtraLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 4.0
-            default:
-                return defaultHeight + 4.0
-            }
-        case .extraExtraExtraLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 6.0
-            default:
-                return defaultHeight + 6.0
-            }
-        case .accessibilityMedium:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 12.0
-            default:
-                return defaultHeight + 11.0
-            }
-        case .accessibilityLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 17.0
-            default:
-                return defaultHeight + 16.0
-            }
-        case .accessibilityExtraLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 22.0
-            default:
-                return defaultHeight + 23.0
-            }
-        case .accessibilityExtraExtraLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 28.0
-            default:
-                return defaultHeight + 30.0
-            }
-        case .accessibilityExtraExtraExtraLarge:
-            switch activeSection(indexPath.section) {
-            case .clear, .logout :
-                return defaultHeight + 34.0
-            default:
-                return defaultHeight + 36.0
-            }
-        case .unspecified:
-            fallthrough
-        default:
-            return defaultHeight
-        }
-    }
-    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         var result = true
         switch activeSection(indexPath.section) {
@@ -259,7 +164,7 @@ extension SettingsViewController: UITableViewDelegate
             case 0 /* Error Logs */,
                 1 /* Support Forum */:
                 result = true
-            case 2 /* Contact Us */:
+            case 2 /* Contact Support */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
             default:
                 result = false
@@ -529,41 +434,12 @@ extension SettingsViewController: UITableViewDelegate
                     UIApplication.shared.open(url)
                 }
             case 2 /* Prepare draft email */:
-                if MFMailComposeViewController.canSendMail() {
-                    let composeVC = MFMailComposeViewController()
-                    composeVC.mailComposeDelegate = self
-                    composeVC.view.tintColor = PwgColor.tintColor
+                // Get mail composer if possible
+                guard let composeVC = SettingsUtilities.getMailComposer() else { return }
+                composeVC.mailComposeDelegate = self
 
-                    // Configure the fields of the interface.
-                    composeVC.setToRecipients([
-                        NSLocalizedString("contact_email", tableName: "PrivacyPolicy", bundle: Bundle.main, value: "", comment: "Contact email")
-                    ])
-
-                    // Collect version and build numbers
-                    let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-                    let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-
-                    // Compile ticket number from current date
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyyMMddHHmm"
-                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.shared.language) as Locale
-                    let date = Date()
-                    let ticketDate = dateFormatter.string(from: date)
-
-                    // Set subject
-                    composeVC.setSubject("[Ticket#\(ticketDate)]: \(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(NSLocalizedString("settings_feedback", comment: "Feedback"))")
-
-                    // Collect system and device data
-                    let deviceModel = UIDevice.current.modelName
-                    let deviceOS = UIDevice.current.systemName
-                    let deviceOSversion = UIDevice.current.systemVersion
-
-                    // Set message body
-                    composeVC.setMessageBody("\(NSLocalizedString("settings_appName", comment: "Piwigo Mobile")) \(appVersionString ?? "") (\(appBuildString ?? ""))\n\(deviceModel ) — \(deviceOS) \(deviceOSversion)\n==============>>\n\n", isHTML: false)
-
-                    // Present the view controller modally.
-                    present(composeVC, animated: true)
-                }
+                // Present the view controller modally.
+                present(composeVC, animated: true)
             default:
                 break
             }

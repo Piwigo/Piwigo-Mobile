@@ -12,15 +12,23 @@ import piwigoKit
 
 extension CounterFormatSelectorViewController: UITableViewDelegate {
     
-    // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
+    // MARK: - Headers
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 { return 20 }
+        return 0
     }
-
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 0 { return UIView() }
+        return nil
+    }
+    
+    
+    // MARK: - Rows
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }
-
+    
     
     // MARK: - Footers
     private func getContentOfFooter(forSection section: Int) -> String {

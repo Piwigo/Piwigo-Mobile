@@ -40,24 +40,6 @@ extension AutoUploadViewController: UITableViewDelegate
     
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var height: CGFloat = 44.0
-        switch indexPath.section {
-        case 2:
-            switch indexPath.row {
-            case 0:
-                height = 78.0 + TableViewUtilities.rowExtraHeight
-            case 1:
-                height = 428.0 + TableViewUtilities.rowExtraHeight
-            default:
-                break
-            }
-        default:
-            height = TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-        }
-        return height
-    }
-    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         switch indexPath.section {
         case 0:
@@ -147,14 +129,14 @@ extension AutoUploadViewController: UITableViewDelegate
             case 0 /* Select Tags */ :
                 // Create view controller
                 let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
-                if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
-                    tagsVC.delegate = self
-                    tagsVC.user = user
-                    tagsVC.setPreselectedTagIds(Set(UploadVars.shared.autoUploadTagIds
-                                                        .components(separatedBy: ",")
-                                                        .map { Int32($0) ?? nil }.compactMap {$0}))
-                    navigationController?.pushViewController(tagsVC, animated: true)
-                }
+                guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController
+                else { preconditionFailure("Could not load TagsViewController") }
+                tagsVC.delegate = self
+                tagsVC.user = user
+                tagsVC.setPreselectedTagIds(Set(UploadVars.shared.autoUploadTagIds
+                                                    .components(separatedBy: ",")
+                                                    .map { Int32($0) ?? nil }.compactMap {$0}))
+                navigationController?.pushViewController(tagsVC, animated: true)
 
             default:
                 break

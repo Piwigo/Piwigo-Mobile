@@ -14,23 +14,25 @@ class LabelTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
-    
+    @IBOutlet weak var topMargin: NSLayoutConstraint!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+
     func configure(with title: String, detail: String) -> Void {
 
         // Background color and aspect
         backgroundColor = PwgColor.cellBackground
+        topMargin.constant = TableViewUtilities.vertMargin
+        bottomMargin.constant = TableViewUtilities.vertMargin
 
         // Left side: title
-        titleLabel.font = .preferredFont(forTextStyle: .body)
-        titleLabel.adjustsFontForContentSizeCategory = true
-        titleLabel.textColor = PwgColor.leftLabel
         titleLabel.text = title
+        titleLabel.isHidden = title.isEmpty
+        titleLabel.textColor = PwgColor.leftLabel
         
         // Right side: detail
-        detailLabel.font = .preferredFont(forTextStyle: .body)
-        detailLabel.adjustsFontForContentSizeCategory = true
-        detailLabel.textColor = PwgColor.rightLabel
         detailLabel.text = detail
+        detailLabel.textColor = PwgColor.rightLabel
+        detailLabel.isHidden = detail.isEmpty
     }
 
     override func prepareForReuse() {

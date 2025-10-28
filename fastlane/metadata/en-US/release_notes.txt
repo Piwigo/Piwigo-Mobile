@@ -1,2 +1,2 @@
-• Adds options for modifying file names before upload
+• Brings support for Larger Text
 • Fixes bugs and improves the interface

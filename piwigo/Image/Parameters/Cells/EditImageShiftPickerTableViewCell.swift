@@ -68,7 +68,7 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
     // MARK: - Picker Methods
     func config(withDate date: Date?, animated: Bool)
     {
-        // Store starting date (now if provided date in nil)
+        // Store starting date (now if provided date is nil)
         if date == nil {
             pickerRefDate = Date()
         } else {

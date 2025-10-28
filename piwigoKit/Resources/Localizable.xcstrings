@@ -881,7 +881,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "Najstarsze → Najnowsze"
           }
         },
         "ru" : {
@@ -1184,7 +1184,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "Najnowsze → Najstarsze"
           }
         },
         "ru" : {
@@ -2802,7 +2802,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "Najniższa → Najwyższa"
           }
         },
         "ru" : {
@@ -2903,7 +2903,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "Najwyższa → Najniższa"
           }
         },
         "ru" : {
@@ -3307,7 +3307,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Najwyższy → Najniższy"
+            "value" : "Najwięcej → Najmniej"
           }
         },
         "ru" : {
@@ -3812,7 +3812,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Server object."
+            "value" : "Nie udało się utworzyć nowego obiektu Serwer."
           }
         },
         "ru" : {
@@ -4722,7 +4722,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to create a new Location object."
+            "value" : "Nie udało się utworzyć nowego obiektu Lokalizacja."
           }
         },
         "ru" : {
@@ -4823,7 +4823,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard a location missing a valid identifier."
+            "value" : "Znaleziono i zostanie odrzucona lokalizacja bez prawidłowego identyfikatora."
           }
         },
         "ru" : {
@@ -5329,7 +5329,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to delete an Upload object."
+            "value" : "Nie udało się usunąć obiektu Przesyłanie."
           }
         },
         "ru" : {
@@ -5531,7 +5531,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found and will discard an upload missing a valid identifier."
+            "value" : "Znaleziono i zostanie odrzucone przesłanie bez prawidłowego identyfikatora."
           }
         },
         "ru" : {
@@ -7552,7 +7552,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo server did not return a valid response."
+            "value" : "Serwer Piwigo nie zwrócił prawidłowej odpowiedzi."
           }
         },
         "ru" : {

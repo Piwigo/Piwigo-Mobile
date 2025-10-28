@@ -1,2 +1,2 @@
-• Lägger till alternativ för att ändra filnamn före uppladdning
+• Stöder större teckensnitt
 • Fixar buggar och förbättrar gränssnittet

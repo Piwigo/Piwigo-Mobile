@@ -16,6 +16,15 @@
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="adQ-xJ-L2L">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="02u-xN-az1">
+                                <rect key="frame" x="364" y="112" width="34" height="34"/>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <buttonConfiguration key="configuration" style="gray" cornerStyle="capsule"/>
+                                <connections>
+                                    <action selector="dismissNotes:" destination="4Om-2x-gp0" eventType="touchUpInside" id="n2U-JE-Zee"/>
+                                </connections>
+                            </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigoText" translatesAutoresizingMaskIntoConstraints="NO" id="cyK-gd-YwR">
                                 <rect key="frame" x="107" y="104" width="200" height="49.5"/>
                                 <constraints>
@@ -64,12 +73,16 @@
                             <constraint firstItem="UdN-nL-0ak" firstAttribute="top" secondItem="vuS-sl-8kx" secondAttribute="bottom" constant="8" symbolic="YES" id="l9I-zj-ocz"/>
                             <constraint firstItem="vuS-sl-8kx" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="pUW-ek-vy0"/>
                             <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="UdN-nL-0ak" secondAttribute="trailing" constant="20" id="uLo-IA-h2y"/>
+                            <constraint firstItem="02u-xN-az1" firstAttribute="top" secondItem="4TL-eJ-11l" secondAttribute="top" constant="16" id="xsW-a2-xAI"/>
+                            <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="02u-xN-az1" secondAttribute="trailing" constant="16" id="zTb-yK-lQy"/>
                         </constraints>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="authorsLabel" destination="WDV-PN-aQQ" id="8Hr-NI-9hv"/>
+                        <outlet property="closeButton" destination="02u-xN-az1" id="AFm-Nc-EkY"/>
                         <outlet property="piwigoLogo" destination="cyK-gd-YwR" id="0mY-Hb-QxS"/>
+                        <outlet property="piwigoLogoTop" destination="Y2b-v3-GLC" id="Qro-FH-4Rl"/>
                         <outlet property="textView" destination="UdN-nL-0ak" id="HED-qK-dbg"/>
                         <outlet property="versionLabel" destination="vuS-sl-8kx" id="1pc-Gj-s2A"/>
                     </connections>

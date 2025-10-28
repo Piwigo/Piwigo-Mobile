@@ -191,20 +191,14 @@ class SettingsViewController: UIViewController {
         
         // Button for returning to albums/images
         closeBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitSettings))
-        closeBarButton?.accessibilityIdentifier = "Done"
         
         // Button for displaying help pages
-        if #available(iOS 26.0, *) {
-            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark"), style: .plain,
-                                            target: self, action: #selector(displayHelp))
-        } else {
-            helpBarButton = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"),
-                                            style: .plain, target: self, action: #selector(displayHelp))
-        }
-        helpBarButton?.accessibilityIdentifier = "Help"
+        helpBarButton = UIBarButtonItem.helpButton(target: self, action: #selector(displayHelp))
         
-        // Table view identifier
-        settingsTableView.accessibilityIdentifier = "settings"
+        // Table view
+        settingsTableView.accessibilityIdentifier = "org.piwigo.settings"
+        settingsTableView.rowHeight = UITableView.automaticDimension
+        settingsTableView.estimatedRowHeight = TableViewUtilities.rowHeight
         
         // Check whether we should display the max size options
         if UploadVars.shared.resizeImageOnUpload,
@@ -334,24 +328,15 @@ class SettingsViewController: UIViewController {
     }
     
     @objc func displayHelp() {
-        let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-        let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
-        if let helpVC = helpVC {
-            // Update this list after deleting/creating Help##ViewControllers
-            if NetworkVars.shared.usesUploadAsync {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,2,4,7,3,9]
-            } else {
-                helpVC.displayHelpPagesWithID = [8,1,5,6,4,3,9]
-            }
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                helpVC.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(helpVC, animated:true)
-            } else {
-                helpVC.modalPresentationStyle = .currentContext
-                helpVC.modalTransitionStyle = .flipHorizontal
-                helpVC.popoverPresentationController?.sourceView = view
-                navigationController?.present(helpVC, animated: true)
-            }
+        let helpVC = HelpUtilities.getHelpViewController()
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            helpVC.popoverPresentationController?.permittedArrowDirections = .up
+            navigationController?.present(helpVC, animated:true)
+        } else {
+            helpVC.modalPresentationStyle = .currentContext
+            helpVC.modalTransitionStyle = .flipHorizontal
+            helpVC.popoverPresentationController?.sourceView = view
+            navigationController?.present(helpVC, animated: true)
         }
     }
     

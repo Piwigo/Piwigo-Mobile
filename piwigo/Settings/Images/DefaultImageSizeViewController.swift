@@ -30,6 +30,14 @@ class DefaultImageSizeViewController: UIViewController {
         super.viewDidLoad()
         
         title = NSLocalizedString("severalImages", comment: "Images")
+
+        // Table view
+        tableView?.accessibilityIdentifier = "Image Preview Size"
+        tableView?.rowHeight = UITableView.automaticDimension
+        tableView?.estimatedRowHeight = TableViewUtilities.rowHeight
+        
+        // Navigation bar
+        navigationController?.navigationBar.accessibilityIdentifier = "Settings Bar"
     }
     
     @MainActor
@@ -80,67 +88,60 @@ extension DefaultImageSizeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .fullRes
-
-        // Name of the image size
-        cell.backgroundColor = PwgColor.cellBackground
-        cell.tintColor = PwgColor.orange
-        cell.textLabel?.font = .preferredFont(forTextStyle: .body)
-        cell.textLabel?.adjustsFontSizeToFitWidth = false
+        let contentSizeCategory = traitCollection.preferredContentSizeCategory
+        let cellIdentifier: String = contentSizeCategory < .accessibilityMedium
+            ? "LabelTableViewCell"
+            : "LabelTableViewCell2"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? LabelTableViewCell
+        else { preconditionFailure("Could not load LabelTableViewCell") }
 
         // Add checkmark in front of selected item
-        if imageSize == currentImageSize {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        let imageSize = pwgImageSize(rawValue: Int16(indexPath.row)) ?? .fullRes
+        let isSelected = imageSize == currentImageSize
 
         // Disable unavailable sizes
-        switch imageSize {
-        case .square:
-            configCell(cell, forSize: .square, available: NetworkVars.shared.hasSquareSizeImages, allowed: false)
-        case .thumb:
-            configCell(cell, forSize: .thumb, available: NetworkVars.shared.hasThumbSizeImages, allowed: false)
-        case .xxSmall:
-            configCell(cell, forSize: .xxSmall, available: NetworkVars.shared.hasXXSmallSizeImages, allowed: false)
-        case .xSmall:
-            configCell(cell, forSize: .xSmall, available: NetworkVars.shared.hasXSmallSizeImages, allowed: false)
-        case .small:
-            configCell(cell, forSize: .small, available: NetworkVars.shared.hasSmallSizeImages, allowed: false)
-        case .medium:
-            configCell(cell, forSize: .medium, available: NetworkVars.shared.hasMediumSizeImages)
-        case .large:
-            configCell(cell, forSize: .large, available: NetworkVars.shared.hasLargeSizeImages)
-        case .xLarge:
-            configCell(cell, forSize: .xLarge, available: NetworkVars.shared.hasXLargeSizeImages)
-        case .xxLarge:
-            configCell(cell, forSize: .xxLarge, available: NetworkVars.shared.hasXXLargeSizeImages)
-        case .fullRes:
-            configCell(cell, forSize: .fullRes, available: true)
-        }
+        configCell(cell, forSize: imageSize, selected: isSelected)
 
         return cell
     }
-
-    private func configCell(_ cell: UITableViewCell, forSize size: pwgImageSize, available: Bool, allowed: Bool = true) {
-        if available {
-            // This image size is available
-            cell.isUserInteractionEnabled = allowed
-            cell.textLabel?.textColor = allowed ? PwgColor.leftLabel : PwgColor.rightLabel
-            var sizeName = size.name
-            if size == optimumSize {
-                sizeName.append(contentsOf: NSLocalizedString("defaultImageSize_recommended", comment: " (recommended)"))
-            } else {
-                sizeName.append(contentsOf: size.sizeAndScale(forScale: scale))
-            }
-            cell.textLabel?.text = sizeName
-        } else {
-            // This image size is not available
+    
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selected: Bool = false) {
+        switch size {
+        case .square, .thumb, .xxSmall, .xSmall, .small:
+            configCell(cell, forSize: size, selectable: false)
+        case .medium, .large, .xLarge, .xxLarge, .fullRes:
+            configCell(cell, forSize: size, selectable: true, selected: selected)
+        }
+    }
+    
+    private func configCell(_ cell: LabelTableViewCell, forSize size: pwgImageSize,
+                            selectable: Bool, selected: Bool = false) {
+        // Selected?
+        cell.accessoryType = selected ? .checkmark : .none
+        
+        // Available?
+        guard size.isAvailable
+        else {
+            cell.configure(with: size.name, detail: " ")
+            cell.titleLabel.textColor = cell.detailLabel.textColor
             cell.isUserInteractionEnabled = false
-            cell.textLabel?.textColor = PwgColor.rightLabel
-            cell.textLabel?.text = size.name + NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)")
+            return
+        }
+        
+        // Optimum?
+        if size == optimumSize {
+            let detail = NSLocalizedString("defaultImageSize_recommended", comment: "(recommended)")
+            cell.configure(with: size.name, detail: detail)
+        } else {
+            cell.configure(with: size.name, detail: size.sizeAndScale(forScale: scale))
+        }
+        
+        // Selectable?
+        cell.isUserInteractionEnabled = selectable
+        if selectable == false {
+            // Colour must be changed after configuration
+            cell.titleLabel.textColor = cell.detailLabel.textColor
         }
     }
 }
@@ -169,10 +170,6 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
 
     
     // MARK: - Rows
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return TableViewUtilities.shared.rowHeightForContentSizeCategory(traitCollection.preferredContentSizeCategory)
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -180,10 +177,17 @@ extension DefaultImageSizeViewController: UITableViewDelegate {
         guard let selectedSize = pwgImageSize(rawValue: Int16(indexPath.row)) else { return }
         if selectedSize == currentImageSize { return }
 
-        // Update default size
-        tableView.cellForRow(at: IndexPath(row: Int(currentImageSize.rawValue), section: 0))?.accessoryType = .none
+        // Update deselected cell
+        let deselectedIndexPath = IndexPath(row: Int(currentImageSize.rawValue), section: 0)
+        if let cell = tableView.cellForRow(at: deselectedIndexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: currentImageSize, selected: false)
+        }
+        
+        // Update selected cell
         currentImageSize = selectedSize
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        if let cell = tableView.cellForRow(at: indexPath) as? LabelTableViewCell {
+            configCell(cell, forSize: selectedSize, selected: true)
+        }
     }
 
 

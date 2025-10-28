@@ -13,7 +13,9 @@ import piwigoKit
 
 class ReleaseNotesViewController: UIViewController {
     
+    @IBOutlet weak var closeButton: UIButton!
     @IBOutlet private weak var piwigoLogo: UIImageView!
+    @IBOutlet weak var piwigoLogoTop: NSLayoutConstraint!
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
@@ -26,12 +28,25 @@ class ReleaseNotesViewController: UIViewController {
 
         // Title
         title = NSLocalizedString("settings_releaseNotes", comment: "Release Notes")
+        
+        // Show close button?
+        if #available(iOS 26.0, *) {
+            let hasNavController = (navigationController != nil)
+            closeButton.isHidden = hasNavController
+            piwigoLogoTop.constant = hasNavController ? 8.0 : 24.0
+        } else {
+            // Fallback on previous version
+            closeButton.isHidden = true
+        }
     }
 
     @MainActor
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = PwgColor.background
+
+        // Close button
+        closeButton.tintColor = PwgColor.tintColor
 
         // Change text colour according to palette colour
         piwigoLogo?.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
@@ -94,6 +109,10 @@ class ReleaseNotesViewController: UIViewController {
         // Back to large titles
         navigationController?.navigationBar.prefersLargeTitles = true
     }
+    
+    @IBAction func dismissNotes(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 
     deinit {
         // Unregister all observers
@@ -105,6 +124,9 @@ class ReleaseNotesViewController: UIViewController {
     private func notesAttributedString() -> NSMutableAttributedString? {
         // Release notes attributed string
         let notesAttributedString = NSMutableAttributedString(string: "")
+
+        // Release 4.1.x — Bundle string
+        notesAttributedString.append(releaseNotes("v4.1.0_text", comment: "v4.1.0 Release Notes text"))
 
         // Release 4.0.x — Bundle string
         notesAttributedString.append(releaseNotes("v4.0.0_text", comment: "v4.0.0 Release Notes text"))
