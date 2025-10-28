@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -719,20 +719,20 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N2H-8c-Oxe" userLabel="Image View Top">
-                                <rect key="frame" x="30" y="28.5" width="260" height="246.5"/>
+                                <rect key="frame" x="-1" y="28.5" width="322" height="276.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="N2H-8c-Oxe" secondAttribute="height" multiplier="1020:967" id="f9x-Po-387"/>
+                                    <constraint firstAttribute="width" secondItem="N2H-8c-Oxe" secondAttribute="height" multiplier="1022:878" id="f9x-Po-387"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ruf-jb-KlD">
-                                <rect key="frame" x="0.0" y="283" width="320" height="20.5"/>
+                                <rect key="frame" x="0.0" y="313" width="320" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="6DD-ef-j2B">
-                                <rect key="frame" x="30" y="311.5" width="260" height="246.5"/>
+                                <rect key="frame" x="-1" y="341.5" width="322" height="216.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                         </subviews>
@@ -740,8 +740,8 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ruf-jb-KlD" firstAttribute="top" secondItem="N2H-8c-Oxe" secondAttribute="bottom" constant="8" symbolic="YES" id="45Z-Lg-tVd"/>
-                            <constraint firstItem="6DD-ef-j2B" firstAttribute="height" secondItem="N2H-8c-Oxe" secondAttribute="height" id="80u-Ud-7Tn"/>
                             <constraint firstItem="6DD-ef-j2B" firstAttribute="width" secondItem="N2H-8c-Oxe" secondAttribute="width" id="8tM-LK-xrM"/>
+                            <constraint firstItem="6DD-ef-j2B" firstAttribute="height" secondItem="N2H-8c-Oxe" secondAttribute="height" multiplier="878:1120" id="BHe-XY-bux"/>
                             <constraint firstItem="ruf-jb-KlD" firstAttribute="centerX" secondItem="6DD-ef-j2B" secondAttribute="centerX" id="CYj-Pd-QW2"/>
                             <constraint firstItem="N2H-8c-Oxe" firstAttribute="width" secondItem="wJC-et-fbk" secondAttribute="width" multiplier="0.5" constant="-60" id="ETD-Dw-1n5"/>
                             <constraint firstAttribute="trailing" secondItem="vFC-Z8-0aM" secondAttribute="trailing" id="Fa8-Nb-gDc"/>
@@ -820,10 +820,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jr4-Xf-4i0" userLabel="Image View Top">
-                                <rect key="frame" x="30" y="28.5" width="260" height="246.5"/>
+                                <rect key="frame" x="27.5" y="28.5" width="265" height="246.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="jr4-Xf-4i0" secondAttribute="height" multiplier="1020:967" id="nzI-rU-RMO"/>
+                                    <constraint firstAttribute="width" secondItem="jr4-Xf-4i0" secondAttribute="height" multiplier="1022:950" id="nzI-rU-RMO"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qob-CK-KGE">
@@ -833,7 +833,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="buG-IY-DFZ">
-                                <rect key="frame" x="30" y="311.5" width="260" height="246.5"/>
+                                <rect key="frame" x="27.5" y="311.5" width="265" height="246.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                         </subviews>

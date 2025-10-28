@@ -62,9 +62,7 @@
 		AD0F70222946262D008F1394 /* SettingsViewController+Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */; };
 		AD0F7024294629BD008F1394 /* SettingsViewController+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */; };
 		AD0FE4BB2E01DB30002395CF /* Help09ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */; };
-		AD0FE4BD2E01DEDD002395CF /* help09.png in Resources */ = {isa = PBXBuildFile; fileRef = AD0FE4BC2E01DEDD002395CF /* help09.png */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
-		AD11AC4C273B17A100433038 /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD11AC4B273B17A100433038 /* help01.png */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
 		AD129E6628C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD129E6528C34FE8007A2A52 /* NSManagedObjectContext+AppTools.swift */; };
@@ -189,6 +187,32 @@
 		AD30FD3721316DA8009AA30E /* piwigoScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoScreenshots.swift */; };
 		AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */; };
 		AD31A73F2C736A9800B37B19 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */; };
+		AD31E73C2EB106C100584ECB /* help02-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7312EB106C100584ECB /* help02-top-iOS18.png */; };
+		AD31E73D2EB106C100584ECB /* help09-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E73B2EB106C100584ECB /* help09-iOS18.png */; };
+		AD31E73F2EB106C100584ECB /* help05-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7352EB106C100584ECB /* help05-top-iOS18.png */; };
+		AD31E7402EB106C100584ECB /* help01-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E72F2EB106C100584ECB /* help01-iOS18.png */; };
+		AD31E7412EB106C100584ECB /* help02-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7302EB106C100584ECB /* help02-bot-iOS18.png */; };
+		AD31E7422EB106C100584ECB /* help07-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7372EB106C100584ECB /* help07-bot-iOS18.png */; };
+		AD31E7432EB106C100584ECB /* help08-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */; };
+		AD31E7442EB106C100584ECB /* help06-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7362EB106C100584ECB /* help06-iOS18.png */; };
+		AD31E7462EB106C100584ECB /* help07-top-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7382EB106C100584ECB /* help07-top-iOS18.png */; };
+		AD31E7472EB106C100584ECB /* help08-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7392EB106C100584ECB /* help08-bot-iOS18.png */; };
+		AD31E7482EB106C100584ECB /* help04-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7332EB106C100584ECB /* help04-iOS18.png */; };
+		AD31E7562EB106CD00584ECB /* help07-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7512EB106CD00584ECB /* help07-bot.png */; };
+		AD31E7572EB106CD00584ECB /* help08-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7542EB106CD00584ECB /* help08-top.png */; };
+		AD31E7592EB106CD00584ECB /* help08-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7532EB106CD00584ECB /* help08-bot.png */; };
+		AD31E75A2EB106CD00584ECB /* help02-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74A2EB106CD00584ECB /* help02-bot.png */; };
+		AD31E75B2EB106CD00584ECB /* help04.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74D2EB106CD00584ECB /* help04.png */; };
+		AD31E75C2EB106CD00584ECB /* help06.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7502EB106CD00584ECB /* help06.png */; };
+		AD31E75D2EB106CD00584ECB /* help07-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7522EB106CD00584ECB /* help07-top.png */; };
+		AD31E75E2EB106CD00584ECB /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7492EB106CD00584ECB /* help01.png */; };
+		AD31E75F2EB106CD00584ECB /* help09.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7552EB106CD00584ECB /* help09.png */; };
+		AD31E7612EB106CD00584ECB /* help02-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74B2EB106CD00584ECB /* help02-top.png */; };
+		AD31E7622EB106CD00584ECB /* help05-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E74F2EB106CD00584ECB /* help05-top.png */; };
+		AD31E7642EB1082500584ECB /* help03-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7632EB1082500584ECB /* help03-iOS18.png */; };
+		AD31E7662EB1082D00584ECB /* help03.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7652EB1082D00584ECB /* help03.png */; };
+		AD31E7682EB109F400584ECB /* help05-bot-iOS18.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */; };
+		AD31E76A2EB10A3800584ECB /* help05-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD31E7692EB10A3800584ECB /* help05-bot.png */; };
 		AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */; };
 		AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */; };
 		AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */; };
@@ -252,7 +276,6 @@
 		AD5A316B2847FDC900948FEE /* pwg.categories.setRepresentative.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A31692847FDA700948FEE /* pwg.categories.setRepresentative.json */; };
 		AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */; };
 		AD5CB9172D84941F00A0D2B2 /* NSEntityMigrationPolicy+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5CB9162D84941F00A0D2B2 /* NSEntityMigrationPolicy+AppTools.swift */; };
-		AD5DA2812DFF412500EFA7A5 /* help07-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD5DA2802DFF412500EFA7A5 /* help07-bot.png */; };
 		AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */; };
 		AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64E724C601EE00660BE3 /* pwg.tags.add.json */; };
 		AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */; };
@@ -383,20 +406,10 @@
 		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD8803552DBE86EE00ECF990 /* CaseSelectorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8803542DBE86EE00ECF990 /* CaseSelectorTableViewCell.swift */; };
 		AD8A1E7D28846E1300752948 /* Help08ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A1E7C28846E1300752948 /* Help08ViewController.swift */; };
-		AD8A1E80288478FA00752948 /* help08-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8A1E7E288478FA00752948 /* help08-top.png */; };
-		AD8A1E81288478FA00752948 /* help08-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8A1E7F288478FA00752948 /* help08-bot.png */; };
 		AD8C57162B320AFF00FD1C90 /* PwgSession+Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8C57152B320AFF00FD1C90 /* PwgSession+Root.swift */; };
 		AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD8D212826ACC15F0008E907 /* InAppIntents.intentdefinition */; };
 		AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D214926B094DC0008E907 /* Help07ViewController.swift */; };
 		AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D214B26B0A4450008E907 /* ImageUtilities.swift */; };
-		AD8D217926B0B16A0008E907 /* help03.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217026B0B1690008E907 /* help03.png */; };
-		AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217126B0B1690008E907 /* help02-bot.png */; };
-		AD8D217B26B0B16A0008E907 /* help04.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217226B0B1690008E907 /* help04.png */; };
-		AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217326B0B1690008E907 /* help02-top.png */; };
-		AD8D217E26B0B16A0008E907 /* help06.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217526B0B1690008E907 /* help06.png */; };
-		AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217626B0B16A0008E907 /* help05-bot.png */; };
-		AD8D218026B0B16A0008E907 /* help07-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217726B0B16A0008E907 /* help07-top.png */; };
-		AD8D218126B0B16A0008E907 /* help05-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217826B0B16A0008E907 /* help05-top.png */; };
 		AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218226B0B46A0008E907 /* darkPhone.png */; };
 		AD8D218726B0B46A0008E907 /* lightPad.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218326B0B46A0008E907 /* lightPad.png */; };
 		AD8D218826B0B46A0008E907 /* darkPad.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218426B0B46A0008E907 /* darkPad.png */; };
@@ -796,10 +809,8 @@
 		AD0F70212946262D008F1394 /* SettingsViewController+Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Albums.swift"; sourceTree = "<group>"; };
 		AD0F7023294629BD008F1394 /* SettingsViewController+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsViewController+Images.swift"; sourceTree = "<group>"; };
 		AD0FE4BA2E01DB30002395CF /* Help09ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help09ViewController.swift; sourceTree = "<group>"; };
-		AD0FE4BC2E01DEDD002395CF /* help09.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help09.png; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagProvider.swift; sourceTree = "<group>"; };
-		AD11AC4B273B17A100433038 /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = help01.png; path = piwigo/Resources/Images/help01.png; sourceTree = SOURCE_ROOT; };
 		AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoWebAPI.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD11E46024A930B000C8876F /* piwigoWebAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoWebAPI.swift; sourceTree = "<group>"; };
 		AD11E46224A930B000C8876F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -912,6 +923,32 @@
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD311FF927CB7B730044AC5A /* LoginViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginViewController.storyboard; sourceTree = "<group>"; };
 		AD31A73E2C736A9800B37B19 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
+		AD31E72F2EB106C100584ECB /* help01-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help01-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7302EB106C100584ECB /* help02-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7312EB106C100584ECB /* help02-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7332EB106C100584ECB /* help04-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help04-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7352EB106C100584ECB /* help05-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-top-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7362EB106C100584ECB /* help06-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help06-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7372EB106C100584ECB /* help07-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-bot-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7382EB106C100584ECB /* help07-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-top-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7392EB106C100584ECB /* help08-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-bot-iOS18.png"; sourceTree = "<group>"; };
+		AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-top-iOS18.png"; sourceTree = "<group>"; };
+		AD31E73B2EB106C100584ECB /* help09-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help09-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7492EB106CD00584ECB /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help01.png; sourceTree = "<group>"; };
+		AD31E74A2EB106CD00584ECB /* help02-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot.png"; sourceTree = "<group>"; };
+		AD31E74B2EB106CD00584ECB /* help02-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top.png"; sourceTree = "<group>"; };
+		AD31E74D2EB106CD00584ECB /* help04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help04.png; sourceTree = "<group>"; };
+		AD31E74F2EB106CD00584ECB /* help05-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-top.png"; sourceTree = "<group>"; };
+		AD31E7502EB106CD00584ECB /* help06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help06.png; sourceTree = "<group>"; };
+		AD31E7512EB106CD00584ECB /* help07-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-bot.png"; sourceTree = "<group>"; };
+		AD31E7522EB106CD00584ECB /* help07-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-top.png"; sourceTree = "<group>"; };
+		AD31E7532EB106CD00584ECB /* help08-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-bot.png"; sourceTree = "<group>"; };
+		AD31E7542EB106CD00584ECB /* help08-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-top.png"; sourceTree = "<group>"; };
+		AD31E7552EB106CD00584ECB /* help09.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help09.png; sourceTree = "<group>"; };
+		AD31E7632EB1082500584ECB /* help03-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help03-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7652EB1082D00584ECB /* help03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help03.png; sourceTree = "<group>"; };
+		AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot-iOS18.png"; sourceTree = "<group>"; };
+		AD31E7692EB10A3800584ECB /* help05-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot.png"; sourceTree = "<group>"; };
 		AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReleaseNotesViewController.storyboard; sourceTree = "<group>"; };
 		AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseNotesViewController.swift; sourceTree = "<group>"; };
@@ -989,7 +1026,6 @@
 		AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareMetadataCell.swift; sourceTree = "<group>"; };
 		AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadQueueViewController.swift; sourceTree = "<group>"; };
 		AD5CB9162D84941F00A0D2B2 /* NSEntityMigrationPolicy+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSEntityMigrationPolicy+AppTools.swift"; sourceTree = "<group>"; };
-		AD5DA2802DFF412500EFA7A5 /* help07-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-bot.png"; sourceTree = "<group>"; };
 		AD5F64E724C601EE00660BE3 /* pwg.tags.add.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.tags.add.json; sourceTree = "<group>"; };
 		AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.tags.add.swift; sourceTree = "<group>"; };
 		AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.tags.getList.swift; sourceTree = "<group>"; };
@@ -1118,8 +1154,6 @@
 		AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help04ViewController.swift; sourceTree = "<group>"; };
 		AD8803542DBE86EE00ECF990 /* CaseSelectorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseSelectorTableViewCell.swift; sourceTree = "<group>"; };
 		AD8A1E7C28846E1300752948 /* Help08ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Help08ViewController.swift; sourceTree = "<group>"; };
-		AD8A1E7E288478FA00752948 /* help08-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-top.png"; sourceTree = "<group>"; };
-		AD8A1E7F288478FA00752948 /* help08-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help08-bot.png"; sourceTree = "<group>"; };
 		AD8C57152B320AFF00FD1C90 /* PwgSession+Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PwgSession+Root.swift"; sourceTree = "<group>"; };
 		AD8D212726ACC15F0008E907 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/InAppIntents.intentdefinition; sourceTree = "<group>"; };
 		AD8D212A26ACC1660008E907 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InAppIntents.strings; sourceTree = "<group>"; };
@@ -1138,14 +1172,6 @@
 		AD8D214626ACC1790008E907 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D214926B094DC0008E907 /* Help07ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help07ViewController.swift; sourceTree = "<group>"; };
 		AD8D214B26B0A4450008E907 /* ImageUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtilities.swift; sourceTree = "<group>"; };
-		AD8D217026B0B1690008E907 /* help03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help03.png; sourceTree = "<group>"; };
-		AD8D217126B0B1690008E907 /* help02-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot.png"; sourceTree = "<group>"; };
-		AD8D217226B0B1690008E907 /* help04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help04.png; sourceTree = "<group>"; };
-		AD8D217326B0B1690008E907 /* help02-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top.png"; sourceTree = "<group>"; };
-		AD8D217526B0B1690008E907 /* help06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help06.png; sourceTree = "<group>"; };
-		AD8D217626B0B16A0008E907 /* help05-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot.png"; sourceTree = "<group>"; };
-		AD8D217726B0B16A0008E907 /* help07-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-top.png"; sourceTree = "<group>"; };
-		AD8D217826B0B16A0008E907 /* help05-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-top.png"; sourceTree = "<group>"; };
 		AD8D218226B0B46A0008E907 /* darkPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = darkPhone.png; sourceTree = "<group>"; };
 		AD8D218326B0B46A0008E907 /* lightPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightPad.png; sourceTree = "<group>"; };
 		AD8D218426B0B46A0008E907 /* darkPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = darkPad.png; sourceTree = "<group>"; };
@@ -1842,6 +1868,46 @@
 			path = piwigoScreenshots;
 			sourceTree = "<group>";
 		};
+		AD31E72B2EB0D91900584ECB /* Help for iOS 18 */ = {
+			isa = PBXGroup;
+			children = (
+				AD31E72F2EB106C100584ECB /* help01-iOS18.png */,
+				AD31E7302EB106C100584ECB /* help02-bot-iOS18.png */,
+				AD31E7312EB106C100584ECB /* help02-top-iOS18.png */,
+				AD31E7632EB1082500584ECB /* help03-iOS18.png */,
+				AD31E7332EB106C100584ECB /* help04-iOS18.png */,
+				AD31E7672EB109F400584ECB /* help05-bot-iOS18.png */,
+				AD31E7352EB106C100584ECB /* help05-top-iOS18.png */,
+				AD31E7362EB106C100584ECB /* help06-iOS18.png */,
+				AD31E7372EB106C100584ECB /* help07-bot-iOS18.png */,
+				AD31E7382EB106C100584ECB /* help07-top-iOS18.png */,
+				AD31E7392EB106C100584ECB /* help08-bot-iOS18.png */,
+				AD31E73A2EB106C100584ECB /* help08-top-iOS18.png */,
+				AD31E73B2EB106C100584ECB /* help09-iOS18.png */,
+			);
+			path = "Help for iOS 18";
+			sourceTree = "<group>";
+		};
+		AD31E72E2EB0D95100584ECB /* Help for iOS 26 */ = {
+			isa = PBXGroup;
+			children = (
+				AD31E7492EB106CD00584ECB /* help01.png */,
+				AD31E74A2EB106CD00584ECB /* help02-bot.png */,
+				AD31E74B2EB106CD00584ECB /* help02-top.png */,
+				AD31E7652EB1082D00584ECB /* help03.png */,
+				AD31E74D2EB106CD00584ECB /* help04.png */,
+				AD31E7692EB10A3800584ECB /* help05-bot.png */,
+				AD31E74F2EB106CD00584ECB /* help05-top.png */,
+				AD31E7502EB106CD00584ECB /* help06.png */,
+				AD31E7512EB106CD00584ECB /* help07-bot.png */,
+				AD31E7522EB106CD00584ECB /* help07-top.png */,
+				AD31E7532EB106CD00584ECB /* help08-bot.png */,
+				AD31E7542EB106CD00584ECB /* help08-top.png */,
+				AD31E7552EB106CD00584ECB /* help09.png */,
+			);
+			path = "Help for iOS 26";
+			sourceTree = "<group>";
+		};
 		AD36C0792DEA1C5200D30C8D /* CounterFormatSelector */ = {
 			isa = PBXGroup;
 			children = (
@@ -2228,19 +2294,8 @@
 				AD8D218226B0B46A0008E907 /* darkPhone.png */,
 				AD8D218326B0B46A0008E907 /* lightPad.png */,
 				AD8D218526B0B46A0008E907 /* lightPhone.png */,
-				AD11AC4B273B17A100433038 /* help01.png */,
-				AD8D217126B0B1690008E907 /* help02-bot.png */,
-				AD8D217326B0B1690008E907 /* help02-top.png */,
-				AD8D217026B0B1690008E907 /* help03.png */,
-				AD8D217226B0B1690008E907 /* help04.png */,
-				AD8D217626B0B16A0008E907 /* help05-bot.png */,
-				AD8D217826B0B16A0008E907 /* help05-top.png */,
-				AD8D217526B0B1690008E907 /* help06.png */,
-				AD8D217726B0B16A0008E907 /* help07-top.png */,
-				AD5DA2802DFF412500EFA7A5 /* help07-bot.png */,
-				AD8A1E7F288478FA00752948 /* help08-bot.png */,
-				AD8A1E7E288478FA00752948 /* help08-top.png */,
-				AD0FE4BC2E01DEDD002395CF /* help09.png */,
+				AD31E72B2EB0D91900584ECB /* Help for iOS 18 */,
+				AD31E72E2EB0D95100584ECB /* Help for iOS 26 */,
 				AD96F42F2748601D004C8DFF /* piwigo.png */,
 			);
 			path = Images;
@@ -3377,8 +3432,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD31E7642EB1082500584ECB /* help03-iOS18.png in Resources */,
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
 				ADC115DC2DC91E59000EA45B /* DateFormatSelectorViewController.storyboard in Resources */,
+				AD31E7682EB109F400584ECB /* help05-bot-iOS18.png in Resources */,
 				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
 				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
 				AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */,
@@ -3391,15 +3448,24 @@
 				ADACD2912C317CFB00F8790B /* TroubleshootingViewController.storyboard in Resources */,
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD9697DA2BE2536300520614 /* LocalImageCollectionViewCell.xib in Resources */,
-				AD5DA2812DFF412500EFA7A5 /* help07-bot.png in Resources */,
 				AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */,
 				AD311FFA27CB7B730044AC5A /* LoginViewController.storyboard in Resources */,
 				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
 				AD3B2C672A2938910001B8B0 /* (null) in Resources */,
 				AD36C07D2DEA1CE400D30C8D /* CounterFormatSelectorViewController.storyboard in Resources */,
 				ADAC8D132E150211002ECAEA /* LaunchScreen.storyboard in Resources */,
-				AD0FE4BD2E01DEDD002395CF /* help09.png in Resources */,
 				AD42568C2ACB584F00D7CCC8 /* VideoControlsView.xib in Resources */,
+				AD31E7562EB106CD00584ECB /* help07-bot.png in Resources */,
+				AD31E7572EB106CD00584ECB /* help08-top.png in Resources */,
+				AD31E7592EB106CD00584ECB /* help08-bot.png in Resources */,
+				AD31E75A2EB106CD00584ECB /* help02-bot.png in Resources */,
+				AD31E75B2EB106CD00584ECB /* help04.png in Resources */,
+				AD31E75C2EB106CD00584ECB /* help06.png in Resources */,
+				AD31E75D2EB106CD00584ECB /* help07-top.png in Resources */,
+				AD31E75E2EB106CD00584ECB /* help01.png in Resources */,
+				AD31E75F2EB106CD00584ECB /* help09.png in Resources */,
+				AD31E7612EB106CD00584ECB /* help02-top.png in Resources */,
+				AD31E7622EB106CD00584ECB /* help05-top.png in Resources */,
 				AD7D132C2DFF00FA00EEE90D /* In-AppIntents.xcstrings in Resources */,
 				ADAE3C382E19497100E1D634 /* Localizable.xcstrings in Resources */,
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
@@ -3423,6 +3489,7 @@
 				AD1AD61E2DFF195700D25EF9 /* AppShortcuts.strings in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
+				AD31E7662EB1082D00584ECB /* help03.png in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
@@ -3431,6 +3498,18 @@
 				AD2D959A27D7F14900AC1FD8 /* AppLockViewController.storyboard in Resources */,
 				AD9697D62BDE4B8D00520614 /* PiwigoHUD.xib in Resources */,
 				AD3DB4112773957A00017542 /* ImageViewController.storyboard in Resources */,
+				AD31E73C2EB106C100584ECB /* help02-top-iOS18.png in Resources */,
+				AD31E73D2EB106C100584ECB /* help09-iOS18.png in Resources */,
+				AD31E73F2EB106C100584ECB /* help05-top-iOS18.png in Resources */,
+				AD31E7402EB106C100584ECB /* help01-iOS18.png in Resources */,
+				AD31E7412EB106C100584ECB /* help02-bot-iOS18.png in Resources */,
+				AD31E7422EB106C100584ECB /* help07-bot-iOS18.png in Resources */,
+				AD31E7432EB106C100584ECB /* help08-top-iOS18.png in Resources */,
+				AD31E7442EB106C100584ECB /* help06-iOS18.png in Resources */,
+				AD31E76A2EB10A3800584ECB /* help05-bot.png in Resources */,
+				AD31E7462EB106C100584ECB /* help07-top-iOS18.png in Resources */,
+				AD31E7472EB106C100584ECB /* help08-bot-iOS18.png in Resources */,
+				AD31E7482EB106C100584ECB /* help04-iOS18.png in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD9D684827DFE6DF00517261 /* VerificationFailed.ahap in Resources */,
 				AD1644052E894313002B555F /* RenameFileTableHeaderView.xib in Resources */,
@@ -3442,18 +3521,7 @@
 				ADAE3C342E19215200E1D634 /* ReleaseNotes.xcstrings in Resources */,
 				AD089CFF2BC2A52200CE4A3E /* ImageCollectionViewCell.xib in Resources */,
 				AD089D052BC2A5FC00CE4A3E /* AlbumTableViewCell.xib in Resources */,
-				AD11AC4C273B17A100433038 /* help01.png in Resources */,
-				AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */,
-				AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */,
-				AD8D217926B0B16A0008E907 /* help03.png in Resources */,
-				AD8D217B26B0B16A0008E907 /* help04.png in Resources */,
-				AD8D218126B0B16A0008E907 /* help05-top.png in Resources */,
-				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
-				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
-				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
-				AD8A1E80288478FA00752948 /* help08-top.png in Resources */,
 				ADB2E9442DD5A8DC000F3F7C /* TimeFormatSelectorViewController.storyboard in Resources */,
-				AD8A1E81288478FA00752948 /* help08-bot.png in Resources */,
 				ADAE3C362E1932F200E1D634 /* InfoPlist.xcstrings in Resources */,
 				ADA78AFE2E6B6D100049198A /* piwigo.icon in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,

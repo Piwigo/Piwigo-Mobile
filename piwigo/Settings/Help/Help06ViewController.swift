@@ -43,7 +43,9 @@ class Help06ViewController: UIViewController {
         legend.attributedText = legendAttributedString
         
         // Set image view
-        guard let imageUrl = Bundle.main.url(forResource: "help06", withExtension: "png")
+        var fileName: String = "help06"
+        if #unavailable(iOS 26.0) { fileName += "-iOS18" }
+        guard let imageUrl = Bundle.main.url(forResource: fileName, withExtension: "png")
         else { preconditionFailure("!!! Could not find help06 image !!!") }
         imageView.layoutIfNeeded() // Ensure imageView is in its final size.
         let scale = max(imageView.traitCollection.displayScale, 1.0)

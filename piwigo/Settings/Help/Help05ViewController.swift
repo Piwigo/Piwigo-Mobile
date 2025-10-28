@@ -56,7 +56,9 @@ class Help05ViewController: UIViewController {
         legendBot.attributedText = legendBotAttributedString
         
         // Set top image view
-        guard let topImageUrl = Bundle.main.url(forResource: "help05-top", withExtension: "png")
+        var fileName: String = "help05-top"
+        if #unavailable(iOS 26.0) { fileName += "-iOS18" }
+        guard let topImageUrl = Bundle.main.url(forResource: fileName, withExtension: "png")
         else { preconditionFailure("!!! Could not find help05-top image !!!") }
         imageViewTop.layoutIfNeeded() // Ensure imageView is in its final size.
         var scale = max(imageViewTop.traitCollection.displayScale, 1.0)
@@ -64,7 +66,9 @@ class Help05ViewController: UIViewController {
         imageViewTop.image = ImageUtilities.downsample(imageAt: topImageUrl, to: imageSize, for: .help)
         
         // Set bottom image view
-        guard let botImageUrl = Bundle.main.url(forResource: "help05-bot", withExtension: "png")
+        fileName = "help05-bot"
+        if #unavailable(iOS 26.0) { fileName += "-iOS18" }
+        guard let botImageUrl = Bundle.main.url(forResource: fileName, withExtension: "png")
         else { preconditionFailure("!!! Could not find help05-bot image !!!") }
         imageViewBot.layoutIfNeeded() // Ensure imageView is in its final size.
         scale = max(imageViewBot.traitCollection.displayScale, 1.0)

@@ -112,6 +112,7 @@ number_of_retries(1)
 #   xcrun simctl status_bar "iPhone SE (1st generation)" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #   xcrun simctl status_bar "iPhone SE (3rd generation)" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #   xcrun simctl status_bar "iPhone 16e" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
+#   xcrun simctl status_bar "iPhone 16 Pro" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #   xcrun simctl status_bar "iPhone 17 Pro" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #   xcrun simctl status_bar "iPhone 14 Plus" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
 #   xcrun simctl status_bar "iPhone Air" override --time "09:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --operatorName '' --cellularBars 4 --batteryState charged --batteryLevel 100
