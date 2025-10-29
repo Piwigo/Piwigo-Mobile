@@ -426,8 +426,10 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Update image description?
+        /// token required for updating HTML in name/comment/author
         if shouldUpdateComment {
             paramsDict["comment"] = commonComment.utf8mb4Encoded
+            paramsDict["pwg_token"] = NetworkVars.shared.pwgToken
         }
         
         // Send request to Piwigo server

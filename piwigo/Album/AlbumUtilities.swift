@@ -90,9 +90,12 @@ class AlbumUtilities: NSObject {
                          failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for setting album thumbnail
+        /// token required for updating HTML in name/comment
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "name"        : name,
-                                          "comment"     : description]
+                                          "comment"     : description,
+                                          "pwg_token"   : NetworkVars.shared.pwgToken
+        ]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
