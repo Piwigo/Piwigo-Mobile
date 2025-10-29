@@ -9603,97 +9603,198 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.1\n\n• يدعم النصوص الكبيرة\n• يصلح الأخطاء ويحسن الواجهة"
+            "value" : "الإصدار 4.1\n29 أكتوبر 2025\n\n• يجلب الدعم للنص الاكبر\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1\n\n• Understøtter større skrifttyper\n• Mindre fejl rettet og forbedringer af brugerflade"
+            "value" : "Version 4.1\n29 oktober 2025\n\n• Understøtter større skrifttyper\n• Mindre fejl rettet og forbedringer af brugerflade"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1\n\n• Unterstützt größere Schriftarten\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
+            "value" : "Version 4.1\n29. Oktober 2025\n\n• Unterstützt größere Schriftarten\n• Behebung von Fehlern und Verbesserung der Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1\n\n• Brings support for Larger Text\n• Fixes bugs and improves the interface"
+            "value" : "Version 4.1\nOctober 29, 2025\n\n• Brings support for Larger Text\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.1\n\n• Añade soporte para textos más grandes\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 4.1\n29 de octubre de 2025\n\n• Añade soporte para textos más grandes\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1\n\n• Prend en charge des polices plus grandes\n• Corrige les bugs et améliore l'interface"
+            "value" : "Version 4.1\n29 octobre 2025\n\n• Prend en charge des polices plus grandes\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1-es verzió\n\n• Nagyobb betűméret támogatása\n• Hibák javítása és a felület javítása"
+            "value" : "4.1-es verzió\n2025 Október 29\n\n• Nagyobb betűméret támogatása\n• Hibák javítása és a felület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.1\n\n• Mendukung font yang lebih besar\n• Memperbaiki bug dan meningkatkan antarmuka"
+            "value" : "Versi 4.1\n29 Oktober 2025\n\n• Mendukung font yang lebih besar\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.1\n\n• Supporta caratteri più grandi\n• Corregge i bug e migliora l'interfaccia"
+            "value" : "Versione 4.1\n29 ottobre 2025\n\n• Supporta caratteri più grandi\n• Corregge i bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン 4.1\n\n• 大きなフォントのサポート\n• バグの修正とインターフェイスの改善"
+            "value" : "バージョン 4.1\n2025年10月29日\n\n• 大きなフォントのサポート\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.1\n\n• Brings ondersteuning voor grotere tekst\n• Verbetert bugs en verbetert de interface"
+            "value" : "Versie 4.1\n29 oktober 2025\n\n• Brings ondersteuning voor grotere tekst\n• Verbetert bugs en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.1\n\n• Obsługa większych czcionek\n• Poprawki błędów i ulepszenia interfejsu"
+            "value" : "Wersja 4.1\n29 października 2025\n\n• Obsługa większych czcionek\n• Poprawki błędów i ulepszenia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.1\n\n• Поддержка более крупных шрифтов.\n• Исправлены ошибки и улучшен интерфейс"
+            "value" : "Версия 4.1\n29 октября 2025\n\n• Поддержка более крупных шрифтов.\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1\n\n• Stöder större teckensnitt\n• Fixar buggar och förbättrar gränssnittet"
+            "value" : "Version 4.1\n29 oktober 2025\n\n• Stöder större teckensnitt\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本4.1\n\n• 支持更大字号的字体\n• 修复了错误并改进了界面"
+            "value" : "版本4.1\n2025年10月29日\n\n• 支持更大字号的字体\n• 修复了错误并改进了界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.1\n\n• 支援更大尺寸的字型\n• 錯誤修正與介面改進"
+            "value" : "版本 4.1\n2025年10月29日\n\n• 支援更大尺寸的字型\n• 錯誤修正與介面改進"
+          }
+        }
+      }
+    },
+    "v4.1.1_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.1.1\n\n• إصلاح الأخطاء وتحسين الواجهة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.4.1\n\n• Retter fejl og forbedrer brugerfladen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.1\n\n• Behebt Fehler und verbessert die Benutzeroberfläche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.1\n\n• Fixes bugs and improves the interface"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.1.1\n\n• Corrección de errores y mejoras en la interfaz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.1\n\n• Corrige les bugs et améliore l'interface"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.1.1 verzió\n\n• Hibajavítások és a kezelőfelület javítása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.1.1\n\n• Memperbaiki bug dan meningkatkan antarmuka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.1.1\n\n• Corregge i bug e migliora l'interfaccia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン4.1.1\n\n• バグの修正とインターフェイスの改善"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.1.1\n\n• Lost bugs op en verbetert de interface"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.1.1\n\n• Naprawiono błędy i ulepszono interfejs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.1.1\n\n• Исправлены ошибки и улучшен интерфейс"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.1\n\n• Fixar buggar och förbättrar gränssnittet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1.1\n\n• 修正错误并改进界面"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1.1\n\n• 修正錯誤並改進介面"
           }
         }
       }
