@@ -16900,6 +16900,7 @@
     },
     "editImageDetails_dateMonthDec" : {
       "comment" : "-1 Month",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17001,6 +17002,7 @@
     },
     "editImageDetails_dateMonthInc" : {
       "comment" : "+1 Month",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17304,6 +17306,7 @@
     },
     "editImageDetails_dateYearDec" : {
       "comment" : "-1 Year",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -17405,6 +17408,7 @@
     },
     "editImageDetails_dateYearInc" : {
       "comment" : "+1 Year",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
