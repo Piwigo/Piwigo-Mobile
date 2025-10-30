@@ -11,10 +11,10 @@ import UIKit
 import piwigoKit
 import uploadKit
 
+@available(iOS, introduced: 15.0, deprecated: 26.0, message: "Exclusively before iOS 26")
 extension AlbumViewController
 {
     // MARK: - Buttons Management
-    // Exclusively before iOS 26
     func relocateButtons() {
         // Buttons might have to be relocated:
         /// - when using several scenes on iPad

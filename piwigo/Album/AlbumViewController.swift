@@ -450,13 +450,6 @@ class AlbumViewController: UIViewController
         navigationController?.setNavigationBarHidden(false, animated: true)
         navigationItem.largeTitleDisplayMode = prefersLargeTitles ? .always : .never
         navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
-
-        // Set navigation bar and buttons
-        initBarsInPreviewMode()
-        if #unavailable(iOS 26.0) {
-            relocateButtons()
-            updateButtons()
-        }
         
         // Should we reload the collection view?
         if collectionView.visibleCells.first is AlbumCollectionViewCell {
@@ -484,6 +477,20 @@ class AlbumViewController: UIViewController
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                    name: Notification.Name.pwgUploadProgress, object: nil)
+        }
+
+        // Set navigation bar and buttons
+        initBarsInPreviewMode()
+        if #available(iOS 26.0, *) {
+            // Show/hide UploadQueue toolbar button if needed
+            let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+            let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
+            NotificationCenter.default.post(name: .pwgLeftUploads,
+                                            object: nil, userInfo: userInfo)
+        } else {
+            // Set buttons
+            relocateButtons()
+            updateButtons()
         }
     }
     
