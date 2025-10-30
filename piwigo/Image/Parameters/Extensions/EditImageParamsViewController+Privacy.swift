@@ -27,7 +27,9 @@ extension EditImageParamsViewController: SelectPrivacyDelegate
             commonPrivacyLevel = privacyLevel.rawValue
 
             // Refresh table row
-            let row = EditImageParamsOrder.privacy.rawValue - (hasDatePicker == false ? 1 : 0)
+            var row = EditImageParamsOrder.privacy.rawValue
+            row -= hasDatePicker ? 0 : 1
+            row -= hasTimePicker ? 0 : 1
             let indexPath = IndexPath(row: row, section: 0)
             editImageParamsTableView.reloadRows(at: [indexPath], with: .automatic)
         }
