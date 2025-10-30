@@ -93,7 +93,7 @@ extension PasteboardImagesViewController {
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+        if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
             case 0:

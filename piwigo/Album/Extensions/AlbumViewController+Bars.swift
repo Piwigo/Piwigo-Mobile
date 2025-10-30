@@ -315,7 +315,7 @@ extension AlbumViewController
         }
         actionBarButton?.accessibilityIdentifier = "actions"
 
-        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Remaining buttons in navigation toolbar
             if #available(iOS 26.0, *) {
                 // Left side of navigation bar
@@ -368,7 +368,7 @@ extension AlbumViewController
         navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
 
         // Right side and toolbar
-        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Remaining two buttons on the right side of the navigation bar
             navigationItem.setRightBarButtonItems([shareBarButton, favoriteBarButton].compactMap { $0 }, animated: true)
 
@@ -480,7 +480,7 @@ extension AlbumViewController
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         let tooLargeFont = traitCollection.preferredContentSizeCategory >= .accessibilityMedium
         if (tooLargeFont && categoryId != AlbumVars.shared.defaultCategory) ||
-            (UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+            (view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             // Set title and subtitle
             if prefersLargeTitles {
                 navigationItem.subtitle = nil
@@ -567,7 +567,7 @@ extension AlbumViewController
         var subtitle = ""
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
         let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
-        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+        if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             if AlbumVars.shared.isFetchingAlbumData.contains(categoryId) && !isAccessibilityCategory {
                 // Inform user that the app is fetching album data
                 if progress == 0 {

@@ -55,7 +55,7 @@ extension LocalImagesViewController {
         // Right side of the navigation bar
         updateActionButton()
         if #available(iOS 26.0, *) {
-            switch UIDevice.current.userInterfaceIdiom {
+            switch view.traitCollection.userInterfaceIdiom {
             case .phone:
                 navigationItem.rightBarButtonItems = [uploadBarButton, .space(),
                                                       actionBarButton].compactMap { $0 }
@@ -68,7 +68,7 @@ extension LocalImagesViewController {
             }
         }
         else {
-            switch UIDevice.current.userInterfaceIdiom {
+            switch view.traitCollection.userInterfaceIdiom {
             case .phone:
                 navigationItem.rightBarButtonItems = [uploadBarButton, actionBarButton].compactMap { $0 }
 
@@ -111,7 +111,7 @@ extension LocalImagesViewController {
         // There is no subtitle in landscape mode on iPhone
         var subtitle = ""
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if !(UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape) {
+        if !(view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape) {
             let nberOfSelectedImages = count ?? selectedImages.compactMap{ $0 }.count
             switch nberOfSelectedImages {
             case 0:
@@ -185,7 +185,7 @@ extension LocalImagesViewController {
         /// - to delete photos already uploaded to the Piwigo server on iPhone only.
         var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                           selectPhotosMenu(), reUploadAction()]
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if view.traitCollection.userInterfaceIdiom == .phone {
             children.append(deleteMenu())
         }
         let updatedMenu = actionBarButton?.menu?.replacingChildren(children.compactMap({$0}))

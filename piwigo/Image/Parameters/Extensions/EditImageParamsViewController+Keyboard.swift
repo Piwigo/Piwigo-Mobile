@@ -12,7 +12,7 @@ import UIKit
 extension EditImageParamsViewController
 {
     @objc func onKeyboardWillShow(_ notification: NSNotification) {
-        guard UIDevice.current.userInterfaceIdiom == .phone,
+        guard view.traitCollection.userInterfaceIdiom == .phone,
               let info = notification.userInfo,
               let kbInfo = info[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
               let window = editImageParamsTableView.window,
@@ -39,7 +39,7 @@ extension EditImageParamsViewController
         else { return }
         
         // If necessary, scroll the table so that the cell remains visible
-        if UIDevice.current.userInterfaceIdiom == .phone,
+        if view.traitCollection.userInterfaceIdiom == .phone,
            let cell = editImageParamsTableView.cellForRow(at: editedRow) {
             let toCoordinateSpace: UICoordinateSpace = view
             let convertedCellFrame = cell.convert(cell.bounds, to: toCoordinateSpace)
@@ -55,7 +55,7 @@ extension EditImageParamsViewController
     
     @objc func onKeyboardWillHide(_ notification: NSNotification) {
         // Reset content inset
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if view.traitCollection.userInterfaceIdiom == .pad {
             let navBarHeight = navigationController?.navigationBar.bounds.size.height ?? 0.0
             editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0,
                                                                  bottom: navBarHeight, right: 0.0)

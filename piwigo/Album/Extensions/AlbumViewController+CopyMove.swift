@@ -96,7 +96,7 @@ extension AlbumViewController: PushAlbumCollectionViewCellDelegate
         }
         else {
             // Push album list
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if view.traitCollection.userInterfaceIdiom == .pad {
                 viewController.modalPresentationStyle = .popover
                 viewController.popoverPresentationController?.sourceView = view
                 viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)

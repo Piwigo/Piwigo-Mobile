@@ -13,7 +13,7 @@ import UIKit
 class LoginNavigationController: UINavigationController {
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if view.traitCollection.userInterfaceIdiom == .phone {
             return .portrait
         } else {
             return .all

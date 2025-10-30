@@ -182,7 +182,7 @@ class LocalImagesViewController: UIViewController
         /// - and to delete photos already uploaded to the Piwigo server on iPhone only.
         var children: [UIMenuElement?] = [swapOrderAction(), groupMenu(),
                                           selectPhotosMenu(), reUploadAction()]
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if view.traitCollection.userInterfaceIdiom == .phone {
             children.append(deleteMenu())
         }
         let menu = UIMenu(title: "", children: children.compactMap({$0}))
@@ -194,7 +194,7 @@ class LocalImagesViewController: UIViewController
         }
         actionBarButton?.accessibilityIdentifier = "Action"
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if view.traitCollection.userInterfaceIdiom == .pad {
             // The deletion of photos already uploaded to a Piwigo server is performed with this trash button.
             trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
             trashBarButton?.isEnabled = false

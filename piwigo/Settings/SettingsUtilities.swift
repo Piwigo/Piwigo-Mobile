@@ -21,7 +21,7 @@ class SettingsUtilities: NSObject {
         
         // Change label according to orientation
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if (UIDevice.current.userInterfaceIdiom == .phone) && orientation.isPortrait {
+        if (view.traitCollection.userInterfaceIdiom == .phone) && orientation.isPortrait {
             // iPhone in portrait mode
             return "\(authors1)\r\(authors2)"
         }

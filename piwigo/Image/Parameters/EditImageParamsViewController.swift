@@ -162,7 +162,7 @@ class EditImageParamsViewController: UIViewController
         coordinator.animate(alongsideTransition: { [self] _ in
             
             // On iPad, the form is presented in a popover view
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if view.traitCollection.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))

@@ -156,7 +156,7 @@ extension LocalImagesViewController: UploadSwitchDelegate
         if displayHelpPagesWithID.count > 0 {
             // Present unseen upload management help views
             let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if view.traitCollection.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
             } else {

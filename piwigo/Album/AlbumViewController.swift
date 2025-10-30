@@ -609,7 +609,7 @@ class AlbumViewController: UIViewController
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
             let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if view.traitCollection.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 present(helpVC, animated: true)
             } else {
@@ -1079,7 +1079,7 @@ class AlbumViewController: UIViewController
         else { return }
         
         // Push album list or tag list
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if view.traitCollection.userInterfaceIdiom == .pad {
             viewController.modalPresentationStyle = .popover
             if viewController is SelectCategoryViewController {
                 viewController.popoverPresentationController?.barButtonItem = actionBarButton

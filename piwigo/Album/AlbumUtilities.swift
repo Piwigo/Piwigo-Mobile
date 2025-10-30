@@ -353,11 +353,11 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Album/Images Collections | Image Thumbnails
-    static var minNberOfImagesPerRow: Int = {
+    static let minNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
     }()
     
-    static var maxNberOfImagesPerRow: Int = {
+    static let maxNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
     }()
     

@@ -329,7 +329,7 @@ class SettingsViewController: UIViewController {
     
     @objc func displayHelp() {
         let helpVC = HelpUtilities.getHelpViewController()
-        if UIDevice.current.userInterfaceIdiom == .phone {
+        if view.traitCollection.userInterfaceIdiom == .phone {
             helpVC.popoverPresentationController?.permittedArrowDirections = .up
             navigationController?.present(helpVC, animated:true)
         } else {

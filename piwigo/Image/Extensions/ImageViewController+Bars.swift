@@ -64,7 +64,7 @@ extension ImageViewController {
     @MainActor @available(iOS 26.0, *)
     private func updateNavBarForAdmin(orientation: UIInterfaceOrientation) {
         // Case of users with admin or upload rights
-        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
             var toolbarItems: [UIBarButtonItem?] = [shareBarButton, .space()]
             let type = pwgImageFileType(rawValue: imageData.fileType) ?? .image
@@ -122,7 +122,7 @@ extension ImageViewController {
     @MainActor @available(iOS 26.0, *)
     private func updateNavBarForStdUserOrGuest(orientation: UIInterfaceOrientation) {
         // Case of users without admin or upload rights
-        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
             let toolbarItems: [UIBarButtonItem?] = [goToPageButton, playBarButton, favoriteBarButton, muteBarButton]
             // We get:
@@ -196,7 +196,7 @@ extension ImageViewController {
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     private func updateNavBarOldForAdmin(orientation: UIInterfaceOrientation) {
         // Case of users with admin or upload rights
-        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
             var toolbarItems = [UIBarButtonItem?]()
             toolbarItems.append(contentsOf: [shareBarButton == nil ? nil : .space(), shareBarButton])
@@ -256,7 +256,7 @@ extension ImageViewController {
     @MainActor @available(iOS, introduced: 15.0, deprecated: 26.0, message: "Specific to iOS 15 to 18")
     private func updateNavBarOldForStdUserOrGuest(orientation: UIInterfaceOrientation) {
         // Case of users without admin or upload rights
-        if UIDevice.current.userInterfaceIdiom == .phone, orientation.isPortrait {
+        if view.traitCollection.userInterfaceIdiom == .phone, orientation.isPortrait {
             // Determine toolbar items
             var toolbarItems = [UIBarButtonItem?]()
             toolbarItems.append(contentsOf: [goToPageButton == nil ? nil : .space(), goToPageButton])
@@ -397,7 +397,7 @@ extension ImageViewController {
         if imageData.dateCreated > DateUtilities.weekAfterInterval { // i.e. a week after unknown date
             let dateCreated = Date(timeIntervalSinceReferenceDate: imageData.dateCreated)
             let dateFormatter = DateUtilities.dateFormatter
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if view.traitCollection.userInterfaceIdiom == .pad {
                 dateFormatter.dateStyle = .long
                 dateFormatter.timeStyle = .medium   // Without time zone (unknown)
                 subTitle = AttributedString(dateFormatter.string(from: dateCreated))
@@ -477,7 +477,7 @@ extension ImageViewController {
         
         // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        if ((UIDevice.current.userInterfaceIdiom == .phone) && orientation.isLandscape) ||
+        if ((view.traitCollection.userInterfaceIdiom == .phone) && orientation.isLandscape) ||
             imageData.dateCreated < DateUtilities.weekAfterInterval { // i.e. a week after unknown date
             let titleWidth = CGFloat(fmin(titleLabel.bounds.size.width, view.bounds.size.width * 0.4))
             titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
@@ -501,7 +501,7 @@ extension ImageViewController {
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.allowsDefaultTighteningForTruncation = true
             let dateFormatter = DateUtilities.dateFormatter
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if view.traitCollection.userInterfaceIdiom == .pad {
                 dateFormatter.dateStyle = .long
                 dateFormatter.timeStyle = .medium   // Without time zone (unknown)
                 subTitleLabel.text = dateFormatter.string(from: dateCreated)

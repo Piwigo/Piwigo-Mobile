@@ -57,7 +57,7 @@ extension AlbumViewController
                               image: helpIcon, identifier: actionId, handler: { [self] action in
             // Present help views
             let helpVC = HelpUtilities.getHelpViewController()
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if view.traitCollection.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
             } else {
@@ -87,7 +87,7 @@ extension AlbumViewController
             guard let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
             else { preconditionFailure("Could not load ReleaseNotesViewController") }
 
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if view.traitCollection.userInterfaceIdiom == .phone {
                 releaseNotesVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(releaseNotesVC, animated:true)
             } else {

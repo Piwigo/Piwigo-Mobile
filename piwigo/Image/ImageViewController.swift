@@ -501,7 +501,7 @@ class ImageViewController: UIViewController {
     // Display/hide status bar
     override var prefersStatusBarHidden: Bool {
         let orientation = view.window?.windowScene?.interfaceOrientation ?? .portrait
-        let phoneInLandscape = UIDevice.current.userInterfaceIdiom == .phone && orientation.isLandscape
+        let phoneInLandscape = view.traitCollection.userInterfaceIdiom == .phone && orientation.isLandscape
         return phoneInLandscape || navigationController?.isNavigationBarHidden ?? false
     }
 
@@ -526,7 +526,7 @@ class ImageViewController: UIViewController {
 
     // MARK: - Push Views
     func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
-        if UIDevice.current.userInterfaceIdiom == .pad
+        if view.traitCollection.userInterfaceIdiom == .pad
         {
             if let vc = viewController as? SelectCategoryViewController {
                 vc.modalPresentationStyle = .popover
