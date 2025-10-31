@@ -114,6 +114,10 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesSetCategory: Bool
 
+    /// - pwg.users.api_key.revoke method available, false by default (available since Piwigo 16)
+    @UserDefault("usesAPIkeys", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var usesAPIkeys: Bool
+
     
     // MARK: - Vars in Memory
     // Network variables kept in memory

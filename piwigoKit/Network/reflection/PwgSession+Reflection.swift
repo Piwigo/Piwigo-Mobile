@@ -40,11 +40,17 @@ public extension PwgSession {
                 // Check if the pwg.images.setCategory method is available (since Piwigo 14)
                 NetworkVars.shared.usesSetCategory = pwgData.data.contains("pwg.images.setCategory")
                 
+                // Check if the pwg.users.api_key.revoke method is available (since Piwigo 16.0)
+                NetworkVars.shared.usesAPIkeys = pwgData.data.contains("pwg.users.api_key.revoke")
+                
                 if #available(iOSApplicationExtension 14.0, *) {
-                    PwgSession.logger.notice("Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)")
-                    PwgSession.logger.notice("uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)")
-                    PwgSession.logger.notice("calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)")
-                    PwgSession.logger.notice("setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)")
+                    PwgSession.logger.notice("""
+                            Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)
+                            uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)
+                            calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)
+                            setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)
+                            API keys available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)
+                        """)
                 }
                 completion()
                 
