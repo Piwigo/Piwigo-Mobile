@@ -45,7 +45,8 @@ extension AlbumViewController
     // MARK: - Copy/Move Images to Album
     func copyToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+        else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter: [Any] = [imageIDs, albumData.pwgID]
         copyVC.user = user
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
@@ -56,7 +57,8 @@ extension AlbumViewController
 
     func moveToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+        else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter: [Any] = [imageIDs, albumData.pwgID]
         moveVC.user = user
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
@@ -85,9 +87,8 @@ extension AlbumViewController: PushAlbumCollectionViewCellDelegate
 {
     func pushAlbumView(_ viewController: UIViewController?,
                        completion: @escaping (Bool) -> Void) {
-        guard let viewController = viewController else {
-            return
-        }
+        guard let viewController = viewController
+        else { return }
 
         // Push sub-album, Discover or Favorites album
         if viewController is AlbumViewController {
