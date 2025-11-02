@@ -96,12 +96,18 @@ extension AlbumViewController: PushAlbumCollectionViewCellDelegate
             navigationController?.pushViewController(viewController, animated: true)
         }
         else {
-            // Push album list
+            // Push album selector
             if view.traitCollection.userInterfaceIdiom == .pad {
-                viewController.modalPresentationStyle = .popover
+                viewController.modalPresentationStyle = .formSheet
+                viewController.modalTransitionStyle = .coverVertical
                 viewController.popoverPresentationController?.sourceView = view
-                viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-                navigationController?.present(viewController, animated: true) {
+                viewController.popoverPresentationController?.sourceRect = CGRect(
+                    x: view.bounds.midX, y: view.bounds.midY,
+                    width: 0, height: 0)
+                viewController.preferredContentSize = CGSize(
+                    width: pwgPadSubViewWidth,
+                    height: ceil(view.bounds.height * 2 / 3))
+                present(viewController, animated: true) {
                     // Hide swipe commands
                     completion(true)
                 }
