@@ -90,38 +90,37 @@ extension AlbumViewController: PushAlbumCollectionViewCellDelegate
         guard let viewController = viewController
         else { return }
 
-        // Push sub-album, Discover or Favorites album
+        // Push sub-album or album selector
         if viewController is AlbumViewController {
             // Push sub-album view
             navigationController?.pushViewController(viewController, animated: true)
+            return
         }
-        else {
-            // Push album selector
-            if view.traitCollection.userInterfaceIdiom == .pad {
-                viewController.modalPresentationStyle = .formSheet
-                viewController.modalTransitionStyle = .coverVertical
-                viewController.popoverPresentationController?.sourceView = view
-                viewController.popoverPresentationController?.sourceRect = CGRect(
-                    x: view.bounds.midX, y: view.bounds.midY,
-                    width: 0, height: 0)
-                viewController.preferredContentSize = CGSize(
-                    width: pwgPadSubViewWidth,
-                    height: ceil(view.bounds.height * 2 / 3))
-                present(viewController, animated: true) {
-                    // Hide swipe commands
-                    completion(true)
-                }
-            }
-            else {
-                let navController = UINavigationController(rootViewController: viewController)
-                navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.sourceView = view
-                navController.modalTransitionStyle = .coverVertical
-                navigationController?.present(navController, animated: true) {
-                    // Hide swipe commands
-                    completion(true)
-                }
-            }
+        
+        // Push album selector
+        let navController = UINavigationController(rootViewController: viewController)
+        navController.modalTransitionStyle = .coverVertical
+        navController.popoverPresentationController?.sourceView = view
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            navController.modalPresentationStyle = .popover
+
+        case .pad:
+            navController.modalPresentationStyle = .formSheet
+            navController.popoverPresentationController?.sourceRect = CGRect(
+                x: view.bounds.midX, y: view.bounds.midY,
+                width: 0, height: 0)
+            navController.preferredContentSize = CGSize(
+                width: pwgPadSubViewWidth,
+                height: ceil(view.bounds.height * 2 / 3))
+
+        default:
+            preconditionFailure("!!! Unsupported device idiom !!!")
+        }
+        
+        present(navController, animated: true) {
+            // Hide swipe commands
+            completion(true)
         }
     }
 }
