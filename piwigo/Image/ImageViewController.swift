@@ -525,32 +525,50 @@ class ImageViewController: UIViewController {
 
 
     // MARK: - Push Views
-    func pushView(_ viewController: UIViewController?, forButton button: UIBarButtonItem?) {
-        if view.traitCollection.userInterfaceIdiom == .pad
-        {
-            if let vc = viewController as? SelectCategoryViewController {
-                vc.modalPresentationStyle = .popover
-                vc.popoverPresentationController?.barButtonItem = button
-                    navigationController?.present(vc, animated: true)
-            }
-            else if let vc = viewController as? EditImageParamsViewController {
-                // Push Edit view embedded in navigation controller
-                let navController = UINavigationController(rootViewController: vc)
-                navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.barButtonItem = button
-                navigationController?.present(navController, animated: true)
-            } else {
-                fatalError("!!! Unknown View Conntroller !!!")
-            }
-        } else {
-            if let viewController = viewController {
-                let navController = UINavigationController(rootViewController: viewController)
+    func pushView(_ viewController: UIViewController, forButton button: UIBarButtonItem?)
+    {
+        let navController = UINavigationController(rootViewController: viewController)
+        navController.modalTransitionStyle = .coverVertical
+        if #available(iOS 26.0, *) {
+            switch view.traitCollection.userInterfaceIdiom {
+            case .phone:
                 navController.modalPresentationStyle = .popover
                 navController.popoverPresentationController?.sourceView = view
-                navController.modalTransitionStyle = .coverVertical
-                present(navController, animated: true)
+            
+            case .pad:
+                // Push view embedded in navigation controller
+                navController.modalPresentationStyle = .formSheet
+                let windowBounds = view.window?.bounds ?? .zero
+                navController.popoverPresentationController?.sourceRect = CGRect(
+                    x: windowBounds.midX, y: windowBounds.midY,
+                    width: 0, height: 0)
+                let minHeight = min(windowBounds.width, windowBounds.height)
+                navController.preferredContentSize = CGSize(
+                    width: pwgPadSettingsWidth,
+                    height: ceil(minHeight * 2 / 3))
+                
+            default:
+                preconditionFailure("!!! Interface not supported !!!")
             }
         }
+        else {
+            // Fallback on previous version
+            switch view.traitCollection.userInterfaceIdiom {
+            case .phone:
+                navController.modalTransitionStyle = .coverVertical
+                navController.modalPresentationStyle = .popover
+                navController.popoverPresentationController?.sourceView = view
+
+            case .pad:
+                // Push view embedded in navigation controller
+                navController.modalPresentationStyle = .popover
+                navController.popoverPresentationController?.barButtonItem = button
+            
+            default:
+                preconditionFailure("!!! Interface not supported !!!")
+            }
+        }
+        present(navController, animated: true)
     }
 }
 
