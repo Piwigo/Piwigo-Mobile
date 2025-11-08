@@ -65,7 +65,7 @@ class HelpViewController: UIViewController {
         view.backgroundColor = PwgColor.background
 
         // Close button
-        closeButton.tintColor = PwgColor.tintColor
+        closeButton.tintColor = PwgColor.whiteCream
     }
 
     override func viewWillAppear(_ animated: Bool) {
