@@ -1090,10 +1090,10 @@ class AlbumViewController: UIViewController
                 }
                 else {
                     let navController = UINavigationController(rootViewController: viewController)
-                    navController.modalPresentationStyle = .popover
                     navController.modalTransitionStyle = .coverVertical
+                    navController.modalPresentationStyle = .popover
                     navController.popoverPresentationController?.sourceView = view
-                    navigationController?.present(navController, animated: true)
+                    present(navController, animated: true)
                 }
                 
             case .pad:
@@ -1138,14 +1138,14 @@ class AlbumViewController: UIViewController
                 navController.modalTransitionStyle = .coverVertical
                 navController.modalPresentationStyle = .popover
                 navController.popoverPresentationController?.sourceView = view
-                navigationController?.present(navController, animated: true)
+                present(navController, animated: true)
             
             case .pad:
                 viewController.modalPresentationStyle = .popover
                 if viewController is SelectCategoryViewController {
                     viewController.popoverPresentationController?.barButtonItem = actionBarButton
                     viewController.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(viewController, animated: true)
+                    present(viewController, animated: true)
                 }
                 else if viewController is TagSelectorViewController {
                     // Push tag selector view embedded in navigation controller
@@ -1153,7 +1153,7 @@ class AlbumViewController: UIViewController
                     navController.modalPresentationStyle = .popover
                     navController.popoverPresentationController?.barButtonItem = discoverBarButton
                     navController.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(navController, animated: true)
+                    present(navController, animated: true)
                 }
                 else if viewController is EditImageParamsViewController {
                     // Push Edit view embedded in navigation controller
@@ -1161,7 +1161,7 @@ class AlbumViewController: UIViewController
                     navController.modalPresentationStyle = .popover
                     navController.popoverPresentationController?.barButtonItem = actionBarButton
                     navController.popoverPresentationController?.permittedArrowDirections = .up
-                    navigationController?.present(navController, animated: true)
+                    present(navController, animated: true)
                 }
             
             default:
