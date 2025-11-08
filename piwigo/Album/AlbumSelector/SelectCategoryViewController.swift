@@ -349,8 +349,8 @@ class SelectCategoryViewController: UIViewController {
         applyColorPalette()
 
         // Navigation "Cancel" button and identifier
-        navigationItem.setRightBarButton(cancelBarButton, animated: true)
-
+        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -415,7 +415,7 @@ class SelectCategoryViewController: UIViewController {
         // Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { [self] _ in
 
-            // On iPad, the Settings section is presented in a centered popover view
+            // On iPad, the view is presented in a centered popover view
             if view.traitCollection.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
                 self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
