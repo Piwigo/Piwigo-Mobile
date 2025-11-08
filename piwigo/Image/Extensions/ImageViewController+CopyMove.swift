@@ -44,7 +44,8 @@ extension ImageViewController
 
     func selectCategory(withAction action: pwgCategorySelectAction) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+        else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter = [imageData, NSNumber(value: categoryId)]
         copyVC.user = user
         if copyVC.setInput(parameter: parameter, for: action) {
