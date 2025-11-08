@@ -102,7 +102,7 @@ class EditImageParamsViewController: UIViewController
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         
         // Buttons
-        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
+        let cancel = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelEdit))
         cancel.accessibilityIdentifier = "Cancel"
         let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
         done.accessibilityIdentifier = "Done"
