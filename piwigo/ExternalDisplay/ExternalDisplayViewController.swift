@@ -165,7 +165,7 @@ class ExternalDisplayViewController: UIViewController {
                 else {
                     // Display image of lower resolution
                     let thumbnail = getLowResPDFthumbnail(of: imageData)
-                    presentPDFthumbnail(thumbnail)
+                    self.presentPDFthumbnail(thumbnail)
                     
                     // Download high-resolution thumbnail for next time
                     guard let serverID = imageData.server?.uuid
@@ -183,13 +183,7 @@ class ExternalDisplayViewController: UIViewController {
             } else {
                 // Display image of lower resolution
                 let thumbnail = getLowResPDFthumbnail(of: imageData)
-                presentPDFthumbnail(thumbnail)
-            }
-
-            // Check if we already have the PDF file in cache
-            if let document = self.document {
-                // Show PDF file in cache
-                setPdfView(with: document)
+                self.presentPDFthumbnail(thumbnail)
             }
         }
     }
@@ -302,6 +296,12 @@ class ExternalDisplayViewController: UIViewController {
         completion: { [self] _ in
             self.progressView?.isHidden = false
             self.videoContainerView?.isHidden = true
+
+            // Check if we have the PDF file in cache
+            if let document = self.document {
+                // Show PDF file in cache
+                setPdfView(with: document)
+            }
         })
     }
 }
