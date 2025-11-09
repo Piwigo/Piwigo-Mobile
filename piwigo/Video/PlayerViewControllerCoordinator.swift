@@ -21,7 +21,7 @@ class PlayerViewControllerCoordinator: NSObject {
     weak var delegate: PlayerViewControllerCoordinatorDelegate?
     
     var video: Video
-    private lazy var scale = CMTimeScale(USEC_PER_SEC)
+    private let timeScale = CMTimeScale(USEC_PER_SEC)
     private lazy var videoHud = VideoHUD()
     private(set) var status: Status = [] {
         didSet {
@@ -74,6 +74,8 @@ class PlayerViewControllerCoordinator: NSObject {
     
     private weak var fullScreenViewController: UIViewController?
     private var playerStatusObservation: NSKeyValueObservation?
+    private var playerDurationObservation: NSKeyValueObservation?
+    private var playerSizeObservation: NSKeyValueObservation?
     private var playerRateObservation: NSKeyValueObservation?
     private var playerMuteObservation: NSKeyValueObservation?
     private var playbackReadyObservation: NSKeyValueObservation?
@@ -86,6 +88,10 @@ class PlayerViewControllerCoordinator: NSObject {
             // and status for the original player view controller.
             playerStatusObservation?.invalidate()
             playerStatusObservation = nil
+            playerDurationObservation?.invalidate()
+            playerDurationObservation = nil
+            playerSizeObservation?.invalidate()
+            playerSizeObservation = nil
             playerRateObservation?.invalidate()
             playerRateObservation = nil
             playerMuteObservation?.invalidate()
@@ -98,181 +104,177 @@ class PlayerViewControllerCoordinator: NSObject {
             if oldValue?.hasContent(fromVideo: video) == true {
                 oldValue?.player = nil
             }
-            
             status = []
             
             autoreleasepool {
-                // Set up the new playerViewController.
-                if let playerViewController = playerViewControllerIfLoaded {
-                    // Initialisation
-                    playerViewController.delegate = self
-                    playerViewController.updatesNowPlayingInfoCenter = true
+                // Set up the new playerViewController if needed
+                guard let playerViewController = playerViewControllerIfLoaded
+                else { return }
+                
+                // Initialisation
+                playerViewController.delegate = self
+                playerViewController.updatesNowPlayingInfoCenter = true
+                
+                // Create a player for the video
+                if playerViewController.hasContent(fromVideo: video) == false {
+                    // Prefer asset in cache if available
+                    let asset: AVURLAsset
+                    if FileManager.default.fileExists(atPath: video.cacheURL.path) {
+                        asset = AVURLAsset(url: video.cacheURL, options: nil)
+                    } else {
+                        let options = [
+                            AVURLAssetAllowsCellularAccessKey            : true,
+                            AVURLAssetAllowsConstrainedNetworkAccessKey  : true,
+                            AVURLAssetAllowsExpensiveNetworkAccessKey    : true,
+                            AVURLAssetPreferPreciseDurationAndTimingKey  : true,
+                            AVURLAssetReferenceRestrictionsKey           : NSNumber(value: AVAssetReferenceRestrictions.forbidCrossSiteReference.rawValue)
+                        ] as [String: Any]
+                        asset = AVURLAsset(url: video.pwgURL, options: options)
+                        let loader = asset.resourceLoader
+                        loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
+                    }
                     
-                    // Create a player for the video.
-                    if !playerViewController.hasContent(fromVideo: video) {
-                        // Prefer asset in cache if available
-                        let asset: AVURLAsset
-                        if FileManager.default.fileExists(atPath: video.cacheURL.path) {
-                            asset = AVURLAsset(url: video.cacheURL, options: nil)
-                        } else {
-                            asset = AVURLAsset(url: video.pwgURL, options: nil)
-                            let loader = asset.resourceLoader
+                    // Initialise player item
+                    let playerItem = AVPlayerItem(asset: asset)
+                    playerItem.preferredForwardBufferDuration = TimeInterval(5)
+                    // Seek to the resume time *before* assigning the player to the view controller.
+                    // This is more efficient, and provides a better user experience because the media only loads at the actual start time.
+                    playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: timeScale),
+                                    completionHandler: nil)
+                    
+                    // Add title and artwork if any
+                    let titleItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
+                                                                  filteredByIdentifier: .commonIdentifierTitle)
+                    if titleItems.isEmpty {
+                        playerItem.externalMetadata.append(metadataItemForMediaTitle())
+                    }
+                    let artworkItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
+                                                                    filteredByIdentifier: .commonIdentifierArtwork)
+                    if artworkItems.isEmpty {
+                        let item = metadataItemForMediaArtwork()
+                        playerItem.externalMetadata.append(item)
+                    }
+                    
+                    // Create player minimizing stalling
+                    let player = AVPlayer(playerItem: playerItem)
+                    player.automaticallyWaitsToMinimizeStalling = true
+                    
+                    // Complete player controller settings
+                    let start = CMTime(seconds: video.resumeTime, preferredTimescale: timeScale)
+                    player.seek(to: start) { _ in
+                        playerViewController.player = player
+                        playerViewController.videoGravity = .resizeAspect
+                        playerViewController.view.backgroundColor = .clear
+                        playerViewController.view.tintColor = .white
+                    }
+                    
+                    // In case the cached video file is not playable, delete it and replace item
+                    playerStatusObservation = playerItem.observe(\.status,
+                                                                  changeHandler: { [weak self] item, _ in
+                        guard let self else { return }
+                        if item.status == .failed,
+                           asset.url == self.video.cacheURL {
+                            // Delete cached file
+                            try? FileManager.default.removeItem(at: asset.url)
+                            // Create new resource loader
+                            let pwgAsset = AVURLAsset(url: self.video.pwgURL, options: nil)
+                            let loader = pwgAsset.resourceLoader
                             loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
+                            let playerItem = AVPlayerItem(asset: pwgAsset)
+                            playerViewController.player?.replaceCurrentItem(with: playerItem)
                         }
-                        
-                        // Initialise player item
-                        let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
-                        playerItem.preferredForwardBufferDuration = TimeInterval(5)
-                        // Seek to the resume time *before* assigning the player to the view controller.
-                        // This is more efficient, and provides a better user experience because the media only loads at the actual start time.
-                        playerItem.seek(to: CMTime(seconds: video.resumeTime, preferredTimescale: scale),
-                                        completionHandler: nil)
-                        
-                        // Add title and artwork if any
-                        let titleItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
-                                                                      filteredByIdentifier: .commonIdentifierTitle)
-                        if titleItems.isEmpty {
-                            playerItem.externalMetadata.append(metadataItemForMediaTitle())
-                        }
-                        let artworkItems = AVMetadataItem.metadataItems(from: playerItem.externalMetadata,
-                                                                        filteredByIdentifier: .commonIdentifierArtwork)
-                        if artworkItems.isEmpty {
-                            let item = metadataItemForMediaArtwork()
-                            playerItem.externalMetadata.append(item)
-                        }
-                        
-                        // Create player minimizing stalling
-                        let player = AVPlayer(playerItem: playerItem)
-                        player.automaticallyWaitsToMinimizeStalling = true
-                        
-                        // In case the cached video file is not playable, delete it and replace item
-                        playerStatusObservation = playerItem.observe(\.status,
-                                                                      changeHandler: { [weak self] item, _ in
-                            if item.status == .failed,
-                               asset.url == self?.video.cacheURL,
-                               let pwgURL = self?.video.pwgURL {
-                                // Delete cached file
-                                try? FileManager.default.removeItem(at: asset.url)
-                                //
-                                let pwgAsset = AVURLAsset(url: pwgURL, options: nil)
-                                let loader = pwgAsset.resourceLoader
-                                loader.setDelegate(self, queue: DispatchQueue(label: "org.piwigo.resourceLoader"))
-                                let playerItem = AVPlayerItem(asset: pwgAsset)
-                                playerViewController.player?.replaceCurrentItem(with: playerItem)
-                            }
-                        })
-                        
-                        // Observe playback rate
-                        playerRateObservation = player.observe(\.rate,
-                                                                changeHandler: { [weak self] player, _ in
-                            // Update play/pause button
-                            let userInfo = ["pwgID"   : self?.video.pwgID as Any,
-                                            "playing" : player.rate != 0] as [String : Any]
-                            NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
-                                                            object: nil, userInfo: userInfo)
-                        })
-                        
-                        // Observe playback mute option
-                        playerMuteObservation = player.observe(\.isMuted,
-                                                                changeHandler: { [weak self] player, _ in
-                            // Store user preference for next use
-                            if playerViewController.parent is VideoDetailViewController {
-                                VideoVars.shared.isMuted = playerViewController.player?.isMuted ?? false
-                            }
-                            // Update mute button
-                            let userInfo = ["pwgID" : self?.video.pwgID as Any,
-                                            "muted" : player.isMuted]  as [String : Any]
-                            NotificationCenter.default.post(name: .pwgVideoMutedOrNot,
-                                                            object: nil, userInfo: userInfo)
-                        })
-                        
-                        // Complete player controller settings
-                        let start = CMTime(seconds: video.resumeTime, preferredTimescale: scale)
-                        player.seek(to: start) { _ in
-                            playerViewController.player = player
-                            playerViewController.videoGravity = .resizeAspect
-                            playerViewController.view.backgroundColor = .clear
-                            playerViewController.view.tintColor = .white
-                        }
-                        
-                        // Invoke callback every 0.1 s
-                        let interval = CMTime(seconds: 0.1,
-                                              preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-                        // Add time observer. Invoke closure on the main queue.
-                        timeObserverToken =
-                        player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
-                            // Update player transport UI
-                            if let parent = playerViewController.parent as? VideoDetailViewController {
-                                parent.videoControls.setCurrentTime(time.seconds)
-                            } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
-                                parent.setCurrentTime(time.seconds)
-                            }
-                        }
-                    }
+                    })
                     
-                    // Update the player view contoller's ready-for-display status and start observing the property.
-                    if playerViewController.isReadyForDisplay {
-                        // Remember status and hides HUD if needed
-                        status.insert(.readyForDisplay)
-                        // Store video parameters
-                        video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
-                        // Center container view now that the video size is known and configure slider
-                        let currentTime = playerViewController.player?.currentTime().seconds ?? 0
-                        if let parent = playerViewController.parent as? VideoDetailViewController {
-                            parent.video?.duration = video.duration
-                            parent.videoSize = playerViewController.videoBounds.size
-                            parent.configVideoViews()
-                            parent.videoControls.config(currentTime: currentTime, duration: video.duration)
-                            playerViewController.player?.rate = VideoVars.shared.autoPlayOnDevice ? 1 : 0
-                        } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
-                            parent.config(currentTime: currentTime, duration: video.duration)
-                            playerViewController.player?.rate = 1
-                        }
-                        // Hide image and show play button when ready
-                        let userInfo = ["pwgID"   : video.pwgID as Any,
-                                        "ready"   : playerViewController.player?.status == .readyToPlay,
-                                        "playing" : playerViewController.player?.rate != 0,
-                                        "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
-                        NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
-                                                        object: nil, userInfo: userInfo)
-                    }
+                    // Observe video duration (the player may be ready before knowing the duration)
+                    playerDurationObservation = playerItem.observe(\.duration, changeHandler: { [weak self] item, _ in
+//                        debugPrint("••> Player item duration: \(item.duration.seconds)")
+                        let duration = item.duration.seconds
+                        guard duration.isFinite, let self, duration != self.video.duration
+                        else { return }
+                        // Store video duration, configure slider and play video if possible
+//                        debugPrint("updatePlayerViewController.duration: \(duration), was \(self.video.duration)")
+                        self.video.duration = duration
+                        self.updatePlayerViewController(duration: duration)
+                    })
                     
-                    playbackReadyObservation = playerViewController.observe(\.isReadyForDisplay,
-                                                                             changeHandler: { [weak self] observed, _ in
-                        if observed.isReadyForDisplay {
-                            // Remember status and hides HUD if needed
-                            self?.status.insert(.readyForDisplay)
-                            // Store video parameters
-                            self?.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? 0
-                            // Center container view now that the video size is known and configure slider
-                            let currentTime = playerViewController.player?.currentTime().seconds ?? 0
-                            if let parent = playerViewController.parent as? VideoDetailViewController {
-                                parent.video?.duration = self?.video.duration ?? TimeInterval(0)
-                                parent.videoSize = playerViewController.videoBounds.size
-                                parent.configVideoViews()
-                                parent.videoControls.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
-                                playerViewController.player?.rate = VideoVars.shared.autoPlayOnDevice ? 1 : 0
-                            } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
-                                parent.config(currentTime: currentTime, duration: self?.video.duration ?? 0)
-                                playerViewController.player?.rate = 1
-                            }
-                        } else {
-                            // Remember status and shows HUD if needed
-                            self?.status.remove(.readyForDisplay)
-                        }
-                        
-                        // Hide image and show play button
-                        let userInfo = ["pwgID"   : self?.video.pwgID as Any,
-                                        "ready"   : playerViewController.player?.status == .readyToPlay,
-                                        "playing" : playerViewController.player?.rate != 0,
-                                        "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
+                    // Observe video size (the player may be ready before knowing the duration
+                    playerSizeObservation = playerViewController.observe(\.videoBounds, changeHandler: { [weak self] controller, _ in
+//                        debugPrint("••> Player item size: \(controller.videoBounds.size)")
+                        guard controller.videoBounds.size != .zero, let self,
+                              controller.videoBounds.size != self.video.frameSize
+                        else { return }
+                        // Store video frame size, configure video container and play video if possible
+//                        debugPrint("updatePlayerViewController.size: \(controller.videoBounds.size), was \(String(describing: self.video.frameSize))")
+                        self.video.frameSize = controller.videoBounds.size
+                        self.updatePlayerViewController(frameSize: controller.videoBounds.size)
+                    })
+                    
+                    // Observe playback rate
+                    playerRateObservation = player.observe(\.rate, changeHandler: { [weak self] player, _ in
+                        guard let self = self else { return }
+                        // Update play/pause button
+                        let userInfo = ["pwgID"   : self.video.pwgID as Any,
+                                        "playing" : player.rate != 0] as [String : Any]
                         NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
                                                         object: nil, userInfo: userInfo)
                     })
                     
-                    // Update the VideoHUD with the current status.
-                    videoHud.status = status
+                    // Observe playback mute option
+                    playerMuteObservation = player.observe(\.isMuted, changeHandler: { [weak self] player, _ in
+                        guard let self = self else { return }
+                        // Store user preference for next use
+                        if playerViewController.parent is VideoDetailViewController {
+                            VideoVars.shared.isMuted = playerViewController.player?.isMuted ?? false
+                        }
+                        // Update mute button
+                        let userInfo = ["pwgID" : self.video.pwgID as Any,
+                                        "muted" : player.isMuted]  as [String : Any]
+                        NotificationCenter.default.post(name: .pwgVideoMutedOrNot,
+                                                        object: nil, userInfo: userInfo)
+                    })
+                    
+                    // Add time observer. Invoke closure on the main queue every 0.1 s.
+                    let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                    timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
+                        // Update player transport UI
+                        if let parent = playerViewController.parent as? VideoDetailViewController {
+                            DispatchQueue.main.async { [weak parent] in
+                                parent?.videoControls.setCurrentTime(time.seconds)
+                            }
+                        } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
+                            DispatchQueue.main.async { [weak parent] in
+                                parent?.setCurrentTime(time.seconds)
+                            }
+                        }
+                    }
                 }
+                
+                // Update the player view contoller's ready-for-display status and start observing the property.
+                if playerViewController.isReadyForDisplay {
+                    // Remember status and hides HUD if needed
+                    status.insert(.readyForDisplay)
+                    // Play video if possible
+                    updatePlayerViewController(frameSize: playerViewController.videoBounds.size)
+                }
+                
+                playbackReadyObservation = playerViewController.observe(\.isReadyForDisplay, changeHandler: { [weak self] observed, _ in
+                    guard let self else { return }
+                    if observed.isReadyForDisplay {
+                        // Remember status and hides HUD if needed
+                        self.status.insert(.readyForDisplay)
+                        // Play video if possible
+                        self.video.duration = playerViewController.player?.currentItem?.duration.seconds ?? .nan
+                        self.video.frameSize = playerViewController.videoBounds.size == .zero ? nil : playerViewController.videoBounds.size
+//                        debugPrint("updatePlayerViewController.duration: \(playerViewController.player?.currentItem?.duration.seconds ?? .nan), was \(self.video.duration) AND .size: \(String(describing: playerViewController.videoBounds.size == .zero ? nil : playerViewController.videoBounds.size)), was \(String(describing: self.video.frameSize))")
+                        updatePlayerViewController()
+                    } else {
+                        // Remember status and shows HUD if needed
+                        self.status.remove(.readyForDisplay)
+                    }
+                })
+                
+                // Update the VideoHUD with the current status.
+                videoHud.status = status
             }
         }
     }
@@ -293,6 +295,70 @@ class PlayerViewControllerCoordinator: NSObject {
         if playerViewControllerIfLoaded == nil {
             playerViewControllerIfLoaded = AVPlayerViewController()
         }
+    }
+    
+    // Initialise appropriate player view controller
+    private func updatePlayerViewController(duration: TimeInterval? = nil,
+                                            frameSize: CGSize? = nil) {
+        // Initialisation
+        guard let playerViewController = playerViewControllerIfLoaded else { return }
+        var readyForDisplay = status.contains(.readyForDisplay)
+        
+        // Get current time position
+        let currentTime = playerViewController.player?.currentTime().seconds ?? 0
+        
+        // Which video player controller?
+        if let parent = playerViewController.parent as? VideoDetailViewController {
+            DispatchQueue.main.async { [weak parent] in
+                guard let parent else { return }
+                
+                // Video duration
+                if let duration, duration.isFinite {
+                    parent.video?.duration = duration
+                    parent.videoControls.config(currentTime: currentTime, duration: duration)
+                }
+                
+                // Video size
+                if let frameSize, frameSize != CGSize.zero {
+                    parent.video?.frameSize = frameSize
+                    parent.configVideoViews()
+                }
+                
+                // Play video?
+                let hasDuration = (parent.video?.duration ?? .nan).isFinite
+                let hasPresentationSize = (parent.video?.frameSize ?? .zero) != .zero
+                if readyForDisplay, hasDuration, hasPresentationSize {
+                    playerViewController.player?.rate = VideoVars.shared.autoPlayOnDevice ? 1 : 0
+                } else {
+                    readyForDisplay = false
+                }
+            }
+        } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
+            DispatchQueue.main.async { [weak parent] in
+                guard let parent else { return }
+                
+                // Video duration
+                if let duration, duration.isFinite {
+                    parent.config(currentTime: currentTime, duration: duration)
+                }
+                
+                // Play video?
+                let hasDuration = (parent.video?.duration ?? .nan).isFinite
+                if readyForDisplay, hasDuration {
+                    playerViewController.player?.rate = 1
+                } else {
+                    readyForDisplay = false
+                }
+            }
+        }
+        
+        // Hide image and show play button when ready
+        let userInfo = ["pwgID"   : self.video.pwgID as Any,
+                        "ready"   : readyForDisplay,
+                        "playing" : playerViewController.player?.rate != 0,
+                        "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
+        NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,
+                                        object: nil, userInfo: userInfo)
     }
     
     private func addVideoHUDToPlayerViewControllerIfNeeded() {
@@ -479,7 +545,7 @@ class PlayerViewControllerCoordinator: NSObject {
         // Did we reach the end of the video?
         if duration - currentTime < 0.1 {
             // Reached the end of the video
-            let start = CMTime(seconds: 0, preferredTimescale: scale)
+            let start = CMTime(seconds: 0, preferredTimescale: timeScale)
             player.seek(to: start) { success in
                 if success {
                     player.play()
@@ -501,9 +567,9 @@ class PlayerViewControllerCoordinator: NSObject {
             return
         }
         
-        let value = CMTime(seconds: time, preferredTimescale: scale)
-        let before = CMTime(seconds: max(0, time - 0.1), preferredTimescale: scale)
-        let after = CMTime(seconds: min(video.duration, time + 0.1), preferredTimescale: scale)
+        let value = CMTime(seconds: time, preferredTimescale: timeScale)
+        let before = CMTime(seconds: max(0, time - 0.1), preferredTimescale: timeScale)
+        let after = CMTime(seconds: min(video.duration, time + 0.1), preferredTimescale: timeScale)
         player.seek(to: value, toleranceBefore: before, toleranceAfter: after) { [weak self] successs in
             if successs == false {
                 return

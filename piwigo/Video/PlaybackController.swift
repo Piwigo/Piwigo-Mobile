@@ -83,6 +83,7 @@ class PlaybackController {
         }
     }
     
+    @MainActor
     func dismissActivePlayerViewController(animated: Bool, completion: @escaping () -> Void) {
         let fullScreenItems = playbackItems.filter({ $0.value.status.contains(.fullScreenActive) }).map({ $0.value })
         assert(fullScreenItems.count <= 1, "Never should be more than one thing full screen!")

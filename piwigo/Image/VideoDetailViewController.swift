@@ -20,7 +20,6 @@ class VideoDetailViewController: UIViewController
         }
     }
     var video: Video?
-    var videoSize: CGSize?
     let playbackController = PlaybackController.shared
     
     @IBOutlet weak var scrollView: UIScrollView!
@@ -108,7 +107,7 @@ class VideoDetailViewController: UIViewController
             setPlaceHolderViewFrame()
             
             // Update scale, insets and offsets
-            if let size = videoSize {
+            if let size = video?.frameSize {
                 configScrollView(withSize: size)
             }
         })
@@ -123,17 +122,16 @@ class VideoDetailViewController: UIViewController
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        // Pause video player
+
+        // Remove video player
         if let video = video {
-            playbackController.pause(contentOfVideo: video)
+            playbackController.remove(contentOfVideo: video)
         }
     }
     
     deinit {
         // Release memory
         if let video = video {
-            playbackController.remove(contentOfVideo: video)
             playbackController.delete(video: video)
         }
         
@@ -143,6 +141,7 @@ class VideoDetailViewController: UIViewController
     
     
     // MARK: - Video Management
+    @MainActor
     private func setPlaceHolderViewFrame() {
         // Check input
         guard let imageSize = placeHolderView.image?.size
@@ -162,12 +161,13 @@ class VideoDetailViewController: UIViewController
                                        width: imageWidth, height: imageHeight)
     }
     
+    @MainActor
     func configVideoViews() {
         // Initialisation
         scrollView.bounds = view.bounds
         scrollView.isPagingEnabled = false    // Do not stop on multiples of the scroll view’s bounds
         scrollView.contentInsetAdjustmentBehavior = .never  // Do not add/remove safe area insets
-        scrollView.contentSize = videoSize ?? placeHolderView.frame.size
+        scrollView.contentSize = video?.frameSize ?? placeHolderView.frame.size
         
         // Prevents scrolling image at minimum scale
         // Will be unlocked when starting zooming
@@ -181,16 +181,17 @@ class VideoDetailViewController: UIViewController
             return
         }
                 
-        // Set scroll view scale and range
-        if let size = videoSize {
-            // Set video container view size
-            videoContainerView.frame.size = videoSize ?? placeHolderView.frame.size
-            videoContainerWidthConstraint.constant = videoSize?.width ?? placeHolderView.frame.width
-            videoContainerHeightConstraint.constant = videoSize?.height ?? placeHolderView.frame.height
+        // Video size available?
+        guard let size = video?.frameSize
+        else { return }
+        
+        // Set video container view size
+        videoContainerView.frame.size = size
+        videoContainerWidthConstraint.constant = size.width
+        videoContainerHeightConstraint.constant = size.height
 
-            // Set zoom scale and scroll view
-            configScrollView(withSize: size)
-        }
+        // Set zoom scale and scroll view
+        configScrollView(withSize: size)
     }
     
     /*
@@ -199,9 +200,10 @@ class VideoDetailViewController: UIViewController
      A zoom scale of less than 1 shows a zoomed-out version of the content,
      and a zoom scale greater than 1 shows the content zoomed in.
      */
+    @MainActor
     private func configScrollView(withSize size: CGSize) {
         // Calc new zoom scale range
-        debugPrint(view.bounds.size, videoContainerView.bounds.size, size)
+        debugPrint("••> configScrollView withSize:\(view.bounds.size), \(videoContainerView.bounds.size), \(size)")
         let widthScale = view.bounds.size.width / size.width
         let heightScale = view.bounds.size.height / size.height
         let minScale = min(widthScale, heightScale)
@@ -231,6 +233,7 @@ class VideoDetailViewController: UIViewController
     }
     
     /// Called when the PlayerViewController is ready
+    @MainActor
     private func updateScrollViewInset() {
         // Reset insets
         scrollView.contentInset = UIEdgeInsets.zero
@@ -262,6 +265,7 @@ class VideoDetailViewController: UIViewController
         //        debugPrint("    Inset : \(scrollView.contentInset)")
     }
     
+    @MainActor
     func updateImageMetadata(with imageData: Image) {
         // Update image description
         descContainer.config(withImage: imageData, inViewController: self, forVideo: true)
@@ -269,6 +273,7 @@ class VideoDetailViewController: UIViewController
     
     
     // MARK: - Gestures Management
+    @MainActor
     func updateDescriptionControlsVisibility() {
         // Hide/show the description and controls views with the navigation bar
         let state = navigationController?.isNavigationBarHidden ?? false
@@ -281,6 +286,7 @@ class VideoDetailViewController: UIViewController
         }
     }
     
+    @MainActor
     func didTapTwice(_ gestureRecognizer: UIGestureRecognizer) {
         // Don't zoom video if it is presented on an external display
         if AppVars.shared.inSingleDisplayMode == false {
@@ -429,10 +435,12 @@ extension VideoDetailViewController: VideoControlsDelegate
 // MARK: - VideoDetailDelegate Methods
 extension VideoDetailViewController: VideoDetailDelegate
 {
+    @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate) {
         videoControls?.config(currentTime: currentTime, duration: duration)
     }
     
+    @MainActor
     func setCurrentTime(_ value: Double) {
         videoControls?.setCurrentTime(value)
     }

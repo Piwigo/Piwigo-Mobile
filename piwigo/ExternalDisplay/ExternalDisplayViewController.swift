@@ -11,7 +11,9 @@ import UIKit
 import piwigoKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
+    @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate)
+    @MainActor
     func setCurrentTime(_ value: Double)
 }
 
@@ -257,11 +259,13 @@ class ExternalDisplayViewController: UIViewController {
         })
     }
     
+    @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval) {
         video?.duration = duration
         videoDetailDelegate?.config(currentTime: currentTime, duration: duration, delegate: self)
     }
     
+    @MainActor
     func setCurrentTime(_ value: Double) {
         videoDetailDelegate?.setCurrentTime(value)
     }
