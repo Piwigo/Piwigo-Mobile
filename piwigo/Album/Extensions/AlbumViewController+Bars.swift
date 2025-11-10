@@ -543,8 +543,8 @@ extension AlbumViewController
             navigationItem.subtitle = subTitle
             navigationItem.largeAttributedSubtitle = TableViewUtilities.shared.largeAttributedSubTitleForAlbum(subTitle)
         } else {
-            navigationItem.titleView = getTitleView(withTitle: title, titleColor: PwgColor.gray,
-                                                    subtitle: subTitle, subTitleColor: PwgColor.rightLabel)
+            navigationItem.titleView = getTitleView(withTitle: title, titleColor: .label,
+                                                    subtitle: subTitle, subTitleColor: .label)
         }
         self.view?.window?.windowScene?.subtitle = subTitle
     }

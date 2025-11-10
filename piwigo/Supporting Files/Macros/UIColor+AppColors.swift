@@ -27,7 +27,7 @@ struct PwgColor {
 
     static var tintColor: UIColor {
         if #available(iOS 26.0, *) {
-            return PwgColor.gray
+            return .label
         } else {
             return PwgColor.orange
         }

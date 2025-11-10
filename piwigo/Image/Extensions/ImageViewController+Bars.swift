@@ -374,7 +374,7 @@ extension ImageViewController {
         }
         
         // Apply title attributes
-        title.foregroundColor = PwgColor.whiteCream
+        title.foregroundColor = .label
         switch traitCollection.preferredContentSizeCategory {
         case .extraSmall, .small, .medium, .large:
             title.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
@@ -407,7 +407,7 @@ extension ImageViewController {
                 subTitle = AttributedString(dateFormatter.string(from: dateCreated))
             }
             // Apply subtitle attributes
-            subTitle.foregroundColor = PwgColor.whiteCream
+            subTitle.foregroundColor = .label
             subTitle.font = UIFont.systemFont(ofSize: 10, weight: .regular)
         }
         
