@@ -1,2 +1,1 @@
-• Obsługa większych czcionek
-• Naprawiono błędy i ulepszono interfejs
+Naprawiono błędy i ulepszono interfejs

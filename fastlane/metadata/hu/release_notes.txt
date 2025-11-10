@@ -1,2 +1,1 @@
-• Nagyobb betűméret támogatása
-• Hibák javítása és a felület javítása
+Hibák javítása és a felület javítása

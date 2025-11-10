@@ -1,2 +1,1 @@
-• Unterstützt größere Schriftarten
-• Behebung von Fehlern und Verbesserung der Benutzeroberfläche
+Behebt Fehler und verbessert die Benutzeroberfläche
