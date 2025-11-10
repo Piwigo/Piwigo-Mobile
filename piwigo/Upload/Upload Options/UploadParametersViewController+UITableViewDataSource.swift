@@ -89,19 +89,19 @@ extension UploadParametersViewController {
             else { preconditionFailure("Could not load a TextViewTableViewCell!") }
             cell.config(withText: commonComment,
                         inColor: shouldUpdateComment ? PwgColor.orange : PwgColor.rightLabel)
-            cell.textView.tag = EditImageDetailsOrder.comment.rawValue
-            cell.textView.delegate = self
-            tableViewCell = cell
 
-            // Piwigo does not manage HTML descriptions.
-            // So we disable the editor to prevent a mess when the description contains HTML.
-            if commonComment.containsHTML {
+            // Piwigo manages HTML descriptions since v14.0
+            // So we disable the editor to prevent a mess when the description contains HTML if needed.
+            if NetworkVars.shared.pwgVersion.compare("14.0", options: .numeric) == .orderedAscending,
+               commonComment.containsHTML {
                 cell.textView.isEditable = false
             } else {
                 cell.textView.isEditable = true
                 cell.textView.tag = indexPath.row
                 cell.textView.delegate = self
             }
+            tableViewCell = cell
+
         default:
             break
         }

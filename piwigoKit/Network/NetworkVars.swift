@@ -114,6 +114,10 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("usesSetCategory", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesSetCategory: Bool
 
+    /// - pwg.users.api_key.revoke method available, false by default (available since Piwigo 16)
+    @UserDefault("usesAPIkeys", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var usesAPIkeys: Bool
+
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
@@ -124,7 +128,7 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     public let pwgMinVersion = "2.10.0"
 
     /// - At login, invites to update the Piwigo server if version is lower than:
-    public let pwgRecentVersion = "13.0"
+    public let pwgRecentVersion = "14.0"
 
     /// - Quicker than calling UserDefaults variables
     public lazy var service = serverProtocol + serverPath

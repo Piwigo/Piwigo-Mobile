@@ -45,7 +45,8 @@ extension AlbumViewController
     // MARK: - Copy/Move Images to Album
     func copyToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+        else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter: [Any] = [imageIDs, albumData.pwgID]
         copyVC.user = user
         if copyVC.setInput(parameter: parameter, for: .copyImages) {
@@ -56,7 +57,8 @@ extension AlbumViewController
 
     func moveToAlbum(imagesWithID imageIDs: Set<Int64>) {
         let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-        guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+        else { preconditionFailure("Could not instantiate SelectCategoryViewController") }
         let parameter: [Any] = [imageIDs, albumData.pwgID]
         moveVC.user = user
         if moveVC.setInput(parameter: parameter, for: .moveImages) {
@@ -85,36 +87,40 @@ extension AlbumViewController: PushAlbumCollectionViewCellDelegate
 {
     func pushAlbumView(_ viewController: UIViewController?,
                        completion: @escaping (Bool) -> Void) {
-        guard let viewController = viewController else {
-            return
-        }
+        guard let viewController = viewController
+        else { return }
 
-        // Push sub-album, Discover or Favorites album
+        // Push sub-album or album selector
         if viewController is AlbumViewController {
             // Push sub-album view
             navigationController?.pushViewController(viewController, animated: true)
+            return
         }
-        else {
-            // Push album list
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                viewController.modalPresentationStyle = .popover
-                viewController.popoverPresentationController?.sourceView = view
-                viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-                navigationController?.present(viewController, animated: true) {
-                    // Hide swipe commands
-                    completion(true)
-                }
-            }
-            else {
-                let navController = UINavigationController(rootViewController: viewController)
-                navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.sourceView = view
-                navController.modalTransitionStyle = .coverVertical
-                navigationController?.present(navController, animated: true) {
-                    // Hide swipe commands
-                    completion(true)
-                }
-            }
+        
+        // Push album selector
+        let navController = UINavigationController(rootViewController: viewController)
+        navController.modalTransitionStyle = .coverVertical
+        navController.popoverPresentationController?.sourceView = view
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
+            navController.modalPresentationStyle = .popover
+
+        case .pad:
+            navController.modalPresentationStyle = .formSheet
+            navController.popoverPresentationController?.sourceRect = CGRect(
+                x: view.bounds.midX, y: view.bounds.midY,
+                width: 0, height: 0)
+            navController.preferredContentSize = CGSize(
+                width: pwgPadSubViewWidth,
+                height: ceil(view.bounds.height * 2 / 3))
+
+        default:
+            preconditionFailure("!!! Unsupported device idiom !!!")
+        }
+        
+        present(navController, animated: true) {
+            // Hide swipe commands
+            completion(true)
         }
     }
 }

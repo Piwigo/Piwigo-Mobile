@@ -127,7 +127,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         }
 
         // Thumbnails are not squared on iPad
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if traitCollection.userInterfaceIdiom == .pad {
             cellImage?.contentMode = .scaleAspectFit
         }
         
@@ -209,7 +209,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         self.deltaY = CGFloat.zero
         let imageScale = CGFloat(min(self.bounds.size.width / image.size.width,
                                      self.bounds.size.height / image.size.height))
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if traitCollection.userInterfaceIdiom == .pad {
             // Case of an iPad: respect aspect ratio
             let imageWidth = image.size.width * imageScale
             self.darkImgWidth?.constant = imageWidth

@@ -218,6 +218,7 @@ class LoginViewController: UIViewController {
         NetworkVars.shared.usesUploadAsync = false
         NetworkVars.shared.usesCalcOrphans = false
         NetworkVars.shared.usesSetCategory = false
+        NetworkVars.shared.usesAPIkeys = false
         
         // Check server address and cancel login if address not provided
         if let serverURL = serverTextField.text, serverURL.isEmpty {

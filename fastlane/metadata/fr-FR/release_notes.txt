@@ -1,2 +1,1 @@
-• Prend en charge des polices plus grandes
-• Corrige les bugs et améliore l'interface
+Corrige les bugs et améliore l'interface

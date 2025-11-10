@@ -57,15 +57,7 @@ extension AlbumViewController
                               image: helpIcon, identifier: actionId, handler: { [self] action in
             // Present help views
             let helpVC = HelpUtilities.getHelpViewController()
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                helpVC.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(helpVC, animated:true)
-            } else {
-                helpVC.modalPresentationStyle = .popover
-                helpVC.modalTransitionStyle = .coverVertical
-                helpVC.popoverPresentationController?.sourceView = view
-                navigationController?.present(helpVC, animated: true)
-            }
+            pushView(helpVC)
         })
         action.accessibilityIdentifier = "help"
         return action
@@ -86,16 +78,7 @@ extension AlbumViewController
             let releaseNotesSB = UIStoryboard(name: "ReleaseNotesViewController", bundle: nil)
             guard let releaseNotesVC = releaseNotesSB.instantiateViewController(withIdentifier: "ReleaseNotesViewController") as? ReleaseNotesViewController
             else { preconditionFailure("Could not load ReleaseNotesViewController") }
-
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                releaseNotesVC.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(releaseNotesVC, animated:true)
-            } else {
-                releaseNotesVC.modalPresentationStyle = .popover
-                releaseNotesVC.modalTransitionStyle = .coverVertical
-                releaseNotesVC.popoverPresentationController?.sourceView = view
-                navigationController?.present(releaseNotesVC, animated: true)
-            }
+            pushView(releaseNotesVC)
         })
         return action
     }

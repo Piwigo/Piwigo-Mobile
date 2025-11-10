@@ -450,13 +450,6 @@ class AlbumViewController: UIViewController
         navigationController?.setNavigationBarHidden(false, animated: true)
         navigationItem.largeTitleDisplayMode = prefersLargeTitles ? .always : .never
         navigationItem.backButtonDisplayMode = traitCollection.userInterfaceIdiom == .pad ? .generic : .minimal
-
-        // Set navigation bar and buttons
-        initBarsInPreviewMode()
-        if #unavailable(iOS 26.0) {
-            relocateButtons()
-            updateButtons()
-        }
         
         // Should we reload the collection view?
         if collectionView.visibleCells.first is AlbumCollectionViewCell {
@@ -484,6 +477,20 @@ class AlbumViewController: UIViewController
         if [0, AlbumVars.shared.defaultCategory].contains(categoryId) {
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                    name: Notification.Name.pwgUploadProgress, object: nil)
+        }
+
+        // Set navigation bar and buttons
+        initBarsInPreviewMode()
+        if #available(iOS 26.0, *) {
+            // Show/hide UploadQueue toolbar button if needed
+            let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+            let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
+            NotificationCenter.default.post(name: .pwgLeftUploads,
+                                            object: nil, userInfo: userInfo)
+        } else {
+            // Set buttons
+            relocateButtons()
+            updateButtons()
         }
     }
     
@@ -602,7 +609,7 @@ class AlbumViewController: UIViewController
         if displayHelpPagesWithID.count > 0 {
             // Present unseen help views
             let helpVC = HelpUtilities.getHelpViewController(showingPagesWithIDs: displayHelpPagesWithID)
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if view.traitCollection.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 present(helpVC, animated: true)
             } else {
@@ -1071,33 +1078,95 @@ class AlbumViewController: UIViewController
         guard let viewController = viewController
         else { return }
         
-        // Push album list or tag list
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            viewController.modalPresentationStyle = .popover
-            if viewController is SelectCategoryViewController {
-                viewController.popoverPresentationController?.barButtonItem = actionBarButton
-                viewController.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(viewController, animated: true)
+        // Push album list, tag list, help view, etc.
+        if #available(iOS 26.0, *) {
+            switch view.traitCollection.userInterfaceIdiom {
+            case .phone:
+                if (viewController is HelpViewController) ||
+                   (viewController is ReleaseNotesViewController) {
+                    viewController.modalTransitionStyle = .coverVertical
+                    viewController.modalPresentationStyle = .popover
+                    present(viewController, animated: true)
+                }
+                else {
+                    let navController = UINavigationController(rootViewController: viewController)
+                    navController.modalTransitionStyle = .coverVertical
+                    navController.modalPresentationStyle = .popover
+                    navController.popoverPresentationController?.sourceView = view
+                    present(navController, animated: true)
+                }
+                
+            case .pad:
+                if (viewController is HelpViewController) ||
+                    (viewController is ReleaseNotesViewController) {
+                    viewController.modalTransitionStyle = .coverVertical
+                    viewController.modalPresentationStyle = .formSheet
+                    let windowBounds = view.window?.bounds ?? .zero
+                    viewController.popoverPresentationController?.sourceRect = CGRect(
+                        x: windowBounds.midX, y: windowBounds.midY,
+                        width: 0, height: 0)
+                    let minHeight = min(windowBounds.width, windowBounds.height)
+                    viewController.preferredContentSize = CGSize(
+                        width: pwgPadSettingsWidth,
+                        height: ceil(minHeight * 2 / 3))
+                    present(viewController, animated: true)
+                }
+                else {
+                    let navController = UINavigationController(rootViewController: viewController)
+                    navController.modalTransitionStyle = .coverVertical
+                    navController.modalPresentationStyle = .formSheet
+                    let windowBounds = view.window?.bounds ?? .zero
+                    navController.popoverPresentationController?.sourceRect = CGRect(
+                        x: windowBounds.midX, y: windowBounds.midY,
+                        width: 0, height: 0)
+                    let minHeight = min(windowBounds.width, windowBounds.height)
+                    navController.preferredContentSize = CGSize(
+                        width: pwgPadSettingsWidth,
+                        height: ceil(minHeight * 2 / 3))
+                    present(navController, animated: true)
+                }
+                
+            default:
+                preconditionFailure("!!! Interface not supported !!!")
             }
-            else if viewController is TagSelectorViewController {
-                viewController.popoverPresentationController?.barButtonItem = discoverBarButton
-                viewController.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(viewController, animated: true)
-            }
-            else if viewController is EditImageParamsViewController {
-                // Push Edit view embedded in navigation controller
+        }
+        else {
+            // Fallback on previous version
+            switch view.traitCollection.userInterfaceIdiom {
+            case .phone:
                 let navController = UINavigationController(rootViewController: viewController)
+                navController.modalTransitionStyle = .coverVertical
                 navController.modalPresentationStyle = .popover
-                navController.popoverPresentationController?.barButtonItem = actionBarButton
-                navController.popoverPresentationController?.permittedArrowDirections = .up
-                navigationController?.present(navController, animated: true)
+                navController.popoverPresentationController?.sourceView = view
+                present(navController, animated: true)
+            
+            case .pad:
+                viewController.modalPresentationStyle = .popover
+                if viewController is SelectCategoryViewController {
+                    viewController.popoverPresentationController?.barButtonItem = actionBarButton
+                    viewController.popoverPresentationController?.permittedArrowDirections = .up
+                    present(viewController, animated: true)
+                }
+                else if viewController is TagSelectorViewController {
+                    // Push tag selector view embedded in navigation controller
+                    let navController = UINavigationController(rootViewController: viewController)
+                    navController.modalPresentationStyle = .popover
+                    navController.popoverPresentationController?.barButtonItem = discoverBarButton
+                    navController.popoverPresentationController?.permittedArrowDirections = .up
+                    present(navController, animated: true)
+                }
+                else if viewController is EditImageParamsViewController {
+                    // Push Edit view embedded in navigation controller
+                    let navController = UINavigationController(rootViewController: viewController)
+                    navController.modalPresentationStyle = .popover
+                    navController.popoverPresentationController?.barButtonItem = actionBarButton
+                    navController.popoverPresentationController?.permittedArrowDirections = .up
+                    present(navController, animated: true)
+                }
+            
+            default:
+                preconditionFailure("!!! Interface not supported !!!")
             }
-        } else {
-            let navController = UINavigationController(rootViewController: viewController)
-            navController.modalPresentationStyle = .popover
-            navController.popoverPresentationController?.sourceView = view
-            navController.modalTransitionStyle = .coverVertical
-            navigationController?.present(navController, animated: true)
         }
     }
     

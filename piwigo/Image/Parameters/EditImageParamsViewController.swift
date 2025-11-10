@@ -102,7 +102,7 @@ class EditImageParamsViewController: UIViewController
         title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         
         // Buttons
-        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
+        let cancel = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelEdit))
         cancel.accessibilityIdentifier = "Cancel"
         let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
         done.accessibilityIdentifier = "Done"
@@ -162,7 +162,7 @@ class EditImageParamsViewController: UIViewController
         coordinator.animate(alongsideTransition: { [self] _ in
             
             // On iPad, the form is presented in a popover view
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            if view.traitCollection.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
                 preferredContentSize = CGSize(width: pwgPadSubViewWidth,
                                               height: ceil(mainScreenBounds.height * 2 / 3))
@@ -426,8 +426,10 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Update image description?
+        /// token required for updating HTML in name/comment/author
         if shouldUpdateComment {
             paramsDict["comment"] = commonComment.utf8mb4Encoded
+            paramsDict["pwg_token"] = NetworkVars.shared.pwgToken
         }
         
         // Send request to Piwigo server

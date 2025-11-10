@@ -93,7 +93,7 @@ class ExternalDisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
 
         // Apply transition
-        UIView.transition(with: window, duration: 0.5,
+        UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve) {
             window.makeKeyAndVisible()
         }

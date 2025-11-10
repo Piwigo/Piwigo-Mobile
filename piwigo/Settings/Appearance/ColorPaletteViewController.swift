@@ -84,7 +84,7 @@ extension ColorPaletteViewController: UITableViewDataSource {
         var tableViewCell = UITableViewCell()
         switch indexPath.row {
         case 0:
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if view.traitCollection.userInterfaceIdiom == .phone {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell
                 else { preconditionFailure("Could not load a PhoneTableViewCell!") }
                 cell.configure()

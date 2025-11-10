@@ -16,11 +16,12 @@ protocol TagSelectorViewDelegate: NSObjectProtocol {
     func pushTaggedImagesView(_ viewController: UIViewController)
 }
 
-class TagSelectorViewController: UITableViewController {
+class TagSelectorViewController: UIViewController {
     
     weak var tagSelectedDelegate: TagSelectorViewDelegate?
     
     @IBOutlet var tagsTableView: UITableView!
+    
     private var tagIdsBeforeUpdate = [Int32]()
     private var letterIndex: [String] = []
     private var updateOperations = [BlockOperation]()
@@ -49,7 +50,13 @@ class TagSelectorViewController: UITableViewController {
     
     
     // MARK: - Fetched Results Controller
-    let searchController = UISearchController(searchResultsController: nil)
+    lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        return searchController
+    }()
     var searchQuery = ""
     lazy var predicate: NSPredicate = {
         var andPredicates = [NSPredicate]()
@@ -85,6 +92,7 @@ class TagSelectorViewController: UITableViewController {
     
     
     // MARK: - View Lifecycle
+    @MainActor
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -92,8 +100,19 @@ class TagSelectorViewController: UITableViewController {
         title = NSLocalizedString("tagsTitle_selectOne", comment: "Select a Tag")
         
         // Initialise search bar
-        initSearchBar()
-        
+        let searchBar = searchController.searchBar
+        initSearchBar(searchBar)
+
+        // Add search bar to navigation bar or toolbar
+        navigationItem.searchController = searchController
+        if #available(iOS 26.0, *) {
+            navigationItem.preferredSearchBarPlacement = .integrated
+            let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+            setToolbarItems([searchBarButton], animated: false)
+            navigationController?.setToolbarHidden(false, animated: false)
+        }
+        navigationItem.hidesSearchBarWhenScrolling = false
+
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
         PwgSession.checkSession(ofUser: user) { [self] in
@@ -110,7 +129,7 @@ class TagSelectorViewController: UITableViewController {
         }
         
         // Add button for returning to albums/images
-        let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitTagSelect))
+        let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(quitTagSelect))
         cancelBarButton.accessibilityIdentifier = "cancelTagSelectionButton"
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
         
@@ -163,9 +182,6 @@ class TagSelectorViewController: UITableViewController {
             debugPrint("Failed to fetch tags: \(error)")
         }
         
-        // Reload data
-        tagsTableView?.reloadData()
-        
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: Notification.Name.pwgPaletteChanged, object: nil)
@@ -183,21 +199,41 @@ class TagSelectorViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
+
+    // MARK: - Content Sizes
+    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Search bar
+            self.searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
+            self.searchController.searchBar.invalidateIntrinsicContentSize()
+            self.searchController.searchBar.layer.setNeedsLayout()
+            self.searchController.searchBar.layoutIfNeeded()
+            
+            // Animated update for smoother experience
+            self.tagsTableView?.beginUpdates()
+            self.tagsTableView?.endUpdates()
+        }
+    }
+}
     
-    // MARK: - UITableView Rows
+
+// MARK: - UITableViewDataSource Methods
+extension TagSelectorViewController: UITableViewDataSource
+{
     // Return the number of sections for the table.
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     // Return the number of rows for the table.
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let objects = tags.fetchedObjects
         return objects?.count ?? 0
     }
     
     // Return cell configured with tag
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell
         else { preconditionFailure("Could not load LabelTableViewCell") }
@@ -217,8 +253,12 @@ class TagSelectorViewController: UITableViewController {
         
         return cell
     }
-    
-    
+}
+
+
+// MARK: - UITableViewDelegate Methods
+extension TagSelectorViewController: UITableViewDelegate
+{
     // MARK: - UITableView Footers
     private func getContentOfFooter() -> String {
         let numberFormatter = NumberFormatter()
@@ -231,22 +271,20 @@ class TagSelectorViewController: UITableViewController {
         return footer
     }
     
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let footer = getContentOfFooter()
         let height = TableViewUtilities.shared.heightOfFooter(withText: footer)
         return CGFloat(fmax(44.0, height))
     }
     
     // Return the footer view
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let text = getContentOfFooter()
         return TableViewUtilities.shared.viewOfFooter(withText: text, alignment: .center)
     }
     
-    
-    // MARK: - UITableViewDelegate Methods
     // Display images tagged with the tag selected a row of the table
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Deselect row
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -270,23 +308,6 @@ class TagSelectorViewController: UITableViewController {
             else { preconditionFailure("Could not load AlbumViewController") }
             taggedImagesVC.categoryId = catID
             self.tagSelectedDelegate?.pushTaggedImagesView(taggedImagesVC)
-        }
-    }
-    
-    
-    // MARK: - Content Sizes
-    @objc func didChangeContentSizeCategory(_ notification: NSNotification) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            // Search bar
-            self.searchController.searchBar.searchTextField.font = UIFont.preferredFont(forTextStyle: .body)
-            self.searchController.searchBar.invalidateIntrinsicContentSize()
-            self.searchController.searchBar.layer.setNeedsLayout()
-            self.searchController.searchBar.layoutIfNeeded()
-            
-            // Animated update for smoother experience
-            self.tagsTableView?.beginUpdates()
-            self.tagsTableView?.endUpdates()
         }
     }
 }

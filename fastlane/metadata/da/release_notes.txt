@@ -1,2 +1,1 @@
-• Understøtter større skrifttyper
-• Mindre fejl rettet og forbedringer af brugerflade
+Mindre fejl rettet og forbedringer af brugerflade

@@ -33,7 +33,8 @@ extension ImageViewController
 
         // Present EditImageDetails view
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
-        guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
+        guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController
+        else { preconditionFailure("Could not instantiate EditImageParamsViewController") }
         editImageVC.user = user
         editImageVC.images = [imageData]
         editImageVC.delegate = self

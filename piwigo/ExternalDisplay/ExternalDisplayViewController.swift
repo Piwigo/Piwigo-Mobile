@@ -11,7 +11,9 @@ import UIKit
 import piwigoKit
 
 protocol VideoDetailDelegate: NSObjectProtocol {
+    @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval, delegate: VideoControlsDelegate)
+    @MainActor
     func setCurrentTime(_ value: Double)
 }
 
@@ -165,7 +167,7 @@ class ExternalDisplayViewController: UIViewController {
                 else {
                     // Display image of lower resolution
                     let thumbnail = getLowResPDFthumbnail(of: imageData)
-                    presentPDFthumbnail(thumbnail)
+                    self.presentPDFthumbnail(thumbnail)
                     
                     // Download high-resolution thumbnail for next time
                     guard let serverID = imageData.server?.uuid
@@ -183,13 +185,7 @@ class ExternalDisplayViewController: UIViewController {
             } else {
                 // Display image of lower resolution
                 let thumbnail = getLowResPDFthumbnail(of: imageData)
-                presentPDFthumbnail(thumbnail)
-            }
-
-            // Check if we already have the PDF file in cache
-            if let document = self.document {
-                // Show PDF file in cache
-                setPdfView(with: document)
+                self.presentPDFthumbnail(thumbnail)
             }
         }
     }
@@ -199,7 +195,7 @@ class ExternalDisplayViewController: UIViewController {
     @MainActor
     private func presentLowResPhoto(_ image: UIImage) {
         // Set image
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: imageView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView.image = image
@@ -227,7 +223,7 @@ class ExternalDisplayViewController: UIViewController {
         self.progressView?.progress = 1.0
         
         // Display final image
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: imageView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView.image = image
@@ -253,7 +249,7 @@ class ExternalDisplayViewController: UIViewController {
             playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
         }
         // Hide image and show video
-        UIView.transition(with: videoContainerView, duration: 0.5,
+        UIView.transition(with: videoContainerView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView?.image = nil
@@ -263,11 +259,13 @@ class ExternalDisplayViewController: UIViewController {
         })
     }
     
+    @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval) {
         video?.duration = duration
         videoDetailDelegate?.config(currentTime: currentTime, duration: duration, delegate: self)
     }
     
+    @MainActor
     func setCurrentTime(_ value: Double) {
         videoDetailDelegate?.setCurrentTime(value)
     }
@@ -291,7 +289,7 @@ class ExternalDisplayViewController: UIViewController {
     @MainActor
     private func presentPDFthumbnail(_ image: UIImage) {
         // Set image
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: imageView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView.image = image
@@ -302,6 +300,12 @@ class ExternalDisplayViewController: UIViewController {
         completion: { [self] _ in
             self.progressView?.isHidden = false
             self.videoContainerView?.isHidden = true
+
+            // Check if we have the PDF file in cache
+            if let document = self.document {
+                // Show PDF file in cache
+                setPdfView(with: document)
+            }
         })
     }
 }
@@ -339,7 +343,7 @@ extension ExternalDisplayViewController: @preconcurrency PdfDetailDelegate
         self.progressView?.progress = 1.0
         
         // Display PDF document
-        UIView.transition(with: pdfView, duration: 0.5,
+        UIView.transition(with: pdfView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             pdfView?.document = document

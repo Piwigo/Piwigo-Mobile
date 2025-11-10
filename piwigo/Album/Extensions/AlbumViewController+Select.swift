@@ -51,7 +51,7 @@ extension AlbumViewController
     /// - for copying images to another album
     /// - for moving images to another album
     func albumMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.images.album")
+        let menuId = UIMenu.Identifier("org.piwigo.images.albumMenu")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: [imagesCopyAction(),
@@ -63,7 +63,7 @@ extension AlbumViewController
     // MARK: - Images Menu
     /// - for editing image parameters
     func imagesMenu() -> UIMenu {
-        let menuId = UIMenu.Identifier("org.piwigo.images.edit")
+        let menuId = UIMenu.Identifier("org.piwigo.images.imageMenu")
         let menu = UIMenu(title: "", image: nil, identifier: menuId,
                           options: UIMenu.Options.displayInline,
                           children: [rotateMenu(),
@@ -506,14 +506,22 @@ extension AlbumViewController: UIGestureRecognizerDelegate
 extension AlbumViewController: ImageDetailDelegate
 {
     func didSelectImage(atIndexPath indexPath: IndexPath) {
-        // Scroll view to center image
-        if collectionView?.numberOfSections ?? 0 > indexPath.section,
-           collectionView?.numberOfItems(inSection: indexPath.section) ?? 0 > indexPath.item {
-            
-            collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+        // Album section presented?
+        var imageIndexPath = indexPath
+        if let firstSectionID = diffableDataSource.snapshot().sectionIdentifiers.first,
+           firstSectionID == pwgAlbumGroup.none.sectionKey {
+            imageIndexPath.section += 1
+        }
+        
+        // Scroll view and prepare transition
+        if collectionView?.numberOfSections ?? 0 > imageIndexPath.section,
+           collectionView?.numberOfItems(inSection: imageIndexPath.section) ?? 0 > imageIndexPath.item
+        {
+            // Scroll view to center image
+            collectionView?.scrollToItem(at: imageIndexPath, at: .centeredVertically, animated: true)
             
             // Prepare variables for transitioning delegate
-            if let selectedCell = collectionView?.cellForItem(at: indexPath) as? ImageCollectionViewCell {
+            if let selectedCell = collectionView?.cellForItem(at: imageIndexPath) as? ImageCollectionViewCell {
                 animatedCell = selectedCell
                 albumViewSnapshot = view.snapshotView(afterScreenUpdates: false)
                 cellImageViewSnapshot = selectedCell.snapshotView(afterScreenUpdates: false)

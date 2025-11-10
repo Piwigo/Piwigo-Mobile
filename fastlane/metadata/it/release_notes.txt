@@ -1,2 +1,1 @@
-• Supporta caratteri più grandi
-• Corregge i bug e migliora l'interfaccia
+Corregge i bug e migliora l'interfaccia

@@ -1,2 +1,1 @@
-• Brings ondersteuning voor grotere tekst
-• Verbetert bugs en verbetert de interface
+Verbetert bugs en verbetert de interface

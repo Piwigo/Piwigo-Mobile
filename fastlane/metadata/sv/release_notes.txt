@@ -1,2 +1,1 @@
-• Stöder större teckensnitt
-• Fixar buggar och förbättrar gränssnittet
+Fixar buggar och förbättrar gränssnittet

@@ -25,7 +25,7 @@ class TableViewUtilities: NSObject {
 
         // Get title
         var attrSubtitle = AttributedString(subtitle)
-        attrSubtitle.foregroundColor = PwgColor.rightLabel
+        attrSubtitle.foregroundColor = .label
         attrSubtitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
         return attrSubtitle
     }

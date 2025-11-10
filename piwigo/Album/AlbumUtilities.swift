@@ -90,9 +90,12 @@ class AlbumUtilities: NSObject {
                          failure: @escaping (PwgKitError) -> Void) {
         
         // Prepare parameters for setting album thumbnail
+        /// token required for updating HTML in name/comment
         let paramsDict: [String : Any] = ["category_id" : albumId,
                                           "name"        : name,
-                                          "comment"     : description]
+                                          "comment"     : description,
+                                          "pwg_token"   : NetworkVars.shared.pwgToken
+        ]
         
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: pwgCategoriesSetInfo, paramDict: paramsDict,
@@ -350,11 +353,11 @@ class AlbumUtilities: NSObject {
     
     
     // MARK: - Album/Images Collections | Image Thumbnails
-    static var minNberOfImagesPerRow: Int = {
+    static let minNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 3 : 5
     }()
     
-    static var maxNberOfImagesPerRow: Int = {
+    static let maxNberOfImagesPerRow: Int = {
         return UIDevice.current.userInterfaceIdiom == .phone ? 6 : 10
     }()
     
@@ -537,11 +540,8 @@ class AlbumUtilities: NSObject {
                 dateFormatStyle = Date.FormatStyle()
                     .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
                 
-                optionalDateFormatStyle = arePwgDates
-                ? Date.FormatStyle()
+                optionalDateFormatStyle = Date.FormatStyle()
                     .weekday(.wide) .hour() .minute() .second()
-                : Date.FormatStyle()
-                    .weekday()
                 optionalDateFormatStyle.timeZone = timeZone
                 optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                 

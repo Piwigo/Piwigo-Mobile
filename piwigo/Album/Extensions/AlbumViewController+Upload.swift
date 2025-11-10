@@ -55,7 +55,7 @@ extension AlbumViewController
             // Currently shown?
             var toolbarItems = toolbarItems ?? []
             if toolbarItems.count == 4 {
-                // Remove button from toolbar
+                // Remove UploadQueue button from toolbar when the root album is visible
                 toolbarItems.removeFirst()
                 setToolbarItems(toolbarItems, animated: true)
             }

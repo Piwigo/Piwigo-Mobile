@@ -1,2 +1,1 @@
-• Brings support for Larger Text
-• Fixes bugs and improves the interface
+Fixes bugs and improves the interface

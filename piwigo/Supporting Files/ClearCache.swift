@@ -41,6 +41,7 @@ class ClearCache: NSObject {
             NetworkVars.shared.usesUploadAsync = false
             NetworkVars.shared.usesCalcOrphans = false
             NetworkVars.shared.usesSetCategory = false
+            NetworkVars.shared.usesAPIkeys = false
             
             // Back to default user properties
             NetworkVars.shared.userStatus = pwgUserStatus.guest

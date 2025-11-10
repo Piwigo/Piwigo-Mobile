@@ -26,7 +26,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var failedUploadImage: UIImageView!
     
-    private func configureIcons() {
+    private func applyColorPalette() {
         // Appearance
         backgroundColor = PwgColor.cellBackground
         selectedIcon?.layer.shadowColor = UIColor.white.cgColor
@@ -35,9 +35,11 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         uploadingProgress?.trackTintColor = UIColor.white
     }
 
+    @MainActor  // Image from the Photos Library
     func configure(with imageAsset: PHAsset, thumbnailSize: CGSize) {
+//        debugPrint("••> Configure cell with ID: \(imageAsset.localIdentifier)")
         // Configure icons
-        configureIcons()
+        applyColorPalette()
         
         // Store local identifier
         localIdentifier = imageAsset.localIdentifier
@@ -71,10 +73,10 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         })
     }
     
-    @MainActor
+    @MainActor  // Image from the Pasteboard
     func configure(with image: UIImage, identifier: String) {
         // Configure icons
-        configureIcons()
+        applyColorPalette()
         
         // Store local identifier
         localIdentifier = identifier
@@ -91,6 +93,12 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         guard let state = state else {
             selectedIcon?.isHidden = !selected
             darkenView?.isHidden = !selected
+            waitingActivity?.isHidden = true
+            waitingActivity?.stopAnimating()
+            uploadingProgress?.isHidden = true
+            uploadingProgress?.setProgress(0, animated: false)
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
             return
         }
         // Known upload request state
@@ -147,13 +155,9 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
 
     private func changeCellImageIfNeeded(withImage image: UIImage) {
-        if let oldImage = self.cellImage.image {
-            if oldImage.isEqual(image) == false {
-                self.cellImage.image = image
-            }
-        } else {
-            self.cellImage.image = image
-        }
+        if let oldImage = self.cellImage.image,
+           oldImage.isEqual(image) { return }
+        self.cellImage.image = image
     }
     
     override func prepareForReuse() {

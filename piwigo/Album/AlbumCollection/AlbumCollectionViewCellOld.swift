@@ -159,7 +159,8 @@ extension AlbumCollectionViewCellOld: UITableViewDelegate
         let move = UIContextualAction(style: .normal, title: nil,
                                       handler: { action, view, completionHandler in
             let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-            guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+            guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController
+            else { preconditionFailure("Cannot instantiate SelectCategoryViewController") }
             if moveVC.setInput(parameter: albumData, for: .moveAlbum) {
                 moveVC.user = user
                 self.pushAlbumDelegate?.pushAlbumView(moveVC, completion: completionHandler)

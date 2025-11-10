@@ -279,7 +279,7 @@ class AppLockViewController: UIViewController {
         let attributes = [NSAttributedString.Key.font: infoLabel.font!]
 
         // Constraints depend on orientation
-        if orientation.isPortrait || UIDevice.current.userInterfaceIdiom == .pad {
+        if orientation.isPortrait || view.traitCollection.userInterfaceIdiom == .pad {
             // iPhone in portrait mode ▸ All centered horizontally
             titleLabelHorOffset.constant = CGFloat.zero
             mainStackHorOffset.constant = CGFloat.zero

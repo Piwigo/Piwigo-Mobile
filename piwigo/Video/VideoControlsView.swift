@@ -33,6 +33,7 @@ class VideoControlsView: UIVisualEffectView {
     
     // Initialisation
     private var videoDuration: Double?
+    @MainActor
     private func configView() {
         let view = viewFromNibForClass()
         view.frame = bounds
@@ -41,6 +42,7 @@ class VideoControlsView: UIVisualEffectView {
     }
     
     // Loads XIB file into a view and returns this view
+    @MainActor
     private func viewFromNibForClass() -> UIView {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: String(describing: type(of: self)), bundle: bundle)
@@ -56,6 +58,7 @@ class VideoControlsView: UIVisualEffectView {
         timeSlider.maximumTrackTintColor = PwgColor.thumb
     }
     
+    @MainActor
     func config(currentTime: TimeInterval, duration: TimeInterval) {
         // Update video object
         videoDuration = duration
@@ -79,6 +82,7 @@ class VideoControlsView: UIVisualEffectView {
         }
     }
     
+    @MainActor
     func setCurrentTime(_ value: Double) {
         autoreleasepool {
             // Set slider value

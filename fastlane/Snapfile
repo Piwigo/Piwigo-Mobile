@@ -46,6 +46,8 @@
 #   bundle exec fastlane deliver download_screenshots
 # To upload screenshots only
 #   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --skip_metadata --overwrite_screenshots
+# To upload metadata only
+#   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --skip_screenshots
 # To upload screenshots and metadata
 #   bundle exec fastlane deliver --force --skip_binary_upload --skip_app_version_update --overwrite_screenshots
 #

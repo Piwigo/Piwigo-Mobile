@@ -598,7 +598,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = nav
 
         // Transition to migration view
-        UIView.transition(with: window, duration: 0.5,
+        UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: nil) { _ in }
     }
@@ -628,7 +628,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = nav
 
         // Transition to login view
-        UIView.transition(with: window, duration: 0.5,
+        UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: nil) { _ in }
     }
@@ -652,7 +652,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else { preconditionFailure("Could not load AlbumViewController") }
         albumVC.categoryId = AlbumVars.shared.defaultCategory
         window.rootViewController = AlbumNavigationController(rootViewController: albumVC)
-        UIView.transition(with: window, duration: 0.5,
+        UIView.transition(with: window, duration: 0.3,
                           options: .transitionCrossDissolve) { }
             completion: { [self] success in
                 if success, keepLoginView == false {
