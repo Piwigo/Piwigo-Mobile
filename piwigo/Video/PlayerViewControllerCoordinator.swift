@@ -302,7 +302,7 @@ class PlayerViewControllerCoordinator: NSObject {
                                             frameSize: CGSize? = nil) {
         // Initialisation
         guard let playerViewController = playerViewControllerIfLoaded else { return }
-        var readyForDisplay = status.contains(.readyForDisplay)
+        let readyForDisplay = status.contains(.readyForDisplay)
         
         // Get current time position
         let currentTime = playerViewController.player?.currentTime().seconds ?? 0
@@ -328,9 +328,7 @@ class PlayerViewControllerCoordinator: NSObject {
                 let hasDuration = (parent.video?.duration ?? .nan).isFinite
                 let hasPresentationSize = (parent.video?.frameSize ?? .zero) != .zero
                 if readyForDisplay, hasDuration, hasPresentationSize {
-                    playerViewController.player?.rate = VideoVars.shared.autoPlayOnDevice ? 1 : 0
-                } else {
-                    readyForDisplay = false
+                    parent.presentVideoContainer()
                 }
             }
         } else if let parent = playerViewController.parent as? ExternalDisplayViewController {
@@ -346,15 +344,12 @@ class PlayerViewControllerCoordinator: NSObject {
                 let hasDuration = (parent.video?.duration ?? .nan).isFinite
                 if readyForDisplay, hasDuration {
                     playerViewController.player?.rate = 1
-                } else {
-                    readyForDisplay = false
                 }
             }
         }
         
         // Hide image and show play button when ready
         let userInfo = ["pwgID"   : self.video.pwgID as Any,
-                        "ready"   : readyForDisplay,
                         "playing" : playerViewController.player?.rate != 0,
                         "muted"   : playerViewController.player?.isMuted as Any] as [String : Any]
         NotificationCenter.default.post(name: .pwgVideoPlaybackStatus,

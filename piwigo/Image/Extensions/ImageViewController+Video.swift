@@ -24,16 +24,6 @@ extension ImageViewController
                 return
             }
 
-            // Show/hide video according to situation
-            if let isReady = notification.userInfo?["ready"] as? Bool, isReady {
-                // Hide place holder image unless the video is presented on an external display
-                videoPVC.placeHolderView.isHidden = AppVars.shared.inSingleDisplayMode
-                // Show video unless the video is presented on an external display
-                videoPVC.videoContainerView.isHidden = !AppVars.shared.inSingleDisplayMode
-                // Show player controls
-                videoPVC.videoControls.isHidden = navigationController?.isNavigationBarHidden ?? false
-            }
-            
             // Set button according to status if needed
             var didChangeButton = false
             if let isPlaying = notification.userInfo?["playing"] as? Bool {

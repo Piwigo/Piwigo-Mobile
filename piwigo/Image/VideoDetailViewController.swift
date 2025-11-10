@@ -256,13 +256,44 @@ class VideoDetailViewController: UIViewController
             scrollView.contentOffset.y = -verticalSpace
         }
         
-        // Show video with controls
-        videoContainerView.isHidden = false
-        videoControls.isHidden = navigationController?.isNavigationBarHidden ?? false
         //        debugPrint("••> Did updateScrollViewInset: ")
         //        debugPrint("    Scale: \(scrollView.minimumZoomScale) to \(scrollView.maximumZoomScale); now: \(scrollView.zoomScale)")
         //        debugPrint("    Offset: \(scrollView.contentOffset)")
         //        debugPrint("    Inset : \(scrollView.contentInset)")
+    }
+    
+    func presentVideoContainer() {
+        debugPrint("presentVideoContainer !!!!!!!!!!!!!!!")
+        // Show/hide video according to situation
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            // Always show player controls
+            self.videoControls.isHidden = self.navigationController?.isNavigationBarHidden ?? false
+            
+            // Show video unless it is presented on an external display
+            self.videoContainerView.alpha = 0.0
+            self.videoContainerView.isHidden = !AppVars.shared.inSingleDisplayMode
+            
+            // Animate appearance of video
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveLinear) { [weak self] in
+                guard let self else { return }
+                // Hide place holder image unless the video is presented on an external display
+                self.placeHolderView.layer.opacity = AppVars.shared.inSingleDisplayMode ? 0.0 : 0.3
+                // Show video unless it is presented on an external display
+                self.videoContainerView.alpha = AppVars.shared.inSingleDisplayMode ? 1.0 : 0.0
+            }
+            completion: { [weak self] _ in
+                guard let self else { return }
+                // Hide place holder image unless the video is presented on an external display
+                self.placeHolderView.isHidden = AppVars.shared.inSingleDisplayMode
+                // Reset alpha channel for future use
+                self.placeHolderView.layer.opacity = 1.0
+                // Play video if requested
+                if VideoVars.shared.autoPlayOnDevice, let video = self.video {
+                    self.playbackController.play(contentOfVideo: video)
+                }
+            }
+        }
     }
     
     @MainActor
