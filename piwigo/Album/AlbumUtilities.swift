@@ -540,11 +540,8 @@ class AlbumUtilities: NSObject {
                 dateFormatStyle = Date.FormatStyle()
                     .day(.defaultDigits) .month(.wide) .year(.defaultDigits)
                 
-                optionalDateFormatStyle = arePwgDates
-                ? Date.FormatStyle()
+                optionalDateFormatStyle = Date.FormatStyle()
                     .weekday(.wide) .hour() .minute() .second()
-                : Date.FormatStyle()
-                    .weekday()
                 optionalDateFormatStyle.timeZone = timeZone
                 optionalDateLabelText = startDate.formatted(optionalDateFormatStyle)
                 
