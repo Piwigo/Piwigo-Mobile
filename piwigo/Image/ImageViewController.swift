@@ -235,30 +235,6 @@ class ImageViewController: UIViewController {
 
 
     // MARK: - Image Data
-//    func getIndexPath(atOrBefore indexPath: IndexPath) -> IndexPath? {
-//        // Any image left?
-//        if images?.fetchedObjects?.count ?? 0 == 0 {
-//            return nil
-//        }
-//
-//        // Select the current section, or the previous one if not available
-//        guard let sections = images.sections
-//        else { preconditionFailure("No sections in fetchedResultsController")}
-//        let section = min(indexPath.section, sections.count - 1)
-//        
-//        // Images still available in the current section?
-//        let count = sections[indexPath.section].numberOfObjects
-//        if section == indexPath.section {
-//            // Select the item the nearest to the current one
-//            let item = min(indexPath.item, count - 1)
-//            return IndexPath(item: item, section: section)
-//        } else {
-//            // Select the last item of a previous section
-//            let count = sections[indexPath.section].numberOfObjects
-//            return IndexPath(item: count - 1, section: section)
-//        }
-//    }
-    
     func getIndexPath(after indexPath: IndexPath) -> IndexPath? {
         // Check that the current section is still accessible
         guard let sections = images.sections,
