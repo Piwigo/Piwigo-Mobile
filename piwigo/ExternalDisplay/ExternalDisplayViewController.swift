@@ -195,7 +195,7 @@ class ExternalDisplayViewController: UIViewController {
     @MainActor
     private func presentLowResPhoto(_ image: UIImage) {
         // Set image
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: imageView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView.image = image
@@ -223,7 +223,7 @@ class ExternalDisplayViewController: UIViewController {
         self.progressView?.progress = 1.0
         
         // Display final image
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: imageView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView.image = image
@@ -249,7 +249,7 @@ class ExternalDisplayViewController: UIViewController {
             playbackController.embed(contentOfVideo: video, in: self, containerView: videoContainerView)
         }
         // Hide image and show video
-        UIView.transition(with: videoContainerView, duration: 0.5,
+        UIView.transition(with: videoContainerView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView?.image = nil
@@ -289,7 +289,7 @@ class ExternalDisplayViewController: UIViewController {
     @MainActor
     private func presentPDFthumbnail(_ image: UIImage) {
         // Set image
-        UIView.transition(with: imageView, duration: 0.5,
+        UIView.transition(with: imageView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             self.imageView.image = image
@@ -343,7 +343,7 @@ extension ExternalDisplayViewController: @preconcurrency PdfDetailDelegate
         self.progressView?.progress = 1.0
         
         // Display PDF document
-        UIView.transition(with: pdfView, duration: 0.5,
+        UIView.transition(with: pdfView, duration: 0.3,
                           options: .transitionCrossDissolve,
                           animations: { [self] in
             pdfView?.document = document
