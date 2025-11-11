@@ -3845,8 +3845,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.4.8\nMarch 25, 2020\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\n - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.4.8\n25 مارس 2020\n\n• Piwigo يحذرك عندما:\n - الموقع يحتوي على شهادة غير صالحة،\n - قبل إنشاء اتصال غير آمن\n• تحسين إدارة ذاكرة التخزين المؤقت\n• إصلاحات الشوائب طفيفة وتحسين الواجهة"
           }
         },
         "da" : {
@@ -3946,8 +3946,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5\nAugust 27, 2020\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update."
+            "state" : "translated",
+            "value" : "الإصدار 2.5\n27 أغسطس، 2020\n\n• طلب تحميل السجلات\n• تحميل صور/مقاطع فيديو عندما يكون ذلك ممكنا\n• خيار \"Wi-Fi فقط\" لتحميل\n• لا تحميل عندما يكون في وضع الطاقة المنخفضة\n• الوصول الأسرع إلى مكتبة الصور\n• إصلاحات الشوائب طفيفة وتحسين الواجهة\n• تحديث الكود\n\nتحميل الخلفية سيكون متاحا بعد تحديث الخادم."
           }
         },
         "da" : {
@@ -4148,8 +4148,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.2\nDecember 3, 2020\n\n• Background uploading (requires the uploadAsync extension or Piwigo 11 or later)\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.2\n3 ديسمبر, 2020\n\n• تحميل الخلفية (يتطلب ملحق التحميل Async أو Piwigo 11 أو آخر)\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -4249,8 +4249,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.3\nDecember 21, 2020\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.3\n21 ديسمبر 2020\n\n• التحكم في الصور والفيديوهات التي يمكن الوصول إليها\n• نصائح وخدع لتحسين استغلال التطبيق\n• إصلاحات الشوائب"
           }
         },
         "da" : {
@@ -4350,8 +4350,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Version 2.5.4\nJanuary 2, 2021\n\n• Minor bug fixes and improvements of the interface"
+            "state" : "translated",
+            "value" : "الإصدار 2.5.4\n2 كانون الثاني/يناير 2021\n\n• إصلاحات الشوائب طفيفة والتحسينات في الواجهة"
           }
         },
         "da" : {
@@ -9728,7 +9728,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.1.1\n\n• Corrección de errores y mejoras en la interfaz"
+            "value" : "Versión 4.1.1\n\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
@@ -9770,7 +9770,7 @@
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.1.1\n\n• Naprawiono błędy i ulepszono interfejs"
+            "value" : "Wersja 4.1.1\n\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
@@ -9795,6 +9795,107 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 4.1.1\n\n• 修正錯誤並改進介面"
+          }
+        }
+      }
+    },
+    "v4.1.2_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإصدار 4.1.2\n\n• يضيف الدعم لمفاتيح API\n• إصلاح الأخطاء وتحسين الواجهة\n• تحديث التعليمات البرمجية"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.2\n\n• Tilføjer understøttelse af API-nøgler\n• Rette fejl og forbedrer grænsefladen\n• Modernisering af kode"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.2\n\n• Unterstützung für API-Schlüssel hinzugefügt\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche\n• Modernisierung des Codes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.2\n\n• Adds support for API keys\n• Fixes bugs and improves the interface\n• Code modernization"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión 4.1.2\n\n• Añade compatibilidad con claves API\n• Corrige errores y mejora la interfaz\n• Modernización del código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.2\n\n• Ajout de la prise en charge des clés API\n• Correction de bugs et amélioration de l'interface\n• Modernisation du code"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4.1.2 verzió\n\n• API-kulcsok támogatása\n• Hibajavítások és a felület fejlesztése\n• Kód modernizálása"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi 4.1.2\n\n• Menambahkan dukungan untuk kunci API\n• Memperbaiki bug dan meningkatkan antarmuka\n• Modernisasi kode"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione 4.1.2\n\n• Aggiunge il supporto per le chiavi API\n• Corregge bug e migliora l'interfaccia\n• Modernizzazione del codice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン 4.1.2\n\n• APIキーのサポートを追加\n• バグ修正とインターフェースの改善\n• コードの近代化"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versie 4.1.2\n\n• Ondersteuning voor API-sleutels toegevoegd\n• Bugs verholpen en interface verbeterd\n• Codemodernisering"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wersja 4.1.2\n\n• Dodano obsługę kluczy API\n• Naprawiono błędy i ulepszono interfejs\n• Modernizacja kodu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Версия 4.1.2\n\n• Добавлена поддержка API-ключей\n• Исправлены ошибки и улучшен интерфейс\n• Модернизация кода"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.2\n\n• Lägger till stöd för API-nycklar\n• Fixar buggar och förbättrar gränssnittet\n• Modernisering av koden"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1.2\n\n• 新增对 API 密钥的支持\n• 修复了若干错误并优化了界面\n• 代码现代化"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 4.1.2\n\n• 新增 API 金鑰支援功能\n• 修復錯誤並優化介面\n• 程式碼現代化"
           }
         }
       }
