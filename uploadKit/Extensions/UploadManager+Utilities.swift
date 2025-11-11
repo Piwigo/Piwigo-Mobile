@@ -19,7 +19,13 @@ extension UploadManager {
     public func getUploadFileURL(from upload: Upload, withSuffix suffix: String = "",
                                   deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
-        var fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        var fileName = ""
+        if #available(iOS 16.0, *) {
+            fileName = upload.localIdentifier.replacing("/", with: "-")
+        } else {
+            // Fallback on earlier versions
+            fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        }
         if fileName.isEmpty {
             fileName = "file-".appending(String(Int64(upload.creationDate)))
         }

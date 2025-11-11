@@ -282,7 +282,12 @@ extension UploadManager
                 
                 // Snapchat creates filenames containning ":" characters,
                 // which prevents the app from storing the converted file
-                utf8mb3Filename = utf8mb3Filename.replacingOccurrences(of: ":", with: "")
+                if #available(iOS 16.0, *) {
+                    utf8mb3Filename = utf8mb3Filename.replacing(":", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    utf8mb3Filename = utf8mb3Filename.replacingOccurrences(of: ":", with: "")
+                }
                 
                 // If encodedFileName is empty, build one from the current date
                 if utf8mb3Filename.count == 0 {

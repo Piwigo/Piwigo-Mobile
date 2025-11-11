@@ -187,7 +187,13 @@ public class Upload: NSManagedObject {
         super.prepareForDeletion()
         
         // Delete corresponding temporary files if any
-        let prefix = self.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        var prefix = ""
+        if #available(iOS 16.0, *) {
+            prefix = self.localIdentifier.replacing("/", with: "-")
+        } else {
+            // Fallback on earlier versions
+            prefix = self.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        }
         if !prefix.isEmpty {
             // Delete associated files stored in the Upload folder
             let fm = FileManager.default

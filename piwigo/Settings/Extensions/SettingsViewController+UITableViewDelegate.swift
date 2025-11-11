@@ -183,7 +183,12 @@ extension SettingsViewController: UITableViewDelegate
         switch activeSection(section) {
         case .logout:
             if NetworkVars.shared.serverFileTypes.isEmpty == false {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+                if #available(iOS 16.0, *) {
+                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacing(",", with: ", "))."
+                } else {
+                    // Fallback on earlier versions
+                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+                }
             }
         case .about:
             footer = NetworkVars.shared.pwgStatistics

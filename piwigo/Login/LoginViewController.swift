@@ -628,10 +628,20 @@ class LoginViewController: UIViewController {
             switch serverURL.port {
             case 80:
                 NetworkVars.shared.serverProtocol = "http://"
-                serverString = serverString.replacingOccurrences(of: "https://", with: "http://")
+                if #available(iOS 16.0, *) {
+                    serverString = serverString.replacing("https://", with: "http://")
+                } else {
+                    // Fallback on earlier versions
+                    serverString = serverString.replacingOccurrences(of: "https://", with: "http://")
+                }
             case 443:
                 NetworkVars.shared.serverProtocol = "https://"
-                serverString = serverString.replacingOccurrences(of: "http://", with: "https://")
+                if #available(iOS 16.0, *) {
+                    serverString = serverString.replacing("http://", with: "https://")
+                } else {
+                    // Fallback on earlier versions
+                    serverString = serverString.replacingOccurrences(of: "http://", with: "https://")
+                }
             default:
                 NetworkVars.shared.serverProtocol = "\(serverURL.scheme ?? "https")://"
             }

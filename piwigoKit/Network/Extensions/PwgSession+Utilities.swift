@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 extension PwgSession {
-    // MARK: - Sessionn Management
+    // MARK: Sessionn Management
     public static
     func requestServerMethods(completion: @escaping () -> Void,
                               didRejectCertificate: @escaping (Error) -> Void,
@@ -210,12 +210,21 @@ extension PwgSession {
         // TEMPORARY PATCH for case where $conf['original_url_protection'] = 'images' or 'all';
         /// See https://github.com/Piwigo/Piwigo-Mobile/issues/503
         /// Seems not to be an issue with all servers or since iOS 17 or 18.
-        let patchedURL = okURL.replacingOccurrences(of: "&amp;part=", with: "&part=")
+        var patchedURL = ""
+        if #available(iOS 16.0, *) {
+            patchedURL = okURL.replacing("&amp;part=", with: "&part=")
+                              .replacing("&amp;pwg_token=", with: "&pwg_token=")
+                              .replacing("&amp;download", with: "&download")
+                              .replacing("&amp;filter_image_id=", with: "&filter_image_id=")
+                              .replacing("&amp;sync_metadata=1", with: "&sync_metadata=1")
+        } else {
+            // Fallback on earlier versions
+            patchedURL = okURL.replacingOccurrences(of: "&amp;part=", with: "&part=")
                               .replacingOccurrences(of: "&amp;pwg_token=", with: "&pwg_token=")
                               .replacingOccurrences(of: "&amp;download", with: "&download")
                               .replacingOccurrences(of: "&amp;filter_image_id=", with: "&filter_image_id=")
                               .replacingOccurrences(of: "&amp;sync_metadata=1", with: "&sync_metadata=1")
-        
+        }
         var serverComponents: URLComponents
         
         if let components = URLComponents(string: patchedURL) {

@@ -217,8 +217,15 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription
-                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            var msg = ""
+            if #available(iOS 16.0, *) {
+                msg = error.localizedDescription
+                           .replacing(fileURL.absoluteString, with: fileURL.lastPathComponent)
+            } else {
+                // Fallback on earlier versions
+                msg = error.localizedDescription
+                           .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            }
             let err = NSError(domain: error.domain, code: error.code,
                               userInfo: [NSLocalizedDescriptionKey : msg])
             upload.setState(.preparingFail, error: err, save: true)
@@ -262,8 +269,15 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription
-                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            var msg = ""
+            if #available(iOS 16.0, *) {
+                msg = error.localizedDescription
+                           .replacing(fileURL.absoluteString, with: fileURL.lastPathComponent)
+            } else {
+                // Fallback on earlier versions
+                msg = error.localizedDescription
+                           .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            }
             let err = PwgKitError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
@@ -429,10 +443,16 @@ extension UploadManager {
         if #available(iOSApplicationExtension 14.0, *) {
             UploadManager.logger.notice("Did complete task \(task.taskIdentifier, privacy: .public), delete files")
         }
-        let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+        var imageFile = ""
+        if #available(iOS 16.0, *) {
+            imageFile = identifier.replacing("/", with: "-")
+        } else {
+            // Fallback on earlier versions
+            imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+        }
         deleteFilesInUploadsDirectory(withPrefix: imageFile)
     }
-
+    
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
@@ -588,8 +608,15 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription
-                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            var msg = ""
+            if #available(iOS 16.0, *) {
+                msg = error.localizedDescription
+                           .replacing(fileURL.absoluteString, with: fileURL.lastPathComponent)
+            } else {
+                // Fallback on earlier versions
+                msg = error.localizedDescription
+                           .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            }
             let err = PwgKitError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
@@ -706,8 +733,15 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            let msg = error.localizedDescription
-                .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            var msg = ""
+            if #available(iOS 16.0, *) {
+                msg = error.localizedDescription
+                           .replacing(fileURL.absoluteString, with: fileURL.lastPathComponent)
+            } else {
+                // Fallback on earlier versions
+                msg = error.localizedDescription
+                           .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
+            }
             let err = PwgKitError.pwgError(code: error.code, msg: msg)
             upload.setState(.preparingFail, error: err, save: true)
             self.didEndTransfer(for: upload)
@@ -940,7 +974,13 @@ extension UploadManager {
         numberFormatter.minimumIntegerDigits = 5
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
-        let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+        var imageFile = ""
+        if #available(iOS 16.0, *) {
+            imageFile = identifier.replacing("/", with: "-")
+        } else {
+            // Fallback on earlier versions
+            imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+        }
         let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
         deleteFilesInUploadsDirectory(withPrefix: chunkFileName)
     }
@@ -1135,7 +1175,13 @@ extension UploadManager {
             }
             
             // Delete uploaded file
-            let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+            var imageFile = ""
+            if #available(iOS 16.0, *) {
+                imageFile = identifier.replacing("/", with: "-")
+            } else {
+                // Fallback on earlier versions
+                imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+            }
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Clear bytes and chunk counter
@@ -1208,7 +1254,13 @@ extension UploadManager {
     // MARK: - Utilities
     func createBoundary(from identifier: String) -> String {
         /// We don't use the UUID to be able to test uploads with a simulator.
-        let suffix = identifier.replacingOccurrences(of: "/", with: "").map { $0.lowercased() }.joined()
+        var suffix = ""
+        if #available(iOS 16.0, *) {
+            suffix = identifier.replacing("/", with: "").map { $0.lowercased() }.joined()
+        } else {
+            // Fallback on earlier versions
+            suffix = identifier.replacingOccurrences(of: "/", with: "").map { $0.lowercased() }.joined()
+        }
         let boundary = String(repeating: "-", count: 68 - suffix.count) + suffix
 //        debugPrint("\(dbg()) \(boundary)")
         return boundary

@@ -190,9 +190,15 @@ extension Data {
     // MARK: - Piwgo Response Checker
     func saveInvalidJSON(for method: String) {
         // Prepare file name from current date (UTC time)
-        let pwgMethod = method.replacingOccurrences(of: "format=json&method=", with: "")
+        var pwgMethod = ""
+        if #available(iOS 16.0, *) {
+            pwgMethod = method.replacing("format=json&method=", with: "")
+        } else {
+            // Fallback on earlier versions
+            pwgMethod = method.replacingOccurrences(of: "format=json&method=", with: "")
+        }
         let fileName = JSONprefix + DateUtilities.logsDateFormatter.string(from: Date()) + " " + pwgMethod + JSONextension
-
+        
         // Logs are saved in the /tmp directory and will be deleted:
         // - by the app if the user kills it
         // - by the system after a certain amount of time
