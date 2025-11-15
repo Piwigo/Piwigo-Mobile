@@ -47,7 +47,7 @@ extension PwgSession
                 
                 // No error, check that we received a valid response
                 guard var jsonData = data, let httpResponse = response as? HTTPURLResponse
-                else { throw PwgKitError.invalidStatusCode(statusCode: -1) }
+                else { throw PwgKitError.invalidResponse }
                 
                 // Valid response, check the absence of HTTP error
                 guard (200...299).contains(httpResponse.statusCode)
