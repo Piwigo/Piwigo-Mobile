@@ -251,6 +251,10 @@ extension PwgKitError: LocalizedError {
             return String(localized: "CoreDataFetch_DigestError", bundle: piwigoKit,
                           comment: "Could not digest the fetched data.")
 
+        // HTTP errors
+        case .invalidStatusCode(statusCode: let code):
+            return HTTPURLResponse.localizedString(forStatusCode: code)
+        
         // Piwigo errors
         case .pwgError(code: let code, msg: let msg):
             switch code {
