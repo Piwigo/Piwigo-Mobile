@@ -47,8 +47,9 @@ class PiwigoHUD: UIView
     @IBOutlet weak var titleLeading: NSLayoutConstraint!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var detailLabelTop: NSLayoutConstraint!
+    @IBOutlet weak var detailLabelBottom: NSLayoutConstraint!
     @IBOutlet weak var button: UIButton!
-    @IBOutlet weak var buttonTop: NSLayoutConstraint!
+    @IBOutlet weak var buttonBottom: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -104,10 +105,11 @@ class PiwigoHUD: UIView
             button?.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             button?.backgroundColor = PwgColor.cellBackground
             button?.isHidden = false
-            buttonTop?.constant = 16.0
+            buttonBottom?.constant = 16.0
         } else {
             button?.isHidden = true
-            buttonTop?.constant = 0.0
+            buttonBottom?.constant = 0.0
+            detailLabelBottom?.constant = 0.0
         }
         
         // Set HUD view width after labels and button configurations
@@ -185,7 +187,8 @@ class PiwigoHUD: UIView
             button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             button.backgroundColor = PwgColor.cellBackground
             button.isHidden = false
-            buttonTop?.constant = 16.0
+            buttonBottom?.constant = 16.0
+            detailLabelBottom?.constant = 8.0
         } else {
             // Modify button title and/or target/action
             if let buttonTitle = buttonTitle {

@@ -108,9 +108,10 @@
                 <outlet property="activityIndicator" destination="qV3-qh-3os" id="vNx-wH-AYy"/>
                 <outlet property="activityIndicatorTop" destination="hem-WX-aK2" id="Cp0-Vk-gcN"/>
                 <outlet property="button" destination="fDu-hd-Ulx" id="SyL-we-WBZ"/>
-                <outlet property="buttonTop" destination="5dv-gC-bVN" id="qYL-iL-SvL"/>
+                <outlet property="buttonBottom" destination="3me-CH-Yq9" id="CPS-18-fgF"/>
                 <outlet property="completedImage" destination="D1n-W5-8WK" id="aaZ-VJ-GH7"/>
                 <outlet property="detailLabel" destination="2s7-H1-VKn" id="vex-k2-HGi"/>
+                <outlet property="detailLabelBottom" destination="5dv-gC-bVN" id="M3x-3B-QP9"/>
                 <outlet property="detailLabelTop" destination="5GQ-qf-AKT" id="ipQ-3B-J1g"/>
                 <outlet property="progressView" destination="17H-o7-uYw" id="CoT-iT-qcz"/>
                 <outlet property="titleLabel" destination="uYd-qh-gTW" id="1mh-b9-PPR"/>
