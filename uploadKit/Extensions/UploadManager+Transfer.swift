@@ -325,11 +325,14 @@ extension UploadManager {
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue(upload.objectID.uriRepresentation().absoluteString, forHTTPHeaderField: pwgHTTPuploadID)
         request.setValue(upload.fileName, forHTTPHeaderField: "filename")
-        request.addValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
-        request.addValue(String(chunk), forHTTPHeaderField: pwgHTTPchunk)
-        request.addValue(String(chunks), forHTTPHeaderField: pwgHTTPchunks)
-        request.addValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
-
+        request.setValue(upload.localIdentifier, forHTTPHeaderField: pwgHTTPimageID)
+        request.setValue(String(chunk), forHTTPHeaderField: pwgHTTPchunk)
+        request.setValue(String(chunks), forHTTPHeaderField: pwgHTTPchunks)
+        request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
+        
+        // Set HTTP header when API keys are used
+        request.setAPIKeyHTTPHeader(for: pwgImagesUpload)
+        
         // As soon as a task is created, the timeout counter starts
         let task = frgdSession.uploadTask(with: request, from: httpBody)
         task.taskDescription = UploadSessions.shared.uploadSessionIdentifier
