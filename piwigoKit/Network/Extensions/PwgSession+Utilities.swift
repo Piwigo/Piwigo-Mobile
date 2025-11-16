@@ -14,10 +14,10 @@ extension PwgSession {
     // MARK: Session Management
     public static
     func requestServerMethods(completion: @escaping () -> Void,
-                              didRejectCertificate: @escaping (Error) -> Void,
-                              didFailHTTPauthentication: @escaping (Error) -> Void,
-                              didFailSecureConnection: @escaping (Error) -> Void,
-                              failure: @escaping (Error) -> Void) {
+                              didRejectCertificate: @escaping (PwgKitError) -> Void,
+                              didFailHTTPauthentication: @escaping (PwgKitError) -> Void,
+                              didFailSecureConnection: @escaping (PwgKitError) -> Void,
+                              failure: @escaping (PwgKitError) -> Void) {
         // Collect list of methods supplied by Piwigo server
         // => Determine if Community extension 2.9a or later is installed and active
         PwgSession.shared.getMethods {
@@ -32,7 +32,7 @@ extension PwgSession {
             }
 
             // HTTP Basic authentication required?
-            if (error as NSError).code == 401 || (error as NSError).code == 403 || NetworkVars.shared.didFailHTTPauthentication {
+            if error.failedAuthentication || NetworkVars.shared.didFailHTTPauthentication {
                 // Without prior knowledge, the app already tried Piwigo credentials
                 // but unsuccessfully, so we request HTTP credentials
                 didFailHTTPauthentication(error)
@@ -77,7 +77,15 @@ extension PwgSession {
     public static
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
-                      failure: @escaping (Error) -> Void) {
+                      failure: @escaping (PwgKitError) -> Void) {
+        // Check if API keys are used
+        /// It is useless to check the session when using API keys
+        if NetworkVars.shared.usesAPIkeys,
+           NetworkVars.shared.username.isValidPublicKey() {
+            completion()
+            return
+        }
+        
         // Check if the session is still active every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
         if PwgSession.shared.hasNetworkConnectionChanged == false,
@@ -169,7 +177,7 @@ extension PwgSession {
     }
     
     static func getPiwigoConfig(completion: @escaping () -> Void,
-                                failure: @escaping (Error) -> Void) {
+                                failure: @escaping (PwgKitError) -> Void) {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.shared.usesCommunityPluginV29 {
             PwgSession.shared.communityGetStatus {
