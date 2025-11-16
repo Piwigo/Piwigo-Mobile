@@ -117,7 +117,11 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     /// - pwg.users.api_key.revoke method available, false by default (available since Piwigo 16)
     @UserDefault("usesAPIkeys", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesAPIkeys: Bool
-
+    
+    /// - API methods which are prohibited when making requests with an API key
+    @UserDefault("apiKeysProhibitedMethods", defaultValue: Set([pwgSessionLogin, pwgSessionLogout]), userDefaults: UserDefaults.dataSuite)
+    public var apiKeysProhibitedMethods: Set<String>
+    
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
