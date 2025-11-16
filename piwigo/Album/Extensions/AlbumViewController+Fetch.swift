@@ -14,7 +14,7 @@ extension AlbumViewController
 {
     // MARK: - Fetch Album Data in the Background
     @MainActor
-    func fetchAlbumsAndImages(completion: @escaping () -> Void) {
+    func fetchAlbumsAndImages() {
         // Remember query and which images belong to the album
         // from main context before calling background tasks
         /// - takes 662 ms for 2500 photos on iPhone 14 Pro with derivatives inside Image instances
@@ -41,19 +41,14 @@ extension AlbumViewController
                 // Use the ImageProvider to fetch image data. On completion,
                 // handle general UI updates and error alerts on the main queue.
                 self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
-                                 fromPage: 0, toPage: 0) {
-                    completion()
-                }
+                                 fromPage: 0, toPage: 0)
             } else {
-                self.fetchAlbums(withInitialImageIds: oldImageIDs, query: query) {
-                    completion()
-                }
+                self.fetchAlbums(withInitialImageIds: oldImageIDs, query: query)
             }
         }
     }
     
-    private func fetchAlbums(withInitialImageIds oldImageIDs: Set<Int64>, query: String,
-                             completion: @escaping () -> Void) {
+    private func fetchAlbums(withInitialImageIds oldImageIDs: Set<Int64>, query: String) {
         // Use the AlbumProvider to fetch album data. On completion,
         // handle general UI updates and error alerts on the main queue.
         let thumnailSize = pwgImageSize(rawValue: AlbumVars.shared.defaultAlbumThumbnailSize) ?? .medium
@@ -78,7 +73,8 @@ extension AlbumViewController
                     }
                     // ► Remove non-fetched images from album
                     self.removeImageWithIDs(oldImageIDs)
-                    completion()
+                    // ► Update navigtion bar, number of images, etc.
+                    self.fetchCompleted()
                     return
                 }
                 
@@ -87,8 +83,7 @@ extension AlbumViewController
                 let (quotient, remainder) = nbImages.quotientAndRemainder(dividingBy: Int64(self.perPage))
                 let lastPage = Int(quotient) + Int(remainder > 0 ? 1 : 0)
                 self.fetchImages(withInitialImageIds: oldImageIDs, query: query,
-                                 fromPage: 0, toPage: lastPage - 1,
-                                 completion: completion)
+                                 fromPage: 0, toPage: lastPage - 1)
                 return
             }
             
@@ -97,8 +92,7 @@ extension AlbumViewController
                 // Done fetching album data
                 // ► Remove current album from list of albums being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-
-                completion()
+                // ► Update navigtion bar, number of images, etc.
                 self.showError(error)
             }
         }
@@ -107,8 +101,7 @@ extension AlbumViewController
 
     // MARK: - Fetch Image Data in the Background
     func fetchImages(withInitialImageIds oldImageIDs: Set<Int64>, query: String,
-                     fromPage onPage: Int, toPage lastPage: Int,
-                     completion: @escaping () -> Void) {
+                     fromPage onPage: Int, toPage lastPage: Int) {
         // Use the ImageProvider to fetch image data. On completion,
         // handle general UI updates and error alerts on the main queue.
         imageProvider.fetchImages(ofAlbumWithId: albumData.pwgID, withQuery: query, sort: sortOption,
@@ -188,8 +181,7 @@ extension AlbumViewController
                 }
                 // Load next page of images
                 self.fetchImages(withInitialImageIds: imageIDs, query: query,
-                                 fromPage: onPage + 1, toPage: newLastPage,
-                                 completion: completion)
+                                 fromPage: onPage + 1, toPage: newLastPage)
                 return
             }
             
@@ -200,17 +192,15 @@ extension AlbumViewController
             removeImageWithIDs(imageIDs)
             // ► Delete orphaned images in the background
             imageProvider.purgeOrphans()
-
-            completion()
-            return
+            // ► Update navigtion bar, number of images, etc.
+            self.fetchCompleted()
         }
         failure: { error in
             DispatchQueue.main.async { [self] in
                 // Done fetching images
                 // ► Remove current album from list of album being fetched
                 AlbumVars.shared.isFetchingAlbumData.remove(self.categoryId)
-                
-                completion()
+                // Display error if needed
                 self.showError(error)
             }
         }

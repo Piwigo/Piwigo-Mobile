@@ -790,9 +790,7 @@ class AlbumViewController: UIViewController
         // Fetch album data and then image data
         PwgSession.checkSession(ofUser: self.user) { [self] in
             DispatchQueue.main.async { [self] in
-                self.fetchAlbumsAndImages { [self] in
-                    self.fetchCompleted()
-                }
+                self.fetchAlbumsAndImages()
             }
         } failure: { [self] error in
             DispatchQueue.main.async { [self] in
@@ -833,7 +831,7 @@ class AlbumViewController: UIViewController
         self.startFetchingAlbumAndImages(withHUD: true)
     }
     
-    func fetchCompleted() {
+    @objc func fetchCompleted() {
         DispatchQueue.main.async { [self] in
             // Hide HUD if needed
             self.navigationController?.hideHUD { }
