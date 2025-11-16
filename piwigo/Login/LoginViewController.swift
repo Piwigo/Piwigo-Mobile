@@ -279,7 +279,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestCertificateApproval(afterError error: PwgKitError?) {
+    func requestCertificateApproval(afterError error: PwgKitError) {
         let title = NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private")
         let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.shared.certificateInformation)"
         let cancelAction = UIAlertAction(
@@ -309,7 +309,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestHttpCredentials(afterError error: PwgKitError?) {
+    func requestHttpCredentials(afterError error: PwgKitError) {
         let username = NetworkVars.shared.httpUsername
         let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: username)
         httpAlertController = LoginUtilities.getHttpCredentialsAlert(textFieldDelegate: self,
@@ -337,7 +337,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestNonSecuredAccess(afterError error: PwgKitError?) {
+    func requestNonSecuredAccess(afterError error: PwgKitError) {
         let title = NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed")
         let message = NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
         let cancelAction = UIAlertAction(
@@ -529,34 +529,27 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func logging(inConnectionError error: PwgKitError?) {
+    func logging(inConnectionError error: PwgKitError) {
         // Do not present error message when executing background task
         if UploadManager.shared.isExecutingBackgroundUploadTask {
             hideLoading()
             return
         }
 
-        // Unknown error?
-        guard let error = error else {
-            updateHUD(title: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), 
-                      detail: "",
-                      buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                      buttonTarget: self, buttonSelector: #selector(hideLoading),
-                      inMode: .text)
-            return
-        }
-        
         // Error returned
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
-        if error.incompatibleVersion {
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+        if error.requestCancelled {
+            title = NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled")
         }
         else if error.failedAuthentication {
             title = NSLocalizedString("loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
+        }
+        else if error.incompatibleVersion {
+            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         }
         else if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
