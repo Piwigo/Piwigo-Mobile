@@ -253,7 +253,7 @@ extension PwgKitError: LocalizedError {
 
         // HTTP errors
         case .invalidStatusCode(statusCode: let code):
-            return HTTPURLResponse.localizedString(forStatusCode: code)
+            return "HTTP error \(code): " + HTTPURLResponse.localizedString(forStatusCode: code)
         
         // Piwigo errors
         case .pwgError(code: let code, msg: let msg):
