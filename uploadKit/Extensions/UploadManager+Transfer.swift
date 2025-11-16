@@ -1266,7 +1266,7 @@ extension UploadManager {
 
     
     // MARK: - Utilities
-    func createBoundary(from identifier: String) -> String {
+    private func createBoundary(from identifier: String) -> String {
         /// We don't use the UUID to be able to test uploads with a simulator.
         var suffix = ""
         if #available(iOS 16.0, *) {
@@ -1280,7 +1280,7 @@ extension UploadManager {
         return boundary
     }
 
-    func convertFormField(named name: String, value: String, using boundary: String) -> String {
+    private func convertFormField(named name: String, value: String, using boundary: String) -> String {
       var fieldString = "--\(boundary)\r\n"
       fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
       fieldString += "\r\n"
@@ -1289,7 +1289,7 @@ extension UploadManager {
       return fieldString
     }
     
-    func convertFileData(fieldName: String, fileName: String, mimeType: String,
+    private func convertFileData(fieldName: String, fileName: String, mimeType: String,
                          fileData: Data, using boundary: String) -> Data {
         var data = Data()
         data.append("--\(boundary)\r\n".data(using: .utf8)!)
