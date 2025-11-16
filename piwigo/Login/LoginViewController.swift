@@ -279,7 +279,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestCertificateApproval(afterError error: Error?) {
+    func requestCertificateApproval(afterError error: PwgKitError?) {
         let title = NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private")
         let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.shared.certificateInformation)"
         let cancelAction = UIAlertAction(
@@ -309,7 +309,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestHttpCredentials(afterError error: Error?) {
+    func requestHttpCredentials(afterError error: PwgKitError?) {
         let username = NetworkVars.shared.httpUsername
         let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: username)
         httpAlertController = LoginUtilities.getHttpCredentialsAlert(textFieldDelegate: self,
@@ -337,7 +337,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestNonSecuredAccess(afterError error: Error?) {
+    func requestNonSecuredAccess(afterError error: PwgKitError?) {
         let title = NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed")
         let message = NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
         let cancelAction = UIAlertAction(
@@ -355,7 +355,7 @@ class LoginViewController: UIViewController {
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, loginAction])
     }
 
-    func tryNonSecuredAccess(afterError error: Error?) {
+    func tryNonSecuredAccess(afterError error: PwgKitError?) {
         // Proceed at their own risk
         NetworkVars.shared.serverProtocol = "http://"
 
@@ -529,7 +529,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func logging(inConnectionError error: Error?) {
+    func logging(inConnectionError error: PwgKitError?) {
         // Do not present error message when executing background task
         if UploadManager.shared.isExecutingBackgroundUploadTask {
             hideLoading()
@@ -550,11 +550,11 @@ class LoginViewController: UIViewController {
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
-        if let pwgError = error as? PwgKitError, pwgError.incompatibleVersion {
+        if error.incompatibleVersion {
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
             detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
         }
-        else if let pwgError = error as? PwgKitError, pwgError.failedAuthentication {
+        else if error.failedAuthentication {
             title = NSLocalizedString("loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
         }

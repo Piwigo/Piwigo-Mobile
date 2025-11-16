@@ -78,10 +78,10 @@ extension ImageViewController
     }
     
     @MainActor
-    private func addToFavoritesError(_ error: Error) {
+    private func addToFavoritesError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
 
@@ -147,10 +147,10 @@ extension ImageViewController
     }
     
     @MainActor
-    private func removeFromFavoritesError(_ error: Error) {
+    private func removeFromFavoritesError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
 

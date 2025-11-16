@@ -139,7 +139,7 @@ extension SelectCategoryViewController
     }
     
     @MainActor
-    private func didFailWithError(_ error: Error?) {
+    private func didFailWithError(_ error: PwgKitError) {
         // Hide HUD and inform user
         self.hideHUD { [self] in
             self.showError(error)

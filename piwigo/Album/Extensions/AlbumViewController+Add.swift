@@ -147,11 +147,11 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func addCategoryError(_ error: Error) {
+    private func addCategoryError(_ error: PwgKitError) {
         self.hideHUD() { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            if error.requiresLogout {
+                ClearCache.closeSessionWithPwgError(from: self, error: error)
                 return
             }
             

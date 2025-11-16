@@ -211,10 +211,10 @@ extension AlbumViewController
     /// For calling Piwigo server in version 2.10 to 13.x
     @MainActor
     private func removeImages(_ toRemove: Set<Image>, andThenDelete toDelete: Set<Image>,
-                              total: Float, error: Error) {
+                              total: Float, error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         
@@ -279,10 +279,10 @@ extension AlbumViewController
     }
 
     @MainActor
-    private func dissociateImagesError(_ error: Error) {
+    private func dissociateImagesError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         
@@ -362,10 +362,10 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func deleteImagesError(_ error: Error) {
+    private func deleteImagesError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
 

@@ -248,7 +248,7 @@ extension AlbumViewController
 
     // MARK: - Error Management
     @MainActor
-    private func showError(_ error: Error?) {
+    private func showError(_ error: PwgKitError?) {
         guard let error = error else {
             navigationController?.showHUD(
                 withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
@@ -260,7 +260,7 @@ extension AlbumViewController
         }
         
         // Returns to login view only when credentials are rejected
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
+        if error.requiresLogout {
             // Invalid Piwigo or HTTP credentials
             navigationController?.showHUD(
                 withTitle: PwgKitError.authenticationFailed.localizedDescription,
@@ -269,7 +269,7 @@ extension AlbumViewController
                 buttonTarget: self, buttonSelector: #selector(hideLoading),
                 inMode: .text)
         }
-        else if let pwgError = error as? PwgKitError, pwgError.hasMissingParameter {
+        else if error.hasMissingParameter {
             // Hide HUD
             navigationController?.hideHUD() { [self] in
                 // End refreshing if needed

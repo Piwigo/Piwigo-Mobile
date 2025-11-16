@@ -124,10 +124,8 @@ extension LocalImagesViewController: UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Create cell
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LocalImageCollectionViewCell", for: indexPath) as? LocalImageCollectionViewCell else {
-            debugPrint("Error: collectionView.dequeueReusableCell does not return a LocalImageCollectionViewCell!")
-            return LocalImageCollectionViewCell()
-        }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LocalImageCollectionViewCell", for: indexPath) as? LocalImageCollectionViewCell
+        else { preconditionFailure("Error: collectionView.dequeueReusableCell does not return a LocalImageCollectionViewCell!") }
         
         // Get image asset and index which depends on image sort type and date order
         let index = getImageIndex(for: indexPath)

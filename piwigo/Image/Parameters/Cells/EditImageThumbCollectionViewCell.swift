@@ -275,7 +275,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
     }
     
     @MainActor
-    private func renameImageFileError(_ error: Error, topViewController: UIViewController?) {
+    private func renameImageFileError(_ error: PwgKitError, topViewController: UIViewController?) {
         topViewController?.hideHUD {
             topViewController?.dismissPiwigoError(
                 withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),

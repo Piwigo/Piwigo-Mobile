@@ -140,10 +140,10 @@ class TagSelectorViewController: UIViewController {
     }
     
     @MainActor
-    private func didFetchTagsWithError(_ error: Error) {
+    private func didFetchTagsWithError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         

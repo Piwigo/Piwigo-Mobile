@@ -137,12 +137,12 @@ class TagsViewController: UITableViewController {
             self.tagProvider.fetchTags(asAdmin: self.user.hasAdminRights) { [self] error in
                 guard let error = error else { return }     // Done if no error
                 DispatchQueue.main.async { [self] in
-                    didFetchTagsWithError(error as Error)
+                    didFetchTagsWithError(error)
                 }
             }
         } failure: { [self] error in
             DispatchQueue.main.async { [self] in
-                didFetchTagsWithError(error as Error)
+                didFetchTagsWithError(error)
             }
         }
         
@@ -157,10 +157,10 @@ class TagsViewController: UITableViewController {
     }
     
     @MainActor
-    private func didFetchTagsWithError(_ error: Error) {
+    private func didFetchTagsWithError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         

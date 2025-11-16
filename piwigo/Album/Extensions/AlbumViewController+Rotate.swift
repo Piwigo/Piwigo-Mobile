@@ -139,10 +139,10 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func rotateImagesInDatabaseError(_ error: Error) {
+    private func rotateImagesInDatabaseError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
 
@@ -151,7 +151,7 @@ extension AlbumViewController
             // Plugin rotateImage installed?
             let title = NSLocalizedString("rotateImageFail_title", comment: "Rotation Failed")
             var message = ""
-            if let pwgError = error as? PwgKitError, pwgError.pluginMissing {
+            if error.pluginMissing {
                 message = NSLocalizedString("rotateImageFail_plugin", comment: "The rotateImage plugin is not activated.")
             }
             else {

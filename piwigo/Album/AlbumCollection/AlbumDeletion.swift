@@ -260,10 +260,10 @@ class AlbumDeletion: NSObject
     }
     
     @MainActor
-    private func deleteAlbumError(_ error: Error, title: String, message: String) {
+    private func deleteAlbumError(_ error: PwgKitError, title: String, message: String) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self.topViewController, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self.topViewController, error: error)
             return
         }
         

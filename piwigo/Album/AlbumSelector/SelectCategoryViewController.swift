@@ -395,11 +395,11 @@ class SelectCategoryViewController: UIViewController {
     }
     
     @MainActor
-    private func didFetchAlbumsWithError(error: Error) {
+    private func didFetchAlbumsWithError(error: PwgKitError) {
         navigationController?.hideHUD { [self] in
             // Session logout required?
-            if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-                ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+            if error.requiresLogout {
+                ClearCache.closeSessionWithPwgError(from: self, error: error)
                 return
             }
             
@@ -514,10 +514,10 @@ class SelectCategoryViewController: UIViewController {
 
     // For presenting errors returned by Albums/Images actions
     @MainActor
-    func showError(_ error: Error?) {
+    func showError(_ error: PwgKitError) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         
@@ -548,7 +548,7 @@ class SelectCategoryViewController: UIViewController {
         }
         
         // Report error
-        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error?.localizedDescription ?? "") { [self] in
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error.localizedDescription) { [self] in
             // Forget the choice
             self.selectedCategoryId = Int32.min
             // Save changes if any
