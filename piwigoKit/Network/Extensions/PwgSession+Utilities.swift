@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 extension PwgSession {
-    // MARK: Sessionn Management
+    // MARK: Session Management
     public static
     func requestServerMethods(completion: @escaping () -> Void,
                               didRejectCertificate: @escaping (Error) -> Void,
