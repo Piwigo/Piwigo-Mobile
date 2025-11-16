@@ -380,7 +380,7 @@ class EditImageParamsViewController: UIViewController
     
     private func setProperties(ofImage imageData: Image,
                                completion: @escaping () -> Void,
-                               failure: @escaping (Error) -> Void) {
+                               failure: @escaping (PwgKitError) -> Void) {
         // Image ID
         var paramsDict: [String : Any] = ["image_id" : imageData.pwgID,
                                           "single_value_mode"   : "replace",

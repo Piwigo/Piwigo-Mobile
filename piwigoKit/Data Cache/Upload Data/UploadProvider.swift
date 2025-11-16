@@ -43,7 +43,7 @@ public class UploadProvider: NSObject {
      processing the record in batches to avoid a high memory footprint.
     */
     public func importUploads(from uploadRequest: [UploadProperties],
-                              completionHandler: @escaping (Error?) -> Void) {
+                              completionHandler: @escaping (PwgKitError?) -> Void) {
         
         guard uploadRequest.isEmpty == false else {
             completionHandler(nil)
@@ -301,7 +301,7 @@ public class UploadProvider: NSObject {
      processing the record in batches to avoid a high memory footprint.
     */
     public func delete(uploadRequests: [Upload],
-                       completion: @escaping (Error?) -> Void) {
+                       completion: @escaping (PwgKitError?) -> Void) {
         
         guard uploadRequests.isEmpty == false else {
             completion(nil)

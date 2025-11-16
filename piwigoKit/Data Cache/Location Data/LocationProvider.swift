@@ -51,7 +51,7 @@ public class LocationProvider: NSObject {
      The requests are stored in a queue and performed one after the other by a shared instance.
     */
     private func fetchPlaceName(at location: LocationProperties, 
-                                completionHandler: @escaping (Error?) -> Void) {
+                                completionHandler: @escaping (PwgKitError?) -> Void) {
         
         // Add Geocoder request in queue
         let operation = BlockOperation(block: {
