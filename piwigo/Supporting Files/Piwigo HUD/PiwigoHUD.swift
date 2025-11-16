@@ -23,24 +23,41 @@ class PiwigoHUD: UIView
 {
     let margin = CGFloat(16)            // See XIB file
     let stepWidth = CGFloat(10)         // Steps by which the HUD width is increased to limit # of lines
-    let context = NSStringDrawingContext()
+    let context: NSStringDrawingContext = {
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        return context
+    }()
+    let titleColor: UIColor = {
+        if #available(iOS 26.0, *) {
+            return .label
+        } else {
+            return PwgColor.text
+        }
+    }()
     var minWidth = CGFloat.zero         // Calculated when setting label and button titles
     let duration = 0.25                 // Animation duration
     
     @IBOutlet weak var view: UIView!
     @IBOutlet weak var viewWidth: NSLayoutConstraint!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityIndicatorTop: NSLayoutConstraint!
+    @IBOutlet weak var progressView: RingProgressView!
     @IBOutlet weak var completedImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var titleBottomToIndicatorBottom: NSLayoutConstraint!    // 26 points
     @IBOutlet weak var detailLabel: UILabel!
-    @IBOutlet weak var detailBottomToTitleBottom: NSLayoutConstraint!       // 20 points
+    @IBOutlet weak var detailLabelTop: NSLayoutConstraint!
     @IBOutlet weak var button: UIButton!
-    @IBOutlet weak var buttonBottomToDetailBottom: NSLayoutConstraint!      // 36 points
-    @IBOutlet weak var progressView: RingProgressView!
+    @IBOutlet weak var buttonTop: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+
+        // Aspect
+        view?.layer.cornerCurve = .continuous
+        view?.layer.cornerRadius = TableViewUtilities.rowCornerRadius
+        view?.layer.borderWidth = 0.8
+        applyColorPalette()
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -71,26 +88,26 @@ class PiwigoHUD: UIView
         
         // Configure HUD detail
         if let detail = detail, detail.isEmpty == false {
-            (detailLabel.attributedText, detailBottomToTitleBottom.constant) = getAttributed(detail: detail, forMaxWidth: screenWidth)
-            detailLabel.isHidden = false
-            detailBottomToTitleBottom.constant = 20
+            detailLabel.attributedText = getAttributed(detail: detail, forMaxWidth: screenWidth)
+            detailLabel?.isHidden = false
+            detailLabelTop?.constant = 8.0
         } else {
             detailLabel?.isHidden = true
-            detailBottomToTitleBottom?.constant = 0
+            detailLabelTop?.constant = 0.0
         }
         
         // Configure HUD button
         if let buttonTitle = buttonTitle, buttonTitle.isEmpty == false,
            let buttonTarget = buttonTarget, let buttonSelector = buttonSelector {
-            let attrTitle = getAttributed(button: buttonTitle, forWidth: screenWidth)
+            let attrTitle = getAttributed(button: buttonTitle)
             button?.setAttributedTitle(attrTitle, for: .normal)
             button?.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             button?.backgroundColor = PwgColor.cellBackground
             button?.isHidden = false
-            buttonBottomToDetailBottom?.constant = 36
+            buttonTop?.constant = 16.0
         } else {
             button?.isHidden = true
-            buttonBottomToDetailBottom?.constant = 0
+            buttonTop?.constant = 0.0
         }
         
         // Set HUD view width after labels and button configurations
@@ -121,7 +138,8 @@ class PiwigoHUD: UIView
     @objc func applyColorPalette() {
         backgroundColor = UIColor(white: 0, alpha: 0.5)
         view?.backgroundColor = PwgColor.background
-        titleLabel?.textColor = PwgColor.text
+        view?.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+        titleLabel?.textColor = titleColor
         detailLabel?.textColor = PwgColor.text
         button?.backgroundColor = PwgColor.cellBackground
         activityIndicator?.color = PwgColor.text
@@ -148,28 +166,27 @@ class PiwigoHUD: UIView
         
         // Update HUD detail
         if let detail = detail, detail.isEmpty == false {
-            (detailLabel.attributedText, detailBottomToTitleBottom.constant) = getAttributed(detail: detail, forMaxWidth: screenWidth)
-            detailLabel.isHidden = false
-
-        } else {
-            detailLabel.text = ""
-            detailLabel.isHidden = true
-            detailBottomToTitleBottom.constant = 0
+            detailLabel.attributedText = getAttributed(detail: detail, forMaxWidth: screenWidth)
+            detailLabel?.text = detail
+            detailLabel?.isHidden = false
+        }
+        else {
+            detailLabel?.text = ""
+            detailLabel?.isHidden = true
         }
         
         // Add or update button
         if button.isHidden, let buttonTitle = buttonTitle,
            let buttonTarget = buttonTarget, let buttonSelector = buttonSelector {
-            let attrTitle = getAttributed(button: buttonTitle, forWidth: screenWidth)
+            let attrTitle = getAttributed(button: buttonTitle)
             button.setAttributedTitle(attrTitle, for: .normal)
             button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             button.backgroundColor = PwgColor.cellBackground
             button.isHidden = false
-            detailBottomToTitleBottom.constant = 36
         } else {
             // Modify button title and/or target/action
             if let buttonTitle = buttonTitle {
-                let attrTitle = getAttributed(button: buttonTitle, forWidth: screenWidth)
+                let attrTitle = getAttributed(button: buttonTitle)
                 button.setAttributedTitle(attrTitle, for: .normal)
             }
             if let buttonTarget = buttonTarget, let buttonSelector = buttonSelector {
@@ -200,51 +217,47 @@ class PiwigoHUD: UIView
     private func config(mode: pwgHudMode) {
         switch mode {
         case .text:                 // No activity indicator or checkmark
-            activityIndicator.isHidden = true
-            progressView.isHidden = true
-            completedImage.isHidden = true
-            titleBottomToIndicatorBottom.constant = 0
+            activityIndicator?.isHidden = true
+            progressView?.isHidden = true
+            completedImage?.isHidden = true
+            activityIndicatorTop?.constant = 0.0
         case .indeterminate:        // Activity indicator presented
-            activityIndicator.color = PwgColor.text
-            activityIndicator.isHidden = false
-            progressView.isHidden = true
-            completedImage.isHidden = true
-            titleBottomToIndicatorBottom.constant = 26
+            activityIndicator?.color = PwgColor.text
+            activityIndicator?.isHidden = false
+            progressView?.isHidden = true
+            completedImage?.isHidden = true
+            activityIndicatorTop?.constant = 16.0
         case .determinate:
             activityIndicator.isHidden = true
             progressView.isHidden = false
             completedImage.isHidden = true
-            titleBottomToIndicatorBottom.constant = 26
+            activityIndicatorTop?.constant = 16.0
         case .success:              // Checkmark image presented
-            activityIndicator.isHidden = true
-            progressView.isHidden = true
-            completedImage.tintColor = PwgColor.leftLabel
-            completedImage.isHidden = false
-            titleBottomToIndicatorBottom.constant = 26
+            activityIndicator?.isHidden = true
+            progressView?.isHidden = true
+            completedImage?.tintColor = PwgColor.leftLabel
+            completedImage?.isHidden = false
+            activityIndicatorTop?.constant = 16.0
         }
     }
     
     
     // MARK: - HUD Title
     private func getAttributed(title: String, forMaxWidth screenWidth: CGFloat) -> NSAttributedString {
-        // Font size depends on screen size (https://iosref.com/res)
-        let fontSize: CGFloat = screenWidth > 370 ? 17 : 13
-        
         // Create attributed text
         let wholeRange = NSRange(location: 0, length: title.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.text,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize, weight: .semibold),
+            NSAttributedString.Key.foregroundColor: titleColor,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .headline),
             NSAttributedString.Key.paragraphStyle: style
         ]
         let attTitle = NSMutableAttributedString(string: title)
         attTitle.addAttributes(attributes, range: wholeRange)
         
         // Determine size and number of lines
-        context.minimumScaleFactor = 1.0
-        let titleLineHeight = (titleLabel.font ?? UIFont.systemFont(ofSize: fontSize, weight: .semibold)).lineHeight
+        let titleLineHeight = (titleLabel.font ?? UIFont.preferredFont(forTextStyle: .headline)).lineHeight
         let titleRect = attTitle.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude,
                                                            height: titleLineHeight),
                                               options: .usesLineFragmentOrigin, context: context)
@@ -260,25 +273,21 @@ class PiwigoHUD: UIView
     
     
     // MARK: - HUD Detail
-    private func getAttributed(detail: String, forMaxWidth screenWidth: CGFloat) -> (NSAttributedString, CGFloat) {
-        // Font size depends on screen size (https://iosref.com/res)
-        let fontSize: CGFloat = screenWidth > 370 ? 13 : 10
-        
+    private func getAttributed(detail: String, forMaxWidth screenWidth: CGFloat) -> NSAttributedString {
         // Create attributed text
         let wholeRange = NSRange(location: 0, length: detail.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
             NSAttributedString.Key.foregroundColor: PwgColor.text,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize, weight: .regular),
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .footnote),
             NSAttributedString.Key.paragraphStyle: style
         ]
         let attDetail = NSMutableAttributedString(string: detail)
         attDetail.addAttributes(attributes, range: wholeRange)
         
         // Determine height to limit number of lines
-        context.minimumScaleFactor = 1.0
-        let detailLineHeight = UIFont.systemFont(ofSize: fontSize).lineHeight
+        let detailLineHeight = UIFont.preferredFont(forTextStyle: .footnote).lineHeight
         var detailHeight = CGFloat.zero
         var HUDwidth: CGFloat = minWidth - stepWidth
         repeat {
@@ -290,22 +299,19 @@ class PiwigoHUD: UIView
         
         // Try increase minWidth to display detail on fewer lines
         minWidth = HUDwidth
-        return (attDetail, detailHeight + 3.5)
+        return attDetail
     }
     
     
     // MARK: - HUD Button
-    private func getAttributed(button: String, forWidth width: CGFloat) -> NSAttributedString {
-        // Font size depends on screen size (https://iosref.com/res)
-        let fontSize: CGFloat = width > 370 ? 13 : 10
-        
+    private func getAttributed(button: String) -> NSAttributedString {
         // Create attributed text
         let wholeRange = NSRange(location: 0, length: button.count)
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment.center
         let attributes = [
-            NSAttributedString.Key.foregroundColor: PwgColor.orange,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize, weight: .semibold),
+            NSAttributedString.Key.foregroundColor: PwgColor.tintColor,
+            NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .subheadline),
             NSAttributedString.Key.paragraphStyle: style
         ]
         let attButton = NSMutableAttributedString(string: button)
