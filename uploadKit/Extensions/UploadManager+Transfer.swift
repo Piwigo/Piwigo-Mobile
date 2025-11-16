@@ -841,8 +841,15 @@ extension UploadManager {
         
         // Prepare HTTP request body
         var httpBody = Data()
-        httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
-        httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
+        
+        // Append credentials if not using API keys
+        if (NetworkVars.shared.usesAPIkeys && username.isValidPublicKey() &&
+             !NetworkVars.shared.apiKeysProhibitedMethods.contains(pwgImagesUploadAsync)) == false {
+            httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
+            httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
+        }
+
+        // Append parameters requested by API method
         httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
         httpBody.append(convertFormField(named: "original_sum", value: upload.md5Sum, using: boundary).data(using: .utf8)!)
@@ -883,6 +890,10 @@ extension UploadManager {
         request.setValue(chunkStr, forHTTPHeaderField: pwgHTTPchunk)
         request.setValue(chunksStr, forHTTPHeaderField: pwgHTTPchunks)
         request.setValue(upload.md5Sum, forHTTPHeaderField: pwgHTTPmd5sum)
+        
+        // Set HTTP header when API keys are used
+        request.setAPIKeyHTTPHeader(for: pwgImagesUploadAsync)
+        
         return request
     }
 
