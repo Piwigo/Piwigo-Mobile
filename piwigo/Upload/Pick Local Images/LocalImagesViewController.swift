@@ -147,7 +147,7 @@ class LocalImagesViewController: UIViewController
         do {
             try uploads.performFetch()
         } catch {
-            debugPrint("Error: \(error)")
+            debugPrint("Error: \(error.localizedDescription)")
         }
         
         // Sort images in background
