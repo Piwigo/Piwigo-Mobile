@@ -815,7 +815,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oldest → Newest"
+            "value" : "الأقدم → الأحدث"
           }
         },
         "da" : {
@@ -1118,7 +1118,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Newest → Oldest"
+            "value" : "الأحدث → الأقدم"
           }
         },
         "da" : {
@@ -2736,7 +2736,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lowest → Highest"
+            "value" : "أدنى → أعلى"
           }
         },
         "da" : {
@@ -2837,7 +2837,7 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest → Lowest"
+            "value" : "أعلى → أدنى"
           }
         },
         "da" : {
@@ -3139,8 +3139,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lowest → Highest"
+            "state" : "translated",
+            "value" : "أدنى → أعلى"
           }
         },
         "da" : {
@@ -3240,8 +3240,8 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Highest → Lowest"
+            "state" : "translated",
+            "value" : "أعلى → أدنى"
           }
         },
         "da" : {
