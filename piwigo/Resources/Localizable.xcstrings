@@ -29126,102 +29126,102 @@
       }
     },
     "loginHTTP_message" : {
-      "comment" : "HTTP basic authentification is required by the Piwigo server:",
+      "comment" : "Piwigo server requires HTTP basic access authentication…",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "مطلوب مصادقة الوصول الأساسية من قبل خادم Piwigo:"
+            "value" : "يتطلب خادم Piwigo مصادقة الوصول الأساسية لـ HTTP (غير متوافقة مع استخدام مفاتيح API):"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login kræves af Piwigo server:"
+            "value" : "Piwigo server kræver HTTP grundlæggende adgangsgodkendelse (inkompatibel med brugen af API-nøgler):"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Basis Zugriffs-Authentifizierung wird vom Piwigo Server erwartet:"
+            "value" : "Piwigo-Server erfordert HTTP-Authentifizierung (inkompatibel mit API-Schlüsseln):"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Basic access authentification is required by the Piwigo server:"
+            "value" : "Piwigo server requires HTTP basic access authentication (incompatible with the use of API keys):"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El servidor Piwigo requiere una autenticación de acceso básico:"
+            "value" : "El servidor Piwigo requiere autenticación de acceso básico HTTP (incompatible con el uso de claves API):"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'authentification HTTP est requise par le serveur Piwigo:"
+            "value" : "Le serveur Piwigo nécessite une authentification d'accès de base HTTP (incompatible avec l'utilisation des clés API) :"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A Piwigo szerver alapszintű hozzáférési hitelesítést kér:"
+            "value" : "A Piwigo szerver HTTP alapvető hozzáférési hitelesítést igényel (ez nem kompatibilis az API kulcsok használatával):"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Otentikasi akses dasar yang dibutuhkan oleh server Piwigo‎:"
+            "value" : "Server Piwigo memerlukan otentikasi akses HTTP dasar (tidak kompatibel dengan penggunaan kunci API):"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'autenticazione di accesso di base è richiesta dal server Piwigo:"
+            "value" : "Il server Piwigo richiede l'autenticazione di accesso di base HTTP (incompatibile con l'uso di chiavi API):"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigoサーバにおいて、基本アクセス認証が必要です。"
+            "value" : "PiwigoサーバーはHTTP基本的なアクセス認証が必要です (APIキーの使用と互換性がありません)："
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authenticatie van basistoegang is vereist door de Piwigo-server:"
+            "value" : "Piwigo server vereist HTTP basis toegangsauthenticatie (niet compatibel met het gebruik van API keys):"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podstawowa autoryzacja dostępu jest wymagana przez serwer Piwigo‎:"
+            "value" : "Serwer Piwigo wymaga uwierzytelniania podstawowego dostępu HTTP (niekompatybilne z używaniem kluczy API):"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сервер Piwigo требует базовой HTTP-аутентификации:"
+            "value" : "Сервер Piwigo требует базовой HTTP аутентификации (несовместимый с использованием ключей API):"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundläggande autentisering krävs av Piwigo-servern‎:"
+            "value" : "Piwigo-servern kräver HTTP-autentisering för grundläggande åtkomst (inkompatibel med användning av API-nycklar):"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo服务器需要基本访问验证："
+            "value" : "Piwigo服务器需要HTTP基本访问认证（与API密钥使用不兼容）："
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo伺服器正在要求基本存取認證:"
+            "value" : "Piwigo 伺服器需要 HTTP 基本存取驗證（與 API 金鑰的使用不相容）："
           }
         }
       }

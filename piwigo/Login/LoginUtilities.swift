@@ -481,7 +481,7 @@ class LoginUtilities: NSObject {
                                         loginAction: @escaping ((UIAlertAction) -> Void)) -> UIAlertController {
         let alert = UIAlertController(
             title: NSLocalizedString("loginHTTP_title", comment: "HTTP Credentials"),
-            message: NSLocalizedString("loginHTTP_message", comment: "HTTP basic authentification is required by the Piwigo server:"),
+            message: NSLocalizedString("loginHTTP_message", comment: "Piwigo server requires HTTP basic access authentication…"),
             preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: { textField in
