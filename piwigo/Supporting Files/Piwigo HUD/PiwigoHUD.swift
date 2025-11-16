@@ -21,7 +21,6 @@ let pwgDelayHUD = 500
 
 class PiwigoHUD: UIView
 {
-    let margin = CGFloat(16)            // See XIB file
     let stepWidth = CGFloat(10)         // Steps by which the HUD width is increased to limit # of lines
     let context: NSStringDrawingContext = {
         let context = NSStringDrawingContext()
@@ -45,6 +44,7 @@ class PiwigoHUD: UIView
     @IBOutlet weak var progressView: RingProgressView!
     @IBOutlet weak var completedImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var titleLeading: NSLayoutConstraint!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var detailLabelTop: NSLayoutConstraint!
     @IBOutlet weak var button: UIButton!
@@ -169,10 +169,12 @@ class PiwigoHUD: UIView
             detailLabel.attributedText = getAttributed(detail: detail, forMaxWidth: screenWidth)
             detailLabel?.text = detail
             detailLabel?.isHidden = false
+            detailLabelTop?.constant = 8.0
         }
         else {
             detailLabel?.text = ""
             detailLabel?.isHidden = true
+            detailLabelTop?.constant = 0.0
         }
         
         // Add or update button
@@ -183,6 +185,7 @@ class PiwigoHUD: UIView
             button.addTarget(buttonTarget, action: buttonSelector, for: .touchDown)
             button.backgroundColor = PwgColor.cellBackground
             button.isHidden = false
+            buttonTop?.constant = 16.0
         } else {
             // Modify button title and/or target/action
             if let buttonTitle = buttonTitle {
@@ -261,7 +264,7 @@ class PiwigoHUD: UIView
         let titleRect = attTitle.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude,
                                                            height: titleLineHeight),
                                               options: .usesLineFragmentOrigin, context: context)
-        let missing = titleRect.width + 2*margin - minWidth
+        let missing = titleRect.width + 2*(titleLeading?.constant ?? 32) - minWidth
         if missing < 0 {
             return attTitle
         }
@@ -292,7 +295,7 @@ class PiwigoHUD: UIView
         var HUDwidth: CGFloat = minWidth - stepWidth
         repeat {
             HUDwidth += stepWidth
-            detailHeight = attDetail.boundingRect(with: CGSize(width: HUDwidth - 2*margin,
+            detailHeight = attDetail.boundingRect(with: CGSize(width: HUDwidth - 2*(titleLeading?.constant ?? 32),
                                                                height: CGFloat.greatestFiniteMagnitude),
                                                   options: .usesLineFragmentOrigin, context: context).height
         } while (detailHeight / detailLineHeight > 2) && (HUDwidth + stepWidth + 40 < screenWidth)
