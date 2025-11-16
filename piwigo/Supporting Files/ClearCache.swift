@@ -103,9 +103,9 @@ class ClearCache: NSObject {
                     }
                 } else {
                     connectedScenes.forEach { scene in
-                        if let window = (scene.delegate as? SceneDelegate)?.window,
-                           let topMostVC = window.windowScene?.topMostViewController(),
-                           topMostVC !== settingsScene {
+                        if scene !== settingsScene,
+                           let window = (scene.delegate as? SceneDelegate)?.window,
+                           let topMostVC = window.windowScene?.topMostViewController() {
                             UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
                             connectedScenes.remove(scene)
                         }
