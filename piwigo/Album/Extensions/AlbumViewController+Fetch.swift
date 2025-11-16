@@ -279,6 +279,19 @@ extension AlbumViewController
     @objc func hideLoading() {
         // Hide HUD
         navigationController?.hideHUD() { [self] in
+            // Update title
+            self.setTitleViewFromAlbumData()
+
+            // Update number of images in footer
+            self.updateNberOfImagesInFooter()
+
+            // Set navigation bar buttons
+            if self.inSelectionMode {
+                self.updateBarsInSelectMode()
+            } else {
+                self.updateBarsInPreviewMode()
+            }
+
             // End refreshing if needed
             self.collectionView?.refreshControl?.endRefreshing()
         }
