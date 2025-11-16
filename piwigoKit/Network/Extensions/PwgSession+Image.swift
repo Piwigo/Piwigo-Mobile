@@ -14,7 +14,7 @@ extension PwgSession
 {
     public func getImage(withID imageID: Int64?, ofSize imageSize: pwgImageSize, type: pwgImageType,
                          atURL imageURL: URL?, fromServer serverID: String?, fileSize: Int64 = NSURLSessionTransferSizeUnknown,
-                         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+                         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (PwgKitError) -> Void) {
         // Check arguments
         guard let imageID = imageID, imageID != 0,
               let imageURL = imageURL, imageURL.isFileURL == false,
@@ -190,10 +190,27 @@ extension PwgSession: URLSessionTaskDelegate {
               let download = activeDownloads[imageURL]
         else { return }
 
-        if let error = error {
+        // Manage the error type
+        var pwgError: PwgKitError?
+        if let error = error as? URLError {
+            pwgError = PwgKitError.requestFailed(innerError: error)
+        }
+        else if let error = error as? DecodingError {
+            pwgError = PwgKitError.decodingFailed(innerError: error)
+        }
+        else if let response = task.response as? HTTPURLResponse,
+                  (200...299).contains(response.statusCode) == false {
+            pwgError = PwgKitError.invalidStatusCode(statusCode: response.statusCode)
+        }
+        else if let error = error {
+            pwgError = PwgKitError.otherError(innerError: error)
+        }
+        
+        // Handle the response with the Download Manager
+        if let pwgError {
             // Return error with failureHandler
             if let failure = download.failureHandler {
-                failure(error)
+                failure(pwgError)
             }
         } else {
             // Return cached image with completionHandler
@@ -257,10 +274,11 @@ extension PwgSession: URLSessionDownloadDelegate {
             // Store image
             try fm.copyItem(at: location, to: fileURL)
 //            debugPrint("••> Image \(fileURL.lastPathComponent) stored in cache (URL: \(imageURL)")
-        } catch {
+        }
+        catch {
             // Return error with failureHandler
             if let failure = download.failureHandler {
-                failure(error)
+                failure(PwgKitError.otherError(innerError: error))
             }
         }
     }
