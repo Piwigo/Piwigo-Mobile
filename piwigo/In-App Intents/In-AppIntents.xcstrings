@@ -158,8 +158,8 @@
             "plural" : {
               "other" : {
                 "stringUnit" : {
-                  "state" : "new",
-                  "value" : "%lld photos added to the upload queue."
+                  "state" : "translated",
+                  "value" : "%lld foto telah ditambahkan ke antrian unggahan."
                 }
               }
             }
@@ -357,8 +357,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload"
+            "state" : "translated",
+            "value" : "Unggah Otomatis"
           }
         },
         "it" : {
@@ -451,8 +451,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Unggah Foto Otomatis"
           }
         },
         "it" : {
@@ -551,8 +551,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Appends recent photos to the upload queue according to auto-upload settings."
+            "state" : "translated",
+            "value" : "Menambahkan foto-foto terbaru ke antrian unggahan sesuai dengan pengaturan unggahan otomatis."
           }
         },
         "it" : {
@@ -651,8 +651,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Auto-Upload Photos"
+            "state" : "translated",
+            "value" : "Unggah Foto Otomatis"
           }
         },
         "it" : {
@@ -751,8 +751,8 @@
         },
         "id" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No photo added to the upload queue."
+            "state" : "translated",
+            "value" : "Tidak ada foto yang ditambahkan ke antrian unggahan."
           }
         },
         "it" : {
