@@ -99,7 +99,7 @@ class UploadQueueViewController: UIViewController {
             try uploads.performFetch()
         }
         catch {
-            debugPrint("••> Could not fetch uploads: \(error)")
+            debugPrint("••> Could not fetch uploads: \(error.localizedDescription)")
         }
     }
     

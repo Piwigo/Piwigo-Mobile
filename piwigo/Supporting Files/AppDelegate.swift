@@ -274,7 +274,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try BGTaskScheduler.shared.submit(request)
             debugPrint("••> Background upload task request submitted with success.")
         } catch {
-            debugPrint("••> Failed to submit background upload request: \(error)")
+            debugPrint("••> Failed to submit background upload request: \(error.localizedDescription)")
         }
     }
 

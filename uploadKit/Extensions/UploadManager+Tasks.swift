@@ -31,7 +31,7 @@ extension UploadManager
             try completed.performFetch()
         }
         catch {
-            debugPrint("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error.localizedDescription)")
         }
 
         // Update counter and app badge
@@ -241,7 +241,7 @@ extension UploadManager
             try uploads.performFetch()
         }
         catch {
-            debugPrint("Error: \(error)")
+            debugPrint("Error: \(error.localizedDescription)")
         }
         
         // Update counter and app badge

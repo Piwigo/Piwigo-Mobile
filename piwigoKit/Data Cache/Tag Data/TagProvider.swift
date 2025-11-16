@@ -314,7 +314,7 @@ public class TagProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             
             // Tag selection
@@ -346,7 +346,7 @@ public class TagProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Tag count not fetched \(error)")
+            debugPrint("••> Tag count not fetched: \(error.localizedDescription)")
         }
         return Int64.zero
     }

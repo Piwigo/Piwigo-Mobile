@@ -28,7 +28,7 @@ extension NSPersistentStoreCoordinator {
                     .appendingPathExtension("sqlite-wal"))
             })
         } catch let error {
-            fatalError("failed to destroy persistent store at \(storeURL), error: \(error)")
+            fatalError("failed to destroy persistent store at \(storeURL), error: \(error.localizedDescription)")
         }
     }
     
@@ -39,7 +39,7 @@ extension NSPersistentStoreCoordinator {
                                            withPersistentStoreFrom: sourceURL,
                                            sourceOptions: nil, ofType: NSSQLiteStoreType)
         } catch let error {
-            fatalError("failed to replace persistent store at \(targetURL) with \(sourceURL), error: \(error)")
+            fatalError("failed to replace persistent store at \(targetURL) with \(sourceURL), error: \(error.localizedDescription)")
         }
     }
     
@@ -53,7 +53,7 @@ extension NSPersistentStoreCoordinator {
             return try addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
                                           at: storeURL, options: options)
         } catch let error {
-            fatalError("failed to add persistent store to coordinator, error: \(error)")
+            fatalError("failed to add persistent store to coordinator, error: \(error.localizedDescription)")
         }
     }
 }

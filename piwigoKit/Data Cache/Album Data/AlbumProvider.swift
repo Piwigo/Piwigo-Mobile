@@ -79,7 +79,7 @@ public class AlbumProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                debugPrint("••> getAlbum() unresolved error: \(error)")
+                debugPrint("••> getAlbum() unresolved error: \(error.localizedDescription)")
                 return
             }
             

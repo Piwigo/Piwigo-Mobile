@@ -70,7 +70,7 @@ public class UserProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                debugPrint("••> getUserAccount() unresolved error: \(error)")
+                debugPrint("••> getUserAccount() unresolved error: \(error.localizedDescription)")
                 return
             }
             

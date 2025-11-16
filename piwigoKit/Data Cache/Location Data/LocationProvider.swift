@@ -264,7 +264,7 @@ public class LocationProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Album count not fetched \(error)")
+            debugPrint("••> Location count not fetched: \(error.localizedDescription)")
         }
         return Int64.zero
     }
@@ -326,7 +326,7 @@ public class LocationProvider: NSObject {
         do {
             try controller.performFetch()
         } catch {
-            fatalError("Unresolved error \(error)")
+            fatalError("Unresolved error: \(error.localizedDescription)")
         }
         let knownPlaceNames = controller.fetchedObjects ?? []
         

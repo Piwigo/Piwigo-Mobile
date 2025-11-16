@@ -150,7 +150,7 @@ public class UploadProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             let cachedUploads = controller.fetchedObjects ?? []
 
@@ -235,7 +235,7 @@ public class UploadProvider: NSObject {
         do {
             try controller.performFetch()
         } catch {
-            fatalError("Unresolved error \(error)")
+            fatalError("Unresolved error: \(error.localizedDescription)")
         }
         let cachedUploads = controller.fetchedObjects ?? []
         return cachedUploads.map(\.md5Sum)
@@ -265,7 +265,7 @@ public class UploadProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Upload count not fetched \(error)")
+            debugPrint("••> Upload count not fetched: \(error.localizedDescription)")
         }
         return Int64.zero
     }

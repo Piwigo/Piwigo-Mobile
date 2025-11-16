@@ -28,7 +28,7 @@ extension NSManagedObjectContext {
             }
         } catch let error {
             // Handle any thrown errors.
-            fatalError("Unresolved error \(error)")
+            fatalError("Unresolved error \(error.localizedDescription)")
         }
     }
 }

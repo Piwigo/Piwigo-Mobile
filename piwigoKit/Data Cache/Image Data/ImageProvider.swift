@@ -58,7 +58,7 @@ public class ImageProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Could not ftech image count, \(error)")
+            debugPrint("••> Could not ftech image count, \(error.localizedDescription)")
         }
         return Int64.zero
     }
@@ -99,7 +99,7 @@ public class ImageProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             
             // Return image objects
@@ -383,7 +383,7 @@ public class ImageProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             let cachedImages:[Image] = controller.fetchedObjects ?? []
             

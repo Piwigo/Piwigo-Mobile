@@ -127,7 +127,7 @@ public class UploadManager: NSObject {
             try completed.performFetch()
         }
         catch {
-            debugPrint("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error.localizedDescription)")
         }
         
         // Register auto-upload disabler

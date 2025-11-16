@@ -33,7 +33,7 @@ extension UploadManager
             try completed.performFetch()
         }
         catch {
-            debugPrint("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error.localizedDescription)")
         }
 
         // Get active upload tasks
