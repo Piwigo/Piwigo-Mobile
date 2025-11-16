@@ -55,14 +55,22 @@ extension UploadManager {
                     }
                 }
             } failure: { error in
-                upload.setState(.uploadingError, error: error, save: true)
+                if error.failedAuthentication {
+                    upload.setState(.uploadingFail, error: error, save: true)
+                } else {
+                    upload.setState(.uploadingError, error: error, save: true)
+                }
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
             }
         } failure: { error in
-            upload.setState(.uploadingError, error: error, save: true)
+            if error.failedAuthentication {
+                upload.setState(.uploadingFail, error: error, save: true)
+            } else {
+                upload.setState(.uploadingError, error: error, save: true)
+            }
             self.backgroundQueue.async {
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload)
@@ -359,7 +367,7 @@ extension UploadManager {
         chunkData.removeAll()
     }
 
-    func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
+    func didCompleteUploadTask(_ task: URLSessionTask, withError error: PwgKitError?) {
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
@@ -398,28 +406,19 @@ extension UploadManager {
                 // Update upload request status
                 if let error = error {
                     self.backgroundQueue.async {
-                        upload.setState(.uploadingError, error: error, save: false)
+                        if error.failedAuthentication {
+                            upload.setState(.uploadingFail, error: error, save: true)
+                        } else {
+                            upload.setState(.uploadingError, error: error, save: true)
+                        }
                         self.backgroundQueue.async {
                             self.uploadBckgContext.saveIfNeeded()
                             self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
                         }
                     }
                 }
-                else if let httpResponse = task.response as? HTTPURLResponse {
-                    let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                    let error = PwgKitError.pwgError(code: httpResponse.statusCode, msg: msg)
-                    if (400...499).contains(httpResponse.statusCode) {
-                        upload.setState(.uploadingFail, error: error, save: false)
-                    } else {
-                        upload.setState(.uploadingError, error: error, save: false)
-                    }
-                    self.backgroundQueue.async {
-                        self.uploadBckgContext.saveIfNeeded()
-                        self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
-                    }
-                }
                 else {
-                    upload.setState(.uploadingError, error: PwgKitError.networkUnavailable, save: false)
+                    upload.setState(.uploadingError, error: PwgKitError.unexpectedError, save: false)
                     self.backgroundQueue.async {
                         self.uploadBckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -900,7 +899,7 @@ extension UploadManager {
         return request
     }
 
-    func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: Error?) {
+    func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: PwgKitError?) {
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPuploadID),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
@@ -945,19 +944,10 @@ extension UploadManager {
 
             // Update upload request status
             if let error = error {
-                upload.setState(.uploadingError, error: error, save: false)
-                self.backgroundQueue.async {
-                    self.uploadBckgContext.saveIfNeeded()
-                    self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
-                }
-            }
-            else if let httpResponse = task.response as? HTTPURLResponse {
-                let msg = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-                let error = PwgKitError.pwgError(code: httpResponse.statusCode, msg: msg)
-                if (400...499).contains(httpResponse.statusCode) {
-                    upload.setState(.uploadingFail, error: error, save: false)
+                if error.failedAuthentication {
+                    upload.setState(.uploadingFail, error: error, save: true)
                 } else {
-                    upload.setState(.uploadingError, error: error, save: false)
+                    upload.setState(.uploadingError, error: error, save: true)
                 }
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
@@ -965,7 +955,7 @@ extension UploadManager {
                 }
             }
             else {
-                upload.setState(.uploadingError, error: PwgKitError.networkUnavailable, save: false)
+                upload.setState(.uploadingError, error: PwgKitError.unexpectedError, save: false)
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
