@@ -168,11 +168,7 @@ public class Upload: NSManagedObject {
         requestSectionKey = state.sectionKey
         
         // Error message description
-        if let error = error {
-            requestError = error.localizedDescription
-        } else {
-            requestError = ""
-        }
+        requestError = error?.localizedDescription ?? ""
         
         // Should we save changes now?
         if save {

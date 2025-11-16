@@ -25,13 +25,9 @@ extension PwgSession
 
         // Identify requests performed for a specific album
         // so that they can be easily cancelled.
-        switch method {
-        case pwgCategoriesGetList, pwgCategoriesGetImages:
-            if let albumId = paramDict["cat_id"] as? Int {
-                request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.shared.HTTPCatID)
-            }
-        default:
-            break
+        if [pwgCategoriesGetList, pwgCategoriesGetImages].contains(method),
+           let albumId = paramDict["cat_id"] as? Int {
+            request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.shared.HTTPCatID)
         }
         
         // Set HTTP header when API keys are used
