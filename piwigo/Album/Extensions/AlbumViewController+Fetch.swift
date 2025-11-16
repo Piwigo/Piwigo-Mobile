@@ -248,44 +248,52 @@ extension AlbumViewController
 
     // MARK: - Error Management
     @MainActor
-    private func showError(_ error: PwgKitError?) {
-        guard let error = error else {
-            navigationController?.showHUD(
-                withTitle: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"),
-                detail: " ", minWidth: 200,
-                buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                buttonTarget: self, buttonSelector: #selector(hideLoading),
-                inMode: .text)
-            return
+    private func showError(_ error: PwgKitError)
+    {
+        var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
+        var detail = error.localizedDescription
+        var buttonSelector = #selector(hideLoading)
+        if error.requestCancelled {
+            title = NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled")
         }
-        
-        // Returns to login view only when credentials are rejected
-        if error.requiresLogout {
-            // Invalid Piwigo or HTTP credentials
-            navigationController?.showHUD(
-                withTitle: PwgKitError.authenticationFailed.localizedDescription,
-                detail: error.localizedDescription, minWidth: 240,
-                buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                buttonTarget: self, buttonSelector: #selector(hideLoading),
-                inMode: .text)
+        else if error.failedAuthentication {
+            title = NSLocalizedString("loginError_title", comment: "Login Fail")
+            buttonSelector = #selector(hideLoadingAndCloseSession)
         }
-        else if error.hasMissingParameter {
-            // Hide HUD
-            navigationController?.hideHUD() { [self] in
-                // End refreshing if needed
-                self.collectionView?.refreshControl?.endRefreshing()
-            }
+        else if error.incompatibleVersion {
+            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+            buttonSelector = #selector(hideLoadingAndCloseSession)
         }
+        else if detail.isEmpty {
+            detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
+        }
+        navigationController?.showHUD(
+            withTitle: title, detail: detail, minWidth: 240,
+            buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+            buttonTarget: self, buttonSelector: buttonSelector,
+            inMode: .text)
     }
-
-    @objc func hideLoading() {
+    
+    @objc func hideLoadingAndCloseSession() {
         // Hide HUD
-        navigationController?.hideHUD() {
+        navigationController?.hideHUD() { [self] in
+            // End refreshing if needed
+            self.collectionView?.refreshControl?.endRefreshing()
+            
             // Return to login view
             ClearCache.closeSession()
         }
     }
 
+    @objc func hideLoading() {
+        // Hide HUD
+        navigationController?.hideHUD() { [self] in
+            // End refreshing if needed
+            self.collectionView?.refreshControl?.endRefreshing()
+        }
+    }
+    
     
     // MARK: - Fetch Favorites in the background
     /// The below methods are only called if the Piwigo server version is between 2.10.0 and 13.0.0.
