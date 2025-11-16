@@ -100,6 +100,15 @@ extension PwgKitError {
         }
     }
 
+    public var requestCancelled: Bool {
+        switch self {
+        case .requestFailed(innerError: URLError.cancelled):
+            return true
+        default:
+            return false
+        }
+    }
+    
     public var incompatibleVersion: Bool {
         switch self {
         case .incompatiblePwgVersion:
