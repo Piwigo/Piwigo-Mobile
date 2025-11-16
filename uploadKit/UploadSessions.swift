@@ -366,11 +366,26 @@ extension UploadSessions: URLSessionTaskDelegate {
 //            }
 //        }
 
+        // Manage the error type
+        var pwgError: PwgKitError?
+        if let error = error as? URLError {
+            pwgError = PwgKitError.requestFailed(innerError: error)
+        }
+        else if let error = error as? DecodingError {
+            pwgError = PwgKitError.decodingFailed(innerError: error)
+        }
+        else if let response = task.response as? HTTPURLResponse,
+                  (200...299).contains(response.statusCode) == false {
+            pwgError = PwgKitError.invalidStatusCode(statusCode: response.statusCode)
+        }
+        else if let error = error {
+            pwgError = PwgKitError.otherError(innerError: error)
+        }
+        
+        // Log task completion
         if #available(iOSApplicationExtension 14.0, *) {
-            // Task did complete without error?
-            if let error = error,
-               taskDescription.contains(pwgHTTPCancelled) {
-                UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: error.localizedDescription), privacy: .public).")
+            if let pwgError, taskDescription.contains(pwgHTTPCancelled) == false {
+                UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: pwgError.localizedDescription), privacy: .public).")
             } else {
                 UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) completed.")
             }
@@ -381,14 +396,14 @@ extension UploadSessions: URLSessionTaskDelegate {
         switch sessionIdentifier {
         case uploadSessionIdentifier:
             UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.didCompleteUploadTask(task, withError: error)
+                UploadManager.shared.didCompleteUploadTask(task, withError: pwgError)
             }
         case uploadBckgSessionIdentifier:
             if UploadManager.shared.isExecutingBackgroundUploadTask {
-                UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
+                UploadManager.shared.didCompleteBckgUploadTask(task, withError: pwgError)
             } else {
                 UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
+                    UploadManager.shared.didCompleteBckgUploadTask(task, withError: pwgError)
                 }
             }
         default:
