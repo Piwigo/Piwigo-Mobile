@@ -33,7 +33,10 @@ extension PwgSession
         default:
             break
         }
-
+        
+        // Set HTTP header when API keys are used
+        request.setAPIKeyHTTPHeader(for: method)
+        
         // Combine percent encoded parameters
         request.httpBody = httpBody(for: paramDict)
 

@@ -417,3 +417,42 @@ extension CharacterSet {
         return CharacterSet.urlQueryAllowed.subtracting(encodableDelimiters)
     }()
 }
+
+
+// MARK: - API Key Management
+extension String
+{
+    public
+    func isValidPublicKey() -> Bool {
+        if #available(iOS 16.0, *) {
+            let pattern = /^pkid-\d{8}-[a-z0-9]{20}$/
+            return self.wholeMatch(of: pattern.ignoresCase()) != nil
+        } else {
+            // Fallback on previous version
+            let pattern = "^pkid-\\d{8}-[a-z0-9]{20}$"
+            return self.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
+        }
+    }
+}
+
+extension URLRequest
+{
+    public mutating
+    func setAPIKeyHTTPHeader(for method: String) {
+        // Piwigo server managing API keys
+        // and method not prohibited with API keys?
+        guard NetworkVars.shared.usesAPIkeys,
+              NetworkVars.shared.apiKeysProhibitedMethods.contains(method) == false
+        else { return }
+        
+        // API key available?
+        let publicKey = NetworkVars.shared.username
+        guard publicKey.isValidPublicKey()
+        else { return }
+        
+        // Set HTTP header from keys
+        let secretKey = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
+                                                   account: NetworkVars.shared.username)
+        setValue("\(publicKey):\(secretKey)", forHTTPHeaderField: "Authorization")
+    }
+}
