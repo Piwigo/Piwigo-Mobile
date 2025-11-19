@@ -142,20 +142,20 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Can we reuse the user account?
-        let userAccountKey = NetworkVars.shared.username + " @ " + serverPath
+        let userAccountKey = NetworkVars.shared.user + " @ " + serverPath
         if let user = userInfo[userAccountKey] as? NSManagedObject {
             // Add relationship from Upload to User
             // Core Data creates automatically the inverse relationship
             newUpload.setValue(user, forKey: "user")
         }
-        else if NetworkVars.shared.username.isEmpty == false,
+        else if NetworkVars.shared.user.isEmpty == false,
                 let server = userInfo[serverPath] as? NSManagedObject {
             // Create User destination instance…
             // …assuming that the current user account is the appropriate one.
             let description = NSEntityDescription.entity(forEntityName: "User", in: manager.destinationContext)
             let newUser = User(entity: description!, insertInto: manager.destinationContext)
             newUser.setValue(userAccountKey, forKey: "name")
-            newUser.setValue(NetworkVars.shared.username, forKey: "username")
+            newUser.setValue(NetworkVars.shared.user, forKey: "username")
             if let requestDate = sInstance.value(forKey: "requestDate") {
                 newUser.setValue(requestDate, forKey: "lastUsed")
             }

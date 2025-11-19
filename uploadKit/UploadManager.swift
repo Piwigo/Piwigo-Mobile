@@ -198,7 +198,7 @@ public class UploadManager: NSObject {
         
         // Retrieves only non-completed upload requests
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.username]
+                         "userName"   : NetworkVars.shared.user]
         fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
@@ -225,7 +225,7 @@ public class UploadManager: NSObject {
         
         // Retrieves only completed upload requests
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.username]
+                         "userName"   : NetworkVars.shared.user]
         fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()

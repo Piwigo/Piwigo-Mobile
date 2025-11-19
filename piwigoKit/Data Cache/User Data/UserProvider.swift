@@ -42,11 +42,11 @@ public class UserProvider: NSObject {
      - Will create a User Account object if it does not already exist.
      */
     public func getUserAccount(inContext taskContext: NSManagedObjectContext,
-                               atPath path: String = NetworkVars.shared.serverPath,
-                               withUsername username: String = NetworkVars.shared.username,
                                afterUpdate doUpdate: Bool = false) -> User? {
         // Initialisation
         var currentUser: User?
+        let path = NetworkVars.shared.serverPath
+        let username = NetworkVars.shared.user
         
         // Perform the fetch
         taskContext.performAndWait {
@@ -57,7 +57,7 @@ public class UserProvider: NSObject {
             
             // Look for a user account of the server at path
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "server.path == %@", path))
             andPredicates.append(NSPredicate(format: "username == %@", username))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
             fetchRequest.fetchLimit = 1

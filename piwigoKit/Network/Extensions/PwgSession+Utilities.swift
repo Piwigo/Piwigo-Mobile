@@ -80,8 +80,10 @@ extension PwgSession {
                       failure: @escaping (PwgKitError) -> Void) {
         // Check if API keys are used
         /// It is useless to check the session when using API keys
+        /// unless the Piwigo username is unknown
         if NetworkVars.shared.usesAPIkeys,
-           NetworkVars.shared.username.isValidPublicKey() {
+           NetworkVars.shared.username.isValidPublicKey(),
+           NetworkVars.shared.user.isEmpty == false{
             completion()
             return
         }
@@ -105,15 +107,15 @@ extension PwgSession {
             }
         }
         let oldToken = NetworkVars.shared.pwgToken
-        PwgSession.shared.sessionGetStatus { username in
+        PwgSession.shared.sessionGetStatus { pwgUser in
             if #available(iOSApplicationExtension 14.0, *) {
                 #if DEBUG
-                logger.notice("Session: \(NetworkVars.shared.username, privacy: .public)/\(username, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.shared.pwgToken, privacy: .public)")
+                logger.notice("Session: \(NetworkVars.shared.user, privacy: .public)/\(pwgUser, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.shared.pwgToken, privacy: .public)")
                 #else
-                logger.notice("Session: \(NetworkVars.shared.username, privacy: .private(mask: .hash))/\(username, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))")
+                logger.notice("Session: \(NetworkVars.shared.user, privacy: .private(mask: .hash))/\(pwgUser, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))")
                 #endif
             }
-            if username != NetworkVars.shared.username || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
+            if pwgUser != NetworkVars.shared.user || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
                 requestServerMethods {
@@ -181,11 +183,12 @@ extension PwgSession {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.shared.usesCommunityPluginV29 {
             PwgSession.shared.communityGetStatus {
-                PwgSession.shared.sessionGetStatus { _ in
+                PwgSession.shared.sessionGetStatus { userName in
                     // Check Piwigo server version
                     if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
                         failure(PwgKitError.incompatiblePwgVersion) }
                     else {
+                        NetworkVars.shared.user = userName
                         completion()
                     }
                 } failure: { error in
@@ -195,11 +198,12 @@ extension PwgSession {
                 failure(error)
             }
         } else {
-            PwgSession.shared.sessionGetStatus { _ in
+            PwgSession.shared.sessionGetStatus { userName in
                 // Check Piwigo server version
                 if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
                     failure(PwgKitError.incompatiblePwgVersion) }
                 else {
+                    NetworkVars.shared.user = userName
                     completion()
                 }
             } failure: { error in

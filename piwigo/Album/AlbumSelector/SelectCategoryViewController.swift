@@ -87,7 +87,7 @@ class SelectCategoryViewController: UIViewController {
     lazy var predicates: [NSPredicate] = {
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         return andPredicates
     }()
 

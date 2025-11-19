@@ -66,9 +66,13 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("HttpUsername", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var httpUsername: String
     
-    /// - Username provided to access the Piwigo server
+    /// - Username provided to access the Piwigo server, i.e. username or API public key
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var username: String
+    
+    /// - Username returned by the Piwigo server
+    @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var user: String
     
     /// - Status of the user accessing the Piwigo server
     @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)

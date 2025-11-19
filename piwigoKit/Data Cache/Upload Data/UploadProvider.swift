@@ -137,7 +137,7 @@ public class UploadProvider: NSObject {
             // Select upload requests:
             /// — for the current server and user only
             var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
             andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
@@ -222,7 +222,7 @@ public class UploadProvider: NSObject {
         // Select upload requests:
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
@@ -256,7 +256,7 @@ public class UploadProvider: NSObject {
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Fetch number of objects
@@ -286,7 +286,7 @@ public class UploadProvider: NSObject {
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
 
         // Create batch delete request

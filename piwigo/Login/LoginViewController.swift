@@ -386,9 +386,6 @@ class LoginViewController: UIViewController {
                 // Create/update User account in persistent cache, create Server if necessary.
                 // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
                 DispatchQueue.main.async { [self] in
-                    // Create User instance if needed
-                    let _ = self.userProvider.getUserAccount(inContext: mainContext,
-                                                             withUsername: username, afterUpdate: true)
                     // First determine user rights if Community extension installed
                     self.getCommunityStatus()
                 }
@@ -405,14 +402,18 @@ class LoginViewController: UIViewController {
             // Reset keychain and credentials
             KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
                                              account: username)
+            NetworkVars.shared.user = ""
             NetworkVars.shared.username = ""
+            NetworkVars.shared.userStatus = .guest
+            
+            DispatchQueue.main.async { [self] in
+                // Create/update guest account in persistent cache, create Server if necessary.
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
-            // Create/update guest account in persistent cache, create Server if necessary.
-            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            let _ = self.userProvider.getUserAccount(inContext: mainContext,
-                                                     withUsername: username, afterUpdate: true)
-            // Check Piwigo version, get token, available sizes, etc.
-            self.getCommunityStatus()
+                // Check Piwigo version, get token, available sizes, etc.
+                self.getCommunityStatus()
+            }
         }
     }
 
@@ -424,14 +425,10 @@ class LoginViewController: UIViewController {
             // Update HUD during login
             updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
 
-            // Community extension installed
+            // Community extension installed, get real user's status
             PwgSession.shared.communityGetStatus { [self] in
-                // Update user account in persistent cache
-                // Performed in main thread as to avoid concurrency issue with AlbumViewController initialisation
+                // Check Piwigo version, get token, available sizes, etc.
                 DispatchQueue.main.async { [self] in
-                    // Create User instance if needed
-                    let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
-                    // Check Piwigo version, get token, available sizes, etc.
                     self.getSessionStatus()
                 }
             } failure: { [self] error in
@@ -444,17 +441,22 @@ class LoginViewController: UIViewController {
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            getSessionStatus()
+            DispatchQueue.main.async { [self] in
+                self.getSessionStatus()
+            }
         }
     }
 
-    // Check Piwigo version, get token, available sizes, etc.
+    // Check Piwigo version, get username, token, available sizes, etc.
     @MainActor
     func getSessionStatus() {
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
-        PwgSession.shared.sessionGetStatus() { [self] _ in
+        PwgSession.shared.sessionGetStatus() { [self] user in
+            //
+            NetworkVars.shared.user = user
+
             DispatchQueue.main.async { [self] in
                 // Is the Piwigo server incompatible?
                 if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
@@ -497,8 +499,8 @@ class LoginViewController: UIViewController {
     func launchApp() {
         isAlreadyTryingToLogin = false
 
-        // Update user account in persistent cache
-        // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
+        // Create/update User account in persistent cache, create Server if necessary.
+        // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
         let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
         // Check image size availabilities
@@ -589,7 +591,7 @@ class LoginViewController: UIViewController {
 
 
     // MARK: - Utilities
-    func saveServerAddress(_ serverString: String?, andUsername username: String?) -> Bool {
+    func saveServerAddress(_ serverString: String?) -> Bool {
         // Check server address
         guard var serverString = serverString, serverString.isEmpty == false
         else { return false }
@@ -617,7 +619,7 @@ class LoginViewController: UIViewController {
 //        debugPrint("sheme:\(serverURL.scheme), user:\(serverURL.user), pwd:\(serverURL.password), host:\(serverURL.host), port:\(serverURL.port), path:\(serverURL.path)")
         if serverURL.port != nil {
             // Port provided => Adopt user choice but check protocol
-            // Save username, server address and protocol to disk
+            // Save server address and protocol
             switch serverURL.port {
             case 80:
                 NetworkVars.shared.serverProtocol = "http://"
@@ -648,9 +650,8 @@ class LoginViewController: UIViewController {
                 websiteNotSecure.isHidden = false
             }
 
-            // Save username, server address and protocol to disk
+            // Save server address and protocol to disk
             NetworkVars.shared.serverPath = "\(serverURL.host ?? ""):\(serverURL.port ?? 0)\(serverURL.path)"
-            NetworkVars.shared.username = username ?? ""
             return true
         }
 
@@ -666,9 +667,8 @@ class LoginViewController: UIViewController {
             websiteNotSecure.isHidden = false
         }
 
-        // Save username, server address and protocol to disk
+        // Save server address and protocol to disk
         NetworkVars.shared.serverPath = "\(serverURL.host ?? "")\(serverURL.path)"
-        NetworkVars.shared.username = username ?? ""
         return true
     }
 

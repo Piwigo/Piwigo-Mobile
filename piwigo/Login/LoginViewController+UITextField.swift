@@ -56,9 +56,9 @@ extension LoginViewController: UITextFieldDelegate
         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
 
         if textField == serverTextField {
-            // URL valid ► Save server address and username
+            // URL valid ► Save server address
             // URL invalid ► Disable Login button
-            loginButton.isEnabled = saveServerAddress(finalString, andUsername: userTextField.text)
+            loginButton.isEnabled = saveServerAddress(finalString)
         }
         else if let httpAlertController = httpAlertController {
             // Requesting autorisation to access non secure web site
@@ -77,8 +77,8 @@ extension LoginViewController: UITextFieldDelegate
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == serverTextField {
-            // Save server address and username to disk
-            let validURL = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
+            // Save server address
+            let validURL = saveServerAddress(serverTextField.text)
             loginButton.isEnabled = validURL
             if !validURL {
                 // Incorrect URL
@@ -98,7 +98,7 @@ extension LoginViewController: UITextFieldDelegate
         }
         else if textField == passwordTextField {
             // User entered password —> Launch login?
-            if saveServerAddress(serverTextField.text, andUsername: userTextField.text) {
+            if saveServerAddress(serverTextField.text) {
                 loginButton.isEnabled = true
                 launchLogin()
             } else {
@@ -112,9 +112,9 @@ extension LoginViewController: UITextFieldDelegate
 
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         if textField == serverTextField {
-            // URL valid ► Save server address and username
+            // URL valid ► Save server address
             // URL invalid ► Disable Login button
-            loginButton.isEnabled = saveServerAddress(serverTextField.text, andUsername: userTextField.text)
+            loginButton.isEnabled = saveServerAddress(serverTextField.text)
         }
         return true
     }

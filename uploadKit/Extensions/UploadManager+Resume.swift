@@ -23,7 +23,7 @@ extension UploadManager
         
         // Reset predicates in case user switched to another Piwigo
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.username]
+                         "userName"   : NetworkVars.shared.user]
         uploads.fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         completed.fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
 

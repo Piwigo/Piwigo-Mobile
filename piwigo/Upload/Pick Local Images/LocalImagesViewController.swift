@@ -48,7 +48,7 @@ class LocalImagesViewController: UIViewController
         // Retrieves upload requests
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         return fetchRequest
     }()

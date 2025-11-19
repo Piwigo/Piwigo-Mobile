@@ -368,7 +368,7 @@ class SettingsViewController: UIViewController {
         mainContext.saveIfNeeded()
         
         // Guest user?
-        if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
+        if NetworkVars.shared.user.isEmpty || NetworkVars.shared.user.lowercased() == "guest" {
             ClearCache.closeSession()
             return
         }

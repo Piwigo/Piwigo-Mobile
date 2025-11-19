@@ -50,7 +50,7 @@ public extension PwgSession {
     }
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
-                                 failure: @escaping (PwgKitError) -> Void) {
+                          failure: @escaping (PwgKitError) -> Void) {
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,

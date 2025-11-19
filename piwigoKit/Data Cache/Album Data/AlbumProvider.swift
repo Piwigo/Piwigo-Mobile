@@ -596,7 +596,7 @@ public class AlbumProvider: NSObject {
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
@@ -654,7 +654,7 @@ public class AlbumProvider: NSObject {
         /// — whose one of the upper album IDs is the ID of the deleted album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         andPredicates.append(NSPredicate(format: "parentId == %i", albumID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
@@ -699,7 +699,7 @@ public class AlbumProvider: NSObject {
         /// — whose one of the upper album IDs is the ID of the parent album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         let regExp =  NSRegularExpression.escapedPattern(for: String(album.pwgID))
         let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
         andPredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
@@ -790,7 +790,7 @@ public class AlbumProvider: NSObject {
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
