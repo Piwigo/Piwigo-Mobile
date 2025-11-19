@@ -29143,7 +29143,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piwigo-Server erfordert HTTP-Authentifizierung (inkompatibel mit API-Schlüsseln):"
+            "value" : "Der Piwigo-Server erfordert eine HTTP-Basiszugriffsauthentifizierung (nicht kompatibel mit der Verwendung von API-Schlüsseln):"
           }
         },
         "en" : {
