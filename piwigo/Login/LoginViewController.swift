@@ -454,9 +454,9 @@ class LoginViewController: UIViewController {
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
         PwgSession.shared.sessionGetStatus() { [self] user in
-            //
+            // Update Piwigo username (≠ credential)
             NetworkVars.shared.user = user
-
+            
             DispatchQueue.main.async { [self] in
                 // Is the Piwigo server incompatible?
                 if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {

@@ -74,6 +74,14 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var user: String
     
+    public func initPiwigoUsernameAccount() {
+        if NetworkVars.shared.user.isEmpty,
+           NetworkVars.shared.username.isEmpty == false &&
+            NetworkVars.shared.username.lowercased() != "guest" {
+            NetworkVars.shared.user = NetworkVars.shared.username
+        }
+    }
+    
     /// - Status of the user accessing the Piwigo server
     @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)
     private var userStatusRaw: String

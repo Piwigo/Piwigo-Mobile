@@ -58,7 +58,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
         CacheVars.shared.correctRecentPeriodIndex()
-
+        
+        // Piwigo account added in v4.1.1 for dissociating persistent cache data from credentials
+        NetworkVars.shared.initPiwigoUsernameAccount()
+        
         // Set Settings Bundle data
         setSettingsBundleData()
         
