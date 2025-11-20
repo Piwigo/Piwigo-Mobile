@@ -75,6 +75,7 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     public var user: String
     
     public func initPiwigoUsernameAccount() {
+        // Piwigo account added in v4.1.2 for dissociating persistent cache data from credentials
         if NetworkVars.shared.user.isEmpty,
            NetworkVars.shared.username.isEmpty == false &&
             NetworkVars.shared.username.lowercased() != "guest" {
