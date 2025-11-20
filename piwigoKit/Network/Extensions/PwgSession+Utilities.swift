@@ -82,8 +82,7 @@ extension PwgSession {
         /// It is useless to check the session when using API keys
         /// unless the Piwigo username is unknown
         if NetworkVars.shared.usesAPIkeys,
-           NetworkVars.shared.username.isValidPublicKey(),
-           NetworkVars.shared.user.isEmpty == false{
+           NetworkVars.shared.username.isValidPublicKey() {
             completion()
             return
         }
