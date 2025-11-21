@@ -267,7 +267,6 @@ class AlbumViewController: UIViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
         
         // Initialise album width and height
