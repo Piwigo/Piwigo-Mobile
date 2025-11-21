@@ -74,12 +74,23 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var user: String
     
-    public func initPiwigoUsernameAccount() {
+    /// - Tells whether
+    @UserDefault("fixUserIsAPIKeyV412", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var fixUserIsAPIKeyV412: Bool
+    public func createPiwigoUsernameAccountIfNeeded() {
         // Piwigo account added in v4.1.2 for dissociating persistent cache data from credentials
         if NetworkVars.shared.user.isEmpty,
            NetworkVars.shared.username.isEmpty == false &&
             NetworkVars.shared.username.lowercased() != "guest" {
+            // Adopts login username, i.e. Piwigo username or API key
             NetworkVars.shared.user = NetworkVars.shared.username
+            // If the user is using an API key:
+            /// - 1. Call API method to retrieve the Piwigo username
+            /// - 2. Reallocate album data to Piwigo user in persistent cache
+            /// - 3. Reallocate upload requests to Piwigo user in persistent cache
+            if NetworkVars.shared.username.isValidPublicKey() {
+                NetworkVars.shared.fixUserIsAPIKeyV412 = true
+            }
         }
     }
     

@@ -175,7 +175,7 @@ public class AlbumProvider: NSObject {
                 catch {
                     completion(.otherError(innerError: error))
                 }
-
+                
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -567,7 +567,7 @@ public class AlbumProvider: NSObject {
             }
         }
     }
-        
+    
     /**
      The attribute 'nbSubAlbums' of parent albums must be:
      - incremented when an album is added to an album,
@@ -823,14 +823,14 @@ public class AlbumProvider: NSObject {
         // Reset the taskContext to free the cache and lower the memory footprint.
         bckgContext.reset()
     }
-
+    
     
     // MARK: - Clear Album Data
     /**
-        Return number of albums stored in cache
+     Return number of albums stored in cache
      */
     public func getObjectCount() -> Int64 {
-
+        
         // Create a fetch request for the Album entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
         fetchRequest.resultType = .countResultType
@@ -848,7 +848,7 @@ public class AlbumProvider: NSObject {
         }
         return Int64.zero
     }
-
+    
     /**
      Clear cached Core Data album entry
      */
@@ -866,5 +866,87 @@ public class AlbumProvider: NSObject {
         
         // Execute batch delete request
         try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
+    }
+    
+    /**
+     Attribute albums with API key as username to Piwigo user if nonexistent and delete the remaning ones
+     */
+    func attributeAPIKeyAlbums(toUserWithID userID: NSManagedObjectID) {
+        // Runs on the URLSession's delegate queue
+        // so it won’t block the main thread.
+        bckgContext.performAndWait {
+            
+            // Retrieve albums in persistent store
+            let fetchRequest = Album.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Album.globalRank), ascending: true)]
+            
+            // Retrieve all albums associated to the current API key:
+            /// — from the current server
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            var controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: self.bckgContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let APIKeyAlbums:[Album] = controller.fetchedObjects ?? []
+            
+            // Retrieve all albums associated to the current Piwigo user:
+            /// — from the current server
+            andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                    managedObjectContext: self.bckgContext,
+                                                    sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let userAlbums:[Album] = controller.fetchedObjects ?? []
+            
+            // Get IDs of API key albums not already associated to the Piwigo user
+            let IDsOfAPIKeyAlbums: Set<Int32> = Set(APIKeyAlbums.map(\.pwgID))
+            let IDsOfUserAlbums: Set<Int32> = Set(userAlbums.map(\.pwgID))
+            let IDsOfAlbumsToBeAssociated: Set<Int32> = IDsOfAPIKeyAlbums.subtracting(IDsOfUserAlbums)
+            
+            // Attribute API key albums to the Piwigo user
+            if IDsOfAlbumsToBeAssociated.isEmpty ==  false,
+               let user = try? bckgContext.existingObject(with: userID) as? User {
+                for album in APIKeyAlbums where IDsOfAlbumsToBeAssociated.contains(album.pwgID) {
+                    album.user = user
+                }
+            }
+            
+            // Create batch delete request
+            var albumIDsToDelete: [NSManagedObjectID] = []
+            for album in APIKeyAlbums where IDsOfAlbumsToBeAssociated.contains(album.pwgID) == false {
+                albumIDsToDelete.append(album.objectID)
+            }
+            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: albumIDsToDelete)
+            try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
+            
+            // Save all modifications from the context to the store.
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
+            }
+            
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            bckgContext.reset()
+        }
     }
 }

@@ -10,7 +10,7 @@ import CoreData
 import Photos
 
 public class UploadProvider: NSObject {
-
+    
     // MARK: - Singleton
     public static let shared = UploadProvider()
     
@@ -19,29 +19,29 @@ public class UploadProvider: NSObject {
     private lazy var mainContext: NSManagedObjectContext = {
         return DataController.shared.mainContext
     }()
-
+    
     public lazy var bckgContext: NSManagedObjectContext = {
         return DataController.shared.newTaskContext()
     }()
-
-
+    
+    
     // MARK: - Core Data Providers
     private lazy var userProvider: UserProvider = {
         let provider : UserProvider = UserProvider.shared
         return provider
     }()
-
+    
     private lazy var tagProvider: TagProvider = {
         let provider : TagProvider = TagProvider.shared
         return provider
     }()
-
-
+    
+    
     // MARK: - Add/Update Upload Requests
     /**
      Adds or updates a batch of upload requests into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
-    */
+     */
     public func importUploads(from uploadRequest: [UploadProperties],
                               completionHandler: @escaping (PwgKitError?) -> Void) {
         
@@ -75,7 +75,7 @@ public class UploadProvider: NSObject {
         }
         completionHandler(nil)
     }
-
+    
     public func importUploads(from uploadRequest: [UploadProperties]) async throws -> Int {
         
         guard uploadRequest.isEmpty == false
@@ -106,7 +106,7 @@ public class UploadProvider: NSObject {
         }
         return count
     }
-
+    
     /**
      Adds or updates one batch of upload requests, creating managed objects from the new data,
      and saving them to the persistent store, on a private queue. After saving,
@@ -115,11 +115,11 @@ public class UploadProvider: NSObject {
      NSManagedObjectContext.performAndWait doesn't rethrow so this function
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
-    */
+     */
     private func importOneBatch(_ uploadsBatch: [UploadProperties]) -> Bool {
         
         var success = false
-                
+        
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
         bckgContext.performAndWait {
@@ -140,11 +140,11 @@ public class UploadProvider: NSObject {
             andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
             andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+            
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: bckgContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
+                                                        managedObjectContext: bckgContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
             
             // Perform the fetch.
             do {
@@ -153,7 +153,7 @@ public class UploadProvider: NSObject {
                 fatalError("Unresolved error: \(error.localizedDescription)")
             }
             let cachedUploads = controller.fetchedObjects ?? []
-
+            
             // Loop over new uploads
             for uploadData in uploadsBatch {
                 // Index of this new upload in cache
@@ -210,8 +210,8 @@ public class UploadProvider: NSObject {
     
     // MARK: - Get md5sum of Upload Requests
     /**
-        Called by UploadPhotosHandler
-        Return the md5sum of the upload requests in cache in the main thread
+     Called by UploadPhotosHandler
+     Return the md5sum of the upload requests in cache in the main thread
      */
     public func getAllMd5sum() -> [String] {
         // Retrieve all existing uploads
@@ -225,11 +225,11 @@ public class UploadProvider: NSObject {
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                            managedObjectContext: bckgContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
+                                                    managedObjectContext: bckgContext,
+                                                    sectionNameKeyPath: nil, cacheName: nil)
         
         // Perform the fetch.
         do {
@@ -244,10 +244,10 @@ public class UploadProvider: NSObject {
     
     // MARK: - Clear Upload Requests
     /**
-        Return number of upload requests stored in cache
+     Return number of upload requests stored in cache
      */
     public func getObjectCount() -> Int64 {
-
+        
         // Create a fetch request for the Upload entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Upload")
         fetchRequest.resultType = .countResultType
@@ -258,7 +258,7 @@ public class UploadProvider: NSObject {
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Fetch number of objects
         do {
             let countResult = try bckgContext.fetch(fetchRequest)
@@ -269,29 +269,29 @@ public class UploadProvider: NSObject {
         }
         return Int64.zero
     }
-        
+    
     /**
      Clear cached Core Data upload entry
-    */
+     */
     public func clearAll() {
         // Create a fetch request for the Upload entity
         let fetchRequest = Upload.fetchRequest()
-
+        
         // Priority to uploads requested manually, recent ones first
         var sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.markedForAutoUpload), ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: false))
         fetchRequest.sortDescriptors = sortDescriptors
-
+        
         // Select upload requests:
         /// — for the current server and user only
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
         andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-
+        
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
-
+        
         // Execute batch delete request
         try? mainContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
@@ -299,7 +299,7 @@ public class UploadProvider: NSObject {
     /**
      Delete a batch of upload requests from the Core Data store on a queue,
      processing the record in batches to avoid a high memory footprint.
-    */
+     */
     public func delete(uploadRequests: [Upload],
                        completion: @escaping (PwgKitError?) -> Void) {
         
@@ -348,23 +348,72 @@ public class UploadProvider: NSObject {
      NSManagedObjectContext.performAndWait doesn't rethrow so this function
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
-    */
+     */
     private func deleteOneBatch(_ uploadBatch: [Upload],
                                 taskContext: NSManagedObjectContext) -> Bool {
         // Check imput and current queue
         if uploadBatch.isEmpty { return true }
-
+        
         var success = false
         taskContext.performAndWait {
             // Create batch delete request
             let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadBatch.map({$0.objectID}))
-
+            
             // Execute batch delete request
             // Associated files will be deleted
             try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
-
+            
             success = true
         }
         return success
+    }
+    
+    /**
+     Attribute upload requests with API key as username to Piwigo user
+     */
+    func attributeAPIKeyUploadRequests(toUserWithID userID: NSManagedObjectID) {
+        // Runs on the URLSession's delegate queue
+        // so it won’t block the main thread.
+        bckgContext.performAndWait {
+            
+            // Retrieve upload requests in persistent store
+            let fetchRequest = Upload.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true)]
+            
+            // Retrieve all albums associated to the current API key:
+            /// — from the current server
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: self.bckgContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let APIKeyUploads:[Upload] = controller.fetchedObjects ?? []
+            
+            // Attribute API key upload requests to the Piwigo user
+            if let user = try? bckgContext.existingObject(with: userID) as? User {
+                APIKeyUploads.forEach { upload in
+                    upload.user = user
+                }
+            }
+            
+            // Save all modifications from the context to the store.
+            bckgContext.saveIfNeeded()
+            DispatchQueue.main.async {
+                self.mainContext.saveIfNeeded()
+            }
+            
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            bckgContext.reset()
+        }
     }
 }

@@ -35,7 +35,7 @@ public class UserProvider: NSObject {
     }()
     
     
-    // MARK: - Get/Create User Account Object
+    // MARK: - Manage User Account Object
     /**
      Returns a User Account instance
      - Will create a Server object if it does not already exist.
@@ -114,6 +114,44 @@ public class UserProvider: NSObject {
         }
         
         return currentUser
+    }
+    
+    func deleteUser(withName username: String) {
+        // Perform the fetch and delete the user object
+        bckgContext.performAndWait {
+            // Create a fetch request for the User entity
+            let fetchRequest = User.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
+                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+            
+            // Look for a user account of the server at path
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "username == %@", username))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            fetchRequest.fetchLimit = 1
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                        managedObjectContext: self.bckgContext,
+                                                        sectionNameKeyPath: nil, cacheName: nil)
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                debugPrint("••> getUserAccount() unresolved error: \(error.localizedDescription)")
+                return
+            }
+            
+            // Delete the user if any
+            if let user = controller.fetchedObjects?.first {
+                bckgContext.delete(user)
+                bckgContext.saveIfNeeded()
+                DispatchQueue.main.async {
+                    self.mainContext.saveIfNeeded()
+                }
+            }
+        }
     }
     
     /**

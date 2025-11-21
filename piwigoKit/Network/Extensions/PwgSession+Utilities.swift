@@ -7,6 +7,7 @@
 //
 
 import os
+import CoreData
 import Foundation
 import UIKit
 
@@ -82,7 +83,8 @@ extension PwgSession {
         /// It is useless to check the session when using API keys
         /// unless the Piwigo username is unknown
         if NetworkVars.shared.usesAPIkeys,
-           NetworkVars.shared.username.isValidPublicKey() {
+           NetworkVars.shared.username.isValidPublicKey(),
+           NetworkVars.shared.fixUserIsAPIKeyV412 == false {
             completion()
             return
         }
@@ -125,7 +127,7 @@ extension PwgSession {
                             logger.notice("Session opened for Guest")
                         }
                         // Session now opened
-                        getPiwigoConfig {
+                        getPiwigoConfig(forUser: user) {
                             // Update date of accesss to the server by guest
                             DispatchQueue.main.async {
                                 user?.setLastUsedToNow()
@@ -142,7 +144,7 @@ extension PwgSession {
                         let password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: username)
                         PwgSession.shared.sessionLogin(withUsername: username, password: password) {
                             // Session now opened
-                            getPiwigoConfig {
+                            getPiwigoConfig(forUser: user) {
                                 // Update date of accesss to the server by user
                                 DispatchQueue.main.async {
                                     user?.setLastUsedToNow()
@@ -177,7 +179,8 @@ extension PwgSession {
         }
     }
     
-    static func getPiwigoConfig(completion: @escaping () -> Void,
+    static func getPiwigoConfig(forUser user: User?,
+                                completion: @escaping () -> Void,
                                 failure: @escaping (PwgKitError) -> Void) {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.shared.usesCommunityPluginV29 {
@@ -187,8 +190,15 @@ extension PwgSession {
                     if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
                         failure(PwgKitError.incompatiblePwgVersion) }
                     else {
+                        // Update Piwigo user
                         NetworkVars.shared.user = userName
-                        completion()
+                        if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
+                            fixesUserIsAPIKey(forUserWithID: userID) {
+                                completion()
+                            }
+                        } else {
+                            completion()
+                        }
                     }
                 } failure: { error in
                     failure(error)
@@ -203,15 +213,38 @@ extension PwgSession {
                     failure(PwgKitError.incompatiblePwgVersion) }
                 else {
                     NetworkVars.shared.user = userName
-                    completion()
+                    if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
+                        fixesUserIsAPIKey(forUserWithID: userID) {
+                            completion()
+                        }
+                    } else {
+                        completion()
+                    }
                 }
             } failure: { error in
                 failure(error)
             }
         }
     }
-
-
+    
+    fileprivate static
+    func fixesUserIsAPIKey(forUserWithID userID: NSManagedObjectID,
+                           completion: @escaping () -> Void) {
+        // Attribute albums to appropriate user if necessary
+        AlbumProvider.shared.attributeAPIKeyAlbums(toUserWithID: userID)
+        
+        // Attribute upoload requests to appropriate user if necessary
+        UploadProvider.shared.attributeAPIKeyUploadRequests(toUserWithID: userID)
+        
+        // Delete API Key user
+        UserProvider.shared.deleteUser(withName: NetworkVars.shared.username)
+        
+        // Job completed
+        NetworkVars.shared.fixUserIsAPIKeyV412 = false
+        completion()
+    }
+    
+    
     // MARK: - Clean URLs of Images
     public static
     func encodedImageURL(_ originalURL: String?) -> NSURL? {
