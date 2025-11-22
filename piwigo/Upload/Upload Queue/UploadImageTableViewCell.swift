@@ -188,7 +188,7 @@ class UploadImageTableViewCell: UITableViewCell {
                                 maxSize: maxSize)
         }
         imageInfoLabel.text = text
-        
+
         // Cell image: retrieve data of right size and crop image
         let squareSize = CGSize(width: 58.0 * scale, height: 58.0 * scale)
         let cropToSquare = PHImageRequestOptions()

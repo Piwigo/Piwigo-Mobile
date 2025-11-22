@@ -11,7 +11,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **f
 
 [![Available on the App Store](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/Download_on_the_App_Store_Badge.svg)](https://itunes.apple.com/app/piwigo/id472225196?mt=8)
 
-[![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%20M4%2013"%20+%20iPhone%2017%20Pro.webp)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%20M4%2013"%20+%20iPhone%2017%20Pro%20small.webp)
+[![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%2013%20M4%20+%20iPhone%2017%20Pro%20small.webp)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%2013%20M4%20+%20iPhone%2017%20Pro%20small.webp)
 ## Description
 [Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.org](http://piwigo.org) (2.8 or higher):
 
