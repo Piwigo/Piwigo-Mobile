@@ -20,17 +20,13 @@ extension PwgSession: URLSessionDelegate {
 //    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Session invalidated.")
-        }
+        PwgSession.logger.notice("Session invalidated.")
         activeDownloads = [ : ]
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Session-level authentication requested by server.")
-        }
+        PwgSession.logger.notice("Session-level authentication requested by server.")
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust else {

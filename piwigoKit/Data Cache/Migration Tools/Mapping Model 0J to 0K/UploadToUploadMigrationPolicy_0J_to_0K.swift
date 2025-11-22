@@ -24,10 +24,8 @@ final class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
 
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -63,18 +61,14 @@ final class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                        }
+                        DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
-                if #available(iOSApplicationExtension 14.0, *) {
-                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                }
+                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -126,10 +120,8 @@ final class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
 
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -151,10 +143,8 @@ final class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -167,10 +157,8 @@ final class UploadToUploadMigrationPolicy_0J_to_0K: NSEntityMigrationPolicy {
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)

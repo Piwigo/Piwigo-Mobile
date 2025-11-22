@@ -38,10 +38,8 @@ extension UploadManager
         self.updateNberOfUploadsToComplete()
 
         // Check current queue
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("findNextImageToUpload() in \(queueName(), privacy: .public), \((self.uploads.fetchedObjects ?? []).count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
-        }
-                
+        UploadManager.logger.notice("findNextImageToUpload() in \(queueName(), privacy: .public), \((self.uploads.fetchedObjects ?? []).count, privacy: .public) pending and \((self.completed.fetchedObjects ?? []).count, privacy: .public) completed upload requests, preparing:\(self.isPreparing ? "Yes" : "No", privacy: .public), uploading: \(self.isUploading.count, privacy: .public), finishing:\(self.isFinishing ? "Yes" : "No", privacy: .public)")
+        
         // Pause upload manager if:
         /// - app not in the foreground anymore
         /// - executing a background task
@@ -277,9 +275,7 @@ extension UploadManager
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads.map({$0.objectID}))
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("initialiseBckgTask() collected \(self.uploadRequestsToTransfer.count, privacy: .public) failed uploads")
-            }
+            UploadManager.logger.notice("initialiseBckgTask() collected \(self.uploadRequestsToTransfer.count, privacy: .public) failed uploads")
         }
         
         // Second, find upload requests ready for transfer
@@ -290,9 +286,7 @@ extension UploadManager
             let prepared = preparedUploads.map({$0.objectID})
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(prepared[..<min(UploadVars.shared.maxNberOfUploadsPerBckgTask,prepared.count)]))
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("initialiseBckgTask() collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count), privacy: .public) prepared uploads")
-            }
+            UploadManager.logger.notice("initialiseBckgTask() collected \(min(UploadVars.shared.maxNberOfUploadsPerBckgTask, prepared.count), privacy: .public) prepared uploads")
         }
         
         // Finally, get list of upload requests to prepare
@@ -300,9 +294,7 @@ extension UploadManager
         if diff <= 0 { return }
         let requestsToPrepare = (uploads.fetchedObjects ?? [])
             .filter({$0.state == .waiting && $0.markedForAutoUpload == autoUploadOnly})
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("initialiseBckgTask() collected \(min(diff, requestsToPrepare.count), privacy: .public) uploads to prepare")
-        }
+        UploadManager.logger.notice("initialiseBckgTask() collected \(min(diff, requestsToPrepare.count), privacy: .public) uploads to prepare")
         let toPrepare = requestsToPrepare.map({$0.objectID})
         uploadRequestsToPrepare = Set(toPrepare[..<min(diff, toPrepare.count)])
     }
@@ -319,16 +311,12 @@ extension UploadManager
                           let objectURI = URL(string: objectURIstr),
                           let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
                     else {
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier) not associated to an upload!")
-                        }
+                        UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier) not associated to an upload!")
                         continue
                     }
 
                     // Remembers that this upload request is being dealt with
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
-                    }
+                    UploadManager.logger.notice("resumeTransfers(): Foreground task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
                     self.isUploading.insert(uploadID)
                     
                     // Avoids duplicates
@@ -351,16 +339,12 @@ extension UploadManager
                               let objectURI = URL(string: objectURIstr),
                               let uploadID = uploadBckgContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI)
                         else {
-                            if #available(iOSApplicationExtension 14.0, *) {
-                                UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier) not associated to an upload!")
-                            }
+                            UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier) not associated to an upload!")
                             continue
                         }
 
                         // Remembers that this upload request is being dealt with
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
-                        }
+                        UploadManager.logger.notice("resumeTransfers(): Background task \(task.taskIdentifier, privacy: .public) is uploading: \(uploadID)")
                         self.isUploading.insert(uploadID)
                         
                         // Avoids duplicates

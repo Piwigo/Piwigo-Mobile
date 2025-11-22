@@ -257,9 +257,7 @@ extension PwgSession {
             serverComponents = components
         } else {
             // URL not RFC compliant! - Try to fix it manually
-            if #available(iOSApplicationExtension 14.0, *) {
-                PwgSession.logger.notice("Received invalid URL: \(originalURL ?? "", privacy: .public)")
-            }
+            PwgSession.logger.notice("Received invalid URL: \(originalURL ?? "", privacy: .public)")
             
             guard let fixedComponents = fixInvalidURL(patchedURL) else {
                 return nil
@@ -300,8 +298,7 @@ extension PwgSession {
         }
         
         #if DEBUG
-        if #available(iOSApplicationExtension 14.0, *),
-           let originalURL = originalURL,
+        if let originalURL = originalURL,
            finalURL.absoluteString != originalURL {
             PwgSession.logger.notice("Invalid URL \"\(originalURL, privacy: .public)\" replaced by \(finalURL.absoluteString, privacy: .public)")
         }

@@ -18,7 +18,6 @@ public class UploadManager: NSObject {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManager.self))
     
     // Singleton

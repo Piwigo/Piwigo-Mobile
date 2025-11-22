@@ -42,7 +42,6 @@ public final class DataMigrator: NSObject {
     
     // Logs migration activity
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: DataMigrator.self))
     
     // MARK: - Migration Required?
@@ -86,7 +85,7 @@ public final class DataMigrator: NSObject {
     public func migrateStore() throws {
         // Initialise time counter
         timeCounter = CFAbsoluteTimeGetCurrent()
-        logNotice("Migration started…")
+        DataMigrator.logger.notice("Migration started…")
         
         // URL of the store in the App Group directory
         let storeURL = DataDirectories.appGroupDirectory
@@ -105,11 +104,11 @@ public final class DataMigrator: NSObject {
 
                 // Log time needed to perform the migration
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                logNotice("Migration completed in \(duration) s")
+                DataMigrator.logger.notice("Migration completed in \(duration) s")
                 return
             } catch {
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                logNotice("Migration failed after \(duration) s")
+                DataMigrator.logger.notice("Migration failed after \(duration) s")
                 throw error
             }
         }
@@ -131,11 +130,11 @@ public final class DataMigrator: NSObject {
 
                 // Log time needed to perform the migration
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                logNotice("Migration completed in \(duration) s")
+                DataMigrator.logger.notice("Migration completed in \(duration) s")
                 return
             } catch {
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                logNotice("Migration failed after \(duration) s")
+                DataMigrator.logger.notice("Migration failed after \(duration) s")
                 throw error
             }
         }
@@ -151,11 +150,11 @@ public final class DataMigrator: NSObject {
 
                 // Log time needed to perform the migration
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                logNotice("Migration completed in \(duration) s")
+                DataMigrator.logger.notice("Migration completed in \(duration) s")
                 return
             } catch {
                 let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-                logNotice("Migration failed after \(duration) s")
+                DataMigrator.logger.notice("Migration failed after \(duration) s")
                 throw error
             }
         }
@@ -181,13 +180,13 @@ public final class DataMigrator: NSObject {
         var currentURL = oldStoreURL
         let migrationSteps = self.migrationStepsForStore(at: oldStoreURL, toVersion: version)
         if migrationSteps.isEmpty {
-            logNotice("No migration steps found.")
+            DataMigrator.logger.notice("No migration steps found.")
             return
         }
         
         // Loop over the migration steps
         for (index, migrationStep) in migrationSteps.enumerated() {
-            logNotice("Migration step \(index + 1)/\(migrationSteps.count): Starting…")
+            DataMigrator.logger.notice("Migration step \(index + 1)/\(migrationSteps.count): Starting…")
             do {
                 let manager = NSMigrationManager(sourceModel: migrationStep.sourceModel,
                                                  destinationModel: migrationStep.destinationModel)
@@ -212,7 +211,7 @@ public final class DataMigrator: NSObject {
                     
                     // Move store to directory of incompatible stores
                     moveIncompatibleStore(storeURL: currentURL)
-                    logNotice("Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
+                    DataMigrator.logger.notice("Failed attempting to migrate from \(migrationStep.sourceModel) to \(migrationStep.destinationModel), error: \(error)")
                     throw error
                 }
                 
@@ -225,7 +224,7 @@ public final class DataMigrator: NSObject {
                 currentURL = tempStoreURL
             }
             
-            logNotice("Migration step \(index + 1)/\(migrationSteps.count): Completed")
+            DataMigrator.logger.notice("Migration step \(index + 1)/\(migrationSteps.count): Completed")
         }
         
         // Replace original store with new store if old and new URLs are identical
@@ -291,7 +290,7 @@ public final class DataMigrator: NSObject {
                     try fm.copyItem(at: fileURL, to: backupURL)
                 }
                 catch let error {
-                    logNotice("Unable to backup data store: \(error.localizedDescription)")
+                    DataMigrator.logger.notice("Unable to backup data store: \(error.localizedDescription)")
                 }
             }
         }
@@ -316,7 +315,7 @@ public final class DataMigrator: NSObject {
                     try fm.copyItem(at: restoreURL, to: fileURL)
                 }
                 catch let error {
-                    logNotice("Unable to restore data store: \(error.localizedDescription)")
+                    DataMigrator.logger.notice("Unable to restore data store: \(error.localizedDescription)")
                 }
              }
         }
@@ -348,7 +347,7 @@ public final class DataMigrator: NSObject {
                 do {
                     try fm.moveItem(at: storeURL, to: corruptURL)
                 } catch let error {
-                    logNotice("Unable to move a corrupted data store: \(error.localizedDescription)")
+                    DataMigrator.logger.notice("Unable to move a corrupted data store: \(error.localizedDescription)")
                 }
             }
         }
@@ -375,7 +374,7 @@ public final class DataMigrator: NSObject {
             try fm.removeItem(at: oldURL)
         }
         catch let error {
-            logNotice("Unable to move content of Uploads directory: \(error.localizedDescription)")
+            DataMigrator.logger.notice("Unable to move content of Uploads directory: \(error.localizedDescription)")
         }
     }
     
@@ -386,17 +385,17 @@ public final class DataMigrator: NSObject {
               let currentModel = NSManagedObjectModel.compatibleModelForStoreMetadata(metadata)
         else { return }
         
-        logNotice("WAL checkpointing: Starting…")
+        DataMigrator.logger.notice("WAL checkpointing: Starting…")
         do {
             let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: currentModel)
             let options = [NSSQLitePragmasOption: ["journal_mode": "DELETE"]]
             let store = persistentStoreCoordinator.addPersistentStore(at: storeURL, options: options)
             try persistentStoreCoordinator.remove(store)
             let duration = CFAbsoluteTimeGetCurrent() - timeCounter
-            logNotice("WAL checkpointing: Completed in \(duration) s")
+            DataMigrator.logger.notice("WAL checkpointing: Completed in \(duration) s")
         }
         catch let error {
-            logNotice("WAL checkpointing failed: \(error.localizedDescription)")
+            DataMigrator.logger.notice("WAL checkpointing failed: \(error.localizedDescription)")
             throw error
         }
     }
@@ -431,69 +430,47 @@ private extension DataMigrationVersion {
             if let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
                 let logPrefix = "Trying to guess data model from app version \(appVersion) smaller than "
                 if appVersion.compare("2.5", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 2.5.")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 2.5.")
                     return .version01
                 }
                 else if appVersion.compare("2.5.2", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 2.5.2")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 2.5.2")
                     return .version03
                 }
                 else if appVersion.compare("2.6", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 2.6")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 2.6")
                     return .version04
                 }
                 else if appVersion.compare("2.6.2", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 2.6.2")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 2.6.2")
                     return .version06
                 }
                 else if appVersion.compare("2.7", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 2.7")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 2.7")
                     return .version07
                 }
                 else if appVersion.compare("2.12", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 2.12")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 2.12")
                     return .version08
                 }
                 else if appVersion.compare("3.0", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 3.0")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 3.0")
                     return .version09
                 }
                 else if appVersion.compare("3.2", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 3.2")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 3.2")
                     return .version0C
                 }
                 else if appVersion.compare("3.3", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 3.3")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 3.3")
                     return .version0F
                 }
                 else if appVersion.compare("3.4", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 3.4")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 3.4")
                     return .version0H
                 }
                 else if appVersion.compare("3.5", options: .numeric) == .orderedAscending {
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        DataMigrator.logger.error("\(logPrefix) 3.5")
-                    }
+                    DataMigrator.logger.error("\(logPrefix) 3.5")
                     return .version0J
                 }
                 return .version0L
@@ -515,20 +492,8 @@ extension DataMigrator {
         }
     }
     
-    func logNotice(_ message: String) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            DataMigrator.logger.notice("\(message)")
-        } else {
-            debugPrint("••> \(message)")
-        }
-    }
-    
     //    private static func logError(_ message: String, file: String = #file, function: String = #function, line: UInt = #line) {
-    //        if #available(iOSApplicationExtension 14.0, *) {
-    //            DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
-    //        } else {
-    //            debugPrint("\(file):\(function):\(line): \(message)")
-    //        }
+    //        DataMigrator.logger.debug("\(file):\(function):\(line): \(message)")
     //    }
     
     func queueName() -> String {

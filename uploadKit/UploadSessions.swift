@@ -21,7 +21,6 @@ public class UploadSessions: NSObject {
                 
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadSessions.self))
 
     // Singleton
@@ -153,9 +152,7 @@ public class UploadSessions: NSObject {
                 .filter({ $0.taskIdentifier != exceptedTaskID})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach {
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadSessions.logger.notice("Task \($0.taskIdentifier, privacy: .public) cancelled.")
-                }
+                UploadSessions.logger.notice("Task \($0.taskIdentifier, privacy: .public) cancelled.")
                 // Remember that this task was cancelled
                 $0.taskDescription = self.uploadBckgSessionIdentifier + " " + pwgHTTPCancelled
                 $0.cancel()
@@ -169,28 +166,20 @@ public class UploadSessions: NSObject {
 extension UploadSessions: URLSessionDelegate {
 
 //    public func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            UploadSessions.logger.notice("Session waiting for connectivity (offline mode).")
-//        }
+//        UploadSessions.logger.notice("Session waiting for connectivity (offline mode).")
 //    }
         
 //    public func urlSession(_ session: URLSession, task: URLSessionTask, willBeginDelayedRequest: URLRequest, completionHandler: (URLSession.DelayedRequestDisposition, URLRequest?) -> Void) {
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            UploadSessions.logger.notice("Session will begin delayed request (back to online).")
-//        }
+//        UploadSessions.logger.notice("Session will begin delayed request (back to online).")
 //    }
 
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadSessions.logger.notice("Session invalidated.")
-        }
+        UploadSessions.logger.notice("Session invalidated.")
     }
     
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadSessions.logger.notice("Session-level authentication requested by server.")
-        }
+        UploadSessions.logger.notice("Session-level authentication requested by server.")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
@@ -241,9 +230,7 @@ extension UploadSessions: URLSessionDelegate {
     }
     
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadSessions.logger.notice("Session \(session.configuration.identifier ?? "", privacy: .public) finished events.")
-        }
+        UploadSessions.logger.notice("Session \(session.configuration.identifier ?? "", privacy: .public) finished events.")
         
         // Execute completion handler, i.e. inform iOS that we collect data returned by Piwigo server
         DispatchQueue.main.async {
@@ -259,9 +246,7 @@ extension UploadSessions: URLSessionDelegate {
 extension UploadSessions: URLSessionTaskDelegate {
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadSessions.logger.notice("Task-level authentication requested by server.")
-        }
+        UploadSessions.logger.notice("Task-level authentication requested by server.")
 
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
@@ -290,9 +275,7 @@ extension UploadSessions: URLSessionTaskDelegate {
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: pwgHTTPimageID),
               let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!)
         else {
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadSessions.logger.notice("Could not extract HTTP header fields.")
-            }
+            UploadSessions.logger.notice("Could not extract HTTP header fields.")
             preconditionFailure("Could not extract HTTP header fields.")
         }
 
@@ -307,22 +290,20 @@ extension UploadSessions: URLSessionTaskDelegate {
             NotificationCenter.default.post(name: .pwgUploadProgress, object: nil, userInfo: uploadInfo)
         }
         
-        if #available(iOSApplicationExtension 14.0, *) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = NumberFormatter.Style.none
-            numberFormatter.usesGroupingSeparator = true
-            let bytes = numberFormatter.string(from: NSNumber(value: bytesSent)) ?? ""
-            numberFormatter.numberStyle = NumberFormatter.Style.decimal
-            numberFormatter.roundingMode = .ceiling
-            numberFormatter.roundingIncrement = NSNumber(value: 0.01)
-            let progress = numberFormatter.string(from: NSNumber(value: self.getProgress(forCounterWithID: identifier) * 100)) ?? ""
-            UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) did send \(bytes, privacy: .public) bytes | counter: \(progress, privacy: .public) %")
-            #if DEBUG
-            if let counter = uploadCounters.first(where: { $0.uid == identifier }) {
-                UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) did send \(bytes, privacy: .public) bytes | counter: \(counter.bytesSent, privacy: .public)/\(counter.totalBytes, privacy: .public)")
-            }
-            #endif
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.none
+        numberFormatter.usesGroupingSeparator = true
+        let bytes = numberFormatter.string(from: NSNumber(value: bytesSent)) ?? ""
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
+        numberFormatter.roundingMode = .ceiling
+        numberFormatter.roundingIncrement = NSNumber(value: 0.01)
+        let progress = numberFormatter.string(from: NSNumber(value: self.getProgress(forCounterWithID: identifier) * 100)) ?? ""
+        UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) did send \(bytes, privacy: .public) bytes | counter: \(progress, privacy: .public) %")
+        #if DEBUG
+        if let counter = uploadCounters.first(where: { $0.uid == identifier }) {
+            UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) did send \(bytes, privacy: .public) bytes | counter: \(counter.bytesSent, privacy: .public)/\(counter.totalBytes, privacy: .public)")
         }
+        #endif
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -333,9 +314,7 @@ extension UploadSessions: URLSessionTaskDelegate {
               let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!),
               let taskDescription = task.taskDescription
         else {
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadSessions.logger.notice("Could not extract HTTP header fields.")
-            }
+            UploadSessions.logger.notice("Could not extract HTTP header fields.")
             preconditionFailure("Could not extract HTTP header fields.")
         }
 
@@ -383,12 +362,10 @@ extension UploadSessions: URLSessionTaskDelegate {
         }
         
         // Log task completion
-        if #available(iOSApplicationExtension 14.0, *) {
-            if let pwgError, taskDescription.contains(pwgHTTPCancelled) == false {
-                UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: pwgError.localizedDescription), privacy: .public).")
-            } else {
-                UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) completed.")
-            }
+        if let pwgError, taskDescription.contains(pwgHTTPCancelled) == false {
+            UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) failed with error \(String(describing: pwgError.localizedDescription), privacy: .public).")
+        } else {
+            UploadSessions.logger.notice("Task \(task.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) completed.")
         }
         
         // Handle the response with the Upload Manager
@@ -407,9 +384,7 @@ extension UploadSessions: URLSessionTaskDelegate {
                 }
             }
         default:
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadSessions.logger.notice("Unexpected session identifier.")
-            }
+            UploadSessions.logger.notice("Unexpected session identifier.")
             preconditionFailure("Unexpected session identifier.")
         }
     }
@@ -421,21 +396,19 @@ extension UploadSessions: URLSessionDataDelegate {
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
     {
-        if #available(iOSApplicationExtension 14.0, *) {
-            // Get upload info from task
-            if let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
-               let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) {
-                #if DEBUG
-                let dataStr = String(decoding: data, as: UTF8.self)
-                UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
-                #else
-                let countsOfBytes = data.count * MemoryLayout<Data>.stride
-                UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
-                #endif
-            } else {
-                UploadSessions.logger.fault("Could not extract HTTP header fields.")
-                preconditionFailure("Could not extract HTTP header fields.")
-            }
+        // Get upload info from task
+        if let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunk))!),
+           let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: pwgHTTPchunks))!) {
+            #if DEBUG
+            let dataStr = String(decoding: data, as: UTF8.self)
+            UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive: \(dataStr, privacy: .public).")
+            #else
+            let countsOfBytes = data.count * MemoryLayout<Data>.stride
+            UploadSessions.logger.notice("Task \(dataTask.taskIdentifier, privacy: .public) of chunk \(chunk+1, privacy: .public)/\(chunks, privacy: .public) did receive \(countsOfBytes, privacy: .public) bytes.")
+            #endif
+        } else {
+            UploadSessions.logger.fault("Could not extract HTTP header fields.")
+            preconditionFailure("Could not extract HTTP header fields.")
         }
         
         let sessionIdentifier = (dataTask.taskDescription ?? "").components(separatedBy: " ").first
@@ -453,9 +426,7 @@ extension UploadSessions: URLSessionDataDelegate {
                 }
             }
         default:
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadSessions.logger.fault("Unexpected session identifier.")
-            }
+            UploadSessions.logger.fault("Unexpected session identifier.")
             preconditionFailure("Unexpected session identifier.")
         }
     }

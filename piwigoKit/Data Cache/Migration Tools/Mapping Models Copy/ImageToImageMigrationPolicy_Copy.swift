@@ -21,10 +21,8 @@ final class ImageToImageMigrationPolicy_Copy: NSEntityMigrationPolicy {
 
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -48,10 +46,8 @@ final class ImageToImageMigrationPolicy_Copy: NSEntityMigrationPolicy {
         try super.endInstanceCreation(forMapping: mapping, manager: manager)
         
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -75,10 +71,8 @@ final class ImageToImageMigrationPolicy_Copy: NSEntityMigrationPolicy {
         try super.endRelationshipCreation(forMapping: mapping, manager: manager)
         
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -93,10 +87,8 @@ final class ImageToImageMigrationPolicy_Copy: NSEntityMigrationPolicy {
         try super.end(mapping, manager: manager)
         
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)

@@ -52,16 +52,12 @@ extension UploadManager
                           let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
                               .managedObjectID(forURIRepresentation: objectURI)
                     else {
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
-                        }
+                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
                         continue
                     }
                     
                     // Task associated to an upload
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
-                    }
+                    UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
                     self.isUploading.insert(uploadID)
                     
                 default:
@@ -70,8 +66,7 @@ extension UploadManager
             }
             
             // Logs
-            if #available(iOSApplicationExtension 14.0, *),
-               let uploadObjects = self.uploads.fetchedObjects,
+            if let uploadObjects = self.uploads.fetchedObjects,
                let completedObjects = self.completed.fetchedObjects {
                 UploadManager.logger.notice("\(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
             }
@@ -98,9 +93,7 @@ extension UploadManager
                 UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("\(assetsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
-                }
+                UploadManager.logger.notice("\(assetsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
                 deleteAssets(associatedToUploads: assetsToDelete)
             }
         }

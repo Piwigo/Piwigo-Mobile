@@ -23,7 +23,6 @@ public class Image: NSManagedObject {
 
     // Logs Image updates
     /// sudo log collect --device --start '2023-04-07 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.piwigoKit", category: String(describing: Image.self))
 
     /**
@@ -132,9 +131,7 @@ public class Image: NSManagedObject {
             }
         } else {
             datePosted = DateUtilities.unknownDateInterval
-            if #available(iOSApplicationExtension 14.0, *) {
-                Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID, privacy: .public) from '\(imageData.datePosted ?? "nil", privacy: .public)'")
-            }
+            Image.logger.notice("Could not update datePosted attribute of Image \(newPwgID, privacy: .public) from '\(imageData.datePosted ?? "nil", privacy: .public)'")
         }
         if let newCreatedInterval = DateUtilities.timeInterval(from: imageData.dateCreated) {
             if newCreatedInterval != dateCreated {
@@ -142,9 +139,7 @@ public class Image: NSManagedObject {
             }
         } else {
             dateCreated = DateUtilities.unknownDateInterval
-            if #available(iOSApplicationExtension 14.0, *) {
-                Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID, privacy: .public) from '\(imageData.dateCreated ?? "nil", privacy: .public)'")
-            }
+            Image.logger.notice("Could not update dateCreated attribute of Image \(newPwgID, privacy: .public) from '\(imageData.dateCreated ?? "nil", privacy: .public)'")
         }
         
         // Author
