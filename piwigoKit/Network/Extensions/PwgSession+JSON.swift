@@ -53,7 +53,7 @@ extension PwgSession
                 else { throw PwgKitError.invalidStatusCode(statusCode: httpResponse.statusCode) }
                 
                 // Check that we have received some data
-                guard var jsonData = data, jsonData.isEmpty == false
+                guard jsonData.isEmpty == false
                 else { throw PwgKitError.emptyJSONobject }
                 
                 // Data returned, try decoding JSON object
