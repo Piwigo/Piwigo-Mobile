@@ -26,42 +26,94 @@ extension AlbumViewController
     
 
     // MARK: - Button Management
-    @MainActor
-    func showUploadQueueButton() {
+    @MainActor @available(iOS 26.0, *)
+    private func setNavBarWithUploadQueueButton() {
         // Show upload queue button only in default album
-        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId)
+        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
+              uploadQueueBarButton != nil
         else { return }
         
-        if #available(iOS 26.0, *) {
-            // Already shown?
-            if (toolbarItems ?? []).count == 3  {
-                // Add button to toolbar
-                let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                setToolbarItems(toolBarItems, animated: true)
-            }
-        } else {
-            showOldUploadQueueButton()
+        // Reset the navigation bar
+        switch view.traitCollection.userInterfaceIdiom {
+        case .phone:
+            // Search and other buttons in the toolbar
+            navigationItem.preferredSearchBarPlacement = .integratedButton
+            let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+            let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
+            navigationController?.setToolbarHidden(false, animated: true)
+            setToolbarItems(toolBarItems, animated: true)
+            
+        case .pad:
+            // Right side of the navigation bar
+            navigationItem.preferredSearchBarPlacement = .integrated
+            let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
+            navigationItem.setRightBarButtonItems(items, animated: true)
+            
+        default:
+            preconditionFailure("!!! Interface not managed !!!")
         }
     }
     
-    @MainActor
-    func hideUploadQueueButton() {
+    @MainActor @available(iOS 26.0, *)
+    func setNavBarWithUploadQueueButton(andNberOfUploads nberOfUploads: Int) {
+        guard [0, AlbumVars.shared.defaultCategory].contains(categoryId),
+              nberOfUploads > 0
+        else { return }
+        
+        if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
+            ProcessInfo.processInfo.isLowPowerModeEnabled {
+            if uploadQueueBarButton == nil {
+                uploadQueueBarButton = getUploadQueueBarButton(withTitle: "⚠️")!
+                setNavBarWithUploadQueueButton()
+            } else {
+                uploadQueueBarButton?.title = "⚠️"
+            }
+        } else {
+            // Set number of uploads
+            let nber = String(format: "%lu", UInt(nberOfUploads))
+            if uploadQueueBarButton == nil {
+                uploadQueueBarButton = getUploadQueueBarButton(withTitle: nber)!
+                setNavBarWithUploadQueueButton()
+            }
+            else if let currentTitle = uploadQueueBarButton?.title,
+                      nber.compare(currentTitle) == .orderedSame,
+                      uploadQueueBarButton?.isHidden ?? true == false {
+                // Nothing changed ► NOP
+                return
+            } else {
+                uploadQueueBarButton?.title = nber
+            }
+        }
+    }
+    
+    @MainActor @available(iOS 26.0, *)
+    func setNavBarWithoutUploadQueueButton() {
         // The upload queue button is only presented in the default album
         guard [0, AlbumVars.shared.defaultCategory].contains(categoryId)
         else { return }
         
-        if #available(iOS 26.0, *) {
-            // Currently shown?
-            var toolbarItems = toolbarItems ?? []
-            if toolbarItems.count == 4 {
-                // Remove UploadQueue button from toolbar when the root album is visible
-                toolbarItems.removeFirst()
-                setToolbarItems(toolbarItems, animated: true)
-            }
-        } else {
-            hideOldUploadQueueButton()
+        // Reset the navigation bar
+        switch view.traitCollection.userInterfaceIdiom {
+        case .phone:
+            // Search and other buttons in the toolbar
+            navigationItem.preferredSearchBarPlacement = .integratedButton
+            let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
+            let toolBarItems = [addAlbumBarButton, searchBarButton].compactMap { $0 }
+            navigationController?.setToolbarHidden(false, animated: true)
+            setToolbarItems(toolBarItems, animated: true)
+            
+        case .pad:
+            // Right side of the navigation bar
+            navigationItem.preferredSearchBarPlacement = .integrated
+            let items = [discoverBarButton, addAlbumBarButton].compactMap { $0 }
+            navigationItem.setRightBarButtonItems(items, animated: true)
+            
+        default:
+            preconditionFailure("!!! Interface not managed !!!")
         }
+        
+        // Deinitialise the button
+        uploadQueueBarButton = nil
     }
     
     @MainActor
@@ -74,41 +126,21 @@ extension AlbumViewController
               let nberOfUploads = (notification?.userInfo?["nberOfUploadsToComplete"] as? Int)
         else { return }
 
-        // Upload completed?
-        if nberOfUploads <= 0 {
-            // Hide button if not already hidden
-            hideUploadQueueButton()
-            return
-        }
-        
-        // Uploading: Update button?
+        // Show/hide upload queue button
         if #available(iOS 26.0, *) {
-            if (!NetworkVars.shared.isConnectedToWiFi && UploadVars.shared.wifiOnlyUploading) ||
-                ProcessInfo.processInfo.isLowPowerModeEnabled {
-                if uploadQueueBarButton == nil {
-                    uploadQueueBarButton = getUploadQueueBarButton(withTitle: "⚠️")!
-                } else {
-                    uploadQueueBarButton?.title = "⚠️"
-                }
+            if nberOfUploads <= 0 {
+                setNavBarWithoutUploadQueueButton()
             } else {
-                // Set number of uploads
-                let nber = String(format: "%lu", UInt(nberOfUploads))
-                if uploadQueueBarButton == nil {
-                    uploadQueueBarButton = getUploadQueueBarButton(withTitle: nber)!
-                } else if let currentTitle = uploadQueueBarButton?.title,
-                          nber.compare(currentTitle) == .orderedSame,
-                          uploadQueueBarButton?.isHidden ?? true == false {
-                    // Nothing changed ► NOP
-                    return
-                }
-                uploadQueueBarButton?.title = nber
+                setNavBarWithUploadQueueButton(andNberOfUploads: nberOfUploads)
             }
-            
-            // Resize and show button if needed
-            showUploadQueueButton()
         }
         else {
-            updateOldButton(withNberOfUploads: nberOfUploads)
+            // Fallback on previous version
+            if nberOfUploads <= 0 {
+                hideOldUploadQueueButton()
+            } else {
+                updateOldButton(withNberOfUploads: nberOfUploads)
+            }
         }
     }
     

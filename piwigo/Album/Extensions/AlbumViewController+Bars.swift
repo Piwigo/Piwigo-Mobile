@@ -49,25 +49,25 @@ extension AlbumViewController
             // SHOULD BE => 'normal' user having uploaded images can only edit their images.
             //              This requires 'user_id' and 'added_by' values of images for checking rights
             if user.hasUploadRights(forCatID: categoryId) {
+                // Initialise UploadQueue toolbar button if needed
+                // and place it with other buttons in the navigation bar
+                let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
+                if nberOfUploads > 0 {
+                    // In toolbar or on the right side of the navigation bar
+                    setNavBarWithUploadQueueButton(andNberOfUploads: nberOfUploads)
+                } else {
+                    // In toolbar or on the right side of the navigation bar
+                    setNavBarWithoutUploadQueueButton()
+                }
+
+                // Items not gathered with the upload queue bar button
                 switch view.traitCollection.userInterfaceIdiom {
                 case .phone:
                     // Right side of the navigation bar
                     let items = [discoverBarButton].compactMap { $0 }
                     navigationItem.setRightBarButtonItems(items, animated: true)
                     
-                    // Search and other buttons in the toolbar
-                    navigationItem.preferredSearchBarPlacement = .integratedButton
-                    let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-                    let toolBarItems = [uploadQueueBarButton, .space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
-                    navigationController?.setToolbarHidden(false, animated: true)
-                    setToolbarItems(toolBarItems, animated: true)
-                    
                 case .pad:
-                    // Right side of the navigation bar
-                    navigationItem.preferredSearchBarPlacement = .integrated
-                    let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0), uploadQueueBarButton].compactMap { $0 }
-                    navigationItem.setRightBarButtonItems(items, animated: true)
-
                     // No toolbar
                     navigationController?.setToolbarHidden(true, animated: true)
                     setToolbarItems(nil, animated: false)

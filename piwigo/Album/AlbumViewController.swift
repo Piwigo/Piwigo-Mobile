@@ -477,17 +477,10 @@ class AlbumViewController: UIViewController
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                    name: Notification.Name.pwgUploadProgress, object: nil)
         }
-
+        
         // Set navigation bar and buttons
         initBarsInPreviewMode()
-        if #available(iOS 26.0, *) {
-            // Show/hide UploadQueue toolbar button if needed
-            let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-            let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
-            NotificationCenter.default.post(name: .pwgLeftUploads,
-                                            object: nil, userInfo: userInfo)
-        } else {
-            // Set buttons
+        if #unavailable(iOS 26.0) {
             relocateButtons()
             updateButtons()
         }
