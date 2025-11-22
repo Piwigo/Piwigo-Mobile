@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgHistoryLog = "format=json&method=pwg.history.log"
+public let pwgHistoryLog = "pwg.history.log"
 public let pwgHistoryLogBytes: Int64 = 560
 
 // MARK: Piwigo JSON Structures

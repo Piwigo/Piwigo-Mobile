@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let kCommunityCategoriesGetList = "format=json&method=community.categories.getList"
+public let kCommunityCategoriesGetList = "community.categories.getList"
 
 // MARK: Piwigo JSON Structures
 public struct CommunityCategoriesGetListJSON: Decodable {

@@ -8,8 +8,8 @@
 
 import Foundation
 
-public let pwgUsersFavoritesAdd = "format=json&method=pwg.users.favorites.add"
-public let pwgUsersFavoritesRemove = "format=json&method=pwg.users.favorites.remove"
+public let pwgUsersFavoritesAdd = "pwg.users.favorites.add"
+public let pwgUsersFavoritesRemove = "pwg.users.favorites.remove"
 
 // MARK: Piwigo JSON Structures
 public struct FavoritesAddRemoveJSON: Decodable {

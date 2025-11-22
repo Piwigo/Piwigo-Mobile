@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesGetInfo = "format=json&method=pwg.images.getInfo"
+public let pwgImagesGetInfo = "pwg.images.getInfo"
 
 // MARK: Piwigo JSON Structures
 public struct ImagesGetInfoJSON: Decodable {

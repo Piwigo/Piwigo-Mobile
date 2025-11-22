@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let kCommunityImagesUploadCompleted = "format=json&method=community.images.uploadCompleted"
+public let kCommunityImagesUploadCompleted = "community.images.uploadCompleted"
 
 // MARK: Piwigo JSON Structures
 public struct CommunityImagesUploadCompletedJSON: Decodable {

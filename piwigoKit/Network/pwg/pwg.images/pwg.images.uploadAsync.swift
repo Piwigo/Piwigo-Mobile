@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesUploadAsync = "format=json&method=pwg.images.uploadAsync"
+public let pwgImagesUploadAsync = "pwg.images.uploadAsync"
 
 // MARK: Piwigo JSON Structures
 public struct ImagesUploadAsyncJSON: Decodable {

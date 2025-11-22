@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImageRotate = "format=json&method=pwg.image.rotate"
+public let pwgImageRotate = "pwg.image.rotate"
 
 // MARK: Piwigo JSON Structures
 public struct ImageRotateJSON: Decodable {

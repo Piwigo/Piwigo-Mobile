@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgCategoriesCalcOrphans = "format=json&method=pwg.categories.calculateOrphans"
+public let pwgCategoriesCalcOrphans = "pwg.categories.calculateOrphans"
 
 // MARK: Piwigo JSON Structures
 public struct CategoriesCalcOrphansJSON: Decodable {

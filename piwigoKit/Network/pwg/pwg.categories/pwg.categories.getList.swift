@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgCategoriesGetList = "format=json&method=pwg.categories.getList"
+public let pwgCategoriesGetList = "pwg.categories.getList"
 
 // MARK: Piwigo JSON Structures
 public struct CategoriesGetListJSON: Decodable {

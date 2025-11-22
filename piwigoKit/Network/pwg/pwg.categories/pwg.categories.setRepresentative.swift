@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgCategoriesSetRepresentative = "format=json&method=pwg.categories.setRepresentative"
+public let pwgCategoriesSetRepresentative = "pwg.categories.setRepresentative"
 
 // MARK: Piwigo JSON Structures
 public struct CategoriesSetRepresentativeJSON: Decodable {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesSetInfo = "format=json&method=pwg.images.setInfo"
+public let pwgImagesSetInfo = "pwg.images.setInfo"
 public let pwgImagesSetInfoBytes: Int64 = 610
 
 // MARK: Piwigo JSON Structures

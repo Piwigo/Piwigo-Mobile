@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgSessionGetStatus = "format=json&method=pwg.session.getStatus"
+public let pwgSessionGetStatus = "pwg.session.getStatus"
 public let pwgSessionGetStatusBytes: Int64 = 7430
 
 // MARK: Piwigo JSON Structures

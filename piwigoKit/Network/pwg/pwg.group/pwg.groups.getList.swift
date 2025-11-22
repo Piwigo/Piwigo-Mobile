@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgGroupsGetList = "format=json&method=pwg.groups.getList"
+public let pwgGroupsGetList = "pwg.groups.getList"
 
 // MARK: Piwigo JSON Structures
 public struct GroupsGetListJSON: Decodable {

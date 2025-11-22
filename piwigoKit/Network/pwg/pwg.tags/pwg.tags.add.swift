@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgTagsAdd = "format=json&method=pwg.tags.add"
+public let pwgTagsAdd = "pwg.tags.add"
 
 // MARK: Piwigo JSON Structures
 public struct TagAddJSON: Decodable {

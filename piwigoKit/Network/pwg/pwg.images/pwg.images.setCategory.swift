@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesSetCategory = "format=json&method=pwg.images.setCategory"
+public let pwgImagesSetCategory = "pwg.images.setCategory"
 public let pwgImagesSetCategoryBytes: Int64 = 610
 
 public enum pwgImagesSetCategoryAction: String {

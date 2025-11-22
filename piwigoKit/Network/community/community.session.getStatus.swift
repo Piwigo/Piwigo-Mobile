@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let kCommunitySessionGetStatus = "format=json&method=community.session.getStatus"
+public let kCommunitySessionGetStatus = "community.session.getStatus"
 public let kCommunitySessionGetStatusBytes: Int64 = 2100
 
 // MARK: Piwigo JSON Structures

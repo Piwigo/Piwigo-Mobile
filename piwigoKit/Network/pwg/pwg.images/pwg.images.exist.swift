@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesExist = "format=json&method=pwg.images.exist"
+public let pwgImagesExist = "pwg.images.exist"
 public let pwgImagesExistBytes: Int64 = 1250
 
 // MARK: - Piwigo JSON Structures

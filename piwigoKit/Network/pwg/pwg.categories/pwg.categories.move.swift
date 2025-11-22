@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgCategoriesMove = "format=json&method=pwg.categories.move"
+public let pwgCategoriesMove = "pwg.categories.move"
 
 // MARK: Piwigo JSON Structures
 public struct CategoriesMoveJSON: Decodable {

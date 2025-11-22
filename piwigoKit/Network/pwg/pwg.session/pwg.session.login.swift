@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgSessionLogin = "format=json&method=pwg.session.login"
+public let pwgSessionLogin = "pwg.session.login"
 public let pwgSessionLoginBytes: Int64 = 620
 
 // MARK: Piwigo JSON Structures

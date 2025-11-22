@@ -16,7 +16,7 @@ extension PwgSession
                                           countOfBytesClientExpectsToReceive: Int64,
                                           completion: @escaping (Result<T, PwgKitError>) -> Void) {
         // Create POST request
-        let url = URL(string: NetworkVars.shared.service + "/ws.php?\(method)")
+        let url = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(method)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")

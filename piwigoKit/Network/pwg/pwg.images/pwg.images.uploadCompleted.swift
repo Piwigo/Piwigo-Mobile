@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesUploadCompleted = "format=json&method=pwg.images.uploadCompleted"
+public let pwgImagesUploadCompleted = "pwg.images.uploadCompleted"
 
 // MARK: Piwigo JSON Structures
 public struct ImagesUploadCompletedJSON: Decodable {

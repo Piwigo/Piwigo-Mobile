@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgCategoriesAdd = "format=json&method=pwg.categories.add"
+public let pwgCategoriesAdd = "pwg.categories.add"
 
 // MARK: Piwigo JSON Structures
 public struct CategoriesAddJSON: Decodable {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let kReflectionGetMethodList = "format=json&method=reflection.getMethodList"
+public let kReflectionGetMethodList = "reflection.getMethodList"
 public let kReflectionGetMethodListBytes: Int64 = 34528
 
 // MARK: Piwigo JSON Structures

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesDelete = "format=json&method=pwg.images.delete"
+public let pwgImagesDelete = "pwg.images.delete"
 
 // MARK: Piwigo JSON Structures
 public struct ImagesDeleteJSON: Decodable {
