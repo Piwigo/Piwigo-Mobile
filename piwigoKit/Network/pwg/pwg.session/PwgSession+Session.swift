@@ -14,13 +14,11 @@ public extension PwgSession {
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
                       failure: @escaping (PwgKitError) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            #if DEBUG
-            PwgSession.logger.notice("Open session for \(username, privacy: .public).")
-            #else
-            PwgSession.logger.notice("Open session for \(username, privacy: .private(mask: .hash)).")
-            #endif
-        }
+#if DEBUG
+        PwgSession.logger.notice("Session: logging in with username: \(username, privacy: .public)…")
+#else
+        PwgSession.logger.notice("Session: logging in with username: \(username, privacy: .private(mask: .hash))…")
+#endif
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "password" : password]
@@ -51,6 +49,7 @@ public extension PwgSession {
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
                           failure: @escaping (PwgKitError) -> Void) {
+        PwgSession.logger.notice("Session: getting status…")
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
@@ -190,9 +189,7 @@ public extension PwgSession {
 
     func sessionLogout(completion: @escaping () -> Void,
                        failure: @escaping (PwgKitError) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Close session.")
-        }
+        PwgSession.logger.notice("Session: closing…")
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,

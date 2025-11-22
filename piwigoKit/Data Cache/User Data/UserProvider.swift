@@ -117,41 +117,23 @@ public class UserProvider: NSObject {
     }
     
     func deleteUser(withName username: String) {
-        // Perform the fetch and delete the user object
-        bckgContext.performAndWait {
-            // Create a fetch request for the User entity
-            let fetchRequest = User.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
-                                                             selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
-            
-            // Look for a user account of the server at path
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "username == %@", username))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            fetchRequest.fetchLimit = 1
-            
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: self.bckgContext,
-                                                        sectionNameKeyPath: nil, cacheName: nil)
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                debugPrint("••> getUserAccount() unresolved error: \(error.localizedDescription)")
-                return
-            }
-            
-            // Delete the user if any
-            if let user = controller.fetchedObjects?.first {
-                bckgContext.delete(user)
-                bckgContext.saveIfNeeded()
-                DispatchQueue.main.async {
-                    self.mainContext.saveIfNeeded()
-                }
-            }
-        }
+        // Create a fetch request for the User entity
+        let fetchRequest = User.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(User.username), ascending: true,
+                                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
+        
+        // Look for a user account of the server at path
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "username == %@", username))
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        fetchRequest.fetchLimit = 1
+        
+        // Delete the User object w/o loading it into memory
+        /// - deletes associated albums in cascade
+        /// - deletes associated upload requests in cascade if not already re-attributed to Piwigo user
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        try? bckgContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
     /**

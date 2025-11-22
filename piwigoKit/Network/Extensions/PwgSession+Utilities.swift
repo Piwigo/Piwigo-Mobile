@@ -80,8 +80,8 @@ extension PwgSession {
                       completion: @escaping () -> Void,
                       failure: @escaping (PwgKitError) -> Void) {
         // Check if API keys are used
-        /// It is useless to check the session when using API keys
-        /// unless the Piwigo username is unknown
+        /// It is useless to check the session status when using API keys
+        /// unless the Piwigo username is properly unset.
         if NetworkVars.shared.usesAPIkeys,
            NetworkVars.shared.username.isValidPublicKey(),
            NetworkVars.shared.fixUserIsAPIKeyV412 == false {
@@ -100,22 +100,14 @@ extension PwgSession {
         
         // Determine if the session is still active
         PwgSession.shared.hasNetworkConnectionChanged = false
-        if #available(iOSApplicationExtension 14.0, *) {
-            if NetworkVars.shared.isConnectedToWiFi {
-                logger.notice("Start checking session… (WiFi)")
-            } else {
-                logger.notice("Start checking session… (Cellular)")
-            }
-        }
+        logger.notice("Session: starting checking… \(NetworkVars.shared.isConnectedToWiFi ? "WiFi" : "Cellular")")
         let oldToken = NetworkVars.shared.pwgToken
         PwgSession.shared.sessionGetStatus { pwgUser in
-            if #available(iOSApplicationExtension 14.0, *) {
-                #if DEBUG
-                logger.notice("Session: \(NetworkVars.shared.user, privacy: .public)/\(pwgUser, privacy: .public), \(oldToken, privacy: .public)/\(NetworkVars.shared.pwgToken, privacy: .public)")
-                #else
-                logger.notice("Session: \(NetworkVars.shared.user, privacy: .private(mask: .hash))/\(pwgUser, privacy: .private(mask: .hash)), \(oldToken, privacy: .private(mask: .hash))/\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))")
-                #endif
-            }
+#if DEBUG
+            logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .public)\" vs \"\(pwgUser, privacy: .public)\", \"\(oldToken, privacy: .public)\" vs \"\(NetworkVars.shared.pwgToken, privacy: .public)\"")
+#else
+            logger.notice("Session: \"\(NetworkVars.shared.user, privacy: .private(mask: .hash))\" vs \"\(pwgUser, privacy: .private(mask: .hash))\", \"\(oldToken, privacy: .private(mask: .hash))\" vs \"\(NetworkVars.shared.pwgToken, privacy: .private(mask: .hash))\"")
+#endif
             if pwgUser != NetworkVars.shared.user || oldToken.isEmpty || NetworkVars.shared.pwgToken != oldToken {
                 // Collect list of methods supplied by Piwigo server
                 // => Determine if Community extension 2.9a or later is installed and active
@@ -123,9 +115,7 @@ extension PwgSession {
                     // Known methods, perform re-login
                     // Don't use userStatus as it may not be known after Core Data migration
                     if NetworkVars.shared.username.isEmpty || NetworkVars.shared.username.lowercased() == "guest" {
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            logger.notice("Session opened for Guest")
-                        }
+                        logger.notice("Session: logged as Guest")
                         // Session now opened
                         getPiwigoConfig(forUser: user) {
                             // Update date of accesss to the server by guest
@@ -143,6 +133,11 @@ extension PwgSession {
                         let username = NetworkVars.shared.username
                         let password = KeychainUtilities.password(forService: NetworkVars.shared.serverPath, account: username)
                         PwgSession.shared.sessionLogin(withUsername: username, password: password) {
+#if DEBUG
+                            logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .public)")
+#else
+                            logger.notice("Session: logged as \(NetworkVars.shared.username, privacy: .private(mask: .hash))")
+#endif
                             // Session now opened
                             getPiwigoConfig(forUser: user) {
                                 // Update date of accesss to the server by user
@@ -179,69 +174,56 @@ extension PwgSession {
         }
     }
     
-    static func getPiwigoConfig(forUser user: User?,
-                                completion: @escaping () -> Void,
-                                failure: @escaping (PwgKitError) -> Void) {
+    fileprivate static
+    func getPiwigoConfig(forUser user: User?,
+                         completion: @escaping () -> Void,
+                         failure: @escaping (PwgKitError) -> Void) {
         // Check Piwigo version, get token, available sizes, etc.
         if NetworkVars.shared.usesCommunityPluginV29 {
             PwgSession.shared.communityGetStatus {
-                PwgSession.shared.sessionGetStatus { userName in
-                    // Check Piwigo server version
-                    if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                        failure(PwgKitError.incompatiblePwgVersion) }
-                    else {
-                        // Update Piwigo user
-                        NetworkVars.shared.user = userName
-                        if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
-                            fixesUserIsAPIKey(forUserWithID: userID) {
-                                completion()
-                            }
-                        } else {
-                            completion()
-                        }
-                    }
-                } failure: { error in
-                    failure(error)
-                }
-            } failure: { error in
+                getPiwigoStatus(forUser: user, completion: completion, failure: failure)
+            }
+            failure: { error in
                 failure(error)
             }
         } else {
-            PwgSession.shared.sessionGetStatus { userName in
-                // Check Piwigo server version
-                if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                    failure(PwgKitError.incompatiblePwgVersion) }
-                else {
-                    NetworkVars.shared.user = userName
-                    if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
-                        fixesUserIsAPIKey(forUserWithID: userID) {
-                            completion()
-                        }
-                    } else {
-                        completion()
-                    }
-                }
-            } failure: { error in
-                failure(error)
-            }
+            getPiwigoStatus(forUser: user, completion: completion, failure: failure)
         }
     }
     
     fileprivate static
-    func fixesUserIsAPIKey(forUserWithID userID: NSManagedObjectID,
-                           completion: @escaping () -> Void) {
-        // Attribute albums to appropriate user if necessary
-        AlbumProvider.shared.attributeAPIKeyAlbums(toUserWithID: userID)
-        
-        // Attribute upoload requests to appropriate user if necessary
-        UploadProvider.shared.attributeAPIKeyUploadRequests(toUserWithID: userID)
-        
-        // Delete API Key user
-        UserProvider.shared.deleteUser(withName: NetworkVars.shared.username)
-        
-        // Job completed
-        NetworkVars.shared.fixUserIsAPIKeyV412 = false
-        completion()
+    func getPiwigoStatus(forUser user: User?,
+                         completion: @escaping () -> Void,
+                         failure: @escaping (PwgKitError) -> Void)
+    {
+        PwgSession.shared.sessionGetStatus { userName in
+            // Check Piwigo server version
+            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
+                failure(PwgKitError.incompatiblePwgVersion)
+                return
+            }
+
+            // Update Piwigo user
+            NetworkVars.shared.user = userName
+            if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID
+            {
+                // Attribute upoload requests to appropriate user if necessary
+                logger.debug("Session: attributing API Key upload requests to user…")
+                UploadProvider.shared.attributeAPIKeyUploadRequestsToUser(withID: userID)
+                
+                // Delete API Key user (and albums in cascade)
+                logger.debug("Session: deleting API Key user…")
+                UserProvider.shared.deleteUser(withName: NetworkVars.shared.username)
+                
+                // Job completed
+                logger.debug("Session: API Key user deleted")
+                NetworkVars.shared.fixUserIsAPIKeyV412 = false
+            }
+            completion()
+        }
+        failure: { error in
+            failure(error)
+        }
     }
     
     

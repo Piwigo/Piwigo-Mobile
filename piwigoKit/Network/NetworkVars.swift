@@ -70,7 +70,7 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var username: String
     
-    /// - Username returned by the Piwigo server
+    /// - Username returned by the Piwigo server, introduced in v4.1.2 for correcting user attribution in persistent cache
     @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var user: String
     
@@ -78,16 +78,17 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("fixUserIsAPIKeyV412", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var fixUserIsAPIKeyV412: Bool
     public func createPiwigoUsernameAccountIfNeeded() {
-        // Piwigo account added in v4.1.2 for dissociating persistent cache data from credentials
+        // 'user' added in v4.1.2 for dissociating persistent cache data from credentials
         if NetworkVars.shared.user.isEmpty,
            NetworkVars.shared.username.isEmpty == false &&
             NetworkVars.shared.username.lowercased() != "guest" {
             // Adopts login username, i.e. Piwigo username or API key
             NetworkVars.shared.user = NetworkVars.shared.username
             // If the user is using an API key:
-            /// - 1. Call API method to retrieve the Piwigo username
-            /// - 2. Reallocate album data to Piwigo user in persistent cache
-            /// - 3. Reallocate upload requests to Piwigo user in persistent cache
+            /// - 1. Call API method to retrieve the Piwigo user
+            /// - 2. Attribute 'API key' upload requests to 'Piwigo user' in persistent cache
+            /// - 3. Delete API key 'username', thereby albums associated to it
+            /// See PwgSession+Utilities
             if NetworkVars.shared.username.isValidPublicKey() {
                 NetworkVars.shared.fixUserIsAPIKeyV412 = true
             }

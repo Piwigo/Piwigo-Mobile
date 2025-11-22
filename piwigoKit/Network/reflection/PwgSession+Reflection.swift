@@ -13,9 +13,6 @@ public extension PwgSession {
     
     func getMethods(completion: @escaping () -> Void,
                     failure: @escaping (PwgKitError) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Retrieve methods.")
-        }
         // Launch request
         postRequest(withMethod: kReflectionGetMethodList, paramDict: [:],
                     jsonObjectClientExpectsToReceive: ReflectionGetMethodListJSON.self,
@@ -43,15 +40,13 @@ public extension PwgSession {
                 // Check if the pwg.users.api_key.revoke method is available (since Piwigo 16.0)
                 NetworkVars.shared.usesAPIkeys = pwgData.data.contains("pwg.users.api_key.revoke")
                 
-                if #available(iOSApplicationExtension 14.0, *) {
-                    PwgSession.logger.notice("""
-                            Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)
-                            uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)
-                            calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)
-                            setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)
-                            API keys available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)
-                        """)
-                }
+                PwgSession.logger.notice("""
+                        Community plugin installed: \(NetworkVars.shared.usesCommunityPluginV29, privacy: .public)
+                        uploadAsync method available: \(NetworkVars.shared.usesUploadAsync, privacy: .public)
+                        calculateOrphans method available: \(NetworkVars.shared.usesCalcOrphans, privacy: .public)
+                        setCategory method available: \(NetworkVars.shared.usesSetCategory, privacy: .public)
+                        API keys management available: \(NetworkVars.shared.usesAPIkeys, privacy: .public)
+                    """)
                 completion()
                 
             case .failure(let error):

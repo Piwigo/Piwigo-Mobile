@@ -15,6 +15,10 @@ extension UploadManager
 {
     // MARK: - Resume Uploads
     public func resumeAll() -> Void {
+        // Wait until fix completed
+        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
+        else { return }
+        
         // Reset flags
         isPaused = false
         isPreparing = false; isFinishing = false

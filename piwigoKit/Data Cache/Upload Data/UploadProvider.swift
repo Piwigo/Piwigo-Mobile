@@ -370,50 +370,23 @@ public class UploadProvider: NSObject {
     
     /**
      Attribute upload requests with API key as username to Piwigo user
+     Used to fix situations where a user logins with API keys before v4.1.2 (Piwigo 16.0 RC2+)
      */
-    func attributeAPIKeyUploadRequests(toUserWithID userID: NSManagedObjectID) {
-        // Runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
-        bckgContext.performAndWait {
-            
-            // Retrieve upload requests in persistent store
-            let fetchRequest = Upload.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(Upload.requestDate), ascending: true)]
-            
-            // Retrieve all albums associated to the current API key:
-            /// — from the current server
-            var andPredicates = [NSPredicate]()
-            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-            
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                        managedObjectContext: self.bckgContext,
-                                                        sectionNameKeyPath: nil, cacheName: nil)
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            let APIKeyUploads:[Upload] = controller.fetchedObjects ?? []
-            
-            // Attribute API key upload requests to the Piwigo user
-            if let user = try? bckgContext.existingObject(with: userID) as? User {
-                APIKeyUploads.forEach { upload in
-                    upload.user = user
-                }
-            }
-            
-            // Save all modifications from the context to the store.
-            bckgContext.saveIfNeeded()
-            DispatchQueue.main.async {
-                self.mainContext.saveIfNeeded()
-            }
-            
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            bckgContext.reset()
-        }
+    func attributeAPIKeyUploadRequestsToUser(withID userID: NSManagedObjectID) {
+        // Retrieve User object
+        guard let user = try? bckgContext.existingObject(with: userID) as? User
+        else { return }
+        
+        // Select all upload requests associated to the current API key:
+        /// — from the current server
+        var andPredicates = [NSPredicate]()
+        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        
+        // Update upload requests w/o loading them into memory
+        let batchUpdate = NSBatchUpdateRequest(entity: Upload.entity())
+        batchUpdate.propertiesToUpdate = ["user": user]
+        batchUpdate.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+        try? bckgContext.executeAndMergeChanges(using: batchUpdate)
     }
 }

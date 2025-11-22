@@ -31,4 +31,25 @@ extension NSManagedObjectContext {
             fatalError("Unresolved error \(error.localizedDescription)")
         }
     }
+    
+    /// Executes the given `NSBatchUpdateRequest` and directly merges the changes to bring the given managed object context up to date.
+    public func executeAndMergeChanges(using batchUpdateRequest: NSBatchUpdateRequest) throws {
+        batchUpdateRequest.resultType = .updatedObjectIDsResultType
+        do {
+            // Execute the request.
+            let updateResult = try execute(batchUpdateRequest) as? NSBatchUpdateResult
+            
+            // Extract the IDs of the deleted managed objects from the request's result.
+            if let objectIDs = updateResult?.result as? [NSManagedObjectID] {
+                // Merge the deletions into the app's managed object context.
+                NSManagedObjectContext.mergeChanges(
+                    fromRemoteContextSave: [NSDeletedObjectsKey: objectIDs],
+                    into: [self]
+                )
+            }
+        } catch let error {
+            // Handle any thrown errors.
+            fatalError("Unresolved error \(error.localizedDescription)")
+        }
+    }
 }

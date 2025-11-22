@@ -62,31 +62,27 @@ extension PwgSession
                     let pwgData = try decoder.decode(jsonObjectClientExpectsToReceive.self, from: jsonData)
                     
                     // Log returned data
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
-    #if DEBUG
-                        let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
-//                        let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
-    #else
-                        PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of data.")
-    #endif
-                    }
+                    let countsOfBytes = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride + jsonData.count * MemoryLayout<Data>.stride
+#if DEBUG
+                    let dataStr = String(decoding: jsonData.prefix(100), as: UTF8.self) + "…"
+//                    let dataStr = String(decoding: jsonData, as: UTF8.self)
+                    PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes: \(dataStr, privacy: .public)")
+#else
+                    PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes.")
+#endif
                     
                     // Return decoded object
                     completion(.success(pwgData))
                 }
                 catch let error {
                     // Log invalid returned data
-                    if #available(iOSApplicationExtension 14.0, *) {
 #if DEBUG
-                        let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        PwgSession.logger.notice("Received invalid JSON data: \(dataStr, privacy: .public)")
+                    let dataStr = String(decoding: jsonData, as: UTF8.self)
+                    PwgSession.logger.notice("\(method) returned the invalid JSON data: \(dataStr, privacy: .public)")
 #else
-                        let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
-                        PwgSession.logger.notice("Received \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
+                    let countsOfBytes = jsonData.count * MemoryLayout<Data>.stride
+                    PwgSession.logger.notice("\(method) returned \(countsOfBytes, privacy: .public) bytes of invalid JSON data.")
 #endif
-                    }
                     
                     // Store invalid JSON data for helping user
                     jsonData.saveInvalidJSON(for: method)
@@ -139,7 +135,7 @@ extension PwgSession
         task.resume()
     }
     
-    private func httpBody(for paramDict: [String: Any]) -> Data?
+    fileprivate func httpBody(for paramDict: [String: Any]) -> Data?
     {
         var urlComponents = URLComponents()
         var queryItems: [URLQueryItem] = []
