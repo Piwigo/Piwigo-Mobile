@@ -613,7 +613,7 @@ extension UploadManager {
         }
         
         // Prepare upload URL
-        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?\(pwgImagesUploadAsync)")
+        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
 
         // Prepare creation date as Piwigo string
@@ -723,7 +723,7 @@ extension UploadManager {
         }
 
         // Prepare upload URL
-        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?\(pwgImagesUploadAsync)")
+        guard let uploadUrl = URL(string: NetworkVars.shared.service + "/ws.php?format=json&method=\(pwgImagesUploadAsync)")
         else { preconditionFailure("!!! Invalid uploadAsync URL") }
 
         // Get credentials
