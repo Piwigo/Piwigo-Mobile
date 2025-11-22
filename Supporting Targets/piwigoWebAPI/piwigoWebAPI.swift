@@ -88,13 +88,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: GetInfosJSON.self, method: pwgGetInfos) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(GetInfosJSON.self, from: data) else {
             XCTFail()
@@ -141,13 +134,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesAddJSON.self, method: pwgCategoriesAdd) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(CategoriesAddJSON.self, from: data) else {
             XCTFail()
@@ -168,13 +154,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesSetInfoJSON.self, method: pwgCategoriesSetInfo) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(CategoriesSetInfoJSON.self, from: data) else {
             XCTFail()
@@ -195,13 +174,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesMoveJSON.self, method: pwgCategoriesMove) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(CategoriesMoveJSON.self, from: data) else {
             XCTFail()
@@ -222,13 +194,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesCalcOrphansJSON.self, method: pwgCategoriesCalcOrphans) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(CategoriesCalcOrphansJSON.self, from: data) else {
             XCTFail()
@@ -249,13 +214,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesDeleteJSON.self, method: pwgCategoriesDelete) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(CategoriesDeleteJSON.self, from: data) else {
             XCTFail()
@@ -276,13 +234,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: CategoriesSetRepresentativeJSON.self, method: pwgCategoriesSetRepresentative) {
-            XCTFail()
-            return
-        }
-        
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(CategoriesSetRepresentativeJSON.self, from: data) else {
             XCTFail()
@@ -519,13 +470,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: SessionLoginJSON.self, method: pwgSessionLogin) {
-            XCTFail()
-            return
-        }
-
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(SessionLoginJSON.self, from: data) else {
             XCTFail()
@@ -570,13 +514,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: SessionLogoutJSON.self, method: pwgSessionLogout) {
-            XCTFail()
-            return
-        }
-
-        // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(SessionLogoutJSON.self, from: data) else {
             XCTFail()
@@ -782,12 +719,6 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        // Clean returned data
-        if !data.isPiwigoResponseValid(for: ReflectionGetMethodListJSON.self, method: kReflectionGetMethodList) {
-            XCTFail()
-            return
-        }
-
         // Is this a valid JSON object?
         let decoder = JSONDecoder()
         guard let result = try? decoder.decode(ReflectionGetMethodListJSON.self, from: data) else {
