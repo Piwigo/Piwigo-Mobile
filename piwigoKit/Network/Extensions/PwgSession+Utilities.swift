@@ -203,22 +203,31 @@ extension PwgSession {
                 return
             }
 
-            // Update Piwigo user
+            // Set Piwigo user
             NetworkVars.shared.user = userName
-            if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID
-            {
-                // Attribute upoload requests to appropriate user if necessary
-                logger.debug("Session: attributing API Key upload requests to user…")
-                UploadProvider.shared.attributeAPIKeyUploadRequestsToUser(withID: userID)
-                
-                // Delete API Key user (and albums in cascade)
-                logger.debug("Session: deleting API Key user…")
-                UserProvider.shared.deleteUser(withName: NetworkVars.shared.username)
-                
-                // Job completed
-                logger.debug("Session: API Key user deleted")
-                NetworkVars.shared.fixUserIsAPIKeyV412 = false
+            
+            // Are cached data associated to an API public key?
+            if NetworkVars.shared.fixUserIsAPIKeyV412, let userID = user?.objectID {
+                DispatchQueue.global(qos: .background).async {
+                    // Attribute upload requests to appropriate user if necessary
+                    logger.debug("Session: attributing API Key upload requests to user…")
+                    UploadProvider.shared.attributeAPIKeyUploadRequests(toUserWithID: userID)
+                    
+                    // Delete API Key user (and albums in cascade)
+                    logger.debug("Session: deleting API Key user…")
+                    UserProvider.shared.deleteUser(withName: NetworkVars.shared.username)
+                    
+                    // Job completed
+                    logger.debug("Session: API Key user deleted")
+                    NetworkVars.shared.fixUserIsAPIKeyV412 = false
+                    
+                    // Try to resume upload requests if the low power mode is not enabled
+                    let name = Notification.Name.NSProcessInfoPowerStateDidChange
+                    NotificationCenter.default.post(name: name, object: nil)
+                }
             }
+            
+            // Pursue logging in without waiting for the fix to complete
             completion()
         }
         failure: { error in

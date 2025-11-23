@@ -370,23 +370,57 @@ public class UploadProvider: NSObject {
     
     /**
      Attribute upload requests with API key as username to Piwigo user
-     Used to fix situations where a user logins with API keys before v4.1.2 (Piwigo 16.0 RC2+)
+     Used to fix situations where a user logins with API keys before v4.1.2 (since Piwigo 16)
+     To be called on a background queue so it won’t block the main thread.
      */
-    func attributeAPIKeyUploadRequestsToUser(withID userID: NSManagedObjectID) {
-        // Retrieve User object
-        guard let user = try? bckgContext.existingObject(with: userID) as? User
-        else { return }
-        
-        // Select all upload requests associated to the current API key:
-        /// — from the current server
-        var andPredicates = [NSPredicate]()
-        andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
-        
-        // Update upload requests w/o loading them into memory
-        let batchUpdate = NSBatchUpdateRequest(entity: Upload.entity())
-        batchUpdate.propertiesToUpdate = ["user": user]
-        batchUpdate.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
-        try? bckgContext.executeAndMergeChanges(using: batchUpdate)
+    func attributeAPIKeyUploadRequests(toUserWithID userID: NSManagedObjectID) {
+        // To be called on a background queue so it won’t block the main thread.
+        bckgContext.performAndWait {
+            
+            // Retrieve IDs of upload requests in persistent store
+            let fetchRequest = NSFetchRequest<NSManagedObjectID>(entityName: "Upload")
+            fetchRequest.resultType = .managedObjectIDResultType
+            
+            // Retrieve all albums associated to the current API key:
+            /// — from the current server
+            var andPredicates = [NSPredicate]()
+            andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
+            andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
+            
+            do {
+                // Perform the fetch.
+                let uploadIDs = try bckgContext.fetch(fetchRequest)
+                
+                // Retrieve Piwigo user object
+                guard let piwigoUser = try? bckgContext.existingObject(with: userID) as? User
+                else { return }
+                
+                // Attribute API key upload requests to the Piwigo user
+                let batchSize = 100
+                for batch in stride(from: 0, to: uploadIDs.count, by: batchSize) {
+                    let endIndex = min(batch + batchSize, uploadIDs.count)
+                    let batchIDs = Array(uploadIDs[batch..<endIndex])
+                    
+                    for objectID in batchIDs {
+                        let upload = bckgContext.object(with: objectID)
+                        upload.setValue(piwigoUser, forKey: "user")
+                    }
+                    
+                    // Save modifications from the context’s parent store
+                    try bckgContext.save()
+                    
+                    // Reset the taskContext to free the cache and lower the memory footprint.
+                    bckgContext.reset()
+                    
+                    // Merge all modifications in the persistent store
+                    DispatchQueue.main.async {
+                        self.mainContext.saveIfNeeded()
+                    }
+                }
+            } catch {
+                debugPrint("Unresolved error \(error.localizedDescription)")
+            }
+        }
     }
 }
