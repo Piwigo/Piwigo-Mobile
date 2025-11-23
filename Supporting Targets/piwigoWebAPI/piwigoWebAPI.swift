@@ -263,7 +263,9 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.paging?.perPage, 100)
         XCTAssertEqual(result.paging?.totalCount?.intValue, 8)
+        XCTAssertEqual(result.data.first?.isFavorite, true)
         XCTAssertEqual(result.data.first?.datePosted, "2018-08-23 19:01:39")
+        XCTAssertEqual(result.data.first?.downloadUrl, "https:/action.php?id=62417&part=e&download")
         XCTAssertEqual(result.data.first?.categories?.first?.id, 2)
         XCTAssertEqual(result.data.last?.derivatives.largeImage?.height?.intValue, 756)
     }
