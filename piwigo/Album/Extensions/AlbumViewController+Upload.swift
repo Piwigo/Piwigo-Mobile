@@ -98,14 +98,14 @@ extension AlbumViewController
             // Search and other buttons in the toolbar
             navigationItem.preferredSearchBarPlacement = .integratedButton
             let searchBarButton = navigationItem.searchBarPlacementBarButtonItem
-            let toolBarItems = [addAlbumBarButton, searchBarButton].compactMap { $0 }
+            let toolBarItems = [.space(), addAlbumBarButton, searchBarButton].compactMap { $0 }
             navigationController?.setToolbarHidden(false, animated: true)
             setToolbarItems(toolBarItems, animated: true)
             
         case .pad:
             // Right side of the navigation bar
             navigationItem.preferredSearchBarPlacement = .integrated
-            let items = [discoverBarButton, addAlbumBarButton].compactMap { $0 }
+            let items = [discoverBarButton, addAlbumBarButton, .fixedSpace(16.0)].compactMap { $0 }
             navigationItem.setRightBarButtonItems(items, animated: true)
             
         default:
