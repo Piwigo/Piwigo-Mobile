@@ -78,8 +78,8 @@ public struct ImagesGetInfo: Decodable
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
-    public var isFavorite: Bool?                // false
-    public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since 14.0)
+    public var isFavorite: Bool?                // false (since Piwigo 13.0)
+    public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since Piwigo 14.0)
  
     public let fullResWidth: Int?               // 4092
     public let fullResHeight: Int?              // 2048
