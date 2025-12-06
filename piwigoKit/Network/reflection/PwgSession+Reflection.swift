@@ -19,12 +19,6 @@ public extension PwgSession {
                     countOfBytesClientExpectsToReceive: kReflectionGetMethodListBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Check if the Community extension is installed and active (since Piwigo 2.9a)
                 NetworkVars.shared.usesCommunityPluginV29 = pwgData.data.contains(kCommunitySessionGetStatus)
                 
