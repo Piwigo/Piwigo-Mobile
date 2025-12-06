@@ -20,12 +20,6 @@ public extension PwgSession {
                     countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Update user's status
                 guard pwgData.realUser.isEmpty == false,
                       let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
