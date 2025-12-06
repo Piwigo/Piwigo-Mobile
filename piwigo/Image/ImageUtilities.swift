@@ -30,12 +30,6 @@ class ImageUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Successful?
                 /// Image data not always immediately available after rotation.
                 /// We rotate the images stored in cache instead of downloading them.
