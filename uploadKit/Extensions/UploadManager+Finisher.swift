@@ -153,17 +153,11 @@ extension UploadManager {
             UploadManager.logger.notice("processImages() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
+                // Successful?
                 if pwgData.success {
                     completion(nil)
                 } else {
-                    completion(PwgKitError.wrongJSONobject)
+                    completion(PwgKitError.emptyingLoungeFailed)
                 }
                 
             case .failure(let error):

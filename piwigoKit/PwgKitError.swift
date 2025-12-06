@@ -70,6 +70,8 @@ public enum PwgKitError: Error {
     case unexpectedError
     case wrongDataFormat
     case wrongJSONobject
+    case emptyingLoungeFailed
+    case logoutFailed
 }
 
 extension PwgKitError {
@@ -454,6 +456,12 @@ extension PwgKitError: LocalizedError {
         case .wrongDataFormat:
             return String(localized: "CoreDataFetch_DigestError", bundle: piwigoKit,
                           comment: "Could not digest the fetched data.")
+        case .emptyingLoungeFailed:
+            return String(localized: "EmptyingLoungeFailed", bundle: piwigoKit,
+                          comment: "Failed to empty the lounge.")
+        case .logoutFailed:
+            return String(localized: "LogoutFailed", bundle: piwigoKit,
+                          comment: "Failed to logout.")
 
         case .unexpectedError:
             fallthrough
