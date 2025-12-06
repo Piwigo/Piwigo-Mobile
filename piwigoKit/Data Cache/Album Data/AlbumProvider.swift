@@ -200,15 +200,6 @@ public class AlbumProvider: NSObject {
             case .success(let pwgData):
                 // Import Community albums into Core Data.
                 do {
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                        debugPrint("••> fetchCommunityAlbums error: \(error)")
-                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                        completion(nil)
-                        return
-                    }
-                    
                     // No Community albums?
                     if pwgData.data.isEmpty == true {
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
@@ -234,6 +225,7 @@ public class AlbumProvider: NSObject {
                     // Data cannot be digested
                     do {
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                        completion(nil)
                     }
                     catch let error as DecodingError {
                         completion(.decodingFailed(innerError: error))
@@ -249,6 +241,7 @@ public class AlbumProvider: NSObject {
                 /// - Cannot decode data returned by Piwigo server
                 do {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                    completion(nil)
                 }
                 catch let error as DecodingError {
                     completion(.decodingFailed(innerError: error))
