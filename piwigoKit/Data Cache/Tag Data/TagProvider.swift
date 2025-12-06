@@ -46,24 +46,17 @@ public class TagProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
                 // Import tag data into Core Data.
                 do {
                     try self.importTags(from: pwgData.data, asAdmin: asAdmin)
+                    completion(nil)
                 }
                 catch let error as DecodingError {
                     completion(.decodingFailed(innerError: error))
                 }
                 catch {
                     completion(.otherError(innerError: error))
-                    return
                 }
-                completion(nil)
                 
             case .failure(let error):
                 /// - Network communication errors

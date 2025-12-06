@@ -16,9 +16,7 @@ public struct TagJSON: Decodable {
 
     public var status: String?
     public var data = [TagProperties]()
-    public var errorCode = 0
-    public var errorMessage = ""
-
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case data = "result"
@@ -49,30 +47,28 @@ public struct TagJSON: Decodable {
 //            dump(resultContainer)
             
             // Decodes tags from the data and store them in the array
-            do {
-                // Use TagProperties struct
-                try data = resultContainer.decode([TagProperties].self, forKey: .tags)
-            }
+            try data = resultContainer.decode([TagProperties].self, forKey: .tags)
         }
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
             do {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
             catch {
                 // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
                 let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
         }
         else {
             // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = PwgKitError.invalidParameter.localizedDescription
+            throw PwgKitError.unexpectedError
         }
     }
 }
