@@ -68,12 +68,6 @@ class ImageUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Successful?
                 if pwgData.success {
                     // Images associated/dissociated/moved successfully
