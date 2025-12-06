@@ -21,14 +21,7 @@ public extension PwgSession {
                     jsonObjectClientExpectsToReceive: HistoryLogJSON.self,
                     countOfBytesClientExpectsToReceive: pwgHistoryLogBytes) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
+            case .success:
                 completion()
                 
             case .failure(let error):
