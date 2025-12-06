@@ -90,13 +90,6 @@ extension UploadManager {
             UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    self.didFinishTransfer(for: upload, error: error)
-                    return
-                }
-
                 // Successful?
                 if pwgData.success {
                     // Image successfully uploaded and set

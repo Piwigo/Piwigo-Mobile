@@ -226,20 +226,6 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    DispatchQueue.main.async {
-                        topViewController?.hideHUD {
-                            topViewController?.dismissPiwigoError(
-                                withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                                message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
-                                errorMessage: error.localizedDescription) { }
-                        }
-                    }
-                    return
-                }
-
                 // Successful?
                 if pwgData.success {
                     // Filename successfully changed
