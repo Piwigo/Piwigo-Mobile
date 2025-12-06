@@ -251,17 +251,10 @@ public class ImageProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: 50000) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Import the imageJSON into Core Data
                 // The provided sort option will not change the rankManual/rankRandom values.
                 do {
                     try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
-                    
                     completion()
                 }
                 catch let error as DecodingError {
