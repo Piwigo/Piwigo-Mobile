@@ -57,12 +57,6 @@ class AlbumUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: 1040) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Successful?
                 if let catId = pwgData.data.id, catId != Int32.min {
                     // Album successfully created ▶ Add it to list of recently used albums
