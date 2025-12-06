@@ -499,21 +499,6 @@ extension UploadManager {
                 // Decode the JSON into codable type ImagesUploadJSON.
                 let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
-                    let error = PwgKitError.pwgError(code: uploadJSON.errorCode, msg: uploadJSON.errorMessage)
-                    if (400...499).contains(uploadJSON.errorCode) {
-                        upload.setState(.uploadingFail, error: error, save: false)
-                    } else {
-                        upload.setState(.uploadingError, error: error, save: false)
-                    }
-                    self.backgroundQueue.async {
-                        self.uploadBckgContext.saveIfNeeded()
-                        self.didEndTransfer(for: upload)
-                    }
-                    return
-                }
-
                 // Upload completed?
                 if chunk + 1 < chunks {
                     self.backgroundQueue.async {
@@ -547,15 +532,22 @@ extension UploadManager {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
-                return
             } catch {
-                // Data cannot be digested, image still ready for upload
-                upload.setState(.uploadingError, error: PwgKitError.wrongJSONobject, save: false)
+                // Error type?
+                if let error = error as? PwgKitError {
+                    if error.failedAuthentication {
+                        upload.setState(.uploadingFail, error: error, save: false)
+                    } else {
+                        upload.setState(.uploadingError, error: error, save: false)
+                    }
+                } else {
+                    // Data cannot be digested, image still ready for upload
+                    upload.setState(.uploadingError, error: PwgKitError.wrongJSONobject, save: false)
+                }
                 backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload)
                 }
-                return
             }
         }
         catch {
@@ -564,7 +556,6 @@ extension UploadManager {
             self.backgroundQueue.async {
                 self.findNextImageToUpload()
             }
-            return
         }
     }
 
@@ -1013,22 +1004,6 @@ extension UploadManager {
         do {
             // Decode the JSON into codable type ImagesUploadAsyncJSON.
             let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: jsonData)
-
-            // Piwigo error?
-            if (uploadJSON.errorCode != 0) {
-                UploadManager.logger.notice("\(md5sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the Piwigo error \(uploadJSON.errorCode)")
-                let error = PwgKitError.pwgError(code: uploadJSON.errorCode, msg: uploadJSON.errorMessage)
-                if (400...499).contains(uploadJSON.errorCode) {
-                    upload.setState(.uploadingFail, error: error, save: false)
-                } else {
-                    upload.setState(.uploadingError, error: error, save: false)
-                }
-                self.backgroundQueue.async {
-                    self.uploadBckgContext.saveIfNeeded()
-                    self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
-                }
-                return
-            }
             
             // Upload completed?
             if let chunkMsg = uploadJSON.chunks, let message = chunkMsg.message {
@@ -1136,16 +1111,25 @@ extension UploadManager {
 
             // Clear bytes and chunk counter
             UploadSessions.shared.removeCounter(withID: upload.localIdentifier)
-            return
-        } catch {
-            // JSON object cannot be digested, image still ready for upload
-            UploadManager.logger.notice("\(md5sum, privacy: .public) | Wrong JSON object!")
-            upload.setState(.uploadingError, error: PwgKitError.wrongJSONobject, save: false)
+        }
+        catch {
+            // Error type?
+            if let error = error as? PwgKitError {
+                UploadManager.logger.notice("\(md5sum, privacy: .public) | Task \(task.taskIdentifier, privacy: .public) returned the Piwigo error \(error.localizedDescription)")
+                if error.failedAuthentication {
+                    upload.setState(.uploadingFail, error: error, save: false)
+                } else {
+                    upload.setState(.uploadingError, error: error, save: false)
+                }
+            } else {
+                // JSON object cannot be digested, image still ready for upload
+                UploadManager.logger.notice("\(md5sum, privacy: .public) | Wrong JSON object!")
+                upload.setState(.uploadingError, error: PwgKitError.wrongJSONobject, save: false)
+            }
             self.backgroundQueue.async {
                 self.uploadBckgContext.saveIfNeeded()
                 self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
             }
-            return
         }
     }
 
