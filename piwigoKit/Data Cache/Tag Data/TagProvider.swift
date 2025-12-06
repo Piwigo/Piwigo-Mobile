@@ -51,8 +51,8 @@ public class TagProvider: NSObject {
                     try self.importTags(from: pwgData.data, asAdmin: asAdmin)
                     completion(nil)
                 }
-                catch let error as DecodingError {
-                    completion(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    completion(error)
                 }
                 catch {
                     completion(.otherError(innerError: error))

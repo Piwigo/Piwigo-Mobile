@@ -210,8 +210,8 @@ public class ImageProvider: NSObject {
                     }
                     completion(fetchedImageIds, totalCount, hasDownloadRight)
                 }
-                catch let error as DecodingError {
-                    failure(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    failure(error)
                 }
                 catch {
                     failure(.otherError(innerError: error))
@@ -257,8 +257,8 @@ public class ImageProvider: NSObject {
                     try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
                     completion()
                 }
-                catch let error as DecodingError {
-                    failure(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    failure(error)
                 }
                 catch {
                     failure(.otherError(innerError: error))

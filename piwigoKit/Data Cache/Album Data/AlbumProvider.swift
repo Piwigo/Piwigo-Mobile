@@ -163,8 +163,8 @@ public class AlbumProvider: NSObject {
                     try self.importAlbums(pwgData.data, recursively: recursively, inParent: parentId)
                     completion(nil)
                 }
-                catch let error as DecodingError {
-                    completion(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    completion(error)
                 }
                 catch {
                     completion(.otherError(innerError: error))
@@ -221,8 +221,8 @@ public class AlbumProvider: NSObject {
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                         completion(nil)
                     }
-                    catch let error as DecodingError {
-                        completion(.decodingFailed(innerError: error))
+                    catch let error as PwgKitError {
+                        completion(error)
                     }
                     catch {
                         completion(.otherError(innerError: error))
@@ -237,8 +237,8 @@ public class AlbumProvider: NSObject {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
                     completion(nil)
                 }
-                catch let error as DecodingError {
-                    completion(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    completion(error)
                 }
                 catch {
                     completion(.otherError(innerError: error))
