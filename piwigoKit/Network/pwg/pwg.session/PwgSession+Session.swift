@@ -53,12 +53,6 @@ public extension PwgSession {
                     countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // No status returned?
                 guard let data = pwgData.data else {
                     failure(PwgKitError.authenticationFailed)
@@ -78,9 +72,9 @@ public extension PwgSession {
                 let components = versionStr.components(separatedBy: ".")
                 switch components.count {
                     case 1:     // Version of type 1
-                    versionStr.append(".0.0")
+                        versionStr.append(".0.0")
                     case 2:     // Version of type 1.2
-                    versionStr.append(".0")
+                        versionStr.append(".0")
                     default:
                         break
                 }
