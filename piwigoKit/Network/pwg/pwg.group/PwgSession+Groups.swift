@@ -20,14 +20,6 @@ public extension PwgSession {
                                 countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-#if DEBUG
-                    debugPrint(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-#endif
-                    return
-                }
-                
                 // Update current recentPeriodIndex
                 completion(pwgData.groups)
 
