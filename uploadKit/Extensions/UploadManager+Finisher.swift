@@ -219,15 +219,6 @@ extension UploadManager {
             UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    debugPrint("••> moderateImages(): \(error.localizedDescription)")
-                    completionHandler(false, [])
-                    return
-                }
-
                 // Return validated image IDs
                 var validatedIDs = [Int64]()
                 pwgData.data.forEach { (pendingData) in
