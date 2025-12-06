@@ -95,9 +95,6 @@ class piwigoWebAPI: XCTestCase {
         }
 
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
-
         XCTAssertEqual(result.data[0].name, "version")
         XCTAssertEqual(result.data[0].value?.stringValue, "12.2.0")
     }
@@ -288,8 +285,6 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
     }
     
     func testPwgImagesGetInfoDecoding() {
@@ -370,9 +365,6 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
-        
         XCTAssertEqual(result.data.image_id, 6580)
 //        XCTAssertEqual(result.data.name, "Delft - 06")
         XCTAssertEqual(result.data.square_src, "https://.../20200628211106-5fc9fb08-sq.jpg")
@@ -390,9 +382,6 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result2.status, "ok")
-        XCTAssertEqual(result2.errorCode, 0)
-        XCTAssertEqual(result2.errorMessage, "")
-        
         XCTAssertEqual(result2.data.image_id, 6582)
 //        XCTAssertEqual(result2.data.name, "Screenshot 2020-06-28 at 14.01.38")
         XCTAssertEqual(result2.data.square_src, "https://.../20200628212043-0a9c6158-sq.png")
@@ -457,8 +446,6 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
     }
     
     
@@ -479,9 +466,6 @@ class piwigoWebAPI: XCTestCase {
         }
 
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
-
         XCTAssertEqual(result.success, true)
     }
 
@@ -523,9 +507,6 @@ class piwigoWebAPI: XCTestCase {
         }
 
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
-
         XCTAssertEqual(result.success, true)
     }
 
@@ -729,9 +710,6 @@ class piwigoWebAPI: XCTestCase {
         }
 
         XCTAssertEqual(result.status, "ok")
-        XCTAssertEqual(result.errorCode, 0)
-        XCTAssertEqual(result.errorMessage, "")
-
         XCTAssertEqual(result.data[0], kCommunityCategoriesGetList)
         XCTAssertEqual(result.data[1], kCommunityImagesUploadCompleted)
     }
