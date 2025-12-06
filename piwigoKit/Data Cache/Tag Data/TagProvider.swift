@@ -257,12 +257,6 @@ public class TagProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: 3000) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
                 // Import the tagJSON into Core Data.
                 guard let tagId = pwgData.data.id else {
                     completion(PwgKitError.missingTagData)
