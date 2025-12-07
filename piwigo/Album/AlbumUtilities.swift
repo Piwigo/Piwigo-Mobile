@@ -96,17 +96,10 @@ class AlbumUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: CategoriesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Album successfully updated
-                    completion()
-                }
-                else {
-                    // Could not set album data
-                    failure(.unexpectedError)
-                }
-
+            case .success:
+                // Album successfully updated
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
