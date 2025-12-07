@@ -17,5 +17,6 @@ public let pwgMinVersion = "2.10.0"
 // At login, invites to update the Piwigo server if version is lower than:
 public let pwgRecentVersion = "14.0.0"
 
-// Custom HTTP header
+// Custom HTTP header for cancelling tasks related with a specific album
 public let HTTPCatID = "X-PWG-categoryID"
+
