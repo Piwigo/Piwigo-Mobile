@@ -40,7 +40,7 @@ public enum PwgKitError: Error {
     case missingAlbumData
     case albumCreationError
     case albumNotFound
-    
+
     // Image error
     case fetchImageFailed
     case missingImageData

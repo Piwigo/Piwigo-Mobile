@@ -66,7 +66,7 @@ class AlbumUtilities: NSObject {
                     completion(catId)
                 }
                 else {
-                    // Could not create album
+                    // Could not retrieve album ID
                     failure(.unexpectedError)
                 }
 
