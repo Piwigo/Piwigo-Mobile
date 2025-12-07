@@ -55,7 +55,7 @@ public extension PwgSession {
             case .success(let pwgData):
                 // No status returned?
                 guard let data = pwgData.data else {
-                    failure(.authenticationFailed)
+                    failure(.unknownUserStatus)
                     return
                 }
 
