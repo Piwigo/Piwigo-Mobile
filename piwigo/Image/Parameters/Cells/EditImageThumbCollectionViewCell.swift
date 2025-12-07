@@ -225,51 +225,36 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Filename successfully changed
-                    DispatchQueue.main.async {
-                        topViewController?.updateHUDwithSuccess { [self] in
-                            topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
-                                // Adopt new original filename
-                                imageFile.text = fileName
-                                
-                                // Update parent image view
-                                delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
-                            }
+            case .success:
+                // Filename successfully changed
+                DispatchQueue.main.async {
+                    topViewController?.updateHUDwithSuccess { [self] in
+                        topViewController?.hideHUD(afterDelay: pwgDelayHUD) { [self] in
+                            // Adopt new original filename
+                            imageFile.text = fileName
+                            
+                            // Update parent image view
+                            delegate?.didRenameFileOfImage(withId: imageID, andFilename: fileName)
                         }
                     }
                 }
-                else {
-                    // Could not change the filename
-                    DispatchQueue.main.async {
-                        self.renameImageFileError(PwgKitError.unexpectedError, topViewController: topViewController)
-                    }
-                    return
-                }
-                
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
                 /// - Cannot decode data returned by Piwigo server
                 DispatchQueue.main.async {
-                    self.renameImageFileError(error, topViewController: topViewController)
+                    topViewController?.hideHUD {
+                        topViewController?.dismissPiwigoError(
+                            withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
+                            message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
+                            errorMessage: error.localizedDescription) { }
+                    }
                 }
             }
         }
     }
     
-    @MainActor
-    private func renameImageFileError(_ error: PwgKitError, topViewController: UIViewController?) {
-        topViewController?.hideHUD {
-            topViewController?.dismissPiwigoError(
-                withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),
-                message: NSLocalizedString("renameImageError_message", comment: "Failed to rename your image filename"),
-                errorMessage: error.localizedDescription) { }
-        }
-    }
-
     
     // MARK: - Remove Image from Selection
     @MainActor
