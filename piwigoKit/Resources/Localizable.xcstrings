@@ -8097,6 +8097,9 @@
         }
       }
     },
+    "PiwigoServer_unexpectedData" : {
+      "comment" : "Could not retrieve the expected information from the data returned by Piwigo server."
+    },
     "PiwigoServer_wrongJSONobject" : {
       "extractionState" : "manual",
       "localizations" : {
