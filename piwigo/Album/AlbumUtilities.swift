@@ -178,19 +178,12 @@ class AlbumUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: CategoriesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Album successfully deleted ▶ Remove category ID from list of recently used albums
-                    let userInfo = ["categoryId" : NSNumber.init(value: catID)]
-                    NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
-                                                    object: nil, userInfo: userInfo)
-                    completion()
-                }
-                else {
-                    // Could not delete album
-                    failure(.unexpectedError)
-                }
+            case .success:
+                // Album successfully deleted ▶ Remove category ID from list of recently used albums
+                let userInfo = ["categoryId" : NSNumber.init(value: catID)]
+                NotificationCenter.default.post(name: Notification.Name.pwgRemoveRecentAlbum,
+                                                object: nil, userInfo: userInfo)
+                completion()
                 
             case .failure(let error):
                 /// - Network communication errors
