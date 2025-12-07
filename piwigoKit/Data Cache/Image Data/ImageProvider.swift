@@ -167,12 +167,6 @@ public class ImageProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Import image data into Core Data.
                 do {
                     if [.rankAscending, .random].contains(sort) {
