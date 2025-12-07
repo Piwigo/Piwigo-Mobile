@@ -89,7 +89,7 @@ extension UploadManager {
                                 countOfBytesClientExpectsToReceive: 1000) { [self] result in
             UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
-            case .success(let pwgData):
+            case .success:
                 // Image successfully uploaded and set
                 self.didFinishTransfer(for: upload, error: nil)
             
