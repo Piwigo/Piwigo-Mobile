@@ -90,16 +90,9 @@ extension UploadManager {
             UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
             case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Image successfully uploaded and set
-                    self.didFinishTransfer(for: upload, error: nil)
-                }
-                else {
-                    // Could not set image parameters, upload still ready for finish
-                    self.didFinishTransfer(for: upload, error: .unexpectedError)
-                }
-
+                // Image successfully uploaded and set
+                self.didFinishTransfer(for: upload, error: nil)
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
