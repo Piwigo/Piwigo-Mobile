@@ -39,7 +39,7 @@ public struct ImagesDeleteJSON: Decodable {
         if status == "ok"
         {
             success = true
-            result = try rootContainer.decode(Int.self, forKey: .result)
+//            result = try rootContainer.decode(Int.self, forKey: .result)
         }
         else if status == "fail"
         {

@@ -86,19 +86,12 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Images deleted successfully
-                    /// We may check here that the number returned matches the number of images to delete
-                    /// and return an error to the user.
-                    completion()
-                }
-                else {
-                    // Could not delete images
-                    failure(PwgKitError.unexpectedError)
-                }
-
+            case .success:
+                // Images deleted successfully
+                /// We may check here that the number returned matches the number of images to delete
+                /// and return an error to the user.
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
