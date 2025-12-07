@@ -397,7 +397,7 @@ extension UploadManager {
                     }
                 }
                 else {
-                    upload.setState(.uploadingError, error: .unexpectedError, save: false)
+                    upload.setState(.uploadingError, error: .operationFailed, save: false)
                     self.backgroundQueue.async {
                         self.uploadBckgContext.saveIfNeeded()
                         self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
@@ -894,7 +894,7 @@ extension UploadManager {
                 }
             }
             else {
-                upload.setState(.uploadingError, error: .unexpectedError, save: false)
+                upload.setState(.uploadingError, error: .operationFailed, save: false)
                 self.backgroundQueue.async {
                     self.uploadBckgContext.saveIfNeeded()
                     self.didEndTransfer(for: upload, taskID: task.taskIdentifier)
