@@ -102,12 +102,7 @@ extension User {
     }
     
     public func canManageFavorites() -> Bool {
-        // pwg.users.favorites… methods available from Piwigo version 2.10 for registered users
-        let versionTooOld = NetworkVars.shared.pwgVersion.compare("2.10.0", options: .numeric) == .orderedAscending
-        if versionTooOld || self.role == .guest {
-            return false
-        }
-        return true
+        return !(self.role == .guest)
     }
     
     public func canDownloadImages() -> Bool {
