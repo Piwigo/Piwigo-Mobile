@@ -251,7 +251,9 @@ extension UploadManager {
             // Start uploading
             self.sendInForeground(chunk: 0, of: chunks, for: upload)
         } failure: { error in
-            upload.requestError = error.localizedDescription
+            // Report error
+            upload.setState(.preparingFail, error: error, save: true)
+            self.didEndTransfer(for: upload)
         }
     }
 

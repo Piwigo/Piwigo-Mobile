@@ -79,10 +79,12 @@ public enum PwgKitError: Error {
     case invalidURL
     case missingParameter
     case networkUnavailable
-    case unexpectedError
-    case wrongDataFormat
     case wrongJSONobject
+    case unexpectedData
     case logoutFailed
+
+    // Unexplained error
+    case unexpectedError
 }
 
 extension PwgKitError {
@@ -494,19 +496,19 @@ extension PwgKitError: LocalizedError {
         case .missingParameter:
             return String(localized: "serverMissingParamError_message", bundle: piwigoKit,
                           comment: "Failed to execute server method with missing parameter.")
-        case .wrongJSONobject:
-            return String(localized: "PiwigoServer_wrongJSONobject", bundle: piwigoKit,
-                          comment: "Could not digest JSON object returned by Piwigo server.")
         case .networkUnavailable:
             return String(localized: "internetErrorGeneral_broken", bundle: piwigoKit,
                           comment: "Sorry, the communication was broken.\nTry logging in again.")
-        case .wrongDataFormat:
-            return String(localized: "CoreDataFetch_DigestError", bundle: piwigoKit,
-                          comment: "Could not digest the fetched data.")
+        case .wrongJSONobject:
+            return String(localized: "PiwigoServer_wrongJSONobject", bundle: piwigoKit,
+                          comment: "Could not digest JSON object returned by Piwigo server.")
+        case .unexpectedData:
+            return String(localized: "PiwigoServer_unexpectedData", bundle: piwigoKit,
+                          comment: "Could not retrieve the expected information from the data returned by Piwigo server.")
         case .logoutFailed:
             return String(localized: "LogoutFailed", bundle: piwigoKit,
                           comment: "Failed to logout.")
-
+        
         case .unexpectedError:
             fallthrough
         
