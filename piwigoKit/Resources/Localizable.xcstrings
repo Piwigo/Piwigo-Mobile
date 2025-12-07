@@ -7611,7 +7611,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se pudo cerrar sesión."
+            "value" : "No se ha podido cerrar la sesión."
           }
         },
         "fr" : {
@@ -8116,7 +8116,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El servidor Piwigo no pudo completar la operación solicitada."
+            "value" : "El servidor de Piwigo no ha podido completar la operación solicitada."
           }
         },
         "fr" : {
@@ -8217,7 +8217,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se pudo extraer la información esperada de los datos devueltos por el servidor Piwigo."
+            "value" : "No se ha podido extraer la información esperada de los datos devueltos por el servidor Piwigo."
           }
         },
         "fr" : {

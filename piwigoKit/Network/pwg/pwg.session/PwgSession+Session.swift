@@ -88,6 +88,11 @@ public extension PwgSession {
                     NetworkVars.shared.usesUploadAsync = false
                 }
 
+                // API Keys conflict with HTTP Basic authentication in Piwigo 16.0
+                if "16.0.0".compare(versionStr, options: .numeric) == .orderedSame {
+                    NetworkVars.shared.usesAPIkeys = false
+                }
+                
                 // Retrieve charset used by the Piwigo server
                 let charset = (data.charset ?? "UTF-8").uppercased()
                 switch charset {

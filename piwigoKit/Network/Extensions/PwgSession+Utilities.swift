@@ -471,6 +471,6 @@ extension URLRequest
         // Set HTTP header from keys
         let secretKey = KeychainUtilities.password(forService: NetworkVars.shared.serverPath,
                                                    account: NetworkVars.shared.username)
-        setValue("\(publicKey):\(secretKey)", forHTTPHeaderField: "Authorization")
+        setValue("\(publicKey):\(secretKey)", forHTTPHeaderField: HTTPAPIKey)
     }
 }
