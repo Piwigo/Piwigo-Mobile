@@ -29,20 +29,13 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
+            case .success:
+                // Image rotated successfully ► Rotate thumbnails in cache
                 /// Image data not always immediately available after rotation.
                 /// We rotate the images stored in cache instead of downloading them.
-                if pwgData.result {
-                    // Image rotated successfully ► Rotate thumbnails in cache
-                    rotateThumbnailsOfImage(image, by: angle)
-                    completion()
-                }
-                else {
-                    // Could not rotate image
-                    failure(.unexpectedError)
-                }
-
+                rotateThumbnailsOfImage(image, by: angle)
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty

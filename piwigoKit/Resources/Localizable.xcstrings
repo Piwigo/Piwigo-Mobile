@@ -8086,6 +8086,17 @@
         }
       }
     },
+    "PiwigoServer_operationFailed" : {
+      "comment" : "The Piwigo server was unable to complete the requested operation.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Piwigo server was unable to complete the requested operation."
+          }
+        }
+      }
+    },
     "PiwigoServer_wrongJSONobject" : {
       "extractionState" : "manual",
       "localizations" : {

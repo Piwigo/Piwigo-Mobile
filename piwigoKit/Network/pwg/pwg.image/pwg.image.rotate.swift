@@ -38,6 +38,9 @@ public struct ImageRotateJSON: Decodable {
         if status == "ok"
         {
             result = try rootContainer.decode(Bool.self, forKey: .result)
+            if result == false {
+                throw PwgKitError.operationFailed
+            }
         }
         else if status == "fail"
         {

@@ -29,6 +29,7 @@ public enum PwgKitError: Error {
     case emptyJSONobject
     case invalidCredentials
     case invalidJSONobject
+    case operationFailed
     
     // User errors
     case emptyUsername
@@ -374,7 +375,10 @@ extension PwgKitError: LocalizedError {
         case .invalidJSONobject:
             return String(localized: "PiwigoServer_invalidJSONobject", bundle: piwigoKit,
                           comment: "Piwigo server did not return a valid JSON object.")
-        
+        case .operationFailed:
+            return String(localized: "PiwigoServer_operationFailed", bundle: piwigoKit,
+                          comment: "The Piwigo server was unable to complete the requested operation.")
+
         // User errors
         case .emptyUsername:
             return String(localized: "CoreDataFetch_UserMissingData", bundle: piwigoKit,
