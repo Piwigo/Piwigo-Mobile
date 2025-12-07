@@ -79,17 +79,9 @@ extension PwgSession {
     func checkSession(ofUser user: User?,
                       completion: @escaping () -> Void,
                       failure: @escaping (PwgKitError) -> Void) {
-        // Check if API keys are used
-        /// It is useless to check the session status when using API keys
-        /// unless the Piwigo username is properly unset.
-        if NetworkVars.shared.usesAPIkeys,
-           NetworkVars.shared.username.isValidPublicKey(),
-           NetworkVars.shared.fixUserIsAPIKeyV412 == false {
-            completion()
-            return
-        }
         
-        // Check if the session is still active every 60 seconds or more
+        // Check if the session is still active and update the server status
+        // every 60 seconds or more
         let secondsSinceLastCheck = Date.timeIntervalSinceReferenceDate - (user?.lastUsed ?? 0.0)
         if PwgSession.shared.hasNetworkConnectionChanged == false,
            NetworkVars.shared.applicationShouldRelogin == false,
