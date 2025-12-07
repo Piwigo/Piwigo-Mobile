@@ -160,7 +160,7 @@ public class Upload: NSManagedObject {
     /**
      Updates the state of an Upload instance.
      */
-    public func setState(_ state: pwgUploadState, error: Error? = nil, save: Bool) {
+    public func setState(_ state: pwgUploadState, error: PwgKitError? = nil, save: Bool) {
         // State of upload request
         requestState = state.rawValue
         

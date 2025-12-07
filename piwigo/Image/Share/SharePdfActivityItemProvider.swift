@@ -180,7 +180,7 @@ class SharePdfActivityItemProvider: UIActivityItemProvider, @unchecked Sendable 
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
             alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = String.localizedStringWithFormat("%@ (%@)", UploadKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
+            alertMessage = String.localizedStringWithFormat("%@ (%@)", PwgKitError.cannotStripPrivateMetadata.localizedDescription, error.localizedDescription)
             preprocessingDidEnd()
             return placeholderItem!
         }

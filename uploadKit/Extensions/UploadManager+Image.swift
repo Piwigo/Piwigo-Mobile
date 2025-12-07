@@ -88,7 +88,7 @@ extension UploadManager {
         }
     }
     
-    private func didPrepareImage(for upload: Upload, _ error: Error?) {
+    private func didPrepareImage(for upload: Upload, _ error: PwgKitError?) {
         // Upload ready for transfer
         // Error?
         if let error = error {
@@ -152,7 +152,7 @@ extension UploadManager {
     /// -> Return file URL w/ or w/o error
     private func stripMetadataOfImage(atURL originalFileURL:URL, with upload: Upload,
                                       completion: @escaping (URL) -> Void,
-                                      failure: @escaping (Error?) -> Void) {
+                                      failure: @escaping (PwgKitError?) -> Void) {
         autoreleasepool {
             // Create image source
             let options = [kCGImageSourceShouldCache      : false,
@@ -217,7 +217,7 @@ extension UploadManager {
     /// -> Return file URL w/ or w/o error
     private func modifyImage(atURL originalFileURL:URL, with upload: Upload,
                              completion: @escaping (URL) -> Void,
-                             failure: @escaping (Error?) -> Void) {
+                             failure: @escaping (PwgKitError?) -> Void) {
         autoreleasepool {
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
@@ -439,7 +439,7 @@ extension UploadManager {
     /// -> Return file URL w/ or w/o error
     private func convertImage(atURL originalFileURL:URL, with upload: Upload,
                               completion: @escaping (URL) -> Void,
-                              failure: @escaping (Error?) -> Void) {
+                              failure: @escaping (PwgKitError?) -> Void) {
         autoreleasepool {
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,

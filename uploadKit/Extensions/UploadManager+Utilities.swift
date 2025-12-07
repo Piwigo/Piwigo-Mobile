@@ -47,7 +47,7 @@ extension UploadManager {
     /// -> return updated upload properties w/ or w/o error
     public func finalizeImageFile(atURL originalFileURL: URL, with upload: Upload,
                                   completion: @escaping () -> Void,
-                                  failure: @escaping (Error?) -> Void) {
+                                  failure: @escaping (PwgKitError?) -> Void) {
 
         // File name of image data to be stored into Piwigo/Uploads directory
         let fileURL = getUploadFileURL(from: upload)
@@ -77,7 +77,7 @@ extension UploadManager {
         do { try FileManager.default.setAttributes(attrs, ofItemAtPath: fileURL.path) } catch { }
         
         // Determine MD5 checksum of image file to upload
-        let error: Error?
+        let error: PwgKitError?
         (upload.md5Sum, error) = fileURL.MD5checksum
          if error != nil {
             // Could not determine the MD5 checksum

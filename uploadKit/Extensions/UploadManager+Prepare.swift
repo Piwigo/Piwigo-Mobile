@@ -179,7 +179,7 @@ extension UploadManager
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadKitError.unacceptedImageFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
             // Update upload request
             didEndPreparation()
@@ -217,14 +217,14 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadKitError.unacceptedVideoFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
         }
         else {
             // Unknown type
-            upload.setState(.formatError, error: UploadKitError.unacceptedDataFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -309,7 +309,7 @@ extension UploadManager
         }
         else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -345,7 +345,7 @@ extension UploadManager
             }
 
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadKitError.unacceptedImageFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -369,14 +369,14 @@ extension UploadManager
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadKitError.unacceptedVideoFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            upload.setState(.formatError, error: UploadKitError.unacceptedAudioFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedAudioFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -385,7 +385,7 @@ extension UploadManager
             fallthrough
         default:
             // Update state of upload request: Unknown format
-            upload.setState(.formatError, error: UploadKitError.unacceptedDataFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()

@@ -221,20 +221,14 @@ extension UploadManager {
             try imageData = NSData(contentsOf: fileURL, options: .alwaysMapped) as Data
 //            try imageData = Data(contentsOf: fileURL, options: .alwaysMapped) as Data
         }
-        catch let error as NSError {
+        catch let error as CocoaError {
             // Could not find the file to upload!
-            var msg = ""
-            if #available(iOS 16.0, *) {
-                msg = error.localizedDescription
-                           .replacing(fileURL.absoluteString, with: fileURL.lastPathComponent)
-            } else {
-                // Fallback on earlier versions
-                msg = error.localizedDescription
-                           .replacingOccurrences(of: fileURL.absoluteString, with: fileURL.lastPathComponent)
-            }
-            let err = NSError(domain: error.domain, code: error.code,
-                              userInfo: [NSLocalizedDescriptionKey : msg])
-            upload.setState(.preparingFail, error: err, save: true)
+            upload.setState(.preparingFail, error: .fileOperationFailed(innerError: error), save: true)
+            self.didEndTransfer(for: upload)
+            return
+        }
+        catch {
+            upload.setState(.preparingFail, error: .otherError(innerError: error), save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -245,7 +239,7 @@ extension UploadManager {
         let chunks = Int(chunksDiv.rounded(.up))
         if chunks == 0 || upload.fileName.isEmpty ||
            upload.md5Sum.isEmpty || upload.category == 0 {
-            upload.setState(.preparingFail, error: UploadKitError.missingUploadParameter, save: true)
+            upload.setState(.preparingFail, error: .missingUploadParameter, save: true)
             self.didEndTransfer(for: upload)
             return
         }
@@ -589,7 +583,7 @@ extension UploadManager {
         let chunksStr = String(format: "%ld", chunks)
         if chunks == 0 || upload.fileName.isEmpty ||
            upload.md5Sum.isEmpty || upload.category == 0 {
-            upload.setState(.preparingFail, error: PwgKitError.missingUploadFile, save: true)
+            upload.setState(.preparingFail, error: .missingUploadParameter, save: true)
             self.didEndTransfer(for: upload)
         }
         

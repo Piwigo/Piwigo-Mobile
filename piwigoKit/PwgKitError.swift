@@ -7,21 +7,29 @@
 //
 
 import Foundation
+import Photos
 
 public enum PwgKitError: Error {
     // Error types
-    case decodingFailed(innerError: DecodingError)
+    case fileOperationFailed(innerError: CocoaError)
+    case photosError(innerError: PHPhotosError)
     case invalidStatusCode(statusCode: Int)
     case requestFailed(innerError: URLError)
+    case decodingFailed(innerError: DecodingError)
     case otherError(innerError: Error)
-
+    
     // Piwigo errors
     case pwgError(code: Int, msg: String)
-
+    
     // Server errors
-    case wrongServerURL
     case serverCreationError
-
+    case incompatiblePwgVersion
+    case authenticationFailed
+    case invalidResponse
+    case emptyJSONobject
+    case invalidCredentials
+    case invalidJSONobject
+    
     // User errors
     case emptyUsername
     case unknownUserStatus
@@ -32,36 +40,39 @@ public enum PwgKitError: Error {
     case missingAlbumData
     case albumCreationError
     case albumNotFound
-
+    
     // Image error
     case fetchImageFailed
     case missingImageData
     case creationImageError
-
+    
     // Tag errors
     case fetchTagFailed
     case missingTagData
     case tagCreationError
-
+    
     // Location errors
     case locationCreationError
     case missingLocationData
-
+    
     // Upload errors
     case uploadCreationError
     case uploadDeletionError
     case missingUploadData
     case missingAsset
-    case missingUploadFile
-
+    case unacceptedImageFormat
+    case unacceptedAudioFormat
+    case unacceptedVideoFormat
+    case unacceptedDataFormat
+    case missingUploadParameter
+    case cannotStripPrivateMetadata
+    case autoUploadSourceInvalid
+    case autoUploadDestinationInvalid
+    case emptyingLoungeFailed
+    
     // Network errors
-    case authenticationFailed
-    case invalidResponse
-    case emptyJSONobject
+    case wrongServerURL
     case failedToPrepareDownload
-    case incompatiblePwgVersion
-    case invalidCredentials
-    case invalidJSONobject
     case invalidMethod
     case invalidParameter
     case invalidURL
@@ -70,7 +81,6 @@ public enum PwgKitError: Error {
     case unexpectedError
     case wrongDataFormat
     case wrongJSONobject
-    case emptyingLoungeFailed
     case logoutFailed
 }
 
@@ -143,8 +153,12 @@ extension PwgKitError: LocalizedError {
     // When adopting iOS 16 as minimum target, migrate to LocalizedStringResource()
     public var errorDescription: String? {
         switch self {
-        // Decoding failed errors
-        case .decodingFailed(innerError: let error):
+        // File management errors
+        case .fileOperationFailed(innerError: let error):
+            return error.localizedDescription
+        
+        // Photo Library errors
+        case .photosError(innerError: let error):
             return error.localizedDescription
         
         // HTTP errors
@@ -153,6 +167,10 @@ extension PwgKitError: LocalizedError {
         
         // Request failed errors
         case .requestFailed(innerError: let error):
+            return error.localizedDescription
+        
+        // Decoding failed errors
+        case .decodingFailed(innerError: let error):
             return error.localizedDescription
         
         // Other errors
@@ -335,13 +353,28 @@ extension PwgKitError: LocalizedError {
             }
 
         // Server errors
-        case .wrongServerURL:
-            return String(localized: "serverURLerror_title", bundle: piwigoKit,
-                          comment: "Incorrect URL")
         case .serverCreationError:
             return String(localized: "CoreData_ServerCreateFailed", bundle: piwigoKit,
                           comment: "Failed to create a new Server object.")
-
+        case .incompatiblePwgVersion:
+            return String(localized: "serverVersionNotCompatible_message", bundle: piwigoKit,
+                          comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
+        case .authenticationFailed:
+            return String(localized: "sessionStatusError_message", bundle: piwigoKit,
+                          comment: "Failed to authenticate with server.\nTry logging in again.")
+        case .invalidResponse:
+            return String(localized: "PiwigoServer_invalidResponse", bundle: piwigoKit,
+                          comment: "Piwigo server did not return a valid response.")
+        case .emptyJSONobject:
+            return String(localized: "PiwigoServer_emptyJSONobject", bundle: piwigoKit,
+                          comment: "Piwigo server did return an empty JSON object.")
+        case .invalidCredentials:
+            return String(localized: "loginError_message", bundle: piwigoKit,
+                          comment: "The username and password don't match on the given server")
+        case .invalidJSONobject:
+            return String(localized: "PiwigoServer_invalidJSONobject", bundle: piwigoKit,
+                          comment: "Piwigo server did not return a valid JSON object.")
+        
         // User errors
         case .emptyUsername:
             return String(localized: "CoreDataFetch_UserMissingData", bundle: piwigoKit,
@@ -390,12 +423,12 @@ extension PwgKitError: LocalizedError {
                           comment: "Failed to create a new Tag object.")
         
         // Location errors
-        case .missingLocationData:
-            return String(localized: "CoreDataFetch_LocationMissingData", bundle: piwigoKit,
-                          comment: "Found and will discard a location missing a valid identifier.")
         case .locationCreationError:
             return String(localized: "CoreDataFetch_LocationCreateFailed", bundle: piwigoKit,
                           comment: "Failed to create a new Location object.")
+        case .missingLocationData:
+            return String(localized: "CoreDataFetch_LocationMissingData", bundle: piwigoKit,
+                          comment: "Found and will discard a location missing a valid identifier.")
 
         // Upload errors
         case .uploadCreationError:
@@ -406,35 +439,45 @@ extension PwgKitError: LocalizedError {
                           comment: "Failed to delete an Upload object.")
         case .missingUploadData:
             return String(localized: "CoreDataFetch_UploadMissingData", bundle: piwigoKit,
-                          comment: "Found and will discard an upload missing a valid identifier.")
+                          comment: "Found and will discard an upload missing data.")
         case .missingAsset:
             return String(localized: "CoreDataFetch_UploadMissingAsset", bundle: piwigoKit,
                           comment: "Failed to retrieve photo")
-        case .missingUploadFile:
-            return ""
+        case .unacceptedImageFormat:
+            return String(localized: "imageFormat_error", bundle: piwigoKit,
+                          comment: "Photo file format not supported.")
+        case .unacceptedAudioFormat:
+            return String(localized: "audioFormat_error", bundle: piwigoKit,
+                          comment: "Sorry, audio files are not supported by Piwigo Mobile yet.")
+        case .unacceptedVideoFormat:
+            return String(localized: "videoFormat_error", bundle: piwigoKit,
+                          comment: "Video file format not supported.")
+        case .unacceptedDataFormat:
+            return String(localized: "otherFormat_error", bundle: piwigoKit,
+                          comment: "File format not supported.")
+        case .missingUploadParameter:
+            return String(localized: "uploadParameterMissing_message", bundle: piwigoKit,
+                          comment: "Missing upload paremeter")
+        case .cannotStripPrivateMetadata:
+            return String(localized: "shareMetadataError_message", bundle: piwigoKit,
+                          comment: "Cannot strip private metadata")
+        case .autoUploadSourceInvalid:
+            return String(localized: "settings_autoUploadSourceInvalid", bundle: piwigoKit,
+                          comment: "Invalid source album")
+        case .autoUploadDestinationInvalid:
+            return String(localized: "settings_autoUploadDestinationInvalid", bundle: piwigoKit,
+                          comment: "Invalid destination album")
+        case .emptyingLoungeFailed:
+            return String(localized: "EmptyingLoungeFailed", bundle: piwigoKit,
+                          comment: "Failed to empty the lounge.")
         
         // Network errors
-        case .authenticationFailed:
-            return String(localized: "sessionStatusError_message", bundle: piwigoKit,
-                          comment: "Failed to authenticate with server.\nTry logging in again.")
-        case .invalidResponse:
-            return String(localized: "PiwigoServer_invalidResponse", bundle: piwigoKit,
-                          comment: "Piwigo server did not return a valid response.")
-        case .emptyJSONobject:
-            return String(localized: "PiwigoServer_emptyJSONobject", bundle: piwigoKit,
-                          comment: "Piwigo server did return an empty JSON object.")
+        case .wrongServerURL:
+            return String(localized: "serverURLerror_title", bundle: piwigoKit,
+                          comment: "Incorrect URL")
         case .failedToPrepareDownload:
             return String(localized: "downloadImageFail_title", bundle: piwigoKit,
                           comment: "Download Fail")
-        case .incompatiblePwgVersion:
-            return String(localized: "serverVersionNotCompatible_message", bundle: piwigoKit,
-                          comment: "Your server version is %@. Piwigo Mobile only supports a version of at least %@. Please update your server to use Piwigo Mobile.")
-        case .invalidCredentials:
-            return String(localized: "loginError_message", bundle: piwigoKit,
-                          comment: "The username and password don't match on the given server")
-        case .invalidJSONobject:
-            return String(localized: "PiwigoServer_invalidJSONobject", bundle: piwigoKit,
-                          comment: "Piwigo server did not return a valid JSON object.")
         case .invalidMethod:
             return String(localized: "serverInvalidMethodError_message", bundle: piwigoKit,
                           comment: "Failed to call server method.")
@@ -456,9 +499,6 @@ extension PwgKitError: LocalizedError {
         case .wrongDataFormat:
             return String(localized: "CoreDataFetch_DigestError", bundle: piwigoKit,
                           comment: "Could not digest the fetched data.")
-        case .emptyingLoungeFailed:
-            return String(localized: "EmptyingLoungeFailed", bundle: piwigoKit,
-                          comment: "Failed to empty the lounge.")
         case .logoutFailed:
             return String(localized: "LogoutFailed", bundle: piwigoKit,
                           comment: "Failed to logout.")

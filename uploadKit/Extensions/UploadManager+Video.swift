@@ -124,7 +124,7 @@ extension UploadManager {
             let fileURL = self.getUploadFileURL(from: upload, deleted: true)
 
             // Determine MD5 checksum
-            let error: Error?
+            let error: PwgKitError?
             (upload.md5Sum, error) = originalFileURL.MD5checksum
             if error != nil {
                 // Could not determine the MD5 checksum
@@ -140,9 +140,12 @@ extension UploadManager {
                 self.didPrepareVideo(for: upload, nil)
                 return
             }
-            catch let error {
+            catch let error as CocoaError {
+                self.didPrepareVideo(for: upload, .fileOperationFailed(innerError: error))
+            }
+            catch {
                 // Could not copy the video file
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .otherError(innerError: error))
             }
         }
     }
@@ -184,7 +187,7 @@ extension UploadManager {
         }
     }
     
-    private func didPrepareVideo(for upload: Upload, _ error: Error?) {
+    private func didPrepareVideo(for upload: Upload, _ error: PwgKitError?) {
         // Upload ready for transfer
         // Error?
         if let error = error {
@@ -216,7 +219,7 @@ extension UploadManager {
     }
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
-                       completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
+                               completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, PwgKitError?) -> Void) {
         UploadManager.logger.notice("retrieveVideoFrom() in \(queueName(), privacy: .public)")
 
         // The block Photos calls periodically while downloading the video.
@@ -291,24 +294,31 @@ extension UploadManager {
             // <<==== End of code for debugging
             
             // resultHandler performed on another thread!
-            let error = info?[PHImageErrorKey] as? Error
             if self.isExecutingBackgroundUploadTask {
 //                debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
-                guard let error = error else {
+                if let error = info?[PHImageErrorKey] as? Error {
+                    if let photosError = error as? PHPhotosError {
+                        completionHandler(nil, options, .photosError(innerError: photosError))
+                    } else {
+                        completionHandler(nil, options, .otherError(innerError: error))
+                    }
+                } else {
                     completionHandler(avasset, options, nil)
-                    return
                 }
-                completionHandler(nil, options, error)
             } else {
                 self.backgroundQueue.async {
 //                    debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
-                    guard let error = error else {
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        if let photosError = error as? PHPhotosError {
+                            completionHandler(nil, options, .photosError(innerError: photosError))
+                        } else {
+                            completionHandler(nil, options, .otherError(innerError: error))
+                        }
+                    } else {
                         completionHandler(avasset, options, nil)
-                        return
                     }
-                    completionHandler(nil, options, error)
                 }
             }
         })
