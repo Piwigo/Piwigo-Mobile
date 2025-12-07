@@ -504,7 +504,7 @@ extension PwgKitError: LocalizedError {
                           comment: "Could not digest JSON object returned by Piwigo server.")
         case .unexpectedData:
             return String(localized: "PiwigoServer_unexpectedData", bundle: piwigoKit,
-                          comment: "Could not retrieve the expected information from the data returned by Piwigo server.")
+                          comment: "Unable to extract the expected information from the data returned by the Piwigo server.")
         case .logoutFailed:
             return String(localized: "LogoutFailed", bundle: piwigoKit,
                           comment: "Failed to logout.")

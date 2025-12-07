@@ -8089,16 +8089,204 @@
     "PiwigoServer_operationFailed" : {
       "comment" : "The Piwigo server was unable to complete the requested operation.",
       "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يتمكن خادم Piwigo من إكمال العملية المطلوبة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo-serveren kunne ikke udføre den ønskede handling."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Piwigo Server konnte den angeforderten Vorgang nicht abschließen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The Piwigo server was unable to complete the requested operation."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El servidor Piwigo no pudo completar la operación solicitada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le serveur Piwigo n'a pas pu terminer l'opération demandée."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Piwigo szerver nem tudta végrehajtani a kért műveletet."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server Piwigo tidak dapat menyelesaikan operasi yang diminta."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il server Piwigo non è stato in grado di completare l'operazione richiesta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigoサーバーは要求された操作を完了できませんでした。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De Piwigo-server kon de gevraagde bewerking niet voltooien."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serwer Piwigo nie mógł wykonać żądanej operacji."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сервер Piwigo не смог выполнить запрошенную операцию."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo-servern kunde inte slutföra den begärda åtgärden."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo服务器无法完成请求的操作。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigo 伺服器無法完成所請求的操作。"
+          }
         }
       }
     },
     "PiwigoServer_unexpectedData" : {
-      "comment" : "Could not retrieve the expected information from the data returned by Piwigo server."
+      "comment" : "Unable to extract the expected information from the data returned by the Piwigo server.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير قادر على استخراج المعلومات المتوقعة من البيانات التي أرسلها خادم Piwigo."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det var ikke muligt at udtrække de forventede oplysninger fra de data, der blev returneret af Piwigo-serveren."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die erwarteten Informationen konnten nicht aus den vom Piwigo-Server zurückgegebenen Daten extrahiert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to extract the expected information from the data returned by the Piwigo server."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo extraer la información esperada de los datos devueltos por el servidor Piwigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d'extraire les informations attendues des données retournées par le serveur Piwigo."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Piwigo szerver által visszaküldött adatokból nem sikerült kinyerni a várt információkat."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak dapat mengekstrak informasi yang diharapkan dari data yang dikembalikan oleh server Piwigo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile estrarre le informazioni previste dai dati restituiti dal server Piwigo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piwigoサーバーから返されたデータから期待される情報を抽出できませんでした。"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De verwachte informatie kan niet worden geëxtraheerd uit de gegevens die door de Piwigo-server zijn geretourneerd."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie można wyodrębnić oczekiwanych informacji z danych zwróconych przez serwer Piwigo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Невозможно извлечь ожидаемую информацию из данных, возвращенных сервером Piwigo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att extrahera den förväntade informationen från de data som returnerades av Piwigo-servern."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法从Piwigo服务器返回的数据中提取预期信息。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法從 Piwigo 伺服器返回的資料中提取預期資訊。"
+          }
+        }
+      }
     },
     "PiwigoServer_wrongJSONobject" : {
       "extractionState" : "manual",
