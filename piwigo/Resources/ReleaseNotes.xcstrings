@@ -9704,97 +9704,97 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإصدار 4.1.1\n\n• إصلاح الأخطاء وتحسين الواجهة"
+            "value" : "الإصدار 4.1.1\n11 نوفمبر 2025\n\n• إصلاح الأخطاء وتحسين الواجهة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.4.1\n\n• Retter fejl og forbedrer brugerfladen"
+            "value" : "Version 4.4.1\n11 november 2025\n\n• Retter fejl og forbedrer brugerfladen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.1\n\n• Behebt Fehler und verbessert die Benutzeroberfläche"
+            "value" : "Version 4.1.1\n11. November 2025\n\n• Behebt Fehler und verbessert die Benutzeroberfläche"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.1\n\n• Fixes bugs and improves the interface"
+            "value" : "Version 4.1.1\nNovember 11, 2025\n\n• Fixes bugs and improves the interface"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versión 4.1.1\n\n• Corrige errores y mejora la interfaz"
+            "value" : "Versión 4.1.1\n11 de noviembre de 2025\n\n• Corrige errores y mejora la interfaz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.1\n\n• Corrige les bugs et améliore l'interface"
+            "value" : "Version 4.1.1\n11 novembre 2025\n\n• Corrige les bugs et améliore l'interface"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4.1.1 verzió\n\n• Hibajavítások és a kezelőfelület javítása"
+            "value" : "4.1.1 verzió\n2025 November 11\n\n• Hibajavítások és a kezelőfelület javítása"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versi 4.1.1\n\n• Memperbaiki bug dan meningkatkan antarmuka"
+            "value" : "Versi 4.1.1\n11 November 2025\n\n• Memperbaiki bug dan meningkatkan antarmuka"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione 4.1.1\n\n• Corregge i bug e migliora l'interfaccia"
+            "value" : "Versione 4.1.1\n11 novembre 2025\n\n• Corregge i bug e migliora l'interfaccia"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン4.1.1\n\n• バグの修正とインターフェイスの改善"
+            "value" : "バージョン4.1.1\n2025年11月11日\n\n• バグの修正とインターフェイスの改善"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versie 4.1.1\n\n• Lost bugs op en verbetert de interface"
+            "value" : "Versie 4.1.1\n11 November 2025\n\n• Lost bugs op en verbetert de interface"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wersja 4.1.1\n\n• Poprawki błędów i usprawnienia interfejsu"
+            "value" : "Wersja 4.1.1\n11 listopada 2025\n\n• Poprawki błędów i usprawnienia interfejsu"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Версия 4.1.1\n\n• Исправлены ошибки и улучшен интерфейс"
+            "value" : "Версия 4.1.1\n11 ноября 2025\n\n• Исправлены ошибки и улучшен интерфейс"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.1\n\n• Fixar buggar och förbättrar gränssnittet"
+            "value" : "Version 4.1.1\n11 november 2025\n\n• Fixar buggar och förbättrar gränssnittet"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.1.1\n\n• 修正错误并改进界面"
+            "value" : "版本 4.1.1\n2025年11月11日\n\n• 修正错误并改进界面"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "版本 4.1.1\n\n• 修正錯誤並改進介面"
+            "value" : "版本 4.1.1\n2025年11月11日\n\n• 修正錯誤並改進介面"
           }
         }
       }
