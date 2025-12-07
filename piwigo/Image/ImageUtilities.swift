@@ -112,17 +112,10 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Images successfully added to user's favorites
-                    completion()
-                }
-                else {
-                    // Could not delete images
-                    failure(.unexpectedError)
-                }
-
+            case .success:
+                // Images successfully added to user's favorites
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -143,17 +136,10 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Images successfully added to user's favorites
-                    completion()
-                }
-                else {
-                    // Could not delete images
-                    failure(.unexpectedError)
-                }
-
+            case .success:
+                // Images successfully removed from user's favorites
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty

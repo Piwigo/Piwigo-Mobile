@@ -16,7 +16,6 @@ public struct FavoritesAddRemoveJSON: Decodable {
 
     public var status: String?
     public var success = false
-    public var result = false
     
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -39,8 +38,10 @@ public struct FavoritesAddRemoveJSON: Decodable {
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
         if status == "ok"
         {
-            success = true
-            result = try rootContainer.decode(Bool.self, forKey: .result)
+            success = try rootContainer.decode(Bool.self, forKey: .result)
+            if success == false {
+                throw PwgKitError.operationFailed
+            }
         }
         else if status == "fail"
         {
