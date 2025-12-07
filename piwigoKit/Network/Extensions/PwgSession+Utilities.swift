@@ -199,7 +199,7 @@ extension PwgSession {
         PwgSession.shared.sessionGetStatus { userName in
             // Check Piwigo server version
             if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                failure(PwgKitError.incompatiblePwgVersion)
+                failure(.incompatiblePwgVersion)
                 return
             }
 

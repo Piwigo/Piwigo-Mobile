@@ -67,7 +67,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not create album
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):
@@ -104,7 +104,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album data
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):
@@ -137,7 +137,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not move album
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):
@@ -164,7 +164,7 @@ class AlbumUtilities: NSObject {
                 // Data retrieved successfully?
                 guard let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan else {
                     // Could not retrieve number of orphans
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                     return
                 }
                 
@@ -203,7 +203,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not delete album
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
                 
             case .failure(let error):
@@ -238,7 +238,7 @@ class AlbumUtilities: NSObject {
                 }
                 else {
                     // Could not set album thumbnail
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):

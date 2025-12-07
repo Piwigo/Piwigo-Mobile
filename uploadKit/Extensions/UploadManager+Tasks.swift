@@ -60,7 +60,7 @@ extension UploadManager
         if !isFinishing, finishing.count > 0 {
             // Transfers encountered an error
             finishing.forEach({ upload in
-                upload.setState(.finishingError, error: PwgKitError.networkUnavailable, save: false)
+                upload.setState(.finishingError, error: .networkUnavailable, save: false)
             })
             uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()
@@ -72,7 +72,7 @@ extension UploadManager
             for upload in uploading {
                 if isUploading.contains(upload.objectID) == false {
                     // Transfer encountered an error
-                    upload.setState(.uploadingError, error: PwgKitError.networkUnavailable, save: true)
+                    upload.setState(.uploadingError, error: .networkUnavailable, save: true)
                     findNextImageToUpload()
                 }
             }
@@ -83,7 +83,7 @@ extension UploadManager
         if isPreparing == false, preparing.count > 0 {
             // Preparations encountered an error
             preparing.forEach { upload in
-                upload.setState(.preparingError, error: PwgKitError.missingAsset, save: false)
+                upload.setState(.preparingError, error: .missingAsset, save: false)
             }
             uploadBckgContext.saveIfNeeded()
             findNextImageToUpload()

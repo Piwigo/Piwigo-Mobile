@@ -24,7 +24,7 @@ public extension PwgSession {
                 guard pwgData.realUser.isEmpty == false,
                       let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
                 else {
-                    failure(PwgKitError.unknownUserStatus)
+                    failure(.unknownUserStatus)
                     return
                 }
                 NetworkVars.shared.userStatus = userStatus

@@ -463,7 +463,7 @@ class LoginViewController: UIViewController {
                     // Piwigo update required ► Close login or re-login view and inform user
                     isAlreadyTryingToLogin = false
                     // Display error message
-                    logging(inConnectionError: PwgKitError.incompatiblePwgVersion)
+                    logging(inConnectionError: .incompatiblePwgVersion)
                     return
                 }
                 

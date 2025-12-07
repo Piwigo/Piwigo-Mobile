@@ -51,7 +51,7 @@ public extension PwgSession {
                 }
                 else {
                     // Could not set image parameters
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):

@@ -348,17 +348,17 @@ extension UploadSessions: URLSessionTaskDelegate {
         // Manage the error type
         var pwgError: PwgKitError?
         if let error = error as? URLError {
-            pwgError = PwgKitError.requestFailed(innerError: error)
+            pwgError = .requestFailed(innerError: error)
         }
         else if let error = error as? DecodingError {
-            pwgError = PwgKitError.decodingFailed(innerError: error)
+            pwgError = .decodingFailed(innerError: error)
         }
         else if let response = task.response as? HTTPURLResponse,
                   (200...299).contains(response.statusCode) == false {
-            pwgError = PwgKitError.invalidStatusCode(statusCode: response.statusCode)
+            pwgError = .invalidStatusCode(statusCode: response.statusCode)
         }
         else if let error = error {
-            pwgError = PwgKitError.otherError(innerError: error)
+            pwgError = .otherError(innerError: error)
         }
         
         // Log task completion

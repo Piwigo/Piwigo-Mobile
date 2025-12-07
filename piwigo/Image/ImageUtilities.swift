@@ -40,7 +40,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not rotate image
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):
@@ -75,7 +75,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not associate/dissociate/move images
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):
@@ -141,7 +141,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):
@@ -172,7 +172,7 @@ class ImageUtilities: NSObject {
                 }
                 else {
                     // Could not delete images
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):

@@ -61,9 +61,12 @@ extension UploadManager {
             do {
                 try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
             }
+            catch let error as CocoaError {
+                // Update upload request state
+                failure(.fileOperationFailed(innerError: error))
+            }
             catch {
-                // Update upload request
-                failure(error)
+                failure(.otherError(innerError: error))
             }
         }
         
@@ -87,7 +90,7 @@ extension UploadManager {
         guard let uti = UTType(filenameExtension: fileExt),
               let mimeType = uti.preferredMIMEType
         else {
-            failure(PwgKitError.missingAsset)
+            failure(.missingAsset)
             return
         }
         upload.mimeType = mimeType

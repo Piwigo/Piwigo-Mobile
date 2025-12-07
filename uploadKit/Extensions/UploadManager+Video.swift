@@ -82,15 +82,13 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
 
@@ -117,8 +115,7 @@ extension UploadManager {
             guard let uti = UTType(filenameExtension: fileExt),
                   let mimeType = uti.preferredMIMEType
             else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             upload.mimeType = mimeType
@@ -164,13 +161,13 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
 
@@ -323,7 +320,7 @@ extension UploadManager {
     private func checkVideoExportability(of originalVideo: AVAsset, for upload: Upload) {
         // We cannot convert the video if it is not exportable
         if !originalVideo.isExportable {
-            didPrepareVideo(for: upload, UploadKitError.cannotStripPrivateMetadata)
+            didPrepareVideo(for: upload, .cannotStripPrivateMetadata)
             return
         }
         else {
@@ -378,7 +375,7 @@ extension UploadManager {
             // Get export session
             guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                            presetName: exportPreset) else {
-                didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             
@@ -438,7 +435,7 @@ extension UploadManager {
                         
                     }
                     // Report error
-                    self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                    self.didPrepareVideo(for: upload, .missingAsset)
                     return
                 }
 

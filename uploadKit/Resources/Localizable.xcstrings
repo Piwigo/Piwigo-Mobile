@@ -810,6 +810,9 @@
         }
       }
     },
+    "uploadParameterMissing_message" : {
+      "comment" : "Missing upload paremeter"
+    },
     "videoFormat_error" : {
       "comment" : "Video file format not supported.",
       "localizations" : {

@@ -17,6 +17,7 @@ public enum UploadKitError: Error {
     case autoUploadSourceInvalid
     case autoUploadDestinationInvalid
     
+    case missingUploadParameter
     case cannotStripPrivateMetadata
 }
 
@@ -42,6 +43,8 @@ extension UploadKitError: LocalizedError {
         case .autoUploadDestinationInvalid:
             return String(localized: "settings_autoUploadDestinationInvalid", bundle: uploadKit, comment: "Invalid destination album")
         
+        case .missingUploadParameter:
+            return String(localized: "uploadParameterMissing_message", bundle: uploadKit, comment: "Missing upload paremeter")
         case .cannotStripPrivateMetadata:
             return String(localized: "shareMetadataError_message", bundle: uploadKit, comment: "Cannot strip private metadata")
         }

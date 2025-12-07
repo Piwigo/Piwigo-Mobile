@@ -101,7 +101,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -136,7 +136,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -236,7 +236,7 @@ extension UploadManager
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             self.didEndPreparation()
             return

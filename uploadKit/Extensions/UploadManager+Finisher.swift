@@ -97,7 +97,7 @@ extension UploadManager {
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
-                    self.didFinishTransfer(for: upload, error: PwgKitError.unexpectedError)
+                    self.didFinishTransfer(for: upload, error: .unexpectedError)
                 }
 
             case .failure(let error):
@@ -157,7 +157,7 @@ extension UploadManager {
                 if pwgData.success {
                     completion(nil)
                 } else {
-                    completion(PwgKitError.emptyingLoungeFailed)
+                    completion(.emptyingLoungeFailed)
                 }
                 
             case .failure(let error):
