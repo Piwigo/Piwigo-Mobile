@@ -60,7 +60,7 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesSetCategoryJSON.self,
                                 countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
             switch result {
-            case .success(let pwgData):
+            case .success:
                 // Images associated/dissociated/moved successfully
                 completion()
             
