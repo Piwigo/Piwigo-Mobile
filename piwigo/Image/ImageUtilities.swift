@@ -61,16 +61,9 @@ class ImageUtilities: NSObject {
                                 countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Images associated/dissociated/moved successfully
-                    completion()
-                }
-                else {
-                    // Could not associate/dissociate/move images
-                    failure(.unexpectedError)
-                }
-
+                // Images associated/dissociated/moved successfully
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
