@@ -186,14 +186,10 @@ public extension PwgSession {
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
                     countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { result in
             switch result {
-            case .success(let pwgData):
-                // Logout successful?
-                if pwgData.success {
-                    completion()
-                } else {
-                    failure(.logoutFailed)
-                }
-
+            case .success:
+                // Logout successful
+                completion()
+            
             case .failure (let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
