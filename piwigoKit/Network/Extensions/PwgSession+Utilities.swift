@@ -197,12 +197,6 @@ extension PwgSession {
                          failure: @escaping (PwgKitError) -> Void)
     {
         PwgSession.shared.sessionGetStatus { userName in
-            // Check Piwigo server version
-            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                failure(.incompatiblePwgVersion)
-                return
-            }
-
             // Set Piwigo user
             NetworkVars.shared.user = userName
             

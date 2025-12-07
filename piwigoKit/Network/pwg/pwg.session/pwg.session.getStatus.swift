@@ -41,6 +41,13 @@ public struct SessionGetStatusJSON: Decodable {
         {
             // Decodes response from the data and store them in the array
             data = try rootContainer.decodeIfPresent(StatusInfo.self, forKey: .result)
+            
+            // Check Piwigo server version
+            if let version = data?.version,
+               version.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending
+            {
+                throw PwgKitError.incompatiblePwgVersion
+            }
         }
         else if status == "fail"
         {

@@ -458,15 +458,6 @@ class LoginViewController: UIViewController {
             NetworkVars.shared.user = user
             
             DispatchQueue.main.async { [self] in
-                // Is the Piwigo server incompatible?
-                if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                    // Piwigo update required ► Close login or re-login view and inform user
-                    isAlreadyTryingToLogin = false
-                    // Display error message
-                    logging(inConnectionError: .incompatiblePwgVersion)
-                    return
-                }
-                
                 // Should this server be updated?
                 let now: Double = Date().timeIntervalSinceReferenceDate
                 if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
