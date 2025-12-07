@@ -148,13 +148,11 @@ class AlbumUtilities: NSObject {
             switch result {
             case .success(let pwgData):
                 // Data retrieved successfully?
-                guard let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan else {
-                    // Could not retrieve number of orphans
+                if let nberOrphans = pwgData.data?.first?.nbImagesBecomingOrphan {
+                    completion(nberOrphans)
+                } else {
                     failure(.unexpectedError)
-                    return
                 }
-                
-                completion(nberOrphans)
 
             case .failure(let error):
                 /// - Network communication errors
