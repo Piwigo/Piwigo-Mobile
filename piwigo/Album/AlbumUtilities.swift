@@ -122,16 +122,9 @@ class AlbumUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: CategoriesMoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Successful?
-                if pwgData.success {
-                    // Album successfully moved
-                    completion()
-                }
-                else {
-                    // Could not move album
-                    failure(.unexpectedError)
-                }
+            case .success:
+                // Album successfully moved
+                completion()
 
             case .failure(let error):
                 /// - Network communication errors
