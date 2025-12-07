@@ -40,7 +40,7 @@ public struct ImagesUploadAsyncJSON: Decodable {
         if status == "ok"
         {
             // Decodes response from the data and store them in the array
-            data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
+            data = try? rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
             // Did the server returned the image parameters?
             guard let _ = data, let _ = data.id else {
