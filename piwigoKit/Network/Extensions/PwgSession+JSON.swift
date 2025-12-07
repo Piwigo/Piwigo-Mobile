@@ -27,7 +27,7 @@ extension PwgSession
         // so that they can be easily cancelled.
         if [pwgCategoriesGetList, pwgCategoriesGetImages].contains(method),
            let albumId = paramDict["cat_id"] as? Int {
-            request.setValue(String(albumId), forHTTPHeaderField: NetworkVars.shared.HTTPCatID)
+            request.setValue(String(albumId), forHTTPHeaderField: HTTPCatID)
         }
         
         // Set HTTP header when API keys are used

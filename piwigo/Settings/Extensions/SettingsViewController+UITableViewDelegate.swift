@@ -24,7 +24,7 @@ extension SettingsViewController: UITableViewDelegate
                 title += "\n"
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
+            if NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                 if !title.contains("\n") { title += "\n" }
                 if !text.isEmpty { text += " — " }
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")

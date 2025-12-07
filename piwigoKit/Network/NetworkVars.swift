@@ -152,12 +152,6 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     // Network variables kept in memory
     /// - Remembers whether the device is connected to Wi-FI
     public var isConnectedToWiFi: Bool = false
-
-    /// - Disconnects and asks to update Piwigo server if version is lower than:
-    public let pwgMinVersion = "2.10.0"
-
-    /// - At login, invites to update the Piwigo server if version is lower than:
-    public let pwgRecentVersion = "14.0.0"
     
     /// - Quicker than calling UserDefaults variables
     public lazy var service = serverProtocol + serverPath
@@ -179,10 +173,7 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     
     /// - User's default language
     public var language = ""
-    
-    /// - Custom HTTP header field names
-    public let HTTPCatID = "X-PWG-categoryID"
-    
+        
     /// - Available image sizes
     public var hasSquareSizeImages = true
     public var hasThumbSizeImages = true

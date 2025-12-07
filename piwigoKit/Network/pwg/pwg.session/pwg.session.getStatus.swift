@@ -44,7 +44,7 @@ public struct SessionGetStatusJSON: Decodable {
             
             // Check Piwigo server version
             if let version = data?.version,
-               version.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending
+               version.compare(pwgMinVersion, options: .numeric) == .orderedAscending
             {
                 throw PwgKitError.incompatiblePwgVersion
             }
