@@ -21,4 +21,4 @@ public let pwgRecentVersion = "14.0.0"
 public let HTTPCatID = "X-PWG-categoryID"
 
 // HTTP header used by API keys
-public let HTTPAPIKey = "X_PIWIGO_API"
+public let HTTPAPIKey = "X-PIWIGO-API"
