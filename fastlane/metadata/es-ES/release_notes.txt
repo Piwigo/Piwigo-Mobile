@@ -1,1 +1,3 @@
-Corrige errores y mejora la interfaz
+• Añade compatibilidad con claves de API
+• Corrige errores y mejora la interfaz
+• Modernización del código

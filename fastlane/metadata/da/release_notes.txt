@@ -1,1 +1,3 @@
-Mindre fejl rettet og forbedringer af brugerflade
+• Tilføjer understøttelse af API-nøgler
+• Rette fejl og forbedrer grænsefladen
+• Modernisering af kode

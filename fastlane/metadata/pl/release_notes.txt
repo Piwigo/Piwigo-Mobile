@@ -1,1 +1,3 @@
-Naprawiono błędy i ulepszono interfejs
+• Dodano obsługę kluczy API
+• Poprawki błędów i usprawnienia interfejsu
+• Modernizacja kodu

@@ -1,4 +1,4 @@
-Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.8 or higher):
+Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.10 or higher):
 
 • Browse your albums,
 • Create, delete, move and rename albums,

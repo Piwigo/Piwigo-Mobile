@@ -1,1 +1,3 @@
-Verbetert bugs en verbetert de interface
+• Ondersteuning voor API-sleutels toegevoegd
+• Bugs verholpen en interface verbeterd
+• Codemodernisering
