@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgGroupsGetList = "format=json&method=pwg.groups.getList"
+public let pwgGroupsGetList = "pwg.groups.getList"
 
 // MARK: Piwigo JSON Structures
 public struct GroupsGetListJSON: Decodable {
@@ -17,9 +17,7 @@ public struct GroupsGetListJSON: Decodable {
     public var paging: PageData?
     public var groups = [GroupsGetInfo]()
     public var totalCount: Int?
-    public var errorCode = 0
-    public var errorMessage = ""
-
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case data = "result"
@@ -49,39 +47,32 @@ public struct GroupsGetListJSON: Decodable {
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
 //            dump(resultContainer)
             
-            // Decodes paging and group data from the data and store them in the array
-            do {
-                // Paging data
-                paging = try resultContainer.decode(PageData.self, forKey: .paging)
-                
-                // Images data
-                groups = try resultContainer.decode([GroupsGetInfo].self, forKey: .groups)
-            }
-            catch {
-                // Returns an empty array => No group
-                errorCode = -1
-                errorMessage = PwgKitError.wrongDataFormat.localizedDescription
-            }
+            // Paging data
+            paging = try resultContainer.decode(PageData.self, forKey: .paging)
+            
+            // Images data
+            groups = try resultContainer.decode([GroupsGetInfo].self, forKey: .groups)
         }
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
             do {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
             catch {
                 // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
                 let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
         }
         else {
             // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = PwgKitError.invalidParameter.localizedDescription
+            throw PwgKitError.unexpectedError
         }
     }
 }

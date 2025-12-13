@@ -270,7 +270,7 @@ class LocalAlbumsViewController: UIViewController {
         // May be called from the notification center
         DispatchQueue.main.async { [self] in
             let headerView = SelectCategoryHeaderView(frame: .zero)
-            var text = String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
+            var text = String(localized: "settings_autoUploadSourceInfo", bundle: piwigoKit,
                               comment: "Please select the album…")
             switch wantedAction {
             case .presentLocalAlbum:

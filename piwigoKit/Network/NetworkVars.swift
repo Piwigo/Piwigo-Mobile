@@ -66,9 +66,34 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     @UserDefault("HttpUsername", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var httpUsername: String
     
-    /// - Username provided to access the Piwigo server
+    /// - Username provided to access the Piwigo server, i.e. username or API public key
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public var username: String
+    
+    /// - Username returned by the Piwigo server, introduced in v4.1.2 for correcting user attribution in persistent cache
+    @UserDefault("user", defaultValue: "", userDefaults: UserDefaults.dataSuite)
+    public var user: String
+    
+    /// - Tells whether
+    @UserDefault("fixUserIsAPIKeyV412", defaultValue: false, userDefaults: UserDefaults.dataSuite)
+    public var fixUserIsAPIKeyV412: Bool
+    public func createPiwigoUsernameAccountIfNeeded() {
+        // 'user' added in v4.1.2 for dissociating persistent cache data from credentials
+        if NetworkVars.shared.user.isEmpty,
+           NetworkVars.shared.username.isEmpty == false &&
+            NetworkVars.shared.username.lowercased() != "guest" {
+            // Adopts login username, i.e. Piwigo username or API key
+            NetworkVars.shared.user = NetworkVars.shared.username
+            // If the user is using an API key:
+            /// - 1. Call API method to retrieve the Piwigo user
+            /// - 2. Attribute 'API key' upload requests to 'Piwigo user' in persistent cache
+            /// - 3. Delete API key 'username', thereby albums associated to it
+            /// See PwgSession+Utilities
+            if NetworkVars.shared.username.isValidPublicKey() {
+                NetworkVars.shared.fixUserIsAPIKeyV412 = true
+            }
+        }
+    }
     
     /// - Status of the user accessing the Piwigo server
     @UserDefault("userStatusRaw", defaultValue: pwgUserStatus.guest.rawValue, userDefaults: UserDefaults.dataSuite)
@@ -117,19 +142,17 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     /// - pwg.users.api_key.revoke method available, false by default (available since Piwigo 16)
     @UserDefault("usesAPIkeys", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public var usesAPIkeys: Bool
-
+    
+    /// - API methods which are prohibited when making requests with an API key
+    @UserDefault("apiKeysProhibitedMethods", defaultValue: Set([pwgSessionLogin, pwgSessionLogout]), userDefaults: UserDefaults.dataSuite)
+    public var apiKeysProhibitedMethods: Set<String>
+    
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
     /// - Remembers whether the device is connected to Wi-FI
     public var isConnectedToWiFi: Bool = false
-
-    /// - Disconnects and asks to update Piwigo server if version is lower than:
-    public let pwgMinVersion = "2.10.0"
-
-    /// - At login, invites to update the Piwigo server if version is lower than:
-    public let pwgRecentVersion = "14.0"
-
+    
     /// - Quicker than calling UserDefaults variables
     public lazy var service = serverProtocol + serverPath
     
@@ -150,10 +173,7 @@ public class NetworkVars: NSObject, @unchecked Sendable {
     
     /// - User's default language
     public var language = ""
-    
-    /// - Custom HTTP header field names
-    public let HTTPCatID = "X-PWG-categoryID"
-    
+        
     /// - Available image sizes
     public var hasSquareSizeImages = true
     public var hasThumbSizeImages = true

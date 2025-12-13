@@ -101,7 +101,7 @@ extension SettingsViewController: UITableViewDataSource
             
             case 1:
                 let title = NSLocalizedString("settings_username", comment: "Username")
-                let detail = NetworkVars.shared.username.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : NetworkVars.shared.username
+                let detail = NetworkVars.shared.user.isEmpty ? NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ") : NetworkVars.shared.user
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "user"
@@ -114,7 +114,7 @@ extension SettingsViewController: UITableViewDataSource
         case .logout /* Login/Logout Button */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as? ButtonTableViewCell
             else { preconditionFailure("Could not load ButtonTableViewCell") }
-            if NetworkVars.shared.username.isEmpty {
+            if NetworkVars.shared.user.isEmpty {
                 cell.configure(with: NSLocalizedString("login", comment: "Login"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_logout", comment: "Logout"))

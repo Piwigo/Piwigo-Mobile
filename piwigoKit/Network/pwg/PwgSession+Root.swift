@@ -19,14 +19,6 @@ public extension PwgSession {
                                 countOfBytesClientExpectsToReceive: 8448) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-#if DEBUG
-                    debugPrint(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-#endif
-                    return
-                }
-                
                 // Collect statistics
                 var infos = [String]()
                 let numberFormatter = NumberFormatter()
@@ -92,12 +84,12 @@ public extension PwgSession {
                 }
                 NetworkVars.shared.pwgStatistics = stats
 
-            case .failure:
+            case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
                 /// - Cannot decode data returned by Piwigo server
                 /// -> nothing presented in the footer
-                break
+                debugPrint(error.localizedDescription)
             }
         }
     }

@@ -160,7 +160,7 @@ public class Upload: NSManagedObject {
     /**
      Updates the state of an Upload instance.
      */
-    public func setState(_ state: pwgUploadState, error: Error? = nil, save: Bool) {
+    public func setState(_ state: pwgUploadState, error: PwgKitError? = nil, save: Bool) {
         // State of upload request
         requestState = state.rawValue
         
@@ -168,11 +168,7 @@ public class Upload: NSManagedObject {
         requestSectionKey = state.sectionKey
         
         // Error message description
-        if let error = error {
-            requestError = error.localizedDescription
-        } else {
-            requestError = ""
-        }
+        requestError = error?.localizedDescription ?? ""
         
         // Should we save changes now?
         if save {
@@ -187,7 +183,13 @@ public class Upload: NSManagedObject {
         super.prepareForDeletion()
         
         // Delete corresponding temporary files if any
-        let prefix = self.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        var prefix = ""
+        if #available(iOS 16.0, *) {
+            prefix = self.localIdentifier.replacing("/", with: "-")
+        } else {
+            // Fallback on earlier versions
+            prefix = self.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        }
         if !prefix.isEmpty {
             // Delete associated files stored in the Upload folder
             let fm = FileManager.default
@@ -201,7 +203,7 @@ public class Upload: NSManagedObject {
                 try filesToDelete.forEach({ try fm.removeItem(at: $0) })
             }
             catch let error {
-                debugPrint("••> could not clear the Uploads folder: \(error)")
+                debugPrint("••> could not clear the Uploads folder: \(error.localizedDescription)")
             }
         }
     }

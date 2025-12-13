@@ -12,9 +12,7 @@ import Foundation
 extension PwgSession: URLSessionDataDelegate {
         
     public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Task-level authentication requested.")
-        }
+        PwgSession.logger.notice("Task-level authentication requested.")
         // Check authentication method
         let authMethod = challenge.protectionSpace.authenticationMethod
         guard [NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest].contains(authMethod) else {

@@ -19,7 +19,13 @@ extension UploadManager {
     public func getUploadFileURL(from upload: Upload, withSuffix suffix: String = "",
                                   deleted deleteIt: Bool = false) -> URL {
         // File name of image data to be stored into Piwigo/Uploads directory
-        var fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        var fileName = ""
+        if #available(iOS 16.0, *) {
+            fileName = upload.localIdentifier.replacing("/", with: "-")
+        } else {
+            // Fallback on earlier versions
+            fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        }
         if fileName.isEmpty {
             fileName = "file-".appending(String(Int64(upload.creationDate)))
         }
@@ -41,7 +47,7 @@ extension UploadManager {
     /// -> return updated upload properties w/ or w/o error
     public func finalizeImageFile(atURL originalFileURL: URL, with upload: Upload,
                                   completion: @escaping () -> Void,
-                                  failure: @escaping (Error?) -> Void) {
+                                  failure: @escaping (PwgKitError?) -> Void) {
 
         // File name of image data to be stored into Piwigo/Uploads directory
         let fileURL = getUploadFileURL(from: upload)
@@ -55,9 +61,12 @@ extension UploadManager {
             do {
                 try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
             }
+            catch let error as CocoaError {
+                // Update upload request state
+                failure(.fileOperationFailed(innerError: error))
+            }
             catch {
-                // Update upload request
-                failure(error)
+                failure(.otherError(innerError: error))
             }
         }
         
@@ -68,7 +77,7 @@ extension UploadManager {
         do { try FileManager.default.setAttributes(attrs, ofItemAtPath: fileURL.path) } catch { }
         
         // Determine MD5 checksum of image file to upload
-        let error: Error?
+        let error: PwgKitError?
         (upload.md5Sum, error) = fileURL.MD5checksum
          if error != nil {
             // Could not determine the MD5 checksum
@@ -81,7 +90,7 @@ extension UploadManager {
         guard let uti = UTType(filenameExtension: fileExt),
               let mimeType = uti.preferredMIMEType
         else {
-            failure(PwgKitError.missingAsset)
+            failure(.missingAsset)
             return
         }
         upload.mimeType = mimeType
@@ -114,9 +123,7 @@ extension UploadManager {
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.uploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            debugPrint("\(dbg()) Remaining files in cache: \(leftFiles)")
         } catch {
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("Could not clear the Uploads folder: \(error)")
-            }
+            UploadManager.logger.notice("Could not clear the Uploads folder: \(error)")
         }
 
         // Job done

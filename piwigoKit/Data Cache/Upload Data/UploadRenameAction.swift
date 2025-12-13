@@ -189,16 +189,31 @@ public extension String {
                     fileName += String(albumID)
                 case .addDate:
                     let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                    if #available(iOS 16.0, *) {
+                        formatter.dateFormat = action.style.replacing("|", with: "")
+                    } else {
+                        // Fallback on earlier versions
+                        formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                    }
                     fileName += formatter.string(from: date)
                 case .addTime:
                     let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                    if #available(iOS 16.0, *) {
+                        formatter.dateFormat = action.style.replacing("|", with: "")
+                    } else {
+                        // Fallback on earlier versions
+                        formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                    }
                     fileName += formatter.string(from: date)
                 case .addCounter:
                     let formatter: NumberFormatter = NumberFormatter()
                     formatter.numberStyle = .none
-                    formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                    if #available(iOS 16.0, *) {
+                        formatter.positiveFormat = action.style.replacing("|", with: "")
+                    } else {
+                        // Fallback on earlier versions
+                        formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                    }
                     fileName += formatter.string(from: NSNumber(value: counter)) ?? ""
                 }
             }
@@ -213,16 +228,31 @@ public extension String {
                 fileName = "\(String(albumID))\(fileName)"
             case .addDate:
                 let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                if #available(iOS 16.0, *) {
+                    formatter.dateFormat = action.style.replacing("|", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                }
                 fileName = "\(formatter.string(from: date))\(fileName)"
             case .addTime:
                 let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                if #available(iOS 16.0, *) {
+                    formatter.dateFormat = action.style.replacing("|", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                }
                 fileName = "\(formatter.string(from: date))\(fileName)"
             case .addCounter:
                 let formatter: NumberFormatter = NumberFormatter()
                 formatter.numberStyle = .none
-                formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                if #available(iOS 16.0, *) {
+                    formatter.positiveFormat = action.style.replacing("|", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                }
                 fileName = "\(formatter.string(from: NSNumber(value: counter)) ?? "")\(fileName)"
             }
         }
@@ -236,16 +266,31 @@ public extension String {
                 fileName = "\(fileName)\(String(albumID))"
             case .addDate:
                 let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                if #available(iOS 16.0, *) {
+                    formatter.dateFormat = action.style.replacing("|", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                }
                 fileName = "\(fileName)\(formatter.string(from: date))"
             case .addTime:
                 let formatter: DateFormatter = DateUtilities.pwgDateFormatter
-                formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                if #available(iOS 16.0, *) {
+                    formatter.dateFormat = action.style.replacing("|", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    formatter.dateFormat = action.style.replacingOccurrences(of: "|", with: "")
+                }
                 fileName = "\(fileName)\(formatter.string(from: date))"
             case .addCounter:
                 let formatter: NumberFormatter = NumberFormatter()
                 formatter.numberStyle = .none
-                formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                if #available(iOS 16.0, *) {
+                    formatter.positiveFormat = action.style.replacing("|", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    formatter.positiveFormat = action.style.replacingOccurrences(of: "|", with: "")
+                }
                 fileName = "\(fileName)\(formatter.string(from: NSNumber(value: counter)) ?? "")"
             }
         }

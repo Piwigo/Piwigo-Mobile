@@ -29,26 +29,13 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImageRotateJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
-                // Successful?
+            case .success:
+                // Image rotated successfully ► Rotate thumbnails in cache
                 /// Image data not always immediately available after rotation.
                 /// We rotate the images stored in cache instead of downloading them.
-                if pwgData.result {
-                    // Image rotated successfully ► Rotate thumbnails in cache
-                    rotateThumbnailsOfImage(image, by: angle)
-                    completion()
-                }
-                else {
-                    // Could not rotate image
-                    failure(PwgKitError.unexpectedError)
-                }
-
+                rotateThumbnailsOfImage(image, by: angle)
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -73,23 +60,10 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesSetCategoryJSON.self,
                                 countOfBytesClientExpectsToReceive: pwgImagesSetCategoryBytes) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
-                // Successful?
-                if pwgData.success {
-                    // Images associated/dissociated/moved successfully
-                    completion()
-                }
-                else {
-                    // Could not associate/dissociate/move images
-                    failure(PwgKitError.unexpectedError)
-                }
-
+            case .success:
+                // Images associated/dissociated/moved successfully
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -112,25 +86,12 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: ImagesDeleteJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
-                // Successful?
-                if pwgData.success {
-                    // Images deleted successfully
-                    /// We may check here that the number returned matches the number of images to delete
-                    /// and return an error to the user.
-                    completion()
-                }
-                else {
-                    // Could not delete images
-                    failure(PwgKitError.unexpectedError)
-                }
-
+            case .success:
+                // Images deleted successfully
+                /// We may check here that the number returned matches the number of images to delete
+                /// and return an error to the user.
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -151,23 +112,10 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
-                // Successful?
-                if pwgData.success {
-                    // Images successfully added to user's favorites
-                    completion()
-                }
-                else {
-                    // Could not delete images
-                    failure(PwgKitError.unexpectedError)
-                }
-
+            case .success:
+                // Images successfully added to user's favorites
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -188,23 +136,10 @@ class ImageUtilities: NSObject {
                                 jsonObjectClientExpectsToReceive: FavoritesAddRemoveJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
-                // Successful?
-                if pwgData.success {
-                    // Images successfully added to user's favorites
-                    completion()
-                }
-                else {
-                    // Could not delete images
-                    failure(PwgKitError.unexpectedError)
-                }
-
+            case .success:
+                // Images successfully removed from user's favorites
+                completion()
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty

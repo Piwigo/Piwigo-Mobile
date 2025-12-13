@@ -14,9 +14,7 @@ extension UploadManager {
     
     // MARK: - Tasks Executed after Uploading
     func finishTransfer(of upload: Upload) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("Finish transfers of \(upload.objectID.uriRepresentation())")
-        }
+        UploadManager.logger.notice("Finish transfers of \(upload.objectID.uriRepresentation())")
 
         // Update upload status
         isFinishing = true
@@ -53,9 +51,7 @@ extension UploadManager {
                     launchTransfer(of: upload)
                 }
             } else {
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Background task stopped (\(self.countOfBytesToUpload, privacy: .public) bytes transferred)")
-                }
+                UploadManager.logger.notice("Background task stopped (\(self.countOfBytesToUpload, privacy: .public) bytes transferred)")
             }
         } else if !isPreparing, isUploading.count <= maxNberOfTransfers {
             findNextImageToUpload()
@@ -67,9 +63,7 @@ extension UploadManager {
     /// — Called after having uploaded with pwg.images.upload
     /// — pwg.images.upload does not allow to set the image title
     func setImageParameters(for upload: Upload) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public)")
-        }
+        UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public)")
         
         // Prepare creation date
         let creationDate = DateUtilities.string(from: upload.creationDate)
@@ -93,28 +87,12 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesSetInfo, paramDict: paramsDict,
                                 jsonObjectClientExpectsToReceive: ImagesSetInfoJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { [self] result in
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
-            }
+            UploadManager.logger.notice("setImageParameters() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    self.didFinishTransfer(for: upload, error: error)
-                    return
-                }
-
-                // Successful?
-                if pwgData.success {
-                    // Image successfully uploaded and set
-                    self.didFinishTransfer(for: upload, error: nil)
-                }
-                else {
-                    // Could not set image parameters, upload still ready for finish
-                    self.didFinishTransfer(for: upload, error: PwgKitError.unexpectedError)
-                }
-
+            case .success:
+                // Image successfully uploaded and set
+                self.didFinishTransfer(for: upload, error: nil)
+            
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -132,9 +110,7 @@ extension UploadManager {
      If not, they will be visible after some delay (12 minutes).
      */
     func emptyLounge(for upload: Upload) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("emptyLounge() in \(queueName(), privacy: .public)")
-        }
+        UploadManager.logger.notice("emptyLounge() in \(queueName(), privacy: .public)")
         // Empty lounge without reporting potential error
         guard let user = upload.user else {
             // Should never happen
@@ -167,22 +143,14 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: pwgImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: ImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 2500) { result in
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("processImages() in \(queueName(), privacy: .public) after calling postRequest")
-            }
+            UploadManager.logger.notice("processImages() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
+                // Successful?
                 if pwgData.success {
                     completion(nil)
                 } else {
-                    completion(PwgKitError.wrongJSONobject)
+                    completion(.emptyingLoungeFailed)
                 }
                 
             case .failure(let error):
@@ -220,9 +188,7 @@ extension UploadManager {
                         inCategory categoryId: Int32,
                         completionHandler: @escaping (Bool, [Int64]) -> Void) -> (Void) {
         // Launch request
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public)")
-        }
+        UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public)")
         let JSONsession = PwgSession.shared
         let paramDict: [String : Any] = ["image_id": imageIds,
                                          "pwg_token": NetworkVars.shared.pwgToken,
@@ -230,20 +196,9 @@ extension UploadManager {
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 jsonObjectClientExpectsToReceive: CommunityImagesUploadCompletedJSON.self,
                                 countOfBytesClientExpectsToReceive: 1000) { result in
-            if #available(iOSApplicationExtension 14.0, *) {
-                UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public) after calling postRequest")
-            }
+            UploadManager.logger.notice("moderateImages() in \(queueName(), privacy: .public) after calling postRequest")
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                    debugPrint("••> moderateImages(): \(error.localizedDescription)")
-                    completionHandler(false, [])
-                    return
-                }
-
                 // Return validated image IDs
                 var validatedIDs = [Int64]()
                 pwgData.data.forEach { (pendingData) in

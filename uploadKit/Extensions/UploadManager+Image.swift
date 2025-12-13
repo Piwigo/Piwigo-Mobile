@@ -88,7 +88,7 @@ extension UploadManager {
         }
     }
     
-    private func didPrepareImage(for upload: Upload, _ error: Error?) {
+    private func didPrepareImage(for upload: Upload, _ error: PwgKitError?) {
         // Upload ready for transfer
         // Error?
         if let error = error {
@@ -152,14 +152,14 @@ extension UploadManager {
     /// -> Return file URL w/ or w/o error
     private func stripMetadataOfImage(atURL originalFileURL:URL, with upload: Upload,
                                       completion: @escaping (URL) -> Void,
-                                      failure: @escaping (Error?) -> Void) {
+                                      failure: @escaping (PwgKitError?) -> Void) {
         autoreleasepool {
             // Create image source
             let options = [kCGImageSourceShouldCache      : false,
                            kCGImageSourceShouldAllowFloat : true] as CFDictionary
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
 
@@ -167,7 +167,7 @@ extension UploadManager {
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             
@@ -185,7 +185,7 @@ extension UploadManager {
             guard let UTI = CGImageSourceGetType(sourceRef),
                   let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, nberOfImages, nil) else {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
 
@@ -203,7 +203,7 @@ extension UploadManager {
             // Save image file
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             completion(fileURL)
@@ -217,14 +217,14 @@ extension UploadManager {
     /// -> Return file URL w/ or w/o error
     private func modifyImage(atURL originalFileURL:URL, with upload: Upload,
                              completion: @escaping (URL) -> Void,
-                             failure: @escaping (Error?) -> Void) {
+                             failure: @escaping (PwgKitError?) -> Void) {
         autoreleasepool {
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
                            kCGImageSourceShouldAllowFloat       : true] as CFDictionary
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             
@@ -232,7 +232,7 @@ extension UploadManager {
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             
@@ -250,7 +250,7 @@ extension UploadManager {
             guard let UTI = CGImageSourceGetType(sourceRef),
                   let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, nberOfImages, nil) else {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
 
@@ -290,7 +290,7 @@ extension UploadManager {
                 guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
                                                                         resizeOptions as CFDictionary) else {
                     // Could not retrieve primary image
-                    failure(PwgKitError.missingAsset)
+                    failure(.missingAsset)
                     return
                 }
                 image = resized
@@ -298,7 +298,7 @@ extension UploadManager {
                 // Get image
                 guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
                     // Could not retrieve primary image
-                    failure(PwgKitError.missingAsset)
+                    failure(.missingAsset)
                     return
                 }
                 image = copied
@@ -370,7 +370,7 @@ extension UploadManager {
                     guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, index,
                                                                             resizeOptions as CFDictionary) else {
                         // Could not retrieve primary image
-                        failure(PwgKitError.missingAsset)
+                        failure(.missingAsset)
                         return
                     }
                     image = resized
@@ -378,7 +378,7 @@ extension UploadManager {
                     // Get image
                     guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, index, nil) else {
                         // Could not retrieve primary image
-                        failure(PwgKitError.missingAsset)
+                        failure(.missingAsset)
                         return
                     }
                     image = copied
@@ -425,7 +425,7 @@ extension UploadManager {
             // Save image file
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             completion(fileURL)
@@ -439,14 +439,14 @@ extension UploadManager {
     /// -> Return file URL w/ or w/o error
     private func convertImage(atURL originalFileURL:URL, with upload: Upload,
                               completion: @escaping (URL) -> Void,
-                              failure: @escaping (Error?) -> Void) {
+                              failure: @escaping (PwgKitError?) -> Void) {
         autoreleasepool {
             // Create image source
             let options = [kCGImageSourceShouldCacheImmediately : false,
                            kCGImageSourceShouldAllowFloat       : true] as CFDictionary
             guard let sourceRef = CGImageSourceCreateWithURL(originalFileURL as CFURL, options) else {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             
@@ -454,7 +454,7 @@ extension UploadManager {
             let nberOfImages = CGImageSourceGetCount(sourceRef)
             if nberOfImages == 0 {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             
@@ -478,7 +478,7 @@ extension UploadManager {
             // Prepare destination file of JPEG type containing a single image
             guard let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
                 // Could not prepare image source
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             
@@ -518,7 +518,7 @@ extension UploadManager {
                 guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
                                                                         resizeOptions as CFDictionary) else {
                     // Could not retrieve primary image
-                    failure(PwgKitError.missingAsset)
+                    failure(.missingAsset)
                     return
                 }
                 image = resized
@@ -526,7 +526,7 @@ extension UploadManager {
                 // Get image
                 guard let copied = CGImageSourceCreateImageAtIndex(sourceRef, imageIndex, nil) else {
                     // Could not retrieve primary image
-                    failure(PwgKitError.missingAsset)
+                    failure(.missingAsset)
                     return
                 }
                 image = copied
@@ -585,7 +585,7 @@ extension UploadManager {
             // Save image file
             guard CGImageDestinationFinalize(destinationRef) else {
                 // Could not prepare full resolution image file
-                failure(PwgKitError.missingAsset)
+                failure(.missingAsset)
                 return
             }
             completion(fileURL)

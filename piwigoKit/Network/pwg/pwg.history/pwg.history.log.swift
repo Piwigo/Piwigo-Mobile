@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgHistoryLog = "format=json&method=pwg.history.log"
+public let pwgHistoryLog = "pwg.history.log"
 public let pwgHistoryLogBytes: Int64 = 560
 
 // MARK: Piwigo JSON Structures
@@ -16,9 +16,7 @@ public struct HistoryLogJSON: Decodable {
 
     public var status: String?
     public var success = false
-    public var errorCode = 0
-    public var errorMessage = ""
-
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case errorCode = "err"
@@ -45,20 +43,21 @@ public struct HistoryLogJSON: Decodable {
         {
             do {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
             catch {
                 // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
                 let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
         }
         else {
             // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = PwgKitError.invalidParameter.localizedDescription
+            throw PwgKitError.unexpectedError
         }
     }
 }

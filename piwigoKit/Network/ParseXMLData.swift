@@ -16,10 +16,18 @@ class ParseXMLData: NSObject, XMLParserDelegate {
     var str = "{"
 
     init(xml: String) {
-        parser = XMLParser(data: xml.replacingOccurrences(of: "&", with: "And")
-                            .replacingOccurrences(of: "Andapos;", with: "'")
-                            .replacingOccurrences(of: "Andquot;", with: "'")
-                            .data(using: String.Encoding.utf8)!)
+        if #available(iOS 16.0, *) {
+            parser = XMLParser(data: xml.replacing("&", with: "And")
+                                        .replacing("Andapos;", with: "'")
+                                        .replacing("Andquot;", with: "'")
+                                        .data(using: String.Encoding.utf8)!)
+        } else {
+            // Fallback on earlier versions
+            parser = XMLParser(data: xml.replacingOccurrences(of: "&", with: "And")
+                                        .replacingOccurrences(of: "Andapos;", with: "'")
+                                        .replacingOccurrences(of: "Andquot;", with: "'")
+                                        .data(using: String.Encoding.utf8)!)
+        }
         super.init()
         parser.delegate = self
     }
@@ -34,28 +42,54 @@ class ParseXMLData: NSObject, XMLParserDelegate {
                     self.arrayElementArr.append(i)
                 }
             }
-            str = str.replacingOccurrences(of: "\(i)@},\"\(i)\":", with: "},") //"\(element)@},\"\(element)\":"
+            if #available(iOS 16.0, *) {
+                str = str.replacing("\(i)@},\"\(i)\":", with: "},") //"\(element)@},\"\(element)\":"
+            } else {
+                // Fallback on earlier versions
+                str = str.replacingOccurrences(of: "\(i)@},\"\(i)\":", with: "},") //"\(element)@},\"\(element)\":"
+            }
         }
 
         for i in self.arrayElementArr{
-            str = str.replacingOccurrences(of: "\"\(i)\":", with: "\"\(i)\":[") //"\"\(arrayElement)\":}"
+            if #available(iOS 16.0, *) {
+                str = str.replacing("\"\(i)\":", with: "\"\(i)\":[") //"\"\(arrayElement)\":}"
+            } else {
+                // Fallback on earlier versions
+                str = str.replacingOccurrences(of: "\"\(i)\":", with: "\"\(i)\":[") //"\"\(arrayElement)\":}"
+            }
         }
 
         for i in self.arrayElementArr{
-            str = str.replacingOccurrences(of: "\(i)@}", with: "\(i)@}]") //"\(arrayElement)@}"
+            if #available(iOS 16.0, *) {
+                str = str.replacing("\(i)@}", with: "\(i)@}]") //"\(arrayElement)@}"
+            } else {
+                // Fallback on earlier versions
+                str = str.replacingOccurrences(of: "\(i)@}", with: "\(i)@}]") //"\(arrayElement)@}"
+            }
         }
-
+        
         for i in self.elementArr{
-            str = str.replacingOccurrences(of: "\(i)@", with: "") //"\(element)@"
+            if #available(iOS 16.0, *) {
+                str = str.replacing("\(i)@", with: "") //"\(element)@"
+            } else {
+                // Fallback on earlier versions
+                str = str.replacingOccurrences(of: "\(i)@", with: "") //"\(element)@"
+            }
         }
 
         // For most complex xml (You can ommit this step for simple xml data)
-        self.str = self.str.replacingOccurrences(of: "\n", with: "")
-        self.str = self.str.replacingOccurrences(of: ":[\\s]?\"[\\s]+?\"#", with: ":{", options: .regularExpression, range: nil)
-
-        return self.str.replacingOccurrences(of: "\\", with: "").appending("}")
+        if #available(iOS 16.0, *) {
+            self.str = self.str.replacing("\n", with: "")
+            self.str = self.str.replacingOccurrences(of: ":[\\s]?\"[\\s]+?\"#", with: ":{", options: .regularExpression, range: nil)
+            return self.str.replacing("\\", with: "").appending("}")
+        } else {
+            // Fallback on earlier versions
+            self.str = self.str.replacingOccurrences(of: "\n", with: "")
+            self.str = self.str.replacingOccurrences(of: ":[\\s]?\"[\\s]+?\"#", with: ":{", options: .regularExpression, range: nil)
+            return self.str.replacingOccurrences(of: "\\", with: "").appending("}")
+        }
     }
-
+    
     // MARK: XML Parser Delegate
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
 

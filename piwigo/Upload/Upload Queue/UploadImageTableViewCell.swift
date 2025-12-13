@@ -153,7 +153,7 @@ class UploadImageTableViewCell: UITableViewCell {
         if [.preparingError, .preparingFail, .formatError,
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
-            text = errorDescription(for: upload)
+            text = upload.requestError
         } else if image != pwgImageType.image.placeHolder {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
@@ -169,7 +169,7 @@ class UploadImageTableViewCell: UITableViewCell {
         // Get corresponding image asset
         guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
             cellImage.image = pwgImageType.image.placeHolder
-            imageInfoLabel.text = errorDescription(for: upload)
+            imageInfoLabel.text = upload.requestError
             uploadingProgress?.setProgress(0.0, animated: false)
             playIcon.isHidden = true
             return
@@ -180,7 +180,7 @@ class UploadImageTableViewCell: UITableViewCell {
         if [.preparingError, .preparingFail, .formatError,
             .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
-            text = errorDescription(for: upload)
+            text = upload.requestError
         } else {
             // Display image information
             let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
@@ -266,26 +266,6 @@ class UploadImageTableViewCell: UITableViewCell {
     
 
     // MARK: - Utilities
-    func errorDescription(for upload: Upload) -> String {
-        // Display error message
-        let error: String?
-        if upload.requestError.isEmpty == false {
-            error = upload.requestError
-        } else {
-            switch upload.state {
-            case .preparingError, .preparingFail:
-                error = PwgKitError.missingAsset.localizedDescription
-            case .formatError:
-                error = PwgKitError.wrongDataFormat.localizedDescription
-            case .uploadingError, .uploadingFail, .finishingError:
-                error = PwgKitError.networkUnavailable.localizedDescription
-            default:
-                error = "— ? —"
-            }
-        }
-        return error ?? ""
-    }
-    
     private func imageInfo(for availableWidth:Int,
                            pixelWidth: Float, pixelHeight: Float, creationDate: Date?) -> String {
         // Check date

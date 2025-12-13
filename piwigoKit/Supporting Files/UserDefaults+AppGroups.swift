@@ -74,3 +74,4 @@ extension UInt32: PropertyListValue {}
 extension Float: PropertyListValue {}
 extension TimeInterval: PropertyListValue {}
 extension String: PropertyListValue {}
+extension Set<String>: PropertyListValue {}

@@ -40,7 +40,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - App Initialisation
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
-                        launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+                        launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool
+    {
+        // Register transformers at the very beginning
+        ValueTransformer.setValueTransformer(DescriptionValueTransformer(), forName: .descriptionToDataTransformer)
+        ValueTransformer.setValueTransformer(RelativeURLValueTransformer(), forName: .relativeUrlToDataTransformer)
+        ValueTransformer.setValueTransformer(ResolutionValueTransformer(), forName: .resolutionToDataTransformer)
+
         // Register notifications for displaying number of uploads to perform in app badge
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { granted, Error in
 //                if granted { debugPrint("request succeeded!") }
@@ -58,7 +64,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // "0 day" option added in v3.1.2 for allowing user to disable "recent" icon
         CacheVars.shared.correctRecentPeriodIndex()
-
+        
+        // Piwigo account added in v4.1.2 for dissociating persistent cache data from credentials
+        NetworkVars.shared.createPiwigoUsernameAccountIfNeeded()
+        
         // Set Settings Bundle data
         setSettingsBundleData()
         
@@ -67,11 +76,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppVars.shared.isAppLockActive = false
             AppVars.shared.isAppUnlocked = true
         }
-
-        // Register transformers at the very beginning
-        ValueTransformer.setValueTransformer(DescriptionValueTransformer(), forName: .descriptionToDataTransformer)
-        ValueTransformer.setValueTransformer(RelativeURLValueTransformer(), forName: .relativeUrlToDataTransformer)
-        ValueTransformer.setValueTransformer(ResolutionValueTransformer(), forName: .resolutionToDataTransformer)
 
         // If a migration is planned:
         // - disable Core Data usage
@@ -274,7 +278,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try BGTaskScheduler.shared.submit(request)
             debugPrint("••> Background upload task request submitted with success.")
         } catch {
-            debugPrint("••> Failed to submit background upload request: \(error)")
+            debugPrint("••> Failed to submit background upload request: \(error.localizedDescription)")
         }
     }
 

@@ -14,13 +14,11 @@ public extension PwgSession {
     func sessionLogin(withUsername username:String, password:String,
                       completion: @escaping () -> Void,
                       failure: @escaping (PwgKitError) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            #if DEBUG
-            PwgSession.logger.notice("Open session for \(username, privacy: .public).")
-            #else
-            PwgSession.logger.notice("Open session for \(username, privacy: .private(mask: .hash)).")
-            #endif
-        }
+#if DEBUG
+        PwgSession.logger.notice("Session: logging in with username: \(username, privacy: .public)…")
+#else
+        PwgSession.logger.notice("Session: logging in with username: \(username, privacy: .private(mask: .hash))…")
+#endif
         // Prepare parameters for retrieving image/video infos
         let paramsDict: [String : Any] = ["username" : username,
                                           "password" : password]
@@ -30,15 +28,12 @@ public extension PwgSession {
                     countOfBytesClientExpectsToReceive: pwgSessionLoginBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Decode the JSON object and check if the login was successful
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
+                // Login successful?
+                if pwgData.success {
+                    completion()
+                } else {
+                    failure(.invalidCredentials)
                 }
-                
-                // Login successful
-                completion()
 
             case .failure (let error):
                 /// - Network communication errors
@@ -50,22 +45,17 @@ public extension PwgSession {
     }
     
     func sessionGetStatus(completion: @escaping (String) -> Void,
-                                 failure: @escaping (PwgKitError) -> Void) {
+                          failure: @escaping (PwgKitError) -> Void) {
+        PwgSession.logger.notice("Session: getting status…")
         // Launch request
         postRequest(withMethod: pwgSessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionGetStatusJSON.self,
                     countOfBytesClientExpectsToReceive: pwgSessionGetStatusBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // No status returned?
                 guard let data = pwgData.data else {
-                    failure(PwgKitError.authenticationFailed)
+                    failure(.unknownUserStatus)
                     return
                 }
 
@@ -82,9 +72,9 @@ public extension PwgSession {
                 let components = versionStr.components(separatedBy: ".")
                 switch components.count {
                     case 1:     // Version of type 1
-                    versionStr.append(".0.0")
+                        versionStr.append(".0.0")
                     case 2:     // Version of type 1.2
-                    versionStr.append(".0")
+                        versionStr.append(".0")
                     default:
                         break
                 }
@@ -98,6 +88,11 @@ public extension PwgSession {
                     NetworkVars.shared.usesUploadAsync = false
                 }
 
+                // API Keys conflict with HTTP Basic authentication in Piwigo 16.0
+                if "16.0.0".compare(versionStr, options: .numeric) == .orderedSame {
+                    NetworkVars.shared.usesAPIkeys = false
+                }
+                
                 // Retrieve charset used by the Piwigo server
                 let charset = (data.charset ?? "UTF-8").uppercased()
                 switch charset {
@@ -159,7 +154,7 @@ public extension PwgSession {
                         NetworkVars.shared.userStatus = userStatus
                     }
                 } else {
-                    failure(PwgKitError.unknownUserStatus)
+                    failure(.unknownUserStatus)
                     return
                 }
 
@@ -190,24 +185,16 @@ public extension PwgSession {
 
     func sessionLogout(completion: @escaping () -> Void,
                        failure: @escaping (PwgKitError) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Close session.")
-        }
+        PwgSession.logger.notice("Session: closing…")
         // Launch request
         postRequest(withMethod: pwgSessionLogout, paramDict: [:],
                     jsonObjectClientExpectsToReceive: SessionLogoutJSON.self,
                     countOfBytesClientExpectsToReceive: pwgSessionLogoutBytes) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
+            case .success:
                 // Logout successful
                 completion()
-
+            
             case .failure (let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty

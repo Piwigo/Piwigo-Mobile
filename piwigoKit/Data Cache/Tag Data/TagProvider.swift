@@ -46,24 +46,17 @@ public class TagProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
                 // Import tag data into Core Data.
                 do {
                     try self.importTags(from: pwgData.data, asAdmin: asAdmin)
+                    completion(nil)
                 }
-                catch let error as DecodingError {
-                    completion(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    completion(error)
                 }
                 catch {
                     completion(.otherError(innerError: error))
-                    return
                 }
-                completion(nil)
                 
             case .failure(let error):
                 /// - Network communication errors
@@ -257,12 +250,6 @@ public class TagProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: 3000) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
                 // Import the tagJSON into Core Data.
                 guard let tagId = pwgData.data.id else {
                     completion(PwgKitError.missingTagData)
@@ -314,7 +301,7 @@ public class TagProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             
             // Tag selection
@@ -346,7 +333,7 @@ public class TagProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Tag count not fetched \(error)")
+            debugPrint("••> Tag count not fetched: \(error.localizedDescription)")
         }
         return Int64.zero
     }

@@ -58,7 +58,7 @@ public class ImageProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Could not ftech image count, \(error)")
+            debugPrint("••> Could not ftech image count, \(error.localizedDescription)")
         }
         return Int64.zero
     }
@@ -99,7 +99,7 @@ public class ImageProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             
             // Return image objects
@@ -167,12 +167,6 @@ public class ImageProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Import image data into Core Data.
                 do {
                     if [.rankAscending, .random].contains(sort) {
@@ -210,8 +204,8 @@ public class ImageProvider: NSObject {
                     }
                     completion(fetchedImageIds, totalCount, hasDownloadRight)
                 }
-                catch let error as DecodingError {
-                    failure(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    failure(error)
                 }
                 catch {
                     failure(.otherError(innerError: error))
@@ -251,21 +245,14 @@ public class ImageProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: 50000) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Import the imageJSON into Core Data
                 // The provided sort option will not change the rankManual/rankRandom values.
                 do {
                     try self.importImages([pwgData.data], inAlbum: albumId, sort: .albumDefault)
-                    
                     completion()
                 }
-                catch let error as DecodingError {
-                    failure(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    failure(error)
                 }
                 catch {
                     failure(.otherError(innerError: error))
@@ -383,7 +370,7 @@ public class ImageProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
             let cachedImages:[Image] = controller.fetchedObjects ?? []
             
@@ -498,7 +485,7 @@ public class ImageProvider: NSObject {
         // Select images of the current server not belonging to an album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "ANY users.username == %@", NetworkVars.shared.user))
         andPredicates.append(NSPredicate(format: "albums.@count == 0"))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         

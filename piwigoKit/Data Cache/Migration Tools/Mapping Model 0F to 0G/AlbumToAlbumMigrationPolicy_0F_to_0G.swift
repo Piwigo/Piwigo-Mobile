@@ -22,10 +22,8 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
 
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -63,18 +61,14 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                        }
+                        DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
-                if #available(iOSApplicationExtension 14.0, *) {
-                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                }
+                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: albumErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -94,8 +88,7 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
         // Replace nil comments with NSAttributedString()
         if newAlbum.value(forKey: "comment") == nil {
             newAlbum.setValue(NSAttributedString(), forKey: "comment")
-//            if #available(iOSApplicationExtension 14.0, *),
-//               let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
+//            if let albumId = sInstance.value(forKey: "pwgID") as? Int32 {
 //                DataMigrator.logger.notice("\(self.logPrefix): Empty comment for album #\(albumId)")
 //            }
         }
@@ -111,10 +104,8 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -136,10 +127,8 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -152,10 +141,8 @@ final class AlbumToAlbumMigrationPolicy_0F_to_0G: NSEntityMigrationPolicy {
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)

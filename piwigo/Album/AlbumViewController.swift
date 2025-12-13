@@ -267,7 +267,6 @@ class AlbumViewController: UIViewController
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        debugPrint("--------------------------------------------------")
         debugPrint("••> viewDidLoad — Album #\(categoryId): \(albumData.name)")
         
         // Initialise album width and height
@@ -478,17 +477,10 @@ class AlbumViewController: UIViewController
             NotificationCenter.default.addObserver(self, selector: #selector(updateUploadQueueButton(withProgress:)),
                                                    name: Notification.Name.pwgUploadProgress, object: nil)
         }
-
+        
         // Set navigation bar and buttons
         initBarsInPreviewMode()
-        if #available(iOS 26.0, *) {
-            // Show/hide UploadQueue toolbar button if needed
-            let nberOfUploads = UploadVars.shared.nberOfUploadsToComplete
-            let userInfo = ["nberOfUploadsToComplete": nberOfUploads]
-            NotificationCenter.default.post(name: .pwgLeftUploads,
-                                            object: nil, userInfo: userInfo)
-        } else {
-            // Set buttons
+        if #unavailable(iOS 26.0) {
             relocateButtons()
             updateButtons()
         }
@@ -699,7 +691,7 @@ class AlbumViewController: UIViewController
         PwgSession.shared.dataSession.getAllTasks { tasks in
             // Select tasks related with this album if any
             let tasksToCancel = tasks.filter({ $0.originalRequest?
-                .value(forHTTPHeaderField: NetworkVars.shared.HTTPCatID) == catIDstr })
+                .value(forHTTPHeaderField: HTTPCatID) == catIDstr })
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 debugPrint("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel task \($0.taskIdentifier) related with album \(catIDstr)")
@@ -790,9 +782,7 @@ class AlbumViewController: UIViewController
         // Fetch album data and then image data
         PwgSession.checkSession(ofUser: self.user) { [self] in
             DispatchQueue.main.async { [self] in
-                self.fetchAlbumsAndImages { [self] in
-                    self.fetchCompleted()
-                }
+                self.fetchAlbumsAndImages()
             }
         } failure: { [self] error in
             DispatchQueue.main.async { [self] in
@@ -800,8 +790,8 @@ class AlbumViewController: UIViewController
                 self.collectionView?.refreshControl?.endRefreshing()
                 
                 // Session logout required?
-                if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-                    ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+                if error.requiresLogout {
+                    ClearCache.closeSessionWithPwgError(from: self, error: error)
                     return
                 }
 
@@ -833,7 +823,7 @@ class AlbumViewController: UIViewController
         self.startFetchingAlbumAndImages(withHUD: true)
     }
     
-    func fetchCompleted() {
+    @objc func fetchCompleted() {
         DispatchQueue.main.async { [self] in
             // Hide HUD if needed
             self.navigationController?.hideHUD { }

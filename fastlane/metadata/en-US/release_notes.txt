@@ -1,1 +1,3 @@
-Fixes bugs and improves the interface
+• Adds support for API keys
+• Fixes bugs and improves the interface
+• Code modernization

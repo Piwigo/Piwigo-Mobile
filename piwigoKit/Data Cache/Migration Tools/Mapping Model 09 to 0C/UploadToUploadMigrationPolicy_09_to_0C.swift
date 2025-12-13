@@ -22,10 +22,8 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
 
     override func begin(_ mapping: NSEntityMapping, with manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Starting… (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -67,18 +65,14 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
                         block(propertyMapping, destinationName)
                     } else {
                         let message = "Attribute destination not configured properly!"
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                        }
+                        DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                         let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                         throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
                     }
                 }
             } else {
                 let message = "No Attribute Mappings found!"
-                if #available(iOSApplicationExtension 14.0, *) {
-                    DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
-                }
+                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > \(message)")
                 let userInfo = [NSLocalizedFailureReasonErrorKey: message]
                 throw NSError(domain: uploadErrorDomain, code: 0, userInfo: userInfo)
             }
@@ -97,9 +91,7 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         
         // Forget upload requests of images deleted from the Piwigo server
         if newUpload.value(forKey: "requestState") as? Int16 == 13 {
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > Upload request of deleted image are non longer needed.")
-            }
+            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > Upload request of deleted image are non longer needed.")
             return
         }
         
@@ -113,17 +105,13 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
               let serverFileTypes = sInstance.value(forKeyPath: "serverFileTypes") as? String,
               let _ = URL(string: serverPath) else {
             // We discard records whose server path is incorrect.
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > Upload request instance w/ wrong serverPath!")
-            }
+            DataMigrator.logger.error("\(self.logPrefix): \(sInstance) > Upload request instance w/ wrong serverPath!")
             return
         }
         
         // Did we create a record of the currently used server?
         guard var userInfo = manager.userInfo else {
-            if #available(iOSApplicationExtension 14.0, *) {
-                DataMigrator.logger.error("\(self.logPrefix): userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
-            }
+            DataMigrator.logger.error("\(self.logPrefix): userInfo should have been created in TagToTagMigrationPolicy_09_to_0C!")
             return
         }
 
@@ -142,20 +130,20 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Can we reuse the user account?
-        let userAccountKey = NetworkVars.shared.username + " @ " + serverPath
+        let userAccountKey = NetworkVars.shared.user + " @ " + serverPath
         if let user = userInfo[userAccountKey] as? NSManagedObject {
             // Add relationship from Upload to User
             // Core Data creates automatically the inverse relationship
             newUpload.setValue(user, forKey: "user")
         }
-        else if NetworkVars.shared.username.isEmpty == false,
+        else if NetworkVars.shared.user.isEmpty == false,
                 let server = userInfo[serverPath] as? NSManagedObject {
             // Create User destination instance…
             // …assuming that the current user account is the appropriate one.
             let description = NSEntityDescription.entity(forEntityName: "User", in: manager.destinationContext)
             let newUser = User(entity: description!, insertInto: manager.destinationContext)
             newUser.setValue(userAccountKey, forKey: "name")
-            newUser.setValue(NetworkVars.shared.username, forKey: "username")
+            newUser.setValue(NetworkVars.shared.user, forKey: "username")
             if let requestDate = sInstance.value(forKey: "requestDate") {
                 newUser.setValue(requestDate, forKey: "lastUsed")
             }
@@ -194,9 +182,7 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
         }
         
         // Associate new Upload object to old one
-//        if #available(iOSApplicationExtension 14.0, *) {
-//            DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
-//        }
+//        DataMigrator.logger.notice("\(self.logPrefix): \(sInstance) > \(newUpload)")
         manager.associate(sourceInstance: sInstance, withDestinationInstance: newUpload, for: mapping)
 
         // Stop migration?
@@ -207,10 +193,8 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     
     override func endInstanceCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Instances created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -232,10 +216,8 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     
     override func endRelationshipCreation(forMapping mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Relationships created (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)
@@ -248,10 +230,8 @@ final class UploadToUploadMigrationPolicy_09_to_0C: NSEntityMigrationPolicy {
     
     override func end(_ mapping: NSEntityMapping, manager: NSMigrationManager) throws {
         // Logs
-        if #available(iOSApplicationExtension 14.0, *) {
-            let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
-            DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
-        }
+        let percent = numberFormatter.string(from: NSNumber(value: manager.migrationProgress)) ?? ""
+        DataMigrator.logger.notice("\(self.logPrefix): Completed (\(percent))")
         
         // Progress bar
         updateProgressBar(manager.migrationProgress)

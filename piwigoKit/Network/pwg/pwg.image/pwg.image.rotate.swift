@@ -8,16 +8,14 @@
 
 import Foundation
 
-public let pwgImageRotate = "format=json&method=pwg.image.rotate"
+public let pwgImageRotate = "pwg.image.rotate"
 
 // MARK: Piwigo JSON Structures
 public struct ImageRotateJSON: Decodable {
 
     public var status: String?
     public var result = false
-    public var errorCode = 0
-    public var errorMessage = ""
-
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case result
@@ -40,25 +38,29 @@ public struct ImageRotateJSON: Decodable {
         if status == "ok"
         {
             result = try rootContainer.decode(Bool.self, forKey: .result)
+            if result == false {
+                throw PwgKitError.operationFailed
+            }
         }
         else if status == "fail"
         {
             do {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
             catch {
                 // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
                 let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
         }
         else {
             // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = PwgKitError.invalidParameter.localizedDescription
+            throw PwgKitError.unexpectedError
         }
     }
 }

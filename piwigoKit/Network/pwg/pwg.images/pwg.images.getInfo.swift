@@ -8,16 +8,14 @@
 
 import Foundation
 
-public let pwgImagesGetInfo = "format=json&method=pwg.images.getInfo"
+public let pwgImagesGetInfo = "pwg.images.getInfo"
 
 // MARK: Piwigo JSON Structures
 public struct ImagesGetInfoJSON: Decodable {
 
     public var status: String?
     public var data: ImagesGetInfo!
-    public var errorCode = 0
-    public var errorMessage = ""
-
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case result = "result"
@@ -51,20 +49,21 @@ public struct ImagesGetInfoJSON: Decodable {
             // Retrieve Piwigo server error
             do {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
             catch {
                 // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
                 let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
         }
         else {
             // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = PwgKitError.invalidParameter.localizedDescription
+            throw PwgKitError.unexpectedError
         }
     }
 }
@@ -78,8 +77,8 @@ public struct ImagesGetInfo: Decodable
     public var fileName: String?                // "Image.jpg"
     public var datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
     public var dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
-    public var isFavorite: Bool?                // false
-    public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since 14.0)
+    public var isFavorite: Bool?                // false (since Piwigo 13.0)
+    public var downloadUrl: String?             // "https://…action.php?id=2&part=e&download" (since Piwigo 14.0)
  
     public let fullResWidth: Int?               // 4092
     public let fullResHeight: Int?              // 2048

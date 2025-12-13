@@ -21,13 +21,6 @@ public extension PwgSession {
                     countOfBytesClientExpectsToReceive: pwgImagesExistBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    // Will retry later
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-
                 if let imageID = pwgData.data.first(where: {$0.md5sum == md5sum})?.imageID {
                     completion(imageID)
                 } else {
@@ -51,12 +44,6 @@ public extension PwgSession {
                     countOfBytesClientExpectsToReceive: pwgImagesSetInfoBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Successful?
                 if pwgData.success {
                     // Image properties successfully updated ▶ update image
@@ -64,7 +51,7 @@ public extension PwgSession {
                 }
                 else {
                     // Could not set image parameters
-                    failure(PwgKitError.unexpectedError)
+                    failure(.unexpectedError)
                 }
 
             case .failure(let error):

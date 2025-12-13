@@ -112,10 +112,10 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func favoriteError(_ error: Error, contextually: Bool) {
+    private func favoriteError(_ error: PwgKitError, contextually: Bool) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         
@@ -219,10 +219,10 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func unfavoriteError(_ error: Error, contextually: Bool) {
+    private func unfavoriteError(_ error: PwgKitError, contextually: Bool) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
 

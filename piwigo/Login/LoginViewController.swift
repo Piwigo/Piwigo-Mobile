@@ -279,7 +279,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestCertificateApproval(afterError error: Error?) {
+    func requestCertificateApproval(afterError error: PwgKitError) {
         let title = NSLocalizedString("loginCertFailed_title", comment: "Connection Not Private")
         let message = "\(NSLocalizedString("loginCertFailed_message", comment: "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?"))\r\r\(NetworkVars.shared.certificateInformation)"
         let cancelAction = UIAlertAction(
@@ -309,7 +309,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestHttpCredentials(afterError error: Error?) {
+    func requestHttpCredentials(afterError error: PwgKitError) {
         let username = NetworkVars.shared.httpUsername
         let password = KeychainUtilities.password(forService: NetworkVars.shared.service, account: username)
         httpAlertController = LoginUtilities.getHttpCredentialsAlert(textFieldDelegate: self,
@@ -337,7 +337,7 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func requestNonSecuredAccess(afterError error: Error?) {
+    func requestNonSecuredAccess(afterError error: PwgKitError) {
         let title = NSLocalizedString("loginHTTPSfailed_title", comment: "Secure Connection Failed")
         let message = NSLocalizedString("loginHTTPSfailed_message", comment: "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?")
         let cancelAction = UIAlertAction(
@@ -355,7 +355,7 @@ class LoginViewController: UIViewController {
         presentPiwigoAlert(withTitle: title, message: message, actions: [cancelAction, loginAction])
     }
 
-    func tryNonSecuredAccess(afterError error: Error?) {
+    func tryNonSecuredAccess(afterError error: PwgKitError?) {
         // Proceed at their own risk
         NetworkVars.shared.serverProtocol = "http://"
 
@@ -386,9 +386,6 @@ class LoginViewController: UIViewController {
                 // Create/update User account in persistent cache, create Server if necessary.
                 // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
                 DispatchQueue.main.async { [self] in
-                    // Create User instance if needed
-                    let _ = self.userProvider.getUserAccount(inContext: mainContext,
-                                                             withUsername: username, afterUpdate: true)
                     // First determine user rights if Community extension installed
                     self.getCommunityStatus()
                 }
@@ -405,14 +402,18 @@ class LoginViewController: UIViewController {
             // Reset keychain and credentials
             KeychainUtilities.deletePassword(forService: NetworkVars.shared.serverPath,
                                              account: username)
+            NetworkVars.shared.user = ""
             NetworkVars.shared.username = ""
+            NetworkVars.shared.userStatus = .guest
+            
+            DispatchQueue.main.async { [self] in
+                // Create/update guest account in persistent cache, create Server if necessary.
+                // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
+                let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
-            // Create/update guest account in persistent cache, create Server if necessary.
-            // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
-            let _ = self.userProvider.getUserAccount(inContext: mainContext,
-                                                     withUsername: username, afterUpdate: true)
-            // Check Piwigo version, get token, available sizes, etc.
-            self.getCommunityStatus()
+                // Check Piwigo version, get token, available sizes, etc.
+                self.getCommunityStatus()
+            }
         }
     }
 
@@ -424,14 +425,10 @@ class LoginViewController: UIViewController {
             // Update HUD during login
             updateHUD(detail: NSLocalizedString("login_communityParameters", comment: "Community Parameters"))
 
-            // Community extension installed
+            // Community extension installed, get real user's status
             PwgSession.shared.communityGetStatus { [self] in
-                // Update user account in persistent cache
-                // Performed in main thread as to avoid concurrency issue with AlbumViewController initialisation
+                // Check Piwigo version, get token, available sizes, etc.
                 DispatchQueue.main.async { [self] in
-                    // Create User instance if needed
-                    let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
-                    // Check Piwigo version, get token, available sizes, etc.
                     self.getSessionStatus()
                 }
             } failure: { [self] error in
@@ -444,31 +441,27 @@ class LoginViewController: UIViewController {
         } else {
             // Community extension not installed
             // Check Piwigo version, get token, available sizes, etc.
-            getSessionStatus()
+            DispatchQueue.main.async { [self] in
+                self.getSessionStatus()
+            }
         }
     }
 
-    // Check Piwigo version, get token, available sizes, etc.
+    // Check Piwigo version, get username, token, available sizes, etc.
     @MainActor
     func getSessionStatus() {
         // Update HUD during login
         updateHUD(detail: NSLocalizedString("login_serverParameters", comment: "Piwigo Parameters"))
 
-        PwgSession.shared.sessionGetStatus() { [self] _ in
+        PwgSession.shared.sessionGetStatus() { [self] user in
+            // Update Piwigo username (≠ credential)
+            NetworkVars.shared.user = user
+            
             DispatchQueue.main.async { [self] in
-                // Is the Piwigo server incompatible?
-                if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgMinVersion, options: .numeric) == .orderedAscending {
-                    // Piwigo update required ► Close login or re-login view and inform user
-                    isAlreadyTryingToLogin = false
-                    // Display error message
-                    logging(inConnectionError: PwgKitError.incompatiblePwgVersion)
-                    return
-                }
-                
                 // Should this server be updated?
                 let now: Double = Date().timeIntervalSinceReferenceDate
                 if now > NetworkVars.shared.dateOfLastUpdateRequest + AppVars.shared.pwgOneMonth,
-                   NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
+                   NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                     // Store date of last upgrade request
                     NetworkVars.shared.dateOfLastUpdateRequest = now
                     
@@ -497,8 +490,8 @@ class LoginViewController: UIViewController {
     func launchApp() {
         isAlreadyTryingToLogin = false
 
-        // Update user account in persistent cache
-        // Performed in main thread to avoid concurrency issue with AlbumViewController initialisation
+        // Create/update User account in persistent cache, create Server if necessary.
+        // Performed in main thread so to avoid concurrency issue with AlbumViewController initialisation
         let _ = self.userProvider.getUserAccount(inContext: mainContext, afterUpdate: true)
 
         // Check image size availabilities
@@ -529,34 +522,27 @@ class LoginViewController: UIViewController {
     }
 
     @MainActor
-    func logging(inConnectionError error: Error?) {
+    func logging(inConnectionError error: PwgKitError) {
         // Do not present error message when executing background task
         if UploadManager.shared.isExecutingBackgroundUploadTask {
             hideLoading()
             return
         }
 
-        // Unknown error?
-        guard let error = error else {
-            updateHUD(title: NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled"), 
-                      detail: "",
-                      buttonTitle: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-                      buttonTarget: self, buttonSelector: #selector(hideLoading),
-                      inMode: .text)
-            return
-        }
-        
         // Error returned
         var title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         var detail = error.localizedDescription
         var buttonSelector = #selector(hideLoading)
-        if let pwgError = error as? PwgKitError, pwgError.incompatibleVersion {
-            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+        if error.requestCancelled {
+            title = NSLocalizedString("internetCancelledConnection_title", comment: "Connection Cancelled")
         }
-        else if let pwgError = error as? PwgKitError, pwgError.failedAuthentication {
+        else if error.failedAuthentication {
             title = NSLocalizedString("loginError_title", comment: "Login Fail")
             buttonSelector = #selector(suggestPwdRetrieval)
+        }
+        else if error.incompatibleVersion {
+            title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
+            detail = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
         }
         else if detail.isEmpty {
                 detail = String(format: "%ld", (error as NSError?)?.code ?? 0)
@@ -596,7 +582,7 @@ class LoginViewController: UIViewController {
 
 
     // MARK: - Utilities
-    func saveServerAddress(_ serverString: String?, andUsername username: String?) -> Bool {
+    func saveServerAddress(_ serverString: String?) -> Bool {
         // Check server address
         guard var serverString = serverString, serverString.isEmpty == false
         else { return false }
@@ -624,14 +610,24 @@ class LoginViewController: UIViewController {
 //        debugPrint("sheme:\(serverURL.scheme), user:\(serverURL.user), pwd:\(serverURL.password), host:\(serverURL.host), port:\(serverURL.port), path:\(serverURL.path)")
         if serverURL.port != nil {
             // Port provided => Adopt user choice but check protocol
-            // Save username, server address and protocol to disk
+            // Save server address and protocol
             switch serverURL.port {
             case 80:
                 NetworkVars.shared.serverProtocol = "http://"
-                serverString = serverString.replacingOccurrences(of: "https://", with: "http://")
+                if #available(iOS 16.0, *) {
+                    serverString = serverString.replacing("https://", with: "http://")
+                } else {
+                    // Fallback on earlier versions
+                    serverString = serverString.replacingOccurrences(of: "https://", with: "http://")
+                }
             case 443:
                 NetworkVars.shared.serverProtocol = "https://"
-                serverString = serverString.replacingOccurrences(of: "http://", with: "https://")
+                if #available(iOS 16.0, *) {
+                    serverString = serverString.replacing("http://", with: "https://")
+                } else {
+                    // Fallback on earlier versions
+                    serverString = serverString.replacingOccurrences(of: "http://", with: "https://")
+                }
             default:
                 NetworkVars.shared.serverProtocol = "\(serverURL.scheme ?? "https")://"
             }
@@ -645,9 +641,8 @@ class LoginViewController: UIViewController {
                 websiteNotSecure.isHidden = false
             }
 
-            // Save username, server address and protocol to disk
+            // Save server address and protocol to disk
             NetworkVars.shared.serverPath = "\(serverURL.host ?? ""):\(serverURL.port ?? 0)\(serverURL.path)"
-            NetworkVars.shared.username = username ?? ""
             return true
         }
 
@@ -663,9 +658,8 @@ class LoginViewController: UIViewController {
             websiteNotSecure.isHidden = false
         }
 
-        // Save username, server address and protocol to disk
+        // Save server address and protocol to disk
         NetworkVars.shared.serverPath = "\(serverURL.host ?? "")\(serverURL.path)"
-        NetworkVars.shared.username = username ?? ""
         return true
     }
 

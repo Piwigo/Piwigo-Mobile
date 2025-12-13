@@ -15,6 +15,10 @@ extension UploadManager
 {
     // MARK: - Resume Uploads
     public func resumeAll() -> Void {
+        // Wait until fix completed
+        guard NetworkVars.shared.fixUserIsAPIKeyV412 == false
+        else { return }
+        
         // Reset flags
         isPaused = false
         isPreparing = false; isFinishing = false
@@ -23,7 +27,7 @@ extension UploadManager
         
         // Reset predicates in case user switched to another Piwigo
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.username]
+                         "userName"   : NetworkVars.shared.user]
         uploads.fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         completed.fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
 
@@ -33,7 +37,7 @@ extension UploadManager
             try completed.performFetch()
         }
         catch {
-            debugPrint("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error.localizedDescription)")
         }
 
         // Get active upload tasks
@@ -48,16 +52,12 @@ extension UploadManager
                           let uploadID = self.uploadBckgContext.persistentStoreCoordinator?
                               .managedObjectID(forURIRepresentation: objectURI)
                     else {
-                        if #available(iOSApplicationExtension 14.0, *) {
-                            UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
-                        }
+                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) not associated to an upload!")
                         continue
                     }
                     
                     // Task associated to an upload
-                    if #available(iOSApplicationExtension 14.0, *) {
-                        UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
-                    }
+                    UploadManager.logger.notice("Task \(task.taskIdentifier, privacy: .public) is uploading \(uploadID)")
                     self.isUploading.insert(uploadID)
                     
                 default:
@@ -66,8 +66,7 @@ extension UploadManager
             }
             
             // Logs
-            if #available(iOSApplicationExtension 14.0, *),
-               let uploadObjects = self.uploads.fetchedObjects,
+            if let uploadObjects = self.uploads.fetchedObjects,
                let completedObjects = self.completed.fetchedObjects {
                 UploadManager.logger.notice("\(uploadObjects.count, privacy: .public) pending and \(completedObjects.count, privacy: .public) completed upload requests in cache.")
             }
@@ -94,9 +93,7 @@ extension UploadManager
                 UploadVars.shared.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
                 
                 // Suggest to delete assets from the Photo Library
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("\(assetsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
-                }
+                UploadManager.logger.notice("\(assetsToDelete.count, privacy: .public) assets identified for deletion from the Photo Library.")
                 deleteAssets(associatedToUploads: assetsToDelete)
             }
         }

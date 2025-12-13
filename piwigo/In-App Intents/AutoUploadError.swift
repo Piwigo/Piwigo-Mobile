@@ -8,7 +8,6 @@
 
 import Foundation
 import piwigoKit
-import uploadKit
 
 public enum AutoUploadError: Error {
     case migrationRequired
@@ -28,11 +27,11 @@ extension AutoUploadError: LocalizedError {
             return NSLocalizedString("AutoUploadError_Disabled",
                                      comment: "Auto-uploading is disabled in the app settings.")
         case .invalidSource:
-            return UploadKitError.autoUploadSourceInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit, comment: "Please select the album…")
+            return PwgKitError.autoUploadSourceInvalid.localizedDescription + ": " +
+                   String(localized: "settings_autoUploadSourceInfo", bundle: piwigoKit, comment: "Please select the album…")
         case .invalidDestination:
-            return UploadKitError.autoUploadDestinationInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit, comment: "Please select the album…")
+            return PwgKitError.autoUploadDestinationInvalid.localizedDescription + ": " +
+                   String(localized: "settings_autoUploadDestinationInfo", bundle: piwigoKit, comment: "Please select the album…")
         case .importFailed:
             return "Could not create upload requests."
         }

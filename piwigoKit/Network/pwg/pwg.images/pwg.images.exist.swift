@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let pwgImagesExist = "format=json&method=pwg.images.exist"
+public let pwgImagesExist = "pwg.images.exist"
 public let pwgImagesExistBytes: Int64 = 1250
 
 // MARK: - Piwigo JSON Structures
@@ -16,9 +16,7 @@ public struct ImagesExistJSON: Decodable {
 
     public var status: String?
     public var data = [ImageExist]()
-    public var errorCode = 0
-    public var errorMessage = ""
-
+    
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case result = "result"
@@ -50,20 +48,21 @@ public struct ImagesExistJSON: Decodable {
             // Retrieve Piwigo server error
             do {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                let errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                let errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
             catch {
                 // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
                 let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
-                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
-                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                let errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                let errorMessage = try errorContainer.decode(String.self, forKey: .message)
+                throw PwgKitError.pwgError(code: errorCode, msg: errorMessage)
             }
         }
         else {
             // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = "Unexpected error encountered while calling server method with provided parameters."
+            throw PwgKitError.unexpectedError
         }
     }
 }

@@ -13,26 +13,18 @@ public extension PwgSession {
     
     func communityGetStatus(completion: @escaping () -> Void,
                             failure: @escaping (PwgKitError) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            PwgSession.logger.notice("Retrieve community status.")
-        }
+        PwgSession.logger.notice("Session: getting Community status…")
         // Launch request
         postRequest(withMethod: kCommunitySessionGetStatus, paramDict: [:],
                     jsonObjectClientExpectsToReceive: CommunitySessionGetStatusJSON.self,
                     countOfBytesClientExpectsToReceive: kCommunitySessionGetStatusBytes) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Update user's status
                 guard pwgData.realUser.isEmpty == false,
                       let userStatus = pwgUserStatus(rawValue: pwgData.realUser)
                 else {
-                    failure(PwgKitError.unknownUserStatus)
+                    failure(.unknownUserStatus)
                     return
                 }
                 NetworkVars.shared.userStatus = userStatus

@@ -24,7 +24,7 @@ extension SettingsViewController: UITableViewDelegate
                 title += "\n"
                 text = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
-            if NetworkVars.shared.pwgVersion.compare(NetworkVars.shared.pwgRecentVersion, options: .numeric) == .orderedAscending {
+            if NetworkVars.shared.pwgVersion.compare(pwgRecentVersion, options: .numeric) == .orderedAscending {
                 if !title.contains("\n") { title += "\n" }
                 if !text.isEmpty { text += " — " }
                 text += NSLocalizedString("serverVersionOld_title", comment: "Server Update Available")
@@ -183,7 +183,12 @@ extension SettingsViewController: UITableViewDelegate
         switch activeSection(section) {
         case .logout:
             if NetworkVars.shared.serverFileTypes.isEmpty == false {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+                if #available(iOS 16.0, *) {
+                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacing(",", with: ", "))."
+                } else {
+                    // Fallback on earlier versions
+                    footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(NetworkVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+                }
             }
         case .about:
             footer = NetworkVars.shared.pwgStatistics

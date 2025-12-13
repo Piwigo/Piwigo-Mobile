@@ -21,8 +21,8 @@ extension UploadManager {
             UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
 
             // Delete remaining upload requests and inform user
-            disableAutoUpload(withTitle: UploadKitError.autoUploadSourceInvalid.localizedDescription,
-                              message: String(localized: "settings_autoUploadSourceInfo", bundle: uploadKit,
+            disableAutoUpload(withTitle: PwgKitError.autoUploadSourceInvalid.localizedDescription,
+                              message: String(localized: "settings_autoUploadSourceInfo", bundle: piwigoKit,
                                               comment: "Please select the album…"))
             return
         }
@@ -34,8 +34,8 @@ extension UploadManager {
             UploadVars.shared.autoUploadCategoryId = Int32.min    // Unknown destination Piwigo album
 
             // Delete remaining upload requests and inform user
-            disableAutoUpload(withTitle: UploadKitError.autoUploadDestinationInvalid.localizedDescription,
-                              message: String(localized: "settings_autoUploadDestinationInfo", bundle: uploadKit,
+            disableAutoUpload(withTitle: PwgKitError.autoUploadDestinationInvalid.localizedDescription,
+                              message: String(localized: "settings_autoUploadDestinationInfo", bundle: piwigoKit,
                                               comment: "Please select the album…"))
             return
         }

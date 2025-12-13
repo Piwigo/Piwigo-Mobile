@@ -51,7 +51,7 @@ public class LocationProvider: NSObject {
      The requests are stored in a queue and performed one after the other by a shared instance.
     */
     private func fetchPlaceName(at location: LocationProperties, 
-                                completionHandler: @escaping (Error?) -> Void) {
+                                completionHandler: @escaping (PwgKitError?) -> Void) {
         
         // Add Geocoder request in queue
         let operation = BlockOperation(block: {
@@ -264,7 +264,7 @@ public class LocationProvider: NSObject {
             return countResult.first!.int64Value
         }
         catch let error {
-            debugPrint("••> Album count not fetched \(error)")
+            debugPrint("••> Location count not fetched: \(error.localizedDescription)")
         }
         return Int64.zero
     }
@@ -326,7 +326,7 @@ public class LocationProvider: NSObject {
         do {
             try controller.performFetch()
         } catch {
-            fatalError("Unresolved error \(error)")
+            fatalError("Unresolved error: \(error.localizedDescription)")
         }
         let knownPlaceNames = controller.fetchedObjects ?? []
         

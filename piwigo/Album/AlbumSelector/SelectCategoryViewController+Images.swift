@@ -40,7 +40,7 @@ extension SelectCategoryViewController
     /// For calling Piwigo server in version 2.10 to 13.x
     private func copyImage(_ imageData: Image, toAlbum albumData: Album,
                            onCompletion completion: @escaping () -> Void,
-                           onFailure fail: @escaping (_ error: Error?) -> Void) {
+                           onFailure fail: @escaping (_ error: PwgKitError) -> Void) {
         // Append selected category ID to image category list
         let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})
@@ -139,7 +139,7 @@ extension SelectCategoryViewController
     }
     
     @MainActor
-    private func didFailWithError(_ error: Error?) {
+    private func didFailWithError(_ error: PwgKitError) {
         // Hide HUD and inform user
         self.hideHUD { [self] in
             self.showError(error)
@@ -180,7 +180,7 @@ extension SelectCategoryViewController
     /// For calling Piwigo server in version 2.10 to 13.x
     private func moveImage(_ imageData: Image, toCategory albumData: Album,
                            onCompletion completion: @escaping () -> Void,
-                           onFailure fail: @escaping (_ error: Error?) -> Void) {
+                           onFailure fail: @escaping (_ error: PwgKitError) -> Void) {
         // Append selected category ID to image category list
         let albums = imageData.albums ?? Set<Album>()
         var categoryIds = albums.compactMap({$0.pwgID})

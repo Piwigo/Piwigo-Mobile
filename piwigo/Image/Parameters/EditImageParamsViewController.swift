@@ -351,11 +351,11 @@ class EditImageParamsViewController: UIViewController
     }
 
     @MainActor
-    private func showUpdatePropertiesError(_ error: Error, atIndex index: Int) {
+    private func showUpdatePropertiesError(_ error: PwgKitError, atIndex index: Int) {
         // If there are images left, propose in addition to bypass the one creating problems
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
 
@@ -380,7 +380,7 @@ class EditImageParamsViewController: UIViewController
     
     private func setProperties(ofImage imageData: Image,
                                completion: @escaping () -> Void,
-                               failure: @escaping (Error) -> Void) {
+                               failure: @escaping (PwgKitError) -> Void) {
         // Image ID
         var paramsDict: [String : Any] = ["image_id" : imageData.pwgID,
                                           "single_value_mode"   : "replace",
@@ -426,7 +426,7 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Update image description?
-        /// token required for updating HTML in name/comment/author
+        /// token required for updating HTML in title/comment
         if shouldUpdateComment {
             paramsDict["comment"] = commonComment.utf8mb4Encoded
             paramsDict["pwg_token"] = NetworkVars.shared.pwgToken

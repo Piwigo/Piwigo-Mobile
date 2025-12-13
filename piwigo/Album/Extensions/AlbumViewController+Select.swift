@@ -403,10 +403,10 @@ extension AlbumViewController
     }
     
     @MainActor
-    private func retrieveImageDataError(_ error: Error, contextually: Bool) {
+    private func retrieveImageDataError(_ error: PwgKitError, contextually: Bool) {
         // Session logout required?
-        if let pwgError = error as? PwgKitError, pwgError.requiresLogout {
-            ClearCache.closeSessionWithPwgError(from: self, error: pwgError)
+        if error.requiresLogout {
+            ClearCache.closeSessionWithPwgError(from: self, error: error)
             return
         }
         

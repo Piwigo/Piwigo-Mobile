@@ -11,16 +11,19 @@ import Foundation
 extension URL {
     // Returns the MD5 checksum of a file
     /// https://developer.apple.com/forums/thread/115401
-    public var MD5checksum: (String, Error?) {
+    public var MD5checksum: (String, PwgKitError?) {
         var fileData: Data = Data()
         do {
             try fileData = NSData(contentsOf: self, options: .alwaysMapped) as Data
             let md5Checksum = fileData.MD5checksum
             return (md5Checksum, nil)
         }
-        catch let error {
-            // Report failure
-            return ("", error)
+        catch let error as CocoaError {
+            // Update upload request state
+            return ("", .fileOperationFailed(innerError: error))
+        }
+        catch {
+            return ("", .otherError(innerError: error))
         }
     }
     

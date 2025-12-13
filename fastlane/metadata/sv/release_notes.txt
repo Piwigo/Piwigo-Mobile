@@ -1,1 +1,3 @@
-Fixar buggar och förbättrar gränssnittet
+• Lägger till stöd för API-nycklar
+• Fixar buggar och förbättrar gränssnittet
+• Modernisering av koden

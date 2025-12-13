@@ -14,10 +14,8 @@ extension UploadManager
 {
     // MARK: - Prepare Image/Video
     func prepare(_ upload: Upload) -> Void {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("Prepare image/video for upload \(upload.objectID.uriRepresentation())")
-        }
-
+        UploadManager.logger.notice("Prepare image/video for upload \(upload.objectID.uriRepresentation())")
+        
         // Update upload status
         isPreparing = true
         upload.setState(.preparing, save: true)
@@ -103,7 +101,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.lastPathComponent.hasPrefix(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -138,7 +136,7 @@ extension UploadManager
         guard files.count > 0,
               let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
             // File not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -166,9 +164,7 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Prepare image \(upload.fileName)")
-                }
+                UploadManager.logger.notice("Prepare image \(upload.fileName)")
                 prepareImage(atURL: fileURL, for: upload)
                 return
             }
@@ -177,15 +173,13 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Convert image \(upload.fileName) to JPEG format")
-                }
+                UploadManager.logger.notice("Convert image \(upload.fileName) to JPEG format")
                 convertImage(atURL: fileURL, for: upload)
                 return
             }
             
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
             // Update upload request
             didEndPreparation()
@@ -208,9 +202,7 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Prepare video \(upload.fileName)")
-                }
+                UploadManager.logger.notice("Prepare video \(upload.fileName)")
                 prepareVideo(atURL: fileURL, for: upload)
                 return
             }
@@ -219,22 +211,20 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
-                }
+                UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
                 convertVideo(atURL: fileURL, for: upload)
                 return
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
         }
         else {
             // Unknown type
-            upload.setState(.formatError, error: PwgKitError.wrongDataFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -246,7 +236,7 @@ extension UploadManager
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             self.didEndPreparation()
             return
@@ -282,7 +272,12 @@ extension UploadManager
                 
                 // Snapchat creates filenames containning ":" characters,
                 // which prevents the app from storing the converted file
-                utf8mb3Filename = utf8mb3Filename.replacingOccurrences(of: ":", with: "")
+                if #available(iOS 16.0, *) {
+                    utf8mb3Filename = utf8mb3Filename.replacing(":", with: "")
+                } else {
+                    // Fallback on earlier versions
+                    utf8mb3Filename = utf8mb3Filename.replacingOccurrences(of: ":", with: "")
+                }
                 
                 // If encodedFileName is empty, build one from the current date
                 if utf8mb3Filename.count == 0 {
@@ -314,7 +309,7 @@ extension UploadManager
         }
         else {
             // Asset not available… deleted?
-            upload.setState(.preparingFail, error: PwgKitError.missingAsset, save: true)
+            upload.setState(.preparingFail, error: .missingAsset, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -336,9 +331,7 @@ extension UploadManager
             // Chek that the image format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Prepare image \(upload.fileName)")
-                }
+                UploadManager.logger.notice("Prepare image \(upload.fileName)")
                 self.prepareImage(atURL: uploadFileURL, for: upload)
                 return
             }
@@ -346,15 +339,13 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("jpg"),
                acceptedImageExtensions.contains(fileExt) {
                 // Try conversion to JPEG
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Convert image \(upload.fileName) to JPEG format")
-                }
+                UploadManager.logger.notice("Convert image \(upload.fileName) to JPEG format")
                 self.convertImage(atURL: uploadFileURL, for: upload)
                 return
             }
 
             // Image file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadKitError.unacceptedImageFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedImageFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -364,9 +355,7 @@ extension UploadManager
             // Chek that the video format is accepted by the Piwigo server
             if NetworkVars.shared.serverFileTypes.contains(fileExt) {
                 // Launch preparation job
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Prepare video \(upload.fileName)")
-                }
+                UploadManager.logger.notice("Prepare video \(upload.fileName)")
                 self.prepareVideo(ofAsset: originalAsset, for: upload)
                 return
             }
@@ -374,22 +363,20 @@ extension UploadManager
             if NetworkVars.shared.serverFileTypes.contains("mp4"),
                acceptedMovieExtensions.contains(fileExt) {
                 // Try conversion to MP4
-                if #available(iOSApplicationExtension 14.0, *) {
-                    UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
-                }
+                UploadManager.logger.notice("Convert video \(upload.fileName) to MP4 format")
                 self.convertVideo(ofAsset: originalAsset, for: upload)
                 return
             }
             
             // Video file format cannot be accepted by the Piwigo server
-            upload.setState(.formatError, error: UploadKitError.unacceptedVideoFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedVideoFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
 
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
-            upload.setState(.formatError, error: UploadKitError.unacceptedAudioFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedAudioFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()
@@ -398,7 +385,7 @@ extension UploadManager
             fallthrough
         default:
             // Update state of upload request: Unknown format
-            upload.setState(.formatError, error: UploadKitError.unacceptedDataFormat, save: true)
+            upload.setState(.formatError, error: .unacceptedDataFormat, save: true)
             
             // Investigate next upload request?
             self.didEndPreparation()

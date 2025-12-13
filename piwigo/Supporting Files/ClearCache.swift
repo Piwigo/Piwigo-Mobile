@@ -19,7 +19,7 @@ class ClearCache: NSObject {
         switch error {
         case .incompatiblePwgVersion:
             title = NSLocalizedString("serverVersionNotCompatible_title", comment: "Server Incompatible")
-            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, NetworkVars.shared.pwgMinVersion)
+            message = String.localizedStringWithFormat(PwgKitError.incompatiblePwgVersion.localizedDescription, NetworkVars.shared.pwgVersion, pwgMinVersion)
         default:
             title = NSLocalizedString("internetErrorGeneral_title", comment: "Connection Error")
         }
@@ -83,21 +83,30 @@ class ClearCache: NSObject {
                     }
                 }
                 
-                // Disconnect supplementary active scenes except the one(s) displaying Settings
-                connectedScenes.forEach { scene in
+                // Any scene displaying settings (user pressed logout)?
+                let settingsScene = connectedScenes.first { scene in
                     if let window = (scene.delegate as? SceneDelegate)?.window,
                        let topMostVC = window.windowScene?.topMostViewController(),
-                       (topMostVC is SettingsViewController) == false {
-                        UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                        connectedScenes.remove(scene)
+                       topMostVC is SettingsViewController {
+                        return true
                     }
+                    return false
                 }
-
-                // In case there are scenes left
-                while connectedScenes.count > 1 {
-                    if let scene = connectedScenes.first {
-                        UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
-                        connectedScenes.removeFirst()
+                
+                // Remove scenes except one
+                if settingsScene == nil {
+                    while connectedScenes.count > 1 {
+                        if let scene = connectedScenes.first {
+                            UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                            connectedScenes.removeFirst()
+                        }
+                    }
+                } else {
+                    connectedScenes.forEach { scene in
+                        if scene !== settingsScene  {
+                            UIApplication.shared.requestSceneSessionDestruction(scene.session, options: nil)
+                            connectedScenes.remove(scene)
+                        }
                     }
                 }
                 

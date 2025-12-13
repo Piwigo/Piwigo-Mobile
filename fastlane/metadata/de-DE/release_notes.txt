@@ -1,1 +1,3 @@
-Behebt Fehler und verbessert die Benutzeroberfläche
+• Unterstützung für API-Schlüssel hinzugefügt
+• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche
+• Modernisierung des Codes

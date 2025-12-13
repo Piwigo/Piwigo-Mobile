@@ -8,6 +8,7 @@
             "total_count":"8"
         },
         "images":[{
+            "is_favorite":true,
             "id":285,
             "width":3031,
             "height":2006,
@@ -17,7 +18,9 @@
             "comment":null,
             "date_creation":"2008-10-06 08:36:17",
             "date_available":"2018-08-23 19:01:39",
-            "page_url":"https:…picture.php?\/285",
+            "page_url":"https:…picture.php?/285",
+            "element_url":"https:…20251123104129-e37ee1ee.jpg",
+            "download_url":"https:/action.php?id=62417&part=e&download",
             "derivatives":{
                 "square":{
                     "url":"https:…20180823190139-228ec5ae-sq.jpg",
@@ -62,6 +65,7 @@
                 "page_url":"https:…aerial-views"
             }]},
         {
+            "is_favorite":false,
             "id":1,
             "width":2049,
             "height":1537,

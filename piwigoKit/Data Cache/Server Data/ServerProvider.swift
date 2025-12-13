@@ -43,7 +43,7 @@ public class ServerProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                fatalError("Unresolved error \(error)")
+                fatalError("Unresolved error \(error.localizedDescription)")
             }
 
             // Did we find a Server instance?

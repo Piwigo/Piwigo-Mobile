@@ -1,4 +1,4 @@
-iOS版Piwigo支持2.8版本以上的Piwigo云端相册软件，可以在iPhone/iPad/iPod端实现以下功能：
+iOS版Piwigo支持2.10版本以上的Piwigo云端相册软件，可以在iPhone/iPad/iPod端实现以下功能：
 
 • 浏览相册中的图片
 • 创建、删除、移动、重命名相册

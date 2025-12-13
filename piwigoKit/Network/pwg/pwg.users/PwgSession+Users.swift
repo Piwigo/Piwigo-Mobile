@@ -25,19 +25,12 @@ public extension PwgSession {
                                 countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-#if DEBUG
-                    debugPrint(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-#endif
-                    return
-                }
-                
                 // Update current recentPeriodIndex
                 if let usersData = pwgData.users.first {
-                   completion(usersData)
+                    completion(usersData)
+                } else {
+                    failure()
                 }
-                failure()
 
             case .failure:
                 /// - Network communication errors
@@ -53,7 +46,7 @@ public extension PwgSession {
                                 completion: @escaping (Bool) -> Void,
                                 failure: @escaping (PwgKitError) -> Void) {
         
-        // Prepare parameters for retrieving image/video infos
+        // Prepare parameters for updating user parameters
         let paramsDict: [String : Any] = ["user_id"       : pwgID,
                                           "recent_period" : recentPeriod,
                                           "pwg_token"     : NetworkVars.shared.pwgToken]
@@ -64,13 +57,7 @@ public extension PwgSession {
                                 jsonObjectClientExpectsToReceive: UsersGetListJSON.self,
                                 countOfBytesClientExpectsToReceive: 10800) { result in
             switch result {
-            case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    failure(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
+            case .success:
                 // Update current recentPeriodIndex
                 completion(true)
 

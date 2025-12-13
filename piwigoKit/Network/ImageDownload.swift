@@ -35,7 +35,7 @@ final class ImageDownload {
     let placeHolder: UIImage!
     var progressHandler: ((Float) -> Void)?
     var completionHandler: ((URL) -> Void)!
-    var failureHandler: ((Error) -> Void)!
+    var failureHandler: ((PwgKitError) -> Void)!
     var task: URLSessionDownloadTask?
     var resumeData: Data?
     var progress = Float.zero
@@ -43,7 +43,7 @@ final class ImageDownload {
     
     // MARK: - Initialization
     init(type: pwgImageType, atURL imageURL: URL, fileSize: Int64 = .zero, toCacheAt fileURL: URL,
-         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (Error) -> Void) {
+         progress: ((Float) -> Void)? = nil, completion: @escaping (URL) -> Void, failure: @escaping (PwgKitError) -> Void) {
         
         // Store place holder according to image type
         self.placeHolder = type.placeHolder

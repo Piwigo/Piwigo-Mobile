@@ -8,4 +8,4 @@
 
 import Foundation
 
-public let pwgUsersSetInfo = "format=json&method=pwg.users.setInfo"
+public let pwgUsersSetInfo = "pwg.users.setInfo"

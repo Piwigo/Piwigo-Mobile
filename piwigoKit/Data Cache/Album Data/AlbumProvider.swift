@@ -79,7 +79,7 @@ public class AlbumProvider: NSObject {
             do {
                 try controller.performFetch()
             } catch {
-                debugPrint("••> getAlbum() unresolved error: \(error)")
+                debugPrint("••> getAlbum() unresolved error: \(error.localizedDescription)")
                 return
             }
             
@@ -148,12 +148,6 @@ public class AlbumProvider: NSObject {
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { result in
             switch result {
             case .success(let pwgData):
-                // Piwigo error?
-                if pwgData.errorCode != 0 {
-                    completion(PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage))
-                    return
-                }
-                
                 // Import album data into Core Data.
                 do {
                     // Update albums if Community installed (not needed for admins)
@@ -169,13 +163,13 @@ public class AlbumProvider: NSObject {
                     try self.importAlbums(pwgData.data, recursively: recursively, inParent: parentId)
                     completion(nil)
                 }
-                catch let error as DecodingError {
-                    completion(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    completion(error)
                 }
                 catch {
                     completion(.otherError(innerError: error))
                 }
-
+                
             case .failure(let error):
                 /// - Network communication errors
                 /// - Returned JSON data is empty
@@ -200,15 +194,6 @@ public class AlbumProvider: NSObject {
             case .success(let pwgData):
                 // Import Community albums into Core Data.
                 do {
-                    // Piwigo error?
-                    if pwgData.errorCode != 0 {
-                        let error = PwgKitError.pwgError(code: pwgData.errorCode, msg: pwgData.errorMessage)
-                        debugPrint("••> fetchCommunityAlbums error: \(error)")
-                        try self.importAlbums(albums, recursively: recursively, inParent: parentId)
-                        completion(nil)
-                        return
-                    }
-                    
                     // No Community albums?
                     if pwgData.data.isEmpty == true {
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
@@ -234,9 +219,10 @@ public class AlbumProvider: NSObject {
                     // Data cannot be digested
                     do {
                         try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                        completion(nil)
                     }
-                    catch let error as DecodingError {
-                        completion(.decodingFailed(innerError: error))
+                    catch let error as PwgKitError {
+                        completion(error)
                     }
                     catch {
                         completion(.otherError(innerError: error))
@@ -249,9 +235,10 @@ public class AlbumProvider: NSObject {
                 /// - Cannot decode data returned by Piwigo server
                 do {
                     try self.importAlbums(albums, recursively: recursively, inParent: parentId)
+                    completion(nil)
                 }
-                catch let error as DecodingError {
-                    completion(.decodingFailed(innerError: error))
+                catch let error as PwgKitError {
+                    completion(error)
                 }
                 catch {
                     completion(.otherError(innerError: error))
@@ -567,7 +554,7 @@ public class AlbumProvider: NSObject {
             }
         }
     }
-        
+    
     /**
      The attribute 'nbSubAlbums' of parent albums must be:
      - incremented when an album is added to an album,
@@ -596,7 +583,7 @@ public class AlbumProvider: NSObject {
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
@@ -654,7 +641,7 @@ public class AlbumProvider: NSObject {
         /// — whose one of the upper album IDs is the ID of the deleted album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         andPredicates.append(NSPredicate(format: "parentId == %i", albumID))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         
@@ -699,7 +686,7 @@ public class AlbumProvider: NSObject {
         /// — whose one of the upper album IDs is the ID of the parent album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         let regExp =  NSRegularExpression.escapedPattern(for: String(album.pwgID))
         let pattern = String(format: "(^|.*,)%@(,.*|$)", regExp)
         andPredicates.append(NSPredicate(format: "upperIds MATCHES %@", pattern))
@@ -790,7 +777,7 @@ public class AlbumProvider: NSObject {
         /// — whose ID is not the one of the root album
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         let parentIDs = album.upperIds.components(separatedBy: ",").compactMap({Int32($0)})
             .filter({ [0, album.pwgID].contains($0) == false })
         andPredicates.append(NSPredicate(format: "pwgID IN %@", parentIDs))
@@ -823,14 +810,14 @@ public class AlbumProvider: NSObject {
         // Reset the taskContext to free the cache and lower the memory footprint.
         bckgContext.reset()
     }
-
+    
     
     // MARK: - Clear Album Data
     /**
-        Return number of albums stored in cache
+     Return number of albums stored in cache
      */
     public func getObjectCount() -> Int64 {
-
+        
         // Create a fetch request for the Album entity
         let fetchRequest = NSFetchRequest<NSNumber>(entityName: "Album")
         fetchRequest.resultType = .countResultType
@@ -848,7 +835,7 @@ public class AlbumProvider: NSObject {
         }
         return Int64.zero
     }
-
+    
     /**
      Clear cached Core Data album entry
      */

@@ -25,7 +25,7 @@ final class HapticUtilities {
             let audioSession = AVAudioSession.sharedInstance()
             engine = try CHHapticEngine(audioSession: audioSession)
         } catch let error {
-            debugPrint("Engine Creation Error: \(error)")
+            debugPrint("Engine Creation Error: \(error.localizedDescription)")
         }
         
         // The stopped handler alerts you of engine stoppage due to external causes.
@@ -58,7 +58,7 @@ final class HapticUtilities {
             do {
                 try HapticUtilities.engine?.start()
             } catch {
-                debugPrint("Failed to restart the engine: \(error)")
+                debugPrint("Failed to restart the engine: \(error.localizedDescription)")
             }
         }
         return engine
@@ -83,7 +83,7 @@ final class HapticUtilities {
             try engine?.playPattern(from: URL(fileURLWithPath: path))
             
         } catch { // Engine startup errors
-            debugPrint("An error occured playing \(filename): \(error).")
+            debugPrint("An error occured playing \(filename): \(error.localizedDescription).")
         }
     }
 }

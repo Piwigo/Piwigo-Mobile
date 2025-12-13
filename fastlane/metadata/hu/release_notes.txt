@@ -1,1 +1,3 @@
-Hibák javítása és a felület javítása
+• API-kulcsok támogatása
+• Hibajavítások és a felület fejlesztése
+• Kód modernizálása

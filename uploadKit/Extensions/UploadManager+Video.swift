@@ -82,15 +82,13 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
 
@@ -117,8 +115,7 @@ extension UploadManager {
             guard let uti = UTType(filenameExtension: fileExt),
                   let mimeType = uti.preferredMIMEType
             else {
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : PwgKitError.missingAsset.localizedDescription])
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             upload.mimeType = mimeType
@@ -127,7 +124,7 @@ extension UploadManager {
             let fileURL = self.getUploadFileURL(from: upload, deleted: true)
 
             // Determine MD5 checksum
-            let error: Error?
+            let error: PwgKitError?
             (upload.md5Sum, error) = originalFileURL.MD5checksum
             if error != nil {
                 // Could not determine the MD5 checksum
@@ -143,9 +140,12 @@ extension UploadManager {
                 self.didPrepareVideo(for: upload, nil)
                 return
             }
-            catch let error {
+            catch let error as CocoaError {
+                self.didPrepareVideo(for: upload, .fileOperationFailed(innerError: error))
+            }
+            catch {
                 // Could not copy the video file
-                self.didPrepareVideo(for: upload, error)
+                self.didPrepareVideo(for: upload, .otherError(innerError: error))
             }
         }
     }
@@ -164,13 +164,13 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                self.didPrepareVideo(for: upload, .missingAsset)
                 return
             }
 
@@ -187,7 +187,7 @@ extension UploadManager {
         }
     }
     
-    private func didPrepareVideo(for upload: Upload, _ error: Error?) {
+    private func didPrepareVideo(for upload: Upload, _ error: PwgKitError?) {
         // Upload ready for transfer
         // Error?
         if let error = error {
@@ -219,10 +219,8 @@ extension UploadManager {
     }
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
-                       completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        if #available(iOSApplicationExtension 14.0, *) {
-            UploadManager.logger.notice("retrieveVideoFrom() in \(queueName(), privacy: .public)")
-        }
+                               completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, PwgKitError?) -> Void) {
+        UploadManager.logger.notice("retrieveVideoFrom() in \(queueName(), privacy: .public)")
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -296,24 +294,31 @@ extension UploadManager {
             // <<==== End of code for debugging
             
             // resultHandler performed on another thread!
-            let error = info?[PHImageErrorKey] as? Error
             if self.isExecutingBackgroundUploadTask {
 //                debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
-                guard let error = error else {
+                if let error = info?[PHImageErrorKey] as? Error {
+                    if let photosError = error as? PHPhotosError {
+                        completionHandler(nil, options, .photosError(innerError: photosError))
+                    } else {
+                        completionHandler(nil, options, .otherError(innerError: error))
+                    }
+                } else {
                     completionHandler(avasset, options, nil)
-                    return
                 }
-                completionHandler(nil, options, error)
             } else {
                 self.backgroundQueue.async {
 //                    debugPrint("\(self.dbg()) exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
-                    guard let error = error else {
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        if let photosError = error as? PHPhotosError {
+                            completionHandler(nil, options, .photosError(innerError: photosError))
+                        } else {
+                            completionHandler(nil, options, .otherError(innerError: error))
+                        }
+                    } else {
                         completionHandler(avasset, options, nil)
-                        return
                     }
-                    completionHandler(nil, options, error)
                 }
             }
         })
@@ -325,7 +330,7 @@ extension UploadManager {
     private func checkVideoExportability(of originalVideo: AVAsset, for upload: Upload) {
         // We cannot convert the video if it is not exportable
         if !originalVideo.isExportable {
-            didPrepareVideo(for: upload, UploadKitError.cannotStripPrivateMetadata)
+            didPrepareVideo(for: upload, .cannotStripPrivateMetadata)
             return
         }
         else {
@@ -380,7 +385,7 @@ extension UploadManager {
             // Get export session
             guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                            presetName: exportPreset) else {
-                didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                didPrepareVideo(for: upload, .missingAsset)
                 return
             }
             
@@ -440,7 +445,7 @@ extension UploadManager {
                         
                     }
                     // Report error
-                    self.didPrepareVideo(for: upload, PwgKitError.missingAsset)
+                    self.didPrepareVideo(for: upload, .missingAsset)
                     return
                 }
 

@@ -18,7 +18,6 @@ public class UploadManager: NSObject {
     
     // Logs networking activities
     /// sudo log collect --device --start '2025-01-11 15:00:00' --output piwigo.logarchive
-    @available(iOSApplicationExtension 14.0, *)
     static let logger = Logger(subsystem: "org.piwigo.uploadKit", category: String(describing: UploadManager.self))
     
     // Singleton
@@ -127,7 +126,7 @@ public class UploadManager: NSObject {
             try completed.performFetch()
         }
         catch {
-            debugPrint("••> Could not fetch pending uploads: \(error)")
+            debugPrint("••> Could not fetch pending uploads: \(error.localizedDescription)")
         }
         
         // Register auto-upload disabler
@@ -198,7 +197,7 @@ public class UploadManager: NSObject {
         
         // Retrieves only non-completed upload requests
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.username]
+                         "userName"   : NetworkVars.shared.user]
         fetchRequest.predicate = pendingPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()
@@ -225,7 +224,7 @@ public class UploadManager: NSObject {
         
         // Retrieves only completed upload requests
         let variables = ["serverPath" : NetworkVars.shared.serverPath,
-                         "userName"   : NetworkVars.shared.username]
+                         "userName"   : NetworkVars.shared.user]
         fetchRequest.predicate = completedPredicate.withSubstitutionVariables(variables)
         return fetchRequest
     }()

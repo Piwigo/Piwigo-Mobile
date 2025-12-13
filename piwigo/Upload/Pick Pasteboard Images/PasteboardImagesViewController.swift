@@ -40,7 +40,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         // Retrieves only non-completed upload requests
         var andPredicates = [NSPredicate]()
         andPredicates.append(NSPredicate(format: "user.server.path == %@", NetworkVars.shared.serverPath))
-        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.username))
+        andPredicates.append(NSPredicate(format: "user.username == %@", NetworkVars.shared.user))
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andPredicates)
         return fetchRequest
     }()
@@ -107,7 +107,7 @@ class PasteboardImagesViewController: UIViewController, UIScrollViewDelegate {
         do {
             try uploads.performFetch()
         } catch {
-            debugPrint("Error: \(error)")
+            debugPrint("Error: \(error.localizedDescription)")
         }
 
         // Retrieve pasteboard object indexes and types, then create identifiers
