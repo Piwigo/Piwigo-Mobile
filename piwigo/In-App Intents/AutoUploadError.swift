@@ -28,10 +28,10 @@ extension AutoUploadError: LocalizedError {
                                      comment: "Auto-uploading is disabled in the app settings.")
         case .invalidSource:
             return PwgKitError.autoUploadSourceInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadSourceInfo", bundle: piwigoKit, comment: "Please select the album…")
+                   String(localized: "settings_autoUploadSourceInfo", comment: "Please select the album…")
         case .invalidDestination:
             return PwgKitError.autoUploadDestinationInvalid.localizedDescription + ": " +
-                   String(localized: "settings_autoUploadDestinationInfo", bundle: piwigoKit, comment: "Please select the album…")
+                   String(localized: "settings_autoUploadDestinationInfo", comment: "Please select the album…")
         case .importFailed:
             return "Could not create upload requests."
         }
