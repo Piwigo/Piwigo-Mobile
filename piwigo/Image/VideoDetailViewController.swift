@@ -59,7 +59,7 @@ class VideoDetailViewController: UIViewController
     @MainActor
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descContainer.applyColorPalette()
+        descContainer.applyColorPalette(withImage: imageData)
         videoControls.applyColorPalette()
         videoAirplay.tintColor = PwgColor.text
     }
@@ -100,7 +100,7 @@ class VideoDetailViewController: UIViewController
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
                 descContainer.config(withImage: imageData, inViewController: self, forVideo: true)
-                descContainer.applyColorPalette()
+                descContainer.applyColorPalette(withImage: imageData)
             }
             
             // Set place holder view frame for this orientation

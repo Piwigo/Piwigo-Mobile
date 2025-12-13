@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 extension String
-{    
+{
     // MARK: - UTF-8 encoding on 3 and 4 bytes
     public var utf8mb4Encoded: String {
         // Return empty string if nothing provided
@@ -24,12 +24,12 @@ extension String
         }
         return ""
     }
-
+    
     public var utf8mb3Encoded: String {
         // Return empty string if nothing provided
         guard self.isEmpty == false
         else { return "" }
-
+        
         // Replace characters encoded on 4 bytes
         var utf8mb3String = ""
         for char in self {
@@ -43,7 +43,7 @@ extension String
         }
         return utf8mb3String
     }
-
+    
     
     // MARK: - HTML Conversion
     public var attributedPlain: NSAttributedString {
@@ -53,15 +53,15 @@ extension String
             .components(separatedBy: .newlines)
             .map({ $0.trimmingCharacters(in: .whitespaces) })
             .joined(separator: "\n")
-
+        
         // Check provided string
         guard trimmedText.isEmpty == false
         else { return NSAttributedString() }
-
+        
         // Return attributed string
         return NSAttributedString(string: trimmedText)
     }
-
+    
     public var containsHTML: Bool {
         let lowerCaseText = self.lowercased()
         if lowerCaseText.hasPrefix("<!doctype html") ||
@@ -84,49 +84,41 @@ extension String
         guard trimmedText.containsHTML
         else { return NSAttributedString() }
         
-        // Decode HTML code if possible
+        // Convert string to data
         guard let data = trimmedText.data(using: .utf8)
         else { return NSAttributedString() }
-        do {
-            let options: [NSAttributedString.DocumentReadingOptionKey : Any] = [
-                .documentType: NSAttributedString.DocumentType.html,
-                .characterEncoding: String.Encoding.utf8.rawValue
-            ]
-            let attributedHTML = try NSMutableAttributedString(data: data, options: options, documentAttributes: nil)
-            
-            // Replace default HTML font if not specified
-            if trimmedText.contains("font-family") == false {
-                let systemFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
-                let wholeRange = NSRange(location: 0, length: attributedHTML.length)
-                attributedHTML.enumerateAttribute(.font, in: wholeRange) { font, range, _ in
-                    if let currentFont = font as? UIFont {
-                        // Preserve bold and italic traits
-                        var traits: UIFontDescriptor.SymbolicTraits = []
-                        if currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
-                            traits.insert(.traitBold)
-                        }
-                        if currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
-                            traits.insert(.traitItalic)
-                        }
-                        // Preserve font size
-                        let newFontDescriptor = systemFont.fontDescriptor.withSymbolicTraits(traits) ?? systemFont.fontDescriptor
-                        let replacementFont = UIFont(descriptor: newFontDescriptor, size: currentFont.pointSize)
-                        // Apply font
-                        attributedHTML.addAttribute(.font, value: replacementFont, range: range)
+        
+        // Decode HTML if possible
+        let options: [NSAttributedString.DocumentReadingOptionKey : Any] = [
+            .documentType: NSAttributedString.DocumentType.html,
+            .characterEncoding: String.Encoding.utf8.rawValue
+        ]
+        guard let attributed = try? NSMutableAttributedString(
+            data: data, options: options, documentAttributes: nil)
+        else { return NSAttributedString() }
+        
+        // Replace default HTML font if not specified
+        if trimmedText.contains("font-family") == false {
+            let systemFont = UIFont.preferredFont(forTextStyle: .body)
+            let wholeRange = NSRange(location: 0, length: attributed.length)
+            attributed.enumerateAttribute(.font, in: wholeRange) { font, range, _ in
+                if let currentFont = font as? UIFont {
+                    // Preserve bold and italic traits
+                    var traits: UIFontDescriptor.SymbolicTraits = []
+                    if currentFont.fontDescriptor.symbolicTraits.contains(.traitBold) {
+                        traits.insert(.traitBold)
                     }
+                    if currentFont.fontDescriptor.symbolicTraits.contains(.traitItalic) {
+                        traits.insert(.traitItalic)
+                    }
+                    // Preserve font size
+                    let newFontDescriptor = systemFont.fontDescriptor.withSymbolicTraits(traits) ?? systemFont.fontDescriptor
+                    let replacementFont = UIFont(descriptor: newFontDescriptor, size: currentFont.pointSize)
+                    // Apply font
+                    attributed.addAttribute(.font, value: replacementFont, range: range)
                 }
             }
-            
-            // Removes superfluous line feed
-            while !attributedHTML.string.isEmpty
-                    && CharacterSet.newlines.contains(attributedHTML.string.unicodeScalars.last!) {
-                attributedHTML.deleteCharacters(in: NSRange(location: attributedHTML.length - 1, length: 1))
-            }
-            return attributedHTML
         }
-        catch {
-            // Could not decode data as HTML code
-            return NSAttributedString()
-        }
+        return attributed
     }
 }

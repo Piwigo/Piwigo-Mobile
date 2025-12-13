@@ -71,7 +71,7 @@ class ImageDetailViewController: UIViewController
     @MainActor
     @objc func applyColorPalette() {
         // Update description view colors if necessary
-        descContainer.applyColorPalette()
+        descContainer.applyColorPalette(withImage: imageData)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -105,7 +105,7 @@ class ImageDetailViewController: UIViewController
             // Should we update the description?
             if descContainer.descTextView.text.isEmpty == false {
                 descContainer.config(withImage: imageData, inViewController: self, forVideo: false)
-                descContainer.applyColorPalette()
+                descContainer.applyColorPalette(withImage: imageData)
             }
             
             // Preloaded page views not updated as expected!
