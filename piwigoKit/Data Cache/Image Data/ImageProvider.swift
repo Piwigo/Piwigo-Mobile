@@ -461,9 +461,9 @@ public class ImageProvider: NSObject {
             
             // Save all insertions from the context to the store.
             bckgContext.saveIfNeeded()
-            DispatchQueue.main.async {
-                self.mainContext.saveIfNeeded()
-            }
+//            DispatchQueue.main.async {
+//                self.mainContext.saveIfNeeded()
+//            }
 
             // Reset the taskContext to free the cache and lower the memory footprint.
             bckgContext.reset()
