@@ -13,7 +13,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org), a **f
 
 [![](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%2013%20M4%20+%20iPhone%2017%20Pro%20small.webp)](https://raw.githubusercontent.com/Piwigo/Piwigo-Mobile/master/Assets/Images%20-%20Readme/iPad%20Pro%2013%20M4%20+%20iPhone%2017%20Pro%20small.webp)
 ## Description
-[Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.org](http://piwigo.org) (2.8 or higher):
+[Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) for iPhone/iPad supplements the photo gallery software in the cloud [Piwigo.org](http://piwigo.org) (2.10 or higher):
 
 - Browse your albums,
 - Create, delete, move and rename albums,
