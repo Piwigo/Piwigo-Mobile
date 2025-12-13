@@ -18,13 +18,21 @@ extension AlbumViewController
         guard let title = title
         else { return nil }
         
-        let button = UIBarButtonItem(title: title, style: .plain,
-                                     target: self, action: #selector(didTapUploadQueueButton))
+        let button = UIBarButtonItem()
+        button.style = .plain
+        button.target = self
+        button.action = #selector(didTapUploadQueueButton)
         button.accessibilityIdentifier = "showUploadQueue"
+        if title == "⚠️" {
+            let config = UIImage.SymbolConfiguration(pointSize: 17)
+            button.image = UIImage(systemName: "photo.badge.exclamationmark", withConfiguration: config)
+        } else {
+            button.title = title
+        }
         return button
     }
     
-
+    
     // MARK: - Button Management
     @MainActor @available(iOS 26.0, *)
     private func setNavBarWithUploadQueueButton() {
