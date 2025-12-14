@@ -428,7 +428,7 @@ class EditImageParamsViewController: UIViewController
         // Update image description?
         /// token required for updating HTML in title/comment
         if shouldUpdateComment {
-            paramsDict["comment"] = commonComment.utf8mb4Encoded
+            paramsDict["comment"] = commonComment.utf8mb3Encoded
             paramsDict["pwg_token"] = NetworkVars.shared.pwgToken
         }
         
