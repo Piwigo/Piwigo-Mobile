@@ -119,6 +119,13 @@ extension String
                 }
             }
         }
+
+        // Removes superfluous line feed
+        while !attributed.string.isEmpty
+                && CharacterSet.newlines.contains(attributed.string.unicodeScalars.last!) {
+            attributed.deleteCharacters(in: NSRange(location: attributed.length - 1, length: 1))
+        }
+
         return attributed
     }
 }
