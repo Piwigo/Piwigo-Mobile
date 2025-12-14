@@ -191,6 +191,8 @@ public struct Derivatives: Decodable {
     public var largeImage: Derivative?
     public var xLargeImage: Derivative?
     public var xxLargeImage: Derivative?
+    public var xxxLargeImage: Derivative?
+    public var xxxxLargeImage: Derivative?
 
     public enum CodingKeys: String, CodingKey {
         case squareImage = "square"
@@ -204,6 +206,8 @@ public struct Derivatives: Decodable {
         case largeImage = "large"
         case xLargeImage = "xlarge"
         case xxLargeImage = "xxlarge"
+        case xxxLargeImage = "3xlarge"
+        case xxxxLargeImage = "4xlarge"
     }
 }
 
