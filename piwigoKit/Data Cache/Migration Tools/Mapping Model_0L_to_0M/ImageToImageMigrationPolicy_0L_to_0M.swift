@@ -38,7 +38,7 @@ final class ImageToImageMigrationPolicy_0L_to_0M: NSEntityMigrationPolicy {
     /**
      ImageToImage custom migration performed following these steps:
      - Sets the values of the attributes from the source instance
-     - Sets the value of the attribute 'downloadUrl' to nil
+     - Sets the value of the attribute 'commentRaw' to ""
      - Sets the relationship from the source instance
      - Associates the source instance with the destination instance
     */
