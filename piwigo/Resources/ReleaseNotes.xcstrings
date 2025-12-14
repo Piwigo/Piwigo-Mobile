@@ -9804,98 +9804,109 @@
       "localizations" : {
         "ar" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "الإصدار 4.1.2\n\n• يضيف الدعم لمفاتيح API\n• إصلاح الأخطاء وتحسين الواجهة\n• تحديث التعليمات البرمجية"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.1.2\n\n• Tilføjer understøttelse af API-nøgler\n• Rette fejl og forbedrer grænsefladen\n• Modernisering af kode"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.1.2\n\n• Unterstützung für API-Schlüssel hinzugefügt\n• Fehlerbehebungen und Verbesserungen der Benutzeroberfläche\n• Modernisierung des Codes"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version 4.1.2\n\n• Adds support for API keys\n• Fixes bugs and improves the interface\n• Code modernization"
+            "value" : "Version 4.1.2\nDecember 12, 2025\n\n• Adds support for API keys\n• Fixes bugs and improves the interface\n• Code modernization"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versión 4.1.2\n\n• Añade compatibilidad con claves de API\n• Corrige errores y mejora la interfaz\n• Modernización del código"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.1.2\n\n• Ajout de la prise en charge des clés API\n• Correction de bugs et amélioration de l'interface\n• Modernisation du code"
           }
         },
         "hu" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "4.1.2 verzió\n\n• API-kulcsok támogatása\n• Hibajavítások és a felület fejlesztése\n• Kód modernizálása"
           }
         },
         "id" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versi 4.1.2\n\n• Menambahkan dukungan untuk kunci API\n• Memperbaiki bug dan meningkatkan antarmuka\n• Modernisasi kode"
           }
         },
         "it" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versione 4.1.2\n\n• Aggiunge il supporto per le chiavi API\n• Corregge bug e migliora l'interfaccia\n• Modernizzazione del codice"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "バージョン 4.1.2\n\n• APIキーのサポートを追加\n• バグ修正とインターフェースの改善\n• コードの近代化"
           }
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Versie 4.1.2\n\n• Ondersteuning voor API-sleutels toegevoegd\n• Bugs verholpen en interface verbeterd\n• Codemodernisering"
           }
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wersja 4.1.2\n\n• Dodano obsługę kluczy API\n• Poprawki błędów i usprawnienia interfejsu\n• Modernizacja kodu"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Версия 4.1.2\n\n• Добавлена поддержка API-ключей\n• Исправлены ошибки и улучшен интерфейс\n• Модернизация кода"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Version 4.1.2\n\n• Lägger till stöd för API-nycklar\n• Fixar buggar och förbättrar gränssnittet\n• Modernisering av koden"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.1.2\n\n• 新增对 API 密钥的支持\n• 修复了若干错误并优化了界面\n• 代码现代化"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "版本 4.1.2\n\n• 新增 API 金鑰支援功能\n• 修復錯誤並優化介面\n• 程式碼現代化"
+          }
+        }
+      }
+    },
+    "v4.1.3_text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version 4.1.3\n\n• Piwigo 16 compatibility\n• Fixes bugs and improves the interface"
           }
         }
       }
