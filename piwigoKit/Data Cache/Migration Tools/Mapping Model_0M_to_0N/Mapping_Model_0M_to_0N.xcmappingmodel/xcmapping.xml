@@ -686,11 +686,11 @@ cxIAAYagXxAPTlNLZXllZEFyY2hpdmVy0QAIAAlUcm9vdIABrxEOcAALAAwAGQA1ADYANwBPAFAAUQBS
         <attribute name="migrationpolicyclassname" type="string">piwigoKit.UploadToUploadMigrationPolicy_Copy</attribute>
         <attribute name="sourcename" type="string">Upload</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
-        <attribute name="mappingnumber" type="int16">8</attribute>
+        <attribute name="mappingnumber" type="int16">9</attribute>
         <attribute name="destinationname" type="string">Upload</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z201"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z133 z187 z124 z195 z110 z214 z137 z134 z239 z218 z108 z247 z171 z161 z181 z169 z126 z243 z149 z143 z229 z228 z233 z194 z165 z164 z147 z136"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z124 z233 z133 z164 z228 z171 z110 z247 z165 z194 z137 z187 z108 z229 z126 z147 z181 z195 z239 z169 z214 z149 z143 z136 z218 z161 z134 z243"></relationship>
         <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z198 z131"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z241">
