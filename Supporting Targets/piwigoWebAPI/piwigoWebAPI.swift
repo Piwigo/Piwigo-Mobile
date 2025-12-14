@@ -119,6 +119,7 @@ class piwigoWebAPI: XCTestCase {
         
         XCTAssertEqual(result.status, "ok")
         XCTAssertTrue(result.data.contains(where: { $0.id == 38 }))
+        XCTAssertTrue(result.data.contains(where: { $0.commentRaw == "Which are different as explained for example here: https://northamericannature.com/what-is-the-difference-between-insects-and-spiders/" }))
     }
 
     func testPwgCategoriesAddDecoding() {
@@ -306,6 +307,7 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.data.md5checksum, "3175a7347fd5d6348935ec955f52a9e3")
         XCTAssertEqual(result.data.derivatives.largeImage?.height?.intValue, 756)
+        XCTAssertEqual(result.data.commentRaw, "<!DOCTYPE html><html lang=\"fr\"><head>    <meta charset=\"UTF-8\">    <title>Exemple avec police</title>    <style>        p {            font-family: 'Comic Sans MS', cursive;            font-size: 18px;            color: #0000FF;        }    </style></head><body>    <p>Great view from Pic du Midi! Visit Piwigo.org</p></body></html>")
     }
 
     func testPwgImagesSetInfoDecoding() {
