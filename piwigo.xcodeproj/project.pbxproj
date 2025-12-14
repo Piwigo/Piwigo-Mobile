@@ -270,6 +270,8 @@
 		AD541F4F2EEEBBF800C87DC9 /* Mapping_Model_0L_to_0M.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD541F4E2EEEBBF800C87DC9 /* Mapping_Model_0L_to_0M.xcmappingmodel */; };
 		AD541F522EEEBC5100C87DC9 /* ImageToImageMigrationPolicy_0L_to_0M.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD541F512EEEBC5100C87DC9 /* ImageToImageMigrationPolicy_0L_to_0M.swift */; };
 		AD541F542EEEBE2200C87DC9 /* AlbumToAlbumMigrationPolicy_0L_to_0M.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD541F532EEEBE2200C87DC9 /* AlbumToAlbumMigrationPolicy_0L_to_0M.swift */; };
+		AD541F582EEF061400C87DC9 /* Mapping_Model_0M_to_0N.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD541F572EEF061400C87DC9 /* Mapping_Model_0M_to_0N.xcmappingmodel */; };
+		AD541F5A2EEF06D200C87DC9 /* SizesToSizesMigrationPolicy_0M_to_0N.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD541F592EEF06D200C87DC9 /* SizesToSizesMigrationPolicy_0M_to_0N.swift */; };
 		AD54834A2EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */; };
 		AD54834C2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */; };
 		AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */; };
@@ -1019,6 +1021,9 @@
 		AD541F4E2EEEBBF800C87DC9 /* Mapping_Model_0L_to_0M.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Mapping_Model_0L_to_0M.xcmappingmodel; sourceTree = "<group>"; };
 		AD541F512EEEBC5100C87DC9 /* ImageToImageMigrationPolicy_0L_to_0M.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageToImageMigrationPolicy_0L_to_0M.swift; sourceTree = "<group>"; };
 		AD541F532EEEBE2200C87DC9 /* AlbumToAlbumMigrationPolicy_0L_to_0M.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumToAlbumMigrationPolicy_0L_to_0M.swift; sourceTree = "<group>"; };
+		AD541F552EEEEBE200C87DC9 /* DataModel 0N (Sizes).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 0N (Sizes).xcdatamodel"; sourceTree = "<group>"; };
+		AD541F572EEF061400C87DC9 /* Mapping_Model_0M_to_0N.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Mapping_Model_0M_to_0N.xcmappingmodel; sourceTree = "<group>"; };
+		AD541F592EEF06D200C87DC9 /* SizesToSizesMigrationPolicy_0M_to_0N.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizesToSizesMigrationPolicy_0M_to_0N.swift; sourceTree = "<group>"; };
 		AD5483492EA3A9F50032A95E /* EditImageParamsViewController+ShiftDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftDatePicker.swift"; sourceTree = "<group>"; };
 		AD54834B2EA3CC740032A95E /* EditImageParamsViewController+ShiftTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EditImageParamsViewController+ShiftTimePicker.swift"; sourceTree = "<group>"; };
 		AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadViewController.swift; sourceTree = "<group>"; };
@@ -1741,6 +1746,7 @@
 				AD7000D32E4618A2007B2791 /* Mapping Model 0K to 0L */,
 				AD7000DD2E461C5E007B2791 /* Mapping Model_0J_to_0L */,
 				AD541F502EEEBC1400C87DC9 /* Mapping Model_0L_to_0M */,
+				AD541F562EEF05D400C87DC9 /* Mapping Model_0M_to_0N */,
 			);
 			path = "Migration Tools";
 			sourceTree = "<group>";
@@ -1980,6 +1986,15 @@
 				AD541F532EEEBE2200C87DC9 /* AlbumToAlbumMigrationPolicy_0L_to_0M.swift */,
 			);
 			path = "Mapping Model_0L_to_0M";
+			sourceTree = "<group>";
+		};
+		AD541F562EEF05D400C87DC9 /* Mapping Model_0M_to_0N */ = {
+			isa = PBXGroup;
+			children = (
+				AD541F572EEF061400C87DC9 /* Mapping_Model_0M_to_0N.xcmappingmodel */,
+				AD541F592EEF06D200C87DC9 /* SizesToSizesMigrationPolicy_0M_to_0N.swift */,
+			);
+			path = "Mapping Model_0M_to_0N";
 			sourceTree = "<group>";
 		};
 		AD5A31652847F85F00948FEE /* pwg.categories */ = {
@@ -3644,6 +3659,7 @@
 				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
 				ADDC36C928CCE91700E5AE4B /* Album+CoreDataClass.swift in Sources */,
 				ADDC36CA28CCE91700E5AE4B /* Album+CoreDataProperties.swift in Sources */,
+				AD541F582EEF061400C87DC9 /* Mapping_Model_0M_to_0N.xcmappingmodel in Sources */,
 				AD44870C29056D50001288E4 /* AlbumSmart.swift in Sources */,
 				AD7D131A2DFDCC9B00EEE90D /* UserGroup+CoreDataClass.swift in Sources */,
 				AD541F542EEEBE2200C87DC9 /* AlbumToAlbumMigrationPolicy_0L_to_0M.swift in Sources */,
@@ -3676,6 +3692,7 @@
 				AD0B62E92DEAF960001E9684 /* UploadRenameAction+DateFormat.swift in Sources */,
 				AD0B62EB2DEAF98A001E9684 /* UploadRenameAction+TimeFormat.swift in Sources */,
 				AD0B62EF2DEAFBDC001E9684 /* UploadRenameAction+CounterFormat.swift in Sources */,
+				AD541F5A2EEF06D200C87DC9 /* SizesToSizesMigrationPolicy_0M_to_0N.swift in Sources */,
 				ADDC36D428D10DD700E5AE4B /* DescriptionValueTransformer.swift in Sources */,
 				AD243D9228E05F60002DCC5F /* RelativeURLValueTransformer.swift in Sources */,
 				ADDC36BC28CCC12800E5AE4B /* ResolutionValueTransformer.swift in Sources */,
@@ -5172,6 +5189,7 @@
 		ADD981F528737EFD007213AE /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AD541F552EEEEBE200C87DC9 /* DataModel 0N (Sizes).xcdatamodel */,
 				AD541F4D2EEEBAE400C87DC9 /* DataModel 0M (.comment).xcdatamodel */,
 				AD7000E32E46732B007B2791 /* DataModel 0L (.comment).xcdatamodel */,
 				AD6E6C432E2BE62600600E5A /* DataModel 0K (Image.fileType).xcdatamodel */,
@@ -5195,7 +5213,7 @@
 				ADD981FA28737EFD007213AE /* DataModel 02 (+Location).xcdatamodel */,
 				ADD981FD28737EFD007213AE /* DataModel 01.xcdatamodel */,
 			);
-			currentVersion = AD541F4D2EEEBAE400C87DC9 /* DataModel 0M (.comment).xcdatamodel */;
+			currentVersion = AD541F552EEEEBE200C87DC9 /* DataModel 0N (Sizes).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

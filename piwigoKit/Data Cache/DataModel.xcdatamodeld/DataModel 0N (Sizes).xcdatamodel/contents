@@ -105,6 +105,8 @@
         <attribute name="xsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="xxlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
         <attribute name="xxsmall" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName=".Resolution"/>
+        <attribute name="xxxlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
+        <attribute name="xxxxlarge" optional="YES" attributeType="Transformable" valueTransformerName="ResolutionValueTransformer" customClassName="Resolution"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="sizes" inverseEntity="Image"/>
     </entity>
     <entity name="Tag" representedClassName=".Tag" syncable="YES">

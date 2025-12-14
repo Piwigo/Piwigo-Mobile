@@ -271,6 +271,24 @@ public class Image: NSManagedObject {
             sizes.xxlarge = newXxlarge
         }
         
+        let xxxlargeRes = imageData.derivatives.xxxLargeImage
+        let xxxlargeUrl = PwgSession.encodedImageURL(xxxlargeRes?.url ?? "")
+        let newXxxlarge = Resolution(imageWidth: xxxlargeRes?.width?.intValue ?? 1,
+                                    imageHeight: xxxlargeRes?.height?.intValue ?? 1,
+                                    imageURL: NSURL(string: xxxlargeUrl?.absoluteString ?? ""))
+        if sizes.xxxlarge == nil || sizes.xxxlarge?.isEqual(newXxxlarge) == false {
+            sizes.xxxlarge = newXxxlarge
+        }
+        
+        let xxxxlargeRes = imageData.derivatives.xxxxLargeImage
+        let xxxxlargeUrl = PwgSession.encodedImageURL(xxxxlargeRes?.url ?? "")
+        let newXxxxlarge = Resolution(imageWidth: xxxxlargeRes?.width?.intValue ?? 1,
+                                    imageHeight: xxxxlargeRes?.height?.intValue ?? 1,
+                                    imageURL: NSURL(string: xxxxlargeUrl?.absoluteString ?? ""))
+        if sizes.xxxxlarge == nil || sizes.xxxxlarge?.isEqual(newXxxxlarge) == false {
+            sizes.xxxxlarge = newXxxxlarge
+        }
+        
         // Location
         let latitude = imageData.latitude?.doubleValue ?? 0.0
         if latitude != 0, self.latitude != latitude {

@@ -477,7 +477,7 @@ private extension DataMigrationVersion {
                     DataMigrator.logger.error("\(logPrefix) 4.1.3")
                     return .version0L
                 }
-                return .version0M
+                return .version0N
             }
         }
         return compatibleVersion
