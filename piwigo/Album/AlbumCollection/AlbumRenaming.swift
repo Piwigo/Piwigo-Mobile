@@ -130,8 +130,9 @@ class AlbumRenaming: NSObject
                     if albumData.name != albumName {
                         albumData.name = albumName
                     }
-                    if albumData.commentStr != albumComment {
+                    if albumData.commentRaw != albumComment {
                         albumData.commentStr = albumComment
+                        albumData.commentRaw = albumComment
                         albumData.comment = albumComment.attributedPlain
                         albumData.commentHTML = albumComment.attributedHTML
                     }

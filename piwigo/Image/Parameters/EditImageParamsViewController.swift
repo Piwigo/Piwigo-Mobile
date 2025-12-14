@@ -501,6 +501,7 @@ class EditImageParamsViewController: UIViewController
                     if shouldUpdateComment,
                        let newComment = paramsDict["comment"] as? String {
                         imageData.commentStr = newComment.utf8mb4Encoded
+                        imageData.commentRaw = imageData.commentStr
                         imageData.comment = imageData.commentStr.attributedPlain
                         imageData.commentHTML = imageData.commentStr.attributedHTML
                     }
