@@ -133,20 +133,30 @@ extension PwgSession
         else { return }
         
         // Cancel the download request
-        download.task?.cancel(byProducingResumeData: { data in
-            if let data = data {
-                #if DEBUG
-                PwgSession.logger.notice("Pause download of image \(download.fileURL.lastPathComponent) with resume data (\(self.activeDownloads.count) active downloads)")
-                #endif
-                download.resumeData = data
-            } else {
-                #if DEBUG
-                PwgSession.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) without resume data (\(self.activeDownloads.count) active downloads)")
-                #endif
-                download.task?.cancel()
-                download.task = nil
-            }
-        })
+        guard let task = download.task else { return }
+        switch task.state {
+        case .running, .suspended:
+            download.task?.cancel(byProducingResumeData: { data in
+                if let data = data {
+#if DEBUG
+                    PwgSession.logger.notice("Pause download of image \(download.fileURL.lastPathComponent) with resume data (\(self.activeDownloads.count) active downloads)")
+#endif
+                    download.resumeData = data
+                } else {
+#if DEBUG
+                    PwgSession.logger.notice("Cancel download of image \(download.fileURL.lastPathComponent) without resume data (\(self.activeDownloads.count) active downloads)")
+#endif
+                    download.task?.cancel()
+                    download.task = nil
+                }
+            })
+        case .canceling:
+            break
+        case .completed:
+            download.task = nil
+        default:
+            return
+        }
     }
     
     public func cancelDownload(atURL imageURL: URL) {
